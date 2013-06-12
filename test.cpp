@@ -82,5 +82,16 @@ int main()
   archive & t3;
   archive & t4;
 
+  int x = 5;
+  auto nvp = cereal::make_nvp("hello!", x);
+  //auto nvp2 = CEREAL_NVP(x);
+
+  std::cout << std::is_base_of<cereal::detail::NameValuePairCore, decltype(nvp)>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_serialize<decltype(nvp), cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_serializable<decltype(nvp), cereal::BinaryOutputArchive>() << std::endl;
+
+  archive & nvp;
+  archive & cereal::make_nvp("another", x);
+
   return 0;
 }

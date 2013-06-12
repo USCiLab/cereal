@@ -6,6 +6,30 @@
 
 namespace cereal
 {
+  namespace detail
+  {
+    struct NameValuePairCore {};
+  }
+
+  //! For holding name value pairs
+  template <class T>
+  struct NameValuePair : detail::NameValuePairCore
+  {
+    NameValuePair( std::string const & n, T const & v ) : name(n), value(v) {}
+
+    std::string name;
+    T value;
+  };
+
+  //! Creates a name value pair
+  template <class T> inline
+  NameValuePair<T> make_nvp( std::string const & name, T const & value )
+  {
+    return {name, value};
+  }
+
+  //! Creates a name value pair for the variable T, using the same name
+  #define CEREAL_NVP(T) make_nvp("T", T);
 
   class BinaryOutputArchive
   {
@@ -18,7 +42,7 @@ namespace cereal
       template <class T>
       typename std::enable_if<traits::is_serializable<T, BinaryOutputArchive>() && traits::has_member_serialize<T, BinaryOutputArchive>(),
                BinaryOutputArchive &>::type
-      operator & (T & t)
+      operator & (T && t)
       {
         std::cout << "Member serialize" << std::endl;
 
@@ -30,7 +54,7 @@ namespace cereal
       template <class T>
       typename std::enable_if<traits::is_serializable<T, BinaryOutputArchive>() && traits::has_non_member_serialize<T, BinaryOutputArchive>(),
                BinaryOutputArchive &>::type
-      operator & (T & t)
+      operator & (T && t)
       {
         std::cout << "Non member serialize" << std::endl;
 
@@ -95,9 +119,16 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   serialize(BinaryOutputArchive & ar, T & t)
   {
-    //ar.itsStream << t;
     ar.save_binary(std::addressof(t), sizeof(t));
     std::cout << "Serializing POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
   }
 
+  //! Serialization for NVP types to binary
+  template<class T>
+  typename std::enable_if<std::is_base_of<cereal::detail::NameValuePairCore, T>::value, void>::type
+  serialize(BinaryOutputArchive & ar, T & t)
+  {
+    std::cout << "Serializing NVP: " << t.name << " " << t.value << std::endl;
+    ar & t.value;
+  }
 }
