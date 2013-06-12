@@ -8,12 +8,11 @@ struct Test1
   std::string b;
 
   template<class Archive>
-    void serialize(Archive & ar, unsigned int version)
+    void serialize(Archive & ar)
     {
       ar & a & b;
     }
 };
-CEREAL_CLASS_VERSION(Test1, 1);
 
 // ###################################
 struct Test2
@@ -22,18 +21,17 @@ struct Test2
   std::string b;
 
   template<class Archive>
-    void save(Archive & ar, unsigned int version)
+    void save(Archive & ar)
     {
       ar & a & b;
     }
 
   template<class Archive>
-    void load(Archive & ar, unsigned int version)
+    void load(Archive & ar)
     {
       ar & a & b;
     }
 };
-CEREAL_CLASS_VERSION(Test2, 2);
 
 // ###################################
 struct Test3
@@ -43,12 +41,11 @@ struct Test3
 };
 
   template<class Archive>
-void serialize(Archive & ar, Test3 & t, unsigned int version)
+void serialize(Archive & ar, Test3 & t)
 {
   //ar & t.a;
   //ar & t.b;
 }
-CEREAL_CLASS_VERSION(Test3, 3);
 
 namespace test4
 {
@@ -60,17 +57,16 @@ namespace test4
   };
 
   template<class Archive>
-    void save(Archive & ar, Test4 & t, unsigned int version)
+    void save(Archive & ar, Test4 & t)
     {
       ar & t.a & t.b;
     }
 
   template<class Archive>
-    void load(Archive & ar, Test4 & t, unsigned int version)
+    void load(Archive & ar, Test4 & t)
     {
       ar & t.a & t.b;
     }
-  CEREAL_CLASS_VERSION(Test4, 4);
 }
 
 // ######################################################################
