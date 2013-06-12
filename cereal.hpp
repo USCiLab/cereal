@@ -29,7 +29,7 @@ namespace cereal
   }
 
   //! Creates a name value pair for the variable T, using the same name
-  #define CEREAL_NVP(T) make_nvp("T", T);
+  #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T);
 
   class BinaryOutputArchive
   {
