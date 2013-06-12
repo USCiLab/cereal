@@ -22,7 +22,8 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
-                     std::cout << "Member serialize" << std::endl;
+                     std::cout << "Member serialize. Version " << cereal_class_version(t) << std::endl;
+
                      //t.serialize(*this, traits::version<T>::value)
                      return *this;
                    }
@@ -32,7 +33,8 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
-                     std::cout << "Non member serialize" << std::endl;
+                     std::cout << "Non member serialize. Version " << cereal_class_version(t) << std::endl;
+
                      //serialize(*this, t, traits::version<T>::value)
                      return *this;
                    }
@@ -42,7 +44,8 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
-                     std::cout << "Member split" << std::endl;
+                     std::cout << "Member split. Version " << cereal_class_version(t) << std::endl;
+
                      //t.save(*this, traits::version<T>::value);
                      return *this;
                    }
@@ -52,7 +55,7 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
-                     std::cout << "Non member split" << std::endl;
+                     std::cout << "Non member split. Version " << cereal_class_version(t) << std::endl;
                      //save(*this, t, traits::version<T>::value);
                      return *this;
                    }
@@ -72,5 +75,8 @@ namespace cereal
           return *this;
         }
   };
+
+#define CEREAL_CLASS_VERSION(classname, version) \
+  unsigned int constexpr cereal_class_version(classname const &) { return version; };
 
 }

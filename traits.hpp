@@ -1,8 +1,12 @@
 namespace cereal
 {
+
+  template<typename T> unsigned int constexpr cereal_class_version(T const &) { return 0; };
+
   namespace traits
   {
     template<typename> struct Void { typedef void type; };
+
 
     // ######################################################################
     // Member Serialize
