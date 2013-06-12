@@ -1,4 +1,5 @@
 #include "cereal.hpp"
+#include <cxxabi.h>
 
 // ###################################
 struct Test1
@@ -37,20 +38,14 @@ struct Test3
 {
   int a;
   std::string b;
-
 };
 
-#if 1
-//namespace cereal
-//{
   template<class Archive>
-    void serialize(Archive & ar, Test3 & t, unsigned int version)
-    {
-      //ar & t.a;
-      //ar & t.b;
-    }
-//}
-#endif
+void serialize(Archive & ar, Test3 & t, unsigned int version)
+{
+  //ar & t.a;
+  //ar & t.b;
+}
 
 // ###################################
 struct Test4
@@ -58,37 +53,19 @@ struct Test4
   int a;
   std::string b;
 
-  template<class Archive>
-    void serialize(Archive & ar, unsigned int version)
-    {
-      ar & a & b;
-    }
-
-  template<class Archive>
-    void save(Archive & ar, unsigned int version)
-    {
-      ar & a & b;
-    }
-
-  template<class Archive>
-    void load(Archive & ar, unsigned int version)
-    {
-      ar & a & b;
-    }
 };
 
-//// ######################################################################
-//template<typename> struct Void { typedef void type; };
-//
-//template<typename T, class A, typename Sfinae = void>
-//struct has_non_member_serialize2: std::false_type {};
-//
-//template<typename T, class A>
-//struct has_non_member_serialize2< T, A,
-//  typename Void<
-//decltype( cereal::serialize( std::declval<A&>(), std::declval<T&>(), 0 ) )
-//  >::type
-//  >: std::true_type {};
+  template<class Archive>
+void save(Archive & ar, Test4 & t, unsigned int version)
+{
+  ar & t.a & t.b;
+}
+
+  template<class Archive>
+void load(Archive & ar, Test4 & t, unsigned int version)
+{
+  ar & t.a & t.b;
+}
 
 // ######################################################################
 int main()
@@ -100,16 +77,10 @@ int main()
   Test3 t3;
   Test4 t4;
 
-  //archive & t1;
-  //archive & t2;
-  //archive & t3;
-  //archive & t4;
-
-  //cereal::serialize(archive, t3, 0);
-
-
-  std::cout << cereal::traits::has_non_member_serialize<Test2, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << has_non_member_serialize2<Test3, cereal::BinaryOutputArchive>() << std::endl;
+  archive & t1;
+  archive & t2;
+  archive & t3;
+  archive & t4;
 
   return 0;
 }

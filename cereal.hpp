@@ -22,6 +22,7 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
+                     std::cout << "Member serialize" << std::endl;
                      //t.serialize(*this, traits::version<T>::value)
                      return *this;
                    }
@@ -31,6 +32,7 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
+                     std::cout << "Non member serialize" << std::endl;
                      //serialize(*this, t, traits::version<T>::value)
                      return *this;
                    }
@@ -40,6 +42,7 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
+                     std::cout << "Member split" << std::endl;
                      //t.save(*this, traits::version<T>::value);
                      return *this;
                    }
@@ -49,6 +52,7 @@ namespace cereal
                  BinaryOutputArchive &>::type
                    operator & (T const & t)
                    { 
+                     std::cout << "Non member split" << std::endl;
                      //save(*this, t, traits::version<T>::value);
                      return *this;
                    }
