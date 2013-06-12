@@ -56,7 +56,7 @@ namespace cereal
 
     // ######################################################################
     // Non Member Save
-    template<typename T, typename A> char & save(A&, T&);
+    template<typename T, typename A> char & save(A&, T const &);
     template<typename T, typename A>
       bool constexpr has_non_member_save()
       { return std::is_void<decltype(save(std::declval<A&>(), std::declval<T&>()))>::value; };

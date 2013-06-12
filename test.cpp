@@ -1,50 +1,48 @@
 #include "cereal.hpp"
 #include <cxxabi.h>
+#include <sstream>
+#include <fstream>
 
 // ###################################
 struct Test1
 {
   int a;
-  std::string b;
 
   template<class Archive>
-    void serialize(Archive & ar)
-    {
-      ar & a & b;
-    }
+  void serialize(Archive & ar)
+  {
+    ar & a;
+  }
 };
 
 // ###################################
 struct Test2
 {
   int a;
-  std::string b;
 
   template<class Archive>
-    void save(Archive & ar)
-    {
-      ar & a & b;
-    }
+  void save(Archive & ar) const
+  {
+    ar & a;
+  }
 
   template<class Archive>
-    void load(Archive & ar)
-    {
-      ar & a & b;
-    }
+  void load(Archive & ar)
+  {
+    ar & a;
+  }
 };
 
 // ###################################
 struct Test3
 {
   int a;
-  std::string b;
 };
 
-  template<class Archive>
+template<class Archive>
 void serialize(Archive & ar, Test3 & t)
 {
-  //ar & t.a;
-  //ar & t.b;
+  ar & t.a;
 }
 
 namespace test4
@@ -53,26 +51,26 @@ namespace test4
   struct Test4
   {
     int a;
-    std::string b;
   };
 
   template<class Archive>
-    void save(Archive & ar, Test4 & t)
-    {
-      ar & t.a & t.b;
-    }
+  void save(Archive & ar, Test4 const & t)
+  {
+    ar & t.a;
+  }
 
   template<class Archive>
-    void load(Archive & ar, Test4 & t)
-    {
-      ar & t.a & t.b;
-    }
+  void load(Archive & ar, Test4 & t)
+  {
+    ar & t.a;
+  }
 }
 
 // ######################################################################
 int main()
 {
-  cereal::BinaryOutputArchive archive;
+  std::ostringstream os;
+  cereal::BinaryOutputArchive archive(os);
 
   Test1 t1;
   Test2 t2;
