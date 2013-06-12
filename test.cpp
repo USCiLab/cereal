@@ -69,13 +69,14 @@ namespace test4
 // ######################################################################
 int main()
 {
-  std::ostringstream os;
+  //std::ostringstream os;
+  std::ofstream os("out.txt");
   cereal::BinaryOutputArchive archive(os);
 
-  Test1 t1;
-  Test2 t2;
-  Test3 t3;
-  test4::Test4 t4;
+  Test1 t1 = {1};
+  Test2 t2 = {2};
+  Test3 t3 = {3};
+  test4::Test4 t4 = {4};
 
   archive & t1;
   archive & t2;
@@ -84,14 +85,19 @@ int main()
 
   int x = 5;
   auto nvp = cereal::make_nvp("hello!", x);
-  archive & CEREAL_NVP(x);
-
-  std::cout << std::is_base_of<cereal::detail::NameValuePairCore, decltype(nvp)>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_serialize<decltype(nvp), cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::is_serializable<decltype(nvp), cereal::BinaryOutputArchive>() << std::endl;
 
   archive & nvp;
-  archive & cereal::make_nvp("another", x);
+
+  x = 6;
+  archive & CEREAL_NVP(x);
+
+  std::string bla = "asdf";
+
+  //std::cout << cereal::traits::has_non_member_save<std::string, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << cereal::traits::has_non_member_load<std::string, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << cereal::traits::is_serializable<std::string, cereal::BinaryOutputArchive>() << std::endl;
+
+  archive & bla;
 
   return 0;
 }

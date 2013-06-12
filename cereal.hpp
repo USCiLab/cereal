@@ -3,6 +3,7 @@
 #include <iostream>
 #include <type_traits>
 #include "traits.hpp"
+#include <string>
 
 namespace cereal
 {
@@ -130,5 +131,23 @@ namespace cereal
   {
     std::cout << "Serializing NVP: " << t.name << " " << t.value << std::endl;
     ar & t.value;
+  }
+
+  //! Serialization for basic_string types to binary
+  template<class CharT, class Traits, class Alloc>
+  void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  {
+    // Save number of chars + the data
+    ar & str.size();
+    ar.save_binary(str.data(), str.size() * sizeof(CharT));
+
+    std::cout << "Saving string: " << str << std::endl;
+  }
+
+  //! Serialization for basic_string types to binary
+  template<class CharT, class Traits, class Alloc>
+  void load(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  {
+    std::cout << "Loading string: " << str << std::endl;
   }
 }
