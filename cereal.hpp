@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <type_traits>
 #include "traits.hpp"
@@ -39,8 +41,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Member serialize" << std::endl;
-
         t.serialize(*self);
         return *self;
       }
@@ -51,8 +51,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Non member serialize" << std::endl;
-
         serialize(*self, std::forward<T>(t));
         return *self;
       }
@@ -63,8 +61,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T const & t)
       {
-        std::cout << "Member split" << std::endl;
-
         t.save(*self);
         return *self;
       }
@@ -75,7 +71,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T const & t)
       {
-        std::cout << "Non member split" << std::endl;
         save(*self, t);
         return *self;
       }
@@ -114,8 +109,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Member serialize" << std::endl;
-
         t.serialize(*self);
         return *self;
       }
@@ -126,8 +119,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Non member serialize" << std::endl;
-
         serialize(*self, t);
         return *self;
       }
@@ -138,8 +129,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Member split" << std::endl;
-
         t.load(*self);
         return *self;
       }
@@ -150,7 +139,6 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        std::cout << "Non member split" << std::endl;
         load(*self, std::forward<T>(t));
         return *self;
       }

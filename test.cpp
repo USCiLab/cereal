@@ -1,5 +1,6 @@
 #include "cereal.hpp"
 #include "binary_archive.hpp"
+#include "json_archive.hpp"
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
@@ -13,7 +14,7 @@ struct Test1
   template<class Archive>
   void serialize(Archive & ar)
   {
-    ar & a;
+    ar & CEREAL_NVP(a);
   }
 };
 
@@ -25,13 +26,13 @@ struct Test2
   template<class Archive>
   void save(Archive & ar) const
   {
-    ar & a;
+    ar & CEREAL_NVP(a);
   }
 
   template<class Archive>
   void load(Archive & ar)
   {
-    ar & a;
+    ar & CEREAL_NVP(a);
   }
 };
 
@@ -44,7 +45,7 @@ struct Test3
 template<class Archive>
 void serialize(Archive & ar, Test3 & t)
 {
-  ar & t.a;
+  ar & CEREAL_NVP(t.a);
 }
 
 namespace test4
@@ -58,13 +59,13 @@ namespace test4
   template<class Archive>
   void save(Archive & ar, Test4 const & t)
   {
-    ar & t.a;
+    ar & CEREAL_NVP(t.a);
   }
 
   template<class Archive>
   void load(Archive & ar, Test4 & t)
   {
-    ar & t.a;
+    ar & CEREAL_NVP(t.a);
   }
 }
 
@@ -119,20 +120,24 @@ int main()
   {
     std::ofstream os("out.txt");
     cereal::BinaryOutputArchive archive(os);
-    archive & e_out;
+    archive & CEREAL_NVP(e_out);
   }
-
-  std::cout << "----------------" << std::endl;
 
   Everything e_in;
 
   {
     std::ifstream is("out.txt");
     cereal::BinaryInputArchive archive(is);
-    archive & e_in;
+    archive & CEREAL_NVP(e_in);
   }
 
   assert(e_in == e_out);
+
+  cereal::JSONOutputArchive json(std::cout);
+
+  std::string hello = "Hello, World!";
+  json & CEREAL_NVP(hello);
+  //json & CEREAL_NVP(e_out); <<< Need to figure out how to recurse!
 
   return 0;
 }
