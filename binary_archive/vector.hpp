@@ -6,9 +6,10 @@
 
 namespace cereal
 {
-  //! Serialization for std::vector types to binary
+  //! Serialization for std::vectors of arithmetic types to binary
   template <class T, class A>
-  void save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
+    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+    save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
     std::cout << "Saving vector" << std::endl;
 
@@ -19,10 +20,11 @@ namespace cereal
     ar.save_binary( array.data(), size ); // actual data
   }
 
-  //! Serialization for std::vector to binary
+  //! Serialization for std::vectors of arithmetic types to binary
   template <class T, class A>
-  void load( BinaryInputArchive & ar, std::vector<T, A> & vector )
-  {
+    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+    load( BinaryInputArchive & ar, std::vector<T, A> & vector )
+    {
     std::cout << "Loading vector" << std::endl;
 
     size_t dataSize;
