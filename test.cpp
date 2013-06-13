@@ -154,8 +154,8 @@ int main()
     archive & xptr2;
     archive & wptr2;
     archive & uptr;
-
   }
+
   {
     std::ifstream is("ptr.txt");
     cereal::BinaryInputArchive archive(is);
@@ -176,7 +176,34 @@ int main()
     std::cout << uptr->a << std::endl;
   }
 
+  {
+    std::ofstream os("arr.txt");
+    cereal::BinaryOutputArchive archive(os);
+    int a1[] = {1, 2, 3};
+    int a2[][2] = {{4, 5}, {6, 7}};
+    archive & a1;
+    archive & a2;
+  }
 
+  {
+    std::ifstream is("arr.txt");
+    cereal::BinaryInputArchive archive(is);
+    int a1[3];
+    int a2[2][2];
+    archive & a1;
+    archive & a2;
+
+    for(auto i : a1)
+      std::cout << i << " ";
+    std::cout << std::endl;
+    for( auto const & i : a2 )
+    {
+      for( auto j : i )
+        std::cout << j << " ";
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+  }
 
   return 0;
 }

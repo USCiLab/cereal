@@ -83,6 +83,20 @@ namespace cereal
     ar & t.value;
   }
 
+  template <class T>
+  typename std::enable_if<std::is_array<T>::value, void>::type
+  save(BinaryOutputArchive & ar, T const & array)
+  {
+    ar.save_binary(array, traits::sizeofArray<T>() * sizeof(typename std::remove_all_extents<T>::type));
+  }
+
+  template <class T>
+  typename std::enable_if<std::is_array<T>::value, void>::type
+  load(BinaryInputArchive & ar, T & array)
+  {
+    ar.load_binary(array, traits::sizeofArray<T>() * sizeof(typename std::remove_all_extents<T>::type));
+  }
+
   template <class Archive, class T>
   void serialize( Archive & ar, T * & t )
   {

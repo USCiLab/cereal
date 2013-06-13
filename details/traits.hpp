@@ -100,29 +100,10 @@ namespace cereal
       }
 
     // ######################################################################
-    constexpr std::false_type is_smart_ptr(...)
-    {
-      return {};
-    }
-
-    template <class T, class D>
-    constexpr std::true_type is_smart_ptr( std::unique_ptr<T, D> const & p )
-    {
-      return {};
-    }
-
     template <class T>
-    constexpr std::true_type is_smart_ptr( std::shared_ptr<T> const & p )
+    constexpr size_t sizeofArray( size_t rank = std::rank<T>::value )
     {
-      return {};
-    }
-
-    // ######################################################################
-    //! Returns true if the type T is a pointer or smart pointer (in std library)
-    template <class T>
-    constexpr bool is_any_pointer()
-    {
-      return std::is_pointer<T>() || std::is_same<std::true_type, decltype(is_smart_ptr( std::declval<T&>() ))>::value;
+      return rank == 0 ? 1 : std::extent<T>::value * sizeofArray<typename std::remove_extent<T>::type>( rank - 1 );
     }
   }
 }
