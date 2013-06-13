@@ -148,9 +148,12 @@ int main()
     std::shared_ptr<std::shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
     std::shared_ptr<int> xptr2 = *xptr1;
     std::weak_ptr<int> wptr2 = xptr2;
+    std::unique_ptr<Test1> uptr(new Test1);
+    uptr->a = 99;
     archive & xptr1;
     archive & xptr2;
     archive & wptr2;
+    archive & uptr;
 
   }
   {
@@ -159,15 +162,18 @@ int main()
     std::shared_ptr<std::shared_ptr<int>> xptr1;
     std::shared_ptr<int> xptr2;
     std::weak_ptr<int> wptr2;
+    std::unique_ptr<Test1> uptr;
     archive & xptr1;
     archive & xptr2;
     archive & wptr2;
+    archive & uptr;
 
     std::cout << **xptr1 << std::endl;
     std::cout << *xptr2 << std::endl;
     std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
     std::cout << *(wptr2.lock()) << std::endl;
     std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
+    std::cout << uptr->a << std::endl;
   }
 
 

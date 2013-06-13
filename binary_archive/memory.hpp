@@ -50,7 +50,7 @@ namespace cereal
     ar & sptr;
   }
 
-  //! Loading std::weak_ptr to binary
+  //! Loading std::weak_ptr from binary
   template <class T>
   void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
   {
@@ -58,6 +58,22 @@ namespace cereal
     ar & sptr;
     ptr = sptr;
   }
+
+  //! Saving std::unique_ptr to binary
+  template <class T, class D>
+  void save( BinaryOutputArchive & ar, std::unique_ptr<T, D> const & ptr )
+  {
+    ar & *ptr;
+  }
+
+  //! Loading std::unique_ptr from binary
+  template <class T, class D>
+  void load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
+  {
+    ptr.reset(new T);
+    ar & *ptr;
+  }
+
 } // namespace cereal
 
 #endif // CEREAL_BINARY_ARCHIVE_SHARED_PTR_HPP_
