@@ -1,4 +1,5 @@
 #include "cereal.hpp"
+#include "binary_archive.hpp"
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
@@ -92,10 +93,6 @@ int main()
   archive & CEREAL_NVP(x);
 
   std::string bla = "asdf";
-
-  //std::cout << cereal::traits::has_non_member_save<std::string, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_load<std::string, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::is_serializable<std::string, cereal::BinaryOutputArchive>() << std::endl;
 
   archive & bla;
 

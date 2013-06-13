@@ -62,18 +62,35 @@ namespace cereal
       { return std::is_void<decltype(save(std::declval<A&>(), std::declval<T&>()))>::value; };
 
     // ######################################################################
-    template <class T, class A>
+    template <class T, class InputArchive, class OutputArchive>
       constexpr bool has_member_split()
-      { return has_member_load<T, A>() && has_member_save<T, A>(); }
+      { return has_member_load<T, InputArchive>() && has_member_save<T, OutputArchive>(); }
 
     // ######################################################################
-    template <class T, class A>
+    template <class T, class InputArchive, class OutputArchive>
       constexpr bool has_non_member_split()
-      { return has_non_member_load<T, A>() && has_non_member_save<T, A>(); }
+      { return has_non_member_load<T, InputArchive>() && has_non_member_save<T, OutputArchive>(); }
 
     // ######################################################################
-    template <class T, class A>
-      constexpr bool is_serializable()
-      { return has_member_split<T, A>() ^ has_member_serialize<T, A>() ^ has_non_member_split<T, A>() ^ has_non_member_serialize<T,A>(); }
+    template <class T, class OutputArchive>
+      constexpr bool is_output_serializable()
+      {
+        return
+          has_member_save<T, OutputArchive>() ^
+          has_non_member_save<T, OutputArchive>() ^
+          has_member_serialize<T, OutputArchive>() ^
+          has_non_member_serialize<T, OutputArchive>();
+      }
+
+    // ######################################################################
+    template <class T, class InputArchive>
+      constexpr bool is_input_serializable()
+      {
+        return
+          has_member_load<T, InputArchive>() ^
+          has_non_member_load<T, InputArchive>() ^
+          has_member_serialize<T, InputArchive>() ^
+          has_non_member_serialize<T, InputArchive>();
+      }
   }
 }
