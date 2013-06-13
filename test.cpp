@@ -76,6 +76,7 @@ struct Everything
   Test2 t2;
   Test3 t3;
   test4::Test4 t4;
+  std::string s;
 
   template<class Archive>
   void serialize(Archive & ar)
@@ -86,6 +87,7 @@ struct Everything
     ar & CEREAL_NVP(t2);
     ar & CEREAL_NVP(t3);
     ar & CEREAL_NVP(t4);
+    ar & CEREAL_NVP(s);
   }
 
   bool operator==(Everything const & o)
@@ -96,7 +98,8 @@ struct Everything
       t1.a == o.t1.a &&
       t2.a == o.t2.a &&
       t3.a == o.t3.a &&
-      t4.a == o.t4.a;
+      t4.a == o.t4.a &&
+      s == o.s;
   }
 
 };
@@ -111,6 +114,7 @@ int main()
   e_out.t2 = {2};
   e_out.t3 = {3};
   e_out.t4 = {4};
+  e_out.s = "Hello, World!";
 
   {
     std::ofstream os("out.txt");

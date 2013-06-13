@@ -96,6 +96,10 @@ namespace cereal
   template<class CharT, class Traits, class Alloc>
     void load(BinaryInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
     {
+      size_t size;
+      ar & size;
+      str.resize(size);
+      ar.load_binary(const_cast<CharT*>(str.data()), size * sizeof(CharT));
       std::cout << "Loading string: " << str << std::endl;
     }
 }
