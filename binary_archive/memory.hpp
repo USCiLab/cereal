@@ -6,18 +6,6 @@
 
 namespace cereal
 {
-  /*
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
   //! Saving std::shared_ptr to binary
   template <class T>
   void save( BinaryOutputArchive & ar, std::shared_ptr<T> const & ptr )
@@ -53,6 +41,24 @@ namespace cereal
       ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
     }
   }
+
+  //! Saving std::weak_ptr to binary
+  template <class T>
+  void save( BinaryOutputArchive & ar, std::weak_ptr<T> const & ptr )
+  {
+    auto sptr = ptr.lock();
+    ar & sptr;
+  }
+
+  //! Loading std::weak_ptr to binary
+  template <class T>
+  void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
+  {
+    std::shared_ptr<T> sptr;
+    ar & sptr;
+    ptr = sptr;
+  }
 } // namespace cereal
 
 #endif // CEREAL_BINARY_ARCHIVE_SHARED_PTR_HPP_
+

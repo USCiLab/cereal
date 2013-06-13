@@ -3,7 +3,7 @@
 #include <cereal/binary_archive/binary_archive.hpp>
 #include <cereal/binary_archive/string.hpp>
 #include <cereal/json_archive/json_archive.hpp>
-#include <cereal/binary_archive/shared_ptr.hpp>
+#include <cereal/binary_archive/memory.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -145,32 +145,29 @@ int main()
   {
     std::ofstream os("ptr.txt");
     cereal::BinaryOutputArchive archive(os);
-    std::shared_ptr<int> xptr1 = std::make_shared<int>(5);
-    std::shared_ptr<int> xptr2 = xptr1;
-    std::shared_ptr<int> yptr1 = std::make_shared<int>(6);
-    std::shared_ptr<int> yptr2 = yptr1;
+    std::shared_ptr<std::shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
+    std::shared_ptr<int> xptr2 = *xptr1;
+    std::weak_ptr<int> wptr2 = xptr2;
     archive & xptr1;
     archive & xptr2;
-    archive & yptr1;
-    archive & yptr2;
+    archive & wptr2;
 
   }
   {
     std::ifstream is("ptr.txt");
     cereal::BinaryInputArchive archive(is);
-    std::shared_ptr<int> xptr1;
+    std::shared_ptr<std::shared_ptr<int>> xptr1;
     std::shared_ptr<int> xptr2;
-    std::shared_ptr<int> yptr1;
-    std::shared_ptr<int> yptr2;
+    std::weak_ptr<int> wptr2;
     archive & xptr1;
     archive & xptr2;
-    archive & yptr1;
-    archive & yptr2;
+    archive & wptr2;
 
-    assert(xptr1.get() == xptr2.get());
-    assert(yptr1.get() == yptr2.get());
-    std::cout << *xptr1 << " " << *xptr2 << std::endl;
-    std::cout << *yptr1 << " " << *yptr2 << std::endl;
+    std::cout << **xptr1 << std::endl;
+    std::cout << *xptr2 << std::endl;
+    std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
+    std::cout << *(wptr2.lock()) << std::endl;
+    std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
   }
 
 
