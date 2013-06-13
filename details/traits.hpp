@@ -99,6 +99,7 @@ namespace cereal
           has_non_member_serialize<T, InputArchive>();
       }
 
+    // ######################################################################
     constexpr std::false_type is_smart_ptr(...)
     {
       return {};
@@ -116,6 +117,7 @@ namespace cereal
       return {};
     }
 
+    // ######################################################################
     //! Returns true if the type T is a pointer or smart pointer (in std library)
     template <class T>
     constexpr bool is_any_pointer()

@@ -82,6 +82,12 @@ namespace cereal
     //std::cout << "Loading NVP... " << std::endl;
     ar & t.value;
   }
+
+  template <class Archive, class T>
+  void serialize( Archive & ar, T * & t )
+  {
+    static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
+  }
 }
 
 #endif // CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_

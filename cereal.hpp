@@ -3,11 +3,15 @@
 
 #include <iostream>
 #include <type_traits>
+#include <unordered_map>
+#include <cstddef>
 
 #include <cereal/details/traits.hpp>
 
 namespace cereal
 {
+  static const int32_t msb_32bit = 0x80000000;
+
   //! For holding name value pairs
   template <class T>
   struct NameValuePair
@@ -34,7 +38,7 @@ namespace cereal
   class OutputArchive
   {
     public:
-      OutputArchive(ArchiveType * const self) : self(self)
+      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(0)
       { }
 
       //! Member serialization
@@ -93,8 +97,25 @@ namespace cereal
         return *self;
       }
 
+      //! Registers a pointer with the archive
+      uint32_t registerSharedPointer( void * addr )
+      {
+        auto id = itsSharedPointerMap.find( addr );
+        if( id == itsSharedPointerMap.end() )
+        {
+          auto ptrId = itsCurrentPointerId++;
+          itsSharedPointerMap.insert( {addr, ptrId} );
+          return ptrId | msb_32bit; // mask MSB to be 1
+        }
+        else
+          return id->second;
+      }
+
     private:
       ArchiveType * const self;
+
+      std::unordered_map<void *, std::size_t> itsSharedPointerMap; //!< Maps from addresses to pointer ids
+      std::size_t itsCurrentPointerId; //!< The id to be given to the next pointer
   }; // class OutputArchive
 
   // ######################################################################
@@ -161,8 +182,26 @@ namespace cereal
         return *self;
       }
 
+      std::shared_ptr<void> getSharedPointer(uint32_t const id)
+      {
+        auto ptr = itsSharedPointerMap.find( id );
+        if(ptr == itsSharedPointerMap.end())
+        {
+          // TODO: Throw a Cereal exception;
+          throw std::runtime_error("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
+        }
+        return ptr->second;
+      }
+
+      void registerSharedPointer(uint32_t const id, std::shared_ptr<void> ptr)
+      {
+        uint32_t const stripped_id = id & ~msb_32bit;
+        itsSharedPointerMap.insert( {stripped_id, ptr} );
+      }
+
     private:
       ArchiveType * const self;
+      std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap; //!< Maps from addresses to pointer ids
   }; // class InputArchive
 }
 
