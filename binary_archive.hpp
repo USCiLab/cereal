@@ -3,13 +3,14 @@
 namespace cereal
 {
 
-class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive>
-{
-  public:
+  // ######################################################################
+  class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive>
+  {
+    public:
       BinaryOutputArchive(std::ostream & stream) :
         OutputArchive<BinaryOutputArchive>(this),
         itsStream(stream)
-      { }
+    { }
 
       //! Writes size bytes of data to the output stream
       void save_binary( const void * data, size_t size )
@@ -22,42 +23,79 @@ class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive>
 
     private:
       std::ostream & itsStream;
-};
+  };
+
+  // ######################################################################
+  class BinaryInputArchive : public InputArchive<BinaryInputArchive>
+  {
+    public:
+      BinaryInputArchive(std::istream & stream) :
+        InputArchive<BinaryInputArchive>(this),
+        itsStream(stream)
+    { }
+
+      //! Reads size bytes of data from the input stream
+      void load_binary( void * const data, size_t size )
+      {
+        auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
+
+        if(readSize != size)
+          throw 1; // TODO: something terrible
+
+      }
+
+    private:
+      std::istream & itsStream;
+  };
 
 
   //! Serialization for POD types to binary
   template<class T>
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(BinaryOutputArchive & ar, T const & t)
-  {
-    ar.save_binary(std::addressof(t), sizeof(t));
-    std::cout << "Serializing POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
-  }
+    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+    save(BinaryOutputArchive & ar, T const & t)
+    {
+      ar.save_binary(std::addressof(t), sizeof(t));
+      std::cout << "Saving POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
+    }
+
+  template<class T>
+    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+    load(BinaryInputArchive & ar, T & t)
+    {
+      ar.load_binary(std::addressof(t), sizeof(t));
+      std::cout << "Loading POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
+    }
 
   //! Serialization for NVP types to binary
   template<class T>
-  typename std::enable_if<std::is_base_of<cereal::detail::NameValuePairCore, T>::value, void>::type
-  save(BinaryOutputArchive & ar, T const & t)
-  {
-    std::cout << "Serializing NVP: " << t.name << " " << t.value << std::endl;
-    ar & t.value;
-  }
+    void save(BinaryOutputArchive & ar, NameValuePair<T> const & t)
+    {
+      std::cout << "Saving NVP: " << t.name << std::endl;
+      ar & t.value;
+    }
+
+  template<class T>
+    void load(BinaryInputArchive & ar, NameValuePair<T> t)
+    {
+      std::cout << "Loading NVP... " << std::endl;
+      ar & t.value;
+    }
 
   //! Serialization for basic_string types to binary
   template<class CharT, class Traits, class Alloc>
-  void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
-  {
-    // Save number of chars + the data
-    ar & str.size();
-    ar.save_binary(str.data(), str.size() * sizeof(CharT));
+    void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+    {
+      // Save number of chars + the data
+      ar & str.size();
+      ar.save_binary(str.data(), str.size() * sizeof(CharT));
 
-    std::cout << "Saving string: " << str << std::endl;
-  }
+      std::cout << "Saving string: " << str << std::endl;
+    }
 
   //! Serialization for basic_string types to binary
   template<class CharT, class Traits, class Alloc>
-  void load(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
-  {
-    std::cout << "Loading string: " << str << std::endl;
-  }
+    void load(BinaryInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+    {
+      std::cout << "Loading string: " << str << std::endl;
+    }
 }

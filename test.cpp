@@ -3,6 +3,7 @@
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
+#include <cassert>
 
 // ###################################
 struct Test1
@@ -67,34 +68,67 @@ namespace test4
   }
 }
 
+struct Everything
+{
+  int x;
+  int y;
+  Test1 t1;
+  Test2 t2;
+  Test3 t3;
+  test4::Test4 t4;
+
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    ar & CEREAL_NVP(x);
+    ar & CEREAL_NVP(y);
+    ar & CEREAL_NVP(t1);
+    ar & CEREAL_NVP(t2);
+    ar & CEREAL_NVP(t3);
+    ar & CEREAL_NVP(t4);
+  }
+
+  bool operator==(Everything const & o)
+  {
+    return
+      x == o.x &&
+      y == o.y &&
+      t1.a == o.t1.a &&
+      t2.a == o.t2.a &&
+      t3.a == o.t3.a &&
+      t4.a == o.t4.a;
+  }
+
+};
+
 // ######################################################################
 int main()
 {
-  //std::ostringstream os;
-  std::ofstream os("out.txt");
-  cereal::BinaryOutputArchive archive(os);
+  Everything e_out;
+  e_out.x = 99;
+  e_out.y = 100;
+  e_out.t1 = {1};
+  e_out.t2 = {2};
+  e_out.t3 = {3};
+  e_out.t4 = {4};
 
-  Test1 t1 = {1};
-  Test2 t2 = {2};
-  Test3 t3 = {3};
-  test4::Test4 t4 = {4};
+  {
+    std::ofstream os("out.txt");
+    cereal::BinaryOutputArchive archive(os);
+    archive & e_out;
+  }
 
-  archive & t1;
-  archive & t2;
-  archive & t3;
-  archive & t4;
+  std::cout << "----------------" << std::endl;
 
-  int x = 5;
-  auto nvp = cereal::make_nvp("hello!", x);
+  Everything e_in;
 
-  archive & nvp;
+  {
+    std::ifstream is("out.txt");
+    cereal::BinaryInputArchive archive(is);
+    archive & e_in;
+  }
 
-  x = 6;
-  archive & CEREAL_NVP(x);
-
-  std::string bla = "asdf";
-
-  archive & bla;
+  assert(e_in == e_out);
 
   return 0;
 }
