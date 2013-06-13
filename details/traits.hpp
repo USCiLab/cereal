@@ -2,6 +2,7 @@
 #define CEREAL_DETAILS_TRAITS_HPP_
 
 #include <type_traits>
+#include <memory>
 
 namespace cereal
 {
@@ -97,6 +98,30 @@ namespace cereal
           has_member_serialize<T, InputArchive>() ^
           has_non_member_serialize<T, InputArchive>();
       }
+
+    constexpr std::false_type is_smart_ptr(...)
+    {
+      return {};
+    }
+
+    template <class T, class D>
+    constexpr std::true_type is_smart_ptr( std::unique_ptr<T, D> const & p )
+    {
+      return {};
+    }
+
+    template <class T>
+    constexpr std::true_type is_smart_ptr( std::shared_ptr<T> const & p )
+    {
+      return {};
+    }
+
+    //! Returns true if the type T is a pointer or smart pointer (in std library)
+    template <class T>
+    constexpr bool is_any_pointer()
+    {
+      return std::is_pointer<T>() || std::is_same<std::true_type, decltype(is_smart_ptr( std::declval<T&>() ))>::value;
+    }
   }
 }
 

@@ -1,6 +1,7 @@
-#pragma once
+#ifndef CEREAL_JSON_ARCHIVE_JSON_ARCHIVE_HPP_
+#define CEREAL_JSON_ARCHIVE_JSON_ARCHIVE_HPP_
 
-#include "cereal.hpp"
+#include <cereal/cereal.hpp>
 #include <cassert>
 #include <jsoncpp/json/json.h>
 
@@ -96,3 +97,5 @@ namespace cereal
       //std::cout << "Loading string: " << str << std::endl;
     }
 }
+
+#endif // CEREAL_JSON_ARCHIVE_JSON_ARCHIVE_HPP_

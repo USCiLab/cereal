@@ -1,6 +1,9 @@
-#include "cereal.hpp"
-#include "binary_archive.hpp"
-#include "json_archive.hpp"
+
+#include <cereal/cereal.hpp>
+#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/binary_archive/string.hpp>
+#include <cereal/json_archive/json_archive.hpp>
+
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
@@ -102,7 +105,6 @@ struct Everything
       t4.a == o.t4.a &&
       s == o.s;
   }
-
 };
 
 // ######################################################################
@@ -138,6 +140,7 @@ int main()
   std::string hello = "Hello, World!";
   json & CEREAL_NVP(hello);
   //json & CEREAL_NVP(e_out); <<< Need to figure out how to recurse!
+  //
 
   return 0;
 }

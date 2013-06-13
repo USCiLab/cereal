@@ -20,10 +20,10 @@ namespace cereal
   }
 
   //! Serialization for std::vector to binary
-  template <class T>
+  template <class T, class A>
   void load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
-    std::cout << "Loading array" << std::endl;
+    std::cout << "Loading vector" << std::endl;
 
     size_t dataSize;
     size_t vectorSize;
@@ -33,6 +33,29 @@ namespace cereal
     vector.resize( vectorSize );
 
     ar.load_binary( vector.data(), dataSize );
+  }
+
+  //! Serialization for std::vector<bool, A> types to binary
+  template <class A>
+  void save( BinaryOutputArchive & ar, std::vector<bool, A> const & vector )
+  {
+    std::cout << "Saving vector of bool" << std::endl;
+
+    ar & vector.size(); // number of elements
+    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
+      ar & (*it);
+  }
+
+  //! Serialization for std::vector<bool, A> to binary
+  template <class A>
+  void load( BinaryInputArchive & ar, std::vector<bool, A> & vector )
+  {
+    size_t size;
+    ar & size;
+
+    vector.resize( size );
+    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
+      ar & (*it);
   }
 } // namespace cereal
 

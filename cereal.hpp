@@ -1,8 +1,10 @@
-#pragma once
+#ifndef CEREAL_CEREAL_HPP_
+#define CEREAL_CEREAL_HPP_
 
 #include <iostream>
 #include <type_traits>
-#include "traits.hpp"
+
+#include <cereal/details/traits.hpp>
 
 namespace cereal
 {
@@ -163,3 +165,5 @@ namespace cereal
       ArchiveType * const self;
   }; // class InputArchive
 }
+
+#endif // CEREAL_CEREAL_HPP_
