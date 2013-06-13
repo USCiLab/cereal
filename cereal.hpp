@@ -25,6 +25,7 @@ namespace cereal
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T);
 
   // ######################################################################
+  //! The base output archive class
   template<class ArchiveType>
   class OutputArchive
   {
@@ -100,6 +101,7 @@ namespace cereal
   }; // class OutputArchive
 
   // ######################################################################
+  //! The base input archive class
   template<class ArchiveType>
   class InputArchive
   {
