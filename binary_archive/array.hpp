@@ -9,7 +9,7 @@ namespace cereal
   //! Saving for std::array primitive types to binary
   template <class T, size_t N>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  void save( BinaryOutputArchive & ar, std::array<T, N> const & array )
+  save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
     std::cout << "Saving array (arith)" << std::endl;
     ar.save_binary( array.data(), N * sizeof(T) );
@@ -18,7 +18,7 @@ namespace cereal
   //! Loading for std::array primitive types to binary
   template <class T, size_t N>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  void load( BinaryInputArchive & ar, std::array<T, N> & array )
+  load( BinaryInputArchive & ar, std::array<T, N> & array )
   {
     std::cout << "Loading array (arith)" << std::endl;
     ar.load_binary( array.data(), N * sizeof(T) );
@@ -26,8 +26,8 @@ namespace cereal
 
   //! Saving for std::array all other types to binary
   template <class T, size_t N>
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  void save( BinaryOutputArchive & ar, std::array<T, N> const & array )
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
     std::cout << "Saving array" << std::endl;
     for( const auto & i : array )
@@ -36,8 +36,8 @@ namespace cereal
 
   //! Loading for std::array all other types to binary
   template <class T, size_t N>
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  void load( BinaryInputArchive & ar, std::array<T, N> & array )
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  load( BinaryInputArchive & ar, std::array<T, N> & array )
   {
     std::cout << "Loading array" << std::endl;
     for( auto & i : array )
