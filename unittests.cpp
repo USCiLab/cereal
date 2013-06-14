@@ -23,6 +23,7 @@ namespace boost
   }
 }
 
+
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Cereal
 #include <boost/test/unit_test.hpp>
@@ -124,6 +125,15 @@ random_value(std::mt19937 & gen)
   std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
   for(char & c : s)
     c = std::uniform_int_distribution<char>(' ', '~')(gen); 
+  return s;
+}
+
+template<class C>
+std::basic_string<C> random_basic_string(std::mt19937 & gen)
+{
+  std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
+  for(C & c : s)
+    c = std::uniform_int_distribution<C>(' ', '~')(gen); 
   return s;
 }
 
@@ -842,5 +852,45 @@ BOOST_AUTO_TEST_CASE( binary_stack )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isplstack_c.begin(),   i_isplstack_c.end(),   o_isplstack_c.begin(), o_isplstack_c.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eserstack_c.begin(),   i_eserstack_c.end(),   o_eserstack_c.begin(), o_eserstack_c.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_esplstack_c.begin(),   i_esplstack_c.end(),   o_esplstack_c.begin(), o_esplstack_c.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_string )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(size_t i=0; i<100; ++i)
+  {
+    std::basic_string<char> o_string        = random_basic_string<char>(gen);
+    std::basic_string<wchar_t> o_wstring    = random_basic_string<wchar_t>(gen);
+    std::basic_string<char16_t> o_u16string = random_basic_string<char16_t>(gen);
+    std::basic_string<char32_t> o_u32string = random_basic_string<char32_t>(gen);
+
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+    oar & o_string;
+    oar & o_wstring;
+    oar & o_u16string;
+    oar & o_u32string;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::basic_string<char> i_string;
+    std::basic_string<wchar_t> i_wstring;
+    std::basic_string<char16_t> i_u16string;
+    std::basic_string<char32_t> i_u32string;
+
+    iar & i_string;
+    iar & i_wstring;
+    iar & i_u16string;
+    iar & i_u32string;
+
+    BOOST_CHECK_EQUAL(i_string, o_string);
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_wstring.begin(),     i_wstring.end(),   o_wstring.begin(),   o_wstring.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_u16string.begin(),  i_u16string.end(),  o_u16string.begin(), o_u16string.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_u32string.begin(),  i_u32string.end(),  o_u32string.begin(), o_u32string.end());
   }
 }
