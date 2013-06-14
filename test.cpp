@@ -205,5 +205,9 @@ int main()
     std::cout << std::endl;
   }
 
+  std::ostringstream os;
+  std::cout << "Testing:" << std::endl;
+  //os.write(, 5);
+
   return 0;
 }

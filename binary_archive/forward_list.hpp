@@ -10,22 +10,42 @@ namespace cereal
   template <class T, class A>
   void save( BinaryOutputArchive & ar, std::forward_list<T, A> const & forward_list )
   {
-    // TODO: This is linear time! We may want to do something smarter
-    ar & std::distance(forward_list.begin(), forward_list.end());
+    // save position for size of list
+    ar.pushPosition(sizeof(size_t));
 
+    // write the list
+    size_t size = 0;
     for( const auto & i : forward_list )
+    {
       ar & i;
+      ++size;
+    }
+
+    // write the size
+    ar.popPosition();
+    ar & size;
+    ar.resetPosition();
   }
 
   //! Saving for std::forward_list all other types to binary (non-const version)
   template <class T, class A>
   void save( BinaryOutputArchive & ar, std::forward_list<T, A> & forward_list )
   {
-    // TODO: This is linear time! We may want to do something smarter
-    ar & std::distance(forward_list.begin(), forward_list.end());
+    // save position for size of list
+    ar.pushPosition(sizeof(size_t));
 
+    // write the list
+    size_t size = 0;
     for( auto & i : forward_list )
+    {
       ar & i;
+      ++size;
+    }
+
+    // write the size
+    ar.popPosition();
+    ar & size;
+    ar.resetPosition();
   }
 
   //! Loading for std::forward_list all other types from binary

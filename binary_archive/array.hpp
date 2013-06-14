@@ -31,15 +31,6 @@ namespace cereal
       ar & i;
   }
 
-  //! Saving for non-const std::array all other types to binary
-  template <class T, size_t N>
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  save( BinaryOutputArchive & ar, std::array<T, N> & array )
-  {
-    for( auto & i : array )
-      ar & i;
-  }
-
   //! Loading for std::array all other types to binary
   template <class T, size_t N>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
