@@ -1,6 +1,7 @@
 #include <cereal/binary_archive/binary_archive.hpp>
 #include <cereal/binary_archive/memory.hpp>
 #include <cereal/binary_archive/array.hpp>
+#include <cereal/binary_archive/vector.hpp>
 #include <limits>
 #include <random>
 
@@ -13,7 +14,16 @@ struct StructBase
   int x, y;
   bool operator==(StructBase const & other)
   { return x == other.x && y == other.y; }
+  bool operator!=(StructBase const & other)
+  { return x != other.x || y != other.y; }
 };
+
+std::ostream& operator<<(std::ostream& os, StructBase const & s)
+{
+    os << "[x: " << s.x << " y: " << s.y << "]";
+    return os;
+}
+
  
 struct StructInternalSerialize : StructBase
 {
@@ -277,10 +287,76 @@ BOOST_AUTO_TEST_CASE( binary_array )
     iar & i_eserarray;
     iar & i_esplarray;
 
-    for(size_t i=0; i<i_podarray.size(); ++i)  BOOST_CHECK_EQUAL(i_podarray[i], o_podarray[i]);
-    for(size_t i=0; i<i_iserarray.size(); ++i) BOOST_CHECK(i_iserarray[i] == o_iserarray[i]);
-    for(size_t i=0; i<i_isplarray.size(); ++i) BOOST_CHECK(i_isplarray[i] == o_isplarray[i]);
-    for(size_t i=0; i<i_eserarray.size(); ++i) BOOST_CHECK(i_eserarray[i] == o_eserarray[i]);
-    for(size_t i=0; i<i_esplarray.size(); ++i) BOOST_CHECK(i_esplarray[i] == o_esplarray[i]);
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podarray.begin(), i_podarray.end(), o_podarray.begin(), o_podarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserarray.begin(), i_iserarray.end(), o_iserarray.begin(), o_iserarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplarray.begin(), i_isplarray.end(), o_isplarray.begin(), o_isplarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserarray.begin(), i_eserarray.end(), o_eserarray.begin(), o_eserarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplarray.begin(), i_esplarray.end(), o_esplarray.begin(), o_esplarray.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_vector )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::vector<int> o_podvector(100);
+    for(auto & elem : o_podvector)
+      elem = random_value<decltype(o_podvector)::value_type>(gen);
+
+    std::vector<StructInternalSerialize> o_iservector(100);
+    for(auto & elem : o_iservector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructInternalSplit> o_isplvector(100);
+    for(auto & elem : o_isplvector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructExternalSerialize> o_eservector(100);
+    for(auto & elem : o_eservector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructExternalSplit> o_esplvector(100);
+    for(auto & elem : o_esplvector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    oar & o_podvector;
+    oar & o_iservector;
+    oar & o_isplvector;
+    oar & o_eservector;
+    oar & o_esplvector;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::vector<int> i_podvector;
+    std::vector<StructInternalSerialize> i_iservector;
+    std::vector<StructInternalSplit>     i_isplvector;
+    std::vector<StructExternalSerialize> i_eservector;
+    std::vector<StructExternalSplit>     i_esplvector;
+
+    iar & i_podvector;
+    iar & i_iservector;
+    iar & i_isplvector;
+    iar & i_eservector;
+    iar & i_esplvector;
+
+    BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
+    BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
+    BOOST_CHECK_EQUAL(i_isplvector.size(), o_isplvector.size());
+    BOOST_CHECK_EQUAL(i_eservector.size(), o_eservector.size());
+    BOOST_CHECK_EQUAL(i_esplvector.size(), o_esplvector.size());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(), i_podvector.end(), o_podvector.begin(), o_podvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(), i_iservector.end(), o_iservector.begin(), o_iservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(), i_isplvector.end(), o_isplvector.begin(), o_isplvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(), i_eservector.end(), o_eservector.begin(), o_eservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(), i_esplvector.end(), o_esplvector.begin(), o_esplvector.end());
   }
 }

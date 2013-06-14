@@ -11,13 +11,11 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
-    std::cout << "Saving vector (arithmetic)" << std::endl;
-
-    const size_t dataSize = std::addressof(vector.back()) - std::addressof(vector.front());
+    const size_t dataSize = std::addressof(vector.back()) - std::addressof(vector.front()) + 1;
 
     ar & vector.size(); // number of elements
     ar & dataSize;      // size of data (may be larger due to allocator strategy)
-    ar.save_binary( array.data(), size ); // actual data
+    ar.save_binary( vector.data(), dataSize * sizeof(T) ); // actual data
   }
 
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary
@@ -25,32 +23,40 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
-    std::cout << "Loading vector (arithmetic)" << std::endl;
-
-    size_t dataSize;
     size_t vectorSize;
+    size_t dataSize;
     ar & vectorSize;
     ar & dataSize;
 
     vector.resize( vectorSize );
 
-    ar.load_binary( vector.data(), dataSize );
+    ar.load_binary( vector.data(), dataSize * sizeof(T));
   }
 
-  //! Serialization for all other vector types
+  //! Serialization for non-arithmetic (and bool) vector types to binary
   template <class T, class A>
-  void save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
+  typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
+  save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
-    std::cout << "Saving vector" << std::endl;
-
     ar & vector.size(); // number of elements
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar & (*it);
   }
 
-  //! Serialization for std::vector<bool, A> to binary
+  //! Serialization for non-arithmetic (and bool) vector types to binary (non-const version)
   template <class T, class A>
-  void load( BinaryInputArchive & ar, std::vector<T, A> & vector )
+  typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
+  save( BinaryOutputArchive & ar, std::vector<T, A> & vector )
+  {
+    ar & vector.size(); // number of elements
+    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
+      ar & (*it);
+  }
+
+  //! Serialization for non-arithmetic (and bool) vector types from binary
+  template <class T, class A>
+  typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
+  load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
     size_t size;
     ar & size;
