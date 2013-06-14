@@ -316,72 +316,6 @@ BOOST_AUTO_TEST_CASE( binary_array )
 }
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_vector )
-{
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  for(int i=0; i<100; ++i)
-  {
-    std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
-
-    std::vector<int> o_podvector(100);
-    for(auto & elem : o_podvector)
-      elem = random_value<decltype(o_podvector)::value_type>(gen);
-
-    std::vector<StructInternalSerialize> o_iservector(100);
-    for(auto & elem : o_iservector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
-
-    std::vector<StructInternalSplit> o_isplvector(100);
-    for(auto & elem : o_isplvector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
-
-    std::vector<StructExternalSerialize> o_eservector(100);
-    for(auto & elem : o_eservector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
-
-    std::vector<StructExternalSplit> o_esplvector(100);
-    for(auto & elem : o_esplvector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
-
-    oar & o_podvector;
-    oar & o_iservector;
-    oar & o_isplvector;
-    oar & o_eservector;
-    oar & o_esplvector;
-
-    std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
-
-    std::vector<int> i_podvector;
-    std::vector<StructInternalSerialize> i_iservector;
-    std::vector<StructInternalSplit>     i_isplvector;
-    std::vector<StructExternalSerialize> i_eservector;
-    std::vector<StructExternalSplit>     i_esplvector;
-
-    iar & i_podvector;
-    iar & i_iservector;
-    iar & i_isplvector;
-    iar & i_eservector;
-    iar & i_esplvector;
-
-    BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
-    BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
-    BOOST_CHECK_EQUAL(i_isplvector.size(), o_isplvector.size());
-    BOOST_CHECK_EQUAL(i_eservector.size(), o_eservector.size());
-    BOOST_CHECK_EQUAL(i_esplvector.size(), o_esplvector.size());
-
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(),    i_podvector.end(),    o_podvector.begin(),  o_podvector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(),   i_iservector.end(),   o_iservector.begin(), o_iservector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(),   i_isplvector.end(),   o_isplvector.begin(), o_isplvector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(),   i_eservector.end(),   o_eservector.begin(), o_eservector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(),   i_esplvector.end(),   o_esplvector.begin(), o_esplvector.end());
-  }
-}
-
-// ######################################################################
 BOOST_AUTO_TEST_CASE( binary_deque )
 {
   std::random_device rd;
@@ -879,6 +813,106 @@ BOOST_AUTO_TEST_CASE( binary_set )
 }
 
 // ######################################################################
+BOOST_AUTO_TEST_CASE( binary_multiset )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::multiset<int> o_podmultiset;
+    for(int j=0; j<100; ++j)
+    {
+      int value = random_value<int>(gen);
+      o_podmultiset.insert(value);
+      o_podmultiset.insert(value);
+    }
+
+    std::multiset<StructInternalSerialize> o_isermultiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructInternalSerialize value = { random_value<int>(gen), random_value<int>(gen) };
+      o_isermultiset.insert(value);
+      o_isermultiset.insert(value);
+    }
+
+    std::multiset<StructInternalSplit> o_isplmultiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructInternalSplit value = { random_value<int>(gen), random_value<int>(gen) };
+      o_isplmultiset.insert(value);
+      o_isplmultiset.insert(value);
+    }
+
+    std::multiset<StructExternalSerialize> o_esermultiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructExternalSerialize value = { random_value<int>(gen), random_value<int>(gen) };
+      o_esermultiset.insert(value);
+      o_esermultiset.insert(value);
+    }
+
+    std::multiset<StructExternalSplit> o_esplmultiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructExternalSplit value = { random_value<int>(gen), random_value<int>(gen) };
+      o_esplmultiset.insert(value);
+      o_esplmultiset.insert(value);
+    }
+
+    oar & o_podmultiset;
+    oar & o_isermultiset;
+    oar & o_isplmultiset;
+    oar & o_esermultiset;
+    oar & o_esplmultiset;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::multiset<int> i_podmultiset;
+    std::multiset<StructInternalSerialize> i_isermultiset;
+    std::multiset<StructInternalSplit>     i_isplmultiset;
+    std::multiset<StructExternalSerialize> i_esermultiset;
+    std::multiset<StructExternalSplit>     i_esplmultiset;
+
+    iar & i_podmultiset;
+    iar & i_isermultiset;
+    iar & i_isplmultiset;
+    iar & i_esermultiset;
+    iar & i_esplmultiset;
+
+    for(auto const & p : i_podmultiset)
+    {
+      BOOST_CHECK_EQUAL(o_podmultiset.count(p), i_podmultiset.count(p));
+    }
+
+    for(auto const & p : i_isermultiset)
+    {
+      BOOST_CHECK_EQUAL(o_isermultiset.count(p), i_isermultiset.count(p));
+    }
+
+    for(auto const & p : i_isplmultiset)
+    {
+      BOOST_CHECK_EQUAL(o_isplmultiset.count(p), i_isplmultiset.count(p));
+    }
+
+    for(auto const & p : i_esermultiset)
+    {
+      BOOST_CHECK_EQUAL(o_esermultiset.count(p), i_esermultiset.count(p));
+    }
+
+    for(auto const & p : i_esplmultiset)
+    {
+      BOOST_CHECK_EQUAL(o_esplmultiset.count(p), i_esplmultiset.count(p));
+    }
+  }
+}
+
+
+// ######################################################################
 BOOST_AUTO_TEST_CASE( binary_stack )
 {
   std::random_device rd;
@@ -1278,3 +1312,168 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
     }
   }
 }
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::unordered_multiset<int> o_podunordered_multiset;
+    for(int j=0; j<100; ++j)
+    {
+      int value = random_value<int>(gen);
+      o_podunordered_multiset.insert(value);
+      o_podunordered_multiset.insert(value);
+    }
+
+    std::unordered_multiset<StructInternalSerialize, StructHash<StructInternalSerialize>> o_iserunordered_multiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructInternalSerialize value = { random_value<int>(gen), random_value<int>(gen) };
+      o_iserunordered_multiset.insert(value);
+      o_iserunordered_multiset.insert(value);
+    }
+
+    std::unordered_multiset<StructInternalSplit, StructHash<StructInternalSplit>> o_isplunordered_multiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructInternalSplit value = { random_value<int>(gen), random_value<int>(gen) };
+      o_isplunordered_multiset.insert(value);
+      o_isplunordered_multiset.insert(value);
+    }
+
+    std::unordered_multiset<StructExternalSerialize, StructHash<StructExternalSerialize>> o_eserunordered_multiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructExternalSerialize value = { random_value<int>(gen), random_value<int>(gen) };
+      o_eserunordered_multiset.insert(value);
+      o_eserunordered_multiset.insert(value);
+    }
+
+    std::unordered_multiset<StructExternalSplit, StructHash<StructExternalSplit>> o_esplunordered_multiset;
+    for(int j=0; j<100; ++j)
+    {
+      StructExternalSplit value = { random_value<int>(gen), random_value<int>(gen) };
+      o_esplunordered_multiset.insert(value);
+      o_esplunordered_multiset.insert(value);
+    }
+
+    oar & o_podunordered_multiset;
+    oar & o_iserunordered_multiset;
+    oar & o_isplunordered_multiset;
+    oar & o_eserunordered_multiset;
+    oar & o_esplunordered_multiset;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::unordered_multiset<int> i_podunordered_multiset;
+    std::unordered_multiset<StructInternalSerialize, StructHash<StructInternalSerialize>> i_iserunordered_multiset;
+    std::unordered_multiset<StructInternalSplit, StructHash<StructInternalSplit>>         i_isplunordered_multiset;
+    std::unordered_multiset<StructExternalSerialize, StructHash<StructExternalSerialize>> i_eserunordered_multiset;
+    std::unordered_multiset<StructExternalSplit, StructHash<StructExternalSplit>>         i_esplunordered_multiset;
+
+    iar & i_podunordered_multiset;
+    iar & i_iserunordered_multiset;
+    iar & i_isplunordered_multiset;
+    iar & i_eserunordered_multiset;
+    iar & i_esplunordered_multiset;
+
+    for(auto const & p : i_podunordered_multiset)
+    {
+      BOOST_CHECK_EQUAL(o_podunordered_multiset.count(p), i_podunordered_multiset.count(p));
+    }
+
+    for(auto const & p : i_iserunordered_multiset)
+    {
+      BOOST_CHECK_EQUAL(o_iserunordered_multiset.count(p), i_iserunordered_multiset.count(p));
+    }
+
+    for(auto const & p : i_isplunordered_multiset)
+    {
+      BOOST_CHECK_EQUAL(o_isplunordered_multiset.count(p), i_isplunordered_multiset.count(p));
+    }
+
+    for(auto const & p : i_eserunordered_multiset)
+    {
+      BOOST_CHECK_EQUAL(o_eserunordered_multiset.count(p), i_eserunordered_multiset.count(p));
+    }
+
+    for(auto const & p : i_esplunordered_multiset)
+    {
+      BOOST_CHECK_EQUAL(o_esplunordered_multiset.count(p), i_esplunordered_multiset.count(p));
+    }
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_vector )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::vector<int> o_podvector(100);
+    for(auto & elem : o_podvector)
+      elem = random_value<decltype(o_podvector)::value_type>(gen);
+
+    std::vector<StructInternalSerialize> o_iservector(100);
+    for(auto & elem : o_iservector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructInternalSplit> o_isplvector(100);
+    for(auto & elem : o_isplvector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructExternalSerialize> o_eservector(100);
+    for(auto & elem : o_eservector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::vector<StructExternalSplit> o_esplvector(100);
+    for(auto & elem : o_esplvector)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    oar & o_podvector;
+    oar & o_iservector;
+    oar & o_isplvector;
+    oar & o_eservector;
+    oar & o_esplvector;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::vector<int> i_podvector;
+    std::vector<StructInternalSerialize> i_iservector;
+    std::vector<StructInternalSplit>     i_isplvector;
+    std::vector<StructExternalSerialize> i_eservector;
+    std::vector<StructExternalSplit>     i_esplvector;
+
+    iar & i_podvector;
+    iar & i_iservector;
+    iar & i_isplvector;
+    iar & i_eservector;
+    iar & i_esplvector;
+
+    BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
+    BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
+    BOOST_CHECK_EQUAL(i_isplvector.size(), o_isplvector.size());
+    BOOST_CHECK_EQUAL(i_eservector.size(), o_eservector.size());
+    BOOST_CHECK_EQUAL(i_esplvector.size(), o_esplvector.size());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(),    i_podvector.end(),    o_podvector.begin(),  o_podvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(),   i_iservector.end(),   o_iservector.begin(), o_iservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(),   i_isplvector.end(),   o_isplvector.begin(), o_isplvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(),   i_eservector.end(),   o_eservector.begin(), o_eservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(),   i_esplvector.end(),   o_esplvector.begin(), o_esplvector.end());
+  }
+}
+
