@@ -22,7 +22,7 @@ namespace cereal
     ar.load_binary( array.data(), N * sizeof(T) );
   }
 
-  //! Saving for const std::array all other types to binary
+  //! Saving for std::array all other types to binary
   template <class T, size_t N>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   save( BinaryOutputArchive & ar, std::array<T, N> const & array )
