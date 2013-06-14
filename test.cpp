@@ -205,9 +205,15 @@ int main()
     std::cout << std::endl;
   }
 
-  std::ostringstream os;
+  std::ofstream os("test.txt");
+  cereal::BinaryOutputArchive archive(os);
   std::cout << "Testing:" << std::endl;
-  //os.write(, 5);
+
+  archive & uint8_t();
+  archive & uint16_t(3);
+  //os.write("\0", 1);
+
+
 
   return 0;
 }

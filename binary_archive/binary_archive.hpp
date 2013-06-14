@@ -28,7 +28,8 @@ namespace cereal
       void pushPosition( size_t size )
       {
         itsPositionStack.push( itsStream.tellp() );
-        itsStream.write( 0, size );
+        for(size_t i = 0; i < size; ++i)
+          itsStream.rdbuf()->sputc('\0'); // char doesn't matter, but null-term is zero
       }
 
       //! Pops the most recently pushed position onto the archive, going to the end
