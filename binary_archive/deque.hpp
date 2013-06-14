@@ -16,7 +16,7 @@ namespace cereal
       ar & i;
   }
 
-  //! Loading for std::deque all other types to binary
+  //! Loading for std::deque to binary
   template <class T, class A>
   void load( BinaryInputArchive & ar, std::deque<T, A> & deque )
   {
