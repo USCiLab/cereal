@@ -71,11 +71,31 @@ namespace cereal
         return *self;
       }
 
+      //! Member split (save) non-const version
+      template <class T>
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>(),
+               ArchiveType &>::type
+      operator & (T & t)
+      {
+        t.save(*self);
+        return *self;
+      }
+
       //! Non member split (save)
       template <class T>
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T const & t)
+      {
+        save(*self, t);
+        return *self;
+      }
+
+      //! Non member split (save) non-const version
+      template <class T>
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
+               ArchiveType &>::type
+      operator & (T & t)
       {
         save(*self, t);
         return *self;
