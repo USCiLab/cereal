@@ -7,6 +7,7 @@
 #include <cereal/binary_archive/list.hpp>
 #include <cereal/binary_archive/string.hpp>
 #include <cereal/binary_archive/map.hpp>
+#include <cereal/binary_archive/queue.hpp>
 #include <limits>
 #include <random>
 
@@ -223,44 +224,6 @@ BOOST_AUTO_TEST_CASE( structs )
 }
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_memory )
-{
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  for(int i=0; i<100; ++i)
-  {
-    std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
-
-    std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
-    std::shared_ptr<int> o_xptr2 = o_xptr1;
-    std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
-    std::shared_ptr<int> o_yptr2 = o_yptr1;
-    oar & o_xptr1 & o_xptr2;
-    oar & o_yptr1 & o_yptr2;
-
-    std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
-
-    std::shared_ptr<int> i_xptr1;
-    std::shared_ptr<int> i_xptr2;
-    std::shared_ptr<int> i_yptr1;
-    std::shared_ptr<int> i_yptr2;
-    iar & i_xptr1 & i_xptr2;
-    iar & i_yptr1 & i_yptr2;
-
-    BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
-    BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
-    BOOST_CHECK_EQUAL(*i_xptr1, *i_xptr2);
-
-    BOOST_CHECK_EQUAL(o_yptr1.get(), o_yptr2.get());
-    BOOST_CHECK_EQUAL(i_yptr1.get(), i_yptr2.get());
-    BOOST_CHECK_EQUAL(*i_yptr1, *i_yptr2);
-  }
-}
-
-// ######################################################################
 BOOST_AUTO_TEST_CASE( binary_array )
 {
   std::random_device rd;
@@ -312,11 +275,11 @@ BOOST_AUTO_TEST_CASE( binary_array )
     iar & i_eserarray;
     iar & i_esplarray;
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podarray.begin(), i_podarray.end(), o_podarray.begin(), o_podarray.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserarray.begin(), i_iserarray.end(), o_iserarray.begin(), o_iserarray.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplarray.begin(), i_isplarray.end(), o_isplarray.begin(), o_isplarray.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserarray.begin(), i_eserarray.end(), o_eserarray.begin(), o_eserarray.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplarray.begin(), i_esplarray.end(), o_esplarray.begin(), o_esplarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podarray.begin(),    i_podarray.end(),    o_podarray.begin(),  o_podarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserarray.begin(),   i_iserarray.end(),   o_iserarray.begin(), o_iserarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplarray.begin(),   i_isplarray.end(),   o_isplarray.begin(), o_isplarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserarray.begin(),   i_eserarray.end(),   o_eserarray.begin(), o_eserarray.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplarray.begin(),   i_esplarray.end(),   o_esplarray.begin(), o_esplarray.end());
   }
 }
 
@@ -378,11 +341,11 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     BOOST_CHECK_EQUAL(i_eservector.size(), o_eservector.size());
     BOOST_CHECK_EQUAL(i_esplvector.size(), o_esplvector.size());
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(), i_podvector.end(), o_podvector.begin(), o_podvector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(), i_iservector.end(), o_iservector.begin(), o_iservector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(), i_isplvector.end(), o_isplvector.begin(), o_isplvector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(), i_eservector.end(), o_eservector.begin(), o_eservector.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(), i_esplvector.end(), o_esplvector.begin(), o_esplvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(),    i_podvector.end(),    o_podvector.begin(),  o_podvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(),   i_iservector.end(),   o_iservector.begin(), o_iservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(),   i_isplvector.end(),   o_isplvector.begin(), o_isplvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(),   i_eservector.end(),   o_eservector.begin(), o_eservector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(),   i_esplvector.end(),   o_esplvector.begin(), o_esplvector.end());
   }
 }
 
@@ -444,11 +407,11 @@ BOOST_AUTO_TEST_CASE( binary_deque )
     BOOST_CHECK_EQUAL(i_eserdeque.size(), o_eserdeque.size());
     BOOST_CHECK_EQUAL(i_espldeque.size(), o_espldeque.size());
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_poddeque.begin(), i_poddeque.end(), o_poddeque.begin(), o_poddeque.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserdeque.begin(), i_iserdeque.end(), o_iserdeque.begin(), o_iserdeque.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispldeque.begin(), i_ispldeque.end(), o_ispldeque.begin(), o_ispldeque.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserdeque.begin(), i_eserdeque.end(), o_eserdeque.begin(), o_eserdeque.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_espldeque.begin(), i_espldeque.end(), o_espldeque.begin(), o_espldeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_poddeque.begin(),    i_poddeque.end(),    o_poddeque.begin(),  o_poddeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserdeque.begin(),   i_iserdeque.end(),   o_iserdeque.begin(), o_iserdeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispldeque.begin(),   i_ispldeque.end(),   o_ispldeque.begin(), o_ispldeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserdeque.begin(),   i_eserdeque.end(),   o_eserdeque.begin(), o_eserdeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_espldeque.begin(),   i_espldeque.end(),   o_espldeque.begin(), o_espldeque.end());
   }
 }
 
@@ -504,11 +467,11 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
     iar & i_eserforward_list;
     iar & i_esplforward_list;
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podforward_list.begin(), i_podforward_list.end(), o_podforward_list.begin(), o_podforward_list.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserforward_list.begin(), i_iserforward_list.end(), o_iserforward_list.begin(), o_iserforward_list.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplforward_list.begin(), i_isplforward_list.end(), o_isplforward_list.begin(), o_isplforward_list.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserforward_list.begin(), i_eserforward_list.end(), o_eserforward_list.begin(), o_eserforward_list.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplforward_list.begin(), i_esplforward_list.end(), o_esplforward_list.begin(), o_esplforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podforward_list.begin(),    i_podforward_list.end(),    o_podforward_list.begin(),  o_podforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserforward_list.begin(),   i_iserforward_list.end(),   o_iserforward_list.begin(), o_iserforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplforward_list.begin(),   i_isplforward_list.end(),   o_isplforward_list.begin(), o_isplforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserforward_list.begin(),   i_eserforward_list.end(),   o_eserforward_list.begin(), o_eserforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplforward_list.begin(),   i_esplforward_list.end(),   o_esplforward_list.begin(), o_esplforward_list.end());
   }
 }
 
@@ -564,20 +527,13 @@ BOOST_AUTO_TEST_CASE( binary_list )
     iar & i_eserlist;
     iar & i_espllist;
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podlist.begin(), i_podlist.end(), o_podlist.begin(), o_podlist.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserlist.begin(), i_iserlist.end(), o_iserlist.begin(), o_iserlist.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispllist.begin(), i_ispllist.end(), o_ispllist.begin(), o_ispllist.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserlist.begin(), i_eserlist.end(), o_eserlist.begin(), o_eserlist.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_espllist.begin(), i_espllist.end(), o_espllist.begin(), o_espllist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podlist.begin(),    i_podlist.end(),    o_podlist.begin(),  o_podlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserlist.begin(),   i_iserlist.end(),   o_iserlist.begin(), o_iserlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispllist.begin(),   i_ispllist.end(),   o_ispllist.begin(), o_ispllist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserlist.begin(),   i_eserlist.end(),   o_eserlist.begin(), o_eserlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_espllist.begin(),   i_espllist.end(),   o_espllist.begin(), o_espllist.end());
   }
 }
-
-//template<class F, class S>
-//std::ostream & operator<<(std::ostream & os, std::pair<const F, S> const p)
-//{
-//    os << "(" << p.first << ", " << p.second << ")";
-//    return os;
-//}
 
 // ######################################################################
 BOOST_AUTO_TEST_CASE( binary_map )
@@ -631,10 +587,120 @@ BOOST_AUTO_TEST_CASE( binary_map )
     iar & i_esermap;
     iar & i_esplmap;
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(), i_podmap.end(), o_podmap.begin(), o_podmap.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(), i_isermap.end(), o_isermap.begin(), o_isermap.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmap.begin(), i_isplmap.end(), o_isplmap.begin(), o_isplmap.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esermap.begin(), i_esermap.end(), o_esermap.begin(), o_esermap.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmap.begin(), i_esplmap.end(), o_esplmap.begin(), o_esplmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(),    i_podmap.end(),    o_podmap.begin(),  o_podmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(),   i_isermap.end(),   o_isermap.begin(), o_isermap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmap.begin(),   i_isplmap.end(),   o_isplmap.begin(), o_isplmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esermap.begin(),   i_esermap.end(),   o_esermap.begin(), o_esermap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmap.begin(),   i_esplmap.end(),   o_esplmap.begin(), o_esplmap.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_memory )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
+    std::shared_ptr<int> o_xptr2 = o_xptr1;
+    std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
+    std::shared_ptr<int> o_yptr2 = o_yptr1;
+    oar & o_xptr1 & o_xptr2;
+    oar & o_yptr1 & o_yptr2;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::shared_ptr<int> i_xptr1;
+    std::shared_ptr<int> i_xptr2;
+    std::shared_ptr<int> i_yptr1;
+    std::shared_ptr<int> i_yptr2;
+    iar & i_xptr1 & i_xptr2;
+    iar & i_yptr1 & i_yptr2;
+
+    BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
+    BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
+    BOOST_CHECK_EQUAL(*i_xptr1,      *i_xptr2);
+
+    BOOST_CHECK_EQUAL(o_yptr1.get(), o_yptr2.get());
+    BOOST_CHECK_EQUAL(i_yptr1.get(), i_yptr2.get());
+    BOOST_CHECK_EQUAL(*i_yptr1,      *i_yptr2);
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_queue )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::queue<int> o_podqueue;
+    for(int j=0; j<100; ++j)
+      o_podqueue.push(random_value<int>(gen));
+
+    std::queue<StructInternalSerialize> o_iserqueue;
+    for(int j=0; j<100; ++j)
+      o_iserqueue.push({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::queue<StructInternalSplit> o_isplqueue;
+    for(int j=0; j<100; ++j)
+      o_isplqueue.push({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::queue<StructExternalSerialize> o_eserqueue;
+    for(int j=0; j<100; ++j)
+      o_eserqueue.push({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::queue<StructExternalSplit> o_esplqueue;
+    for(int j=0; j<100; ++j)
+      o_esplqueue.push({ random_value<int>(gen), random_value<int>(gen) });
+
+    oar & o_podqueue;
+    oar & o_iserqueue;
+    oar & o_isplqueue;
+    oar & o_eserqueue;
+    oar & o_esplqueue;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::queue<int> i_podqueue;
+    std::queue<StructInternalSerialize> i_iserqueue;
+    std::queue<StructInternalSplit>     i_isplqueue;
+    std::queue<StructExternalSerialize> i_eserqueue;
+    std::queue<StructExternalSplit>     i_esplqueue;
+
+    iar & i_podqueue;
+    iar & i_iserqueue;
+    iar & i_isplqueue;
+    iar & i_eserqueue;
+    iar & i_esplqueue;
+
+    auto & i_podqueue_c  = cereal::queue_detail::container(i_podqueue);
+    auto & i_iserqueue_c = cereal::queue_detail::container(i_iserqueue);
+    auto & i_isplqueue_c = cereal::queue_detail::container(i_isplqueue);
+    auto & i_eserqueue_c = cereal::queue_detail::container(i_eserqueue);
+    auto & i_esplqueue_c = cereal::queue_detail::container(i_esplqueue);
+
+    auto & o_podqueue_c  = cereal::queue_detail::container(o_podqueue);
+    auto & o_iserqueue_c = cereal::queue_detail::container(o_iserqueue);
+    auto & o_isplqueue_c = cereal::queue_detail::container(o_isplqueue);
+    auto & o_eserqueue_c = cereal::queue_detail::container(o_eserqueue);
+    auto & o_esplqueue_c = cereal::queue_detail::container(o_esplqueue);
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podqueue_c.begin(),    i_podqueue_c.end(),    o_podqueue_c.begin(),  o_podqueue_c.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserqueue_c.begin(),   i_iserqueue_c.end(),   o_iserqueue_c.begin(), o_iserqueue_c.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplqueue_c.begin(),   i_isplqueue_c.end(),   o_isplqueue_c.begin(), o_isplqueue_c.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserqueue_c.begin(),   i_eserqueue_c.end(),   o_eserqueue_c.begin(), o_eserqueue_c.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplqueue_c.begin(),   i_esplqueue_c.end(),   o_esplqueue_c.begin(), o_esplqueue_c.end());
   }
 }
