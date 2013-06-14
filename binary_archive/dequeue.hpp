@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::deque all other types to binary
-  template <class T, size_t A>
+  template <class T, class A>
   void save( BinaryOutputArchive & ar, std::deque<T, A> const & deque )
   {
     ar & deque.size();
@@ -17,7 +17,7 @@ namespace cereal
   }
 
   //! Loading for std::deque all other types to binary
-  template <class T, size_t A>
+  template <class T, class A>
   void load( BinaryInputArchive & ar, std::deque<T, A> & deque )
   {
     size_t size;

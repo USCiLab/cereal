@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::list all other types to binary
-  template <class T, size_t A>
+  template <class T, class A>
   void save( BinaryOutputArchive & ar, std::list<T, A> const & list )
   {
     ar & list.size();
@@ -17,7 +17,7 @@ namespace cereal
   }
 
   //! Loading for std::list all other types to binary
-  template <class T, size_t A>
+  template <class T, class A>
   void load( BinaryInputArchive & ar, std::list<T, A> & list )
   {
     size_t size;
