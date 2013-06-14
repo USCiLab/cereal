@@ -5,9 +5,20 @@
 #include <cereal/binary_archive/deque.hpp>
 #include <cereal/binary_archive/forward_list.hpp>
 #include <cereal/binary_archive/list.hpp>
+#include <cereal/binary_archive/string.hpp>
 #include <cereal/binary_archive/map.hpp>
 #include <limits>
 #include <random>
+
+namespace boost
+{
+  template<class F, class S>
+  ::std::ostream & operator<<(::std::ostream & os, ::std::pair<F, S> const & p)
+  {
+    os << "([" << p.first << "], [" << p.second << "])";
+    return os;
+  }
+}
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Cereal
@@ -16,9 +27,9 @@
 struct StructBase
 {
   int x, y;
-  bool operator==(StructBase const & other)
+  bool operator==(StructBase const & other) const
   { return x == other.x && y == other.y; }
-  bool operator!=(StructBase const & other)
+  bool operator!=(StructBase const & other) const
   { return x != other.x || y != other.y; }
 };
 
@@ -103,7 +114,7 @@ random_value(std::mt19937 & gen)
 {
   std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
   for(char & c : s)
-    c = std::uniform_int_distribution<char>('a', 'Z')(gen); 
+    c = std::uniform_int_distribution<char>(' ', '~')(gen); 
   return s;
 }
 
@@ -561,6 +572,13 @@ BOOST_AUTO_TEST_CASE( binary_list )
   }
 }
 
+//template<class F, class S>
+//std::ostream & operator<<(std::ostream & os, std::pair<const F, S> const p)
+//{
+//    os << "(" << p.first << ", " << p.second << ")";
+//    return os;
+//}
+
 // ######################################################################
 BOOST_AUTO_TEST_CASE( binary_map )
 {
@@ -572,51 +590,51 @@ BOOST_AUTO_TEST_CASE( binary_map )
     std::ostringstream os;
     cereal::BinaryOutputArchive oar(os);
 
-    //std::map<std::string, int> o_podmap;
-    //for(int j=0; j<100; ++j)
-    //  o_podmap.insert({random_value<std::string>(gen), random_value<int>(gen)});
+    std::map<std::string, int> o_podmap;
+    for(int j=0; j<100; ++j)
+      o_podmap.insert({random_value<std::string>(gen), random_value<int>(gen)});
 
-    //std::map<StructInternalSerialize> o_isermap(100);
-    //for(auto & elem : o_isermap)
-    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+    std::map<double, StructInternalSerialize> o_isermap;
+    for(int j=0; j<100; ++j)
+      o_isermap.insert({random_value<double>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
-    //std::map<StructInternalSplit> o_isplmap(100);
-    //for(auto & elem : o_isplmap)
-    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+    std::map<float, StructInternalSplit> o_isplmap;
+    for(int j=0; j<100; ++j)
+      o_isplmap.insert({random_value<float>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
-    //std::map<StructExternalSerialize> o_esermap(100);
-    //for(auto & elem : o_esermap)
-    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+    std::map<uint32_t, StructExternalSerialize> o_esermap;
+    for(int j=0; j<100; ++j)
+      o_esermap.insert({random_value<uint32_t>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
-    //std::map<StructExternalSplit> o_esplmap(100);
-    //for(auto & elem : o_esplmap)
-    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+    std::map<int8_t, StructExternalSplit> o_esplmap;
+    for(int j=0; j<100; ++j)
+      o_esplmap.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
-    //oar & o_podmap;
-    //oar & o_isermap;
-    //oar & o_isplmap;
-    //oar & o_esermap;
-    //oar & o_esplmap;
+    oar & o_podmap;
+    oar & o_isermap;
+    oar & o_isplmap;
+    oar & o_esermap;
+    oar & o_esplmap;
 
-    //std::istringstream is(os.str());
-    //cereal::BinaryInputArchive iar(is);
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
 
-    //std::map<int> i_podmap;
-    //std::map<StructInternalSerialize> i_isermap;
-    //std::map<StructInternalSplit>     i_isplmap;
-    //std::map<StructExternalSerialize> i_esermap;
-    //std::map<StructExternalSplit>     i_esplmap;
+    std::map<std::string, int> i_podmap;
+    std::map<double, StructInternalSerialize>   i_isermap;
+    std::map<float, StructInternalSplit>        i_isplmap;
+    std::map<uint32_t, StructExternalSerialize> i_esermap;
+    std::map<int8_t, StructExternalSplit>       i_esplmap;
 
-    //iar & i_podmap;
-    //iar & i_isermap;
-    //iar & i_isplmap;
-    //iar & i_esermap;
-    //iar & i_esplmap;
+    iar & i_podmap;
+    iar & i_isermap;
+    iar & i_isplmap;
+    iar & i_esermap;
+    iar & i_esplmap;
 
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(), i_podmap.end(), o_podmap.begin(), o_podmap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(), i_isermap.end(), o_isermap.begin(), o_isermap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmap.begin(), i_isplmap.end(), o_isplmap.begin(), o_isplmap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esermap.begin(), i_esermap.end(), o_esermap.begin(), o_esermap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmap.begin(), i_esplmap.end(), o_esplmap.begin(), o_esplmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(), i_podmap.end(), o_podmap.begin(), o_podmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(), i_isermap.end(), o_isermap.begin(), o_isermap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmap.begin(), i_isplmap.end(), o_isplmap.begin(), o_isplmap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esermap.begin(), i_esermap.end(), o_esermap.begin(), o_esermap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmap.begin(), i_esplmap.end(), o_esplmap.begin(), o_esplmap.end());
   }
 }
