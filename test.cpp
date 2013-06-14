@@ -2,6 +2,7 @@
 #include <cereal/cereal.hpp>
 #include <cereal/binary_archive/binary_archive.hpp>
 #include <cereal/binary_archive/string.hpp>
+#include <cereal/binary_archive/utility.hpp>
 #include <cereal/json_archive/json_archive.hpp>
 #include <cereal/binary_archive/memory.hpp>
 

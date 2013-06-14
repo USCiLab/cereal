@@ -1,6 +1,7 @@
 #ifndef CEREAL_BINARY_ARCHIVE_TUPLE_HPP_
 #define CEREAL_BINARY_ARCHIVE_TUPLE_HPP_
 
+#include <cereal/details/traits.hpp>
 #include <cereal/binary_archive/binary_archive.hpp>
 #include <tuple>
 
@@ -24,7 +25,8 @@ namespace cereal
 
   //! Serializing for std::tuple to binary
   template <class Archive, class ... Types> inline
-  void serialize( Archive & ar, std::tuple<Types...> & tuple )
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+  serialize( Archive & ar, std::tuple<Types...> & tuple )
   {
     tuple_size::serialize<std::tuple_size<std::tuple<Types...>>>( ar, tuple );
   }

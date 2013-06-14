@@ -8,7 +8,8 @@ namespace cereal
 {
   //! Serializing for std::pair to binary
   template <class Archive, class T1, class T2> inline
-  void serialize( Archive & ar, std::pair<T1, T2> & pair )
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+  serialize( Archive & ar, std::pair<T1, T2> & pair )
   {
     ar & pair.first;
     ar & pair.second;

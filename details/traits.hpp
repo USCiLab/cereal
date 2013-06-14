@@ -105,6 +105,28 @@ namespace cereal
     {
       return rank == 0 ? 1 : std::extent<T>::value * sizeofArray<typename std::remove_extent<T>::type>( rank - 1 );
     }
+
+    // ######################################################################
+    //! A macro to use to restrict which types of archives your serialize function will work for.
+    /*! This requires you to have a template class parameter named Archive and replaces the void return
+        type for your serialize function.
+
+        INTYPE refers to the input archive type you wish to restrict on.
+        OUTTYPE refers to the output archive type you wish to restrict on.
+
+        For example, if we want to limit a serialize to only work with binary serialization:
+
+        @code{.cpp}
+        template <class Archive>
+        CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+        serialize( Archive & ar, MyCoolType & m )
+        {
+          ar & m;
+        }
+        @endcode
+     */
+    #define CEREAL_ARCHIVE_RESTRICT_SERIALIZE(INTYPE, OUTTYPE) \
+    typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
   }
 }
 
