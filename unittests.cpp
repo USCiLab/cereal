@@ -10,6 +10,7 @@
 #include <cereal/binary_archive/queue.hpp>
 #include <cereal/binary_archive/set.hpp>
 #include <cereal/binary_archive/stack.hpp>
+#include <cereal/binary_archive/unordered_map.hpp>
 #include <limits>
 #include <random>
 
@@ -892,5 +893,94 @@ BOOST_AUTO_TEST_CASE( binary_string )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_wstring.begin(),     i_wstring.end(),   o_wstring.begin(),   o_wstring.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_u16string.begin(),  i_u16string.end(),  o_u16string.begin(), o_u16string.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_u32string.begin(),  i_u32string.end(),  o_u32string.begin(), o_u32string.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_unordered_map )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::unordered_map<std::string, int> o_podunordered_map;
+    for(int j=0; j<100; ++j)
+      o_podunordered_map.insert({random_value<std::string>(gen), random_value<int>(gen)});
+
+    std::unordered_map<double, StructInternalSerialize> o_iserunordered_map;
+    for(int j=0; j<100; ++j)
+      o_iserunordered_map.insert({random_value<double>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+
+    std::unordered_map<float, StructInternalSplit> o_isplunordered_map;
+    for(int j=0; j<100; ++j)
+      o_isplunordered_map.insert({random_value<float>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+
+    std::unordered_map<uint32_t, StructExternalSerialize> o_eserunordered_map;
+    for(int j=0; j<100; ++j)
+      o_eserunordered_map.insert({random_value<uint32_t>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+
+    std::unordered_map<int8_t, StructExternalSplit> o_esplunordered_map;
+    for(int j=0; j<100; ++j)
+      o_esplunordered_map.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
+
+    oar & o_podunordered_map;
+    oar & o_iserunordered_map;
+    oar & o_isplunordered_map;
+    oar & o_eserunordered_map;
+    oar & o_esplunordered_map;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::unordered_map<std::string, int> i_podunordered_map;
+    std::unordered_map<double, StructInternalSerialize>   i_iserunordered_map;
+    std::unordered_map<float, StructInternalSplit>        i_isplunordered_map;
+    std::unordered_map<uint32_t, StructExternalSerialize> i_eserunordered_map;
+    std::unordered_map<int8_t, StructExternalSplit>       i_esplunordered_map;
+
+    iar & i_podunordered_map;
+    iar & i_iserunordered_map;
+    iar & i_isplunordered_map;
+    iar & i_eserunordered_map;
+    iar & i_esplunordered_map;
+
+    for(auto const & p : i_podunordered_map)
+    {
+      auto v = o_podunordered_map.find(p.first);
+      BOOST_CHECK(v != o_podunordered_map.end());
+      BOOST_CHECK_EQUAL(p.second, v->second);
+    }
+
+    for(auto const & p : i_iserunordered_map)
+    {
+      auto v = o_iserunordered_map.find(p.first);
+      BOOST_CHECK(v != o_iserunordered_map.end());
+      BOOST_CHECK_EQUAL(p.second, v->second);
+    }
+
+    for(auto const & p : i_isplunordered_map)
+    {
+      auto v = o_isplunordered_map.find(p.first);
+      BOOST_CHECK(v != o_isplunordered_map.end());
+      BOOST_CHECK_EQUAL(p.second, v->second);
+    }
+
+    for(auto const & p : i_eserunordered_map)
+    {
+      auto v = o_eserunordered_map.find(p.first);
+      BOOST_CHECK(v != o_eserunordered_map.end());
+      BOOST_CHECK_EQUAL(p.second, v->second);
+    }
+
+    for(auto const & p : i_esplunordered_map)
+    {
+      auto v = o_esplunordered_map.find(p.first);
+      BOOST_CHECK(v != o_esplunordered_map.end());
+      BOOST_CHECK_EQUAL(p.second, v->second);
+    }
   }
 }
