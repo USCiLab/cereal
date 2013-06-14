@@ -6,17 +6,27 @@
 
 namespace cereal
 {
-  //! Saving for std::list all other types to binary
+  //! Saving for std::list types to binary
   template <class T, class A>
   void save( BinaryOutputArchive & ar, std::list<T, A> const & list )
   {
     ar & list.size();
 
-    for( const auto & i : list )
+    for( auto const & i : list )
       ar & i;
   }
 
-  //! Loading for std::list all other types to binary
+  //! Saving for std::list types to binary (non-const version)
+  template <class T, class A>
+  void save( BinaryOutputArchive & ar, std::list<T, A> & list )
+  {
+    ar & list.size();
+
+    for( auto & i : list )
+      ar & i;
+  }
+
+  //! Loading for std::list types from binary
   template <class T, class A>
   void load( BinaryInputArchive & ar, std::list<T, A> & list )
   {

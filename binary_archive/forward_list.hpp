@@ -13,7 +13,7 @@ namespace cereal
     // TODO: This is linear time! We may want to do something smarter
     ar & std::distance(forward_list.begin(), forward_list.end());
 
-    for( const auto & i : forward_list )
+    for( auto const & i : forward_list )
       ar & i;
   }
 

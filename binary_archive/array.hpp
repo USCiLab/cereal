@@ -40,7 +40,7 @@ namespace cereal
       ar & i;
   }
 
-  //! Loading for std::array all other types to binary
+  //! Loading for std::array all other types from binary
   template <class T, size_t N>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   load( BinaryInputArchive & ar, std::array<T, N> & array )

@@ -11,7 +11,7 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
-    const size_t dataSize = std::addressof(vector.back()) - std::addressof(vector.front()) + 1;
+    size_t const dataSize = std::addressof(vector.back()) - std::addressof(vector.front()) + 1;
 
     ar & vector.size(); // number of elements
     ar & dataSize;      // size of data (may be larger due to allocator strategy)

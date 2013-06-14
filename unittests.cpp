@@ -4,6 +4,7 @@
 #include <cereal/binary_archive/vector.hpp>
 #include <cereal/binary_archive/deque.hpp>
 #include <cereal/binary_archive/forward_list.hpp>
+#include <cereal/binary_archive/list.hpp>
 #include <limits>
 #include <random>
 
@@ -486,5 +487,65 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isplforward_list.begin(), i_isplforward_list.end(), o_isplforward_list.begin(), o_isplforward_list.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eserforward_list.begin(), i_eserforward_list.end(), o_eserforward_list.begin(), o_eserforward_list.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_esplforward_list.begin(), i_esplforward_list.end(), o_esplforward_list.begin(), o_esplforward_list.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_list )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::list<int> o_podlist(100);
+    for(auto & elem : o_podlist)
+      elem = random_value<decltype(o_podlist)::value_type>(gen);
+
+    std::list<StructInternalSerialize> o_iserlist(100);
+    for(auto & elem : o_iserlist)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::list<StructInternalSplit> o_ispllist(100);
+    for(auto & elem : o_ispllist)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::list<StructExternalSerialize> o_eserlist(100);
+    for(auto & elem : o_eserlist)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::list<StructExternalSplit> o_espllist(100);
+    for(auto & elem : o_espllist)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    oar & o_podlist;
+    oar & o_iserlist;
+    oar & o_ispllist;
+    oar & o_eserlist;
+    oar & o_espllist;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::list<int> i_podlist;
+    std::list<StructInternalSerialize> i_iserlist;
+    std::list<StructInternalSplit>     i_ispllist;
+    std::list<StructExternalSerialize> i_eserlist;
+    std::list<StructExternalSplit>     i_espllist;
+
+    iar & i_podlist;
+    iar & i_iserlist;
+    iar & i_ispllist;
+    iar & i_eserlist;
+    iar & i_espllist;
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podlist.begin(), i_podlist.end(), o_podlist.begin(), o_podlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserlist.begin(), i_iserlist.end(), o_iserlist.begin(), o_iserlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispllist.begin(), i_ispllist.end(), o_ispllist.begin(), o_ispllist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserlist.begin(), i_eserlist.end(), o_eserlist.begin(), o_eserlist.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_espllist.begin(), i_espllist.end(), o_espllist.begin(), o_espllist.end());
   }
 }

@@ -12,7 +12,7 @@ namespace cereal
   {
     ar & deque.size();
 
-    for( const auto & i : deque )
+    for( auto const & i : deque )
       ar & i;
   }
 
