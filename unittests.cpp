@@ -615,6 +615,87 @@ BOOST_AUTO_TEST_CASE( binary_map )
 }
 
 // ######################################################################
+BOOST_AUTO_TEST_CASE( binary_multimap )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::multimap<std::string, int> o_podmultimap;
+    for(int j=0; j<100; ++j)
+    {
+      auto key = random_value<std::string>(gen);
+      o_podmultimap.insert({key, random_value<int>(gen)});
+      o_podmultimap.insert({key, random_value<int>(gen)});
+    }
+
+    std::multimap<double, StructInternalSerialize> o_isermultimap;
+    for(int j=0; j<100; ++j)
+    {
+      auto key = random_value<double>(gen);
+      o_isermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+      o_isermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+    }
+
+    std::multimap<float, StructInternalSplit> o_isplmultimap;
+    for(int j=0; j<100; ++j)
+    {
+      auto key = random_value<float>(gen);
+      o_isplmultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+      o_isplmultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+    }
+
+    std::multimap<uint32_t, StructExternalSerialize> o_esermultimap;
+    for(int j=0; j<100; ++j)
+    {
+      auto key = random_value<uint32_t>(gen);
+      o_esermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+      o_esermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
+    }
+
+    std::multimap<int8_t, StructExternalSplit> o_esplmultimap;
+    for(int j=0; j<100; ++j)
+    {
+      auto key = random_value<char>(gen);
+      o_esplmultimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
+      o_esplmultimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
+    }
+
+    oar & o_podmultimap;
+    oar & o_isermultimap;
+    oar & o_isplmultimap;
+    oar & o_esermultimap;
+    oar & o_esplmultimap;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::multimap<std::string, int> i_podmultimap;
+    std::multimap<double, StructInternalSerialize>   i_isermultimap;
+    std::multimap<float, StructInternalSplit>        i_isplmultimap;
+    std::multimap<uint32_t, StructExternalSerialize> i_esermultimap;
+    std::multimap<int8_t, StructExternalSplit>       i_esplmultimap;
+
+    iar & i_podmultimap;
+    iar & i_isermultimap;
+    iar & i_isplmultimap;
+    iar & i_esermultimap;
+    iar & i_esplmultimap;
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podmultimap.begin(),    i_podmultimap.end(),    o_podmultimap.begin(),  o_podmultimap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isermultimap.begin(),   i_isermultimap.end(),   o_isermultimap.begin(), o_isermultimap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmultimap.begin(),   i_isplmultimap.end(),   o_isplmultimap.begin(), o_isplmultimap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esermultimap.begin(),   i_esermultimap.end(),   o_esermultimap.begin(), o_esermultimap.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmultimap.begin(),   i_esplmultimap.end(),   o_esplmultimap.begin(), o_esplmultimap.end());
+  }
+}
+
+
+// ######################################################################
 BOOST_AUTO_TEST_CASE( binary_memory )
 {
   std::random_device rd;
