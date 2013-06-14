@@ -3,6 +3,7 @@
 #include <cereal/binary_archive/array.hpp>
 #include <cereal/binary_archive/vector.hpp>
 #include <cereal/binary_archive/deque.hpp>
+#include <cereal/binary_archive/forward_list.hpp>
 #include <limits>
 #include <random>
 
@@ -425,5 +426,65 @@ BOOST_AUTO_TEST_CASE( binary_deque )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_ispldeque.begin(), i_ispldeque.end(), o_ispldeque.begin(), o_ispldeque.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eserdeque.begin(), i_eserdeque.end(), o_eserdeque.begin(), o_eserdeque.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_espldeque.begin(), i_espldeque.end(), o_espldeque.begin(), o_espldeque.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_forward_list )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::forward_list<int> o_podforward_list(100);
+    for(auto & elem : o_podforward_list)
+      elem = random_value<decltype(o_podforward_list)::value_type>(gen);
+
+    std::forward_list<StructInternalSerialize> o_iserforward_list(100);
+    for(auto & elem : o_iserforward_list)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::forward_list<StructInternalSplit> o_isplforward_list(100);
+    for(auto & elem : o_isplforward_list)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::forward_list<StructExternalSerialize> o_eserforward_list(100);
+    for(auto & elem : o_eserforward_list)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::forward_list<StructExternalSplit> o_esplforward_list(100);
+    for(auto & elem : o_esplforward_list)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    oar & o_podforward_list;
+    oar & o_iserforward_list;
+    oar & o_isplforward_list;
+    oar & o_eserforward_list;
+    oar & o_esplforward_list;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::forward_list<int> i_podforward_list;
+    std::forward_list<StructInternalSerialize> i_iserforward_list;
+    std::forward_list<StructInternalSplit>     i_isplforward_list;
+    std::forward_list<StructExternalSerialize> i_eserforward_list;
+    std::forward_list<StructExternalSplit>     i_esplforward_list;
+
+    iar & i_podforward_list;
+    iar & i_iserforward_list;
+    iar & i_isplforward_list;
+    iar & i_eserforward_list;
+    iar & i_esplforward_list;
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_podforward_list.begin(), i_podforward_list.end(), o_podforward_list.begin(), o_podforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserforward_list.begin(), i_iserforward_list.end(), o_iserforward_list.begin(), o_iserforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_isplforward_list.begin(), i_isplforward_list.end(), o_isplforward_list.begin(), o_isplforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserforward_list.begin(), i_eserforward_list.end(), o_eserforward_list.begin(), o_eserforward_list.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_esplforward_list.begin(), i_esplforward_list.end(), o_esplforward_list.begin(), o_esplforward_list.end());
   }
 }
