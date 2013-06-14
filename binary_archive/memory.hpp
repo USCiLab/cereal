@@ -13,11 +13,8 @@ namespace cereal
     uint32_t id = ar.registerSharedPointer( ptr.get() );
     ar & id;
 
-    std::cout << "ID: " << id << std::endl;
-
     if( id & msb_32bit )
     {
-      std::cout << "Serializing the *ptr" << std::endl;
       ar & *ptr;
     }
   }

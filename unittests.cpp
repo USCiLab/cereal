@@ -1,4 +1,5 @@
 #include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/binary_archive/memory.hpp>
 #include <limits>
 #include <random>
 
@@ -17,6 +18,7 @@ typename std::enable_if<std::is_integral<T>::value, T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
 
+// ######################################################################
 BOOST_AUTO_TEST_CASE( pod )
 {
   std::random_device rd;
@@ -24,7 +26,6 @@ BOOST_AUTO_TEST_CASE( pod )
 
   for(size_t i=0; i<100; ++i)
   {
-
     uint8_t  const o_uint8  = random_value<uint8_t>(gen);
     int8_t   const o_int8   = random_value<int8_t>(gen);
     uint16_t const o_uint16 = random_value<uint16_t>(gen);
@@ -84,5 +85,42 @@ BOOST_AUTO_TEST_CASE( pod )
     BOOST_CHECK_EQUAL(i_float  , o_float);
     BOOST_CHECK_EQUAL(i_double , o_double);
   }
-  
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( smart_pointers )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
+    std::shared_ptr<int> o_xptr2 = o_xptr1;
+    std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
+    std::shared_ptr<int> o_yptr2 = o_yptr1;
+    oar & o_xptr1 & o_xptr2;
+    oar & o_yptr1 & o_yptr2;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::shared_ptr<int> i_xptr1;
+    std::shared_ptr<int> i_xptr2;
+    std::shared_ptr<int> i_yptr1;
+    std::shared_ptr<int> i_yptr2;
+    iar & i_xptr1 & i_xptr2;
+    iar & i_yptr1 & i_yptr2;
+
+    BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
+    BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
+    BOOST_CHECK_EQUAL(*i_xptr1, *i_xptr2);
+
+    BOOST_CHECK_EQUAL(o_yptr1.get(), o_yptr2.get());
+    BOOST_CHECK_EQUAL(i_yptr1.get(), i_yptr2.get());
+    BOOST_CHECK_EQUAL(*i_yptr1, *i_yptr2);
+  }
 }

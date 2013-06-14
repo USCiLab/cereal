@@ -3,4 +3,5 @@ all: test.cpp unittests
 
 unittests: unittests.cpp
 	g++ -std=c++0x unittests.cpp -o unittests -lboost_unit_test_framework -I./..
+	./unittests
 
