@@ -2,6 +2,7 @@
 #include <cereal/binary_archive/memory.hpp>
 #include <cereal/binary_archive/array.hpp>
 #include <cereal/binary_archive/vector.hpp>
+#include <cereal/binary_archive/deque.hpp>
 #include <limits>
 #include <random>
 
@@ -358,5 +359,71 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(), i_isplvector.end(), o_isplvector.begin(), o_isplvector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(), i_eservector.end(), o_eservector.begin(), o_eservector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(), i_esplvector.end(), o_esplvector.begin(), o_esplvector.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_deque )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::deque<int> o_poddeque(100);
+    for(auto & elem : o_poddeque)
+      elem = random_value<decltype(o_poddeque)::value_type>(gen);
+
+    std::deque<StructInternalSerialize> o_iserdeque(100);
+    for(auto & elem : o_iserdeque)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::deque<StructInternalSplit> o_ispldeque(100);
+    for(auto & elem : o_ispldeque)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::deque<StructExternalSerialize> o_eserdeque(100);
+    for(auto & elem : o_eserdeque)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::deque<StructExternalSplit> o_espldeque(100);
+    for(auto & elem : o_espldeque)
+      elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    oar & o_poddeque;
+    oar & o_iserdeque;
+    oar & o_ispldeque;
+    oar & o_eserdeque;
+    oar & o_espldeque;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::deque<int> i_poddeque;
+    std::deque<StructInternalSerialize> i_iserdeque;
+    std::deque<StructInternalSplit>     i_ispldeque;
+    std::deque<StructExternalSerialize> i_eserdeque;
+    std::deque<StructExternalSplit>     i_espldeque;
+
+    iar & i_poddeque;
+    iar & i_iserdeque;
+    iar & i_ispldeque;
+    iar & i_eserdeque;
+    iar & i_espldeque;
+
+    BOOST_CHECK_EQUAL(i_poddeque.size(),  o_poddeque.size());
+    BOOST_CHECK_EQUAL(i_iserdeque.size(), o_iserdeque.size());
+    BOOST_CHECK_EQUAL(i_ispldeque.size(), o_ispldeque.size());
+    BOOST_CHECK_EQUAL(i_eserdeque.size(), o_eserdeque.size());
+    BOOST_CHECK_EQUAL(i_espldeque.size(), o_espldeque.size());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_poddeque.begin(), i_poddeque.end(), o_poddeque.begin(), o_poddeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_iserdeque.begin(), i_iserdeque.end(), o_iserdeque.begin(), o_iserdeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_ispldeque.begin(), i_ispldeque.end(), o_ispldeque.begin(), o_ispldeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_eserdeque.begin(), i_eserdeque.end(), o_eserdeque.begin(), o_eserdeque.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_espldeque.begin(), i_espldeque.end(), o_espldeque.begin(), o_espldeque.end());
   }
 }
