@@ -2,6 +2,7 @@
 #define CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_
 
 #include <cereal/cereal.hpp>
+#include <stack>
 
 namespace cereal
 {
@@ -23,8 +24,41 @@ namespace cereal
           throw 1; // TODO: something terrible
       }
 
+      //! Pushes a placeholder for data onto the archive and saves its position
+      void pushPosition( size_t size )
+      {
+        itsPositionStack.push( itsStream.tellp() );
+        for(size_t i = 0; i < size; ++i)
+          itsStream.rdbuf()->sputc('\0'); // char doesn't matter, but null-term is zero
+      }
+
+      //! Pops the most recently pushed position onto the archive, going to the end
+      //! of the archive if the stack is empty
+      /*! @return true if the stack is empty and we are at the end of the archive */
+      bool popPosition()
+      {
+        if( itsPositionStack.empty() ) // seek to end of stream
+        {
+          itsStream.seekp( 0, std::ios_base::end );
+          return true;
+        }
+        else
+        {
+          itsStream.seekp( itsPositionStack.top() );
+          itsPositionStack.pop();
+          return false;
+        }
+      }
+
+      //! Resets the position stack and seeks to the end of the archive
+      void resetPosition()
+      {
+        while( !popPosition() );
+      }
+
     private:
       std::ostream & itsStream;
+      std::stack<std::ostream::pos_type> itsPositionStack;
   };
 
   // ######################################################################

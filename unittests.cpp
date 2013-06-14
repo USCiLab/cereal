@@ -28,11 +28,11 @@ std::ostream& operator<<(std::ostream& os, StructBase const & s)
     return os;
 }
 
- 
+
 struct StructInternalSerialize : StructBase
 {
   StructInternalSerialize() : StructBase{0,0} {}
-  StructInternalSerialize(int x_, int y_) : StructBase{x_,y_} {} 
+  StructInternalSerialize(int x_, int y_) : StructBase{x_,y_} {}
   template<class Archive>
     void serialize(Archive & ar)
     {
@@ -43,9 +43,9 @@ struct StructInternalSerialize : StructBase
 struct StructInternalSplit : StructBase
 {
   StructInternalSplit() : StructBase{0,0} {}
-  StructInternalSplit(int x_, int y_) : StructBase{x_,y_} {} 
+  StructInternalSplit(int x_, int y_) : StructBase{x_,y_} {}
   template<class Archive>
-    void save(Archive & ar)
+    void save(Archive & ar) const
     {
       ar & x & y;
     }
@@ -60,7 +60,7 @@ struct StructInternalSplit : StructBase
 struct StructExternalSerialize : StructBase
 {
   StructExternalSerialize() : StructBase{0,0} {}
-  StructExternalSerialize(int x_, int y_) : StructBase{x_,y_} {} 
+  StructExternalSerialize(int x_, int y_) : StructBase{x_,y_} {}
 };
 
   template<class Archive>
@@ -72,11 +72,11 @@ void serialize(Archive & ar, StructExternalSerialize & s)
 struct StructExternalSplit : StructBase
 {
   StructExternalSplit() : StructBase{0,0} {}
-  StructExternalSplit(int x_, int y_) : StructBase{x_,y_} {} 
+  StructExternalSplit(int x_, int y_) : StructBase{x_,y_} {}
 };
 
   template<class Archive>
-void save(Archive & ar, StructExternalSplit & s)
+void save(Archive & ar, StructExternalSplit const & s)
 {
   ar & s.x & s.y;
 }
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE( structs )
     StructExternalSplit     i_espl;
 
     iar & i_iser & i_ispl & i_eser & i_espl;
-  
+
     BOOST_CHECK(i_iser == o_iser);
     BOOST_CHECK(i_ispl == o_ispl);
     BOOST_CHECK(i_eser == o_eser);

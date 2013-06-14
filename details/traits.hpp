@@ -56,7 +56,7 @@ namespace cereal
     template<typename T, class A>
       struct has_member_save< T, A,
       typename Void<
-        decltype( std::declval<T&>().save( std::declval<A&>() ) )
+        decltype( std::declval<T const &>().save( std::declval<A&>() ) )
         >::type
         >: std::true_type {};
 

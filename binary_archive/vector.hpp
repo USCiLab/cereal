@@ -43,16 +43,6 @@ namespace cereal
       ar & (*it);
   }
 
-  //! Serialization for non-arithmetic (and bool) vector types to binary (non-const version)
-  template <class T, class A>
-  typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
-  save( BinaryOutputArchive & ar, std::vector<T, A> & vector )
-  {
-    ar & vector.size(); // number of elements
-    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar & (*it);
-  }
-
   //! Serialization for non-arithmetic (and bool) vector types from binary
   template <class T, class A>
   typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type

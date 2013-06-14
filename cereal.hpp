@@ -45,9 +45,9 @@ namespace cereal
       template <class T>
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
-      operator & (T && t)
+      operator & (T const & t)
       {
-        t.serialize(*self);
+        const_cast<T &>(t).serialize(*self);
         return *self;
       }
 
@@ -55,9 +55,9 @@ namespace cereal
       template <class T>
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
-      operator & (T && t)
+      operator & (T const & t)
       {
-        serialize(*self, std::forward<T>(t));
+        serialize(*self, const_cast<T &>(t));
         return *self;
       }
 
@@ -162,7 +162,7 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        serialize(*self, t);
+        serialize(*self, std::forward<T>(t));
         return *self;
       }
 
