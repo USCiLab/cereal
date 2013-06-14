@@ -5,6 +5,7 @@
 #include <cereal/binary_archive/deque.hpp>
 #include <cereal/binary_archive/forward_list.hpp>
 #include <cereal/binary_archive/list.hpp>
+#include <cereal/binary_archive/map.hpp>
 #include <limits>
 #include <random>
 
@@ -95,6 +96,16 @@ template<class T>
 typename std::enable_if<std::is_integral<T>::value, T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
+
+template<class T>
+typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
+random_value(std::mt19937 & gen)
+{
+  std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
+  for(char & c : s)
+    c = std::uniform_int_distribution<char>('a', 'Z')(gen); 
+  return s;
+}
 
 // ######################################################################
 BOOST_AUTO_TEST_CASE( binary_pod )
@@ -547,5 +558,65 @@ BOOST_AUTO_TEST_CASE( binary_list )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_ispllist.begin(), i_ispllist.end(), o_ispllist.begin(), o_ispllist.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eserlist.begin(), i_eserlist.end(), o_eserlist.begin(), o_eserlist.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_espllist.begin(), i_espllist.end(), o_espllist.begin(), o_espllist.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_map )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    //std::map<std::string, int> o_podmap;
+    //for(int j=0; j<100; ++j)
+    //  o_podmap.insert({random_value<std::string>(gen), random_value<int>(gen)});
+
+    //std::map<StructInternalSerialize> o_isermap(100);
+    //for(auto & elem : o_isermap)
+    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    //std::map<StructInternalSplit> o_isplmap(100);
+    //for(auto & elem : o_isplmap)
+    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    //std::map<StructExternalSerialize> o_esermap(100);
+    //for(auto & elem : o_esermap)
+    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    //std::map<StructExternalSplit> o_esplmap(100);
+    //for(auto & elem : o_esplmap)
+    //  elem = { random_value<int>(gen), random_value<int>(gen) };
+
+    //oar & o_podmap;
+    //oar & o_isermap;
+    //oar & o_isplmap;
+    //oar & o_esermap;
+    //oar & o_esplmap;
+
+    //std::istringstream is(os.str());
+    //cereal::BinaryInputArchive iar(is);
+
+    //std::map<int> i_podmap;
+    //std::map<StructInternalSerialize> i_isermap;
+    //std::map<StructInternalSplit>     i_isplmap;
+    //std::map<StructExternalSerialize> i_esermap;
+    //std::map<StructExternalSplit>     i_esplmap;
+
+    //iar & i_podmap;
+    //iar & i_isermap;
+    //iar & i_isplmap;
+    //iar & i_esermap;
+    //iar & i_esplmap;
+
+    //BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(), i_podmap.end(), o_podmap.begin(), o_podmap.end());
+    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(), i_isermap.end(), o_isermap.begin(), o_isermap.end());
+    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmap.begin(), i_isplmap.end(), o_isplmap.begin(), o_isplmap.end());
+    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esermap.begin(), i_esermap.end(), o_esermap.begin(), o_esermap.end());
+    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmap.begin(), i_esplmap.end(), o_esplmap.begin(), o_esplmap.end());
   }
 }
