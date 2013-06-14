@@ -68,7 +68,7 @@ namespace cereal
   {
     C container;
     ar & container;
-    priority_queue = std::priority_queue<T, C, Comp>( std::move( container ) );
+    priority_queue = std::priority_queue<T, C, Comp>( container.begin(), container.end() );
   }
 } // namespace cereal
 

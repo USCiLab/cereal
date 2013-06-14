@@ -7,8 +7,8 @@
 namespace cereal
 {
   //! Saving for std::set to binary
-  template <class K, class H, class KE, class A>
-  void save( BinaryOutputArchive & ar, std::set<K, H, KE, A> const & set )
+  template <class K, class C, class A>
+  void save( BinaryOutputArchive & ar, std::set<K, C, A> const & set )
   {
     ar & set.size();
 
@@ -17,8 +17,8 @@ namespace cereal
   }
 
   //! Loading for std::set to binary
-  template <class K, class H, class KE, class A>
-  void load( BinaryInputArchive & ar, std::set<K, H, KE, A> & set )
+  template <class K, class C, class A>
+  void load( BinaryInputArchive & ar, std::set<K, C, A> & set )
   {
     size_t size;
     ar & size;
@@ -33,8 +33,8 @@ namespace cereal
   }
 
   //! Saving for std::multiset to binary
-  template <class K, class H, class KE, class A>
-  void save( BinaryOutputArchive & ar, std::multiset<K, H, KE, A> const & multiset )
+  template <class K, class C, class A>
+  void save( BinaryOutputArchive & ar, std::multiset<K, C, A> const & multiset )
   {
     ar & multiset.size();
 
@@ -43,8 +43,8 @@ namespace cereal
   }
 
   //! Loading for std::multiset to binary
-  template <class K, class H, class KE, class A>
-  void load( BinaryInputArchive & ar, std::multiset<K, H, KE, A> & multiset )
+  template <class K, class C, class A>
+  void load( BinaryInputArchive & ar, std::multiset<K, C, A> & multiset )
   {
     size_t size;
     ar & size;

@@ -12,7 +12,7 @@ namespace cereal
   {
     ar & list.size();
 
-    for( const auto & i : list )
+    for( auto const & i : list )
       ar & i;
   }
 
