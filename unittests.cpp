@@ -11,6 +11,7 @@
 #include <cereal/binary_archive/set.hpp>
 #include <cereal/binary_archive/stack.hpp>
 #include <cereal/binary_archive/unordered_map.hpp>
+#include <cereal/binary_archive/unordered_set.hpp>
 #include <limits>
 #include <random>
 
@@ -49,7 +50,6 @@ std::ostream& operator<<(std::ostream& os, StructBase const & s)
     os << "[x: " << s.x << " y: " << s.y << "]";
     return os;
 }
-
 
 struct StructInternalSerialize : StructBase
 {
@@ -108,6 +108,19 @@ void load(Archive & ar, StructExternalSplit & s)
 {
   ar & s.x & s.y;
 }
+
+
+template<class T>
+struct StructHash {
+  public:
+    size_t operator()(const T & s) const 
+    {
+      size_t h1 = std::hash<int>()(s.x);
+      size_t h2 = std::hash<int>()(s.y);
+      return h1 ^ ( h2 << 1 );
+    }
+};
+
 
 template<class T>
 typename std::enable_if<std::is_floating_point<T>::value, T>::type
@@ -1183,6 +1196,85 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
       auto bucket_begin   = o_esplunordered_multimap.begin(bucket);
       auto bucket_end     = o_esplunordered_multimap.end(bucket);
       BOOST_CHECK(std::find(bucket_begin, bucket_end, p) != bucket_end);
+    }
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_unordered_set )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::unordered_set<int> o_podunordered_set;
+    for(int j=0; j<100; ++j)
+      o_podunordered_set.insert(random_value<int>(gen));
+
+    std::unordered_set<StructInternalSerialize, StructHash<StructInternalSerialize>> o_iserunordered_set;
+    for(int j=0; j<100; ++j)
+      o_iserunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::unordered_set<StructInternalSplit, StructHash<StructInternalSplit>> o_isplunordered_set;
+    for(int j=0; j<100; ++j)
+      o_isplunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::unordered_set<StructExternalSerialize, StructHash<StructExternalSerialize>> o_eserunordered_set;
+    for(int j=0; j<100; ++j)
+      o_eserunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
+
+    std::unordered_set<StructExternalSplit, StructHash<StructExternalSplit>> o_esplunordered_set;
+    for(int j=0; j<100; ++j)
+      o_esplunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
+
+    oar & o_podunordered_set;
+    oar & o_iserunordered_set;
+    oar & o_isplunordered_set;
+    oar & o_eserunordered_set;
+    oar & o_esplunordered_set;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::unordered_set<int> i_podunordered_set;
+    std::unordered_set<StructInternalSerialize, StructHash<StructInternalSerialize>>   i_iserunordered_set;
+    std::unordered_set<StructInternalSplit, StructHash<StructInternalSplit>>           i_isplunordered_set;
+    std::unordered_set<StructExternalSerialize, StructHash<StructExternalSerialize>>   i_eserunordered_set;
+    std::unordered_set<StructExternalSplit, StructHash<StructExternalSplit>>           i_esplunordered_set;
+
+    iar & i_podunordered_set;
+    iar & i_iserunordered_set;
+    iar & i_isplunordered_set;
+    iar & i_eserunordered_set;
+    iar & i_esplunordered_set;
+
+    for(auto const & p : i_podunordered_set)
+    {
+      BOOST_CHECK_EQUAL(o_podunordered_set.count(p), 1);
+    }
+
+    for(auto const & p : i_iserunordered_set)
+    {
+      BOOST_CHECK_EQUAL(o_iserunordered_set.count(p), 1);
+    }
+
+    for(auto const & p : i_isplunordered_set)
+    {
+      BOOST_CHECK_EQUAL(o_isplunordered_set.count(p), 1);
+    }
+
+    for(auto const & p : i_eserunordered_set)
+    {
+      BOOST_CHECK_EQUAL(o_eserunordered_set.count(p), 1);
+    }
+
+    for(auto const & p : i_esplunordered_set)
+    {
+      BOOST_CHECK_EQUAL(o_esplunordered_set.count(p), 1);
     }
   }
 }
