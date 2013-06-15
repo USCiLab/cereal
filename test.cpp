@@ -109,6 +109,15 @@ struct Everything
   }
 };
 
+struct EmptyStruct
+{
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    std::cout << "Side effects up the wazoo" << std::endl;
+  };
+};
+
 // ######################################################################
 int main()
 {
@@ -184,6 +193,8 @@ int main()
     int a2[][2] = {{4, 5}, {6, 7}};
     archive & a1;
     archive & a2;
+    EmptyStruct empty;
+    archive & empty;
   }
 
   {

@@ -7,11 +7,11 @@
 namespace cereal
 {
   // ######################################################################
-  class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive>
+  class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>
   {
     public:
       BinaryOutputArchive(std::ostream & stream) :
-        OutputArchive<BinaryOutputArchive>(this),
+        OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
     { }
 
@@ -62,11 +62,11 @@ namespace cereal
   };
 
   // ######################################################################
-  class BinaryInputArchive : public InputArchive<BinaryInputArchive>
+  class BinaryInputArchive : public InputArchive<BinaryInputArchive, AllowEmptyClassElision>
   {
     public:
       BinaryInputArchive(std::istream & stream) :
-        InputArchive<BinaryInputArchive>(this),
+        InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
     { }
 
@@ -121,21 +121,23 @@ namespace cereal
   typename std::enable_if<std::is_array<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & array)
   {
-    ar.save_binary(array, traits::sizeofArray<T>() * sizeof(typename std::remove_all_extents<T>::type));
+    ar.save_binary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
   template <class T>
   typename std::enable_if<std::is_array<T>::value, void>::type
   load(BinaryInputArchive & ar, T & array)
   {
-    ar.load_binary(array, traits::sizeofArray<T>() * sizeof(typename std::remove_all_extents<T>::type));
+    ar.load_binary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
   template <class Archive, class T>
-  void serialize( Archive & ar, T * & t )
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+  serialize( Archive & ar, T * & t )
   {
     static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
   }
+
 }
 
 #endif // CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_

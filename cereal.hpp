@@ -32,9 +32,11 @@ namespace cereal
   //! Creates a name value pair for the variable T, using the same name
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T);
 
+  enum Flags { AllowEmptyClassElision = 1 };
+
   // ######################################################################
   //! The base output archive class
-  template<class ArchiveType>
+  template<class ArchiveType, uint32_t Flags = 0>
   class OutputArchive
   {
     public:
@@ -101,9 +103,19 @@ namespace cereal
         return *self;
       }
 
+      template <class T>
+      typename std::enable_if<(Flags & AllowEmptyClassElision) &&
+          !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
+      operator & (T const & t)
+      {
+        return *self;
+      }
+
       //! No matching serialization
       template <class T>
-      typename std::enable_if<!traits::is_output_serializable<T, ArchiveType>(), ArchiveType &>::type
+      typename std::enable_if<!traits::is_output_serializable<T, ArchiveType>() && 
+        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
+        ArchiveType &>::type
       operator & (T const & t)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
@@ -140,7 +152,7 @@ namespace cereal
 
   // ######################################################################
   //! The base input archive class
-  template<class ArchiveType>
+  template<class ArchiveType, uint32_t Flags = 0>
   class InputArchive
   {
     public:
@@ -186,13 +198,23 @@ namespace cereal
         return *self;
       }
 
+      template <class T>
+      typename std::enable_if<(Flags & AllowEmptyClassElision) &&
+          !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
+      operator & (T const & t)
+      {
+        return *self;
+      }
+
       //! No matching serialization
       template <class T>
-      typename std::enable_if<!traits::is_input_serializable<T, ArchiveType>(), ArchiveType &>::type
-      operator & (T & t)
+      typename std::enable_if<!traits::is_input_serializable<T, ArchiveType>() && 
+        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
+        ArchiveType &>::type
+      operator & (T const & t)
       {
-        static_assert(traits::is_input_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an input archive.\n\n"
-            "Types must either have a serialize function, or separate load/load functions (but not both).\n"
+        static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
+            "Types must either have a serialize function, or separate save/load functions (but not both).\n"
             "Serialize functions generally have the following signature:\n\n"
             "template<class Archive>\n"
             "  void serialize(int & ar)\n"

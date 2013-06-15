@@ -1,4 +1,4 @@
-all: test.cpp unittests
+all: test.cpp
 	g++ -std=c++0x test.cpp -o test -ljsoncpp -I./..
 
 unittests: unittests.cpp

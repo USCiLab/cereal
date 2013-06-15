@@ -37,6 +37,21 @@ namespace cereal
 
       return H::get( priority_queue );
     }
+    
+    //! Allows access to the protected comparator in priority queue
+    template <class T, class C, class Comp>
+    Comp const & comparator( std::priority_queue<T, C, Comp> const & priority_queue )
+    {
+      struct H : public std::priority_queue<T, C, Comp>
+      {
+        static Comp const & get( std::priority_queue<T, C, Comp> const & pq )
+        {
+          return pq.*(&H::comp);
+        }
+      };
+
+      return H::get( priority_queue );
+    }
   }
 
   //! Saving for std::queue to binary
@@ -59,6 +74,7 @@ namespace cereal
   template <class T, class C, class Comp>
   void save( BinaryOutputArchive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
   {
+    ar & queue_detail::comparator( priority_queue );
     ar & queue_detail::container( priority_queue );
   }
 
@@ -66,9 +82,13 @@ namespace cereal
   template <class T, class C, class Comp>
   void load( BinaryInputArchive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
+    Comp comparator;
+    ar & comparator;
+    
     C container;
     ar & container;
-    priority_queue = std::priority_queue<T, C, Comp>( container.begin(), container.end() );
+
+    priority_queue = std::priority_queue<T, C, Comp>( comparator, std::move( container ) );
   }
 } // namespace cereal
 

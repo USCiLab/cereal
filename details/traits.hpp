@@ -24,7 +24,7 @@ namespace cereal
 
     // ######################################################################
     // Non Member Serialize
-    template<typename T, typename A> char & serialize(A&, T&);
+    char & serialize(...);
     template<typename T, typename A>
       bool constexpr has_non_member_serialize()
       { return std::is_void<decltype(serialize(std::declval<A&>(), std::declval<T&>()))>::value; };
@@ -43,7 +43,7 @@ namespace cereal
 
     // ######################################################################
     // Non Member Load
-    template<typename T, typename A> char & load(A&, T&);
+    char & load(...);
     template<typename T, typename A>
       bool constexpr has_non_member_load()
       { return std::is_void<decltype(load(std::declval<A&>(), std::declval<T&>()))>::value; };
@@ -62,7 +62,7 @@ namespace cereal
 
     // ######################################################################
     // Non Member Save
-    template<typename T, typename A> char & save(A&, T const &);
+    char & save(...);
     template<typename T, typename A>
       bool constexpr has_non_member_save()
       { return std::is_void<decltype(save(std::declval<A&>(), std::declval<T&>()))>::value; };
@@ -101,10 +101,30 @@ namespace cereal
 
     // ######################################################################
     template <class T>
-    constexpr size_t sizeofArray( size_t rank = std::rank<T>::value )
+    constexpr size_t sizeof_array( size_t rank = std::rank<T>::value )
     {
-      return rank == 0 ? 1 : std::extent<T>::value * sizeofArray<typename std::remove_extent<T>::type>( rank - 1 );
+      return rank == 0 ? 1 : std::extent<T>::value * sizeof_array<typename std::remove_extent<T>::type>( rank - 1 );
     }
+    
+    // ######################################################################
+    namespace detail
+    {
+      template <class T, typename Enable = void> 
+        struct is_empty_class_impl 
+        { static constexpr bool value = false; };
+
+      template <class T>
+        struct is_empty_class_impl<T, typename std::enable_if<std::is_class<T>::value>::type>
+        {
+          struct S : T
+          { uint8_t t; };
+
+          static constexpr bool value = sizeof(S) == sizeof(uint8_t);
+        };
+    }
+
+    template<class T>
+      using is_empty_class = std::integral_constant<bool, detail::is_empty_class_impl<T>::value>;
 
     // ######################################################################
     //! A macro to use to restrict which types of archives your serialize function will work for.
