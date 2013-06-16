@@ -12,6 +12,7 @@
 #include <cereal/binary_archive/stack.hpp>
 #include <cereal/binary_archive/unordered_map.hpp>
 #include <cereal/binary_archive/unordered_set.hpp>
+#include <cereal/binary_archive/utility.hpp>
 #include <limits>
 #include <random>
 
@@ -38,7 +39,7 @@ struct StructBase
   bool operator!=(StructBase const & other) const
   { return x != other.x || y != other.y; }
   bool operator<(StructBase const & other) const
-  { 
+  {
     if (x < other.x) return true;
     else if(other.x < x) return false;
     else return (y < other.y);
@@ -113,7 +114,7 @@ void load(Archive & ar, StructExternalSplit & s)
 template<class T>
 struct StructHash {
   public:
-    size_t operator()(const T & s) const 
+    size_t operator()(const T & s) const
     {
       size_t h1 = std::hash<int>()(s.x);
       size_t h2 = std::hash<int>()(s.y);
@@ -136,18 +137,18 @@ template<class T>
 typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
 random_value(std::mt19937 & gen)
 {
-  std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
+  std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(char & c : s)
-    c = std::uniform_int_distribution<char>(' ', '~')(gen); 
+    c = std::uniform_int_distribution<char>(' ', '~')(gen);
   return s;
 }
 
 template<class C>
 std::basic_string<C> random_basic_string(std::mt19937 & gen)
 {
-  std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' '); 
+  std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(C & c : s)
-    c = std::uniform_int_distribution<C>(' ', '~')(gen); 
+    c = std::uniform_int_distribution<C>(' ', '~')(gen);
   return s;
 }
 
@@ -1258,10 +1259,10 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
     iar & i_esplunordered_multimap;
 
     BOOST_CHECK_EQUAL(i_podunordered_multimap.size(),  o_podunordered_multimap.size());
-    BOOST_CHECK_EQUAL(i_iserunordered_multimap.size(), o_iserunordered_multimap.size());  
-    BOOST_CHECK_EQUAL(i_isplunordered_multimap.size(), o_isplunordered_multimap.size());  
-    BOOST_CHECK_EQUAL(i_eserunordered_multimap.size(), o_eserunordered_multimap.size());  
-    BOOST_CHECK_EQUAL(i_esplunordered_multimap.size(), o_esplunordered_multimap.size());  
+    BOOST_CHECK_EQUAL(i_iserunordered_multimap.size(), o_iserunordered_multimap.size());
+    BOOST_CHECK_EQUAL(i_isplunordered_multimap.size(), o_isplunordered_multimap.size());
+    BOOST_CHECK_EQUAL(i_eserunordered_multimap.size(), o_eserunordered_multimap.size());
+    BOOST_CHECK_EQUAL(i_esplunordered_multimap.size(), o_esplunordered_multimap.size());
 
 
     for(auto const & p : i_podunordered_multimap)
@@ -1546,6 +1547,63 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(),   i_isplvector.end(),   o_isplvector.begin(), o_isplvector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(),   i_eservector.end(),   o_eservector.begin(), o_eservector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_esplvector.begin(),   i_esplvector.end(),   o_esplvector.begin(), o_esplvector.end());
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_pair )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rng = [&](){ return random_value<int>(gen); };
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::pair<int, int> o_podpair = {rng(), rng()};
+    std::pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = {{rng(), rng()}, {rng(), rng()}};
+    std::pair<StructInternalSplit, StructInternalSplit> o_isplpair = {{rng(), rng()}, {rng(), rng()}};
+    std::pair<StructExternalSerialize, StructExternalSerialize> o_eserpair = {{rng(), rng()}, {rng(), rng()}};
+    std::pair<StructExternalSplit, StructExternalSplit> o_esplpair = {{rng(), rng()}, {rng(), rng()}};
+
+    oar & o_podpair;
+    oar & o_iserpair;
+    oar & o_isplpair;
+    oar & o_eserpair;
+    oar & o_esplpair;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::pair<int, int> i_podpair;
+    std::pair<StructInternalSerialize, StructInternalSerialize> i_iserpair;
+    std::pair<StructInternalSplit, StructInternalSplit> i_isplpair;
+    std::pair<StructExternalSerialize, StructExternalSerialize> i_eserpair;
+    std::pair<StructExternalSplit, StructExternalSplit> i_esplpair;
+
+    iar & i_podpair;
+    iar & i_iserpair;
+    iar & i_isplpair;
+    iar & i_eserpair;
+    iar & i_esplpair;
+
+    BOOST_CHECK_EQUAL( i_podpair.first, o_podpair.first );
+    BOOST_CHECK_EQUAL( i_podpair.second, o_podpair.second );
+
+    BOOST_CHECK_EQUAL( i_iserpair.first, o_iserpair.first );
+    BOOST_CHECK_EQUAL( i_iserpair.second, o_iserpair.second );
+
+    BOOST_CHECK_EQUAL( i_isplpair.first, o_isplpair.first );
+    BOOST_CHECK_EQUAL( i_isplpair.second, o_isplpair.second );
+
+    BOOST_CHECK_EQUAL( i_eserpair.first, o_eserpair.first );
+    BOOST_CHECK_EQUAL( i_eserpair.second, o_eserpair.second );
+
+    BOOST_CHECK_EQUAL( i_esplpair.first, o_esplpair.first );
+    BOOST_CHECK_EQUAL( i_esplpair.second, o_esplpair.second );
   }
 }
 
