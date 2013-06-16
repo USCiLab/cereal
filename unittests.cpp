@@ -14,6 +14,7 @@
 #include <cereal/binary_archive/unordered_set.hpp>
 #include <cereal/binary_archive/utility.hpp>
 #include <cereal/binary_archive/tuple.hpp>
+#include <cereal/binary_archive/bitset.hpp>
 #include <limits>
 #include <random>
 

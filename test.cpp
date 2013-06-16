@@ -5,11 +5,13 @@
 #include <cereal/binary_archive/utility.hpp>
 #include <cereal/json_archive/json_archive.hpp>
 #include <cereal/binary_archive/memory.hpp>
+#include <cereal/binary_archive/complex.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
 #include <cassert>
+#include <complex>
 
 // ###################################
 struct Test1
@@ -195,6 +197,7 @@ int main()
     archive & a2;
     EmptyStruct empty;
     archive & empty;
+    archive & std::complex<float>();
   }
 
   {
