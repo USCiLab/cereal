@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary
-  template <class T, class A>
+  template <class T, class A> inline
   typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
@@ -19,7 +19,7 @@ namespace cereal
   }
 
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary
-  template <class T, class A>
+  template <class T, class A> inline
   typename std::enable_if<std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
@@ -34,7 +34,7 @@ namespace cereal
   }
 
   //! Serialization for non-arithmetic (and bool) vector types to binary
-  template <class T, class A>
+  template <class T, class A> inline
   typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
@@ -44,7 +44,7 @@ namespace cereal
   }
 
   //! Serialization for non-arithmetic (and bool) vector types from binary
-  template <class T, class A>
+  template <class T, class A> inline
   typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
   load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {

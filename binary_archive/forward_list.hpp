@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::forward_list all other types to binary
-  template <class T, class A>
+  template <class T, class A> inline
   void save( BinaryOutputArchive & ar, std::forward_list<T, A> const & forward_list )
   {
     // save position for size of list
@@ -28,7 +28,7 @@ namespace cereal
   }
 
   //! Saving for std::forward_list all other types to binary (non-const version)
-  template <class T, class A>
+  template <class T, class A> inline
   void save( BinaryOutputArchive & ar, std::forward_list<T, A> & forward_list )
   {
     // save position for size of list

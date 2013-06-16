@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::unordered_map to binary
-  template <class K, class T, class H, class KE, class A>
+  template <class K, class T, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_map<K, T, H, KE, A> const & unordered_map )
   {
     ar & unordered_map.size();
@@ -20,7 +20,7 @@ namespace cereal
   }
 
   //! Loading for std::unordered_map to binary
-  template <class K, class T, class H, class KE, class A>
+  template <class K, class T, class H, class KE, class A> inline
   void load( BinaryInputArchive & ar, std::unordered_map<K, T, H, KE, A> & unordered_map )
   {
     size_t size;
@@ -40,7 +40,7 @@ namespace cereal
   }
 
   //! Saving for std::unordered_multimap to binary
-  template <class K, class T, class H, class KE, class A>
+  template <class K, class T, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_multimap<K, T, H, KE, A> const & unordered_multimap )
   {
     ar & unordered_multimap.size();
@@ -53,7 +53,7 @@ namespace cereal
   }
 
   //! Loading for std::unordered_multimap to binary
-  template <class K, class T, class H, class KE, class A>
+  template <class K, class T, class H, class KE, class A> inline
   void load( BinaryInputArchive & ar, std::unordered_multimap<K, T, H, KE, A> & unordered_multimap )
   {
     size_t size;

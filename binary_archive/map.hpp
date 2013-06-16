@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::map to binary
-  template <class K, class T, class C, class A>
+  template <class K, class T, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::map<K, T, C, A> const & map )
   {
     ar & map.size();
@@ -20,7 +20,7 @@ namespace cereal
   }
 
   //! Loading for std::map to binary
-  template <class K, class T, class C, class A>
+  template <class K, class T, class C, class A> inline
   void load( BinaryInputArchive & ar, std::map<K, T, C, A> & map )
   {
     size_t size;
@@ -38,7 +38,7 @@ namespace cereal
   }
 
   //! Saving for std::multimap to binary
-  template <class K, class T, class C, class A>
+  template <class K, class T, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::multimap<K, T, C, A> const & multimap )
   {
     ar & multimap.size();
@@ -51,7 +51,7 @@ namespace cereal
   }
 
   //! Loading for std::multimap to binary
-  template <class K, class T, class C, class A>
+  template <class K, class T, class C, class A> inline
   void load( BinaryInputArchive & ar, std::multimap<K, T, C, A> & multimap )
   {
     size_t size;

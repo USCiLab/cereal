@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::unordered_set to binary
-  template <class K, class H, class KE, class A>
+  template <class K, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_set<K, H, KE, A> const & unordered_set )
   {
     ar & unordered_set.size();
@@ -17,7 +17,7 @@ namespace cereal
   }
 
   //! Loading for std::unordered_set to binary
-  template <class K, class H, class KE, class A>
+  template <class K, class H, class KE, class A> inline
   void load( BinaryInputArchive & ar, std::unordered_set<K, H, KE, A> & unordered_set )
   {
     size_t size;
@@ -35,7 +35,7 @@ namespace cereal
   }
 
   //! Saving for std::unordered_multiset to binary
-  template <class K, class H, class KE, class A>
+  template <class K, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_multiset<K, H, KE, A> const & unordered_multiset )
   {
     ar & unordered_multiset.size();
@@ -45,7 +45,7 @@ namespace cereal
   }
 
   //! Loading for std::unordered_multiset to binary
-  template <class K, class H, class KE, class A>
+  template <class K, class H, class KE, class A> inline
   void load( BinaryInputArchive & ar, std::unordered_multiset<K, H, KE, A> & unordered_multiset )
   {
     size_t size;

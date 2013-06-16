@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving for std::array primitive types to binary
-  template <class T, size_t N>
+  template <class T, size_t N> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
@@ -15,7 +15,7 @@ namespace cereal
   }
 
   //! Loading for std::array primitive types to binary
-  template <class T, size_t N>
+  template <class T, size_t N> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   load( BinaryInputArchive & ar, std::array<T, N> & array )
   {
@@ -23,7 +23,7 @@ namespace cereal
   }
 
   //! Saving for std::array all other types to binary
-  template <class T, size_t N>
+  template <class T, size_t N> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
@@ -32,7 +32,7 @@ namespace cereal
   }
 
   //! Loading for std::array all other types to binary
-  template <class T, size_t N>
+  template <class T, size_t N> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   load( BinaryInputArchive & ar, std::array<T, N> & array )
   {

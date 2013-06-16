@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Saving std::shared_ptr to binary
-  template <class T>
+  template <class T> inline
   void save( BinaryOutputArchive & ar, std::shared_ptr<T> const & ptr )
   {
     uint32_t id = ar.registerSharedPointer( ptr.get() );
@@ -20,7 +20,7 @@ namespace cereal
   }
 
   //! Loading std::shared_ptr to binary
-  template <class T>
+  template <class T> inline
   void load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
@@ -40,7 +40,7 @@ namespace cereal
   }
 
   //! Saving std::weak_ptr to binary
-  template <class T>
+  template <class T> inline
   void save( BinaryOutputArchive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
@@ -48,7 +48,7 @@ namespace cereal
   }
 
   //! Loading std::weak_ptr from binary
-  template <class T>
+  template <class T> inline
   void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
@@ -57,14 +57,14 @@ namespace cereal
   }
 
   //! Saving std::unique_ptr to binary
-  template <class T, class D>
+  template <class T, class D> inline
   void save( BinaryOutputArchive & ar, std::unique_ptr<T, D> const & ptr )
   {
     ar & *ptr;
   }
 
   //! Loading std::unique_ptr from binary
-  template <class T, class D>
+  template <class T, class D> inline
   void load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset(new T);

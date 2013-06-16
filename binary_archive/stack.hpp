@@ -9,7 +9,7 @@ namespace cereal
   namespace stack_detail
   {
     //! Allows access to the protected container in stack
-    template <class T, class C>
+    template <class T, class C> inline
     C const & container( std::stack<T, C> const & stack )
     {
       struct H : public std::stack<T, C>
@@ -25,14 +25,14 @@ namespace cereal
   }
 
   //! Saving for std::stack to binary
-  template <class T, class C>
+  template <class T, class C> inline
   void save( BinaryOutputArchive & ar, std::stack<T, C> const & stack )
   {
     ar & stack_detail::container( stack );
   }
 
   //! Loading for std::stack to binary
-  template <class T, class C>
+  template <class T, class C> inline
   void load( BinaryInputArchive & ar, std::stack<T, C> & stack )
   {
     C container;

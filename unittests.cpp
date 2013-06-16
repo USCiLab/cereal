@@ -15,6 +15,7 @@
 #include <cereal/binary_archive/utility.hpp>
 #include <cereal/binary_archive/tuple.hpp>
 #include <cereal/binary_archive/bitset.hpp>
+#include <cereal/binary_archive/complex.hpp>
 #include <limits>
 #include <random>
 
@@ -151,6 +152,15 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen)
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(C & c : s)
     c = std::uniform_int_distribution<C>(' ', '~')(gen);
+  return s;
+}
+
+template <size_t N>
+std::string random_binary_string(std::mt19937 & gen)
+{
+  std::string s(N, ' ');
+  for(auto & c : s )
+    c = std::uniform_int_distribution<char>('0', '1')(gen);
   return s;
 }
 
@@ -1668,3 +1678,84 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
     BOOST_CHECK_EQUAL( i_espltuple == o_espltuple, true );
   }
 }
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_complex )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rngF = [&](){ return random_value<float>(gen); };
+  auto rngD = [&](){ return random_value<double>(gen); };
+  auto rngLD = [&](){ return random_value<long double>(gen); };
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::complex<float> o_float( rngF(), rngF() );
+    std::complex<double> o_double( rngD(), rngD() );
+    std::complex<long double> o_ldouble( rngLD(), rngLD() );
+
+    oar & o_float;
+    oar & o_double;
+    oar & o_ldouble;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::complex<float> i_float;
+    std::complex<double> i_double;
+    std::complex<long double> i_ldouble;
+
+    iar & i_float;
+    iar & i_double;
+    iar & i_ldouble;
+
+    BOOST_CHECK_EQUAL( o_float, i_float );
+    BOOST_CHECK_EQUAL( o_double, i_double );
+    BOOST_CHECK_EQUAL( o_ldouble, i_ldouble );
+  }
+}
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_bitset )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rng32  = [&](){ return random_binary_string<32>( gen ); };
+  auto rng65  = [&](){ return random_binary_string<65>( gen ); };
+  auto rng256 = [&](){ return random_binary_string<256>( gen ); };
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    std::bitset<32> o_bit32( rng32() );
+    std::bitset<65> o_bit65( rng65() );
+    std::bitset<256> o_bit256( rng256() );
+
+    oar & o_bit32;
+    oar & o_bit65;
+    oar & o_bit256;
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    std::bitset<32>  i_bit32;
+    std::bitset<65>  i_bit65;
+    std::bitset<256> i_bit256;
+
+    iar & i_bit32;
+    iar & i_bit65;
+    iar & i_bit256;
+
+    BOOST_CHECK_EQUAL( o_bit32, i_bit32 );
+    BOOST_CHECK_EQUAL( o_bit65, i_bit65 );
+    BOOST_CHECK_EQUAL( o_bit256, i_bit256 );
+  }
+}
+

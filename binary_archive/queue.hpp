@@ -9,7 +9,7 @@ namespace cereal
   namespace queue_detail
   {
     //! Allows access to the protected container in queue
-    template <class T, class C>
+    template <class T, class C> inline
     C const & container( std::queue<T, C> const & queue )
     {
       struct H : public std::queue<T, C>
@@ -24,7 +24,7 @@ namespace cereal
     }
 
     //! Allows access to the protected container in priority queue
-    template <class T, class C, class Comp>
+    template <class T, class C, class Comp> inline
     C const & container( std::priority_queue<T, C, Comp> const & priority_queue )
     {
       struct H : public std::priority_queue<T, C, Comp>
@@ -37,9 +37,9 @@ namespace cereal
 
       return H::get( priority_queue );
     }
-    
+
     //! Allows access to the protected comparator in priority queue
-    template <class T, class C, class Comp>
+    template <class T, class C, class Comp> inline
     Comp const & comparator( std::priority_queue<T, C, Comp> const & priority_queue )
     {
       struct H : public std::priority_queue<T, C, Comp>
@@ -55,14 +55,14 @@ namespace cereal
   }
 
   //! Saving for std::queue to binary
-  template <class T, class C>
+  template <class T, class C> inline
   void save( BinaryOutputArchive & ar, std::queue<T, C> const & queue )
   {
     ar & queue_detail::container( queue );
   }
 
   //! Loading for std::queue to binary
-  template <class T, class C>
+  template <class T, class C> inline
   void load( BinaryInputArchive & ar, std::queue<T, C> & queue )
   {
     C container;
@@ -71,7 +71,7 @@ namespace cereal
   }
 
   //! Saving for std::priority_queue to binary
-  template <class T, class C, class Comp>
+  template <class T, class C, class Comp> inline
   void save( BinaryOutputArchive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
   {
     ar & queue_detail::comparator( priority_queue );
@@ -79,12 +79,12 @@ namespace cereal
   }
 
   //! Loading for std::priority_queue to binary
-  template <class T, class C, class Comp>
+  template <class T, class C, class Comp> inline
   void load( BinaryInputArchive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
     Comp comparator;
     ar & comparator;
-    
+
     C container;
     ar & container;
 

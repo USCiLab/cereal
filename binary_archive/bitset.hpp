@@ -11,11 +11,17 @@ namespace cereal
     enum class type : uint8_t
     {
       ulong,
-      uulong,
+      ullong,
       string
     };
 
-  };
+    template <class Archive> inline
+    CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+    serialize( Archive & ar, type & t )
+    {
+      ar & reinterpret_cast<uint8_t &>( t );
+    }
+  }
 
   //! Serializing (save) for std::bitset to binary
   template <size_t N> inline
@@ -31,8 +37,8 @@ namespace cereal
     {
       try
       {
-        auto const b = bits.to_uulong();
-        ar & bitset_detail::type::uulong;
+        auto const b = bits.to_ullong();
+        ar & bitset_detail::type::ullong;
         ar & b;
       }
       catch( std::overflow_error const & e )
@@ -59,7 +65,7 @@ namespace cereal
         bits = std::bitset<N>( b );
         break;
       }
-      case bitset_detail::type::uulong:
+      case bitset_detail::type::ullong:
       {
         unsigned long long b;
         ar & b;

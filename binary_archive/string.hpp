@@ -7,7 +7,7 @@
 namespace cereal
 {
   //! Serialization for basic_string types to binary
-  template<class CharT, class Traits, class Alloc>
+  template<class CharT, class Traits, class Alloc> inline
   void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     // Save number of chars + the data
@@ -16,7 +16,7 @@ namespace cereal
   }
 
   //! Serialization for basic_string types from binary
-  template<class CharT, class Traits, class Alloc>
+  template<class CharT, class Traits, class Alloc> inline
   void load(BinaryInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     size_t size;
