@@ -29,6 +29,7 @@
 
 #include <cereal/cereal.hpp>
 #include <stack>
+#include <sstream>
 
 namespace cereal
 {
@@ -47,7 +48,7 @@ namespace cereal
         auto const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
 
         if(writtenSize != size)
-          throw 1; // TODO: something terrible
+          throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
       }
 
       //! Pushes a placeholder for data onto the archive and saves its position
@@ -102,7 +103,7 @@ namespace cereal
         auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
 
         if(readSize != size)
-          throw 1; // TODO: something terrible
+          throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
       }
 
     private:

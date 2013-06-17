@@ -27,7 +27,6 @@
 #ifndef CEREAL_CEREAL_HPP_
 #define CEREAL_CEREAL_HPP_
 
-#include <iostream>
 #include <type_traits>
 #include <unordered_map>
 #include <cstddef>
@@ -37,6 +36,12 @@
 namespace cereal
 {
   static const int32_t msb_32bit = 0x80000000;
+
+  //! An exception class thrown when things go wrong at runtime
+  struct Exception : public std::runtime_error 
+  { 
+    using std::runtime_error::runtime_error;
+  };
 
   //! For holding name value pairs
   template <class T>
@@ -255,8 +260,7 @@ namespace cereal
         auto ptr = itsSharedPointerMap.find( id );
         if(ptr == itsSharedPointerMap.end())
         {
-          // TODO: Throw a Cereal exception;
-          throw std::runtime_error("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
+          throw Exception("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
         }
         return ptr->second;
       }

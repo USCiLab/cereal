@@ -37,6 +37,7 @@
 #include <fstream>
 #include <cassert>
 #include <complex>
+#include <iostream>
 
 // ###################################
 struct Test1
@@ -141,7 +142,7 @@ struct EmptyStruct
   template<class Archive>
   void serialize(Archive & ar)
   {
-    std::cout << "Side effects up the wazoo" << std::endl;
+    std::cout << "Side effects!" << std::endl;
   };
 };
 
@@ -172,12 +173,6 @@ int main()
   }
 
   assert(e_in == e_out);
-
-  //cereal::JSONOutputArchive json(std::cout);
-
-  //std::string hello = "Hello, World!";
-  //json & CEREAL_NVP(hello);
-  //json & CEREAL_NVP(e_out); <<< Need to figure out how to recurse!
 
   {
     std::ofstream os("ptr.txt");

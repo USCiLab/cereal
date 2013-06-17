@@ -106,8 +106,7 @@ namespace cereal
         break;
       }
       default:
-        throw 1;
-        // TODO: emit some kind of error
+        throw Exception("Invalid bitset data representation");
     }
   }
 } // namespace cereal
