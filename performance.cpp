@@ -307,7 +307,7 @@ int main()
     test<binary>( name.str(), data );
   };
 
-  //vectorCharTest(1024*1024*1024, randomize); // 1 GB
+  vectorCharTest(1024*1024*1024, randomize); // 1 GB
 
   //########################################
   auto vectorPoDStructTest = [&](size_t s)
@@ -323,7 +323,7 @@ int main()
   vectorPoDStructTest(64);
   vectorPoDStructTest(1024);
   vectorPoDStructTest(1024*1024);
-  //vectorPoDStructTest(1024*1024*64);
+  vectorPoDStructTest(1024*1024*64);
 
   //########################################
   auto vectorPoDChildTest = [&](size_t s)
