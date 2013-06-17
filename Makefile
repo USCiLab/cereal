@@ -1,15 +1,17 @@
-all: test.cpp
-	g++ -std=c++0x test.cpp -o test -ljsoncpp -I./..
+CPPFLAGS=-std=c++11 -I./include
+CC=g++
+
+all: unittests sandbox performance
+
+sandbox: sandbox.cpp
+	${CC} sandbox.cpp -o sandbox ${CPPFLAGS}
 
 unittests: unittests.cpp
-	clang++ -std=c++0x unittests.cpp -o unittests -lboost_unit_test_framework -I./..
+	${CC} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
 	./unittests --show_progress
 
 performance: performance.cpp
-	clang++ -std=c++11 performance.cpp -o performance -lboost_serialization -I./.. -O3
-
-boost_serialize: boost_serialize.cpp
-	g++ -std=c++11 boost_serialize.cpp -o boost_serialize -lboost_serialization -I./..
+	${CC} performance.cpp -o performance -lboost_serialization ${CPPFLAGS} -O3
 
 clean:
-	rm test; rm unittests;
+	rm sandbox; rm unittests; rm performance;
