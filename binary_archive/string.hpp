@@ -38,7 +38,7 @@ namespace cereal
   {
     // Save number of chars + the data
     ar & str.size();
-    ar.save_binary(str.data(), str.size() * sizeof(CharT));
+    ar.saveBinary(str.data(), str.size() * sizeof(CharT));
   }
 
   //! Serialization for basic_string types from binary
@@ -48,7 +48,7 @@ namespace cereal
     size_t size;
     ar & size;
     str.resize(size);
-    ar.load_binary(const_cast<CharT*>(str.data()), size * sizeof(CharT));
+    ar.loadBinary(const_cast<CharT*>(str.data()), size * sizeof(CharT));
   }
 } // namespace cereal
 

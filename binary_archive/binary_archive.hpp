@@ -42,7 +42,7 @@ namespace cereal
     { }
 
       //! Writes size bytes of data to the output stream
-      void save_binary( const void * data, size_t size )
+      void saveBinary( const void * data, size_t size )
       {
         auto const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
 
@@ -97,7 +97,7 @@ namespace cereal
     { }
 
       //! Reads size bytes of data from the input stream
-      void load_binary( void * const data, size_t size )
+      void loadBinary( void * const data, size_t size )
       {
         auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
 
@@ -114,7 +114,7 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & t)
   {
-    ar.save_binary(std::addressof(t), sizeof(t));
+    ar.saveBinary(std::addressof(t), sizeof(t));
     //std::cout << "Saving POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
   }
 
@@ -123,7 +123,7 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   load(BinaryInputArchive & ar, T & t)
   {
-    ar.load_binary(std::addressof(t), sizeof(t));
+    ar.loadBinary(std::addressof(t), sizeof(t));
     //std::cout << "Loading POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
   }
 
@@ -147,14 +147,14 @@ namespace cereal
   typename std::enable_if<std::is_array<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & array)
   {
-    ar.save_binary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
+    ar.saveBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
   template <class T>
   typename std::enable_if<std::is_array<T>::value, void>::type
   load(BinaryInputArchive & ar, T & array)
   {
-    ar.load_binary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
+    ar.loadBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
   template <class Archive, class T>

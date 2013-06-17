@@ -37,7 +37,7 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
-    ar.save_binary( array.data(), N * sizeof(T) );
+    ar.saveBinary( array.data(), N * sizeof(T) );
   }
 
   //! Loading for std::array primitive types to binary
@@ -45,7 +45,7 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   load( BinaryInputArchive & ar, std::array<T, N> & array )
   {
-    ar.load_binary( array.data(), N * sizeof(T) );
+    ar.loadBinary( array.data(), N * sizeof(T) );
   }
 
   //! Saving for std::array all other types to binary
