@@ -1,0 +1,243 @@
+
+#include <sstream>
+#include <iostream>
+#include <chrono>
+#include <random>
+
+#include <boost/format.hpp>
+
+#include <boost/serialization/serialization.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
+
+#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/binary_archive/vector.hpp>
+
+//! Runs serialization to save data to an ostringstream
+/*! Used to time how long it takes to save data to an ostringstream.
+    Everything that happens within the save function will be timed, including
+    any set-up necessary to perform the serialization.
+
+    @param data The data to save
+    @param saveFunction A function taking in an ostringstream and the data and returning void
+    @return The ostringstream and the time it took to save the data */
+template <class T>
+std::chrono::milliseconds
+saveData( T const & data, std::function<void(std::ostringstream &, T const&)> saveFunction, std::ostringstream & os )
+{
+  auto start = std::chrono::high_resolution_clock::now();
+  saveFunction( os, data );
+  return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - start );
+}
+
+//! Runs serialization to load data to from an istringstream
+/*! Used to time how long it takes to load data from an istringstream.
+    Everything that happens within the load function will be timed, including
+    any set-up necessary to perform the serialization.
+
+    @param dataStream The saved data stream
+    @param loadFunction A function taking in an istringstream and a data reference and returning void
+    @return The loaded data and the time it took to save the data */
+template <class T>
+std::pair<T, std::chrono::milliseconds>
+loadData( std::ostringstream const & dataStream, std::function<void(std::istringstream &, T &)> loadFunction )
+{
+  T data;
+  std::istringstream os( dataStream.str() );
+
+  auto start = std::chrono::high_resolution_clock::now();
+  loadFunction( os, data );
+
+  return {data, std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - start )};
+}
+
+struct cerealBinary
+{
+  //! Saves data to a cereal binary archive
+  template <class T>
+  static void save( std::ostringstream & os, T const & data )
+  {
+    cereal::BinaryOutputArchive oar(os);
+    oar & data;
+  }
+
+  //! Loads data to a cereal binary archive
+  template <class T>
+  static void load( std::istringstream & is, T & data )
+  {
+    cereal::BinaryInputArchive iar(is);
+    iar & data;
+  }
+};
+
+struct boostBinary
+{
+  //! Saves data to a boost binary archive
+  template <class T>
+  static void save( std::ostringstream & os, T const & data )
+  {
+    boost::archive::binary_oarchive oar(os);
+    oar & data;
+  }
+
+  //! Loads data to a boost binary archive
+  template <class T>
+  static void load( std::istringstream & is, T & data )
+  {
+    boost::archive::binary_iarchive iar(is);
+    iar & data;
+  }
+};
+
+struct binary
+{
+  typedef boostBinary  boost;
+  typedef cerealBinary cereal;
+};
+
+//! Times how long it takes to serialize (load and store) some data
+/*! Times how long and the size of the serialization object used to serialize
+    some data.  Result is output to standard out.
+
+    @tparam SerializationT The serialization struct that has all save and load functions
+    @tparam DataT The type of data to test
+    @param name The name for this test
+    @param data The data to serialize
+    @param numAverages The number of times to average
+    @param validateData Whether data should be validated (input == output) */
+template <class SerializationT, class DataT>
+void test( std::string const & name,
+            DataT const & data,
+            size_t numAverages = 100,
+            bool validateData = false )
+{
+  std::cout << "-----------------------------------" << std::endl;
+  std::cout << "Running test: " << name << std::endl;
+
+  // setup - not measured
+  std::chrono::milliseconds totalBoostSave{0};
+  std::chrono::milliseconds totalBoostLoad{0};
+
+  std::chrono::milliseconds totalCerealSave{0};
+  std::chrono::milliseconds totalCerealLoad{0};
+
+  size_t boostSize = 0;
+  size_t cerealSize = 0;
+
+  for(size_t i = 0; i < numAverages; ++i)
+  {
+    // Boost
+    {
+      std::ostringstream os;
+      auto saveResult = saveData<DataT>( data, {SerializationT::boost::template save<DataT>}, os );
+      totalBoostSave += saveResult;
+      if(!boostSize)
+        boostSize = os.tellp();
+
+      auto loadResult = loadData<DataT>( os, {SerializationT::boost::template load<DataT>} );
+      totalBoostLoad += loadResult.second;
+
+      if( validateData )
+        ; // TODO
+    }
+
+    // Cereal
+    {
+      std::ostringstream os;
+      auto saveResult = saveData<DataT>( data, {SerializationT::cereal::template save<DataT>}, os );
+      totalCerealSave += saveResult;
+      if(!cerealSize)
+        cerealSize = os.tellp();
+
+      auto loadResult = loadData<DataT>( os, {SerializationT::cereal::template load<DataT>} );
+      totalCerealLoad += loadResult.second;
+
+      if( validateData )
+        ; // TODO
+    }
+  }
+
+  // Averages
+  double averageBoostSave = totalBoostSave.count() / static_cast<double>( numAverages );
+  double averageBoostLoad = totalBoostLoad.count() / static_cast<double>( numAverages );
+
+  double averageCerealSave = totalCerealSave.count() / static_cast<double>( numAverages );
+  double averageCerealLoad = totalCerealLoad.count() / static_cast<double>( numAverages );
+
+  // Percentages relative to boost
+  double cerealSaveP = averageCerealSave / averageBoostSave;
+  double cerealLoadP = averageCerealLoad / averageBoostLoad;
+  double cerealSizeP = cerealSize / static_cast<double>( boostSize );
+
+  std::cout << "  Boost results:" << std::endl;
+  std::cout << boost::format("\tsave | time: %6.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
+    % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( totalBoostSave.count() );
+  std::cout << std::endl;
+  std::cout << boost::format("\tload | time: %6.4fms (%1.2f) total: %6.1fms")
+    % averageBoostLoad % 1.0 % static_cast<double>( totalBoostLoad.count() );
+  std::cout << std::endl;
+
+  std::cout << "  Cereal results:" << std::endl;
+  std::cout << boost::format("\tsave | time: %6.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
+    % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( totalCerealSave.count() );
+  std::cout << std::endl;
+  std::cout << boost::format("\tload | time: %6.4fms (%1.2f) total: %6.1fms")
+    % averageCerealLoad % 1.0 % static_cast<double>( totalCerealLoad.count() );
+  std::cout << std::endl;
+}
+
+template<class T>
+typename std::enable_if<std::is_floating_point<T>::value, T>::type
+random_value(std::mt19937 & gen)
+{ return std::uniform_real_distribution<T>(-10000.0, 10000.0)(gen); }
+
+template<class T>
+typename std::enable_if<std::is_integral<T>::value, T>::type
+random_value(std::mt19937 & gen)
+{ return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
+
+template<class T>
+typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
+random_value(std::mt19937 & gen)
+{
+  std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
+  for(char & c : s)
+    c = std::uniform_int_distribution<char>(' ', '~')(gen);
+  return s;
+}
+
+template<class C>
+std::basic_string<C> random_basic_string(std::mt19937 & gen)
+{
+  std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
+  for(C & c : s)
+    c = std::uniform_int_distribution<C>(' ', '~')(gen);
+  return s;
+}
+
+template <size_t N>
+std::string random_binary_string(std::mt19937 & gen)
+{
+  std::string s(N, ' ');
+  for(auto & c : s )
+    c = std::uniform_int_distribution<char>('0', '1')(gen);
+  return s;
+}
+
+int main()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  auto rngD = [&](){ return random_value<double>(gen); };
+
+  {
+    //std::vector<double> data(1024*1024);
+    std::vector<double> data(7);
+    for( auto & d : data ) d = rngD();
+    test<binary>( "1M double vector",
+                  data );
+  }
+
+  return 0;
+}
