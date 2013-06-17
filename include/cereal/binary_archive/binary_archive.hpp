@@ -116,7 +116,6 @@ namespace cereal
   save(BinaryOutputArchive & ar, T const & t)
   {
     ar.saveBinary(std::addressof(t), sizeof(t));
-    //std::cout << "Saving POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
   }
 
   //! Loading for POD types from binary
@@ -125,14 +124,12 @@ namespace cereal
   load(BinaryInputArchive & ar, T & t)
   {
     ar.loadBinary(std::addressof(t), sizeof(t));
-    //std::cout << "Loading POD size: " << sizeof(T) << " [" << t << "]" << std::endl;
   }
 
   //! Saving for NVP types to binary
   template<class T>
   void save(BinaryOutputArchive & ar, NameValuePair<T> const & t)
   {
-    //std::cout << "Saving NVP: " << t.name << std::endl;
     ar & t.value;
   }
 
@@ -140,7 +137,6 @@ namespace cereal
   template<class T>
   void load(BinaryInputArchive & ar, NameValuePair<T> t)
   {
-    //std::cout << "Loading NVP... " << std::endl;
     ar & t.value;
   }
 
