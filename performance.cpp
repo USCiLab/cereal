@@ -1,4 +1,3 @@
-
 #include <sstream>
 #include <iostream>
 #include <chrono>
@@ -109,13 +108,12 @@ struct binary
 template <class SerializationT, class DataT>
 void test( std::string const & name,
             DataT const & data,
-            size_t numAverages = 100,
+            size_t numAverages = 10,
             bool validateData = false )
 {
   std::cout << "-----------------------------------" << std::endl;
   std::cout << "Running test: " << name << std::endl;
 
-  // setup - not measured
   std::chrono::milliseconds totalBoostSave{0};
   std::chrono::milliseconds totalBoostLoad{0};
 
@@ -171,18 +169,18 @@ void test( std::string const & name,
   double cerealSizeP = cerealSize / static_cast<double>( boostSize );
 
   std::cout << "  Boost results:" << std::endl;
-  std::cout << boost::format("\tsave | time: %6.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
+  std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
     % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( totalBoostSave.count() );
   std::cout << std::endl;
-  std::cout << boost::format("\tload | time: %6.4fms (%1.2f) total: %6.1fms")
+  std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
     % averageBoostLoad % 1.0 % static_cast<double>( totalBoostLoad.count() );
   std::cout << std::endl;
 
   std::cout << "  Cereal results:" << std::endl;
-  std::cout << boost::format("\tsave | time: %6.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
+  std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
     % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( totalCerealSave.count() );
   std::cout << std::endl;
-  std::cout << boost::format("\tload | time: %6.4fms (%1.2f) total: %6.1fms")
+  std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
     % averageCerealLoad % 1.0 % static_cast<double>( totalCerealLoad.count() );
   std::cout << std::endl;
 }
@@ -225,19 +223,82 @@ std::string random_binary_string(std::mt19937 & gen)
   return s;
 }
 
+struct PoDStruct
+{
+  int32_t a;
+  int64_t b;
+  float c;
+  double d;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar & a & b & c & d;
+  };
+
+  template <class Archive>
+  void serialize( Archive & ar, const unsigned int version )
+  {
+    ar & a & b & c & d;
+  };
+};
+
 int main()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
+  auto rngC = [&](){ return random_value<uint8_t>(gen); };
   auto rngD = [&](){ return random_value<double>(gen); };
 
+  auto vectorDoubleTest = [&](size_t s, bool randomize)
   {
-    //std::vector<double> data(1024*1024);
-    std::vector<double> data(7);
-    for( auto & d : data ) d = rngD();
-    test<binary>( "1M double vector",
-                  data );
-  }
+    std::ostringstream name;
+    name << "Vector(double) size " << s;
+
+    std::vector<double> data(s);
+    if(randomize)
+      for( auto & d : data )
+        d = rngD();
+
+    test<binary>( name.str(), data );
+  };
+
+  auto vectorCharTest = [&](size_t s, bool randomize)
+  {
+    std::ostringstream name;
+    name << "Vector(uint8_t) size " << s;
+
+    std::vector<uint8_t> data(s);
+    if(randomize)
+      for( auto & d : data )
+        d = rngC();
+
+    test<binary>( name.str(), data );
+  };
+
+  const bool randomize = false;
+
+  vectorDoubleTest(1, randomize); // 8B
+  vectorDoubleTest(16, randomize); // 128B
+  vectorDoubleTest(1024, randomize); // 8KB
+  vectorDoubleTest(1024*1024, randomize); // 8MB
+
+  vectorCharTest(1024*1024*1024, randomize); // 1 GB
+
+  auto vectorPoDStructTest = [&](size_t s)
+  {
+    std::ostringstream name;
+    name << "Vector(PoDStruct) size " << s;
+
+    std::vector<PoDStruct> data(s);
+    test<binary>( name.str(), data );
+  };
+
+  vectorPoDStructTest(1);
+  vectorPoDStructTest(64);
+  vectorPoDStructTest(1024);
+  vectorPoDStructTest(1024*1024);
+  vectorPoDStructTest(1024*1024*64);
 
   return 0;
 }
