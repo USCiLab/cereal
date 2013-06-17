@@ -9,6 +9,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/base_object.hpp>
 
 #include <cereal/binary_archive/binary_archive.hpp>
 #include <cereal/binary_archive/vector.hpp>
@@ -181,7 +182,7 @@ void test( std::string const & name,
     % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( totalCerealSave.count() );
   std::cout << std::endl;
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
-    % averageCerealLoad % 1.0 % static_cast<double>( totalCerealLoad.count() );
+    % averageCerealLoad % cerealLoadP % static_cast<double>( totalCerealLoad.count() );
   std::cout << std::endl;
 }
 
@@ -243,13 +244,37 @@ struct PoDStruct
   };
 };
 
+struct PoDChild : PoDStruct
+{
+  PoDChild() : v(1024)
+  { }
+
+  std::vector<float> v;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar & static_cast<PoDStruct>(*this);
+    ar & v;
+  };
+
+  template <class Archive>
+  void serialize( Archive & ar, const unsigned int version )
+  {
+    ar & boost::serialization::base_object<PoDStruct>(*this);
+    ar & v;
+  };
+};
+
 int main()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
   auto rngC = [&](){ return random_value<uint8_t>(gen); };
   auto rngD = [&](){ return random_value<double>(gen); };
+  const bool randomize = false;
 
+  //########################################
   auto vectorDoubleTest = [&](size_t s, bool randomize)
   {
     std::ostringstream name;
@@ -263,6 +288,12 @@ int main()
     test<binary>( name.str(), data );
   };
 
+  vectorDoubleTest(1, randomize); // 8B
+  vectorDoubleTest(16, randomize); // 128B
+  vectorDoubleTest(1024, randomize); // 8KB
+  vectorDoubleTest(1024*1024, randomize); // 8MB
+
+  //########################################
   auto vectorCharTest = [&](size_t s, bool randomize)
   {
     std::ostringstream name;
@@ -276,15 +307,9 @@ int main()
     test<binary>( name.str(), data );
   };
 
-  const bool randomize = false;
+  //vectorCharTest(1024*1024*1024, randomize); // 1 GB
 
-  vectorDoubleTest(1, randomize); // 8B
-  vectorDoubleTest(16, randomize); // 128B
-  vectorDoubleTest(1024, randomize); // 8KB
-  vectorDoubleTest(1024*1024, randomize); // 8MB
-
-  vectorCharTest(1024*1024*1024, randomize); // 1 GB
-
+  //########################################
   auto vectorPoDStructTest = [&](size_t s)
   {
     std::ostringstream name;
@@ -298,7 +323,19 @@ int main()
   vectorPoDStructTest(64);
   vectorPoDStructTest(1024);
   vectorPoDStructTest(1024*1024);
-  vectorPoDStructTest(1024*1024*64);
+  //vectorPoDStructTest(1024*1024*64);
+
+  //########################################
+  auto vectorPoDChildTest = [&](size_t s)
+  {
+    std::ostringstream name;
+    name << "Vector(PoDChild) size " << s;
+
+    std::vector<PoDChild> data(s);
+    test<binary>( name.str(), data );
+  };
+
+  vectorPoDChildTest(1024*64);
 
   return 0;
 }
