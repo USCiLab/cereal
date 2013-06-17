@@ -161,6 +161,6 @@ namespace cereal
     static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
   }
 
-}
+} // namespace cereal
 
 #endif // CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_

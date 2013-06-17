@@ -275,6 +275,6 @@ namespace cereal
       ArchiveType * const self;
       std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap; //!< Maps from addresses to pointer ids
   }; // class InputArchive
-}
+} // namespace cereal
 
 #endif // CEREAL_CEREAL_HPP_

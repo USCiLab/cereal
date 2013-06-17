@@ -173,7 +173,7 @@ namespace cereal
      */
     #define CEREAL_ARCHIVE_RESTRICT_SERIALIZE(INTYPE, OUTTYPE) \
     typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
-  }
-}
+  } // namespace traits
+} // namespace cereal
 
 #endif // CEREAL_DETAILS_TRAITS_HPP_
