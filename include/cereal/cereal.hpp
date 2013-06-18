@@ -80,7 +80,7 @@ namespace cereal
                ArchiveType &>::type
       operator & (T const & t)
       {
-        const_cast<T &>(t).serialize(*self);
+        access::member_serialize(*self, const_cast<T &>(t));
         return *self;
       }
 

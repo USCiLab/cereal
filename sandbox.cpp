@@ -52,21 +52,25 @@ struct Test1
 };
 
 // ###################################
-struct Test2
+class Test2
 {
-  int a;
+  public:
+    int a;
 
-  template<class Archive>
-  void save(Archive & ar) const
-  {
-    ar & CEREAL_NVP(a);
-  }
+  private:
+    friend class cereal::access;
 
-  template<class Archive>
-  void load(Archive & ar)
-  {
-    ar & CEREAL_NVP(a);
-  }
+    template<class Archive>
+      void save(Archive & ar) const
+      {
+        ar & CEREAL_NVP(a);
+      }
+
+    template<class Archive>
+      void load(Archive & ar)
+      {
+        ar & CEREAL_NVP(a);
+      }
 };
 
 // ###################################
@@ -101,6 +105,23 @@ namespace test4
     ar & CEREAL_NVP(t.a);
   }
 }
+
+class Private
+{
+  public:
+    Private() : a('z') {}
+
+  private:
+    char a;
+
+    friend class cereal::access;
+
+    template<class Archive>
+      void serialize(Archive & ar)
+      {
+        ar & a;
+      }
+};
 
 struct Everything
 {
@@ -146,99 +167,121 @@ struct EmptyStruct
   };
 };
 
+struct NonEmptyStruct
+{
+  int x, y, z;
+};
+
 // ######################################################################
 int main()
 {
-  Everything e_out;
-  e_out.x = 99;
-  e_out.y = 100;
-  e_out.t1 = {1};
-  e_out.t2 = {2};
-  e_out.t3 = {3};
-  e_out.t4 = {4};
-  e_out.s = "Hello, World!";
+  //Everything e_out;
+  //e_out.x = 99;
+  //e_out.y = 100;
+  //e_out.t1 = {1};
+  //e_out.t2 = {2};
+  //e_out.t3 = {3};
+  //e_out.t4 = {4};
+  //e_out.s = "Hello, World!";
 
-  {
-    std::ofstream os("out.txt");
-    cereal::BinaryOutputArchive archive(os);
-    archive & CEREAL_NVP(e_out);
-  }
+  //{
+  //  std::ofstream os("out.txt");
+  //  cereal::BinaryOutputArchive archive(os);
+  //  archive & CEREAL_NVP(e_out);
+  //}
 
-  Everything e_in;
+  //Everything e_in;
 
-  {
-    std::ifstream is("out.txt");
-    cereal::BinaryInputArchive archive(is);
-    archive & CEREAL_NVP(e_in);
-  }
+  //{
+  //  std::ifstream is("out.txt");
+  //  cereal::BinaryInputArchive archive(is);
+  //  archive & CEREAL_NVP(e_in);
+  //}
 
-  assert(e_in == e_out);
+  //assert(e_in == e_out);
 
-  {
-    std::ofstream os("ptr.txt");
-    cereal::BinaryOutputArchive archive(os);
-    std::shared_ptr<std::shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
-    std::shared_ptr<int> xptr2 = *xptr1;
-    std::weak_ptr<int> wptr2 = xptr2;
-    std::unique_ptr<Test1> uptr(new Test1);
-    uptr->a = 99;
-    archive & xptr1;
-    archive & xptr2;
-    archive & wptr2;
-    archive & uptr;
-  }
+  //{
+  //  std::ofstream os("ptr.txt");
+  //  cereal::BinaryOutputArchive archive(os);
+  //  std::shared_ptr<std::shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
+  //  std::shared_ptr<int> xptr2 = *xptr1;
+  //  std::weak_ptr<int> wptr2 = xptr2;
+  //  std::unique_ptr<Test1> uptr(new Test1);
+  //  uptr->a = 99;
+  //  archive & xptr1;
+  //  archive & xptr2;
+  //  archive & wptr2;
+  //  archive & uptr;
+  //}
 
-  {
-    std::ifstream is("ptr.txt");
-    cereal::BinaryInputArchive archive(is);
-    std::shared_ptr<std::shared_ptr<int>> xptr1;
-    std::shared_ptr<int> xptr2;
-    std::weak_ptr<int> wptr2;
-    std::unique_ptr<Test1> uptr;
-    archive & xptr1;
-    archive & xptr2;
-    archive & wptr2;
-    archive & uptr;
+  //{
+  //  std::ifstream is("ptr.txt");
+  //  cereal::BinaryInputArchive archive(is);
+  //  std::shared_ptr<std::shared_ptr<int>> xptr1;
+  //  std::shared_ptr<int> xptr2;
+  //  std::weak_ptr<int> wptr2;
+  //  std::unique_ptr<Test1> uptr;
+  //  archive & xptr1;
+  //  archive & xptr2;
+  //  archive & wptr2;
+  //  archive & uptr;
 
-    std::cout << **xptr1 << std::endl;
-    std::cout << *xptr2 << std::endl;
-    std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
-    std::cout << *(wptr2.lock()) << std::endl;
-    std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
-    std::cout << uptr->a << std::endl;
-  }
+  //  std::cout << **xptr1 << std::endl;
+  //  std::cout << *xptr2 << std::endl;
+  //  std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
+  //  std::cout << *(wptr2.lock()) << std::endl;
+  //  std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
+  //  std::cout << uptr->a << std::endl;
+  //}
 
-  {
-    std::ofstream os("arr.txt");
-    cereal::BinaryOutputArchive archive(os);
-    int a1[] = {1, 2, 3};
-    int a2[][2] = {{4, 5}, {6, 7}};
-    archive & a1;
-    archive & a2;
-    EmptyStruct empty;
-    archive & empty;
-    archive & std::complex<float>();
-  }
+  //{
+  //  std::ofstream os("arr.txt");
+  //  cereal::BinaryOutputArchive archive(os);
+  //  int a1[] = {1, 2, 3};
+  //  int a2[][2] = {{4, 5}, {6, 7}};
+  //  archive & a1;
+  //  archive & a2;
+  //  EmptyStruct empty;
+  //  archive & empty;
+  //  archive & std::complex<float>();
+  //}
 
-  {
-    std::ifstream is("arr.txt");
-    cereal::BinaryInputArchive archive(is);
-    int a1[3];
-    int a2[2][2];
-    archive & a1;
-    archive & a2;
+  //{
+  //  std::ifstream is("arr.txt");
+  //  cereal::BinaryInputArchive archive(is);
+  //  int a1[3];
+  //  int a2[2][2];
+  //  archive & a1;
+  //  archive & a2;
 
-    for(auto i : a1)
-      std::cout << i << " ";
-    std::cout << std::endl;
-    for( auto const & i : a2 )
-    {
-      for( auto j : i )
-        std::cout << j << " ";
-      std::cout << std::endl;
-    }
-    std::cout << std::endl;
-  }
+  //  for(auto i : a1)
+  //    std::cout << i << " ";
+  //  std::cout << std::endl;
+  //  for( auto const & i : a2 )
+  //  {
+  //    for( auto j : i )
+  //      std::cout << j << " ";
+  //    std::cout << std::endl;
+  //  }
+  //  std::cout << std::endl;
+  //}
+
+  Private p;
+  NonEmptyStruct nes;
+  int q;
+  cereal::BinaryOutputArchive archive(std::cout);
+  archive & p;
+
+
+  //cereal::access::member_serialize(archive, p);
+  //cereal::access::member_serialize(archive, q);
+  //archive & p;
+  //archive & q;
+  //decltype(cereal::access::member_serialize(archive, q)) sss;
+
+  std::cout << cereal::traits::has_member_serialize<Private, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_output_serializable<Private, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_member_serialize<int, cereal::BinaryOutputArchive>() << std::endl;
 
   return 0;
 }

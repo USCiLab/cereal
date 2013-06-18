@@ -32,6 +32,21 @@
 
 namespace cereal
 {
+  struct access
+  {
+    template<class Archive, class T>
+    static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
+    { t.serialize(ar); }
+
+    template<class Archive, class T>
+    static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
+    { t.save(ar); }
+
+    template<class Archive, class T>
+    static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
+    { t.load(ar); }
+  };
+
   namespace traits
   {
     template<typename> struct Void { typedef void type; };
@@ -44,7 +59,7 @@ namespace cereal
     template<typename T, class A>
       struct has_member_serialize< T, A,
       typename Void<
-        decltype( std::declval<T&>().serialize( std::declval<A&>() ) )
+        decltype( access::member_serialize(std::declval<A&>(), std::declval<T&>() ) )
         >::type
         >: std::true_type {};
 
@@ -63,7 +78,7 @@ namespace cereal
     template<typename T, class A>
       struct has_member_load< T, A,
       typename Void<
-        decltype( std::declval<T&>().load( std::declval<A&>() ) )
+        decltype( access::member_load(std::declval<A&>(), std::declval<T&>() ) )
         >::type
         >: std::true_type {};
 
@@ -82,7 +97,7 @@ namespace cereal
     template<typename T, class A>
       struct has_member_save< T, A,
       typename Void<
-        decltype( std::declval<T const &>().save( std::declval<A&>() ) )
+        decltype( access::member_save(std::declval<A&>(), std::declval<T const &>() ) )
         >::type
         >: std::true_type {};
 
