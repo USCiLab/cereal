@@ -54,7 +54,7 @@ namespace cereal
   template <class T, class C> inline
   void save( BinaryOutputArchive & ar, std::stack<T, C> const & stack )
   {
-    ar & stack_detail::container( stack );
+    ar( stack_detail::container( stack ) );
   }
 
   //! Loading for std::stack to binary
@@ -62,7 +62,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::stack<T, C> & stack )
   {
     C container;
-    ar & container;
+    ar( container );
     stack = std::stack<T, C>( std::move( container ) );
   }
 } // namespace cereal

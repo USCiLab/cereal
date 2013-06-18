@@ -37,11 +37,11 @@ namespace cereal
   void save( BinaryOutputArchive & ar, std::shared_ptr<T> const & ptr )
   {
     uint32_t id = ar.registerSharedPointer( ptr.get() );
-    ar & id;
+    ar( id );
 
     if( id & msb_32bit )
     {
-      ar & *ptr;
+      ar( *ptr );
     }
   }
 
@@ -52,7 +52,7 @@ namespace cereal
   {
     uint32_t id;
 
-    ar & id;
+    ar( id );
 
     if( id & msb_32bit )
     {
@@ -72,12 +72,12 @@ namespace cereal
   {
     uint32_t id;
 
-    ar & id;
+    ar( id );
 
     if( id & msb_32bit )
     {
       ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
-      ar & *ptr;
+      ar( *ptr );
       ar.registerSharedPointer(id, ptr);
     }
     else
@@ -91,7 +91,7 @@ namespace cereal
   void save( BinaryOutputArchive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
-    ar & sptr;
+    ar( sptr );
   }
 
   //! Loading std::weak_ptr from binary
@@ -99,7 +99,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar & sptr;
+    ar( sptr );
     ptr = sptr;
   }
 
@@ -107,7 +107,7 @@ namespace cereal
   template <class T, class D> inline
   void save( BinaryOutputArchive & ar, std::unique_ptr<T, D> const & ptr )
   {
-    ar & *ptr;
+    ar( *ptr );
   }
 
   //! Loading std::unique_ptr from binary, case when user provides load_and_allocate
@@ -124,7 +124,7 @@ namespace cereal
   load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
-    ar & *ptr;
+    ar( *ptr );
   }
 
 } // namespace cereal

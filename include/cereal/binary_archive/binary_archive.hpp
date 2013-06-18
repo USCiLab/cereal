@@ -126,18 +126,12 @@ namespace cereal
     ar.loadBinary(std::addressof(t), sizeof(t));
   }
 
-  //! Saving for NVP types to binary
-  template<class T>
-  void save(BinaryOutputArchive & ar, NameValuePair<T> const & t)
+  //! Serializing NVP types to binary
+  template <class Archive, class T>
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+  serialize( Archive & ar, NameValuePair<T> & t )
   {
-    ar & t.value;
-  }
-
-  //! Loading for NVP types from binary
-  template<class T>
-  void load(BinaryInputArchive & ar, NameValuePair<T> t)
-  {
-    ar & t.value;
+    ar( t.value );
   }
 
   template <class T>

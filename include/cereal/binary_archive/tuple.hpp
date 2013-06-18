@@ -42,7 +42,7 @@ namespace cereal
       template <class Archive, class ... Types> inline
       static void apply( Archive & ar, std::tuple<Types...> & tuple )
       {
-        ar & std::get<Height - 1>( tuple );
+        ar( std::get<Height - 1>( tuple ) );
         serialize<Height - 1>::template apply( ar, tuple );
       }
     };

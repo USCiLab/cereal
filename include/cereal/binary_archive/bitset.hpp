@@ -45,7 +45,7 @@ namespace cereal
     CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
     serialize( Archive & ar, type & t )
     {
-      ar & reinterpret_cast<uint8_t &>( t );
+      ar( reinterpret_cast<uint8_t &>( t ) );
     }
   }
 
@@ -56,21 +56,21 @@ namespace cereal
     try
     {
       auto const b = bits.to_ulong();
-      ar & bitset_detail::type::ulong;
-      ar & b;
+      ar( bitset_detail::type::ulong );
+      ar( b );
     }
     catch( std::overflow_error const & e )
     {
       try
       {
         auto const b = bits.to_ullong();
-        ar & bitset_detail::type::ullong;
-        ar & b;
+        ar( bitset_detail::type::ullong );
+        ar( b );
       }
       catch( std::overflow_error const & e )
       {
-        ar & bitset_detail::type::string;
-        ar & bits.to_string();
+        ar( bitset_detail::type::string );
+        ar( bits.to_string() );
       }
     }
   }
@@ -80,28 +80,28 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::bitset<N> & bits )
   {
     bitset_detail::type t;
-    ar & t;
+    ar( t );
 
     switch( t )
     {
       case bitset_detail::type::ulong:
       {
         unsigned long b;
-        ar & b;
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::ullong:
       {
         unsigned long long b;
-        ar & b;
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::string:
       {
         std::string b;
-        ar & b;
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }

@@ -43,13 +43,13 @@ namespace cereal
     size_t size = 0;
     for( const auto & i : forward_list )
     {
-      ar & i;
+      ar( i );
       ++size;
     }
 
     // write the size
     ar.popPosition();
-    ar & size;
+    ar( size );
     ar.resetPosition();
   }
 
@@ -64,13 +64,13 @@ namespace cereal
     size_t size = 0;
     for( auto & i : forward_list )
     {
-      ar & i;
+      ar( i );
       ++size;
     }
 
     // write the size
     ar.popPosition();
-    ar & size;
+    ar( size );
     ar.resetPosition();
   }
 
@@ -79,12 +79,12 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::forward_list<T, A> & forward_list )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     forward_list.resize( size );
 
     for( auto & i : forward_list )
-      ar & i;
+      ar( i );
   }
 } // namespace cereal
 

@@ -37,8 +37,8 @@ namespace cereal
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
   serialize( Archive & ar, std::pair<T1, T2> & pair )
   {
-    ar & pair.first;
-    ar & pair.second;
+    ar( pair.first,
+        pair.second );
   }
 } // namespace cereal
 

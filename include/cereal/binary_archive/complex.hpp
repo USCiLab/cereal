@@ -36,8 +36,8 @@ namespace cereal
   template <class T> inline
   void save( BinaryOutputArchive & ar, std::complex<T> const & comp )
   {
-    ar & comp.real();
-    ar & comp.imag();
+    ar( comp.real(),
+        comp.imag() );
   }
 
   //! Serializing (load) for std::complex to binary
@@ -45,8 +45,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::complex<T> & bits )
   {
     T real, imag;
-    ar & real;
-    ar & imag;
+    ar( real, imag );
     bits = {real, imag};
   }
 } // namespace cereal

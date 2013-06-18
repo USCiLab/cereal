@@ -54,7 +54,7 @@ namespace cereal
   save( BinaryOutputArchive & ar, std::array<T, N> const & array )
   {
     for( auto const & i : array )
-      ar & i;
+      ar( i );
   }
 
   //! Loading for std::array all other types to binary
@@ -63,7 +63,7 @@ namespace cereal
   load( BinaryInputArchive & ar, std::array<T, N> & array )
   {
     for( auto & i : array )
-      ar & i;
+      ar( i );
   }
 } // namespace cereal
 

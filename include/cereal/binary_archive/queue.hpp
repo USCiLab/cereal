@@ -84,7 +84,7 @@ namespace cereal
   template <class T, class C> inline
   void save( BinaryOutputArchive & ar, std::queue<T, C> const & queue )
   {
-    ar & queue_detail::container( queue );
+    ar( queue_detail::container( queue ) );
   }
 
   //! Loading for std::queue to binary
@@ -92,7 +92,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::queue<T, C> & queue )
   {
     C container;
-    ar & container;
+    ar( container );
     queue = std::queue<T, C>( std::move( container ) );
   }
 
@@ -100,8 +100,8 @@ namespace cereal
   template <class T, class C, class Comp> inline
   void save( BinaryOutputArchive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
   {
-    ar & queue_detail::comparator( priority_queue );
-    ar & queue_detail::container( priority_queue );
+    ar( queue_detail::comparator( priority_queue ) );
+    ar( queue_detail::container( priority_queue ) );
   }
 
   //! Loading for std::priority_queue to binary
@@ -109,10 +109,10 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
     Comp comparator;
-    ar & comparator;
+    ar( comparator );
 
     C container;
-    ar & container;
+    ar( container );
 
     priority_queue = std::priority_queue<T, C, Comp>( comparator, std::move( container ) );
   }

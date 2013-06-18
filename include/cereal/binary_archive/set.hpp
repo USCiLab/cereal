@@ -36,10 +36,10 @@ namespace cereal
   template <class K, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::set<K, C, A> const & set )
   {
-    ar & set.size();
+    ar( set.size() );
 
     for( const auto & i : set )
-      ar & i;
+      ar( i );
   }
 
   //! Loading for std::set to binary
@@ -47,13 +47,13 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::set<K, C, A> & set )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     for( size_t i = 0; i < size; ++i )
     {
       K key;
 
-      ar & key;
+      ar( key );
       set.insert( key );
     }
   }
@@ -62,10 +62,10 @@ namespace cereal
   template <class K, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::multiset<K, C, A> const & multiset )
   {
-    ar & multiset.size();
+    ar( multiset.size() );
 
     for( const auto & i : multiset )
-      ar & i;
+      ar( i );
   }
 
   //! Loading for std::multiset to binary
@@ -73,13 +73,13 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::multiset<K, C, A> & multiset )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     for( size_t i = 0; i < size; ++i )
     {
       K key;
 
-      ar & key;
+      ar( key );
       multiset.insert( key );
     }
   }

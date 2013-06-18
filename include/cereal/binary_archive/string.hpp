@@ -37,7 +37,7 @@ namespace cereal
   void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     // Save number of chars + the data
-    ar & str.size();
+    ar( str.size() );
     ar.saveBinary(str.data(), str.size() * sizeof(CharT));
   }
 
@@ -46,7 +46,7 @@ namespace cereal
   void load(BinaryInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     size_t size;
-    ar & size;
+    ar( size );
     str.resize(size);
     ar.loadBinary(const_cast<CharT*>(str.data()), size * sizeof(CharT));
   }

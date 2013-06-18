@@ -41,8 +41,8 @@ namespace cereal
   static const int32_t msb_32bit = 0x80000000;
 
   //! An exception class thrown when things go wrong at runtime
-  struct Exception : public std::runtime_error 
-  { 
+  struct Exception : public std::runtime_error
+  {
     using std::runtime_error::runtime_error;
   };
 
@@ -73,7 +73,7 @@ namespace cereal
     {
       template<class Derived>
         base_class(Derived const * derived) :
-          base_ptr(const_cast<Base*>(static_cast<Base const *>(derived))) 
+          base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
       { }
 
         Base * base_ptr;
@@ -88,9 +88,31 @@ namespace cereal
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(0)
       { }
 
+      //! Serializes all passed in data
+      template <class ... Types> inline
+      ArchiveType & operator()( Types && ... args )
+      {
+        process( std::forward<Types>( args )... );
+        return *self;
+      }
+
+    private:
+      template <class T> inline
+      void process( T && head )
+      {
+        (*self) & head;
+      }
+
+      template <class T, class ... Other> inline
+      void process( T && head, Other && ... tail )
+      {
+        (*self) & head;
+        process( std::forward<Other>( tail )... );
+      }
+
       //! Serialization of a base_class wrapper
       /*! \sa base_class */
-      template <class T>
+      template <class T> inline
       ArchiveType & operator & (base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
@@ -103,7 +125,7 @@ namespace cereal
       }
 
       //! Member serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T const & t)
@@ -113,7 +135,7 @@ namespace cereal
       }
 
       //! Non member serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T const & t)
@@ -123,7 +145,7 @@ namespace cereal
       }
 
       //! Member split (save)
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T const & t)
@@ -133,7 +155,7 @@ namespace cereal
       }
 
       //! Member split (save) non-const version
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T & t)
@@ -143,7 +165,7 @@ namespace cereal
       }
 
       //! Non member split (save)
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T const & t)
@@ -153,7 +175,7 @@ namespace cereal
       }
 
       //! Non member split (save) non-const version
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T & t)
@@ -162,7 +184,7 @@ namespace cereal
         return *self;
       }
 
-      template <class T>
+      template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
       operator & (T const & t)
@@ -171,7 +193,7 @@ namespace cereal
       }
 
       //! No matching serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<!traits::is_output_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
@@ -206,13 +228,13 @@ namespace cereal
       ArchiveType * const self;
 
       //! A set of all base classes that have been serialized
-      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet; 
+      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
       //! Maps from addresses to pointer ids
       std::unordered_map<void *, std::size_t> itsSharedPointerMap;
 
       //! The id to be given to the next pointer
-      std::size_t itsCurrentPointerId; 
+      std::size_t itsCurrentPointerId;
 
   }; // class OutputArchive
 
@@ -224,9 +246,31 @@ namespace cereal
     public:
       InputArchive(ArchiveType * const self) : self(self) { }
 
+      //! Serializes all passed in data
+      template <class ... Types> inline
+      ArchiveType & operator()( Types && ... args )
+      {
+        process( std::forward<Types>( args )... );
+        return *self;
+      }
+
+    private:
+      template <class T> inline
+      void process( T && head )
+      {
+        (*self) & head;
+      }
+
+      template <class T, class ... Other> inline
+      void process( T && head, Other && ... tail )
+      {
+        (*self) & head;
+        process( std::forward<Other>( tail )... );
+      }
+
       //! Serialization of a base_class wrapper
       /*! \sa base_class */
-      template <class T>
+      template <class T> inline
       ArchiveType & operator & (base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
@@ -239,7 +283,7 @@ namespace cereal
       }
 
       //! Member serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T && t)
@@ -249,7 +293,7 @@ namespace cereal
       }
 
       //! Non member serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T && t)
@@ -259,7 +303,7 @@ namespace cereal
       }
 
       //! Member split (load)
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_member_load<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T && t)
@@ -269,7 +313,7 @@ namespace cereal
       }
 
       //! Non member split (load)
-      template <class T>
+      template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_load<T, ArchiveType>(),
                ArchiveType &>::type
       operator & (T && t)
@@ -278,7 +322,7 @@ namespace cereal
         return *self;
       }
 
-      template <class T>
+      template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
       operator & (T const & t)
@@ -287,7 +331,7 @@ namespace cereal
       }
 
       //! No matching serialization
-      template <class T>
+      template <class T> inline
       typename std::enable_if<!traits::is_input_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
@@ -324,7 +368,7 @@ namespace cereal
       ArchiveType * const self;
 
       //! A set of all base classes that have been serialized
-      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet; 
+      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
       //! Maps from addresses to pointer ids
       std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap;

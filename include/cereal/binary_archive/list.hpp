@@ -36,10 +36,10 @@ namespace cereal
   template <class T, class A> inline
   void save( BinaryOutputArchive & ar, std::list<T, A> const & list )
   {
-    ar & list.size();
+    ar( list.size() );
 
     for( auto const & i : list )
-      ar & i;
+      ar( i );
   }
 
   //! Loading for std::list to binary
@@ -47,12 +47,12 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::list<T, A> & list )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     list.resize( size );
 
     for( auto & i : list )
-      ar & i;
+      ar( i );
   }
 } // namespace cereal
 

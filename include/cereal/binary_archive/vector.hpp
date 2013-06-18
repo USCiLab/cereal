@@ -38,7 +38,7 @@ namespace cereal
                           && std::is_same<A, std::allocator<T>>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
-    ar & vector.size(); // number of elements
+    ar( vector.size() ); // number of elements
     ar.saveBinary( vector.data(), vector.size() * sizeof(T) ); // actual data
   }
 
@@ -49,7 +49,7 @@ namespace cereal
   load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
     size_t vectorSize;
-    ar & vectorSize;
+    ar( vectorSize );
 
     vector.resize( vectorSize );
     ar.loadBinary( vector.data(), vectorSize * sizeof(T));
@@ -63,8 +63,8 @@ namespace cereal
   {
     size_t const dataSize = std::addressof(vector.back()) - std::addressof(vector.front()) + 1;
 
-    ar & vector.size(); // number of elements
-    ar & dataSize;      // size of data (may be larger due to allocator strategy)
+    ar( vector.size() ); // number of elements
+    ar( dataSize );      // size of data (may be larger due to allocator strategy)
     ar.saveBinary( vector.data(), dataSize * sizeof(T) ); // actual data
   }
 
@@ -76,8 +76,8 @@ namespace cereal
   {
     size_t vectorSize;
     size_t dataSize;
-    ar & vectorSize;
-    ar & dataSize;
+    ar( vectorSize,
+        dataSize );
 
     vector.resize( vectorSize );
 
@@ -89,9 +89,9 @@ namespace cereal
   typename std::enable_if<!std::is_arithmetic<T>::value || std::is_same<T, bool>::value, void>::type
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
-    ar & vector.size(); // number of elements
+    ar( vector.size() ); // number of elements
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar & (*it);
+      ar( *it );
   }
 
   //! Serialization for non-arithmetic (and bool) vector types from binary
@@ -100,11 +100,11 @@ namespace cereal
   load( BinaryInputArchive & ar, std::vector<T, A> & vector )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     vector.resize( size );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar & (*it);
+      ar( *it );
   }
 } // namespace cereal
 

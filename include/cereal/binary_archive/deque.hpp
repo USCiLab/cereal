@@ -36,10 +36,10 @@ namespace cereal
   template <class T, class A> inline
   void save( BinaryOutputArchive & ar, std::deque<T, A> const & deque )
   {
-    ar & deque.size();
+    ar( deque.size() );
 
     for( auto const & i : deque )
-      ar & i;
+      ar( i );
   }
 
   //! Loading for std::deque to binary
@@ -47,12 +47,12 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::deque<T, A> & deque )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     deque.resize( size );
 
     for( auto & i : deque )
-      ar & i;
+      ar( i );
   }
 } // namespace cereal
 

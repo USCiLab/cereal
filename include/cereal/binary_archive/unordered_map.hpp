@@ -36,12 +36,12 @@ namespace cereal
   template <class K, class T, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_map<K, T, H, KE, A> const & unordered_map )
   {
-    ar & unordered_map.size();
+    ar( unordered_map.size() );
 
     for( const auto & i : unordered_map )
     {
-      ar & i.first;
-      ar & i.second;
+      ar( i.first,
+          i.second );
     }
   }
 
@@ -50,7 +50,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::unordered_map<K, T, H, KE, A> & unordered_map )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     unordered_map.reserve( size );
 
@@ -59,8 +59,7 @@ namespace cereal
       K key;
       T value;
 
-      ar & key;
-      ar & value;
+      ar( key, value );
       unordered_map.insert( {key, value} );
     }
   }
@@ -69,12 +68,12 @@ namespace cereal
   template <class K, class T, class H, class KE, class A> inline
   void save( BinaryOutputArchive & ar, std::unordered_multimap<K, T, H, KE, A> const & unordered_multimap )
   {
-    ar & unordered_multimap.size();
+    ar( unordered_multimap.size() );
 
     for( const auto & i : unordered_multimap )
     {
-      ar & i.first;
-      ar & i.second;
+      ar( i.first,
+          i.second );
     }
   }
 
@@ -83,7 +82,7 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::unordered_multimap<K, T, H, KE, A> & unordered_multimap )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     unordered_multimap.reserve( size );
 
@@ -92,8 +91,7 @@ namespace cereal
       K key;
       T value;
 
-      ar & key;
-      ar & value;
+      ar( key, value );
       unordered_multimap.insert( {key, value} );
     }
   }

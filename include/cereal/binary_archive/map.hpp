@@ -36,12 +36,12 @@ namespace cereal
   template <class K, class T, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::map<K, T, C, A> const & map )
   {
-    ar & map.size();
+    ar( map.size() );
 
     for( const auto & i : map )
     {
-      ar & i.first;
-      ar & i.second;
+      ar( i.first,
+          i.second );
     }
   }
 
@@ -50,15 +50,14 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::map<K, T, C, A> & map )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     for( size_t i = 0; i < size; ++i )
     {
       K key;
       T value;
 
-      ar & key;
-      ar & value;
+      ar( key, value );
       map.insert( {key, value} );
     }
   }
@@ -67,12 +66,12 @@ namespace cereal
   template <class K, class T, class C, class A> inline
   void save( BinaryOutputArchive & ar, std::multimap<K, T, C, A> const & multimap )
   {
-    ar & multimap.size();
+    ar( multimap.size() );
 
     for( const auto & i : multimap )
     {
-      ar & i.first;
-      ar & i.second;
+      ar( i.first,
+          i.second );
     }
   }
 
@@ -81,15 +80,14 @@ namespace cereal
   void load( BinaryInputArchive & ar, std::multimap<K, T, C, A> & multimap )
   {
     size_t size;
-    ar & size;
+    ar( size );
 
     for( size_t i = 0; i < size; ++i )
     {
       K key;
       T value;
 
-      ar & key;
-      ar & value;
+      ar( key, value );
       multimap.insert( {key, value} );
     }
   }
