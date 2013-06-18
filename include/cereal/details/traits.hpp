@@ -199,6 +199,24 @@ namespace cereal
 
           static constexpr bool value = sizeof(S) == sizeof(uint8_t);
         };
+
+      struct base_class_id
+      {
+        template<class T>
+          base_class_id(T const * const t) :
+          type(typeid(T)),
+          ptr(t),
+          hash(std::hash<std::type_index>()(typeid(T)) ^ (std::hash<void const *>()(t) << 1))
+          { }
+
+          bool operator==(base_class_id const & other) const
+          { return (type == other.type) && (ptr == other.ptr); }
+
+          size_t hash;
+          std::type_index type;
+          void const * ptr;
+      };
+      struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
     }
 
     template<class T>
