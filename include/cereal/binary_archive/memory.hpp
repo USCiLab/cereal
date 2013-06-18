@@ -45,9 +45,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr to binary
+  //! Loading std::shared_ptr to binary, case when user load and allocate
   template <class T> inline
-  void load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
+  typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
 
@@ -55,7 +56,27 @@ namespace cereal
 
     if( id & msb_32bit )
     {
-      ptr.reset( new T );
+      ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+      ar.registerSharedPointer(id, ptr);
+    }
+    else
+    {
+      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+    }
+  }
+
+  //! Loading std::shared_ptr to binary, case when no user load and allocate
+  template <class T> inline
+  typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
+  {
+    uint32_t id;
+
+    ar & id;
+
+    if( id & msb_32bit )
+    {
+      ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
       ar & *ptr;
       ar.registerSharedPointer(id, ptr);
     }
@@ -89,11 +110,20 @@ namespace cereal
     ar & *ptr;
   }
 
-  //! Loading std::unique_ptr from binary
+  //! Loading std::unique_ptr from binary, case when user provides load_and_allocate
   template <class T, class D> inline
-  void load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
+  typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ptr.reset(new T);
+    ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+  }
+
+  //! Loading std::unique_ptr from binary, case when no load_and_allocate
+  template <class T, class D> inline
+  typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
+  {
+    ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
     ar & *ptr;
   }
 

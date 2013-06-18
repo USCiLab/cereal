@@ -29,27 +29,64 @@
 
 #include <type_traits>
 #include <memory>
+#include <iostream>
 
 namespace cereal
 {
+  template <class T>
+  struct LoadAndAllocate
+  {
+    static void load_and_allocate(...)
+    { }
+  };
+
   struct access
   {
-    template<class Archive, class T>
+    template<class Archive, class T> inline
     static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
     { t.serialize(ar); }
 
-    template<class Archive, class T>
+    template<class Archive, class T> inline
     static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
     { t.save(ar); }
 
-    template<class Archive, class T>
+    template<class Archive, class T> inline
     static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
     { t.load(ar); }
+
+    template <class T>
+    static void load_and_allocate(...)
+    { }
+
+    template<class T, class Archive> inline
+    static auto load_and_allocate(Archive & ar) -> decltype(T::load_and_allocate(ar))
+    {
+      std::cout << "yo2" << std::endl;
+      return T::load_and_allocate( ar );
+    }
   };
 
   namespace traits
   {
     template<typename> struct Void { typedef void type; };
+
+    // ######################################################################
+    // Member load_and_allocate
+    template<typename T, typename A>
+      bool constexpr has_member_load_and_allocate()
+      { return std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>() ) ), T*>::value; };
+
+    // ######################################################################
+    // Non Member load_and_allocate
+    template<typename T, typename A>
+      bool constexpr has_non_member_load_and_allocate()
+      { return std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>() ) ), T*>::value; };
+
+    // ######################################################################
+    // Has either a member or non member allocate
+    template<typename T, typename A>
+      bool constexpr has_load_and_allocate()
+      { return has_member_load_and_allocate<T, A>() || has_non_member_load_and_allocate<T, A>(); }
 
     // ######################################################################
     // Member Serialize
@@ -189,6 +226,53 @@ namespace cereal
     #define CEREAL_ARCHIVE_RESTRICT_SERIALIZE(INTYPE, OUTTYPE) \
     typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
   } // namespace traits
+
+  namespace detail
+  {
+    template <class T, class A, bool Member = traits::has_member_load_and_allocate<T, A>(), bool NonMember = traits::has_non_member_load_and_allocate<T, A>()>
+    struct Load
+    {
+      static_assert( !sizeof(T), "Cereal detected both member and non member load_and_allocate functions!" );
+      static T * load_andor_allocate( A & ar )
+      { return nullptr; }
+    };
+
+    template <class T, class A>
+    struct Load<T, A, false, false>
+    {
+      static_assert( std::is_default_constructible<T>::value,
+                     "Trying to serialize a an object with no default constructor.\n\n"
+                     "Types must either be default constructible or define either a member or non member Construct function.\n"
+                     "Construct functions generally have the signature:\n\n"
+                     "template <class Archive>\n"
+                     "static T * load_and_allocate(Archive & ar)\n"
+                     "{\n"
+                     "  var a;\n"
+                     "  ar & a\n"
+                     "  return new T(a);\n"
+                     "}\n\n" );
+      static T * load_andor_allocate( A & ar )
+      { return new T(); }
+    };
+
+    template <class T, class A>
+    struct Load<T, A, true, false>
+    {
+      static T * load_andor_allocate( A & ar )
+      {
+        return access::load_and_allocate<T>( ar );
+      }
+    };
+
+    template <class T, class A>
+    struct Load<T, A, false, true>
+    {
+      static T * load_andor_allocate( A & ar )
+      {
+        return LoadAndAllocate<T>::load_and_allocate( ar );
+      }
+    };
+  } // namespace detail
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_TRAITS_HPP_
