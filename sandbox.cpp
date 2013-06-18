@@ -172,116 +172,121 @@ struct NonEmptyStruct
   int x, y, z;
 };
 
+struct Base
+{
+  int b;
+
+  Base() {};
+  Base(int x) : b(x) {}
+
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    std::cout << "Begin: serializing Base" << std::endl;
+
+    ar & b;
+
+    std::cout << "End  : serializing Base" << std::endl;
+  }
+};
+
+struct MiddleA : public virtual Base
+{
+  int ma;
+
+  MiddleA() {};
+  MiddleA(int x) : /*Base(x+1),*/ ma(x) {}
+
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    std::cout << "Begin: serializing MiddleA" << std::endl;
+
+    ar & cereal::base_class<Base>(this);
+    ar & ma;
+
+    std::cout << "End  : serializing MiddleA" << std::endl;
+  }
+};
+
+struct MiddleB : public virtual Base
+{
+  int mb;
+
+  MiddleB() {};
+  MiddleB(int x) : Base(x+1), mb(x) {}
+
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    std::cout << "Begin: serializing MiddleB" << std::endl;
+
+    ar & cereal::base_class<Base>(this);
+    ar & mb;
+
+    std::cout << "End  : serializing MiddleB" << std::endl;
+  }
+};
+
+struct Derived : public MiddleA, public MiddleB
+{
+  int d;
+
+  Derived() {};
+  Derived(int x) : MiddleA(x+1), MiddleB(x+2), Base(x+3), d(x) {};
+
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    std::cout << "Begin: serializing Derived" << std::endl;
+
+    ar & cereal::base_class<MiddleA>(this);
+    ar & cereal::base_class<MiddleB>(this);
+    ar & d;
+
+    std::cout << "End  : serializing Derived" << std::endl;
+  }
+
+  void print()
+  {
+    std::cout << d << " " << ma << " " << mb << " " << b << std::endl;
+  }
+};
+
+struct MyHash 
+{
+  size_t operator()(std::pair<std::type_index, void const *> const & p) const
+  {
+    return std::hash<std::type_index>()(p.first) ^ (std::hash<void const *>()(p.second) << 1);
+  }
+};
+
 // ######################################################################
 int main()
 {
-  //Everything e_out;
-  //e_out.x = 99;
-  //e_out.y = 100;
-  //e_out.t1 = {1};
-  //e_out.t2 = {2};
-  //e_out.t3 = {3};
-  //e_out.t4 = {4};
-  //e_out.s = "Hello, World!";
 
-  //{
-  //  std::ofstream os("out.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  archive & CEREAL_NVP(e_out);
-  //}
+  {
+    Derived d1(0);
+    Derived d2(100);
+    d1.print();
+    d2.print();
+    std::ofstream os("out.txt");
+    cereal::BinaryOutputArchive archive(os);
+    archive & d1;
+    archive & d2;
+  }
 
-  //Everything e_in;
+  {
+    Derived d1;
+    Derived d2;
+    std::ifstream is("out.txt");
+    cereal::BinaryInputArchive archive(is);
+    archive & d1;
+    archive & d2;
 
-  //{
-  //  std::ifstream is("out.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  archive & CEREAL_NVP(e_in);
-  //}
-
-  //assert(e_in == e_out);
-
-  //{
-  //  std::ofstream os("ptr.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  std::shared_ptr<std::shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
-  //  std::shared_ptr<int> xptr2 = *xptr1;
-  //  std::weak_ptr<int> wptr2 = xptr2;
-  //  std::unique_ptr<Test1> uptr(new Test1);
-  //  uptr->a = 99;
-  //  archive & xptr1;
-  //  archive & xptr2;
-  //  archive & wptr2;
-  //  archive & uptr;
-  //}
-
-  //{
-  //  std::ifstream is("ptr.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  std::shared_ptr<std::shared_ptr<int>> xptr1;
-  //  std::shared_ptr<int> xptr2;
-  //  std::weak_ptr<int> wptr2;
-  //  std::unique_ptr<Test1> uptr;
-  //  archive & xptr1;
-  //  archive & xptr2;
-  //  archive & wptr2;
-  //  archive & uptr;
-
-  //  std::cout << **xptr1 << std::endl;
-  //  std::cout << *xptr2 << std::endl;
-  //  std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
-  //  std::cout << *(wptr2.lock()) << std::endl;
-  //  std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
-  //  std::cout << uptr->a << std::endl;
-  //}
-
-  //{
-  //  std::ofstream os("arr.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  int a1[] = {1, 2, 3};
-  //  int a2[][2] = {{4, 5}, {6, 7}};
-  //  archive & a1;
-  //  archive & a2;
-  //  EmptyStruct empty;
-  //  archive & empty;
-  //  archive & std::complex<float>();
-  //}
-
-  //{
-  //  std::ifstream is("arr.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  int a1[3];
-  //  int a2[2][2];
-  //  archive & a1;
-  //  archive & a2;
-
-  //  for(auto i : a1)
-  //    std::cout << i << " ";
-  //  std::cout << std::endl;
-  //  for( auto const & i : a2 )
-  //  {
-  //    for( auto j : i )
-  //      std::cout << j << " ";
-  //    std::cout << std::endl;
-  //  }
-  //  std::cout << std::endl;
-  //}
-
-  Private p;
-  NonEmptyStruct nes;
-  int q;
-  cereal::BinaryOutputArchive archive(std::cout);
-  archive & p;
-
-
-  //cereal::access::member_serialize(archive, p);
-  //cereal::access::member_serialize(archive, q);
-  //archive & p;
-  //archive & q;
-  //decltype(cereal::access::member_serialize(archive, q)) sss;
-
-  std::cout << cereal::traits::has_member_serialize<Private, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::is_output_serializable<Private, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::has_member_serialize<int, cereal::BinaryOutputArchive>() << std::endl;
+    d1.print();
+    d2.print();
+  }
 
   return 0;
 }

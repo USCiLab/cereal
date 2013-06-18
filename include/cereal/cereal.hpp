@@ -28,7 +28,10 @@
 #define CEREAL_CEREAL_HPP_
 
 #include <type_traits>
+#include <typeinfo>
+#include <typeindex>
 #include <unordered_map>
+#include <unordered_set>
 #include <cstddef>
 
 #include <cereal/details/traits.hpp>
@@ -65,6 +68,17 @@ namespace cereal
 
   enum Flags { AllowEmptyClassElision = 1 };
 
+  template<class Base>
+    struct base_class
+    {
+      template<class Derived>
+        base_class(Derived const * derived) :
+          base_ptr(const_cast<Base*>(static_cast<Base const *>(derived))) 
+      { }
+
+        Base * base_ptr;
+    };
+
   // ######################################################################
   //! The base output archive class
   template<class ArchiveType, uint32_t Flags = 0>
@@ -73,6 +87,20 @@ namespace cereal
     public:
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(0)
       { }
+
+      //! Serialization of a base_class wrapper
+      /*! \sa base_class */
+      template <class T>
+      ArchiveType & operator & (base_class<T> b)
+      {
+        traits::detail::base_class_id id(b.base_ptr);
+        if(itsBaseClassSet.count(id) == 0)
+        {
+          itsBaseClassSet.insert(id);
+          (*self) & (*b.base_ptr);
+        }
+        return *self;
+      }
 
       //! Member serialization
       template <class T>
@@ -177,8 +205,15 @@ namespace cereal
     private:
       ArchiveType * const self;
 
-      std::unordered_map<void *, std::size_t> itsSharedPointerMap; //!< Maps from addresses to pointer ids
-      std::size_t itsCurrentPointerId; //!< The id to be given to the next pointer
+      //! A set of all base classes that have been serialized
+      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet; 
+
+      //! Maps from addresses to pointer ids
+      std::unordered_map<void *, std::size_t> itsSharedPointerMap;
+
+      //! The id to be given to the next pointer
+      std::size_t itsCurrentPointerId; 
+
   }; // class OutputArchive
 
   // ######################################################################
@@ -188,6 +223,20 @@ namespace cereal
   {
     public:
       InputArchive(ArchiveType * const self) : self(self) { }
+
+      //! Serialization of a base_class wrapper
+      /*! \sa base_class */
+      template <class T>
+      ArchiveType & operator & (base_class<T> b)
+      {
+        traits::detail::base_class_id id(b.base_ptr);
+        if(itsBaseClassSet.count(id) == 0)
+        {
+          itsBaseClassSet.insert(id);
+          (*self) & (*b.base_ptr);
+        }
+        return *self;
+      }
 
       //! Member serialization
       template <class T>
@@ -273,7 +322,13 @@ namespace cereal
 
     private:
       ArchiveType * const self;
-      std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap; //!< Maps from addresses to pointer ids
+
+      //! A set of all base classes that have been serialized
+      std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet; 
+
+      //! Maps from addresses to pointer ids
+      std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap;
+
   }; // class InputArchive
 } // namespace cereal
 

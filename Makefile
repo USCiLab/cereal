@@ -1,5 +1,6 @@
 CPPFLAGS=-std=c++11 -I./include
 CC=clang++
+#CC=g++
 
 all: unittests sandbox performance
 
