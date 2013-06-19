@@ -212,9 +212,9 @@ namespace cereal
           bool operator==(base_class_id const & other) const
           { return (type == other.type) && (ptr == other.ptr); }
 
-          size_t hash;
           std::type_index type;
           void const * ptr;
+          size_t hash;
       };
       struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
     }

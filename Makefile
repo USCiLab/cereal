@@ -1,4 +1,4 @@
-CPPFLAGS=-std=c++11 -I./include
+CPPFLAGS=-std=c++11 -I./include -Wall -Werror
 CC=g++
 
 all: unittests sandbox performance
