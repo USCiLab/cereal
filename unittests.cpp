@@ -88,7 +88,7 @@ struct StructInternalSerialize : StructBase
   template<class Archive>
     void serialize(Archive & ar)
     {
-      ar & x & y;
+      ar(x, y);
     }
 };
 
@@ -99,13 +99,13 @@ struct StructInternalSplit : StructBase
   template<class Archive>
     void save(Archive & ar) const
     {
-      ar & x & y;
+      ar(x, y);
     }
 
   template<class Archive>
     void load(Archive & ar)
     {
-      ar & x & y;
+      ar(x, y);
     }
 };
 
@@ -118,7 +118,7 @@ struct StructExternalSerialize : StructBase
   template<class Archive>
 void serialize(Archive & ar, StructExternalSerialize & s)
 {
-  ar & s.x & s.y;
+  ar(s.x, s.y);
 }
 
 struct StructExternalSplit : StructBase
@@ -130,13 +130,13 @@ struct StructExternalSplit : StructBase
   template<class Archive>
 void save(Archive & ar, StructExternalSplit const & s)
 {
-  ar & s.x & s.y;
+  ar(s.x, s.y);
 }
 
   template<class Archive>
 void load(Archive & ar, StructExternalSplit & s)
 {
-  ar & s.x & s.y;
+  ar(s.x, s.y);
 }
 
 
@@ -211,16 +211,16 @@ BOOST_AUTO_TEST_CASE( binary_pod )
 
     std::ostringstream os;
     cereal::BinaryOutputArchive oar(os);
-    oar & o_uint8;
-    oar & o_int8;
-    oar & o_uint16;
-    oar & o_int16;
-    oar & o_uint32;
-    oar & o_int32;
-    oar & o_uint64;
-    oar & o_int64;
-    oar & o_float;
-    oar & o_double;
+    oar(o_uint8);
+    oar(o_int8);
+    oar(o_uint16);
+    oar(o_int16);
+    oar(o_uint32);
+    oar(o_int32);
+    oar(o_uint64);
+    oar(o_int64);
+    oar(o_float);
+    oar(o_double);
 
     uint8_t  i_uint8  = 0.0;
     int8_t   i_int8   = 0.0;
@@ -235,16 +235,16 @@ BOOST_AUTO_TEST_CASE( binary_pod )
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
-    iar & i_uint8;
-    iar & i_int8;
-    iar & i_uint16;
-    iar & i_int16;
-    iar & i_uint32;
-    iar & i_int32;
-    iar & i_uint64;
-    iar & i_int64;
-    iar & i_float;
-    iar & i_double;
+    iar(i_uint8);
+    iar(i_int8);
+    iar(i_uint16);
+    iar(i_int16);
+    iar(i_uint32);
+    iar(i_int32);
+    iar(i_uint64);
+    iar(i_int64);
+    iar(i_float);
+    iar(i_double);
 
     BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
     BOOST_CHECK_EQUAL(i_int8   , o_int8);
@@ -275,7 +275,7 @@ BOOST_AUTO_TEST_CASE( structs )
     StructExternalSerialize o_eser = { random_value<int>(gen), random_value<int>(gen) };
     StructExternalSplit     o_espl = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_iser & o_ispl & o_eser & o_espl;
+    oar( o_iser, o_ispl, o_eser, o_espl);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE( structs )
     StructExternalSerialize i_eser;
     StructExternalSplit     i_espl;
 
-    iar & i_iser & i_ispl & i_eser & i_espl;
+    iar( i_iser, i_ispl, i_eser, i_espl);
 
     BOOST_CHECK(i_iser == o_iser);
     BOOST_CHECK(i_ispl == o_ispl);
@@ -325,11 +325,11 @@ BOOST_AUTO_TEST_CASE( binary_array )
     for(auto & elem : o_esplarray)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_podarray;
-    oar & o_iserarray;
-    oar & o_isplarray;
-    oar & o_eserarray;
-    oar & o_esplarray;
+    oar(o_podarray);
+    oar(o_iserarray);
+    oar(o_isplarray);
+    oar(o_eserarray);
+    oar(o_esplarray);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -340,11 +340,11 @@ BOOST_AUTO_TEST_CASE( binary_array )
     std::array<StructExternalSerialize, 100> i_eserarray;
     std::array<StructExternalSplit, 100>     i_esplarray;
 
-    iar & i_podarray;
-    iar & i_iserarray;
-    iar & i_isplarray;
-    iar & i_eserarray;
-    iar & i_esplarray;
+    iar(i_podarray);
+    iar(i_iserarray);
+    iar(i_isplarray);
+    iar(i_eserarray);
+    iar(i_esplarray);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podarray.begin(),    i_podarray.end(),    o_podarray.begin(),  o_podarray.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserarray.begin(),   i_iserarray.end(),   o_iserarray.begin(), o_iserarray.end());
@@ -385,11 +385,11 @@ BOOST_AUTO_TEST_CASE( binary_deque )
     for(auto & elem : o_espldeque)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_poddeque;
-    oar & o_iserdeque;
-    oar & o_ispldeque;
-    oar & o_eserdeque;
-    oar & o_espldeque;
+    oar(o_poddeque);
+    oar(o_iserdeque);
+    oar(o_ispldeque);
+    oar(o_eserdeque);
+    oar(o_espldeque);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -400,11 +400,11 @@ BOOST_AUTO_TEST_CASE( binary_deque )
     std::deque<StructExternalSerialize> i_eserdeque;
     std::deque<StructExternalSplit>     i_espldeque;
 
-    iar & i_poddeque;
-    iar & i_iserdeque;
-    iar & i_ispldeque;
-    iar & i_eserdeque;
-    iar & i_espldeque;
+    iar(i_poddeque);
+    iar(i_iserdeque);
+    iar(i_ispldeque);
+    iar(i_eserdeque);
+    iar(i_espldeque);
 
     BOOST_CHECK_EQUAL(i_poddeque.size(),  o_poddeque.size());
     BOOST_CHECK_EQUAL(i_iserdeque.size(), o_iserdeque.size());
@@ -451,11 +451,11 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
     for(auto & elem : o_esplforward_list)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_podforward_list;
-    oar & o_iserforward_list;
-    oar & o_isplforward_list;
-    oar & o_eserforward_list;
-    oar & o_esplforward_list;
+    oar(o_podforward_list);
+    oar(o_iserforward_list);
+    oar(o_isplforward_list);
+    oar(o_eserforward_list);
+    oar(o_esplforward_list);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -466,11 +466,11 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
     std::forward_list<StructExternalSerialize> i_eserforward_list;
     std::forward_list<StructExternalSplit>     i_esplforward_list;
 
-    iar & i_podforward_list;
-    iar & i_iserforward_list;
-    iar & i_isplforward_list;
-    iar & i_eserforward_list;
-    iar & i_esplforward_list;
+    iar(i_podforward_list);
+    iar(i_iserforward_list);
+    iar(i_isplforward_list);
+    iar(i_eserforward_list);
+    iar(i_esplforward_list);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podforward_list.begin(),    i_podforward_list.end(),    o_podforward_list.begin(),  o_podforward_list.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserforward_list.begin(),   i_iserforward_list.end(),   o_iserforward_list.begin(), o_iserforward_list.end());
@@ -511,11 +511,11 @@ BOOST_AUTO_TEST_CASE( binary_list )
     for(auto & elem : o_espllist)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_podlist;
-    oar & o_iserlist;
-    oar & o_ispllist;
-    oar & o_eserlist;
-    oar & o_espllist;
+    oar(o_podlist);
+    oar(o_iserlist);
+    oar(o_ispllist);
+    oar(o_eserlist);
+    oar(o_espllist);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -526,11 +526,11 @@ BOOST_AUTO_TEST_CASE( binary_list )
     std::list<StructExternalSerialize> i_eserlist;
     std::list<StructExternalSplit>     i_espllist;
 
-    iar & i_podlist;
-    iar & i_iserlist;
-    iar & i_ispllist;
-    iar & i_eserlist;
-    iar & i_espllist;
+    iar(i_podlist);
+    iar(i_iserlist);
+    iar(i_ispllist);
+    iar(i_eserlist);
+    iar(i_espllist);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podlist.begin(),    i_podlist.end(),    o_podlist.begin(),  o_podlist.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserlist.begin(),   i_iserlist.end(),   o_iserlist.begin(), o_iserlist.end());
@@ -571,11 +571,11 @@ BOOST_AUTO_TEST_CASE( binary_map )
     for(int j=0; j<100; ++j)
       o_esplmap.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
-    oar & o_podmap;
-    oar & o_isermap;
-    oar & o_isplmap;
-    oar & o_esermap;
-    oar & o_esplmap;
+    oar(o_podmap);
+    oar(o_isermap);
+    oar(o_isplmap);
+    oar(o_esermap);
+    oar(o_esplmap);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -586,11 +586,11 @@ BOOST_AUTO_TEST_CASE( binary_map )
     std::map<uint32_t, StructExternalSerialize> i_esermap;
     std::map<int8_t, StructExternalSplit>       i_esplmap;
 
-    iar & i_podmap;
-    iar & i_isermap;
-    iar & i_isplmap;
-    iar & i_esermap;
-    iar & i_esplmap;
+    iar(i_podmap);
+    iar(i_isermap);
+    iar(i_isplmap);
+    iar(i_esermap);
+    iar(i_esplmap);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(),    i_podmap.end(),    o_podmap.begin(),  o_podmap.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(),   i_isermap.end(),   o_isermap.begin(), o_isermap.end());
@@ -651,11 +651,11 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
       o_esplmultimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    oar & o_podmultimap;
-    oar & o_isermultimap;
-    oar & o_isplmultimap;
-    oar & o_esermultimap;
-    oar & o_esplmultimap;
+    oar(o_podmultimap);
+    oar(o_isermultimap);
+    oar(o_isplmultimap);
+    oar(o_esermultimap);
+    oar(o_esplmultimap);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -666,11 +666,11 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
     std::multimap<uint32_t, StructExternalSerialize> i_esermultimap;
     std::multimap<int8_t, StructExternalSplit>       i_esplmultimap;
 
-    iar & i_podmultimap;
-    iar & i_isermultimap;
-    iar & i_isplmultimap;
-    iar & i_esermultimap;
-    iar & i_esplmultimap;
+    iar(i_podmultimap);
+    iar(i_isermultimap);
+    iar(i_isplmultimap);
+    iar(i_esermultimap);
+    iar(i_esplmultimap);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podmultimap.begin(),    i_podmultimap.end(),    o_podmultimap.begin(),  o_podmultimap.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isermultimap.begin(),   i_isermultimap.end(),   o_isermultimap.begin(), o_isermultimap.end());
@@ -696,8 +696,8 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     std::shared_ptr<int> o_xptr2 = o_xptr1;
     std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_yptr2 = o_yptr1;
-    oar & o_xptr1 & o_xptr2;
-    oar & o_yptr1 & o_yptr2;
+    oar( o_xptr1, o_xptr2);
+    oar( o_yptr1, o_yptr2);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -706,8 +706,8 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     std::shared_ptr<int> i_xptr2;
     std::shared_ptr<int> i_yptr1;
     std::shared_ptr<int> i_yptr2;
-    iar & i_xptr1 & i_xptr2;
-    iar & i_yptr1 & i_yptr2;
+    iar( i_xptr1, i_xptr2);
+    iar( i_yptr1, i_yptr2);
 
     BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
     BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
@@ -750,11 +750,11 @@ BOOST_AUTO_TEST_CASE( binary_queue )
     for(int j=0; j<100; ++j)
       o_esplqueue.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar & o_podqueue;
-    oar & o_iserqueue;
-    oar & o_isplqueue;
-    oar & o_eserqueue;
-    oar & o_esplqueue;
+    oar(o_podqueue);
+    oar(o_iserqueue);
+    oar(o_isplqueue);
+    oar(o_eserqueue);
+    oar(o_esplqueue);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -765,11 +765,11 @@ BOOST_AUTO_TEST_CASE( binary_queue )
     std::queue<StructExternalSerialize> i_eserqueue;
     std::queue<StructExternalSplit>     i_esplqueue;
 
-    iar & i_podqueue;
-    iar & i_iserqueue;
-    iar & i_isplqueue;
-    iar & i_eserqueue;
-    iar & i_esplqueue;
+    iar(i_podqueue);
+    iar(i_iserqueue);
+    iar(i_isplqueue);
+    iar(i_eserqueue);
+    iar(i_esplqueue);
 
     auto & i_podqueue_c  = cereal::queue_detail::container(i_podqueue);
     auto & i_iserqueue_c = cereal::queue_detail::container(i_iserqueue);
@@ -822,11 +822,11 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
     for(int j=0; j<100; ++j)
       o_esplpriority_queue.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar & o_podpriority_queue;
-    oar & o_iserpriority_queue;
-    oar & o_isplpriority_queue;
-    oar & o_eserpriority_queue;
-    oar & o_esplpriority_queue;
+    oar(o_podpriority_queue);
+    oar(o_iserpriority_queue);
+    oar(o_isplpriority_queue);
+    oar(o_eserpriority_queue);
+    oar(o_esplpriority_queue);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -837,11 +837,11 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
     std::priority_queue<StructExternalSerialize> i_eserpriority_queue;
     std::priority_queue<StructExternalSplit>     i_esplpriority_queue;
 
-    iar & i_podpriority_queue;
-    iar & i_iserpriority_queue;
-    iar & i_isplpriority_queue;
-    iar & i_eserpriority_queue;
-    iar & i_esplpriority_queue;
+    iar(i_podpriority_queue);
+    iar(i_iserpriority_queue);
+    iar(i_isplpriority_queue);
+    iar(i_eserpriority_queue);
+    iar(i_esplpriority_queue);
 
     auto & i_podpriority_queue_c  = cereal::queue_detail::container(i_podpriority_queue);
     auto & i_iserpriority_queue_c = cereal::queue_detail::container(i_iserpriority_queue);
@@ -894,11 +894,11 @@ BOOST_AUTO_TEST_CASE( binary_set )
     for(int j=0; j<100; ++j)
       o_esplset.insert({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar & o_podset;
-    oar & o_iserset;
-    oar & o_isplset;
-    oar & o_eserset;
-    oar & o_esplset;
+    oar(o_podset);
+    oar(o_iserset);
+    oar(o_isplset);
+    oar(o_eserset);
+    oar(o_esplset);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -909,11 +909,11 @@ BOOST_AUTO_TEST_CASE( binary_set )
     std::set<StructExternalSerialize> i_eserset;
     std::set<StructExternalSplit>       i_esplset;
 
-    iar & i_podset;
-    iar & i_iserset;
-    iar & i_isplset;
-    iar & i_eserset;
-    iar & i_esplset;
+    iar(i_podset);
+    iar(i_iserset);
+    iar(i_isplset);
+    iar(i_eserset);
+    iar(i_esplset);
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podset.begin(),    i_podset.end(),    o_podset.begin(),  o_podset.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserset.begin(),   i_iserset.end(),   o_iserset.begin(), o_iserset.end());
@@ -974,11 +974,11 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
       o_esplmultiset.insert(value);
     }
 
-    oar & o_podmultiset;
-    oar & o_isermultiset;
-    oar & o_isplmultiset;
-    oar & o_esermultiset;
-    oar & o_esplmultiset;
+    oar(o_podmultiset);
+    oar(o_isermultiset);
+    oar(o_isplmultiset);
+    oar(o_esermultiset);
+    oar(o_esplmultiset);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -989,11 +989,11 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
     std::multiset<StructExternalSerialize> i_esermultiset;
     std::multiset<StructExternalSplit>     i_esplmultiset;
 
-    iar & i_podmultiset;
-    iar & i_isermultiset;
-    iar & i_isplmultiset;
-    iar & i_esermultiset;
-    iar & i_esplmultiset;
+    iar(i_podmultiset);
+    iar(i_isermultiset);
+    iar(i_isplmultiset);
+    iar(i_esermultiset);
+    iar(i_esplmultiset);
 
     for(auto const & p : i_podmultiset)
     {
@@ -1054,11 +1054,11 @@ BOOST_AUTO_TEST_CASE( binary_stack )
     for(int j=0; j<100; ++j)
       o_esplstack.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar & o_podstack;
-    oar & o_iserstack;
-    oar & o_isplstack;
-    oar & o_eserstack;
-    oar & o_esplstack;
+    oar(o_podstack);
+    oar(o_iserstack);
+    oar(o_isplstack);
+    oar(o_eserstack);
+    oar(o_esplstack);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1069,11 +1069,11 @@ BOOST_AUTO_TEST_CASE( binary_stack )
     std::stack<StructExternalSerialize> i_eserstack;
     std::stack<StructExternalSplit>     i_esplstack;
 
-    iar & i_podstack;
-    iar & i_iserstack;
-    iar & i_isplstack;
-    iar & i_eserstack;
-    iar & i_esplstack;
+    iar(i_podstack);
+    iar(i_iserstack);
+    iar(i_isplstack);
+    iar(i_eserstack);
+    iar(i_esplstack);
 
     auto & i_podstack_c  = cereal::stack_detail::container(i_podstack);
     auto & i_iserstack_c = cereal::stack_detail::container(i_iserstack);
@@ -1110,10 +1110,10 @@ BOOST_AUTO_TEST_CASE( binary_string )
 
     std::ostringstream os;
     cereal::BinaryOutputArchive oar(os);
-    oar & o_string;
-    oar & o_wstring;
-    oar & o_u16string;
-    oar & o_u32string;
+    oar(o_string);
+    oar(o_wstring);
+    oar(o_u16string);
+    oar(o_u32string);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1123,10 +1123,10 @@ BOOST_AUTO_TEST_CASE( binary_string )
     std::basic_string<char16_t> i_u16string;
     std::basic_string<char32_t> i_u32string;
 
-    iar & i_string;
-    iar & i_wstring;
-    iar & i_u16string;
-    iar & i_u32string;
+    iar(i_string);
+    iar(i_wstring);
+    iar(i_u16string);
+    iar(i_u32string);
 
     BOOST_CHECK_EQUAL(i_string, o_string);
     BOOST_CHECK_EQUAL_COLLECTIONS(i_wstring.begin(),     i_wstring.end(),   o_wstring.begin(),   o_wstring.end());
@@ -1166,11 +1166,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_map )
     for(int j=0; j<100; ++j)
       o_esplunordered_map.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
-    oar & o_podunordered_map;
-    oar & o_iserunordered_map;
-    oar & o_isplunordered_map;
-    oar & o_eserunordered_map;
-    oar & o_esplunordered_map;
+    oar(o_podunordered_map);
+    oar(o_iserunordered_map);
+    oar(o_isplunordered_map);
+    oar(o_eserunordered_map);
+    oar(o_esplunordered_map);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1181,11 +1181,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_map )
     std::unordered_map<uint32_t, StructExternalSerialize> i_eserunordered_map;
     std::unordered_map<int8_t, StructExternalSplit>       i_esplunordered_map;
 
-    iar & i_podunordered_map;
-    iar & i_iserunordered_map;
-    iar & i_isplunordered_map;
-    iar & i_eserunordered_map;
-    iar & i_esplunordered_map;
+    iar(i_podunordered_map);
+    iar(i_iserunordered_map);
+    iar(i_isplunordered_map);
+    iar(i_eserunordered_map);
+    iar(i_esplunordered_map);
 
     for(auto const & p : i_podunordered_map)
     {
@@ -1275,11 +1275,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    oar & o_podunordered_multimap;
-    oar & o_iserunordered_multimap;
-    oar & o_isplunordered_multimap;
-    oar & o_eserunordered_multimap;
-    oar & o_esplunordered_multimap;
+    oar(o_podunordered_multimap);
+    oar(o_iserunordered_multimap);
+    oar(o_isplunordered_multimap);
+    oar(o_eserunordered_multimap);
+    oar(o_esplunordered_multimap);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1290,11 +1290,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
     std::unordered_multimap<uint32_t, StructExternalSerialize> i_eserunordered_multimap;
     std::unordered_multimap<int8_t, StructExternalSplit>       i_esplunordered_multimap;
 
-    iar & i_podunordered_multimap;
-    iar & i_iserunordered_multimap;
-    iar & i_isplunordered_multimap;
-    iar & i_eserunordered_multimap;
-    iar & i_esplunordered_multimap;
+    iar(i_podunordered_multimap);
+    iar(i_iserunordered_multimap);
+    iar(i_isplunordered_multimap);
+    iar(i_eserunordered_multimap);
+    iar(i_esplunordered_multimap);
 
     BOOST_CHECK_EQUAL(i_podunordered_multimap.size(),  o_podunordered_multimap.size());
     BOOST_CHECK_EQUAL(i_iserunordered_multimap.size(), o_iserunordered_multimap.size());
@@ -1376,11 +1376,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
     for(int j=0; j<100; ++j)
       o_esplunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar & o_podunordered_set;
-    oar & o_iserunordered_set;
-    oar & o_isplunordered_set;
-    oar & o_eserunordered_set;
-    oar & o_esplunordered_set;
+    oar(o_podunordered_set);
+    oar(o_iserunordered_set);
+    oar(o_isplunordered_set);
+    oar(o_eserunordered_set);
+    oar(o_esplunordered_set);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1391,11 +1391,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
     std::unordered_set<StructExternalSerialize, StructHash<StructExternalSerialize>>   i_eserunordered_set;
     std::unordered_set<StructExternalSplit, StructHash<StructExternalSplit>>           i_esplunordered_set;
 
-    iar & i_podunordered_set;
-    iar & i_iserunordered_set;
-    iar & i_isplunordered_set;
-    iar & i_eserunordered_set;
-    iar & i_esplunordered_set;
+    iar(i_podunordered_set);
+    iar(i_iserunordered_set);
+    iar(i_isplunordered_set);
+    iar(i_eserunordered_set);
+    iar(i_esplunordered_set);
 
     for(auto const & p : i_podunordered_set)
     {
@@ -1474,11 +1474,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
       o_esplunordered_multiset.insert(value);
     }
 
-    oar & o_podunordered_multiset;
-    oar & o_iserunordered_multiset;
-    oar & o_isplunordered_multiset;
-    oar & o_eserunordered_multiset;
-    oar & o_esplunordered_multiset;
+    oar(o_podunordered_multiset);
+    oar(o_iserunordered_multiset);
+    oar(o_isplunordered_multiset);
+    oar(o_eserunordered_multiset);
+    oar(o_esplunordered_multiset);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1489,11 +1489,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
     std::unordered_multiset<StructExternalSerialize, StructHash<StructExternalSerialize>> i_eserunordered_multiset;
     std::unordered_multiset<StructExternalSplit, StructHash<StructExternalSplit>>         i_esplunordered_multiset;
 
-    iar & i_podunordered_multiset;
-    iar & i_iserunordered_multiset;
-    iar & i_isplunordered_multiset;
-    iar & i_eserunordered_multiset;
-    iar & i_esplunordered_multiset;
+    iar(i_podunordered_multiset);
+    iar(i_iserunordered_multiset);
+    iar(i_isplunordered_multiset);
+    iar(i_eserunordered_multiset);
+    iar(i_esplunordered_multiset);
 
     for(auto const & p : i_podunordered_multiset)
     {
@@ -1553,11 +1553,11 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     for(auto & elem : o_esplvector)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar & o_podvector;
-    oar & o_iservector;
-    oar & o_isplvector;
-    oar & o_eservector;
-    oar & o_esplvector;
+    oar(o_podvector);
+    oar(o_iservector);
+    oar(o_isplvector);
+    oar(o_eservector);
+    oar(o_esplvector);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1568,11 +1568,11 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     std::vector<StructExternalSerialize> i_eservector;
     std::vector<StructExternalSplit>     i_esplvector;
 
-    iar & i_podvector;
-    iar & i_iservector;
-    iar & i_isplvector;
-    iar & i_eservector;
-    iar & i_esplvector;
+    iar(i_podvector);
+    iar(i_iservector);
+    iar(i_isplvector);
+    iar(i_eservector);
+    iar(i_esplvector);
 
     BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
     BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
@@ -1607,11 +1607,11 @@ BOOST_AUTO_TEST_CASE( binary_pair )
     std::pair<StructExternalSerialize, StructExternalSerialize> o_eserpair = {{rng(), rng()}, {rng(), rng()}};
     std::pair<StructExternalSplit, StructExternalSplit> o_esplpair = {{rng(), rng()}, {rng(), rng()}};
 
-    oar & o_podpair;
-    oar & o_iserpair;
-    oar & o_isplpair;
-    oar & o_eserpair;
-    oar & o_esplpair;
+    oar(o_podpair);
+    oar(o_iserpair);
+    oar(o_isplpair);
+    oar(o_eserpair);
+    oar(o_esplpair);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1622,11 +1622,11 @@ BOOST_AUTO_TEST_CASE( binary_pair )
     std::pair<StructExternalSerialize, StructExternalSerialize> i_eserpair;
     std::pair<StructExternalSplit, StructExternalSplit> i_esplpair;
 
-    iar & i_podpair;
-    iar & i_iserpair;
-    iar & i_isplpair;
-    iar & i_eserpair;
-    iar & i_esplpair;
+    iar(i_podpair);
+    iar(i_iserpair);
+    iar(i_isplpair);
+    iar(i_eserpair);
+    iar(i_esplpair);
 
     BOOST_CHECK_EQUAL( i_podpair.first, o_podpair.first );
     BOOST_CHECK_EQUAL( i_podpair.second, o_podpair.second );
@@ -1676,11 +1676,11 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
         StructExternalSerialize( rng(), rng() ),
         StructExternalSerialize( rng(), rng() ) );
 
-    oar & o_podtuple;
-    oar & o_isertuple;
-    oar & o_ispltuple;
-    oar & o_esertuple;
-    oar & o_espltuple;
+    oar(o_podtuple);
+    oar(o_isertuple);
+    oar(o_ispltuple);
+    oar(o_esertuple);
+    oar(o_espltuple);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1691,11 +1691,11 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
     decltype( o_esertuple ) i_esertuple;
     decltype( o_espltuple ) i_espltuple;
 
-    iar & i_podtuple;
-    iar & i_isertuple;
-    iar & i_ispltuple;
-    iar & i_esertuple;
-    iar & i_espltuple;
+    iar(i_podtuple);
+    iar(i_isertuple);
+    iar(i_ispltuple);
+    iar(i_esertuple);
+    iar(i_espltuple);
 
     BOOST_CHECK_EQUAL( i_podtuple == o_podtuple, true );
     BOOST_CHECK_EQUAL( i_isertuple == o_isertuple, true );
@@ -1724,9 +1724,9 @@ BOOST_AUTO_TEST_CASE( binary_complex )
     std::complex<double> o_double( rngD(), rngD() );
     std::complex<long double> o_ldouble( rngLD(), rngLD() );
 
-    oar & o_float;
-    oar & o_double;
-    oar & o_ldouble;
+    oar(o_float);
+    oar(o_double);
+    oar(o_ldouble);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1735,9 +1735,9 @@ BOOST_AUTO_TEST_CASE( binary_complex )
     std::complex<double> i_double;
     std::complex<long double> i_ldouble;
 
-    iar & i_float;
-    iar & i_double;
-    iar & i_ldouble;
+    iar(i_float);
+    iar(i_double);
+    iar(i_ldouble);
 
     BOOST_CHECK_EQUAL( o_float, i_float );
     BOOST_CHECK_EQUAL( o_double, i_double );
@@ -1764,9 +1764,9 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
     std::bitset<65> o_bit65( rng65() );
     std::bitset<256> o_bit256( rng256() );
 
-    oar & o_bit32;
-    oar & o_bit65;
-    oar & o_bit256;
+    oar(o_bit32);
+    oar(o_bit65);
+    oar(o_bit256);
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -1775,13 +1775,12 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
     std::bitset<65>  i_bit65;
     std::bitset<256> i_bit256;
 
-    iar & i_bit32;
-    iar & i_bit65;
-    iar & i_bit256;
+    iar(i_bit32);
+    iar(i_bit65);
+    iar(i_bit256);
 
     BOOST_CHECK_EQUAL( o_bit32, i_bit32 );
     BOOST_CHECK_EQUAL( o_bit65, i_bit65 );
     BOOST_CHECK_EQUAL( o_bit256, i_bit256 );
   }
 }
-

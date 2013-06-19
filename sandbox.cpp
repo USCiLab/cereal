@@ -31,6 +31,7 @@
 #include <cereal/binary_archive/utility.hpp>
 #include <cereal/binary_archive/memory.hpp>
 #include <cereal/binary_archive/complex.hpp>
+#include <cereal/binary_archive/boost_variant.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -47,7 +48,7 @@ struct Test1
   template<class Archive>
   void serialize(Archive & ar)
   {
-    ar & CEREAL_NVP(a);
+    ar(CEREAL_NVP(a));
   }
 };
 
@@ -63,13 +64,13 @@ class Test2
     template<class Archive>
       void save(Archive & ar) const
       {
-        ar & CEREAL_NVP(a);
+        ar(CEREAL_NVP(a));
       }
 
     template<class Archive>
       void load(Archive & ar)
       {
-        ar & CEREAL_NVP(a);
+        ar(CEREAL_NVP(a));
       }
 };
 
@@ -82,7 +83,7 @@ struct Test3
 template<class Archive>
 void serialize(Archive & ar, Test3 & t)
 {
-  ar & CEREAL_NVP(t.a);
+  ar(CEREAL_NVP(t.a));
 }
 
 namespace test4
@@ -96,13 +97,13 @@ namespace test4
   template<class Archive>
   void save(Archive & ar, Test4 const & t)
   {
-    ar & CEREAL_NVP(t.a);
+    ar(CEREAL_NVP(t.a));
   }
 
   template<class Archive>
   void load(Archive & ar, Test4 & t)
   {
-    ar & CEREAL_NVP(t.a);
+    ar(CEREAL_NVP(t.a));
   }
 }
 
@@ -119,7 +120,7 @@ class Private
     template<class Archive>
       void serialize(Archive & ar)
       {
-        ar & a;
+        ar(a);
       }
 };
 
@@ -136,13 +137,13 @@ struct Everything
   template<class Archive>
   void serialize(Archive & ar)
   {
-    ar & CEREAL_NVP(x);
-    ar & CEREAL_NVP(y);
-    ar & CEREAL_NVP(t1);
-    ar & CEREAL_NVP(t2);
-    ar & CEREAL_NVP(t3);
-    ar & CEREAL_NVP(t4);
-    ar & CEREAL_NVP(s);
+    ar(CEREAL_NVP(x));
+    ar(CEREAL_NVP(y));
+    ar(CEREAL_NVP(t1));
+    ar(CEREAL_NVP(t2));
+    ar(CEREAL_NVP(t3));
+    ar(CEREAL_NVP(t4));
+    ar(CEREAL_NVP(s));
   }
 
   bool operator==(Everything const & o)
@@ -208,31 +209,33 @@ namespace cereal
 // ######################################################################
 int main()
 {
-  //Everything e_out;
-  //e_out.x = 99;
-  //e_out.y = 100;
-  //e_out.t1 = {1};
-  //e_out.t2 = {2};
-  //e_out.t3 = {3};
-  //e_out.t4 = {4};
-  //e_out.s = "Hello, World!";
 
-  //{
-  //  std::ofstream os("out.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  archive & CEREAL_NVP(e_out);
-  //}
 
-  //Everything e_in;
+  Everything e_out;
+  e_out.x = 99;
+  e_out.y = 100;
+  e_out.t1 = {1};
+  e_out.t2 = {2};
+  e_out.t3 = {3};
+  e_out.t4 = {4};
+  e_out.s = "Hello, World!";
 
-  //{
-  //  std::ifstream is("out.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  archive & CEREAL_NVP(e_in);
-  //}
+  {
+    std::ofstream os("out.txt");
+    cereal::BinaryOutputArchive archive(os);
+    archive(CEREAL_NVP(e_out));
+  }
 
-  //assert(e_in == e_out);//
-                          //
+  Everything e_in;
+
+  {
+    std::ifstream is("out.txt");
+    cereal::BinaryInputArchive archive(is);
+    archive(CEREAL_NVP(e_in));
+  }
+
+  assert(e_in == e_out);//
+  //
   //{                     //
   //  std::ofstream os("pt//r.txt");
   //  cereal::BinaryOutput//Archive archive(os);
@@ -300,8 +303,8 @@ int main()
   //}
 
 
-  std::ostringstream os;
-  cereal::BinaryOutputArchive out_archive(os);
+  //std::ostringstream os;
+  //cereal::BinaryOutputArchive out_archive(os);
 
   //in_archive & nd;
 
@@ -321,16 +324,16 @@ int main()
   //std::cout << cereal::traits::has_non_member_load_and_allocate<NonEmptyStruct, cereal::BinaryOutputArchive>() << std::endl;
   //std::cout << cereal::traits::has_non_member_load_and_allocate<int, cereal::BinaryOutputArchive>() << std::endl;
 
-  auto p = std::make_shared<NoDefaultCtor>( 5 );
-  out_archive & p;
+  //auto p = std::make_shared<NoDefaultCtor>( 5 );
+  //out_archive & p;
 
-  std::istringstream is(os.str());
-  cereal::BinaryInputArchive in_archive(is);
+  //std::istringstream is(os.str());
+  //cereal::BinaryInputArchive in_archive(is);
 
-  p->y = 3;
+  //p->y = 3;
 
-  in_archive & p;
-  std::cout << p->y << std::endl;
+  //in_archive & p;
+  //std::cout << p->y << std::endl;
 
   return 0;
 }

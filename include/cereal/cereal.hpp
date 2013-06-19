@@ -64,7 +64,7 @@ namespace cereal
   }
 
   //! Creates a name value pair for the variable T, using the same name
-  #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T);
+  #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   enum Flags { AllowEmptyClassElision = 1 };
 
@@ -94,6 +94,20 @@ namespace cereal
       {
         process( std::forward<Types>( args )... );
         return *self;
+      }
+
+      //! Registers a pointer with the archive
+      uint32_t registerSharedPointer( void * addr )
+      {
+        auto id = itsSharedPointerMap.find( addr );
+        if( id == itsSharedPointerMap.end() )
+        {
+          auto ptrId = itsCurrentPointerId++;
+          itsSharedPointerMap.insert( {addr, ptrId} );
+          return ptrId | msb_32bit; // mask MSB to be 1
+        }
+        else
+          return id->second;
       }
 
     private:
@@ -150,17 +164,7 @@ namespace cereal
                ArchiveType &>::type
       operator & (T const & t)
       {
-        t.save(*self);
-        return *self;
-      }
-
-      //! Member split (save) non-const version
-      template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>(),
-               ArchiveType &>::type
-      operator & (T & t)
-      {
-        t.save(*self);
+        access::member_save(*self, t);
         return *self;
       }
 
@@ -210,20 +214,6 @@ namespace cereal
         return *self;
       }
 
-      //! Registers a pointer with the archive
-      uint32_t registerSharedPointer( void * addr )
-      {
-        auto id = itsSharedPointerMap.find( addr );
-        if( id == itsSharedPointerMap.end() )
-        {
-          auto ptrId = itsCurrentPointerId++;
-          itsSharedPointerMap.insert( {addr, ptrId} );
-          return ptrId | msb_32bit; // mask MSB to be 1
-        }
-        else
-          return id->second;
-      }
-
     private:
       ArchiveType * const self;
 
@@ -253,6 +243,23 @@ namespace cereal
         process( std::forward<Types>( args )... );
         return *self;
       }
+
+      std::shared_ptr<void> getSharedPointer(uint32_t const id)
+      {
+        auto ptr = itsSharedPointerMap.find( id );
+        if(ptr == itsSharedPointerMap.end())
+        {
+          throw Exception("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
+        }
+        return ptr->second;
+      }
+
+      void registerSharedPointer(uint32_t const id, std::shared_ptr<void> ptr)
+      {
+        uint32_t const stripped_id = id & ~msb_32bit;
+        itsSharedPointerMap.insert( {stripped_id, ptr} );
+      }
+
 
     private:
       template <class T> inline
@@ -288,7 +295,7 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        t.serialize(*self);
+        access::member_serialize(*self, t);
         return *self;
       }
 
@@ -308,7 +315,7 @@ namespace cereal
                ArchiveType &>::type
       operator & (T && t)
       {
-        t.load(*self);
+        access::member_load(*self, t);
         return *self;
       }
 
@@ -346,22 +353,6 @@ namespace cereal
             "    ar & member1 & member2 & member3;\n"
             "  }\n\n" );
         return *self;
-      }
-
-      std::shared_ptr<void> getSharedPointer(uint32_t const id)
-      {
-        auto ptr = itsSharedPointerMap.find( id );
-        if(ptr == itsSharedPointerMap.end())
-        {
-          throw Exception("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
-        }
-        return ptr->second;
-      }
-
-      void registerSharedPointer(uint32_t const id, std::shared_ptr<void> ptr)
-      {
-        uint32_t const stripped_id = id & ~msb_32bit;
-        itsSharedPointerMap.insert( {stripped_id, ptr} );
       }
 
     private:
