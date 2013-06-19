@@ -39,7 +39,7 @@ namespace cereal
   save( BinaryOutputArchive & ar, std::vector<T, A> const & vector )
   {
     ar( vector.size() ); // number of elements
-    ar.saveBinary( vector.data(), vector.size() * sizeof(T) ); // actual data
+    ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );
   }
 
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary, default allocator
@@ -52,7 +52,7 @@ namespace cereal
     ar( vectorSize );
 
     vector.resize( vectorSize );
-    ar.loadBinary( vector.data(), vectorSize * sizeof(T));
+    ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );
   }
 
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary, special allocator
@@ -65,7 +65,7 @@ namespace cereal
 
     ar( vector.size() ); // number of elements
     ar( dataSize );      // size of data (may be larger due to allocator strategy)
-    ar.saveBinary( vector.data(), dataSize * sizeof(T) ); // actual data
+    ar( binary_data( vector.data(), dataSize * sizeof(T) ) );
   }
 
   //! Serialization for std::vectors of arithmetic (but not bool) types to binary, special allocator
@@ -81,7 +81,7 @@ namespace cereal
 
     vector.resize( vectorSize );
 
-    ar.loadBinary( vector.data(), dataSize * sizeof(T));
+    ar( binary_data( vector.data(), dataSize * sizeof(T) ) );
   }
 
   //! Serialization for non-arithmetic (and bool) vector types to binary

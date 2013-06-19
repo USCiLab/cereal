@@ -82,6 +82,30 @@ namespace cereal
     return {name, std::forward<T>(value)};
   }
 
+  // ######################################################################
+  //! A wrapper around data that can be serialized in a binary fashion
+  template <class T>
+  struct BinaryData
+  {
+    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
+                                         const void *,
+                                         void *>::type;
+
+    BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
+
+    PT data;   // pointer to beginning of data
+    uint64_t size; // size in bytes
+  };
+
+  //! Convenience function to create binary data for both const and non const pointers
+  /*! @param data Pointer to beginning of the data
+      @param size The size in bytes of the data */
+  template <class T> inline
+  BinaryData<T> binary_data( T && data, size_t size )
+  {
+    return {std::forward<T>(data), size};
+  }
+
   //! Creates a name value pair for the variable T, using the same name
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 

@@ -111,7 +111,7 @@ namespace cereal
   };
 
   //! Saving for POD types to binary
-  template<class T>
+  template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & t)
   {
@@ -119,7 +119,7 @@ namespace cereal
   }
 
   //! Loading for POD types from binary
-  template<class T>
+  template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   load(BinaryInputArchive & ar, T & t)
   {
@@ -127,28 +127,40 @@ namespace cereal
   }
 
   //! Serializing NVP types to binary
-  template <class Archive, class T>
+  template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
   serialize( Archive & ar, NameValuePair<T> & t )
   {
     ar( t.value );
   }
 
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & array)
   {
     ar.saveBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
   load(BinaryInputArchive & ar, T & array)
   {
     ar.loadBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
-  template <class Archive, class T>
+  template <class T> inline
+  void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)
+  {
+    ar.saveBinary(bd.data, bd.size);
+  }
+
+  template <class T> inline
+  void load(BinaryInputArchive & ar, BinaryData<T> & bd)
+  {
+    ar.loadBinary(bd.data, bd.size);
+  }
+
+  template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
   serialize( Archive & ar, T * & t )
   {
