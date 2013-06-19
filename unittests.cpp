@@ -42,6 +42,7 @@
 #include <cereal/binary_archive/tuple.hpp>
 #include <cereal/binary_archive/bitset.hpp>
 #include <cereal/binary_archive/complex.hpp>
+#include <cereal/binary_archive/chrono.hpp>
 #include <limits>
 #include <random>
 
@@ -1784,3 +1785,35 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
     BOOST_CHECK_EQUAL( o_bit256, i_bit256 );
   }
 }
+
+// ######################################################################
+BOOST_AUTO_TEST_CASE( binary_chrono )
+{
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    auto o_timePoint1 = std::chrono::system_clock::now();
+    auto o_timePoint2 = std::chrono::steady_clock::now();
+    auto o_timePoint3 = std::chrono::high_resolution_clock::now();
+
+    oar(o_timePoint1);
+    oar(o_timePoint2);
+    oar(o_timePoint3);
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    decltype(o_timePoint1) i_timePoint1;
+    decltype(o_timePoint2) i_timePoint2;
+    decltype(o_timePoint3) i_timePoint3;
+
+    iar(i_timePoint1);
+    iar(i_timePoint2);
+    iar(i_timePoint3);
+
+    BOOST_CHECK_EQUAL( o_timePoint1 == i_timePoint1, true );
+  }
+}
+

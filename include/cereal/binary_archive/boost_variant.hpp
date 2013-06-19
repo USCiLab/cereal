@@ -35,19 +35,19 @@ namespace cereal
 {
   namespace binary_detail
   {
-    struct variant_save_visitor : boost::static_visitor<> 
+    struct variant_save_visitor : boost::static_visitor<>
     {
       variant_save_visitor(BinaryOutputArchive & ar) : ar(ar) {}
 
       template<class T>
         void operator()(T const & value) const
         {
-          ar & CEREAL_NVP(value); 
+          ar( value );
         }
 
       BinaryOutputArchive & ar;
     };
-    
+
     template<int N, class Variant, class ... Args>
     typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
     load_variant(BinaryInputArchive & ar, int target, Variant & variant)
@@ -62,7 +62,7 @@ namespace cereal
       if(N == target)
       {
         H value;
-        ar & CEREAL_NVP(value);
+        ar( value );
         variant = value;
       }
       else
@@ -75,8 +75,8 @@ namespace cereal
   template <typename... VariantTypes> inline
   void save( BinaryOutputArchive & ar, boost::variant<VariantTypes...> const & variant )
   {
-    int which = variant.which();
-    ar & CEREAL_NVP(which);
+    int32_t which = variant.which();
+    ar( which );
     binary_detail::variant_save_visitor visitor(ar);
     variant.apply_visitor(visitor);
   }
@@ -87,9 +87,9 @@ namespace cereal
   {
     typedef typename boost::variant<VariantTypes...>::types types;
 
-    int which;
-    ar & cereal::make_nvp("which", which);
-    if(which >= boost::mpl::size<types>::value) 
+    int32_t which;
+    ar( which );
+    if(which >= boost::mpl::size<types>::value)
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 
     binary_detail::load_variant<0, boost::variant<VariantTypes...>, VariantTypes...>(ar, which, variant);

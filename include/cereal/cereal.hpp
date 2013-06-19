@@ -40,34 +40,54 @@ namespace cereal
 {
   static const int32_t msb_32bit = 0x80000000;
 
+  // ######################################################################
   //! An exception class thrown when things go wrong at runtime
   struct Exception : public std::runtime_error
   {
     using std::runtime_error::runtime_error;
   };
 
+  // ######################################################################
   //! For holding name value pairs
+  /*! This pairs a name (some string) with some value such that an archive
+      can potentially take advantage of the pairing. */
   template <class T>
-  struct NameValuePair
+  class NameValuePair
   {
-    NameValuePair( std::string const & n, T & v ) : name(n), value(v) {}
+    private:
+      // If we get passed an RValue, we'll just make a local copy if it here
+      // otherwise, we store a reference
+      using DT = typename std::decay<T>::type;
+      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
+                                             DT,
+                                            typename std::add_lvalue_reference<DT>::type>::type;
+    public:
+      //! Constructs a new NameValuePair
+      /*! @param n The name of the pair
+          @param v The value to pair.  Ideally this should be an l-value reference so that
+                   the value can be both loaded and saved to.  If you pass an r-value reference,
+                   the NameValuePair will store a copy of it instead of a reference.  Thus you should
+                   only pass r-values in cases where this makes sense, such as the result of some
+                   size() call.  In either case, any constness will be stripped away */
+      NameValuePair( std::string const & n, T && v ) : name(n), value(const_cast<Type>(v)) {}
 
-    std::string name;
-    T & value;
+      std::string name;
+      Type value;
   };
 
   //! Creates a name value pair
   template <class T> inline
-  NameValuePair<T> make_nvp( std::string const & name, T & value )
+  NameValuePair<T> make_nvp( std::string const & name, T && value )
   {
-    return {name, value};
+    return {name, std::forward<T>(value)};
   }
 
   //! Creates a name value pair for the variable T, using the same name
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
-  enum Flags { AllowEmptyClassElision = 1 };
-
+  // ######################################################################
+  //! Casts a derived class to its base class in a way that allows
+  //! cereal to track inheritance
   template<class Base>
     struct base_class
     {
@@ -78,6 +98,10 @@ namespace cereal
 
         Base * base_ptr;
     };
+
+  // ######################################################################
+  //! Special flags for archives
+  enum Flags { AllowEmptyClassElision = 1 };
 
   // ######################################################################
   //! The base output archive class

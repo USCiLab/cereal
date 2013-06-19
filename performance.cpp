@@ -85,7 +85,7 @@ struct cerealBinary
   static void save( std::ostringstream & os, T const & data )
   {
     cereal::BinaryOutputArchive oar(os);
-    oar & data;
+    oar(data);
   }
 
   //! Loads data to a cereal binary archive
@@ -93,7 +93,7 @@ struct cerealBinary
   static void load( std::istringstream & is, T & data )
   {
     cereal::BinaryInputArchive iar(is);
-    iar & data;
+    iar(data);
   }
 };
 
@@ -260,7 +260,7 @@ struct PoDStruct
   template <class Archive>
   void serialize( Archive & ar )
   {
-    ar & a & b & c & d;
+    ar(a, b, c, d);
   };
 
   template <class Archive>
@@ -280,8 +280,7 @@ struct PoDChild : PoDStruct
   template <class Archive>
   void serialize( Archive & ar )
   {
-    ar & static_cast<PoDStruct>(*this);
-    ar & v;
+    ar( cereal::base_class<PoDStruct>(this), v );
   };
 
   template <class Archive>
