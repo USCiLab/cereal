@@ -45,7 +45,7 @@ namespace cereal
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, size_t size )
       {
-        auto const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
+        size_t const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
@@ -100,7 +100,7 @@ namespace cereal
       //! Reads size bytes of data from the input stream
       void loadBinary( void * const data, size_t size )
       {
-        auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
+        size_t const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
 
         if(readSize != size)
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
