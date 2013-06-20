@@ -47,7 +47,7 @@ namespace cereal
 
   //! Loading std::shared_ptr, case when user load and allocate
   template <class Archive, class T> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
@@ -56,7 +56,7 @@ namespace cereal
 
     if( id & msb_32bit )
     {
-      ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
       ar.registerSharedPointer(id, ptr);
     }
     else
@@ -67,7 +67,7 @@ namespace cereal
 
   //! Loading std::shared_ptr, case when no user load and allocate
   template <class Archive, class T> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
@@ -76,7 +76,7 @@ namespace cereal
 
     if( id & msb_32bit )
     {
-      ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
       ar( *ptr );
       ar.registerSharedPointer(id, ptr);
     }
@@ -112,18 +112,18 @@ namespace cereal
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate
   template <class Archive, class T, class D> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+    ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
   }
 
   //! Loading std::unique_ptr, case when no load_and_allocate
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
+    ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
     ar( *ptr );
   }
 
