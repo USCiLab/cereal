@@ -27,43 +27,47 @@
 #ifndef CEREAL_BINARY_ARCHIVE_ARRAY_HPP_
 #define CEREAL_BINARY_ARCHIVE_ARRAY_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <array>
 
 namespace cereal
 {
   //! Saving for std::array primitive types to binary
-  template <class T, size_t N> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save( BinaryOutputArchive & ar, std::array<T, N> const & array )
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
+                          && std::is_arithmetic<T>::value, void>::type
+  save( Archive & ar, std::array<T, N> const & array )
   {
-    ar( binary_data( array.data(), N * sizeof(T) ) );
+    ar( make_nvp( "data", binary_data( array.data(), N * sizeof(T) ) ) );
   }
 
   //! Loading for std::array primitive types to binary
-  template <class T, size_t N> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load( BinaryInputArchive & ar, std::array<T, N> & array )
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
+                          && std::is_arithmetic<T>::value, void>::type
+  load( Archive & ar, std::array<T, N> & array )
   {
-    ar( binary_data( array.data(), N * sizeof(T) ) );
+    ar( make_nvp( "data", binary_data( array.data(), N * sizeof(T) ) ) );
   }
 
   //! Saving for std::array all other types to binary
-  template <class T, size_t N> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  save( BinaryOutputArchive & ar, std::array<T, N> const & array )
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
+                          || !std::is_arithmetic<T>::value, void>::type
+  save( Archive & ar, std::array<T, N> const & array )
   {
     for( auto const & i : array )
-      ar( i );
+      ar( make_nvp( "item", i ) );
   }
 
   //! Loading for std::array all other types to binary
-  template <class T, size_t N> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  load( BinaryInputArchive & ar, std::array<T, N> & array )
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
+                          || !std::is_arithmetic<T>::value, void>::type
+  load( Archive & ar, std::array<T, N> & array )
   {
     for( auto & i : array )
-      ar( i );
+      ar( make_nvp( "item", i ) );
   }
 } // namespace cereal
 

@@ -69,15 +69,23 @@ namespace cereal
                    the NameValuePair will store a copy of it instead of a reference.  Thus you should
                    only pass r-values in cases where this makes sense, such as the result of some
                    size() call.  In either case, any constness will be stripped away */
-      NameValuePair( std::string const & n, T && v ) : name(n), value(const_cast<Type>(v)) {}
+      NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
 
-      std::string name;
+      //std::string name;
+      char const * name;
       Type value;
   };
 
   //! Creates a name value pair
   template <class T> inline
   NameValuePair<T> make_nvp( std::string const & name, T && value )
+  {
+    return {name.c_str(), std::forward<T>(value)};
+  }
+
+  //! Creates a name value pair
+  template <class T> inline
+  NameValuePair<T> make_nvp( const char * name, T && value )
   {
     return {name, std::forward<T>(value)};
   }

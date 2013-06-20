@@ -27,7 +27,7 @@
 #ifndef CEREAL_BINARY_ARCHIVE_BITSET_HPP_
 #define CEREAL_BINARY_ARCHIVE_BITSET_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <bitset>
 
 namespace cereal

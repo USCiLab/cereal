@@ -135,7 +135,7 @@ struct binary
 template <class SerializationT, class DataT>
 void test( std::string const & name,
             DataT const & data,
-            size_t numAverages = 10,
+            size_t numAverages = 100,
             bool validateData = false )
 {
   std::cout << "-----------------------------------" << std::endl;
@@ -332,7 +332,7 @@ int main()
     test<binary>( name.str(), data );
   };
 
-  vectorCharTest(1024*1024*1024, randomize); // 1 GB
+  vectorCharTest(1024*1024*64, randomize); // 1 GB
 
   //########################################
   auto vectorPoDStructTest = [&](size_t s)
@@ -348,7 +348,7 @@ int main()
   vectorPoDStructTest(64);
   vectorPoDStructTest(1024);
   vectorPoDStructTest(1024*1024);
-  vectorPoDStructTest(1024*1024*64);
+  vectorPoDStructTest(1024*1024*4);
 
   //########################################
   auto vectorPoDChildTest = [&](size_t s)
