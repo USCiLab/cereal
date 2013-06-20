@@ -26,12 +26,12 @@
 */
 
 #include <cereal/cereal.hpp>
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <cereal/binary_archive/string.hpp>
-#include <cereal/binary_archive/utility.hpp>
-#include <cereal/binary_archive/memory.hpp>
-#include <cereal/binary_archive/complex.hpp>
-#include <cereal/binary_archive/boost_variant.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/complex.hpp>
+#include <cereal/types/boost_variant.hpp>
 
 #include <cxxabi.h>
 #include <sstream>

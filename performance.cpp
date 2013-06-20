@@ -37,8 +37,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/base_object.hpp>
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <cereal/binary_archive/vector.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/vector.hpp>
 
 //! Runs serialization to save data to an ostringstream
 /*! Used to time how long it takes to save data to an ostringstream.

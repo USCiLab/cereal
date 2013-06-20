@@ -24,25 +24,25 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <cereal/binary_archive/memory.hpp>
-#include <cereal/binary_archive/array.hpp>
-#include <cereal/binary_archive/vector.hpp>
-#include <cereal/binary_archive/deque.hpp>
-#include <cereal/binary_archive/forward_list.hpp>
-#include <cereal/binary_archive/list.hpp>
-#include <cereal/binary_archive/string.hpp>
-#include <cereal/binary_archive/map.hpp>
-#include <cereal/binary_archive/queue.hpp>
-#include <cereal/binary_archive/set.hpp>
-#include <cereal/binary_archive/stack.hpp>
-#include <cereal/binary_archive/unordered_map.hpp>
-#include <cereal/binary_archive/unordered_set.hpp>
-#include <cereal/binary_archive/utility.hpp>
-#include <cereal/binary_archive/tuple.hpp>
-#include <cereal/binary_archive/bitset.hpp>
-#include <cereal/binary_archive/complex.hpp>
-#include <cereal/binary_archive/chrono.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/deque.hpp>
+#include <cereal/types/forward_list.hpp>
+#include <cereal/types/list.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/queue.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/stack.hpp>
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/unordered_set.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/tuple.hpp>
+#include <cereal/types/bitset.hpp>
+#include <cereal/types/complex.hpp>
+#include <cereal/types/chrono.hpp>
 #include <limits>
 #include <random>
 
