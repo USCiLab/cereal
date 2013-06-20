@@ -87,16 +87,16 @@ namespace cereal
   }
 
   //! Saving std::weak_ptr
-  template <class T> inline
-  void save( BinaryOutputArchive & ar, std::weak_ptr<T> const & ptr )
+  template <class Archive, class T> inline
+  void save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
     ar( sptr );
   }
 
   //! Loading std::weak_ptr
-  template <class T> inline
-  void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
+  template <class Archive, class T> inline
+  void load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
     ar( sptr );
@@ -104,8 +104,8 @@ namespace cereal
   }
 
   //! Saving std::unique_ptr
-  template <class T, class D> inline
-  void save( BinaryOutputArchive & ar, std::unique_ptr<T, D> const & ptr )
+  template <class Archive, class T, class D> inline
+  void save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     ar( *ptr );
   }
@@ -113,7 +113,7 @@ namespace cereal
   //! Loading std::unique_ptr, case when user provides load_and_allocate
   template <class Archive, class T, class D> inline
   typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
-  load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
+  load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
   }
