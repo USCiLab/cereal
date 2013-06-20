@@ -210,35 +210,43 @@ namespace cereal
 int main()
 {
 
-
-  Everything e_out;
-  e_out.x = 99;
-  e_out.y = 100;
-  e_out.t1 = {1};
-  e_out.t2 = {2};
-  e_out.t3 = {3};
-  e_out.t4 = {4};
-  e_out.s = "Hello, World!";
-
-  Test2 t2 = {22};
+  int x[5];
 
   {
-    std::ofstream os("out.txt");
+    std::ostringstream os;
     cereal::BinaryOutputArchive archive(os);
-    archive(CEREAL_NVP(e_out));
-    archive(t2);
+    archive( x );
   }
 
-  Everything e_in;
 
-  {
-    std::ifstream is("out.txt");
-    cereal::BinaryInputArchive archive(is);
-    archive(CEREAL_NVP(e_in));
-    archive(t2);
-  }
+  //Everything e_out;
+  //e_out.x = 99;
+  //e_out.y = 100;
+  //e_out.t1 = {1};
+  //e_out.t2 = {2};
+  //e_out.t3 = {3};
+  //e_out.t4 = {4};
+  //e_out.s = "Hello, World!";
 
-  assert(e_in == e_out);//
+  //Test2 t2 = {22};
+
+  //{
+  //  std::ofstream os("out.txt");
+  //  cereal::BinaryOutputArchive archive(os);
+  //  archive(CEREAL_NVP(e_out));
+  //  archive(t2);
+  //}
+
+  //Everything e_in;
+
+  //{
+  //  std::ifstream is("out.txt");
+  //  cereal::BinaryInputArchive archive(is);
+  //  archive(CEREAL_NVP(e_in));
+  //  archive(t2);
+  //}
+
+  //assert(e_in == e_out);//
   //
   //{                     //
   //  std::ofstream os("pt//r.txt");

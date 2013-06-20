@@ -28,6 +28,7 @@
 #define CEREAL_ARCHIVES_BINARY_HPP_
 
 #include <cereal/cereal.hpp>
+#include <cereal/types/common.hpp>
 #include <stack>
 #include <sstream>
 
@@ -126,16 +127,6 @@ namespace cereal
     ar.loadBinary(std::addressof(t), sizeof(t));
   }
 
-  //! Serialization for enum types to binary
-  template<class Archive, class T> inline
-    typename std::enable_if<std::is_enum<T>::value &&
-      (std::is_same<Archive, BinaryInputArchive>::value || std::is_same<Archive, BinaryOutputArchive>::value),
-      void>::type
-  serialize(Archive & ar, T & t)
-  {
-    ar( reinterpret_cast<typename std::underlying_type<T>::type &>(t) );
-  }
-
   //! Serializing NVP types to binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
@@ -169,14 +160,6 @@ namespace cereal
   {
     ar.loadBinary(bd.data, bd.size);
   }
-
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, T * & t )
-  {
-    static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
-  }
-
 } // namespace cereal
 
 #endif // CEREAL_ARCHIVES_BINARY_HPP_
