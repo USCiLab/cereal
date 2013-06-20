@@ -697,8 +697,11 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     std::shared_ptr<int> o_xptr2 = o_xptr1;
     std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_yptr2 = o_yptr1;
-    oar( o_xptr1, o_xptr2);
-    oar( o_yptr1, o_yptr2);
+    std::shared_ptr<int> o_nullptr1;
+    std::shared_ptr<int> o_nullptr2;
+    oar( o_xptr1, o_xptr2 );
+    oar( o_yptr1, o_yptr2 );
+    oar( o_nullptr1, o_nullptr2 );
 
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
@@ -707,8 +710,11 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     std::shared_ptr<int> i_xptr2;
     std::shared_ptr<int> i_yptr1;
     std::shared_ptr<int> i_yptr2;
+    std::shared_ptr<int> i_nullptr1;
+    std::shared_ptr<int> i_nullptr2;
     iar( i_xptr1, i_xptr2);
     iar( i_yptr1, i_yptr2);
+    oar( i_nullptr1, i_nullptr2 );
 
     BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
     BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
@@ -717,6 +723,8 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     BOOST_CHECK_EQUAL(o_yptr1.get(), o_yptr2.get());
     BOOST_CHECK_EQUAL(i_yptr1.get(), i_yptr2.get());
     BOOST_CHECK_EQUAL(*i_yptr1,      *i_yptr2);
+    BOOST_CHECK(!i_nullptr1);
+    BOOST_CHECK(!i_nullptr2);
   }
 }
 

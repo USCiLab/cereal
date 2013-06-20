@@ -141,7 +141,7 @@ namespace cereal
   class OutputArchive
   {
     public:
-      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(0)
+      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1)
       { }
 
       //! Serializes all passed in data
@@ -155,6 +155,9 @@ namespace cereal
       //! Registers a pointer with the archive
       uint32_t registerSharedPointer( void * addr )
       {
+        // Handle null pointers by just returning 0
+        if(addr == 0) return 0;
+
         auto id = itsSharedPointerMap.find( addr );
         if( id == itsSharedPointerMap.end() )
         {
@@ -302,6 +305,8 @@ namespace cereal
 
       std::shared_ptr<void> getSharedPointer(uint32_t const id)
       {
+        if(id == 0) return std::shared_ptr<void>(nullptr);
+
         auto ptr = itsSharedPointerMap.find( id );
         if(ptr == itsSharedPointerMap.end())
         {
