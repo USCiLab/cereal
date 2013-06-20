@@ -65,14 +65,12 @@ class Test2
       void save(Archive & ar) const
       {
         ar(a);
-        //ar(CEREAL_NVP(a));
       }
 
     template<class Archive>
       void load(Archive & ar)
       {
         ar(a);
-        //ar(CEREAL_NVP(a));
       }
 };
 

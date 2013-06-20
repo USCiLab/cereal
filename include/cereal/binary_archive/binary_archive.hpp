@@ -126,6 +126,16 @@ namespace cereal
     ar.loadBinary(std::addressof(t), sizeof(t));
   }
 
+  //! Serialization for enum types to binary
+  template<class Archive, class T> inline
+    typename std::enable_if<std::is_enum<T>::value && 
+      (std::is_same<Archive, BinaryInputArchive>::value || std::is_same<Archive, BinaryOutputArchive>::value),
+      void>::type
+  serialize(Archive & ar, T & t)
+  {
+    ar( reinterpret_cast<typename std::underlying_type<T>::type &>(t) );
+  }
+
   //! Serializing NVP types to binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)

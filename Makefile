@@ -1,5 +1,5 @@
 CPPFLAGS=-std=c++11 -I./include -Wall -Werror
-CC=g++
+CC=clang++
 
 all: unittests sandbox performance
 
