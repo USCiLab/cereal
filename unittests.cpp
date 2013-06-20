@@ -1816,4 +1816,3 @@ BOOST_AUTO_TEST_CASE( binary_chrono )
     BOOST_CHECK_EQUAL( o_timePoint1 == i_timePoint1, true );
   }
 }
-

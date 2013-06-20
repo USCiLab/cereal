@@ -40,30 +40,30 @@ namespace cereal
     { }
   };
 
-  struct access
+  class access
   {
-    template<class Archive, class T> inline
-    static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
-    { t.serialize(ar); }
+    public:
+      template<class Archive, class T> inline
+        static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
+        { t.serialize(ar); }
 
-    template<class Archive, class T> inline
-    static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
-    { t.save(ar); }
+      template<class Archive, class T> inline
+        static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
+        { t.save(ar); }
 
-    template<class Archive, class T> inline
-    static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
-    { t.load(ar); }
+      template<class Archive, class T> inline
+        static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
+        { t.load(ar); }
 
-    template <class T>
-    static void load_and_allocate(...)
-    { }
+      template <class T>
+        static void load_and_allocate(...)
+        { }
 
-    template<class T, class Archive> inline
-    static auto load_and_allocate(Archive & ar) -> decltype(T::load_and_allocate(ar))
-    {
-      std::cout << "yo2" << std::endl;
-      return T::load_and_allocate( ar );
-    }
+      template<class T, class Archive> inline
+        static auto load_and_allocate(Archive & ar) -> decltype(T::load_and_allocate(ar))
+        {
+          return T::load_and_allocate( ar );
+        }
   };
 
   namespace traits
@@ -212,9 +212,9 @@ namespace cereal
           bool operator==(base_class_id const & other) const
           { return (type == other.type) && (ptr == other.ptr); }
 
-          size_t hash;
           std::type_index type;
           void const * ptr;
+          size_t hash;
       };
       struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
     }

@@ -64,13 +64,13 @@ class Test2
     template<class Archive>
       void save(Archive & ar) const
       {
-        ar(CEREAL_NVP(a));
+        ar(a);
       }
 
     template<class Archive>
       void load(Archive & ar)
       {
-        ar(CEREAL_NVP(a));
+        ar(a);
       }
 };
 
@@ -220,10 +220,13 @@ int main()
   e_out.t4 = {4};
   e_out.s = "Hello, World!";
 
+  Test2 t2 = {22};
+
   {
     std::ofstream os("out.txt");
     cereal::BinaryOutputArchive archive(os);
     archive(CEREAL_NVP(e_out));
+    archive(t2);
   }
 
   Everything e_in;
@@ -232,6 +235,7 @@ int main()
     std::ifstream is("out.txt");
     cereal::BinaryInputArchive archive(is);
     archive(CEREAL_NVP(e_in));
+    archive(t2);
   }
 
   assert(e_in == e_out);//
