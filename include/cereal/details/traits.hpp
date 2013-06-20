@@ -62,7 +62,6 @@ namespace cereal
       template<class T, class Archive> inline
         static auto load_and_allocate(Archive & ar) -> decltype(T::load_and_allocate(ar))
         {
-          std::cout << "yo2" << std::endl;
           return T::load_and_allocate( ar );
         }
   };

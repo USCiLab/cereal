@@ -255,9 +255,9 @@ namespace cereal
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
             "Serialize functions generally have the following signature:\n\n"
             "template<class Archive>\n"
-            "  void serialize(int & ar)\n"
+            "  void serialize(Archive & ar)\n"
             "  {\n"
-            "    ar & member1 & member2 & member3;\n"
+            "    ar( member1, member2, member3 );\n"
             "  }\n\n" );
         return *self;
       }
@@ -396,9 +396,9 @@ namespace cereal
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
             "Serialize functions generally have the following signature:\n\n"
             "template<class Archive>\n"
-            "  void serialize(int & ar)\n"
+            "  void serialize(Archive & ar)\n"
             "  {\n"
-            "    ar & member1 & member2 & member3;\n"
+            "    ar( member1, member2, member3 );\n"
             "  }\n\n" );
         return *self;
       }
