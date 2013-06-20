@@ -28,8 +28,6 @@
 #define CEREAL_CEREAL_HPP_
 
 #include <type_traits>
-#include <typeinfo>
-#include <typeindex>
 #include <unordered_map>
 #include <unordered_set>
 #include <cstddef>

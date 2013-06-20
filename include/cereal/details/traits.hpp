@@ -28,8 +28,8 @@
 #define CEREAL_DETAILS_TRAITS_HPP_
 
 #include <type_traits>
+#include <typeindex>
 #include <memory>
-#include <iostream>
 
 namespace cereal
 {
