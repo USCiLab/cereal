@@ -24,69 +24,44 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_UNORDERED_SET_HPP_
-#define CEREAL_BINARY_ARCHIVE_UNORDERED_SET_HPP_
+#ifndef CEREAL_TYPES_TUPLE_HPP_
+#define CEREAL_TYPES_TUPLE_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <unordered_set>
+#include <cereal/cereal.hpp>
+#include <tuple>
 
 namespace cereal
 {
-  //! Saving for std::unordered_set to binary
-  template <class K, class H, class KE, class A> inline
-  void save( BinaryOutputArchive & ar, std::unordered_set<K, H, KE, A> const & unordered_set )
+  namespace tuple_detail
   {
-    ar( unordered_set.size() );
-
-    for( const auto & i : unordered_set )
-      ar( i );
-  }
-
-  //! Loading for std::unordered_set to binary
-  template <class K, class H, class KE, class A> inline
-  void load( BinaryInputArchive & ar, std::unordered_set<K, H, KE, A> & unordered_set )
-  {
-    size_t size;
-    ar( size );
-
-    unordered_set.reserve( size );
-
-    for( size_t i = 0; i < size; ++i )
+    // unwinds a tuple to save it
+    template <size_t Height>
+    struct serialize
     {
-      K key;
+      template <class Archive, class ... Types> inline
+      static void apply( Archive & ar, std::tuple<Types...> & tuple )
+      {
+        ar( std::get<Height - 1>( tuple ) );
+        serialize<Height - 1>::template apply( ar, tuple );
+      }
+    };
 
-      ar( key );
-      unordered_set.insert( key );
-    }
-  }
-
-  //! Saving for std::unordered_multiset to binary
-  template <class K, class H, class KE, class A> inline
-  void save( BinaryOutputArchive & ar, std::unordered_multiset<K, H, KE, A> const & unordered_multiset )
-  {
-    ar( unordered_multiset.size() );
-
-    for( const auto & i : unordered_multiset )
-      ar( i );
-  }
-
-  //! Loading for std::unordered_multiset to binary
-  template <class K, class H, class KE, class A> inline
-  void load( BinaryInputArchive & ar, std::unordered_multiset<K, H, KE, A> & unordered_multiset )
-  {
-    size_t size;
-    ar( size );
-
-    unordered_multiset.reserve( size );
-
-    for( size_t i = 0; i < size; ++i )
+    // Zero height specialization - nothing to do here
+    template <>
+    struct serialize<0>
     {
-      K key;
+      template <class Archive, class ... Types> inline
+      static void apply( Archive & ar, std::tuple<Types...> & tuple )
+      { }
+    };
+  }
 
-      ar( key );
-      unordered_multiset.insert( key );
-    }
+  //! Serializing for std::tuple
+  template <class Archive, class ... Types> inline
+  void serialize( Archive & ar, std::tuple<Types...> & tuple )
+  {
+    tuple_detail::serialize<std::tuple_size<std::tuple<Types...>>::value>::template apply( ar, tuple );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_UNORDERED_SET_HPP_
+#endif // CEREAL_TYPES_TUPLE_HPP_

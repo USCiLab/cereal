@@ -24,17 +24,17 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_SHARED_PTR_HPP_
-#define CEREAL_BINARY_ARCHIVE_SHARED_PTR_HPP_
+#ifndef CEREAL_TYPES_SHARED_PTR_HPP_
+#define CEREAL_TYPES_SHARED_PTR_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <memory>
 
 namespace cereal
 {
-  //! Saving std::shared_ptr to binary
-  template <class T> inline
-  void save( BinaryOutputArchive & ar, std::shared_ptr<T> const & ptr )
+  //! Saving std::shared_ptr
+  template <class Archive, class T> inline
+  void save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     uint32_t id = ar.registerSharedPointer( ptr.get() );
     ar( id );
@@ -45,10 +45,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr to binary, case when user load and allocate
-  template <class T> inline
+  //! Loading std::shared_ptr, case when user load and allocate
+  template <class Archive, class T> inline
   typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
-  load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
+  load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
 
@@ -65,10 +65,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr to binary, case when no user load and allocate
-  template <class T> inline
+  //! Loading std::shared_ptr, case when no user load and allocate
+  template <class Archive, class T> inline
   typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
-  load( BinaryInputArchive & ar, std::shared_ptr<T> & ptr )
+  load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
 
@@ -86,7 +86,7 @@ namespace cereal
     }
   }
 
-  //! Saving std::weak_ptr to binary
+  //! Saving std::weak_ptr
   template <class T> inline
   void save( BinaryOutputArchive & ar, std::weak_ptr<T> const & ptr )
   {
@@ -94,7 +94,7 @@ namespace cereal
     ar( sptr );
   }
 
-  //! Loading std::weak_ptr from binary
+  //! Loading std::weak_ptr
   template <class T> inline
   void load( BinaryInputArchive & ar, std::weak_ptr<T> & ptr )
   {
@@ -103,25 +103,25 @@ namespace cereal
     ptr = sptr;
   }
 
-  //! Saving std::unique_ptr to binary
+  //! Saving std::unique_ptr
   template <class T, class D> inline
   void save( BinaryOutputArchive & ar, std::unique_ptr<T, D> const & ptr )
   {
     ar( *ptr );
   }
 
-  //! Loading std::unique_ptr from binary, case when user provides load_and_allocate
-  template <class T, class D> inline
+  //! Loading std::unique_ptr, case when user provides load_and_allocate
+  template <class Archive, class T, class D> inline
   typename std::enable_if<traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
   load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
   }
 
-  //! Loading std::unique_ptr from binary, case when no load_and_allocate
-  template <class T, class D> inline
+  //! Loading std::unique_ptr, case when no load_and_allocate
+  template <class Archive, class T, class D> inline
   typename std::enable_if<!traits::has_load_and_allocate<T, BinaryInputArchive>(), void>::type
-  load( BinaryInputArchive & ar, std::unique_ptr<T, D> & ptr )
+  load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, BinaryInputArchive>::load_andor_allocate( ar ) );
     ar( *ptr );
@@ -129,5 +129,4 @@ namespace cereal
 
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_SHARED_PTR_HPP_
-
+#endif // CEREAL_TYPES_SHARED_PTR_HPP_

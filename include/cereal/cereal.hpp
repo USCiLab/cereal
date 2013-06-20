@@ -132,6 +132,19 @@ namespace cereal
     };
 
   // ######################################################################
+  //! Called before a type is serialized to set up any special archive state
+  //! for processing some type
+  template <class Archive, class T>
+  void prologue( Archive & ar, T const & data )
+  { }
+
+  //! Called before a type is serialized to tear down any special archive state
+  //! for processing some type
+  template <class Archive, class T>
+  void epilogue( Archive & ar, T const & data )
+  { }
+
+  // ######################################################################
   //! Special flags for archives
   enum Flags { AllowEmptyClassElision = 1 };
 
@@ -173,13 +186,15 @@ namespace cereal
       template <class T> inline
       void process( T && head )
       {
+        prologue( *self, head );
         (*self) & head;
+        epilogue( *self, head );
       }
 
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
-        (*self) & head;
+        process( std::forward<T>( head ) );
         process( std::forward<Other>( tail )... );
       }
 
@@ -326,13 +341,15 @@ namespace cereal
       template <class T> inline
       void process( T && head )
       {
+        prologue( *self, head );
         (*self) & head;
+        epilogue( *self, head );
       }
 
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
-        (*self) & head;
+        process( std::forward<T>( head ) );
         process( std::forward<Other>( tail )... );
       }
 

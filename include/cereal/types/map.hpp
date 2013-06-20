@@ -24,73 +24,69 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_MAP_HPP_
-#define CEREAL_BINARY_ARCHIVE_MAP_HPP_
+#ifndef CEREAL_TYPES_MAP_HPP_
+#define CEREAL_TYPES_MAP_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <map>
 
 namespace cereal
 {
-  //! Saving for std::map to binary
-  template <class K, class T, class C, class A> inline
-  void save( BinaryOutputArchive & ar, std::map<K, T, C, A> const & map )
+  namespace map_detail
   {
-    ar( map.size() );
-
-    for( const auto & i : map )
+    template <class Archive, class MapT> inline
+    void load( Archive & ar, MapT & map )
     {
-      ar( i.first,
-          i.second );
+      size_t size;
+      ar( size );
+
+      for( size_t i = 0; i < size; ++i )
+      {
+        typename MapT::key_type key;
+        typename MapT::mapped_type value;
+
+        ar( key, value );
+        map.insert( {key, value} );
+      }
     }
+
+    template <class Archive, class MapT> inline
+    void save( Archive & ar, MapT const & map )
+    {
+      ar( map.size() );
+
+      for( const auto & i : map )
+        ar( i.first, i.second );
+    }
+  }
+
+  //! Saving for std::map to binary
+  template <class Archive, class K, class T, class C, class A> inline
+  void save( Archive & ar, std::map<K, T, C, A> const & map )
+  {
+    map_detail::save( ar, map );
   }
 
   //! Loading for std::map to binary
-  template <class K, class T, class C, class A> inline
-  void load( BinaryInputArchive & ar, std::map<K, T, C, A> & map )
+  template <class Archive, class K, class T, class C, class A> inline
+  void load( Archive & ar, std::map<K, T, C, A> & map )
   {
-    size_t size;
-    ar( size );
-
-    for( size_t i = 0; i < size; ++i )
-    {
-      K key;
-      T value;
-
-      ar( key, value );
-      map.insert( {key, value} );
-    }
+    map_detail::load( ar, map );
   }
 
   //! Saving for std::multimap to binary
-  template <class K, class T, class C, class A> inline
-  void save( BinaryOutputArchive & ar, std::multimap<K, T, C, A> const & multimap )
+  template <class Archive, class K, class T, class C, class A> inline
+  void save( Archive & ar, std::multimap<K, T, C, A> const & multimap )
   {
-    ar( multimap.size() );
-
-    for( const auto & i : multimap )
-    {
-      ar( i.first,
-          i.second );
-    }
+    map_detail::save( ar, multimap );
   }
 
   //! Loading for std::multimap to binary
-  template <class K, class T, class C, class A> inline
-  void load( BinaryInputArchive & ar, std::multimap<K, T, C, A> & multimap )
+  template <class Archive, class K, class T, class C, class A> inline
+  void load( Archive & ar, std::multimap<K, T, C, A> & multimap )
   {
-    size_t size;
-    ar( size );
-
-    for( size_t i = 0; i < size; ++i )
-    {
-      K key;
-      T value;
-
-      ar( key, value );
-      multimap.insert( {key, value} );
-    }
+    map_detail::load( ar, multimap );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_MAP_HPP_
+#endif // CEREAL_TYPES_MAP_HPP_

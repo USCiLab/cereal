@@ -24,36 +24,21 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_LIST_HPP_
-#define CEREAL_BINARY_ARCHIVE_LIST_HPP_
+#ifndef CEREAL_TYPES_UTILITY_HPP_
+#define CEREAL_TYPES_UTILITY_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <list>
+#include <cereal/cereal.hpp>
+#include <utility>
 
 namespace cereal
 {
-  //! Saving for std::list to binary
-  template <class T, class A> inline
-  void save( BinaryOutputArchive & ar, std::list<T, A> const & list )
+  //! Serializing for std::pair
+  template <class Archive, class T1, class T2> inline
+  void serialize( Archive & ar, std::pair<T1, T2> & pair )
   {
-    ar( list.size() );
-
-    for( auto const & i : list )
-      ar( i );
-  }
-
-  //! Loading for std::list to binary
-  template <class T, class A> inline
-  void load( BinaryInputArchive & ar, std::list<T, A> & list )
-  {
-    size_t size;
-    ar( size );
-
-    list.resize( size );
-
-    for( auto & i : list )
-      ar( i );
+    ar( pair.first,
+        pair.second );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_LIST_HPP_
+#endif // CEREAL_TYPES_UTILITY_HPP_

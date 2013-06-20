@@ -24,26 +24,28 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_VECTOR_HPP_
-#define CEREAL_BINARY_ARCHIVE_VECTOR_HPP_
+#ifndef CEREAL_TYPES_VECTOR_HPP_
+#define CEREAL_TYPES_VECTOR_HPP_
 
 #include <cereal/cereal.hpp>
 #include <vector>
 
 namespace cereal
 {
-  //! Serialization for std::vectors of arithmetic (but not bool) types to binary, default allocator
+  //! Serialization for std::vectors of arithmetic (but not bool), default allocator
+  //! using binary serialization, if supported
   template <class Archive, class T, class A> inline
   typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value
                           && std::is_same<A, std::allocator<T>>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( make_nvp( "size", vector.size() ) ); // number of elements
-    ar( make_nvp( "data", binary_data( vector.data(), vector.size() * sizeof(T) ) ) );
+    ar( vector.size() ); // number of elements
+    ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );
   }
 
-  //! Serialization for std::vectors of arithmetic (but not bool) types to binary, default allocator
+  //! Serialization for std::vectors of arithmetic (but not bool), default allocator
+  //! using binary serialization, if supported
   template <class Archive, class T, class A> inline
   typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value
@@ -51,13 +53,14 @@ namespace cereal
   load( Archive & ar, std::vector<T, A> & vector )
   {
     size_t vectorSize;
-    ar( make_nvp( "size", vectorSize) );
+    ar( vectorSize );
 
     vector.resize( vectorSize );
-    ar( make_nvp( "data", binary_data( vector.data(), vectorSize * sizeof(T) ) ) );
+    ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );
   }
 
-  //! Serialization for std::vectors of arithmetic (but not bool) types to binary, special allocator
+  //! Serialization for std::vectors of arithmetic (but not bool), special allocator
+  //! using binary serialization, if supported
   template <class Archive, class T, class A> inline
   typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value
@@ -66,12 +69,13 @@ namespace cereal
   {
     size_t const dataSize = std::addressof(vector.back()) - std::addressof(vector.front()) + 1;
 
-    ar( make_nvp( "size", vector.size() ) ); // number of elements
-    ar( make_nvp( "datasize", dataSize) );      // size of data (may be larger due to allocator strategy)
-    ar( make_nvp( "data", binary_data( vector.data(), dataSize * sizeof(T) ) ) );
+    ar( vector.size() ); // number of elements
+    ar( dataSize );      // size of data (may be larger due to allocator strategy)
+    ar( binary_data( vector.data(), dataSize * sizeof(T) ) );
   }
 
-  //! Serialization for std::vectors of arithmetic (but not bool) types to binary, special allocator
+  //! Serialization for std::vectors of arithmetic (but not bool), special allocator
+  //! using binary serialization, if supported
   template <class Archive, class T, class A> inline
   typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value
@@ -80,27 +84,27 @@ namespace cereal
   {
     size_t vectorSize;
     size_t dataSize;
-    ar( make_nvp( "size", vectorSize ),
-        make_nvp( "datasize", dataSize ) );
+    ar( vectorSize,
+        dataSize );
 
     vector.resize( vectorSize );
 
     ar( binary_data( vector.data(), dataSize * sizeof(T) ) );
   }
 
-  //! Serialization for non-arithmetic (and bool) vector types to binary
+  //! Serialization for non-arithmetic (and bool) vector types
   template <class Archive, class T, class A> inline
   typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
                           || !std::is_arithmetic<T>::value
                           || std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( make_nvp( "size", vector.size() ) ); // number of elements
+    ar( vector.size() ); // number of elements
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( make_nvp( "item", *it) );
+      ar( *it );
   }
 
-  //! Serialization for non-arithmetic (and bool) vector types from binary
+  //! Serialization for non-arithmetic (and bool) vector types
   template <class Archive, class T, class A> inline
   typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
                           || !std::is_arithmetic<T>::value
@@ -108,12 +112,12 @@ namespace cereal
   load( Archive & ar, std::vector<T, A> & vector )
   {
     size_t size;
-    ar( CEREAL_NVP(size) );
+    ar( size );
 
     vector.resize( size );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( make_nvp( "item", *it) );
+      ar( *it );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_VECTOR_HPP_
+#endif // CEREAL_TYPES_VECTOR_HPP_

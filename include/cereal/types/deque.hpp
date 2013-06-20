@@ -24,47 +24,36 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_FORWARD_LIST_HPP_
-#define CEREAL_BINARY_ARCHIVE_FORWARD_LIST_HPP_
+#ifndef CEREAL_TYPES_DEQUE_HPP_
+#define CEREAL_TYPES_DEQUE_HPP_
 
 #include <cereal/cereal.hpp>
-#include <forward_list>
+#include <deque>
 
 namespace cereal
 {
-  //! Saving for std::forward_list all other types to binary
+  //! Saving for std::deque
   template <class Archive, class T, class A> inline
-  void save( Archive & ar, std::forward_list<T, A> const & forward_list )
+  void save( Archive & ar, std::deque<T, A> const & deque )
   {
-    // save position for size of list
-    ar.pushPosition(sizeof(size_t));
+    ar( deque.size() );
 
-    // write the list
-    size_t size = 0;
-    for( const auto & i : forward_list )
-    {
-      ar( make_nvp("item", i) );
-      ++size;
-    }
-
-    // write the size
-    ar.popPosition();
-    ar( CEREAL_NVP(size) );
-    ar.resetPosition();
+    for( auto const & i : deque )
+      ar( i );
   }
 
-  //! Loading for std::forward_list all other types from binary
-  template <class Archive, class T, class A>
-  void load( Archive & ar, std::forward_list<T, A> & forward_list )
+  //! Loading for std::deque
+  template <class Archive, class T, class A> inline
+  void load( Archive & ar, std::deque<T, A> & deque )
   {
     size_t size;
-    ar( CEREAL_NVP(size) );
+    ar( size );
 
-    forward_list.resize( size );
+    deque.resize( size );
 
-    for( auto & i : forward_list )
-      ar( make_nvp("item", i) );
+    for( auto & i : deque )
+      ar( i );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_FORWARD_LIST_HPP_
+#endif // CEREAL_TYPES_DEQUE_HPP_

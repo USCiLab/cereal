@@ -24,33 +24,47 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_STRING_HPP_
-#define CEREAL_BINARY_ARCHIVE_STRING_HPP_
+#ifndef CEREAL_TYPES_FORWARD_LIST_HPP_
+#define CEREAL_TYPES_FORWARD_LIST_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <string>
+#include <cereal/cereal.hpp>
+#include <forward_list>
 
 namespace cereal
 {
-  //! Serialization for basic_string types to binary
-  template<class CharT, class Traits, class Alloc> inline
-  void save(BinaryOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  //! Saving for std::forward_list all other types
+  template <class Archive, class T, class A> inline
+  void save( Archive & ar, std::forward_list<T, A> const & forward_list )
   {
-    // Save number of chars + the data
-    ar( str.size() );
-    ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );
+    // save position for size of list
+    ar.pushPosition(sizeof(size_t));
+
+    // write the list
+    size_t size = 0;
+    for( const auto & i : forward_list )
+    {
+      ar( i );
+      ++size;
+    }
+
+    // write the size
+    ar.popPosition();
+    ar( size );
+    ar.resetPosition();
   }
 
-  //! Serialization for basic_string types from binary
-  template<class CharT, class Traits, class Alloc> inline
-  void load(BinaryInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  //! Loading for std::forward_list all other types from
+  template <class Archive, class T, class A>
+  void load( Archive & ar, std::forward_list<T, A> & forward_list )
   {
     size_t size;
     ar( size );
-    str.resize(size);
-    ar( binary_data( const_cast<CharT*>(str.data()), size * sizeof(CharT) ) );
+
+    forward_list.resize( size );
+
+    for( auto & i : forward_list )
+      ar( i );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_STRING_HPP_
-
+#endif // CEREAL_TYPES_FORWARD_LIST_HPP_

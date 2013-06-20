@@ -24,65 +24,68 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_SET_HPP_
-#define CEREAL_BINARY_ARCHIVE_SET_HPP_
+#ifndef CEREAL_TYPES_SET_HPP_
+#define CEREAL_TYPES_SET_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <set>
 
 namespace cereal
 {
-  //! Saving for std::set to binary
-  template <class K, class C, class A> inline
-  void save( BinaryOutputArchive & ar, std::set<K, C, A> const & set )
+  namespace set_detail
   {
-    ar( set.size() );
-
-    for( const auto & i : set )
-      ar( i );
-  }
-
-  //! Loading for std::set to binary
-  template <class K, class C, class A> inline
-  void load( BinaryInputArchive & ar, std::set<K, C, A> & set )
-  {
-    size_t size;
-    ar( size );
-
-    for( size_t i = 0; i < size; ++i )
+    template <class Archive, class SetT> inline
+    void save( Archive & ar, SetT const & set )
     {
-      K key;
+      ar( set.size() );
 
-      ar( key );
-      set.insert( key );
+      for( const auto & i : set )
+        ar( i );
+    }
+
+    template <class Archive, class SetT> inline
+    void load( Archive & ar, SetT & set )
+    {
+      size_t size;
+      ar( size );
+
+      for( size_t i = 0; i < size; ++i )
+      {
+        typename SetT::key_type key;
+
+        ar( key );
+        set.insert( key );
+      }
     }
   }
 
-  //! Saving for std::multiset to binary
-  template <class K, class C, class A> inline
-  void save( BinaryOutputArchive & ar, std::multiset<K, C, A> const & multiset )
+  //! Saving for std::set
+  template <class Archive, class K, class C, class A> inline
+  void save( Archive & ar, std::set<K, C, A> const & set )
   {
-    ar( multiset.size() );
-
-    for( const auto & i : multiset )
-      ar( i );
+    set_detail::save( ar, set );
   }
 
-  //! Loading for std::multiset to binary
-  template <class K, class C, class A> inline
-  void load( BinaryInputArchive & ar, std::multiset<K, C, A> & multiset )
+  //! Loading for std::set
+  template <class Archive, class K, class C, class A> inline
+  void load( Archive & ar, std::set<K, C, A> & set )
   {
-    size_t size;
-    ar( size );
+    set_detail::load( ar, set );
+  }
 
-    for( size_t i = 0; i < size; ++i )
-    {
-      K key;
+  //! Saving for std::multiset
+  template <class Archive, class K, class C, class A> inline
+  void save( Archive & ar, std::multiset<K, C, A> const & multiset )
+  {
+    set_detail::save( ar, multiset );
+  }
 
-      ar( key );
-      multiset.insert( key );
-    }
+  //! Loading for std::multiset
+  template <class Archive, class K, class C, class A> inline
+  void load( Archive & ar, std::multiset<K, C, A> & multiset )
+  {
+    set_detail::load( ar, multiset );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_SET_HPP_
+#endif // CEREAL_TYPES_SET_HPP_

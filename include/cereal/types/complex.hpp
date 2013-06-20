@@ -24,30 +24,30 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_COMPLEX_HPP_
-#define CEREAL_BINARY_ARCHIVE_COMPLEX_HPP_
+#ifndef CEREAL_TYPES_COMPLEX_HPP_
+#define CEREAL_TYPES_COMPLEX_HPP_
 
 #include <cereal/cereal.hpp>
 #include <complex>
 
 namespace cereal
 {
-  //! Serializing (save) for std::complex to binary
+  //! Serializing (save) for std::complex
   template <class Archive, class T> inline
   void save( Archive & ar, std::complex<T> const & comp )
   {
-    ar( make_nvp("real", comp.real()),
-        make_nvp("imag", comp.imag()) );
+    ar( comp.real(),
+        comp.imag() );
   }
 
-  //! Serializing (load) for std::complex to binary
+  //! Serializing (load) for std::complex
   template <class Archive, class T> inline
   void load( Archive & ar, std::complex<T> & bits )
   {
     T real, imag;
-    ar( CEREAL_NVP(real), CEREAL_NVP(imag) );
+    ar( real, imag );
     bits = {real, imag};
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_COMPLEX_HPP_
+#endif // CEREAL_TYPES_COMPLEX_HPP_

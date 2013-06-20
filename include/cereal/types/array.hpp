@@ -24,48 +24,53 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_CHRONO_HPP_
-#define CEREAL_BINARY_ARCHIVE_CHRONO_HPP_
+#ifndef CEREAL_TYPES_ARRAY_HPP_
+#define CEREAL_TYPES_ARRAY_HPP_
 
 #include <cereal/cereal.hpp>
-#include <chrono>
+#include <array>
 
 namespace cereal
 {
-  //! Saving duration
-  template <class Archive, class R, class P> inline
-  void save( Archive & ar, std::chrono::duration<R, P> const & dur )
+  //! Saving for std::array primitive types
+  //! using binary serialization, if supported
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
+                          && std::is_arithmetic<T>::value, void>::type
+  save( Archive & ar, std::array<T, N> const & array )
   {
-    ar( make_nvp("count", dur.count()) );
+    ar( binary_data( array.data(), N * sizeof(T) ) );
   }
 
-  //! Loading duration
-  template <class Archive, class R, class P> inline
-  void load( Archive & ar, std::chrono::duration<R, P> & dur )
+  //! Loading for std::array primitive types
+  //! using binary serialization, if supported
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
+                          && std::is_arithmetic<T>::value, void>::type
+  load( Archive & ar, std::array<T, N> & array )
   {
-    R count;
-    ar( CEREAL_NVP(count) );
-
-    dur = std::chrono::duration<R, P>{count};
+    ar( binary_data( array.data(), N * sizeof(T) ) );
   }
 
-  //! Saving duration
-  template <class Archive, class C, class D> inline
-  void save( Archive & ar, std::chrono::time_point<C, D> const & dur )
+  //! Saving for std::array all other types to binary
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
+                          || !std::is_arithmetic<T>::value, void>::type
+  save( Archive & ar, std::array<T, N> const & array )
   {
-    ar( make_nvp("elapsed", dur.time_since_epoch()) );
+    for( auto const & i : array )
+      ar( i );
   }
 
-  //! Loading duration
-  template <class Archive, class C, class D> inline
-  void load( Archive & ar, std::chrono::time_point<C, D> & dur )
+  //! Loading for std::array all other types to binary
+  template <class Archive, class T, size_t N> inline
+  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
+                          || !std::is_arithmetic<T>::value, void>::type
+  load( Archive & ar, std::array<T, N> & array )
   {
-    D elapsed;
-    ar( CEREAL_NVP(elapsed) );
-
-    dur = std::chrono::time_point<C, D>{elapsed};
+    for( auto & i : array )
+      ar( i );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_CHRONO_HPP_
-
+#endif // CEREAL_TYPES_ARRAY_HPP_

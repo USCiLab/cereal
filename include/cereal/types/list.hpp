@@ -24,36 +24,36 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_DEQUE_HPP_
-#define CEREAL_BINARY_ARCHIVE_DEQUE_HPP_
+#ifndef CEREAL_TYPES_LIST_HPP_
+#define CEREAL_TYPES_LIST_HPP_
 
 #include <cereal/cereal.hpp>
-#include <deque>
+#include <list>
 
 namespace cereal
 {
-  //! Saving for std::deque to binary
+  //! Saving for std::list
   template <class Archive, class T, class A> inline
-  void save( Archive & ar, std::deque<T, A> const & deque )
+  void save( Archive & ar, std::list<T, A> const & list )
   {
-    ar( make_nvp("size", deque.size()) );
+    ar( list.size() );
 
-    for( auto const & i : deque )
-      ar( make_nvp("item", i) );
+    for( auto const & i : list )
+      ar( i );
   }
 
-  //! Loading for std::deque to binary
-  template <class Archive, class T, class A> inline
-  void load( Archive & ar, std::deque<T, A> & deque )
+  //! Loading for std::list
+  template <class T, class A> inline
+  void load( BinaryInputArchive & ar, std::list<T, A> & list )
   {
     size_t size;
-    ar( CEREAL_NVP(size) );
+    ar( size );
 
-    deque.resize( size );
+    list.resize( size );
 
-    for( auto & i : deque )
-      ar( make_nvp("item", i) );
+    for( auto & i : list )
+      ar( i );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_DEQUE_HPP_
+#endif // CEREAL_TYPES_LIST_HPP_

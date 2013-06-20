@@ -24,47 +24,35 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_STACK_HPP_
-#define CEREAL_BINARY_ARCHIVE_STACK_HPP_
+#ifndef CEREAL_TYPES_STRING_HPP_
+#define CEREAL_TYPES_STRING_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <stack>
+#include <cereal/cereal.hpp>
+#include <string>
 
 namespace cereal
 {
-  namespace stack_detail
+  //! Serialization for basic_string types, if binary data is supported
+  template<class Archive, class CharT, class Traits, class Alloc> inline
+  typename std::enable_if<traits::is_output_serializable<BinaryData<CharT>, Archive>(), void>::type
+  save(Archive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
-    //! Allows access to the protected container in stack
-    template <class T, class C> inline
-    C const & container( std::stack<T, C> const & stack )
-    {
-      struct H : public std::stack<T, C>
-      {
-        static C const & get( std::stack<T, C> const & s )
-        {
-          return s.*(&H::c);
-        }
-      };
-
-      return H::get( stack );
-    }
+    // Save number of chars + the data
+    ar( str.size() );
+    ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );
   }
 
-  //! Saving for std::stack to binary
-  template <class T, class C> inline
-  void save( BinaryOutputArchive & ar, std::stack<T, C> const & stack )
+  //! Serialization for basic_string types, if binary data is supported
+  template<class Archive, class CharT, class Traits, class Alloc> inline
+  typename std::enable_if<traits::is_input_serializable<BinaryData<CharT>, Archive>(), void>::type
+  load(Archive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
-    ar( stack_detail::container( stack ) );
-  }
-
-  //! Loading for std::stack to binary
-  template <class T, class C> inline
-  void load( BinaryInputArchive & ar, std::stack<T, C> & stack )
-  {
-    C container;
-    ar( container );
-    stack = std::stack<T, C>( std::move( container ) );
+    size_t size;
+    ar( size );
+    str.resize(size);
+    ar( binary_data( const_cast<CharT*>(str.data()), size * sizeof(CharT) ) );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_STACK_HPP_
+#endif // CEREAL_TYPES_STRING_HPP_
+

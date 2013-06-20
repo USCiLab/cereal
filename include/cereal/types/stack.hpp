@@ -24,45 +24,47 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_TUPLE_HPP_
-#define CEREAL_BINARY_ARCHIVE_TUPLE_HPP_
+#ifndef CEREAL_TYPES_STACK_HPP_
+#define CEREAL_TYPES_STACK_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <tuple>
+#include <cereal/cereal.hpp>
+#include <stack>
 
 namespace cereal
 {
-  namespace tuple_detail
+  namespace stack_detail
   {
-    // unwinds a tuple to save it
-    template <size_t Height>
-    struct serialize
+    //! Allows access to the protected container in stack
+    template <class T, class C> inline
+    C const & container( std::stack<T, C> const & stack )
     {
-      template <class Archive, class ... Types> inline
-      static void apply( Archive & ar, std::tuple<Types...> & tuple )
+      struct H : public std::stack<T, C>
       {
-        ar( std::get<Height - 1>( tuple ) );
-        serialize<Height - 1>::template apply( ar, tuple );
-      }
-    };
+        static C const & get( std::stack<T, C> const & s )
+        {
+          return s.*(&H::c);
+        }
+      };
 
-    // Zero height specialization - nothing to do here
-    template <>
-    struct serialize<0>
-    {
-      template <class Archive, class ... Types> inline
-      static void apply( Archive & ar, std::tuple<Types...> & tuple )
-      { }
-    };
+      return H::get( stack );
+    }
   }
 
-  //! Serializing for std::tuple to binary
-  template <class Archive, class ... Types> inline
-  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, std::tuple<Types...> & tuple )
+  //! Saving for std::stack
+  template <class Archive, class T, class C> inline
+  void save( Archive & ar, std::stack<T, C> const & stack )
   {
-    tuple_detail::serialize<std::tuple_size<std::tuple<Types...>>::value>::template apply( ar, tuple );
+    ar( stack_detail::container( stack ) );
+  }
+
+  //! Loading for std::stack
+  template <class Archive, class T, class C> inline
+  void load( Archive & ar, std::stack<T, C> & stack )
+  {
+    C container;
+    ar( container );
+    stack = std::stack<T, C>( std::move( container ) );
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_TUPLE_HPP_
+#endif // CEREAL_TYPES_STACK_HPP_

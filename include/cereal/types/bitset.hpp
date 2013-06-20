@@ -24,8 +24,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_BITSET_HPP_
-#define CEREAL_BINARY_ARCHIVE_BITSET_HPP_
+#ifndef CEREAL_TYPES_BITSET_HPP_
+#define CEREAL_TYPES_BITSET_HPP_
 
 #include <cereal/cereal.hpp>
 #include <bitset>
@@ -42,59 +42,59 @@ namespace cereal
     };
   }
 
-  //! Serializing (save) for std::bitset to binary
+  //! Serializing (save) for std::bitset
   template <class Archive, size_t N> inline
   void save( Archive & ar, std::bitset<N> const & bits )
   {
     try
     {
       auto const b = bits.to_ulong();
-      ar( make_nvp( "type", bitset_detail::type::ulong ) );
-      ar( make_nvp( "data", b ) );
+      ar( bitset_detail::type::ulong );
+      ar( b );
     }
     catch( std::overflow_error const & e )
     {
       try
       {
         auto const b = bits.to_ullong();
-        ar( make_nvp( "type", bitset_detail::type::ullong ) );
-        ar( make_nvp( "data", b ) );
+        ar( bitset_detail::type::ullong );
+        ar( b );
       }
       catch( std::overflow_error const & e )
       {
-        ar( make_nvp( "type", bitset_detail::type::string ) );
-        ar( make_nvp( "data", bits.to_string() ) );
+        ar( bitset_detail::type::string );
+        ar( bits.to_string() );
       }
     }
   }
 
-  //! Serializing (load) for std::bitset to binary
+  //! Serializing (load) for std::bitset
   template <class Archive, size_t N> inline
   void load( Archive & ar, std::bitset<N> & bits )
   {
     bitset_detail::type t;
-    ar( make_nvp( "type", t ) );
+    ar( t );
 
     switch( t )
     {
       case bitset_detail::type::ulong:
       {
         unsigned long b;
-        ar( make_nvp( "data", b ) );
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::ullong:
       {
         unsigned long long b;
-        ar( make_nvp( "data", b ) );
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::string:
       {
         std::string b;
-        ar( make_nvp( "data", b ) );
+        ar( b );
         bits = std::bitset<N>( b );
         break;
       }
@@ -104,4 +104,4 @@ namespace cereal
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_BITSET_HPP_
+#endif // CEREAL_TYPES_BITSET_HPP_

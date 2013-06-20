@@ -24,22 +24,48 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_UTILITY_HPP_
-#define CEREAL_BINARY_ARCHIVE_UTILITY_HPP_
+#ifndef CEREAL_TYPES_CHRONO_HPP_
+#define CEREAL_TYPES_CHRONO_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
-#include <utility>
+#include <cereal/cereal.hpp>
+#include <chrono>
 
 namespace cereal
 {
-  //! Serializing for std::pair to binary
-  template <class Archive, class T1, class T2> inline
-  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, std::pair<T1, T2> & pair )
+  //! Saving std::chrono::duration
+  template <class Archive, class R, class P> inline
+  void save( Archive & ar, std::chrono::duration<R, P> const & dur )
   {
-    ar( pair.first,
-        pair.second );
+    ar( dur.count() );
+  }
+
+  //! Loading std::chrono::duration
+  template <class Archive, class R, class P> inline
+  void load( Archive & ar, std::chrono::duration<R, P> & dur )
+  {
+    R count;
+    ar( count );
+
+    dur = std::chrono::duration<R, P>{count};
+  }
+
+  //! Saving std::chrono::time_point
+  template <class Archive, class C, class D> inline
+  void save( Archive & ar, std::chrono::time_point<C, D> const & dur )
+  {
+    ar( dur.time_since_epoch() );
+  }
+
+  //! Loading std::chrono::time_point
+  template <class Archive, class C, class D> inline
+  void load( Archive & ar, std::chrono::time_point<C, D> & dur )
+  {
+    D elapsed;
+    ar( elapsed );
+
+    dur = std::chrono::time_point<C, D>{elapsed};
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_UTILITY_HPP_
+#endif // CEREAL_TYPES_CHRONO_HPP_
+

@@ -24,10 +24,10 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_QUEUE_HPP_
-#define CEREAL_BINARY_ARCHIVE_QUEUE_HPP_
+#ifndef CEREAL_TYPES_QUEUE_HPP_
+#define CEREAL_TYPES_QUEUE_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <queue>
 
 namespace cereal
@@ -80,33 +80,33 @@ namespace cereal
     }
   }
 
-  //! Saving for std::queue to binary
-  template <class T, class C> inline
-  void save( BinaryOutputArchive & ar, std::queue<T, C> const & queue )
+  //! Saving for std::queue
+  template <class Archive, class T, class C> inline
+  void save( Archive & ar, std::queue<T, C> const & queue )
   {
     ar( queue_detail::container( queue ) );
   }
 
-  //! Loading for std::queue to binary
-  template <class T, class C> inline
-  void load( BinaryInputArchive & ar, std::queue<T, C> & queue )
+  //! Loading for std::queue
+  template <class Archive, class T, class C> inline
+  void load( Archive & ar, std::queue<T, C> & queue )
   {
     C container;
     ar( container );
     queue = std::queue<T, C>( std::move( container ) );
   }
 
-  //! Saving for std::priority_queue to binary
-  template <class T, class C, class Comp> inline
-  void save( BinaryOutputArchive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
+  //! Saving for std::priority_queue
+  template <class Archive, class T, class C, class Comp> inline
+  void save( Archive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
   {
     ar( queue_detail::comparator( priority_queue ) );
     ar( queue_detail::container( priority_queue ) );
   }
 
-  //! Loading for std::priority_queue to binary
-  template <class T, class C, class Comp> inline
-  void load( BinaryInputArchive & ar, std::priority_queue<T, C, Comp> & priority_queue )
+  //! Loading for std::priority_queue
+  template <class Archive, class T, class C, class Comp> inline
+  void load( Archive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
     Comp comparator;
     ar( comparator );
@@ -118,4 +118,4 @@ namespace cereal
   }
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_QUEUE_HPP_
+#endif // CEREAL_TYPES_QUEUE_HPP_

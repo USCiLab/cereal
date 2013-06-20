@@ -24,8 +24,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_
-#define CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_
+#ifndef CEREAL_ARCHIVES_BINARY_HPP_
+#define CEREAL_ARCHIVES_BINARY_HPP_
 
 #include <cereal/cereal.hpp>
 #include <stack>
@@ -128,7 +128,7 @@ namespace cereal
 
   //! Serialization for enum types to binary
   template<class Archive, class T> inline
-    typename std::enable_if<std::is_enum<T>::value && 
+    typename std::enable_if<std::is_enum<T>::value &&
       (std::is_same<Archive, BinaryInputArchive>::value || std::is_same<Archive, BinaryOutputArchive>::value),
       void>::type
   serialize(Archive & ar, T & t)
@@ -179,4 +179,4 @@ namespace cereal
 
 } // namespace cereal
 
-#endif // CEREAL_BINARY_ARCHIVE_BINARY_ARCHIVE_HPP_
+#endif // CEREAL_ARCHIVES_BINARY_HPP_
