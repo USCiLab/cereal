@@ -27,32 +27,32 @@
 #ifndef CEREAL_BINARY_ARCHIVE_DEQUE_HPP_
 #define CEREAL_BINARY_ARCHIVE_DEQUE_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <deque>
 
 namespace cereal
 {
   //! Saving for std::deque to binary
-  template <class T, class A> inline
-  void save( BinaryOutputArchive & ar, std::deque<T, A> const & deque )
+  template <class Archive, class T, class A> inline
+  void save( Archive & ar, std::deque<T, A> const & deque )
   {
-    ar( deque.size() );
+    ar( make_nvp("size", deque.size()) );
 
     for( auto const & i : deque )
-      ar( i );
+      ar( make_nvp("item", i) );
   }
 
   //! Loading for std::deque to binary
-  template <class T, class A> inline
-  void load( BinaryInputArchive & ar, std::deque<T, A> & deque )
+  template <class Archive, class T, class A> inline
+  void load( Archive & ar, std::deque<T, A> & deque )
   {
     size_t size;
-    ar( size );
+    ar( CEREAL_NVP(size) );
 
     deque.resize( size );
 
     for( auto & i : deque )
-      ar( i );
+      ar( make_nvp("item", i) );
   }
 } // namespace cereal
 

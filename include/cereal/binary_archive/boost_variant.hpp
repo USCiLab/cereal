@@ -27,7 +27,7 @@
 #ifndef CEREAL_BINARY_ARCHIVE_BOOST_VARIANT_HPP_
 #define CEREAL_BINARY_ARCHIVE_BOOST_VARIANT_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <boost/variant.hpp>
 #include <boost/mpl/size.hpp>
 
@@ -35,34 +35,35 @@ namespace cereal
 {
   namespace binary_detail
   {
+    template <class Archive>
     struct variant_save_visitor : boost::static_visitor<>
     {
-      variant_save_visitor(BinaryOutputArchive & ar) : ar(ar) {}
+      variant_save_visitor(Archive & ar) : ar(ar) {}
 
       template<class T>
         void operator()(T const & value) const
         {
-          ar( value );
+          ar( CEREAL_NVP(value) );
         }
 
-      BinaryOutputArchive & ar;
+      Archive & ar;
     };
 
-    template<int N, class Variant, class ... Args>
+    template<int N, class Variant, class ... Args, class Archive>
     typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(BinaryInputArchive & ar, int target, Variant & variant)
+    load_variant(Archive & ar, int target, Variant & variant)
     {
       throw ::cereal::Exception("Error traversing variant during load");
     }
 
-    template<int N, class Variant, class H, class ... T>
+    template<int N, class Variant, class H, class ... T, class Archive>
     typename std::enable_if<N < boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(BinaryInputArchive & ar, int target, Variant & variant)
+    load_variant(Archive & ar, int target, Variant & variant)
     {
       if(N == target)
       {
         H value;
-        ar( value );
+        ar( CEREAL_NVP(value) );
         variant = value;
       }
       else
@@ -72,23 +73,23 @@ namespace cereal
   } // namespace binary_detail
 
   //! Saving for boost::variant to binary
-  template <typename... VariantTypes> inline
-  void save( BinaryOutputArchive & ar, boost::variant<VariantTypes...> const & variant )
+  template <class Archive, typename... VariantTypes> inline
+  void save( Archive & ar, boost::variant<VariantTypes...> const & variant )
   {
     int32_t which = variant.which();
-    ar( which );
-    binary_detail::variant_save_visitor visitor(ar);
+    ar( CEREAL_NVP(which) );
+    binary_detail::variant_save_visitor<Archive> visitor(ar);
     variant.apply_visitor(visitor);
   }
 
   //! Loading for boost::variant from binary
-  template <typename... VariantTypes> inline
-  void load( BinaryInputArchive & ar, boost::variant<VariantTypes...> & variant )
+  template <class Archive, typename... VariantTypes> inline
+  void load( Archive & ar, boost::variant<VariantTypes...> & variant )
   {
     typedef typename boost::variant<VariantTypes...>::types types;
 
     int32_t which;
-    ar( which );
+    ar( CEREAL_NVP(which) );
     if(which >= boost::mpl::size<types>::value)
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 

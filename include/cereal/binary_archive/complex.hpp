@@ -27,25 +27,25 @@
 #ifndef CEREAL_BINARY_ARCHIVE_COMPLEX_HPP_
 #define CEREAL_BINARY_ARCHIVE_COMPLEX_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <complex>
 
 namespace cereal
 {
   //! Serializing (save) for std::complex to binary
-  template <class T> inline
-  void save( BinaryOutputArchive & ar, std::complex<T> const & comp )
+  template <class Archive, class T> inline
+  void save( Archive & ar, std::complex<T> const & comp )
   {
-    ar( comp.real(),
-        comp.imag() );
+    ar( make_nvp("real", comp.real()),
+        make_nvp("imag", comp.imag()) );
   }
 
   //! Serializing (load) for std::complex to binary
-  template <class T> inline
-  void load( BinaryInputArchive & ar, std::complex<T> & bits )
+  template <class Archive, class T> inline
+  void load( Archive & ar, std::complex<T> & bits )
   {
     T real, imag;
-    ar( real, imag );
+    ar( CEREAL_NVP(real), CEREAL_NVP(imag) );
     bits = {real, imag};
   }
 } // namespace cereal

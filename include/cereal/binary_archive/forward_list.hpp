@@ -27,14 +27,14 @@
 #ifndef CEREAL_BINARY_ARCHIVE_FORWARD_LIST_HPP_
 #define CEREAL_BINARY_ARCHIVE_FORWARD_LIST_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <forward_list>
 
 namespace cereal
 {
   //! Saving for std::forward_list all other types to binary
-  template <class T, class A> inline
-  void save( BinaryOutputArchive & ar, std::forward_list<T, A> const & forward_list )
+  template <class Archive, class T, class A> inline
+  void save( Archive & ar, std::forward_list<T, A> const & forward_list )
   {
     // save position for size of list
     ar.pushPosition(sizeof(size_t));
@@ -43,48 +43,27 @@ namespace cereal
     size_t size = 0;
     for( const auto & i : forward_list )
     {
-      ar( i );
+      ar( make_nvp("item", i) );
       ++size;
     }
 
     // write the size
     ar.popPosition();
-    ar( size );
-    ar.resetPosition();
-  }
-
-  //! Saving for std::forward_list all other types to binary (non-const version)
-  template <class T, class A> inline
-  void save( BinaryOutputArchive & ar, std::forward_list<T, A> & forward_list )
-  {
-    // save position for size of list
-    ar.pushPosition(sizeof(size_t));
-
-    // write the list
-    size_t size = 0;
-    for( auto & i : forward_list )
-    {
-      ar( i );
-      ++size;
-    }
-
-    // write the size
-    ar.popPosition();
-    ar( size );
+    ar( CEREAL_NVP(size) );
     ar.resetPosition();
   }
 
   //! Loading for std::forward_list all other types from binary
-  template <class T, class A>
-  void load( BinaryInputArchive & ar, std::forward_list<T, A> & forward_list )
+  template <class Archive, class T, class A>
+  void load( Archive & ar, std::forward_list<T, A> & forward_list )
   {
     size_t size;
-    ar( size );
+    ar( CEREAL_NVP(size) );
 
     forward_list.resize( size );
 
     for( auto & i : forward_list )
-      ar( i );
+      ar( make_nvp("item", i) );
   }
 } // namespace cereal
 

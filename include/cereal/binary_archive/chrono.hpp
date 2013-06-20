@@ -27,41 +27,41 @@
 #ifndef CEREAL_BINARY_ARCHIVE_CHRONO_HPP_
 #define CEREAL_BINARY_ARCHIVE_CHRONO_HPP_
 
-#include <cereal/binary_archive/binary_archive.hpp>
+#include <cereal/cereal.hpp>
 #include <chrono>
 
 namespace cereal
 {
   //! Saving duration
-  template <class R, class P> inline
-  void save( BinaryOutputArchive & ar, std::chrono::duration<R, P> const & dur )
+  template <class Archive, class R, class P> inline
+  void save( Archive & ar, std::chrono::duration<R, P> const & dur )
   {
-    ar( dur.count() );
+    ar( make_nvp("count", dur.count()) );
   }
 
   //! Loading duration
-  template <class R, class P> inline
-  void load( BinaryInputArchive & ar, std::chrono::duration<R, P> & dur )
+  template <class Archive, class R, class P> inline
+  void load( Archive & ar, std::chrono::duration<R, P> & dur )
   {
     R count;
-    ar( count );
+    ar( CEREAL_NVP(count) );
 
     dur = std::chrono::duration<R, P>{count};
   }
 
   //! Saving duration
-  template <class C, class D> inline
-  void save( BinaryOutputArchive & ar, std::chrono::time_point<C, D> const & dur )
+  template <class Archive, class C, class D> inline
+  void save( Archive & ar, std::chrono::time_point<C, D> const & dur )
   {
-    ar( dur.time_since_epoch() );
+    ar( make_nvp("elapsed", dur.time_since_epoch()) );
   }
 
   //! Loading duration
-  template <class C, class D> inline
-  void load( BinaryInputArchive & ar, std::chrono::time_point<C, D> & dur )
+  template <class Archive, class C, class D> inline
+  void load( Archive & ar, std::chrono::time_point<C, D> & dur )
   {
     D elapsed;
-    ar( elapsed );
+    ar( CEREAL_NVP(elapsed) );
 
     dur = std::chrono::time_point<C, D>{elapsed};
   }
