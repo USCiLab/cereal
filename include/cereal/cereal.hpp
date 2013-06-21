@@ -32,7 +32,9 @@
 #include <unordered_set>
 #include <cstddef>
 
+#include <cereal/base_class.hpp>
 #include <cereal/details/traits.hpp>
+#include <cereal/types/common.hpp>
 
 namespace cereal
 {
@@ -116,20 +118,6 @@ namespace cereal
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
-  //! Casts a derived class to its base class in a way that allows
-  //! cereal to track inheritance
-  template<class Base>
-    struct base_class
-    {
-      template<class Derived>
-        base_class(Derived const * derived) :
-          base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
-      { }
-
-        Base * base_ptr;
-    };
-
-  // ######################################################################
   //! Called before a type is serialized to set up any special archive state
   //! for processing some type
   template <class Archive, class T>
@@ -144,6 +132,16 @@ namespace cereal
 
   // ######################################################################
   //! Special flags for archives
+  /*! AllowEmptyClassElision
+        This allows for empty classes to be serialized even if they do not provide
+        a serialization function.  Classes with no data members are considered to be
+        empty.  Be warned that if this is enabled and you attempt to serialize an
+        empty class with improperly formed serialize or save/load functions, no
+        static error will occur - the error will propogate silently and your
+        intended serialization functions may not be called.  You can manually
+        ensure that your classes that have custom serialization are correct
+        by using the traits is_output_serializable and is_input_serializable
+        in cereal/details/traits.hpp. */
   enum Flags { AllowEmptyClassElision = 1 };
 
   // ######################################################################

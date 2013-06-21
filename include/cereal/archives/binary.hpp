@@ -28,7 +28,6 @@
 #define CEREAL_ARCHIVES_BINARY_HPP_
 
 #include <cereal/cereal.hpp>
-#include <cereal/types/common.hpp>
 #include <stack>
 #include <sstream>
 

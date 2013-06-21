@@ -32,6 +32,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/boost_variant.hpp>
+#include <cereal/base_class.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -40,22 +41,62 @@
 #include <complex>
 #include <iostream>
 
+class Base
+{
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void serialize( Archive & ar )
+    {
+      std::cout << "Base serialize" << std::endl;
+      ar( x );
+    }
+    int x;
+};
+
+class Derived : public Base
+{
+  public:
+    //friend class cereal::access;
+    template <class Archive>
+    void save( Archive & ar ) const
+    {
+      std::cout << "Derived save" << std::endl;
+      ar( y );
+      serialize( ar );
+    }
+
+    template <class Archive>
+    void load( Archive & ar )
+    {
+      std::cout << "Derived load" << std::endl;
+      ar( y );
+    }
+
+    int y;
+};
+        //ar( cereal::base_class<Test1>(this) );
+
 // ###################################
 struct Test1
 {
   int a;
 
-  template<class Archive>
-  void serialize(Archive & ar)
-  {
-    ar(CEREAL_NVP(a));
-  }
+  private:
+    friend class cereal::access;
+    template<class Archive>
+    void serialize(Archive & ar)
+    {
+      ar(CEREAL_NVP(a));
+    }
 };
 
 // ###################################
 class Test2
 {
   public:
+    Test2() {}
+    Test2( int x ) : a( x ) {}
     int a;
 
   private:
@@ -209,44 +250,79 @@ namespace cereal
 // ######################################################################
 int main()
 {
+  std::cout << std::boolalpha << std::endl;
+  std::cout << "Base" << std::endl;
+  std::cout << "ms   " << cereal::traits::has_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "nms  " << cereal::traits::has_non_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "ml   " << cereal::traits::has_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "nml  " << cereal::traits::has_non_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "mse  " << cereal::traits::has_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "nse  " << cereal::traits::has_non_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "iser " << cereal::traits::is_input_serializable<Base, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "oser " << cereal::traits::is_output_serializable<Base, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << std::endl;
 
-  int x[5];
+  std::cout << "Derived" << std::endl;
+  std::cout << "ms   " << cereal::traits::has_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "nms  " << cereal::traits::has_non_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "ml   " << cereal::traits::has_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "nml  " << cereal::traits::has_non_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "mse  " << cereal::traits::has_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "nse  " << cereal::traits::has_non_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "iser " << cereal::traits::is_input_serializable<Derived, cereal::BinaryInputArchive>() << std::endl;
+  std::cout << "oser " << cereal::traits::is_output_serializable<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << std::endl;
+
+
+  //{
+  //  int x[5];
+  //  std::cout << "saving" << std::endl;
+  //  std::stringstream os;
+  //  cereal::BinaryOutputArchive archive(os);
+  //  archive( x );
+
+  //  Base b;
+  //  archive( b );
+
+  //  Derived d;
+  //  archive( d );
+
+  //  std::cout << "loading" << std::endl;
+  //  cereal::BinaryInputArchive iarchive(os);
+
+  //  iarchive( x );
+  //  iarchive( b );
+  //  iarchive( d );
+  //}
+
+  Everything e_out;
+  e_out.x = 99;
+  e_out.y = 100;
+  e_out.t1 = {1};
+  e_out.t2 = {2};
+  e_out.t3 = {3};
+  e_out.t4 = {4};
+  e_out.s = "Hello, World!";
+
+  Test2 t2 = {22};
 
   {
-    std::ostringstream os;
+    std::ofstream os("out.txt");
     cereal::BinaryOutputArchive archive(os);
-    archive( x );
+    archive(CEREAL_NVP(e_out));
+    archive(t2);
   }
 
+  Everything e_in;
 
-  //Everything e_out;
-  //e_out.x = 99;
-  //e_out.y = 100;
-  //e_out.t1 = {1};
-  //e_out.t2 = {2};
-  //e_out.t3 = {3};
-  //e_out.t4 = {4};
-  //e_out.s = "Hello, World!";
+  {
+    std::ifstream is("out.txt");
+    cereal::BinaryInputArchive archive(is);
+    archive(CEREAL_NVP(e_in));
+    archive(t2);
+  }
 
-  //Test2 t2 = {22};
-
-  //{
-  //  std::ofstream os("out.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  archive(CEREAL_NVP(e_out));
-  //  archive(t2);
-  //}
-
-  //Everything e_in;
-
-  //{
-  //  std::ifstream is("out.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  archive(CEREAL_NVP(e_in));
-  //  archive(t2);
-  //}
-
-  //assert(e_in == e_out);//
+  assert(e_in == e_out);//
   //
   //{                     //
   //  std::ofstream os("pt//r.txt");
