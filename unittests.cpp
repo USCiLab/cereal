@@ -552,6 +552,14 @@ BOOST_AUTO_TEST_CASE( binary_map )
     std::ostringstream os;
     cereal::BinaryOutputArchive oar(os);
 
+    std::map<size_t, std::vector<StructInternalSerialize>> o_vectormap;
+    for(int j=0; j<10; ++j)
+    {
+      size_t id = random_value<size_t>(gen);
+      for(int k=0; k<100; ++k)
+        o_vectormap[id].emplace_back(random_value<int>(gen), random_value<int>(gen));
+    }
+
     std::map<std::string, int> o_podmap;
     for(int j=0; j<100; ++j)
       o_podmap.insert({random_value<std::string>(gen), random_value<int>(gen)});
@@ -572,6 +580,7 @@ BOOST_AUTO_TEST_CASE( binary_map )
     for(int j=0; j<100; ++j)
       o_esplmap.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
+    oar(o_vectormap);
     oar(o_podmap);
     oar(o_isermap);
     oar(o_isplmap);
@@ -581,17 +590,28 @@ BOOST_AUTO_TEST_CASE( binary_map )
     std::istringstream is(os.str());
     cereal::BinaryInputArchive iar(is);
 
+    std::map<size_t, std::vector<StructInternalSerialize>> i_vectormap;
     std::map<std::string, int> i_podmap;
     std::map<double, StructInternalSerialize>   i_isermap;
     std::map<float, StructInternalSplit>        i_isplmap;
     std::map<uint32_t, StructExternalSerialize> i_esermap;
     std::map<int8_t, StructExternalSplit>       i_esplmap;
 
+    iar(i_vectormap);
     iar(i_podmap);
     iar(i_isermap);
     iar(i_isplmap);
     iar(i_esermap);
     iar(i_esplmap);
+
+    BOOST_CHECK_EQUAL(i_vectormap.size(), o_vectormap.size());
+    auto o_v_it = o_vectormap.begin();
+    auto i_v_it = i_vectormap.begin();
+    for(;o_v_it != o_vectormap.end(); ++o_v_it, ++i_v_it)
+    {
+      BOOST_CHECK_EQUAL(i_v_it->second.size(), o_v_it->second.size());
+      BOOST_CHECK_EQUAL_COLLECTIONS(i_v_it->second.begin(), i_v_it->second.end(), o_v_it->second.begin(), o_v_it->second.end());
+    }
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podmap.begin(),    i_podmap.end(),    o_podmap.begin(),  o_podmap.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isermap.begin(),   i_isermap.end(),   o_isermap.begin(), o_isermap.end());
