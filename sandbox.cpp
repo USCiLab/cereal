@@ -43,7 +43,9 @@
 
 class Base
 {
-  private:
+
+  public:
+  //private:
     friend class cereal::access;
     template <class Archive>
     void serialize( Archive & ar )
@@ -54,7 +56,7 @@ class Base
     int x;
 };
 
-class Derived : public Base
+class Derived : private Base
 {
   public:
     //friend class cereal::access;
@@ -247,32 +249,93 @@ namespace cereal
   };
 }
 
+template<typename T>
+struct has_size_method
+{
+private:
+	typedef std::true_type yes;
+	typedef std::false_type no;
+
+	template<typename U> static auto test(int) -> decltype(std::declval<U>().size(), yes());
+
+	template<typename> static no test(...);
+
+public:
+
+	static constexpr bool value = std::is_same<decltype(test<T>(0)),yes>::value;
+};
+#include <vector>
+template<class T, class A>
+struct has_serialize_method
+{
+private:
+	typedef std::true_type yes;
+	typedef std::false_type no;
+
+	template<class T2, class A2> static auto test(int) -> decltype(std::declval<T2>().serialize(std::declval<A2&>()), yes());
+	//template<class T2, class A2> static auto test(int) -> decltype( access::member_serialize(std::declval<A2&>()std::declval<T2>().serialize(std::declval<A2&>()), yes());
+        //decltype( access::member_serialize(std::declval<A&>(), std::declval<T&>() ) )
+
+	template<typename, typename> static no test(...);
+
+public:
+
+	static constexpr bool value = std::is_same<decltype(test<T, A>(0)),yes>::value;
+};
+
+struct B
+{
+  int size();
+};
+
+struct C : private B
+{
+
+};
+
+
 // ######################################################################
 int main()
 {
   std::cout << std::boolalpha << std::endl;
-  std::cout << "Base" << std::endl;
-  std::cout << "ms   " << cereal::traits::has_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "nms  " << cereal::traits::has_non_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "ml   " << cereal::traits::has_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "nml  " << cereal::traits::has_non_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "mse  " << cereal::traits::has_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "nse  " << cereal::traits::has_non_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "iser " << cereal::traits::is_input_serializable<Base, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "oser " << cereal::traits::is_output_serializable<Base, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << std::endl;
+  //std::cout << "Base" << std::endl;
+  //std::cout << "ms   " << cereal::traits::has_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "nms  " << cereal::traits::has_non_member_save<Base, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "ml   " << cereal::traits::has_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "nml  " << cereal::traits::has_non_member_load<Base, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "mse  " << cereal::traits::has_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "nse  " << cereal::traits::has_non_member_serialize<Base, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "iser " << cereal::traits::is_input_serializable<Base, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "oser " << cereal::traits::is_output_serializable<Base, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << std::endl;
 
-  std::cout << "Derived" << std::endl;
-  std::cout << "ms   " << cereal::traits::has_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "nms  " << cereal::traits::has_non_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "ml   " << cereal::traits::has_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "nml  " << cereal::traits::has_non_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "mse  " << cereal::traits::has_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "nse  " << cereal::traits::has_non_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << "iser " << cereal::traits::is_input_serializable<Derived, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << "oser " << cereal::traits::is_output_serializable<Derived, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << std::endl;
+  //std::cout << "Derived" << std::endl;
+  //std::cout << "ms   " << cereal::traits::has_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "nms  " << cereal::traits::has_non_member_save<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "ml   " << cereal::traits::has_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "nml  " << cereal::traits::has_non_member_load<Derived, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "mse  " << cereal::traits::has_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "nse  " << cereal::traits::has_non_member_serialize<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << "iser " << cereal::traits::is_input_serializable<Derived, cereal::BinaryInputArchive>() << std::endl;
+  //std::cout << "oser " << cereal::traits::is_output_serializable<Derived, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << std::endl;
 
+    std::stringstream os;
+    cereal::BinaryOutputArchive archive(os);
+
+    std::cout << has_size_method<B>::value << std::endl;
+    std::cout << has_size_method<C>::value << std::endl;
+    //std::cout << has_serialize_method<int, cereal::BinaryInputArchive>::value << std::endl;
+    //std::cout << has_serialize_method<Base, cereal::BinaryInputArchive>::value << std::endl;
+    //std::cout << has_serialize_method<Derived, cereal::BinaryInputArchive>::value << std::endl;
+
+  //Derived d;
+  //d.serialize( archive );
+  //decltype(cereal::access::member_serialize(archive, d));
+  //decltype(std::declval<Derived&>().serialize( std::declval<cereal::BinaryOutputArchive&>() ));
+  //d.serialize<cereal::BinaryOutputArchive>( archive );
+
+  //std::cout << "ms2  " << cereal::traits::has_member_serialize2(std::declval<Derived&>(), std::declval<cereal::BinaryOutputArchive&>()) << std::endl;
 
   //{
   //  int x[5];
