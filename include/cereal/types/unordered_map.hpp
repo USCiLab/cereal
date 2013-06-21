@@ -35,11 +35,21 @@ namespace cereal
   namespace unordered_map_detail
   {
     template <class Archive, class MapT> inline
+    void save( Archive & ar, MapT const & map )
+    {
+      ar( map.size() );
+
+      for( const auto & i : map )
+        ar( i.first, i.second );
+    }
+
+    template <class Archive, class MapT> inline
     void load( Archive & ar, MapT & map )
     {
       size_t size;
       ar( size );
 
+      map.clear();
       map.reserve( size );
 
       for( size_t i = 0; i < size; ++i )
@@ -50,15 +60,6 @@ namespace cereal
         ar( key, value );
         map.insert( {key, value} );
       }
-    }
-
-    template <class Archive, class MapT> inline
-    void save( Archive & ar, MapT const & map )
-    {
-      ar( map.size() );
-
-      for( const auto & i : map )
-        ar( i.first, i.second );
     }
   }
 

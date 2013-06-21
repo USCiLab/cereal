@@ -49,6 +49,7 @@ namespace cereal
       size_t size;
       ar( size );
 
+      set.clear();
       set.reserve( size );
 
       for( size_t i = 0; i < size; ++i )

@@ -49,6 +49,8 @@ namespace cereal
       size_t size;
       ar( size );
 
+      set.clear();
+
       for( size_t i = 0; i < size; ++i )
       {
         typename SetT::key_type key;
