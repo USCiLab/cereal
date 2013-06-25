@@ -210,8 +210,9 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
+                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T const & t)
       {
         access::member_serialize(*self, const_cast<T &>(t));
@@ -220,8 +221,9 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
+                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T const & t)
       {
         serialize(*self, const_cast<T &>(t));
@@ -230,8 +232,9 @@ namespace cereal
 
       //! Member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_member_load_save<T, ArchiveType>() ||
+                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T const & t)
       {
         access::member_save(*self, t);
@@ -240,24 +243,16 @@ namespace cereal
 
       //! Non member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_non_member_load_save<T, ArchiveType>() ||
+                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T const & t)
       {
         save(*self, t);
         return *self;
       }
 
-      //! Non member split (save) non-const version
-      template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>(),
-               ArchiveType &>::type
-      operator & (T & t)
-      {
-        save(*self, t);
-        return *self;
-      }
-
+      //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
@@ -268,7 +263,7 @@ namespace cereal
 
       //! No matching serialization
       template <class T> inline
-      typename std::enable_if<!traits::is_output_serializable<T, ArchiveType>() &&
+      typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_output_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
       operator & (T const & t)
@@ -365,8 +360,9 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
+                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T && t)
       {
         access::member_serialize(*self, t);
@@ -375,8 +371,9 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
+                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T && t)
       {
         serialize(*self, std::forward<T>(t));
@@ -385,8 +382,9 @@ namespace cereal
 
       //! Member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_member_load<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_member_load_save<T, ArchiveType>() ||
+                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_load<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T && t)
       {
         access::member_load(*self, t);
@@ -395,14 +393,16 @@ namespace cereal
 
       //! Non member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_load<T, ArchiveType>(),
-               ArchiveType &>::type
+      typename std::enable_if<traits::is_specialized_non_member_load_save<T, ArchiveType>() ||
+                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_load<T, ArchiveType>()),
+                              ArchiveType &>::type
       operator & (T && t)
       {
         load(*self, std::forward<T>(t));
         return *self;
       }
 
+      //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
@@ -413,7 +413,7 @@ namespace cereal
 
       //! No matching serialization
       template <class T> inline
-      typename std::enable_if<!traits::is_input_serializable<T, ArchiveType>() &&
+      typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_input_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
       operator & (T const & t)

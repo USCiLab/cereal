@@ -124,6 +124,70 @@ namespace cereal
           return T::load_and_allocate( ar );
         }
   };
+
+  //! A specifier used in conjunction with cereal::specialize to disambiguate
+  //! serialization in special cases
+  /*! @relates specialize */
+  enum class specialization
+  {
+    member_serialize,
+    member_load_save,
+    non_member_serialize,
+    non_member_load_save
+  };
+
+  //! A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class
+  /*! cereal attempts to figure out which method of serialization (member vs. non-member serialize
+      or load/save pair) at compile time.  If for some reason cereal cannot find a non-ambiguous way
+      of serializing a type, it will produce a static assertion complaining about this.
+
+      This can happen because you have both a serialize and load/save pair, or even because a base
+      class has a serialize (public or private with friend access) and a derived class does not
+      overwrite this due to choosing some other serialization type.
+
+      Specializing this class will tell cereal to explicitly use the serialization type you specify
+      and it will not complain about ambiguity in its compile time selection.  However, if cereal detects
+      an ambiguity in specializations, it will continue to issue a static assertion.
+
+      @code{.cpp}
+      class MyParent
+      {
+        friend class cereal::access;
+        template <class Archive>
+        void serialize( Archive & ar ) {}
+      };
+
+      // Although serialize is private in MyParent, to cereal::access it will look public,
+      // even through MyDerived
+      class MyDerived : public MyParent
+      {
+        public:
+          template <class Archive>
+          void load( Archive & ar ) {}
+
+          template <class Archive>
+          void save( Archive & ar ) {}
+      };
+
+      // The save/load pair in MyDerived is ambiguous because serialize in MyParent can
+      // be accessed from cereal::access.  This looks the same as making serialize public
+      // in MyParent, making it seem as though MyDerived has both a serialize and a load/save pair.
+      // cereal will complain about this at compile time unless we disambiguate:
+
+      namespace cereal
+      {
+        // This struct specialization will tell cereal which is the right way to serialize the ambiguity
+        template <class Archive> struct specialize<Archive, MyDerived, cereal::specialization::member_load_save> {};
+
+        // If we only had a disambiguation for a specific archive type, it would look something like this
+        template <> struct specialize<cereal::BinaryOutputArchive, MyDerived, cereal::specialization::member_load_save> {};
+      }
+      @endcode
+
+      @tparam T The type to specialize the serialization for
+      @tparam S The specialization type to use for T */
+  template <class Archive, class T, specialization S>
+  struct specialize : public std::false_type {};
 } // namespace cereal
 
 #endif // CEREAL_ACCESS_HPP_

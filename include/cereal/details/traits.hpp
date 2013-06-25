@@ -147,6 +147,63 @@ namespace cereal
       }
 
     // ######################################################################
+
+    namespace detail
+    {
+      template <class T, class A>
+      constexpr auto is_specialized_member_serialize() -> bool
+      { return !std::is_base_of<std::false_type, specialize<A, T, specialization::member_serialize>>(); }
+
+      template <class T, class A>
+      constexpr auto is_specialized_member_load_save() -> bool
+      { return !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save>>(); }
+
+      template <class T, class A>
+      constexpr auto is_specialized_non_member_serialize() -> bool
+      { return !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_serialize>>(); }
+
+      template <class T, class A>
+      constexpr auto is_specialized_non_member_load_save() -> bool
+      { return !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_load_save>>(); }
+
+      // Considered an error if specialization exists for more than one type
+      template <class T, class A>
+      constexpr auto is_specialized_error() -> bool
+      {
+        return (is_specialized_member_serialize<T, A>() +
+                is_specialized_member_load_save<T, A>() +
+                is_specialized_non_member_serialize<T, A>() +
+                is_specialized_non_member_load_save<T, A>()) <= 1;
+      }
+    } // namespace detail
+
+    template <class T, class A>
+    constexpr auto is_specialized() -> bool
+    {
+      static_assert(detail::is_specialized_error<T, A>(), "More than one explicit specialization detected for type.");
+      return detail::is_specialized_member_serialize<T, A>() ||
+             detail::is_specialized_member_load_save<T, A>() ||
+             detail::is_specialized_non_member_serialize<T, A>() ||
+             detail::is_specialized_non_member_load_save<T, A>();
+    }
+
+    template <class T, class A>
+    constexpr auto is_specialized_member_serialize() -> bool
+    { return is_specialized<T, A>() && detail::is_specialized_member_serialize<T, A>(); }
+
+    template <class T, class A>
+    constexpr auto is_specialized_member_load_save() -> bool
+    { return is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>(); }
+
+    template <class T, class A>
+    constexpr auto is_specialized_non_member_serialize() -> bool
+    { return is_specialized<T, A>() && detail::is_specialized_non_member_serialize<T, A>(); }
+
+    template <class T, class A>
+    constexpr auto is_specialized_non_member_load_save() -> bool
+    { return is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>(); }
+
+    // ######################################################################
     template <class T>
     constexpr size_t sizeof_array( size_t rank = std::rank<T>::value )
     {
