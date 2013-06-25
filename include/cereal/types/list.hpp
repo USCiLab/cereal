@@ -43,8 +43,8 @@ namespace cereal
   }
 
   //! Loading for std::list
-  template <class T, class A> inline
-  void load( BinaryInputArchive & ar, std::list<T, A> & list )
+  template <class Archive, class T, class A> inline
+  void load( Archive & ar, std::list<T, A> & list )
   {
     size_t size;
     ar( size );
