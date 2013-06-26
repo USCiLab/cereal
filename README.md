@@ -1,7 +1,9 @@
 cereal - A C++11 library for serialization
 ==========================================
 
-cereal is a header-only C++11 serialization library inspired by [boost](http://www.boost.org/doc/libs/1_53_0/libs/serialization/doc/index.html).  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings.  cereal was designed to be fast, light-weight, and easy to extend.
+cereal is a header-only C++11 serialization library inspired by [boost](http://www.boost.org/doc/libs/1_53_0/libs/serialization/doc/index.html).  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.
+
+## cereal offers a familiar syntax to users of boost
 
     #include <cereal/archives/binary.hpp>
     #include <cereal/types/map.hpp>
