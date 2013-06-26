@@ -31,6 +31,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <cstddef>
+#include <cstdint>
 
 #include <cereal/base_class.hpp>
 #include <cereal/details/traits.hpp>
