@@ -15,6 +15,10 @@ cereal uses features new to C++11 and requires a fairly compliant C++ compiler t
 
 In simple performance tests, cereal is usually faster than boost's serialization library and produces binary representations that take up less space.
 
+### cereal is unit tested
+
+Trust something other than good faith - we've written a basic set of unit tests to make sure cereal is doing what it should be doing.
+
 ## cereal offers a familiar syntax to users of boost
 
 cereal's syntax will look familiar if you've used boost's serialization library.  cereal looks for serialization functions either defined in the type to be serialized or for non-member functions to do the same thing.  Unlike boost, cereal doesn't need to be told (in most cases) what type of functions to look for, and will warn you at compile time if you make a mistake.
