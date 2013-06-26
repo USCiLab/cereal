@@ -50,7 +50,7 @@ namespace cereal
     size_t size;
     ar( size );
     str.resize(size);
-    ar( binary_data( const_cast<CharT*>(str.data()), size * sizeof(CharT) ) );
+    ar( binary_data( &(*str.begin()), size * sizeof(CharT) ) );
   }
 } // namespace cereal
 
