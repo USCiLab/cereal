@@ -37,6 +37,10 @@ template <class T>
 void nop(T&&t) {}
 int main()
 {
-  cereal::detail::StaticObject<cereal::detail::BindingMap<cereal::BinaryOutputArchive>>::getInstance().map[std::type_index(typeid(MyType))](0, 0);
-  //cereal::Singleton<boost::archive::detail::extra_detail::guid_initializer<MyType>>::getInstance();
+
+  cereal::detail::StaticObject<
+    cereal::detail::BindingMap<cereal::BinaryOutputArchive>
+    >::getInstance().map[std::type_index(typeid(MyType))](0, 0);
+
+
 }
