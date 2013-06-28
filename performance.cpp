@@ -280,7 +280,7 @@ struct PoDChild : PoDStruct
   template <class Archive>
   void serialize( Archive & ar )
   {
-    ar( cereal::base_class<PoDStruct>(this), v );
+    ar( cereal::virtual_base_class<PoDStruct>(this), v );
   };
 
   template <class Archive>

@@ -32,7 +32,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/boost_variant.hpp>
-#include <cereal/base_class.hpp>
+#include <cereal/types/virtual_base_class.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -61,7 +61,7 @@ class Derived : public Base
     template <class Archive>
     void save( Archive & ar ) const
     {
-      ar( cereal::base_class<Base>(this) );
+      ar( cereal::virtual_base_class<Base>(this) );
       std::cout << "Derived save" << std::endl;
       ar( y );
     }
@@ -69,7 +69,7 @@ class Derived : public Base
     template <class Archive>
     void load( Archive & ar )
     {
-      ar( cereal::base_class<Base>(this) );
+      ar( cereal::virtual_base_class<Base>(this) );
       std::cout << "Derived load" << std::endl;
       ar( y );
     }

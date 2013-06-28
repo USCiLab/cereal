@@ -39,8 +39,6 @@
 
 namespace cereal
 {
-  static const int32_t msb_32bit = 0x80000000;
-
   // ######################################################################
   //! An exception class thrown when things go wrong at runtime
   struct Exception : public std::runtime_error
@@ -72,7 +70,6 @@ namespace cereal
                    size() call.  In either case, any constness will be stripped away */
       NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
 
-      //std::string name;
       char const * name;
       Type value;
   };
@@ -90,6 +87,9 @@ namespace cereal
   {
     return {name, std::forward<T>(value)};
   }
+
+  //! Creates a name value pair for the variable T, using the same name
+  #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion
@@ -114,9 +114,6 @@ namespace cereal
   {
     return {std::forward<T>(data), size};
   }
-
-  //! Creates a name value pair for the variable T, using the same name
-  #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
   //! Called before a type is serialized to set up any special archive state
@@ -155,6 +152,8 @@ namespace cereal
     // forward decls for polymorphic support
     template <class Archive, class T> struct polymorphic_serialization_support;
     struct adl_tag;
+
+    static const int32_t msb_32bit = 0x80000000;
   }
 
   //! Registers a specific Archive type with cereal
@@ -194,7 +193,7 @@ namespace cereal
         {
           auto ptrId = itsCurrentPointerId++;
           itsSharedPointerMap.insert( {addr, ptrId} );
-          return ptrId | msb_32bit; // mask MSB to be 1
+          return ptrId | detail::msb_32bit; // mask MSB to be 1
         }
         else
           return id->second;
@@ -312,7 +311,6 @@ namespace cereal
 
       //! The id to be given to the next pointer
       std::size_t itsCurrentPointerId;
-
   }; // class OutputArchive
 
   // ######################################################################
@@ -345,7 +343,7 @@ namespace cereal
 
       void registerSharedPointer(uint32_t const id, std::shared_ptr<void> ptr)
       {
-        uint32_t const stripped_id = id & ~msb_32bit;
+        uint32_t const stripped_id = id & ~detail::msb_32bit;
         itsSharedPointerMap.insert( {stripped_id, ptr} );
       }
 
@@ -459,7 +457,6 @@ namespace cereal
 
       //! Maps from addresses to pointer ids
       std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap;
-
   }; // class InputArchive
 } // namespace cereal
 

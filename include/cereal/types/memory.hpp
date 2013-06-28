@@ -40,7 +40,7 @@ namespace cereal
     uint32_t id = ar.registerSharedPointer( ptr.get() );
     ar( id );
 
-    if( id & msb_32bit )
+    if( id & detail::msb_32bit )
     {
       ar( *ptr );
     }
@@ -56,7 +56,7 @@ namespace cereal
 
     ar( id );
 
-    if( id & msb_32bit )
+    if( id & detail::msb_32bit )
     {
       ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
       ar.registerSharedPointer(id, ptr);
@@ -77,7 +77,7 @@ namespace cereal
 
     ar( id );
 
-    if( id & msb_32bit )
+    if( id & detail::msb_32bit )
     {
       ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
       ar( *ptr );
@@ -134,7 +134,6 @@ namespace cereal
     ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
     ar( *ptr );
   }
-
 } // namespace cereal
 
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_
