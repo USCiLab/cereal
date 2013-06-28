@@ -42,6 +42,7 @@
 #define CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
 
 #include <cereal/details/static_object.hpp>
+#include <cereal/types/memory.hpp>
 #include <typeindex>
 #include <map>
 
@@ -50,12 +51,25 @@ namespace cereal
   namespace detail
   {
     template <class Archive>
-    struct BindingMap
+    struct OutputBindingMap
     {
-      std::map<std::type_index, std::function<void(void*, void*)>> map;
+      //! A serializer function
+      typedef std::function<void(void*, void const *)> Serializer;
+
+      //! Struct containing the serializer functions for all pointer types
+      struct Serializers
+      {
+        Serializer shared_ptr, //!< Serializer function for shared/weak pointers
+                   unique_ptr; //!< Serializer function for unique pointers
+      };
+
+      //! A map of serializers for pointers of all registered types
+      std::map<std::type_index, Serializers> map;
     };
 
-    // Forward decls
+    //! An empty noop deleter
+    template<class T> struct EmptyDeleter { void operator()(T *) const {} };
+
     struct InputArchiveBase;
     struct OutputArchiveBase;
 
@@ -65,8 +79,27 @@ namespace cereal
     {
       OutputBinding( )
       {
-        StaticObject<BindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), [](void*, void*){ std::cout << "hello" << std::endl; }} );
-        //BindingMap<Archive>::map.insert( {std::type_index(typeid(T)), [](void*, void*){ std::cout << "hello" << std::endl; }} );
+        typename OutputBindingMap<Archive>::Serializers serializers;
+
+        serializers.shared_ptr =
+          [](void * arptr, void const * dptr)
+          {
+            Archive & ar = *static_cast<Archive*>(arptr);
+            std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
+
+            ar( detail::make_ptr_wrapper(ptr) );
+          };
+
+        serializers.unique_ptr =
+          [](void * arptr, void const * dptr)
+          {
+            Archive & ar = *static_cast<Archive*>(arptr);
+            std::unique_ptr<T const, EmptyDeleter<T const>> const ptr(static_cast<T const *>(dptr));
+
+            ar( detail::make_ptr_wrapper(ptr) );
+          };
+
+        StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );
       }
     };
 

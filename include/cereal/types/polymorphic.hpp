@@ -28,7 +28,7 @@
 #define CEREAL_TYPES_POLYMORPHIC_HPP_
 
 #include <cereal/cereal.hpp>
-#include <memory>
+#include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 
 //! Binds a polymorhic type to all registered archives

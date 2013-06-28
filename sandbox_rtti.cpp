@@ -33,14 +33,10 @@ struct MyType {};
 
 CEREAL_BIND_TO_ARCHIVES(MyType);
 
-template <class T>
-void nop(T&&t) {}
+template <class T> void nop(T&&t) {}
+
 int main()
 {
-
-  cereal::detail::StaticObject<
-    cereal::detail::BindingMap<cereal::BinaryOutputArchive>
-    >::getInstance().map[std::type_index(typeid(MyType))](0, 0);
 
 
 }

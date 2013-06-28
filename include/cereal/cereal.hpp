@@ -183,7 +183,7 @@ namespace cereal
       }
 
       //! Registers a pointer with the archive
-      uint32_t registerSharedPointer( void * addr )
+      uint32_t registerSharedPointer( void const * addr )
       {
         // Handle null pointers by just returning 0
         if(addr == 0) return 0;
@@ -307,7 +307,7 @@ namespace cereal
       std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
       //! Maps from addresses to pointer ids
-      std::unordered_map<void *, std::size_t> itsSharedPointerMap;
+      std::unordered_map<void const *, std::size_t> itsSharedPointerMap;
 
       //! The id to be given to the next pointer
       std::size_t itsCurrentPointerId;
