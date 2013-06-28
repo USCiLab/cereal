@@ -80,29 +80,27 @@ namespace cereal
         create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
     }
 
-    namespace detail2
+    template <class T>
+    struct bind_to_archives
     {
-      template <class T>
-      struct bind_to_archives
+      void bind(std::false_type) const
       {
-        void bind(std::false_type) const
-        {
-          instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );
-        }
+        instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );
+      }
 
-        void bind(std::true_type) const
-        { }
+      void bind(std::true_type) const
+      { }
 
-        bind_to_archives const & bind() const
-        {
-          bind( std::is_abstract<T>() );
-          return *this;
-        }
-      };
+      bind_to_archives const & bind() const
+      {
+        bind( std::is_abstract<T>() );
+        return *this;
+      }
+    };
 
-      template <class T>
-      struct init_binding;
-    } // end namespace
+    //! Used to hide the static object that binds stuff
+    template <class T>
+    struct init_binding;
 
     template <class T>
     void instantiate_polymorphic_binding( T*, int, adl_tag ) {};
@@ -117,7 +115,6 @@ namespace cereal
 #define CEREAL_BIND_TO_ARCHIVES(T)                           \
     namespace cereal {                                       \
     namespace detail {                                       \
-    namespace detail2 {                                      \
     template<>                                               \
     struct init_binding<T> {                                 \
         static bind_to_archives<T> const & b;                \
@@ -126,7 +123,7 @@ namespace cereal
         ::cereal::detail::StaticObject<                      \
             bind_to_archives<T >                             \
         >::getInstance().bind();                             \
-    }}} // end namespaces
+    }} // end namespaces
   } // namespace detail
 } // namespace cereal
 
