@@ -28,6 +28,7 @@
 #include <type_traits>
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <sstream>
 
 struct Base 
 {
@@ -36,6 +37,7 @@ struct Base
   template<class Archive>
     void serialize(Archive & ar)
     {
+      std::cout << "Serializing Base" << std::endl;
     }
 };
 
@@ -46,6 +48,7 @@ struct MyType : public Base
   template<class Archive>
     void serialize(Archive & ar)
     {
+      std::cout << "Serializing MyType" << std::endl;
     }
 };
 
@@ -55,16 +58,10 @@ template <class T> void nop(T&&t) {}
 
 int main()
 {
-  cereal::BinaryOutputArchive archive(std::cout);
-  //auto ptr = std::make_shared<MyType>();
+  std::stringstream stream;
+  cereal::BinaryOutputArchive archive(stream);
 
+  std::shared_ptr<Base> ptr = std::make_shared<MyType>();
 
-  std::shared_ptr<int> const ptr(new int);
-
-  archive(cereal::detail::make_ptr_wrapper(ptr));
-
-  //cereal::detail::PtrWrapper<const std::unique_ptr<const MyType, cereal::detail::EmptyDeleter<const MyType> > &>
-
-
-
+  archive(ptr);
 }

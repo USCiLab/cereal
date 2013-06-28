@@ -56,6 +56,13 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
+    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+
+    auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));
+    if(binding == bindingMap.end())
+      throw cereal::Exception("Trying to serialize unregistered polymorphic type");
+
+    binding->second.shared_ptr(&ar, ptr.get());
   }
 
   //! Loading std::shared_ptr, case when user load and allocate for polymorphic types
