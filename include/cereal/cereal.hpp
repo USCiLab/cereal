@@ -35,6 +35,7 @@
 
 #include <cereal/details/traits.hpp>
 #include <cereal/types/virtual_base_class.hpp>
+#include <cereal/types/common.hpp>
 
 namespace cereal
 {

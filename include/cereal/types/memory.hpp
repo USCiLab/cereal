@@ -32,9 +32,10 @@
 
 namespace cereal
 {
-  //! Saving std::shared_ptr
+  //! Saving std::shared_ptr for non polymorphic types
   template <class Archive, class T> inline
-  void save( Archive & ar, std::shared_ptr<T> const & ptr )
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     uint32_t id = ar.registerSharedPointer( ptr.get() );
     ar( id );
@@ -45,9 +46,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr, case when user load and allocate
+  //! Loading std::shared_ptr, case when user load and allocate for non polymorphic types
   template <class Archive, class T> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!std::is_polymorphic<T>::value
+                          && traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
@@ -65,9 +67,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr, case when no user load and allocate
+  //! Loading std::shared_ptr, case when no user load and allocate for non polymorphic types
   template <class Archive, class T> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!std::is_polymorphic<T>::value
+                          && !traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     uint32_t id;
@@ -86,41 +89,46 @@ namespace cereal
     }
   }
 
-  //! Saving std::weak_ptr
+  //! Saving std::weak_ptr for non polymorphic types
   template <class Archive, class T> inline
-  void save( Archive & ar, std::weak_ptr<T> const & ptr )
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
     ar( sptr );
   }
 
-  //! Loading std::weak_ptr
+  //! Loading std::weak_ptr for non polymorphic types
   template <class Archive, class T> inline
-  void load( Archive & ar, std::weak_ptr<T> & ptr )
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
     ar( sptr );
     ptr = sptr;
   }
 
-  //! Saving std::unique_ptr
+  //! Saving std::unique_ptr for non polymorphic types
   template <class Archive, class T, class D> inline
-  void save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     ar( *ptr );
   }
 
-  //! Loading std::unique_ptr, case when user provides load_and_allocate
+  //! Loading std::unique_ptr, case when user provides load_and_allocate for non polymorphic types
   template <class Archive, class T, class D> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!std::is_polymorphic<T>::value
+                          && traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
   }
 
-  //! Loading std::unique_ptr, case when no load_and_allocate
+  //! Loading std::unique_ptr, case when no load_and_allocate for non polymorphic types
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!std::is_polymorphic<T>::value
+                          && !traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
