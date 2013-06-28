@@ -29,7 +29,25 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-struct MyType {};
+struct Base 
+{
+  virtual void foo() = 0;
+
+  template<class Archive>
+    void serialize(Archive & ar)
+    {
+    }
+};
+
+struct MyType : public Base
+{
+  void foo() {}
+
+  template<class Archive>
+    void serialize(Archive & ar)
+    {
+    }
+};
 
 CEREAL_BIND_TO_ARCHIVES(MyType);
 
@@ -37,6 +55,16 @@ template <class T> void nop(T&&t) {}
 
 int main()
 {
+  cereal::BinaryOutputArchive archive(std::cout);
+  //auto ptr = std::make_shared<MyType>();
+
+
+  std::shared_ptr<int> const ptr(new int);
+
+  archive(cereal::detail::make_ptr_wrapper(ptr));
+
+  //cereal::detail::PtrWrapper<const std::unique_ptr<const MyType, cereal::detail::EmptyDeleter<const MyType> > &>
+
 
 
 }

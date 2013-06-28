@@ -74,7 +74,8 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    auto sptr = ptr.lock();
+    ar( detail::make_ptr_wrapper( sptr ) );
   }
 
   //! Loading std::weak_ptr for non polymorphic types
@@ -82,7 +83,9 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::weak_ptr<T> & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    std::shared_ptr<T> sptr;
+    ar( detail::make_ptr_wrapper( sptr ) );
+    ptr = sptr;
   }
 
   //! Saving std::unique_ptr for non polymorphic types
@@ -121,8 +124,7 @@ namespace cereal
 
   //! Loading std::shared_ptr, case when user load and allocate (wrapper implementation)
   template <class Archive, class T> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value
-                          && traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -144,8 +146,7 @@ namespace cereal
 
   //! Loading std::shared_ptr, case when no user load and allocate (wrapper implementation)
   template <class Archive, class T> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value
-                          && !traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -166,33 +167,9 @@ namespace cereal
     }
   }
 
-  //! Saving std::weak_ptr (wrapper implementation)
-  template <class Archive, class T> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, detail::PtrWrapper<std::weak_ptr<T> const &> const & wrapper )
-  {
-    auto & ptr = wrapper.ptr;
-
-    auto sptr = ptr.lock();
-    ar( sptr );
-  }
-
-  //! Loading std::weak_ptr (wrapper implementation)
-  template <class Archive, class T> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, detail::PtrWrapper<std::weak_ptr<T> &> & wrapper )
-  {
-    auto & ptr = wrapper.ptr;
-
-    std::shared_ptr<T> sptr;
-    ar( sptr );
-    ptr = sptr;
-  }
-
   //! Saving std::unique_ptr (wrapper implementation)
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
+  void save( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
   {
     auto & ptr = wrapper.ptr;
     ar( *ptr );
@@ -200,8 +177,7 @@ namespace cereal
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation)
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value
-                          && traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -210,8 +186,7 @@ namespace cereal
 
   //! Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation)
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!std::is_polymorphic<T>::value
-                          && !traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
