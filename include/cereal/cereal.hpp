@@ -146,9 +146,15 @@ namespace cereal
   enum Flags { AllowEmptyClassElision = 1 };
 
   // ######################################################################
+  namespace detail
+  {
+    struct OutputArchiveBase {};
+    struct InputArchiveBase {};
+  }
+
   //! The base output archive class
   template<class ArchiveType, uint32_t Flags = 0>
-  class OutputArchive
+  class OutputArchive : public detail::OutputArchiveBase
   {
     public:
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1)
@@ -297,7 +303,7 @@ namespace cereal
   // ######################################################################
   //! The base input archive class
   template<class ArchiveType, uint32_t Flags = 0>
-  class InputArchive
+  class InputArchive : public detail::InputArchiveBase
   {
     public:
       InputArchive(ArchiveType * const self) : self(self) { }
