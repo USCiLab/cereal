@@ -42,18 +42,33 @@
 #define CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
 
 #include <cereal/details/static_object.hpp>
+#include <typeindex>
+#include <map>
 
 namespace cereal
 {
   namespace detail
   {
+    template <class Archive>
+    struct BindingMap
+    {
+      std::map<std::type_index, std::function<void(void*, void*)>> map;
+    };
+
     // Forward decls
     struct InputArchiveBase;
     struct OutputArchiveBase;
 
     //TODO
     template <class Archive, class T> struct InputBinding {};
-    template <class Archive, class T> struct OutputBinding {};
+    template <class Archive, class T> struct OutputBinding
+    {
+      OutputBinding( )
+      {
+        StaticObject<BindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), [](void*, void*){ std::cout << "hello" << std::endl; }} );
+        //BindingMap<Archive>::map.insert( {std::type_index(typeid(T)), [](void*, void*){ std::cout << "hello" << std::endl; }} );
+      }
+    };
 
     //! Used to help out argument dependent lookup for finding potential overloads
     //! of instantiate_polymorphic_binding

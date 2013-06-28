@@ -37,6 +37,58 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+  //! Loading std::shared_ptr, case when no user load and allocate for non polymorphic types
+  template <class Archive, class T> inline
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  load( Archive & ar, std::shared_ptr<T> & ptr )
+  {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+  //! Saving std::weak_ptr for non polymorphic types
+  template <class Archive, class T> inline
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  save( Archive & ar, std::weak_ptr<T> const & ptr )
+  {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+  //! Loading std::weak_ptr for non polymorphic types
+  template <class Archive, class T> inline
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  load( Archive & ar, std::weak_ptr<T> & ptr )
+  {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+  //! Saving std::unique_ptr for non polymorphic types
+  template <class Archive, class T, class D> inline
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+  //! Loading std::unique_ptr, case when user provides load_and_allocate for non polymorphic types
+  template <class Archive, class T, class D> inline
+  typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
+  load( Archive & ar, std::unique_ptr<T, D> & ptr )
+  {
+    ar( detail::ptr_wrapper( ptr ) );
+  }
+
+
+
+
+  //! Saving std::shared_ptr for non polymorphic types
+  template <class Archive, class T> inline
+  void save( Archive & ar, detail::PtrWrapper<std::shared_ptr<T> const & wraper )
+  {
+    auto & ptr = wrapper.ptr;
+
     uint32_t id = ar.registerSharedPointer( ptr.get() );
     ar( id );
 
@@ -134,6 +186,8 @@ namespace cereal
     ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
     ar( *ptr );
   }
+
+
 } // namespace cereal
 
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_
