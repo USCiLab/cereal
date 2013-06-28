@@ -24,8 +24,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_BASE_CLASS_HPP_
-#define CEREAL_BASE_CLASS_HPP_
+#ifndef CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_
+#define CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_
 
 namespace cereal
 {
@@ -34,7 +34,7 @@ namespace cereal
       base type.  This allows cereal to track the inheritance and to avoid making duplicate copies
       during serialization.
 
-      It is save to use base_cast in all circumstances for serializing base classes, even in cases
+      It is save to use virtual_base_class in all circumstances for serializing base classes, even in cases
       where virtual inheritance does not take place, though it may be slightly faster to utilize
       static_cast<> if you do not need to worry virtual inheritance
 
@@ -66,10 +66,10 @@ namespace cereal
         template <class Archive>
         void serialize( Archive & ar )
         {
-          ar( cereal::base_cast<MyLeft>( this ) );  // safely serialize data members in MyLeft
-          ar( cereal::base_cast<MyRight>( this ) ); // safely serialize data members in MyRight
+          ar( cereal::virtual_base_class<MyLeft>( this ) );  // safely serialize data members in MyLeft
+          ar( cereal::virtual_base_class<MyRight>( this ) ); // safely serialize data members in MyRight
 
-          // Because we used base_cast, cereal will ensure that only one instance of MyBase is
+          // Because we used virtual_base_class, cereal will ensure that only one instance of MyBase is
           // serialized as we traverse the inheritance heirarchy.
 
           // If we had chosen to use static_cast<> instead, cereal would perform no tracking and
@@ -78,14 +78,14 @@ namespace cereal
       };
       */
   template<class Base>
-    struct base_class
+    struct virtual_base_class
     {
       template<class Derived>
-        base_class(Derived const * derived) :
+        virtual_base_class(Derived const * derived) :
           base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
       { }
 
         Base * base_ptr;
     };
 } // namespace cereal
-#endif // CEREAL_BASE_CLASS_HPP_
+#endif // CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_

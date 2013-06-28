@@ -161,4 +161,7 @@ namespace cereal
   }
 } // namespace cereal
 
+CEREAL_REGISTER_ARCHIVE(cereal::BinaryOutputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::BinaryInputArchive);
+
 #endif // CEREAL_ARCHIVES_BINARY_HPP_

@@ -24,18 +24,27 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifndef CEREAL_TYPES_POLYMORPHIC_HPP_
+#define CEREAL_TYPES_POLYMORPHIC_HPP_
 
-#include <type_traits>
-#include <cereal/archives/binary.hpp>
-#include <cereal/types/polymorphic.hpp>
+#include <cereal/details/polymorphic_impl.hpp>
 
-struct MyType {};
+//! Binds a polymorhic type to all registered archives
+/*! This binds a polymorphic type to all registered archives that
+    have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
+    after all archives are registered (usually after the archives themselves
+    have been included). */
+#define CEREAL_BIND_TO_ARCHIVES(T)                           \
+    namespace cereal {                                       \
+    namespace detail {                                       \
+    template<>                                               \
+    struct init_binding<T> {                                 \
+        static bind_to_archives<T> const & b;                \
+    };                                                       \
+    bind_to_archives<T> const & init_binding<T>::b =         \
+        ::cereal::detail::StaticObject<                      \
+            bind_to_archives<T >                             \
+        >::getInstance().bind();                             \
+    }} // end namespaces
 
-CEREAL_BIND_TO_ARCHIVES(MyType);
-
-template <class T>
-void nop(T&&t) {}
-int main()
-{
-  //cereal::Singleton<boost::archive::detail::extra_detail::guid_initializer<MyType>>::getInstance();
-}
+#endif // CEREAL_TYPES_POLYMORPHIC_HPP_

@@ -33,9 +33,8 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <cereal/base_class.hpp>
 #include <cereal/details/traits.hpp>
-#include <cereal/types/common.hpp>
+#include <cereal/types/virtual_base_class.hpp>
 
 namespace cereal
 {
@@ -148,9 +147,24 @@ namespace cereal
   // ######################################################################
   namespace detail
   {
+    // base classes for type checking
     struct OutputArchiveBase {};
     struct InputArchiveBase {};
+
+    // forward decls for polymorphic support
+    template <class Archive, class T> struct polymorphic_serialization_support;
+    struct adl_tag;
   }
+
+  //! Registers a specific Archive type with cereal
+  /*! This registration should be done once per archive.  A good place to
+      put this is immediately following the definition of your archive */
+  #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
+  namespace cereal { namespace detail {                               \
+  template <class T>                                                  \
+  typename polymorphic_serialization_support<Archive, T>::type        \
+  instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \
+  } } // end namespaces
 
   //! The base output archive class
   template<class ArchiveType, uint32_t Flags = 0>
@@ -201,10 +215,10 @@ namespace cereal
         process( std::forward<Other>( tail )... );
       }
 
-      //! Serialization of a base_class wrapper
-      /*! \sa base_class */
+      //! Serialization of a virtual_base_class wrapper
+      /*! \sa virtual_base_class */
       template <class T> inline
-      ArchiveType & operator & (base_class<T> b)
+      ArchiveType & operator & (virtual_base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
         if(itsBaseClassSet.count(id) == 0)
@@ -351,10 +365,10 @@ namespace cereal
         process( std::forward<Other>( tail )... );
       }
 
-      //! Serialization of a base_class wrapper
-      /*! \sa base_class */
+      //! Serialization of a virtual_base_class wrapper
+      /*! \sa virtual_base_class */
       template <class T> inline
-      ArchiveType & operator & (base_class<T> b)
+      ArchiveType & operator & (virtual_base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
         if(itsBaseClassSet.count(id) == 0)
