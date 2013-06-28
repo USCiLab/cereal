@@ -172,7 +172,14 @@ namespace cereal
   void save( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
   {
     auto & ptr = wrapper.ptr;
-    ar( *ptr );
+
+    if( !ptr )
+      ar( uint8_t(0) );
+    else
+    {
+      ar( uint8_t(1) );
+      ar( *ptr );
+    }
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation)
@@ -180,8 +187,15 @@ namespace cereal
   typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
+    uint8_t isValid;
+    ar( isValid );
+      
     auto & ptr = wrapper.ptr;
-    ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
+
+    if( isValid )
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
+    else
+      ptr.reset( nullptr );
   }
 
   //! Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation)
@@ -189,9 +203,18 @@ namespace cereal
   typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
+    uint8_t isValid;
+    ar( isValid );
+      
     auto & ptr = wrapper.ptr;
-    ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
-    ar( *ptr );
+
+    if( isValid )
+    {
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
+      ar( *ptr );
+    }
+    else
+      ptr.reset( nullptr );
   }
 
 } // namespace cereal

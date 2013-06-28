@@ -31,23 +31,23 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 
-//! Binds a polymorhic type to all registered archives
-/*! This binds a polymorphic type to all registered archives that
-    have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
-    after all archives are registered (usually after the archives themselves
-    have been included). */
-#define CEREAL_BIND_TO_ARCHIVES(T)                           \
-    namespace cereal {                                       \
-    namespace detail {                                       \
-    template<>                                               \
-    struct init_binding<T> {                                 \
-        static bind_to_archives<T> const & b;                \
-    };                                                       \
-    bind_to_archives<T> const & init_binding<T>::b =         \
-        ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T >                             \
-        >::getInstance().bind();                             \
-    }} // end namespaces
+#define CEREAL_REGISTER_TYPE(T)       \
+  namespace cereal {                  \
+  namespace detail {                  \
+  template <>                         \
+  struct binding_name<T>              \
+  { static const char * name = #T; }; \
+  } } /* end namespaces */            \
+  CEREAL_BIND_TO_ARCHIVES(T);
+
+#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)\
+  namespace cereal {                           \
+  namespace detail {                           \
+  template <>                                  \
+  struct binding_name<T>                       \
+  { static const char * name = #Name; };       \
+  } } /* end namespaces */                     \
+  CEREAL_BIND_TO_ARCHIVES(T);
 
 namespace cereal
 {
@@ -56,6 +56,12 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
+    if(!ptr)
+    {
+      //ar (detail::null_ptr());
+      return;
+    }
+
     auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));

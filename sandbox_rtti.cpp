@@ -62,6 +62,8 @@ int main()
   cereal::BinaryOutputArchive archive(stream);
 
   std::shared_ptr<Base> ptr = std::make_shared<MyType>();
-
   archive(ptr);
+
+  std::unique_ptr<int> xxx(nullptr);
+  archive(xxx);
 }
