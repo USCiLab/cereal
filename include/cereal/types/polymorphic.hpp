@@ -32,30 +32,65 @@
 #include <cereal/details/polymorphic_impl.hpp>
 #include <cereal/details/util.hpp>
 
-#include <iostream>
-
-#define CEREAL_REGISTER_TYPE(T)           \
-  namespace cereal {                      \
-  namespace detail {                      \
-  template <>                             \
-  struct binding_name<T>                  \
-  { \
+#define CEREAL_REGISTER_TYPE(T)                          \
+  namespace cereal {                                     \
+  namespace detail {                                     \
+  template <>                                            \
+  struct binding_name<T>                                 \
+  {                                                      \
     static constexpr char const * name() { return #T; }; \
-  }; \
-  } } /* end namespaces */                \
+  };                                                     \
+  } } /* end namespaces */                               \
   CEREAL_BIND_TO_ARCHIVES(T);
 
-#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)\
-  namespace cereal {                           \
-  namespace detail {                           \
-  template <>                                  \
-  struct binding_name<T>                       \
+#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)               \
+  namespace cereal {                                          \
+  namespace detail {                                          \
+  template <>                                                 \
+  struct binding_name<T>                                      \
   { static constexpr char const * name() { return Name; }; }; \
-  } } /* end namespaces */                     \
+  } } /* end namespaces */                                    \
   CEREAL_BIND_TO_ARCHIVES(T);
 
 namespace cereal
 {
+  namespace polymorphic_detail
+  {
+    //! Get an input binding from the given archive by deserializing the type meta data
+    template<class Archive>
+      typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar)
+      {
+        std::uint32_t nameid;
+        ar( nameid );
+
+        if(nameid == 0)
+        {
+          typename ::cereal::detail::InputBindingMap<Archive>::Serializers emptySerializers;
+          emptySerializers.shared_ptr = [](void* ar, std::shared_ptr<void> & ptr) { ptr.reset(); };
+          emptySerializers.unique_ptr = [](void* ar, std::unique_ptr<void> & ptr) { ptr.reset(); };
+          return emptySerializers;
+        }
+
+        std::string name;
+        if(nameid & detail::msb_32bit)
+        {
+          ar( name );
+          ar.registerPolymorphicName(nameid, name);
+        }
+        else
+        {
+          name = ar.getPolymorphicName(nameid);
+        }
+
+        auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
+
+        auto binding = bindingMap.find(name);
+        if(binding == bindingMap.end())
+          throw cereal::Exception("Trying to load an unregistered polymorphic type (" + name + ")");
+        return binding->second;
+      }
+  }
+
   //! Saving std::shared_ptr for polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
@@ -82,34 +117,9 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
-    std::uint32_t nameid;
-    ar( nameid );
-
-    if(nameid == 0)
-    {
-      ptr.reset();
-      return;
-    }
-
-    std::string name;
-    if(nameid & detail::msb_32bit)
-    {
-      ar( name );
-      ar.registerPolymorphicName(nameid, name);
-    }
-    else
-    {
-      name = ar.getPolymorphicName(nameid);
-    }
-
-    auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
-
-    auto binding = bindingMap.find(name);
-    if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to load an unregistered polymorphic type (" + name + ")");
-
+    auto binding = polymorphic_detail::getInputBinding(ar);
     std::shared_ptr<void> result;
-    binding->second.shared_ptr(&ar, result);
+    binding.shared_ptr(&ar, result);
     ptr = std::static_pointer_cast<T>(result);
   }
 
@@ -146,6 +156,13 @@ namespace cereal
       return;
     }
 
+    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+
+    auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));
+    if(binding == bindingMap.end())
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(typeid(*ptr.get()).name()) + ")");
+
+    binding->second.unique_ptr(&ar, ptr.get());
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate for polymorphic types
@@ -153,6 +170,10 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
+    auto binding = polymorphic_detail::getInputBinding(ar);
+    std::unique_ptr<void> result;
+    binding.unique_ptr(&ar, result);
+    ptr.reset(static_cast<T*>(result.release()));
   }
 } // namespace cereal
 #endif // CEREAL_TYPES_POLYMORPHIC_HPP_

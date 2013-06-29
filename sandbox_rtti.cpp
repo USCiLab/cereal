@@ -65,9 +65,25 @@ struct MyType : public Base
       std::cout << "Loading MyType" << std::endl;
     }
 };
-
 CEREAL_REGISTER_TYPE(MyType);
-//CEREAL_REGISTER_TYPE_WITH_NAME(MyType, "cool beans");
+
+struct YourType : public Base
+{
+  void foo() {}
+
+  template<class Archive>
+    void save(Archive & ar) const
+    {
+      std::cout << "Saving YourType" << std::endl;
+    }
+
+  template<class Archive>
+    void load(Archive & ar)
+    {
+      std::cout << "Loading YourType" << std::endl;
+    }
+};
+CEREAL_REGISTER_TYPE(YourType);
 
 template <class T> void nop(T&&t) {}
 
@@ -77,9 +93,13 @@ int main()
     std::ofstream ostream("rtti.txt");
     cereal::BinaryOutputArchive oarchive(ostream);
 
-    std::shared_ptr<Base> ptr = std::make_shared<MyType>();
+    std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
+    std::shared_ptr<Base> ptr2 = std::make_shared<YourType>();
+    std::unique_ptr<Base> ptr3(new MyType);
 
-    oarchive(ptr);
+    oarchive(ptr1);
+    oarchive(ptr2);
+    oarchive(ptr3);
   }
 
 
@@ -88,10 +108,13 @@ int main()
     std::ifstream istream("rtti.txt");
     cereal::BinaryInputArchive iarchive(istream);
 
-    std::shared_ptr<Base> ptr;
+    std::shared_ptr<Base> ptr1;
     std::shared_ptr<Base> ptr2;
+    std::unique_ptr<Base> ptr3;
 
-    iarchive(ptr);
+    iarchive(ptr1);
+    iarchive(ptr2);
+    iarchive(ptr3);
   }
 
 }

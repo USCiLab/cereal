@@ -131,12 +131,17 @@ namespace cereal
             ar( make_ptr_wrapper(ptr) );
 
             dptr = ptr;
-
           };
 
         serializers.unique_ptr =
           [](void * arptr, std::unique_ptr<void> & dptr)
           {
+            Archive & ar = *static_cast<Archive*>(arptr);
+            std::unique_ptr<T> ptr;
+
+            ar( make_ptr_wrapper(ptr) );
+
+            dptr.reset(ptr.release());
           };
 
         StaticObject<InputBindingMap<Archive>>::getInstance().map.insert( { std::string(binding_name<T>::name()), serializers } );
@@ -145,29 +150,36 @@ namespace cereal
 
     template <class Archive, class T> struct OutputBindingCreator
     {
+      static void writeMetadata(Archive & ar)
+      {
+        // Register the polymorphic type name with the archive, and get the id
+        char const * name = binding_name<T>::name();
+        std::uint32_t id = ar.registerPolymorphicType(name);
+
+        // Serialize the id
+        ar( id );
+
+        // If the msb of the id is 1, then the type name is new, and we should serialize it
+        if( id & detail::msb_32bit )
+        {
+          std::string namestring(name);
+          ar(namestring);
+        }
+      }
+
       OutputBindingCreator()
       {
         typename OutputBindingMap<Archive>::Serializers serializers;
+
 
         serializers.shared_ptr =
           [](void * arptr, void const * dptr)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
+
+            writeMetadata(ar);
+
             std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
-
-            // Register the polymorphic type name with the archive, and get the id
-            char const * name = binding_name<T>::name();
-            std::uint32_t id = ar.registerPolymorphicType(name);
-
-            // Serialize the id
-            ar( id );
-
-            // If the msb of the id is 1, then the type name is new, and we should serialize it
-            if( id & detail::msb_32bit )
-            {
-              std::string namestring(name);
-              ar(namestring);
-            }
 
             ar( detail::make_ptr_wrapper(ptr) );
           };
@@ -176,6 +188,9 @@ namespace cereal
           [](void * arptr, void const * dptr)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
+
+            writeMetadata(ar);
+
             std::unique_ptr<T const, EmptyDeleter<T const>> const ptr(static_cast<T const *>(dptr));
 
             ar( detail::make_ptr_wrapper(ptr) );

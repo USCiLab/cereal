@@ -214,7 +214,9 @@ namespace cereal
       ar( *ptr );
     }
     else
+    {
       ptr.reset( nullptr );
+    }
   }
 
 } // namespace cereal
