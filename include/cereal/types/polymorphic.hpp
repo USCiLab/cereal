@@ -32,6 +32,21 @@
 #include <cereal/details/polymorphic_impl.hpp>
 #include <cereal/details/util.hpp>
 
+//! Registers a polymorphic type with cereal
+/*! Polymorphic types must be registered before pointers
+    to them can be serialized.  This also assumes that
+    all relevent archives have also previously been
+    registered.  Registration for archives is usually done
+    in the header file in which they are defined.  This means
+    that type registration needs to happen after specific
+    archives to be used are included.
+
+    Registering a type lets cereal know how to properly
+    serialize it when a pointer to a base object is
+    used in conjunction with a derived class.
+
+    Polymorphic support in cereal requires RTTI to be
+    enabled */
 #define CEREAL_REGISTER_TYPE(T)                          \
   namespace cereal {                                     \
   namespace detail {                                     \
@@ -43,6 +58,12 @@
   } } /* end namespaces */                               \
   CEREAL_BIND_TO_ARCHIVES(T);
 
+//! Registers a polymorphic type with cereal, giving it a
+//! user defined name
+/*! In some cases the default name used with
+    CEREAL_REGISTER_TYPE (the name of the type) may not be
+    suitable.  This macro allows any name to be associated
+    with the type.  The name should be unique */
 #define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)               \
   namespace cereal {                                          \
   namespace detail {                                          \
@@ -90,6 +111,9 @@ namespace cereal
         return binding->second;
       }
   }
+
+  // ######################################################################
+  // Pointer serialization for polymorphic types
 
   //! Saving std::shared_ptr for polymorphic types
   template <class Archive, class T> inline

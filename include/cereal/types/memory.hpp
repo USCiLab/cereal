@@ -35,7 +35,7 @@ namespace cereal
   namespace detail
   {
     //! A wrapper class to notify cereal that it is ok to serialize the contained pointer
-    /*! This mechanism allows us to intercept and properly handle polymorphic pointers 
+    /*! This mechanism allows us to intercept and properly handle polymorphic pointers
         \note Users should _not_ use this class directly */
     template<class T>
       struct PtrWrapper
@@ -173,6 +173,10 @@ namespace cereal
   {
     auto & ptr = wrapper.ptr;
 
+    // unique_ptr get one byte of metadata which signifies whether they were a nullptr
+    // 0 == nullptr
+    // 1 == not null
+
     if( !ptr )
       ar( uint8_t(0) );
     else
@@ -189,7 +193,7 @@ namespace cereal
   {
     uint8_t isValid;
     ar( isValid );
-      
+
     auto & ptr = wrapper.ptr;
 
     if( isValid )
@@ -205,7 +209,7 @@ namespace cereal
   {
     uint8_t isValid;
     ar( isValid );
-      
+
     auto & ptr = wrapper.ptr;
 
     if( isValid )

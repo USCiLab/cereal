@@ -36,6 +36,9 @@ namespace cereal
   template <class Archive, class T, class A> inline
   void save( Archive & ar, std::forward_list<T, A> const & forward_list )
   {
+    //TODO: possibly remove push/pop position and just bite the bullet of iterating
+    //      over the list once to get its size
+
     // save position for size of list
     ar.pushPosition(sizeof(size_t));
 

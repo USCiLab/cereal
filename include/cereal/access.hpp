@@ -27,6 +27,8 @@
 #ifndef CEREAL_ACCESS_HPP_
 #define CEREAL_ACCESS_HPP_
 
+#include <type_traits>
+
 namespace cereal
 {
   //! A class that allows cereal to load smart pointers to types that have no default constructor

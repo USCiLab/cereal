@@ -34,9 +34,9 @@ namespace cereal
       base type.  This allows cereal to track the inheritance and to avoid making duplicate copies
       during serialization.
 
-      It is save to use virtual_base_class in all circumstances for serializing base classes, even in cases
+      It is safe to use virtual_base_class in all circumstances for serializing base classes, even in cases
       where virtual inheritance does not take place, though it may be slightly faster to utilize
-      static_cast<> if you do not need to worry virtual inheritance
+      static_cast<> if you do not need to worry about virtual inheritance
 
       @code{.cpp}
       struct MyBase
@@ -75,8 +75,7 @@ namespace cereal
           // If we had chosen to use static_cast<> instead, cereal would perform no tracking and
           // assume that every base class should be serialized (in this case leading to a duplicate
           // serialization of MyBase due to diamond inheritance
-      };
-      */
+      }; */
   template<class Base>
     struct virtual_base_class
     {
