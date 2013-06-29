@@ -32,7 +32,7 @@
 #include <fstream>
 #include <iostream>
 
-struct Base 
+struct Base
 {
   virtual void foo() = 0;
 
@@ -96,10 +96,12 @@ int main()
     std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
     std::shared_ptr<Base> ptr2 = std::make_shared<YourType>();
     std::unique_ptr<Base> ptr3(new MyType);
+    std::weak_ptr<Base>   ptr4 = ptr2;
 
     oarchive(ptr1);
     oarchive(ptr2);
     oarchive(ptr3);
+    oarchive(ptr4);
   }
 
 
@@ -111,10 +113,12 @@ int main()
     std::shared_ptr<Base> ptr1;
     std::shared_ptr<Base> ptr2;
     std::unique_ptr<Base> ptr3;
+    std::weak_ptr<Base>   ptr4;
 
     iarchive(ptr1);
     iarchive(ptr2);
     iarchive(ptr3);
+    iarchive(ptr4);
   }
 
 }

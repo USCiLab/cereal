@@ -74,10 +74,18 @@ namespace cereal
     struct binding_name {};
 
     //! A structure holding a map from type_indices to output serializer functions
+    /*! A static object of this map should be created for each registered archive
+        type, containing entries for every registered type that describe how to
+        properly cast the type to its real type in polymorphic scenarios for
+        shared_ptr, weak_ptr, and unique_ptr. */
     template <class Archive>
     struct OutputBindingMap
     {
       //! A serializer function
+      /*! Serializer functions return nothing and take an archive as
+          their first parameter (will be cast properly inside the function,
+          and a pointer to actual data (contents of smart_ptr's get() function)
+          as their second parameter */
       typedef std::function<void(void*, void const *)> Serializer;
 
       //! Struct containing the serializer functions for all pointer types
@@ -92,11 +100,21 @@ namespace cereal
     };
 
     //! A structure holding a map from type name strings to input serializer functions
+    /*! A static object of this map should be created for each registered archive
+        type, containing entries for every registered type that describe how to
+        properly cast the type to its real type in polymorphic scenarios for
+        shared_ptr, weak_ptr, and unique_ptr. */
     template <class Archive>
     struct InputBindingMap
     {
-      //! A serializer function
+      //! Shared ptr serializer function
+      /*! Serializer functions return nothing and take an archive as
+          their first parameter (will be cast properly inside the function,
+          and a shared_ptr (or unique_ptr for the unique case) of any base
+          type.  Internally it will properly be loaded and cast to the
+          correct type. */
       typedef std::function<void(void*, std::shared_ptr<void> & )> SharedSerializer;
+      //! Unique ptr serializer function
       typedef std::function<void(void*, std::unique_ptr<void> & )> UniqueSerializer;
 
       //! Struct containing the serializer functions for all pointer types
@@ -113,11 +131,18 @@ namespace cereal
     //! An empty noop deleter
     template<class T> struct EmptyDeleter { void operator()(T *) const {} };
 
+    // forward decls for archives from cereal.hpp
     struct InputArchiveBase;
     struct OutputArchiveBase;
 
-    template <class Archive, class T> struct InputBindingCreator 
+    //! Creates a binding (map entry) between an input archive type and a polymorphic type
+    /*! Bindings are made when types are registered, assuming that at least one
+        archive has already been registered.  When this struct is created,
+        it will insert (at run time) an entry into a map that properly handles
+        casting for serializing polymorphic objects */
+    template <class Archive, class T> struct InputBindingCreator
     {
+      //! Initialize the binding
       InputBindingCreator()
       {
         typename InputBindingMap<Archive>::Serializers serializers;
@@ -148,8 +173,14 @@ namespace cereal
       }
     };
 
+    //! Creates a binding (map entry) between an output archive type and a polymorphic type
+    /*! Bindings are made when types are registered, assuming that at least one
+        archive has already been registered.  When this struct is created,
+        it will insert (at run time) an entry into a map that properly handles
+        casting for serializing polymorphic objects */
     template <class Archive, class T> struct OutputBindingCreator
     {
+      //! Writes appropriate metadata to the archive for this polymorphic type
       static void writeMetadata(Archive & ar)
       {
         // Register the polymorphic type name with the archive, and get the id
@@ -167,10 +198,10 @@ namespace cereal
         }
       }
 
+      //! Initialize the binding
       OutputBindingCreator()
       {
         typename OutputBindingMap<Archive>::Serializers serializers;
-
 
         serializers.shared_ptr =
           [](void * arptr, void const * dptr)
@@ -243,6 +274,7 @@ namespace cereal
       typedef instantiate_function<instantiate> unused;
     };
 
+    // instantiate implementation
     template <class Archive, class T>
     void polymorphic_serialization_support<Archive,T>::instantiate()
     {
