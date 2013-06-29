@@ -24,49 +24,35 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_DETAILS_STATIC_OBJECT_HPP_
-#define CEREAL_DETAILS_STATIC_OBJECT_HPP_
+#ifndef CEREAL_DETAILS_UTIL_HPP_
+#define CEREAL_DETAILS_UTIL_HPP_
+
+#include <typeinfo>
+#include <cxxabi.h>
+#include <string>
 
 namespace cereal
 {
-  namespace detail
+  namespace util
   {
-    //! A static, pre-execution object
-    /*! This class will create a single copy (singleton) of some
-        type and ensures that merely referencing this type will
-        cause it to be instantiated and initialized pre-execution.
-
-        For example, this is used heavily in the polymorphic pointer
-        serialization mechanisms to bind various archive types with
-        different polymorphic classes */
-    template <class T>
-    class StaticObject
+    inline std::string demangle(std::string mangledName)
     {
-      private:
-        //! Forces instantiation at pre-execution time
-        static void instantiate(T const &) {}
+      int status = 0;
+      char *demangledName = NULL;
+      std::size_t len;
 
-        static T & create()
-        {
-          static T t;
-          instantiate(instance);
-          return t;
-        }
+      demangledName = abi::__cxa_demangle(mangledName.c_str(), 0, &len, &status);
 
-        StaticObject( StaticObject const & other ) = delete;
+      std::string retName(demangledName);
+      free(demangledName);
 
-      public:
-        static T & getInstance()
-        {
-          return create();
-        }
+      return retName;
+    }
 
-      private:
-        static T & instance;
-    };
-
-    template <class T> T & StaticObject<T>::instance = StaticObject<T>::create();
+    template<class T> inline
+      std::string demangledName()
+      { return demangle(typeid(T).name()); }
   }
-} // namespace cereal
+}
 
-#endif // CEREAL_DETAILS_STATIC_OBJECT_HPP_
+#endif // CEREAL_DETAILS_UTIL_HPP_

@@ -43,6 +43,7 @@
 
 #include <cereal/details/static_object.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
 #include <typeindex>
 #include <map>
 
@@ -72,6 +73,7 @@ namespace cereal
     template <class T>
     struct binding_name {};
 
+    //! A structure holding a map from type_indices to output serializer functions
     template <class Archive>
     struct OutputBindingMap
     {
@@ -89,19 +91,61 @@ namespace cereal
       std::map<std::type_index, Serializers> map;
     };
 
+    //! A structure holding a map from type name strings to input serializer functions
+    template <class Archive>
+    struct InputBindingMap
+    {
+      //! A serializer function
+      typedef std::function<void(void*, std::shared_ptr<void> & )> SharedSerializer;
+      typedef std::function<void(void*, std::unique_ptr<void> & )> UniqueSerializer;
+
+      //! Struct containing the serializer functions for all pointer types
+      struct Serializers
+      {
+        SharedSerializer shared_ptr; //!< Serializer function for shared/weak pointers
+        UniqueSerializer unique_ptr; //!< Serializer function for unique pointers
+      };
+
+      //! A map of serializers for pointers of all registered types
+      std::map<std::string, Serializers> map;
+    };
+
     //! An empty noop deleter
     template<class T> struct EmptyDeleter { void operator()(T *) const {} };
 
     struct InputArchiveBase;
     struct OutputArchiveBase;
 
-    template <class Archive, class T> struct InputBinding 
+    template <class Archive, class T> struct InputBindingCreator 
     {
+      InputBindingCreator()
+      {
+        typename InputBindingMap<Archive>::Serializers serializers;
+
+        serializers.shared_ptr =
+          [](void * arptr, std::shared_ptr<void> & dptr)
+          {
+            Archive & ar = *static_cast<Archive*>(arptr);
+            std::shared_ptr<T> ptr;
+
+            ar( make_ptr_wrapper(ptr) );
+
+            dptr = ptr;
+
+          };
+
+        serializers.unique_ptr =
+          [](void * arptr, std::unique_ptr<void> & dptr)
+          {
+          };
+
+        StaticObject<InputBindingMap<Archive>>::getInstance().map.insert( { std::string(binding_name<T>::name()), serializers } );
+      }
     };
 
-    template <class Archive, class T> struct OutputBinding
+    template <class Archive, class T> struct OutputBindingCreator
     {
-      OutputBinding( )
+      OutputBindingCreator()
       {
         typename OutputBindingMap<Archive>::Serializers serializers;
 
@@ -110,6 +154,20 @@ namespace cereal
           {
             Archive & ar = *static_cast<Archive*>(arptr);
             std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
+
+            // Register the polymorphic type name with the archive, and get the id
+            char const * name = binding_name<T>::name();
+            std::uint32_t id = ar.registerPolymorphicType(name);
+
+            // Serialize the id
+            ar( id );
+
+            // If the msb of the id is 1, then the type name is new, and we should serialize it
+            if( id & detail::msb_32bit )
+            {
+              std::string namestring(name);
+              ar(namestring);
+            }
 
             ar( detail::make_ptr_wrapper(ptr) );
           };
@@ -135,16 +193,16 @@ namespace cereal
     template <class Archive, class T>
     struct create_bindings
     {
-        static const InputBinding<Archive, T> &
+        static const InputBindingCreator<Archive, T> &
         load(std::true_type)
         {
-          return cereal::detail::StaticObject<InputBinding<Archive, T>>::getInstance();
+          return cereal::detail::StaticObject<InputBindingCreator<Archive, T>>::getInstance();
         }
 
-        static const OutputBinding<Archive, T> &
+        static const OutputBindingCreator<Archive, T> &
         save(std::true_type)
         {
-          return cereal::detail::StaticObject<OutputBinding<Archive, T>>::getInstance();
+          return cereal::detail::StaticObject<OutputBindingCreator<Archive, T>>::getInstance();
         }
 
         inline static void load(std::false_type) {}

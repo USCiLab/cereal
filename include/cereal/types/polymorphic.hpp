@@ -30,14 +30,19 @@
 #include <cereal/cereal.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
+#include <cereal/details/util.hpp>
 
-#define CEREAL_REGISTER_TYPE(T)       \
-  namespace cereal {                  \
-  namespace detail {                  \
-  template <>                         \
-  struct binding_name<T>              \
-  { static const char * name = #T; }; \
-  } } /* end namespaces */            \
+#include <iostream>
+
+#define CEREAL_REGISTER_TYPE(T)           \
+  namespace cereal {                      \
+  namespace detail {                      \
+  template <>                             \
+  struct binding_name<T>                  \
+  { \
+    static constexpr char const * name() { return #T; }; \
+  }; \
+  } } /* end namespaces */                \
   CEREAL_BIND_TO_ARCHIVES(T);
 
 #define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)\
@@ -45,7 +50,7 @@
   namespace detail {                           \
   template <>                                  \
   struct binding_name<T>                       \
-  { static const char * name = #Name; };       \
+  { static constexpr char const * name() { return Name; }; }; \
   } } /* end namespaces */                     \
   CEREAL_BIND_TO_ARCHIVES(T);
 
@@ -58,7 +63,8 @@ namespace cereal
   {
     if(!ptr)
     {
-      //ar (detail::null_ptr());
+      // same behavior as nullptr in memory implementation
+      ar( std::uint32_t(0) );
       return;
     }
 
@@ -66,16 +72,45 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to serialize unregistered polymorphic type");
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(typeid(*ptr.get()).name()) + ")");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
 
-  //! Loading std::shared_ptr, case when user load and allocate for polymorphic types
+  //! Loading std::shared_ptr for polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
+    std::uint32_t nameid;
+    ar( nameid );
+
+    if(nameid == 0)
+    {
+      ptr.reset();
+      return;
+    }
+
+    std::string name;
+    if(nameid & detail::msb_32bit)
+    {
+      ar( name );
+      ar.registerPolymorphicName(nameid, name);
+    }
+    else
+    {
+      name = ar.getPolymorphicName(nameid);
+    }
+
+    auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
+
+    auto binding = bindingMap.find(name);
+    if(binding == bindingMap.end())
+      throw cereal::Exception("Trying to load an unregistered polymorphic type (" + name + ")");
+
+    std::shared_ptr<void> result;
+    binding->second.shared_ptr(&ar, result);
+    ptr = std::static_pointer_cast<T>(result);
   }
 
   //! Saving std::weak_ptr for polymorphic types
@@ -83,6 +118,13 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
+    if(!ptr)
+    {
+      // same behavior as nullptr in memory implementation
+      ar( std::uint32_t(0) );
+      return;
+    }
+
   }
 
   //! Loading std::weak_ptr for polymorphic types
@@ -97,6 +139,13 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
+    if(!ptr)
+    {
+      // same behavior as nullptr in memory implementation
+      ar( std::uint32_t(0) );
+      return;
+    }
+
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate for polymorphic types

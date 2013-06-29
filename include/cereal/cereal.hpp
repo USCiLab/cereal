@@ -167,11 +167,11 @@ namespace cereal
   } } // end namespaces
 
   //! The base output archive class
-  template<class ArchiveType, uint32_t Flags = 0>
+  template<class ArchiveType, std::uint32_t Flags = 0>
   class OutputArchive : public detail::OutputArchiveBase
   {
     public:
-      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1)
+      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
       //! Serializes all passed in data
@@ -183,7 +183,7 @@ namespace cereal
       }
 
       //! Registers a pointer with the archive
-      uint32_t registerSharedPointer( void const * addr )
+      std::uint32_t registerSharedPointer( void const * addr )
       {
         // Handle null pointers by just returning 0
         if(addr == 0) return 0;
@@ -194,6 +194,20 @@ namespace cereal
           auto ptrId = itsCurrentPointerId++;
           itsSharedPointerMap.insert( {addr, ptrId} );
           return ptrId | detail::msb_32bit; // mask MSB to be 1
+        }
+        else
+          return id->second;
+      }
+
+      //! Registers a polymorphic type name with the archive
+      std::uint32_t registerPolymorphicType( char const * name )
+      {
+        auto id = itsPolymorphicTypeMap.find( name );
+        if( id == itsPolymorphicTypeMap.end() )
+        {
+          auto polyId = itsCurrentPolymorphicTypeId++;
+          itsPolymorphicTypeMap.insert( {name, polyId} );
+          return polyId | detail::msb_32bit; // mask MSB to be 1
         }
         else
           return id->second;
@@ -307,15 +321,21 @@ namespace cereal
       std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
       //! Maps from addresses to pointer ids
-      std::unordered_map<void const *, std::size_t> itsSharedPointerMap;
+      std::unordered_map<void const *, std::uint32_t> itsSharedPointerMap;
 
       //! The id to be given to the next pointer
-      std::size_t itsCurrentPointerId;
+      std::uint32_t itsCurrentPointerId;
+
+      //! Maps from polymorphic type name strings to ids
+      std::unordered_map<char const *, std::uint32_t> itsPolymorphicTypeMap;
+
+      //! The id to be given to the next polymorphic type name
+      std::uint32_t itsCurrentPolymorphicTypeId;
   }; // class OutputArchive
 
   // ######################################################################
   //! The base input archive class
-  template<class ArchiveType, uint32_t Flags = 0>
+  template<class ArchiveType, std::uint32_t Flags = 0>
   class InputArchive : public detail::InputArchiveBase
   {
     public:
@@ -329,7 +349,7 @@ namespace cereal
         return *self;
       }
 
-      std::shared_ptr<void> getSharedPointer(uint32_t const id)
+      std::shared_ptr<void> getSharedPointer(std::uint32_t const id)
       {
         if(id == 0) return std::shared_ptr<void>(nullptr);
 
@@ -341,12 +361,27 @@ namespace cereal
         return ptr->second;
       }
 
-      void registerSharedPointer(uint32_t const id, std::shared_ptr<void> ptr)
+      void registerSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
       {
-        uint32_t const stripped_id = id & ~detail::msb_32bit;
+        std::uint32_t const stripped_id = id & ~detail::msb_32bit;
         itsSharedPointerMap.insert( {stripped_id, ptr} );
       }
 
+      std::string getPolymorphicName(std::uint32_t const id)
+      {
+        auto name = itsPolymorphicTypeMap.find( id );
+        if(name == itsPolymorphicTypeMap.end())
+        {
+          throw Exception("Error while trying to deserialize a polymorphic pointer. Could not find type id " + std::to_string(id));
+        }
+        return name->second;
+      }
+
+      void registerPolymorphicName(std::uint32_t const id, std::string const & name)
+      {
+        std::uint32_t const stripped_id = id & ~detail::msb_32bit;
+        itsPolymorphicTypeMap.insert( {stripped_id, name} );
+      }
 
     private:
       template <class T> inline
@@ -455,8 +490,12 @@ namespace cereal
       //! A set of all base classes that have been serialized
       std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
-      //! Maps from addresses to pointer ids
-      std::unordered_map<std::size_t, std::shared_ptr<void>> itsSharedPointerMap;
+      //! Maps from pointer ids to addresses
+      std::unordered_map<std::uint32_t, std::shared_ptr<void>> itsSharedPointerMap;
+
+      //! Maps from name ids to names
+      std::unordered_map<std::uint32_t, std::string> itsPolymorphicTypeMap;
+
   }; // class InputArchive
 } // namespace cereal
 

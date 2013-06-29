@@ -29,15 +29,23 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/polymorphic.hpp>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 
 struct Base 
 {
   virtual void foo() = 0;
 
   template<class Archive>
-    void serialize(Archive & ar)
+    void save(Archive & ar) const
     {
-      std::cout << "Serializing Base" << std::endl;
+      std::cout << "Saving Base" << std::endl;
+    }
+
+  template<class Archive>
+    void load(Archive & ar)
+    {
+      std::cout << "Loading Base" << std::endl;
     }
 };
 
@@ -46,24 +54,44 @@ struct MyType : public Base
   void foo() {}
 
   template<class Archive>
-    void serialize(Archive & ar)
+    void save(Archive & ar) const
     {
-      std::cout << "Serializing MyType" << std::endl;
+      std::cout << "Saving MyType" << std::endl;
+    }
+
+  template<class Archive>
+    void load(Archive & ar)
+    {
+      std::cout << "Loading MyType" << std::endl;
     }
 };
 
-CEREAL_BIND_TO_ARCHIVES(MyType);
+CEREAL_REGISTER_TYPE(MyType);
+//CEREAL_REGISTER_TYPE_WITH_NAME(MyType, "cool beans");
 
 template <class T> void nop(T&&t) {}
 
 int main()
 {
-  std::stringstream stream;
-  cereal::BinaryOutputArchive archive(stream);
+  {
+    std::ofstream ostream("rtti.txt");
+    cereal::BinaryOutputArchive oarchive(ostream);
 
-  std::shared_ptr<Base> ptr = std::make_shared<MyType>();
-  archive(ptr);
+    std::shared_ptr<Base> ptr = std::make_shared<MyType>();
 
-  std::unique_ptr<int> xxx(nullptr);
-  archive(xxx);
+    oarchive(ptr);
+  }
+
+
+
+  {
+    std::ifstream istream("rtti.txt");
+    cereal::BinaryInputArchive iarchive(istream);
+
+    std::shared_ptr<Base> ptr;
+    std::shared_ptr<Base> ptr2;
+
+    iarchive(ptr);
+  }
+
 }
