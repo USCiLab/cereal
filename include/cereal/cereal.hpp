@@ -88,22 +88,27 @@ namespace cereal
     return {name, std::forward<T>(value)};
   }
 
-  //! Creates a name value pair for the variable T, using the same name
+  //! Creates a name value pair for the variable T with the same name as the variable
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion
+  /*! This class is used to demarcate data that can safely be serialized
+      as a binary chunk of data.  Individual archives can then choose how
+      best represent this during serialization. */
   template <class T>
   struct BinaryData
   {
+    //! Internally store the pointer as a void *, keeping const if created with
+    //! a const pointer
     using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
                                          const void *,
                                          void *>::type;
 
     BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
 
-    PT data;   // pointer to beginning of data
-    uint64_t size; // size in bytes
+    PT data;   //!< pointer to beginning of data
+    uint64_t size; //!< size in bytes
   };
 
   //! Convenience function to create binary data for both const and non const pointers
@@ -118,14 +123,17 @@ namespace cereal
   // ######################################################################
   //! Called before a type is serialized to set up any special archive state
   //! for processing some type
+  /*! If designing a serializer that needs to set up any kind of special
+      state or output extra information for a type, specialize this function
+      for the archive type and the types that require the extra information. */
   template <class Archive, class T>
-  void prologue( Archive & ar, T const & data )
+  void prologue( Archive & /* archive */, T const & /* data */)
   { }
 
-  //! Called before a type is serialized to tear down any special archive state
+  //! Called after a type is serialized to tear down any special archive state
   //! for processing some type
   template <class Archive, class T>
-  void epilogue( Archive & ar, T const & data )
+  void epilogue( Archive & /* archive */, T const & /* data */)
   { }
 
   // ######################################################################
@@ -153,12 +161,15 @@ namespace cereal
     template <class Archive, class T> struct polymorphic_serialization_support;
     struct adl_tag;
 
+    // used during saving pointers
     static const int32_t msb_32bit = 0x80000000;
   }
 
   //! Registers a specific Archive type with cereal
   /*! This registration should be done once per archive.  A good place to
-      put this is immediately following the definition of your archive */
+      put this is immediately following the definition of your archive.
+      Archive registration is only strictly necessary if you wish to
+      support pointers to polymorphic data types */
   #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
   namespace cereal { namespace detail {                               \
   template <class T>                                                  \
@@ -167,10 +178,26 @@ namespace cereal
   } } // end namespaces
 
   //! The base output archive class
+  /*! This is the base output archive for all output archives.  If you create
+      a custom archive class, it should derive from this, passing itself as
+      a template parameter for the ArchiveType.
+
+      The base class provides all of the functionality necessary to
+      properly forward data to the correct serialization functions.
+
+      Individual archives should use a combination of prologue and
+      epilogue functions together with specializations of serialize, save,
+      and load to alter the functionality of their serialization.
+
+      @tparam ArchiveType The archive type that derives from OutputArchive
+      @tparam Flags Flags to control advanced functionality.  See the Flags
+                    enum for more information. */
   template<class ArchiveType, std::uint32_t Flags = 0>
   class OutputArchive : public detail::OutputArchiveBase
   {
     public:
+      //! Construct the output archive
+      /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
@@ -182,7 +209,13 @@ namespace cereal
         return *self;
       }
 
-      //! Registers a pointer with the archive
+      //! Registers a shared pointer with the archive
+      /*! This function is used to track shared pointer targets to prevent
+          unnecessary saves from taking place if multiple shared pointers
+          point to the same data.
+
+          @param addr The address (see shared_ptr get()) pointed to by the shared pointer
+          @return A key that uniquely identifies the pointer */
       std::uint32_t registerSharedPointer( void const * addr )
       {
         // Handle null pointers by just returning 0
@@ -200,6 +233,12 @@ namespace cereal
       }
 
       //! Registers a polymorphic type name with the archive
+      /*! This function is used to track polymorphic types to prevent
+          unnecessary saves of identifying strings used by the polymorphic
+          support functionality.
+
+          @param name The name to associate with a polymorphic type
+          @return A key that uniquely identifies the polymorphic type name */
       std::uint32_t registerPolymorphicType( char const * name )
       {
         auto id = itsPolymorphicTypeMap.find( name );
@@ -214,6 +253,7 @@ namespace cereal
       }
 
     private:
+      //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
@@ -222,6 +262,7 @@ namespace cereal
         epilogue( *self, head );
       }
 
+      //! Unwinds to process all data
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
@@ -291,7 +332,7 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
-      operator & (T const & t)
+      operator & (T const &)
       {
         return *self;
       }
@@ -301,7 +342,7 @@ namespace cereal
       typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_output_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
-      operator & (T const & t)
+      operator & (T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
@@ -335,10 +376,26 @@ namespace cereal
 
   // ######################################################################
   //! The base input archive class
+  /*! This is the base input archive for all input archives.  If you create
+      a custom archive class, it should derive from this, passing itself as
+      a template parameter for the ArchiveType.
+
+      The base class provides all of the functionality necessary to
+      properly forward data to the correct serialization functions.
+
+      Individual archives should use a combination of prologue and
+      epilogue functions together with specializations of serialize, save,
+      and load to alter the functionality of their serialization.
+
+      @tparam ArchiveType The archive type that derives from InputArchive
+      @tparam Flags Flags to control advanced functionality.  See the Flags
+                    enum for more information. */
   template<class ArchiveType, std::uint32_t Flags = 0>
   class InputArchive : public detail::InputArchiveBase
   {
     public:
+      //! Construct the output archive
+      /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
       InputArchive(ArchiveType * const self) : self(self) { }
 
       //! Serializes all passed in data
@@ -349,24 +406,41 @@ namespace cereal
         return *self;
       }
 
+      //! Retrieves a shared pointer given a unique key for it
+      /*! This is used to retrieve a previously registered shared_ptr
+          which has already been loaded.
+
+          @param id The unique id that was serialized for the pointer
+          @return A shared pointer to the data */
       std::shared_ptr<void> getSharedPointer(std::uint32_t const id)
       {
         if(id == 0) return std::shared_ptr<void>(nullptr);
 
         auto ptr = itsSharedPointerMap.find( id );
         if(ptr == itsSharedPointerMap.end())
-        {
           throw Exception("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
-        }
+
         return ptr->second;
       }
 
+      //! Registers a shared pointer to its unique identifier
+      /*! After a shared pointer has been loaded for the first time, it should
+          be registered with its loaded id for future references to it.
+
+          @param id The unique identifier for the shared pointer
+          @param ptr The actual shared pointer */
       void registerSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
         itsSharedPointerMap.insert( {stripped_id, ptr} );
       }
 
+      //! Retrieves the string for a polymorphic type given a unique key for it
+      /*! This is used to retrieve a string previously registered during
+          a polymorphic load.
+
+          @param id The unique id that was serialized for the polymorphic type
+          @return The string identifier for the tyep */
       std::string getPolymorphicName(std::uint32_t const id)
       {
         auto name = itsPolymorphicTypeMap.find( id );
@@ -377,6 +451,12 @@ namespace cereal
         return name->second;
       }
 
+      //! Registers a polymorphic name string to its unique identifier
+      /*! After a polymorphic type has been loaded for the first time, it should
+          be registered with its loaded id for future references to it.
+
+          @param id The unique identifier for the polymorphic type
+          @param name The name associated with the tyep */
       void registerPolymorphicName(std::uint32_t const id, std::string const & name)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
@@ -384,6 +464,7 @@ namespace cereal
       }
 
     private:
+      //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
@@ -392,6 +473,7 @@ namespace cereal
         epilogue( *self, head );
       }
 
+      //! Unwinds to process all data
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
@@ -461,7 +543,7 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
-      operator & (T const & t)
+      operator & (T const &)
       {
         return *self;
       }
@@ -471,7 +553,7 @@ namespace cereal
       typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_input_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
-      operator & (T const & t)
+      operator & (T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
