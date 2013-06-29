@@ -577,7 +577,6 @@ namespace cereal
 
       //! Maps from name ids to names
       std::unordered_map<std::uint32_t, std::string> itsPolymorphicTypeMap;
-
   }; // class InputArchive
 } // namespace cereal
 

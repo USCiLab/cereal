@@ -34,9 +34,15 @@
 namespace cereal
 {
   // ######################################################################
+  //! An output archive designed to save data in a compact binary representation
+  /*! This archive outputs data to a stream in an extremely compact binary
+      representation with as little extra metadata as possible. */
   class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>
   {
     public:
+      //! Construct, outputting to the provided stream
+      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
+                        even cout! */
       BinaryOutputArchive(std::ostream & stream) :
         OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
@@ -89,9 +95,11 @@ namespace cereal
   };
 
   // ######################################################################
+  //! An input archive designed to load data saved using BinaryOutputArchive
   class BinaryInputArchive : public InputArchive<BinaryInputArchive, AllowEmptyClassElision>
   {
     public:
+      //! Construct, loading from the provided stream
       BinaryInputArchive(std::istream & stream) :
         InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
@@ -109,6 +117,9 @@ namespace cereal
     private:
       std::istream & itsStream;
   };
+
+  // ######################################################################
+  // Common BinaryArchive serialization functions
 
   //! Saving for POD types to binary
   template<class T> inline
@@ -134,6 +145,7 @@ namespace cereal
     ar( t.value );
   }
 
+  //! Saving arrays
   template <class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
   save(BinaryOutputArchive & ar, T const & array)
@@ -141,6 +153,7 @@ namespace cereal
     ar.saveBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
+  //! Loading arrays
   template <class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
   load(BinaryInputArchive & ar, T & array)
@@ -148,12 +161,14 @@ namespace cereal
     ar.loadBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
   }
 
+  //! Saving binary data
   template <class T> inline
   void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)
   {
     ar.saveBinary(bd.data, bd.size);
   }
 
+  //! Loading binary data
   template <class T> inline
   void load(BinaryInputArchive & ar, BinaryData<T> & bd)
   {
@@ -161,6 +176,7 @@ namespace cereal
   }
 } // namespace cereal
 
+// register archives for polymorphic support
 CEREAL_REGISTER_ARCHIVE(cereal::BinaryOutputArchive);
 CEREAL_REGISTER_ARCHIVE(cereal::BinaryInputArchive);
 
