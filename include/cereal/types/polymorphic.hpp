@@ -31,6 +31,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 #include <cereal/details/util.hpp>
+
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
     to them can be serialized.  This also assumes that

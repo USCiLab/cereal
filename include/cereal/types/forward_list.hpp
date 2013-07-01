@@ -39,9 +39,7 @@ namespace cereal
     // write the size - note that this is slow because we need to traverse
     // the entire list. there are ways we could avoid this but this was chosen
     // since it works in the most general fashion with any archive type
-    size_t size = 0;
-    for( auto it = forward_list.begin(), end = forward_list.end(); it != end; ++it )
-      ++size;
+    const size_t size = std::distance( forward_list.begin(), forward_list.end() );
 
     ar( size );
 
