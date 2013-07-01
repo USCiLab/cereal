@@ -258,7 +258,7 @@ namespace cereal
       void process( T && head )
       {
         prologue( *self, head );
-        (*self) & head;
+        self->processImpl( head );
         epilogue( *self, head );
       }
 
@@ -273,13 +273,13 @@ namespace cereal
       //! Serialization of a virtual_base_class wrapper
       /*! \sa virtual_base_class */
       template <class T> inline
-      ArchiveType & operator & (virtual_base_class<T> b)
+      ArchiveType & processImpl(virtual_base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
         if(itsBaseClassSet.count(id) == 0)
         {
           itsBaseClassSet.insert(id);
-          (*self) & (*b.base_ptr);
+          self->processImpl( *b.base_ptr );
         }
         return *self;
       }
@@ -289,7 +289,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
                               (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T const & t)
+      processImpl(T const & t)
       {
         access::member_serialize(*self, const_cast<T &>(t));
         return *self;
@@ -300,7 +300,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
                               (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T const & t)
+      processImpl(T const & t)
       {
         serialize(*self, const_cast<T &>(t));
         return *self;
@@ -311,7 +311,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_member_load_save<T, ArchiveType>() ||
                               (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T const & t)
+      processImpl(T const & t)
       {
         access::member_save(*self, t);
         return *self;
@@ -322,7 +322,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_non_member_load_save<T, ArchiveType>() ||
                               (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T const & t)
+      processImpl(T const & t)
       {
         save(*self, t);
         return *self;
@@ -332,7 +332,7 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
-      operator & (T const &)
+      processImpl(T const &)
       {
         return *self;
       }
@@ -342,7 +342,7 @@ namespace cereal
       typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_output_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
-      operator & (T const &)
+      processImpl(T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
@@ -469,7 +469,7 @@ namespace cereal
       void process( T && head )
       {
         prologue( *self, head );
-        (*self) & head;
+        self->processImpl( head );
         epilogue( *self, head );
       }
 
@@ -484,13 +484,13 @@ namespace cereal
       //! Serialization of a virtual_base_class wrapper
       /*! \sa virtual_base_class */
       template <class T> inline
-      ArchiveType & operator & (virtual_base_class<T> b)
+      ArchiveType & processImpl(virtual_base_class<T> b)
       {
         traits::detail::base_class_id id(b.base_ptr);
         if(itsBaseClassSet.count(id) == 0)
         {
           itsBaseClassSet.insert(id);
-          (*self) & (*b.base_ptr);
+          self->processImpl( *b.base_ptr );
         }
         return *self;
       }
@@ -500,7 +500,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
                               (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T && t)
+      processImpl(T && t)
       {
         access::member_serialize(*self, t);
         return *self;
@@ -511,7 +511,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
                               (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T && t)
+      processImpl(T && t)
       {
         serialize(*self, std::forward<T>(t));
         return *self;
@@ -522,7 +522,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_member_load_save<T, ArchiveType>() ||
                               (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_load<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T && t)
+      processImpl(T && t)
       {
         access::member_load(*self, t);
         return *self;
@@ -533,7 +533,7 @@ namespace cereal
       typename std::enable_if<traits::is_specialized_non_member_load_save<T, ArchiveType>() ||
                               (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_load<T, ArchiveType>()),
                               ArchiveType &>::type
-      operator & (T && t)
+      processImpl(T && t)
       {
         load(*self, std::forward<T>(t));
         return *self;
@@ -543,7 +543,7 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
           !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
-      operator & (T const &)
+      processImpl(T const &)
       {
         return *self;
       }
@@ -553,7 +553,7 @@ namespace cereal
       typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_input_serializable<T, ArchiveType>() &&
         (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
         ArchiveType &>::type
-      operator & (T const &)
+      processImpl(T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
