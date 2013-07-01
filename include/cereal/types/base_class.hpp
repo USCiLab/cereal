@@ -24,53 +24,118 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_
-#define CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_
+#ifndef CEREAL_TYPES_BASE_CLASS_HPP_
+#define CEREAL_TYPES_BASE_CLASS_HPP_
 
 namespace cereal
 {
-  //! Casts a derived class to its base class in a way that allows cereal to track inheritance
+  //! Casts a derived class to its non-virtual base class in a way that safely supports abstract classes
+  /*! This should be used in cases when a derived type needs to serialize its base type. This is better than directly
+      using static_cast, as it allows for serialization of pure virtual (abstract) base classes. 
+
+      \sa virtual_base_class
+      
+      @code{.cpp}
+      struct MyBase
+      {
+        int x;
+
+        virtual void foo() = 0;
+
+        template <class Archive>
+        void serialize( Archive & ar )
+        {
+          ar( x );
+        }
+      };
+
+      struct MyDerived : public MyBase //<-- Note non-virtual inheritance
+      {
+        int y;
+
+        virtual void foo() {};
+
+        template <class Archive>
+        void serialize( Archive & ar )
+        {
+          ar( cereal::base_class<MyBase>(this) );
+          ar( y );
+        }
+      };
+      @endcode */
+  template<class Base>
+    struct base_class
+    {
+      template<class Derived>
+        base_class(Derived const * derived) :
+          base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
+      { }
+
+        Base * base_ptr;
+    };
+
+  //! Casts a derived class to its virtual base class in a way that allows cereal to track inheritance
   /*! This should be used in cases when a derived type features virtual inheritance from some
       base type.  This allows cereal to track the inheritance and to avoid making duplicate copies
       during serialization.
 
       It is safe to use virtual_base_class in all circumstances for serializing base classes, even in cases
       where virtual inheritance does not take place, though it may be slightly faster to utilize
-      static_cast<> if you do not need to worry about virtual inheritance
+      cereal::base_class<> if you do not need to worry about virtual inheritance.
+
+      \sa base_class
 
       @code{.cpp}
       struct MyBase
-      { };
+      { 
+        int x;
 
-      struct MyLeft : virtual MyBase
-      {
         template <class Archive>
         void serialize( Archive & ar )
         {
-          ar( cereal::base_clas<MyBase>( this ) );
+          ar( x );
+        }
+      };
+
+      struct MyLeft : virtual MyBase //<-- Note the virtual inheritance
+      {
+        int y;
+
+        template <class Archive>
+        void serialize( Archive & ar )
+        {
+          ar( cereal::virtual_base_class<MyBase>( this ) );
+          ar( y );
         }
       };
 
       struct MyRight : virtual MyBase
       {
+        int z;
+
         template <class Archive>
         void serialize( Archive & ar )
         {
-          ar( cereal::base_clas<MyBase>( this ) );
+          ar( cereal::virtual_base_clas<MyBase>( this ) );
+          ar( z );
         }
       };
 
-      // diamond virtual inheritance; contains one copy if each base class
+      // diamond virtual inheritance; contains one copy of each base class
       struct MyDerived : virtual MyLeft, virtual MyRight
       {
+        int a;
+
         template <class Archive>
         void serialize( Archive & ar )
         {
           ar( cereal::virtual_base_class<MyLeft>( this ) );  // safely serialize data members in MyLeft
           ar( cereal::virtual_base_class<MyRight>( this ) ); // safely serialize data members in MyRight
+          ar( a );
 
           // Because we used virtual_base_class, cereal will ensure that only one instance of MyBase is
-          // serialized as we traverse the inheritance heirarchy.
+          // serialized as we traverse the inheritance heirarchy. This means that there will be one copy 
+          // each of the variables x, y, z, and a
 
           // If we had chosen to use static_cast<> instead, cereal would perform no tracking and
           // assume that every base class should be serialized (in this case leading to a duplicate
@@ -86,5 +151,6 @@ namespace cereal
 
         Base * base_ptr;
     };
+
 } // namespace cereal
-#endif // CEREAL_TYPES_VIRTUAL_BASE_CLASS_HPP_
+#endif // CEREAL_TYPES_BASE_CLASS_HPP_

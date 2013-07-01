@@ -34,18 +34,21 @@
 
 struct Base
 {
+  int y;
   virtual void foo() = 0;
 
   template<class Archive>
     void save(Archive & ar) const
     {
       std::cout << "Saving Base" << std::endl;
+      ar( y );
     }
 
   template<class Archive>
     void load(Archive & ar)
     {
       std::cout << "Loading Base" << std::endl;
+      ar( y );
     }
 };
 
@@ -59,12 +62,14 @@ struct MyType : public Base
     void save(Archive & ar) const
     {
       std::cout << "Saving MyType" << std::endl;
+      ar( cereal::virtual_base_class<Base>( this ) );
     }
 
   template<class Archive>
     void load(Archive & ar)
     {
       std::cout << "Loading MyType" << std::endl;
+      ar( cereal::base_class<Base>( this ) );
     }
 };
 CEREAL_REGISTER_TYPE(MyType);

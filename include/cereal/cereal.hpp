@@ -34,7 +34,7 @@
 #include <cstdint>
 
 #include <cereal/details/traits.hpp>
-#include <cereal/types/virtual_base_class.hpp>
+#include <cereal/types/base_class.hpp>
 #include <cereal/types/common.hpp>
 
 namespace cereal
@@ -284,6 +284,15 @@ namespace cereal
         return *self;
       }
 
+      //! Serialization of a base_class wrapper
+      /*! \sa base_class */
+      template <class T> inline
+      ArchiveType & processImpl(base_class<T> b)
+      {
+        self->processImpl( *b.base_ptr );
+        return *self;
+      }
+
       //! Member serialization
       template <class T> inline
       typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
@@ -494,6 +503,16 @@ namespace cereal
         }
         return *self;
       }
+
+      //! Serialization of a base_class wrapper
+      /*! \sa base_class */
+      template <class T> inline
+      ArchiveType & processImpl(base_class<T> b)
+      {
+        self->processImpl( *b.base_ptr );
+        return *self;
+      }
+
 
       //! Member serialization
       template <class T> inline

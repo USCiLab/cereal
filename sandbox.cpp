@@ -32,7 +32,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/boost_variant.hpp>
-#include <cereal/types/virtual_base_class.hpp>
+#include <cereal/types/base_class.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
