@@ -205,7 +205,7 @@ namespace cereal
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
-        process( std::forward<Types>( args )... );
+        self->process( std::forward<Types>( args )... );
         return *self;
       }
 
@@ -266,8 +266,8 @@ namespace cereal
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
-        process( std::forward<T>( head ) );
-        process( std::forward<Other>( tail )... );
+        self->process( std::forward<T>( head ) );
+        self->process( std::forward<Other>( tail )... );
       }
 
       //! Serialization of a virtual_base_class wrapper
