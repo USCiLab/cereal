@@ -36,24 +36,18 @@ namespace cereal
   template <class Archive, class T, class A> inline
   void save( Archive & ar, std::forward_list<T, A> const & forward_list )
   {
-    //TODO: possibly remove push/pop position and just bite the bullet of iterating
-    //      over the list once to get its size
+    // write the size - note that this is slow because we need to traverse
+    // the entire list. there are ways we could avoid this but this was chosen
+    // since it works in the most general fashion with any archive type
+    size_t size = 0;
+    for( auto it = forward_list.begin(), end = forward_list.end(); it != end; ++it )
+      ++size;
 
-    // save position for size of list
-    ar.pushPosition(sizeof(size_t));
+    ar( size );
 
     // write the list
-    size_t size = 0;
     for( const auto & i : forward_list )
-    {
       ar( i );
-      ++size;
-    }
-
-    // write the size
-    ar.popPosition();
-    ar( size );
-    ar.resetPosition();
   }
 
   //! Loading for std::forward_list all other types from
