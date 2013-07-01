@@ -51,6 +51,8 @@ struct Base
 
 struct MyType : public Base
 {
+  int x;
+
   void foo() {}
 
   template<class Archive>
@@ -69,18 +71,24 @@ CEREAL_REGISTER_TYPE(MyType);
 
 struct YourType : public Base
 {
+  YourType(int xx) : x(xx) {}
+  YourType() : x(-1) {}
+  int x;
+
   void foo() {}
 
   template<class Archive>
     void save(Archive & ar) const
     {
       std::cout << "Saving YourType" << std::endl;
+      ar( x );
     }
 
   template<class Archive>
     void load(Archive & ar)
     {
       std::cout << "Loading YourType" << std::endl;
+      ar( x );
     }
 };
 CEREAL_REGISTER_TYPE(YourType);
@@ -94,7 +102,7 @@ int main()
     cereal::BinaryOutputArchive oarchive(ostream);
 
     std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
-    std::shared_ptr<Base> ptr2 = std::make_shared<YourType>();
+    std::shared_ptr<Base> ptr2 = std::make_shared<YourType>(33);
     std::unique_ptr<Base> ptr3(new MyType);
     std::weak_ptr<Base>   ptr4 = ptr2;
 
@@ -103,8 +111,6 @@ int main()
     oarchive(ptr3);
     oarchive(ptr4);
   }
-
-
 
   {
     std::ifstream istream("rtti.txt");
@@ -121,4 +127,5 @@ int main()
     iarchive(ptr4);
   }
 
+  //std::remove("rtti.txt");
 }

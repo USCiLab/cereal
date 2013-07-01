@@ -31,7 +31,6 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 #include <cereal/details/util.hpp>
-#include <iostream>
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
     to them can be serialized.  This also assumes that
@@ -99,9 +98,7 @@ namespace cereal
           ar.registerPolymorphicName(nameid, name);
         }
         else
-        {
           name = ar.getPolymorphicName(nameid);
-        }
 
         auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
 
@@ -152,8 +149,7 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
-    std::cout << "poly weak" << std::endl;
-    auto sptr = ptr.lock();
+    auto const sptr = ptr.lock();
     ar( sptr );
   }
 
