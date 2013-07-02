@@ -47,11 +47,15 @@ namespace cereal
   };
 
   // ######################################################################
+  namespace detail
+  {
+    struct NameValuePairCore {};
+  }
   //! For holding name value pairs
   /*! This pairs a name (some string) with some value such that an archive
       can potentially take advantage of the pairing. */
   template <class T>
-  class NameValuePair
+  class NameValuePair : detail::NameValuePairCore
   {
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
@@ -60,6 +64,10 @@ namespace cereal
       using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
                                              DT,
                                             typename std::add_lvalue_reference<DT>::type>::type;
+      // prevent nested nvps
+      static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
+                     "Cannot pair a name to a NameValuePair" );
+
     public:
       //! Constructs a new NameValuePair
       /*! @param n The name of the pair

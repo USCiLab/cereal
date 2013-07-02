@@ -27,6 +27,7 @@
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/xml.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/memory.hpp>
@@ -263,32 +264,6 @@ int main()
 
   Derived d;
   archive( d );
-  //decltype(cereal::access::member_serialize(archive, d));
-  //decltype(std::declval<Derived&>().serialize( std::declval<cereal::BinaryOutputArchive&>() ));
-  //d.serialize<cereal::BinaryOutputArchive>( archive );
-
-  //std::cout << "ms2  " << cereal::traits::has_member_serialize2(std::declval<Derived&>(), std::declval<cereal::BinaryOutputArchive&>()) << std::endl;
-
-  //{
-  //  int x[5];
-  //  std::cout << "saving" << std::endl;
-  //  std::stringstream os;
-  //  cereal::BinaryOutputArchive archive(os);
-  //  archive( x );
-
-  //  Base b;
-  //  archive( b );
-
-  //  Derived d;
-  //  archive( d );
-
-  //  std::cout << "loading" << std::endl;
-  //  cereal::BinaryInputArchive iarchive(os);
-
-  //  iarchive( x );
-  //  iarchive( b );
-  //  iarchive( d );
-  //}
 
   Everything e_out;
   e_out.x = 99;
@@ -315,108 +290,24 @@ int main()
     cereal::BinaryInputArchive archive(is);
     archive(CEREAL_NVP(e_in));
     archive(t2);
+    std::remove("out.txt");
   }
 
-  assert(e_in == e_out);//
-  //
-  //{                     //
-  //  std::ofstream os("pt//r.txt");
-  //  cereal::BinaryOutput//Archive archive(os);
-  //  std::shared_ptr<std://:shared_ptr<int>> xptr1 = std::make_shared<std::shared_ptr<int>>(std::make_shared<int>(5));
-  //  std::shared_ptr<int>// xptr2 = *xptr1;
-  //  std::weak_ptr<int> w//ptr2 = xptr2;
-  //  std::unique_ptr<Test//1> uptr(new Test1);
-  //  uptr->a = 99;       //
-  //  archive & xptr1;    //
-  //  archive & xptr2;    //
-  //  archive & wptr2;    //
-  //  archive & uptr;     //
-  //}
+  assert(e_in == e_out);
 
-  //{
-  //  std::ifstream is("ptr.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  std::shared_ptr<std::shared_ptr<int>> xptr1;
-  //  std::shared_ptr<int> xptr2;
-  //  std::weak_ptr<int> wptr2;
-  //  std::unique_ptr<Test1> uptr;
-  //  archive & xptr1;
-  //  archive & xptr2;
-  //  archive & wptr2;
-  //  archive & uptr;
+  auto x = cereal::make_nvp( "a", cereal::make_nvp("b", 5) );
 
-  //  std::cout << **xptr1 << std::endl;
-  //  std::cout << *xptr2 << std::endl;
-  //  std::cout << (*xptr1).get() << " == " << xptr2.get() << " ? " << ((*xptr1).get() == xptr2.get()) << std::endl;
-  //  std::cout << *(wptr2.lock()) << std::endl;
-  //  std::cout << (wptr2.lock().get() == xptr2.get()) << std::endl;
-  //  std::cout << uptr->a << std::endl;
-  //}
-
-  //{
-  //  std::ofstream os("arr.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  int a1[] = {1, 2, 3};
-  //  int a2[][2] = {{4, 5}, {6, 7}};
-  //  archive & a1;
-  //  archive & a2;
-  //  EmptyStruct empty;
-  //  archive & empty;
-  //  archive & std::complex<float>();
-  //}
-
-  //{
-  //  std::ifstream is("arr.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  int a1[3];
-  //  int a2[2][2];
-  //  archive & a1;
-  //  archive & a2;
-
-  //  for(auto i : a1)
-  //    std::cout << i << " ";
-  //  std::cout << std::endl;
-  //  for( auto const & i : a2 )
-  //  {
-  //    for( auto j : i )
-  //      std::cout << j << " ";
-  //    std::cout << std::endl;
-  //  }
-  //  std::cout << std::endl;
-  //}
+  {
+    //std::stringstream os;
+    cereal::XMLOutputArchive oar( std::cout );
+    oar( cereal::make_nvp("hello", 5 ) );
+    std::string bla("bla");
+    oar( bla );
+  }
 
 
-  //std::ostringstream os;
-  //cereal::BinaryOutputArchive out_archive(os);
 
-  //in_archive & nd;
 
-  //std::cout << nd->y << std::endl;
-
-  //auto zxx = cereal::access::load_and_allocate<NonEmptyStruct>( out_archive );
-  //auto xxx = cereal::access::load_and_allocate<NoDefaultCtor>( out_archive );
-
-  //std::cout << cereal::traits::has_member_load_and_allocate<NoDefaultCtor, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_member_load_and_allocate<NonEmptyStruct, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_member_load_and_allocate<int, cereal::BinaryOutputArchive>() << std::endl;
-
-  //cereal::Construct<int>::Create( out_archive );
-  //cereal::Construct<NoDefaultCtor>::Create( out_archive );
-
-  //std::cout << cereal::traits::has_non_member_load_and_allocate<NoDefaultCtor, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_load_and_allocate<NonEmptyStruct, cereal::BinaryOutputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_load_and_allocate<int, cereal::BinaryOutputArchive>() << std::endl;
-
-  //auto p = std::make_shared<NoDefaultCtor>( 5 );
-  //out_archive & p;
-
-  //std::istringstream is(os.str());
-  //cereal::BinaryInputArchive in_archive(is);
-
-  //p->y = 3;
-
-  //in_archive & p;
-  //std::cout << p->y << std::endl;
 
   return 0;
 }
