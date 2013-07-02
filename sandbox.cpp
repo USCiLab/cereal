@@ -301,10 +301,15 @@ int main()
     oar( cereal::make_nvp("hello", 5 ) );
     std::string bla("bla");
     oar( bla );
+
+    int x = 3;
+    oar( CEREAL_NVP(x) );
     oar( 5 );
     oar( 3.3 );
     oar( 3.2f );
     oar( true );
+
+    std::array<int,5> arr = {1, 2, 3, 4, 5};
     //int xxx[] = {-1, 95, 3};
     //oar.saveBinaryValue( xxx, sizeof(int)*3);
   }

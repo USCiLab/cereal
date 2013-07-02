@@ -51,6 +51,7 @@ namespace cereal
   {
     struct NameValuePairCore {};
   }
+
   //! For holding name value pairs
   /*! This pairs a name (some string) with some value such that an archive
       can potentially take advantage of the pairing. */
