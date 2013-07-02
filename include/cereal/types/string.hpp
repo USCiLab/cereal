@@ -39,7 +39,8 @@ namespace cereal
   save(Archive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     // Save number of chars + the data
-    ar( str.size() );
+    ar( make_size_tag( str.size() ) );
+    //ar( str.size() );
     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );
   }
 
@@ -49,7 +50,7 @@ namespace cereal
   load(Archive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     size_t size;
-    ar( size );
+    ar( make_size_tag( size ) );
     str.resize(size);
     ar( binary_data( &(*str.begin()), size * sizeof(CharT) ) );
   }

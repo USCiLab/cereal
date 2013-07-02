@@ -111,6 +111,14 @@ namespace cereal
     ar( t.value );
   }
 
+  //! Serializing NVP types to binary
+  template <class Archive, class T> inline
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+  serialize( Archive & ar, SizeTag<T> & t )
+  {
+    ar( t.size );
+  }
+
   //! Saving arrays
   template <class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
