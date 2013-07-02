@@ -295,14 +295,18 @@ int main()
 
   assert(e_in == e_out);
 
-  auto x = cereal::make_nvp( "a", cereal::make_nvp("b", 5) );
-
   {
     //std::stringstream os;
     cereal::XMLOutputArchive oar( std::cout );
     oar( cereal::make_nvp("hello", 5 ) );
     std::string bla("bla");
     oar( bla );
+    oar( 5 );
+    oar( 3.3 );
+    oar( 3.2f );
+    oar( true );
+    //int xxx[] = {-1, 95, 3};
+    //oar.saveBinaryValue( xxx, sizeof(int)*3);
   }
 
 
