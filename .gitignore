@@ -19,6 +19,6 @@ unittests
 boost_serialize
 arr.txt
 performance
-sandbox
+sandbox*
 include_renamed
-.ycm_extra_conf.py
+.ycm_extra_conf.py*
