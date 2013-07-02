@@ -27,7 +27,8 @@
 #ifndef CEREAL_TYPES_MAP_HPP_
 #define CEREAL_TYPES_MAP_HPP_
 
-#include <cereal/cereal.hpp>
+//#include <cereal/cereal.hpp>
+#include <cereal/details/helpers.hpp>
 #include <map>
 
 namespace cereal

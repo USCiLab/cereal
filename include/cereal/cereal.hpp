@@ -34,6 +34,7 @@
 #include <cstdint>
 
 #include <cereal/details/traits.hpp>
+#include <cereal/details/helpers.hpp>
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/common.hpp>
 
@@ -47,42 +48,6 @@ namespace cereal
   };
 
   // ######################################################################
-  namespace detail
-  {
-    struct NameValuePairCore {};
-  }
-
-  //! For holding name value pairs
-  /*! This pairs a name (some string) with some value such that an archive
-      can potentially take advantage of the pairing. */
-  template <class T>
-  class NameValuePair : detail::NameValuePairCore
-  {
-    private:
-      // If we get passed an RValue, we'll just make a local copy if it here
-      // otherwise, we store a reference
-      using DT = typename std::decay<T>::type;
-      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
-                                             DT,
-                                            typename std::add_lvalue_reference<DT>::type>::type;
-      // prevent nested nvps
-      static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
-                     "Cannot pair a name to a NameValuePair" );
-
-    public:
-      //! Constructs a new NameValuePair
-      /*! @param n The name of the pair
-          @param v The value to pair.  Ideally this should be an l-value reference so that
-                   the value can be both loaded and saved to.  If you pass an r-value reference,
-                   the NameValuePair will store a copy of it instead of a reference.  Thus you should
-                   only pass r-values in cases where this makes sense, such as the result of some
-                   size() call.  In either case, any constness will be stripped away */
-      NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
-
-      char const * name;
-      Type value;
-  };
-
   //! Creates a name value pair
   template <class T> inline
   NameValuePair<T> make_nvp( std::string const & name, T && value )
@@ -101,25 +66,6 @@ namespace cereal
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
-  //! A wrapper around data that can be serialized in a binary fashion
-  /*! This class is used to demarcate data that can safely be serialized
-      as a binary chunk of data.  Individual archives can then choose how
-      best represent this during serialization. */
-  template <class T>
-  struct BinaryData
-  {
-    //! Internally store the pointer as a void *, keeping const if created with
-    //! a const pointer
-    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
-                                         const void *,
-                                         void *>::type;
-
-    BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
-
-    PT data;   //!< pointer to beginning of data
-    uint64_t size; //!< size in bytes
-  };
-
   //! Convenience function to create binary data for both const and non const pointers
   /*! @param data Pointer to beginning of the data
       @param size The size in bytes of the data */
@@ -160,21 +106,6 @@ namespace cereal
   enum Flags { AllowEmptyClassElision = 1 };
 
   // ######################################################################
-  namespace detail
-  {
-    // base classes for type checking
-    struct OutputArchiveBase {};
-    struct InputArchiveBase {};
-
-    // forward decls for polymorphic support
-    template <class Archive, class T> struct polymorphic_serialization_support;
-    struct adl_tag;
-
-    // used during saving pointers
-    static const int32_t msb_32bit = 0x80000000;
-    static const int32_t msb2_32bit = 0x40000000;
-  }
-
   //! Registers a specific Archive type with cereal
   /*! This registration should be done once per archive.  A good place to
       put this is immediately following the definition of your archive.

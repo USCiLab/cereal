@@ -27,7 +27,8 @@
 #ifndef CEREAL_TYPES_STRING_HPP_
 #define CEREAL_TYPES_STRING_HPP_
 
-#include <cereal/cereal.hpp>
+#include <cereal/details/helpers.hpp>
+#include <cereal/details/traits.hpp>
 #include <string>
 
 namespace cereal
