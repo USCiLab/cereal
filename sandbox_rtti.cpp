@@ -98,6 +98,31 @@ struct YourType : public Base
 };
 CEREAL_REGISTER_TYPE(YourType);
 
+struct OurBase
+{
+  virtual void foo() {}
+
+  template<class Archive>
+    void serialize(Archive & ar)
+    { }
+
+};
+
+struct OurType : public OurBase
+{
+  OurType() = default;
+  OurType(int x_) : x(x_) {}
+  void foo() {}
+
+  int x;
+
+  template<class Archive>
+    void serialize(Archive & ar)
+    {
+      ar( x );
+    }
+};
+
 template <class T> void nop(T&&t) {}
 
 int main()
@@ -111,10 +136,13 @@ int main()
     std::unique_ptr<Base> ptr3(new MyType);
     std::weak_ptr<Base>   ptr4 = ptr2;
 
-    oarchive(ptr1);
-    oarchive(ptr2);
-    oarchive(ptr3);
-    oarchive(ptr4);
+    std::shared_ptr<OurType> ptr5 = std::make_shared<OurType>(99);
+
+    //oarchive(ptr1);
+    //oarchive(ptr2);
+    //oarchive(ptr3);
+    //oarchive(ptr4);
+    oarchive(ptr5);
   }
 
   {
@@ -126,10 +154,13 @@ int main()
     std::unique_ptr<Base> ptr3;
     std::weak_ptr<Base>   ptr4;
 
-    iarchive(ptr1);
-    iarchive(ptr2);
-    iarchive(ptr3);
-    iarchive(ptr4);
+    std::shared_ptr<OurType> ptr5;
+
+    //iarchive(ptr1);
+    //iarchive(ptr2);
+    //iarchive(ptr3);
+    //iarchive(ptr4);
+    iarchive(ptr5);
   }
 
   //std::remove("rtti.txt");

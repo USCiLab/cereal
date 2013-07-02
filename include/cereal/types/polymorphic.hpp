@@ -31,6 +31,7 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 #include <cereal/details/util.hpp>
+#include <cereal/details/traits.hpp>
 
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
@@ -79,11 +80,8 @@ namespace cereal
   {
     //! Get an input binding from the given archive by deserializing the type meta data
     template<class Archive>
-      typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar)
+      typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar, std::uint32_t const nameid)
       {
-        std::uint32_t nameid;
-        ar( nameid );
-
         if(nameid == 0)
         {
           typename ::cereal::detail::InputBindingMap<Archive>::Serializers emptySerializers;
@@ -108,6 +106,50 @@ namespace cereal
           throw cereal::Exception("Trying to load an unregistered polymorphic type (" + name + ")");
         return binding->second;
       }
+
+    //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    template<class Archive, class T> inline
+      typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
+      serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
+      {
+        if(nameid & detail::msb2_32bit)
+        {
+          ar( detail::make_ptr_wrapper(ptr) );
+          return true;
+        }
+        return false;
+      }
+
+    //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    template<class Archive, class T, class D> inline
+      typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
+      serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
+      {
+        if(nameid & detail::msb2_32bit)
+        {
+          ar( detail::make_ptr_wrapper(ptr) );
+          return true;
+        }
+        return false;
+      }
+
+    template<class Archive, class T> inline
+      typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
+      serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
+      {
+        if(nameid & detail::msb2_32bit)
+          throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
+        return false;
+      }
+
+    template<class Archive, class T, class D> inline
+      typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
+      serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
+      { 
+        if(nameid & detail::msb2_32bit)
+          throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
+        return false;
+      }
   }
 
   // ######################################################################
@@ -125,11 +167,25 @@ namespace cereal
       return;
     }
 
+    std::type_info const & ptrinfo = typeid(*ptr.get());
+    static std::type_info const & tinfo = typeid(T);
+
+    if(ptrinfo == tinfo)
+    {
+      // The 2nd msb signals that the following pointer does not need to be
+      // cast with our polymorphic machinery
+      ar( detail::msb2_32bit );
+
+      ar( detail::make_ptr_wrapper(ptr) );
+
+      return;
+    }
+
     auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
-    auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));
+    auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(typeid(*ptr.get()).name()) + ")");
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
@@ -139,7 +195,14 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
-    auto binding = polymorphic_detail::getInputBinding(ar);
+    std::uint32_t nameid;
+    ar( nameid );
+
+    // Check to see if we can skip all of this polymorphism business
+    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid)) 
+      return;
+
+    auto binding = polymorphic_detail::getInputBinding(ar, nameid);
     std::shared_ptr<void> result;
     binding.shared_ptr(&ar, result);
     ptr = std::static_pointer_cast<T>(result);
@@ -176,11 +239,25 @@ namespace cereal
       return;
     }
 
+    std::type_info const & ptrinfo = typeid(*ptr.get());
+    static std::type_info const & tinfo = typeid(T);
+
+    if(ptrinfo == tinfo)
+    {
+      // The 2nd msb signals that the following pointer does not need to be
+      // cast with our polymorphic machinery
+      ar( detail::msb2_32bit );
+
+      ar( detail::make_ptr_wrapper(ptr) );
+
+      return;
+    }
+
     auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
-    auto binding = bindingMap.find(std::type_index(typeid(*ptr.get())));
+    auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(typeid(*ptr.get()).name()) + ")");
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
 
     binding->second.unique_ptr(&ar, ptr.get());
   }
@@ -190,7 +267,14 @@ namespace cereal
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    auto binding = polymorphic_detail::getInputBinding(ar);
+    std::uint32_t nameid;
+    ar( nameid );
+
+    // Check to see if we can skip all of this polymorphism business
+    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid)) 
+      return;
+
+    auto binding = polymorphic_detail::getInputBinding(ar, nameid);
     std::unique_ptr<void> result;
     binding.unique_ptr(&ar, result);
     ptr.reset(static_cast<T*>(result.release()));
