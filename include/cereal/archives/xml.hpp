@@ -38,8 +38,7 @@
 #include <stack>
 #include <vector>
 #include <string>
-
-#include <iostream>
+#include <cstring>
 
 namespace cereal
 {
@@ -88,23 +87,6 @@ namespace cereal
         itsXML.clear();
       }
 
-      //! Saves some data, encoded as a string
-      /*! The data will be be named with the most recent name if one exists,
-          otherwise it will be given some default delimited value that depends upon
-          the parent node */
-      template <class T> inline
-      void saveValue( T const & value )
-      {
-        itsOS.clear(); itsOS.seekp(0);
-        itsOS << value << std::ends;
-
-        // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
-
-        // insert into the XML
-        itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
-      }
-
       //! Creates a new node that is a child of the node at the top of the stack
       /*! Nodes will be given a name that has either been pre-set by a name value pair,
           or generated based upon a counter unique to the parent node.
@@ -124,22 +106,6 @@ namespace cereal
         itsNodes.emplace( node );
       }
 
-      //! Causes the type to be appended to the most recently made node if output type is set to true
-      template <class T> inline
-      void insertType()
-      {
-        if( !itsOutputType )
-          return;
-
-        // generate a name for this new node
-        const auto nameString = util::demangledName<T>();
-
-        // allocate strings for all of the data in the XML object
-        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
-
-        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
-      }
-
       //! Designates the most recently added node as finished
       void finishNode()
       {
@@ -150,6 +116,23 @@ namespace cereal
       void setNextName( const char * name )
       {
         itsNodes.top().name = name;
+      }
+
+      //! Saves some data, encoded as a string
+      /*! The data will be be named with the most recent name if one exists,
+          otherwise it will be given some default delimited value that depends upon
+          the parent node */
+      template <class T> inline
+      void saveValue( T const & value )
+      {
+        itsOS.clear(); itsOS.seekp(0);
+        itsOS << value << std::ends;
+
+        // allocate strings for all of the data in the XML object
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+
+        // insert into the XML
+        itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
@@ -169,6 +152,22 @@ namespace cereal
 
         finishNode();
       };
+
+      //! Causes the type to be appended to the most recently made node if output type is set to true
+      template <class T> inline
+      void insertType()
+      {
+        if( !itsOutputType )
+          return;
+
+        // generate a name for this new node
+        const auto nameString = util::demangledName<T>();
+
+        // allocate strings for all of the data in the XML object
+        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
+
+        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
+      }
 
     protected:
       //! A struct that contains metadata about a node
@@ -240,17 +239,100 @@ namespace cereal
         itsNodes.emplace( root );
       }
 
+      //! Prepares to start reading the next node
+      void startNode()
+      {
+        itsNodes.emplace( itsNodes.top().child );
+      }
+
+      //! Finishes reading the current node
+      void finishNode()
+      {
+        // remove current
+        itsNodes.pop();
+
+        // advance parent
+        itsNodes.top().advance();
+      }
+
+      //! Loads a value from the current node
+      template <class T> inline
+      void loadValue( T & value )
+      {
+        std::istringstream is( itsNodes.top().node->value() );
+        is.setf( std::ios::boolalpha );
+        is >> value;
+      }
+
+      //! Loads a string from the current node
+      template<class CharT, class Traits, class Alloc> inline
+      void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
+      {
+        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
+
+        str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
+                    std::istreambuf_iterator<CharT, Traits>() );
+      }
+
+      //! Loads some binary data, encoded as a base64 string
+      /*! This will automatically start and finish a node to load the data */
+      void loadBinaryValue( void * data, size_t size )
+      {
+        startNode();
+
+        std::string encoded;
+        loadValue( encoded );
+
+        auto decoded = base64::decode( encoded );
+        std::memcpy( data, decoded.data(), decoded.size() );
+
+        finishNode();
+      };
+
+      //! Loads the size of the current node
+      template <class T> inline
+      void loadSize( T & value )
+      {
+        value = getNumChildren( itsNodes.top().node );
+      }
+
+      //! Gets the number of children (usually interpreted as size) for the specified node
+      static size_t getNumChildren( rapidxml::xml_node<> * node = nullptr )
+      {
+        size_t size = 0;
+        node = node->first_node(); // get first child
+
+        while( node != nullptr )
+        {
+          ++size;
+          node = node->next_sibling();
+        }
+
+        return size;
+      }
+
     protected:
       //! A struct that contains metadata about a node
       struct NodeInfo
       {
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
-          counter( 0 )
+          child( n ? n->first_node() : nullptr ),
+          size( XMLInputArchive::getNumChildren( n ) )
         { }
 
-        rapidxml::xml_node<> * node; //!< A pointer to this node
-        size_t counter;              //!< The counter for naming child nodes
+        void advance()
+        {
+          if( size )
+          {
+            --size;
+            child = child->next_sibling();
+          }
+        }
+
+        rapidxml::xml_node<> * node;  //!< A pointer to this node
+        rapidxml::xml_node<> * child; //!< A pointer to its current child
+        size_t size;
       }; // NodeInfo
 
     private:
@@ -261,32 +343,55 @@ namespace cereal
 
   // ######################################################################
   // XMLArchive prologue and epilogue functions
+  // ######################################################################
 
-  //! Prologue for NVPs for XML archives
+  // ######################################################################
+  //! Prologue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T>
   void prologue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
-  //! Epilogue for NVPs for XML archives
+  //! Prologue for NVPs for XML input archives
+  template <class T>
+  void prologue( XMLInputArchive &, NameValuePair<T> const & )
+  { }
+
+  // ######################################################################
+  //! Epilogue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T>
   void epilogue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
-  //! Prologue for SizeTags for XML archives
-  /*! SizeTags are strictly ignored for XML */
+  //! Epilogue for NVPs for XML input archives
+  template <class T>
+  void epilogue( XMLInputArchive &, NameValuePair<T> const & )
+  { }
+
+  // ######################################################################
+  //! Prologue for SizeTags for XML output archives
+  /*! SizeTags do not start or finish nodes */
   template <class T>
   void prologue( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
-  //! Epilogue for SizeTags for XML archives
-  /*! SizeTags are strictly ignored for XML */
+  template <class T>
+  void prologue( XMLInputArchive &, SizeTag<T> const & )
+  { }
+
+  //! Epilogue for SizeTags for XML output archives
+  /*! SizeTags do not start or finish nodes */
   template <class T>
   void epilogue( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
-  //! Prologue for all other types for XML archives
+  template <class T>
+  void epilogue( XMLInputArchive &, SizeTag<T> const & )
+  { }
+
+  // ######################################################################
+  //! Prologue for all other types for XML output archives
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
   template <class T>
@@ -296,7 +401,15 @@ namespace cereal
     ar.insertType<T>();
   }
 
-  //! Epilogue for all other types other for XML archives
+  //! Prologue for all other types for XML input archives
+  template <class T>
+  void prologue( XMLInputArchive & ar, T const & data )
+  {
+    ar.startNode();
+  }
+
+  // ######################################################################
+  //! Epilogue for all other types other for XML output archives
   /*! Finishes the node created in the prologue */
   template <class T>
   void epilogue( XMLOutputArchive & ar, T const & data )
@@ -304,24 +417,46 @@ namespace cereal
     ar.finishNode();
   }
 
+  //! Epilogue for all other types other for XML output archives
+  template <class T>
+  void epilogue( XMLInputArchive & ar, T const & data )
+  {
+    ar.finishNode();
+  }
+
   // ######################################################################
   // Common XMLArchive serialization functions
+  // ######################################################################
 
-  //! Serializing NVP types to XML
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(XMLInputArchive, XMLOutputArchive)
-  serialize( Archive & ar, NameValuePair<T> & t )
+  //! Saving NVP types to XML
+  template <class T> inline
+  void save( XMLOutputArchive & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
   }
 
-  //! Serializing SizeTags to XML
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(XMLInputArchive, XMLOutputArchive)
-  serialize( Archive & ar, SizeTag<T> & )
+  //! Loading NVP types from XML
+  template <class T> inline
+  void load( XMLInputArchive & ar, NameValuePair<T> & t )
+  {
+    ar( t.value );
+  }
+
+  // ######################################################################
+  //! Saving SizeTags to XML
+  template <class T> inline
+  void save( XMLOutputArchive & ar, SizeTag<T> const & )
   { }
 
+  //! Loading SizeTags from XML
+  template <class T> inline
+  void load( XMLInputArchive & ar, SizeTag<T> & st )
+  {
+    ar.loadSize( st.size );
+  }
+
+  // ######################################################################
   //! Saving for POD types to xml
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
@@ -330,6 +465,15 @@ namespace cereal
     ar.saveValue( t );
   }
 
+  //! Loading for POD types from xml
+  template<class T> inline
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  load(XMLInputArchive & ar, T & t)
+  {
+    ar.loadValue( t );
+  }
+
+  // ######################################################################
   //! saving string to xml
   template<class CharT, class Traits, class Alloc> inline
   void save(XMLOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
@@ -337,9 +481,16 @@ namespace cereal
     ar.saveValue( str );
   }
 
+  //! loading string from xml
+  template<class CharT, class Traits, class Alloc> inline
+  void load(XMLInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  {
+    ar.loadValue( str );
+  }
 } // namespace cereal
 
 // register archives for polymorphic support
 CEREAL_REGISTER_ARCHIVE(cereal::XMLOutputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::XMLInputArchive);
 
 #endif // CEREAL_ARCHIVES_XML_HPP_

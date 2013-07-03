@@ -249,9 +249,9 @@ namespace cereal
       using is_empty_class = std::integral_constant<bool, detail::is_empty_class_impl<T>::value>;
 
     // ######################################################################
-    //! A macro to use to restrict which types of archives your serialize function will work for.
+    //! A macro to use to restrict which types of archives your function will work for.
     /*! This requires you to have a template class parameter named Archive and replaces the void return
-        type for your serialize function.
+        type for your function.
 
         INTYPE refers to the input archive type you wish to restrict on.
         OUTTYPE refers to the output archive type you wish to restrict on.
@@ -265,6 +265,8 @@ namespace cereal
         {
           ar & m;
         }
+
+        If you need to do more restrictions in your enable_if, you will need to do this by hand.
         @endcode
      */
     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \

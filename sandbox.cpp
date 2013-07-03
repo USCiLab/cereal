@@ -321,8 +321,7 @@ int main()
 
     std::vector<std::vector<std::string>> vec2 = {vec, vec, vec};
 
-    Everything e;
-    oar( cereal::make_nvp("EVERYTHING", e) );
+    oar( cereal::make_nvp("EVERYTHING", e_out) );
     oar( vec );
     oar( vec2 );
 
@@ -335,8 +334,63 @@ int main()
     std::ifstream is("out.xml");
     cereal::XMLInputArchive iar( is );
 
-    //int z;
-    //iar( cereal::make_nvp("hello", z) );
+    int hello;
+    iar( cereal::make_nvp("hello", hello) );
+    assert( hello == 5 );
+
+    std::string bla;
+    iar( bla );
+    assert( bla == "bla" );
+
+    int x;
+    iar( CEREAL_NVP(x) );
+    assert( x == 3 );
+
+    int x5;
+    iar( x5 );
+    assert( x5 == 5 );
+
+    double x33;
+    iar( x33 );
+    assert( x33 == 3.3 );
+
+    float x32;
+    iar( x32 );
+    assert( x32 == 3.2f );
+
+    bool xtrue;
+    iar( xtrue );
+    assert( xtrue == true );
+
+    std::array<int,5> arr;
+    iar( arr );
+    for( size_t i = 0; i < 5; ++i )
+      assert( arr[i] == (i+1) );
+
+    Everything e;
+    iar( cereal::make_nvp("EVERYTHING", e) );
+    assert( e == e_out );
+
+    std::vector<std::string> vec;
+    iar( vec );
+    assert( vec[0] == "hey" );
+    assert( vec[1] == "there" );
+    assert( vec[2] == "buddy" );
+
+    std::vector<std::vector<std::string>> vec2;
+    iar( vec2 );
+    for( auto & v : vec2 )
+    {
+      assert( v[0] == "hey" );
+      assert( v[1] == "there" );
+      assert( v[2] == "buddy" );
+    }
+
+    int xxx[3];
+    iar.loadBinaryValue( xxx, sizeof(int)*3 );
+    assert( xxx[0] == -1 );
+    assert( xxx[1] == 95 );
+    assert( xxx[2] == 3 );
   }
 
 
