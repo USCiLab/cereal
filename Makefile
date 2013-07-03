@@ -1,4 +1,4 @@
-CPPFLAGS=-std=c++11 -I./include -Wall -Werror
+CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g
 CC=clang++
 
 all: unittests sandbox performance sandbox_rtti

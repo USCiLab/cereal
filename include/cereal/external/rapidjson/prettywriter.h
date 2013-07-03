@@ -73,6 +73,7 @@ public:
 			WriteIndent();
 		}
 		Base::WriteEndObject();
+    Base::stream_.Put('\n');
 		return *this;
 	}
 
