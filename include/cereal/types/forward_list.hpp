@@ -41,7 +41,7 @@ namespace cereal
     // since it works in the most general fashion with any archive type
     const size_t size = std::distance( forward_list.begin(), forward_list.end() );
 
-    ar( size );
+    ar( make_size_tag( size ) );
 
     // write the list
     for( const auto & i : forward_list )
@@ -53,7 +53,7 @@ namespace cereal
   void load( Archive & ar, std::forward_list<T, A> & forward_list )
   {
     size_t size;
-    ar( size );
+    ar( make_size_tag( size ) );
 
     forward_list.resize( size );
 

@@ -30,8 +30,6 @@
 #include <cereal/cereal.hpp>
 #include <vector>
 
-#include <iostream>
-
 namespace cereal
 {
   //! Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported
@@ -40,7 +38,7 @@ namespace cereal
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( vector.size() ); // number of elements
+    ar( make_size_tag( vector.size() ) ); // number of elements
     ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );
   }
 
@@ -51,7 +49,7 @@ namespace cereal
   load( Archive & ar, std::vector<T, A> & vector )
   {
     size_t vectorSize;
-    ar( vectorSize );
+    ar( make_size_tag( vectorSize ) );
 
     vector.resize( vectorSize );
     ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );
@@ -64,7 +62,7 @@ namespace cereal
                           || std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( vector.size() ); // number of elements
+    ar( make_size_tag( vector.size() ) ); // number of elements
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar( *it );
   }
@@ -77,7 +75,7 @@ namespace cereal
   load( Archive & ar, std::vector<T, A> & vector )
   {
     size_t size;
-    ar( size );
+    ar( make_size_tag( size ) );
 
     vector.resize( size );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )

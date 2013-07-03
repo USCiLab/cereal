@@ -36,7 +36,7 @@ namespace cereal
   template <class Archive, class T, class A> inline
   void save( Archive & ar, std::deque<T, A> const & deque )
   {
-    ar( deque.size() );
+    ar( make_size_tag( deque.size() ) );
 
     for( auto const & i : deque )
       ar( i );
@@ -47,7 +47,7 @@ namespace cereal
   void load( Archive & ar, std::deque<T, A> & deque )
   {
     size_t size;
-    ar( size );
+    ar( make_size_tag( size ) );
 
     deque.resize( size );
 

@@ -111,7 +111,7 @@ namespace cereal
     ar( t.value );
   }
 
-  //! Serializing NVP types to binary
+  //! Serializing SizeTags to binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
   serialize( Archive & ar, SizeTag<T> & t )

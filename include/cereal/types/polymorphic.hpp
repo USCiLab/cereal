@@ -29,9 +29,11 @@
 
 #include <cereal/cereal.hpp>
 #include <cereal/types/memory.hpp>
-#include <cereal/details/polymorphic_impl.hpp>
+
 #include <cereal/details/util.hpp>
+#include <cereal/details/helpers.hpp>
 #include <cereal/details/traits.hpp>
+#include <cereal/details/polymorphic_impl.hpp>
 
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
@@ -145,7 +147,7 @@ namespace cereal
     template<class Archive, class T, class D> inline
       typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
       serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
-      { 
+      {
         if(nameid & detail::msb2_32bit)
           throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
         return false;
@@ -199,7 +201,7 @@ namespace cereal
     ar( nameid );
 
     // Check to see if we can skip all of this polymorphism business
-    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid)) 
+    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))
       return;
 
     auto binding = polymorphic_detail::getInputBinding(ar, nameid);
@@ -271,7 +273,7 @@ namespace cereal
     ar( nameid );
 
     // Check to see if we can skip all of this polymorphism business
-    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid)) 
+    if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))
       return;
 
     auto binding = polymorphic_detail::getInputBinding(ar, nameid);

@@ -27,8 +27,7 @@
 #ifndef CEREAL_TYPES_STRING_HPP_
 #define CEREAL_TYPES_STRING_HPP_
 
-#include <cereal/details/helpers.hpp>
-#include <cereal/details/traits.hpp>
+#include <cereal/cereal.hpp>
 #include <string>
 
 namespace cereal
@@ -40,7 +39,6 @@ namespace cereal
   {
     // Save number of chars + the data
     ar( make_size_tag( str.size() ) );
-    //ar( str.size() );
     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );
   }
 

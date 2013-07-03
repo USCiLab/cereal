@@ -24,7 +24,6 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include <cereal/archives/binary.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
@@ -43,6 +42,8 @@
 #include <cereal/types/bitset.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/chrono.hpp>
+
+#include <cereal/archives/binary.hpp>
 #include <limits>
 #include <random>
 

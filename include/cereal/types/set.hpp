@@ -37,7 +37,7 @@ namespace cereal
     template <class Archive, class SetT> inline
     void save( Archive & ar, SetT const & set )
     {
-      ar( set.size() );
+      ar( make_size_tag( set.size() ) );
 
       for( const auto & i : set )
         ar( i );
@@ -47,7 +47,7 @@ namespace cereal
     void load( Archive & ar, SetT & set )
     {
       size_t size;
-      ar( size );
+      ar( make_size_tag( size ) );
 
       set.clear();
 

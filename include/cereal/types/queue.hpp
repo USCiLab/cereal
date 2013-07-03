@@ -27,7 +27,7 @@
 #ifndef CEREAL_TYPES_QUEUE_HPP_
 #define CEREAL_TYPES_QUEUE_HPP_
 
-#include <cereal/cereal.hpp>
+#include <cereal/details/helpers.hpp>
 #include <queue>
 
 namespace cereal

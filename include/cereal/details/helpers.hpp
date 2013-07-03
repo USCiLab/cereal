@@ -27,6 +27,10 @@
 #ifndef CEREAL_DETAILS_HELPERS_HPP_
 #define CEREAL_DETAILS_HELPERS_HPP_
 
+#include <type_traits>
+#include <cstdint>
+#include <utility>
+
 namespace cereal
 {
   // ######################################################################
@@ -103,6 +107,12 @@ namespace cereal
   }
 
   // ######################################################################
+  //! A wrapper around size metadata
+  /*! This class provides a way for archives to have more flexibility over how
+      they choose to serialize size metadata for containers.  For some archive
+      types, the size may be implicitly encoded in the output (e.g. JSON) and
+      not need an explicit entry.  Specializing serialize or load/save for
+      your archive and SizeTags allows you to choose what happens */
   template <class T>
   class SizeTag
   {
@@ -119,13 +129,6 @@ namespace cereal
 
       Type size;
   };
-
-  template <class T>
-  SizeTag<T> make_size_tag( T && sz )
-  {
-    return {std::forward<T>(sz)};
-  }
-
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_

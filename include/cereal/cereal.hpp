@@ -49,6 +49,7 @@ namespace cereal
 
   // ######################################################################
   //! Creates a name value pair
+  /*! @relates NameValuePair */
   template <class T> inline
   NameValuePair<T> make_nvp( std::string const & name, T && value )
   {
@@ -56,6 +57,7 @@ namespace cereal
   }
 
   //! Creates a name value pair
+  /*! @relates NameValuePair */
   template <class T> inline
   NameValuePair<T> make_nvp( const char * name, T && value )
   {
@@ -63,16 +65,30 @@ namespace cereal
   }
 
   //! Creates a name value pair for the variable T with the same name as the variable
+  /*! @relates NameValuePair */
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
   //! Convenience function to create binary data for both const and non const pointers
   /*! @param data Pointer to beginning of the data
-      @param size The size in bytes of the data */
+      @param size The size in bytes of the data
+      @relates BinaryData */
   template <class T> inline
   BinaryData<T> binary_data( T && data, size_t size )
   {
     return {std::forward<T>(data), size};
+  }
+
+  // ######################################################################
+  //! Creates a size tag from some variable.
+  /*! Will normally be used to serialize size (e.g. size()) information for
+      containers.
+
+      @relates SizeTag */
+  template <class T>
+  SizeTag<T> make_size_tag( T && sz )
+  {
+    return {std::forward<T>(sz)};
   }
 
   // ######################################################################

@@ -78,16 +78,16 @@ namespace cereal
         node->append_attribute( itsXML.allocate_attribute( "encoding", "utf-8" ) );
         itsXML.append_node( node );
 
+        // allocate root node
         auto root = itsXML.allocate_node( rapidxml::node_element, "cereal" );
         itsXML.append_node( root );
         itsNodes.emplace( root );
 
-        // testing
+        // set attributes on the streams
         itsStream << std::boolalpha;
         itsStream.precision( precision );
         itsOS << std::boolalpha;
         itsOS.precision( precision );
-        //itsStream.setf( std::ios::floatfield, std::ios::fixed );
       }
 
       //! Destructor, flushes the XML
@@ -132,8 +132,14 @@ namespace cereal
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
       }
 
+      //! Creates a new node that is a child of the node at the top of the stack
+      /*! Nodes will be given a name that has either been pre-set by a name value pair,
+          or generated based upon a counter unique to the parent node.
+
+          The node will then be pushed onto the node stack. */
       void startNode()
       {
+        // generate a name for this new node
         const auto nameString = itsNodes.top().getValueName();
 
         // allocate strings for all of the data in the XML object
@@ -145,11 +151,13 @@ namespace cereal
         itsNodes.emplace( node );
       }
 
+      //! Designates the most recently added node as finished
       void finishNode()
       {
         itsNodes.pop();
       }
 
+      //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
         itsNodes.top().name = name;
@@ -165,6 +173,7 @@ namespace cereal
         //std::cout << zz[0] << " " << zz[1] << " " << zz[2] << std::endl;
       };
 
+      //! A struct that contains metadata about a node
       struct NodeInfo
       {
         NodeInfo( rapidxml::xml_node<> * n = nullptr,
@@ -174,10 +183,14 @@ namespace cereal
           name( nm )
         { }
 
-        rapidxml::xml_node<> * node;
-        size_t counter;
-        const char * name;
+        rapidxml::xml_node<> * node; //!< A pointer to this node
+        size_t counter;              //!< The counter for naming child nodes
+        const char * name;           //!< The name for the next child node
 
+        //! Gets the name for the next child node created from this node
+        /*! The name will be automatically generated using the counter if
+            a name has not been previously set.  If a name has been previously
+            set, that name will be returned only once */
         std::string getValueName()
         {
           if( name )
@@ -187,20 +200,65 @@ namespace cereal
             return {n};
           }
           else
-          {
             return "value" + std::to_string( counter++ ) + "\0";
-          }
         }
-      };
+      }; // NodeInfo
 
     private:
       std::ostream & itsStream;
       rapidxml::xml_document<> itsXML; //!< The XML document
-      std::stack<NodeInfo> itsNodes;
-      std::ostringstream itsOS;
-  };
+      std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
+      std::ostringstream itsOS;        //!< Used to format strings internally
+  }; // XMLOutputArchive
 
   struct XMLInputArchive;
+
+  // ######################################################################
+  // XMLArchive prologue and epilogue functions
+
+  //! Prologue for NVPs for XML archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T>
+  void prologue( XMLOutputArchive &, NameValuePair<T> const & )
+  { }
+
+  //! Epilogue for NVPs for XML archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T>
+  void epilogue( XMLOutputArchive &, NameValuePair<T> const & )
+  { }
+
+  //! Prologue for SizeTags for XML archives
+  /*! SizeTags are strictly ignored for XML */
+  template <class T>
+  void prologue( XMLOutputArchive &, SizeTag<T> const & )
+  { }
+
+  //! Epilogue for SizeTags for XML archives
+  /*! SizeTags are strictly ignored for XML */
+  template <class T>
+  void epilogue( XMLOutputArchive &, SizeTag<T> const & )
+  { }
+
+  //! Prologue for all other types for XML archives
+  /*! Starts a new node, named either automatically or by some NVP,
+      that may be given data by the type about to be archived */
+  template <class T>
+  void prologue( XMLOutputArchive & ar, T const & data )
+  {
+    ar.startNode();
+  }
+
+  //! Epilogue for all other types other for XML archives
+  /*! Finishes the node created in the prologue */
+  template <class T>
+  void epilogue( XMLOutputArchive & ar, T const & data )
+  {
+    ar.finishNode();
+  }
+
+  // ######################################################################
+  // Common XMLArchive serialization functions
 
   //! Serializing NVP types to XML
   template <class Archive, class T> inline
@@ -210,6 +268,12 @@ namespace cereal
     ar.setNextName( t.name );
     ar( t.value );
   }
+
+  //! Serializing SizeTags to XML
+  template <class Archive, class T> inline
+  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(XMLInputArchive, XMLOutputArchive)
+  serialize( Archive & ar, SizeTag<T> & )
+  { }
 
   //! Saving for POD types to xml
   template<class T> inline
@@ -226,28 +290,6 @@ namespace cereal
     ar.saveValue( str );
   }
 
-  template <class T>
-  void prologue( XMLOutputArchive & ar, NameValuePair<T> const & data )
-  { }
-
-  template <class T>
-  void epilogue( XMLOutputArchive & ar, NameValuePair<T> const & data )
-  { }
-
-  template <class T>
-  void prologue( XMLOutputArchive & ar, T const & data )
-  {
-    ar.startNode();
-  }
-
-  template <class T>
-  void epilogue( XMLOutputArchive & ar, T const & data )
-  {
-    ar.finishNode();
-  }
-
-  // ######################################################################
-  // Common XMLArchive serialization functions
 } // namespace cereal
 
 // register archives for polymorphic support

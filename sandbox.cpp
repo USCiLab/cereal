@@ -28,12 +28,14 @@
 #include <cereal/cereal.hpp>
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
+
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/complex.hpp>
-#include <cereal/types/boost_variant.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -309,7 +311,16 @@ int main()
     oar( 3.2f );
     oar( true );
 
-    std::array<int,5> arr = {1, 2, 3, 4, 5};
+    std::array<int,5> arr = {{1, 2, 3, 4, 5}};
+    oar( arr );
+
+    std::vector<std::string> vec = {"hey",
+                                    "there",
+                                    "buddy"};
+
+    Everything e;
+    oar( cereal::make_nvp("EVERYTHING?!", e) );
+    oar( vec );
     //int xxx[] = {-1, 95, 3};
     //oar.saveBinaryValue( xxx, sizeof(int)*3);
   }
