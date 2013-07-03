@@ -299,7 +299,8 @@ int main()
 
   {
     //std::stringstream os;
-    cereal::XMLOutputArchive oar( std::cout );
+    std::ofstream os("out.xml");
+    cereal::XMLOutputArchive oar( os );
     oar( cereal::make_nvp("hello", 5 ) );
     std::string bla("bla");
     oar( bla );
@@ -318,13 +319,23 @@ int main()
                                     "there",
                                     "buddy"};
 
+    std::vector<std::vector<std::string>> vec2 = {vec, vec, vec};
+
     Everything e;
-    oar( cereal::make_nvp("EVERYTHING?!", e) );
+    oar( cereal::make_nvp("EVERYTHING", e) );
     oar( vec );
-    //int xxx[] = {-1, 95, 3};
-    //oar.saveBinaryValue( xxx, sizeof(int)*3);
+    oar( vec2 );
+
+    int xxx[] = {-1, 95, 3};
+    oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
+    oar.saveBinaryValue( xxx, sizeof(int)*3 );
   }
 
+  {
+    std::ifstream is("out.xml");
+    cereal::XMLInputArchive oar( is );
+    std::cout << oar.itsData.size() << std::endl;
+  }
 
 
 

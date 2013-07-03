@@ -28,49 +28,35 @@
 #define CEREAL_ARCHIVES_XML_HPP_
 
 #include <cereal/cereal.hpp>
+#include <cereal/details/util.hpp>
+
 #include <cereal/external/rapidxml/rapidxml.hpp>
 #include <cereal/external/rapidxml/rapidxml_print.hpp>
 #include <cereal/external/base64.hpp>
 
 #include <sstream>
 #include <stack>
+#include <vector>
 #include <string>
 
 #include <iostream>
 
 namespace cereal
 {
-  namespace detail
-  {
-    struct XMLHelper
-    {
-      const char * popName()
-      {
-        if( names.empty() )
-          return nullptr;
-        else
-        {
-          auto name = names.top();
-          names.pop();
-          return name;
-        }
-      }
-
-      std::stack<const char *> names;
-    };
-  }
   // ######################################################################
   //! An output archive designed to save data to XML
-  class XMLOutputArchive : public OutputArchive<XMLOutputArchive, AllowEmptyClassElision>
+  class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!
-          @param precision The precision for floating point output */
-      XMLOutputArchive(std::ostream & stream, size_t precision = 10 ) :
-        OutputArchive<XMLOutputArchive, AllowEmptyClassElision>(this),
-        itsStream(stream)
+          @param precision The precision for floating point output
+          @param outputType Controls whether type information will be printed in attributes */
+      XMLOutputArchive(std::ostream & stream, size_t precision = 10, bool outputType = false ) :
+        OutputArchive<XMLOutputArchive>(this),
+        itsStream(stream),
+        itsOutputType( outputType )
       {
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
@@ -97,20 +83,6 @@ namespace cereal
         itsXML.clear();
       }
 
-      void createNode( std::string const & name )
-      {
-        createNode( name.c_str() );
-      }
-
-      void createNode( char const * name )
-      {
-        auto node = itsXML.allocate_node( rapidxml::node_element, name );
-        itsNodes.top().node->append_node( node );
-        itsNodes.emplace( node );
-
-        node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, "5432" ) );
-      }
-
       //! Saves some data, encoded as a string
       /*! The data will be be named with the most recent name if one exists,
           otherwise it will be given some default delimited value that depends upon
@@ -120,13 +92,9 @@ namespace cereal
       {
         itsOS.clear(); itsOS.seekp(0);
         itsOS << value << std::ends;
-        insertValueNode( itsOS.str().c_str() );
-      }
 
-      void insertValueNode( const char * data )
-      {
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( data );
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
@@ -151,6 +119,22 @@ namespace cereal
         itsNodes.emplace( node );
       }
 
+      //! Causes the type to be appended to the most recently made node if output type is set to true
+      template <class T> inline
+      void insertType()
+      {
+        if( !itsOutputType )
+          return;
+
+        // generate a name for this new node
+        const auto nameString = util::demangledName<T>();
+
+        // allocate strings for all of the data in the XML object
+        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
+
+        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
+      }
+
       //! Designates the most recently added node as finished
       void finishNode()
       {
@@ -163,14 +147,22 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
-      //! Saves some binary data, encoded as a base64 string
-      void saveBinaryValue( const void * data, size_t size )
+      //! Saves some binary data, encoded as a base64 string, with an optional name
+      /*! This will create a new node, optionally named, and insert a value that consists of
+          the data encoded as a base64 string */
+      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
       {
+        itsNodes.top().name = name;
+
+        startNode();
+
         auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
         saveValue( base64string );
-        //auto decoded = base64::decode(base64string);
-        //int const * zz = (int const*)decoded.data();
-        //std::cout << zz[0] << " " << zz[1] << " " << zz[2] << std::endl;
+
+        if( itsOutputType )
+          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
+
+        finishNode();
       };
 
       //! A struct that contains metadata about a node
@@ -209,9 +201,41 @@ namespace cereal
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
       std::ostringstream itsOS;        //!< Used to format strings internally
+      bool itsOutputType;              //!< Controls whether type information is printed
   }; // XMLOutputArchive
 
-  struct XMLInputArchive;
+  // ######################################################################
+  //! An output archive designed to save data to XML
+  class XMLInputArchive : public InputArchive<XMLInputArchive>
+  {
+    public:
+      //! Construct, reading in from the provided stream
+      /*! Reads in an entire XML document from some stream and parses it as soon
+          as serialization starts
+
+          @param stream The stream to read from.  Can be a stringstream or a file. */
+      XMLInputArchive( std::istream & stream ) :
+        InputArchive<XMLInputArchive>( this ),
+        itsStream( stream ),
+        itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
+      {
+        try
+        {
+          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+        }
+        catch( rapidxml::parse_error const & e )
+        {
+          throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
+          //std::cout << e.what() << std::endl;
+          //std::cout << e.where<char>() << std::endl;
+        }
+      }
+
+    //private:
+      std::istream & itsStream;
+      std::vector<uint8_t> itsData;    //!< The raw data loaded
+      rapidxml::xml_document<> itsXML; //!< The XML document
+  };
 
   // ######################################################################
   // XMLArchive prologue and epilogue functions
@@ -247,6 +271,7 @@ namespace cereal
   void prologue( XMLOutputArchive & ar, T const & data )
   {
     ar.startNode();
+    ar.insertType<T>();
   }
 
   //! Epilogue for all other types other for XML archives
