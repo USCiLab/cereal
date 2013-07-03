@@ -43,6 +43,11 @@
 
 namespace cereal
 {
+  namespace xml_detail
+  {
+    static const char * CEREAL_XML_STRING = "cereal";
+  }
+
   // ######################################################################
   //! An output archive designed to save data to XML
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
@@ -65,7 +70,7 @@ namespace cereal
         itsXML.append_node( node );
 
         // allocate root node
-        auto root = itsXML.allocate_node( rapidxml::node_element, "cereal" );
+        auto root = itsXML.allocate_node( rapidxml::node_element, xml_detail::CEREAL_XML_STRING );
         itsXML.append_node( root );
         itsNodes.emplace( root );
 
@@ -165,6 +170,7 @@ namespace cereal
         finishNode();
       };
 
+    protected:
       //! A struct that contains metadata about a node
       struct NodeInfo
       {
@@ -216,7 +222,6 @@ namespace cereal
           @param stream The stream to read from.  Can be a stringstream or a file. */
       XMLInputArchive( std::istream & stream ) :
         InputArchive<XMLInputArchive>( this ),
-        itsStream( stream ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
         try
@@ -229,12 +234,29 @@ namespace cereal
           //std::cout << e.what() << std::endl;
           //std::cout << e.where<char>() << std::endl;
         }
+
+        // Parse the root
+        auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
+        itsNodes.emplace( root );
       }
 
-    //private:
-      std::istream & itsStream;
+    protected:
+      //! A struct that contains metadata about a node
+      struct NodeInfo
+      {
+        NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
+          node( n ),
+          counter( 0 )
+        { }
+
+        rapidxml::xml_node<> * node; //!< A pointer to this node
+        size_t counter;              //!< The counter for naming child nodes
+      }; // NodeInfo
+
+    private:
       std::vector<uint8_t> itsData;    //!< The raw data loaded
       rapidxml::xml_document<> itsXML; //!< The XML document
+      std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };
 
   // ######################################################################
@@ -287,7 +309,7 @@ namespace cereal
 
   //! Serializing NVP types to XML
   template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(XMLInputArchive, XMLOutputArchive)
+  CEREAL_ARCHIVE_RESTRICT(XMLInputArchive, XMLOutputArchive)
   serialize( Archive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
@@ -296,7 +318,7 @@ namespace cereal
 
   //! Serializing SizeTags to XML
   template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT_SERIALIZE(XMLInputArchive, XMLOutputArchive)
+  CEREAL_ARCHIVE_RESTRICT(XMLInputArchive, XMLOutputArchive)
   serialize( Archive & ar, SizeTag<T> & )
   { }
 

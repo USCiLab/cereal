@@ -333,8 +333,10 @@ int main()
 
   {
     std::ifstream is("out.xml");
-    cereal::XMLInputArchive oar( is );
-    std::cout << oar.itsData.size() << std::endl;
+    cereal::XMLInputArchive iar( is );
+
+    //int z;
+    //iar( cereal::make_nvp("hello", z) );
   }
 
 

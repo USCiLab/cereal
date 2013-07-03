@@ -260,14 +260,14 @@ namespace cereal
 
         @code{.cpp}
         template <class Archive>
-        CEREAL_ARCHIVE_RESTRICT_SERIALIZE(BinaryInputArchive, BinaryOutputArchive)
+        CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
         serialize( Archive & ar, MyCoolType & m )
         {
           ar & m;
         }
         @endcode
      */
-    #define CEREAL_ARCHIVE_RESTRICT_SERIALIZE(INTYPE, OUTTYPE) \
+    #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
     typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
   } // namespace traits
 
