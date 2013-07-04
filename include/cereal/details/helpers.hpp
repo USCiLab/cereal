@@ -30,9 +30,13 @@
 #include <type_traits>
 #include <cstdint>
 #include <utility>
+#include <iostream>
 
 namespace cereal
 {
+  class BinaryOutputArchive;
+  class BinaryInputArchive;
+
   // ######################################################################
   namespace detail
   {
@@ -41,7 +45,61 @@ namespace cereal
 
   //! For holding name value pairs
   /*! This pairs a name (some string) with some value such that an archive
-      can potentially take advantage of the pairing. */
+      can potentially take advantage of the pairing. 
+      
+      In serialization functions, NameValuePairs are usually created like so:
+      @code{.cpp}
+      struct MyStruct
+      {
+        int a, b, c, d, e;
+
+        template<class Archive>
+        void serialize(Archive & archive)
+        {
+          archive( CEREAL_NVP(a), 
+                   CEREAL_NVP(b), 
+                   CEREAL_NVP(c), 
+                   CEREAL_NVP(d), 
+                   CEREAL_NVP(e) ); 
+        }
+      };
+      @endcode
+
+      Alternatively, you can give you data members custom names like so:
+      @code{.cpp}
+      struct MyStruct
+      {
+        int a, b, my_embarrassing_variable_name, d, e;
+
+        template<class Archive>
+        void serialize(Archive & archive)
+        {
+          archive( CEREAL_NVP(a),
+                   CEREAL_NVP(b),
+                   cereal::make_nvp("var", my_embarrassing_variable_name) ); 
+                   CEREAL_NVP(d),
+                   CEREAL_NVP(e) );
+        }
+      };
+      @endcode
+
+      There is a slight amount of overhead to creating NameValuePairs, so there
+      is a third method which will elide the names when they are not needed by
+      the Archive:
+
+      @code{.cpp}
+      struct MyStruct
+      {
+        int a, b;
+
+        template<class Archive>
+        void serialize(Archive & archive)
+        {
+          archive( cereal::make_nvp<Archive>(a),
+                   cereal::make_nvp<Archive>(b) );
+        }
+      };
+      @endcode */
   template <class T>
   class NameValuePair : detail::NameValuePairCore
   {
@@ -69,6 +127,31 @@ namespace cereal
       char const * name;
       Type value;
   };
+
+  //! A specialization of make_nvp<> that simply forwards the value for binary archives
+  /*! @relates NameValuePair */
+  template<class Archive, class T>
+    typename 
+    std::enable_if<std::is_same<Archive, ::cereal::BinaryInputArchive>::value ||
+                   std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
+    T && >::type
+      make_nvp(std::string const & name, T && value)
+      {
+        return std::forward<T>(value);
+      }
+
+  //! A specialization of make_nvp<> that actually creates an nvp for non-binary archives
+  /*! @relates NameValuePair */
+  template<class Archive, class T>
+    typename 
+    std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
+                   !std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
+    NameValuePair<T> >::type
+      make_nvp(std::string const & name, T && value)
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+    
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion

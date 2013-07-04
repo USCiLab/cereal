@@ -34,6 +34,9 @@ namespace cereal
 {
   namespace detail
   {
+
+#define _NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
+
     //! A wrapper class to notify cereal that it is ok to serialize the contained pointer
     /*! This mechanism allows us to intercept and properly handle polymorphic pointers
         \note Users should _not_ use this class directly */
@@ -58,7 +61,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Loading std::shared_ptr, case when no user load and allocate for non polymorphic types
@@ -66,7 +69,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Saving std::weak_ptr for non polymorphic types
@@ -75,7 +78,7 @@ namespace cereal
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
-    ar( detail::make_ptr_wrapper( sptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( sptr )) );
   }
 
   //! Loading std::weak_ptr for non polymorphic types
@@ -84,7 +87,7 @@ namespace cereal
   load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar( detail::make_ptr_wrapper( sptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( sptr )) );
     ptr = sptr;
   }
 
@@ -93,7 +96,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate for non polymorphic types
@@ -101,7 +104,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ar( detail::make_ptr_wrapper( ptr ) );
+    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
   }
 
   // ######################################################################
@@ -114,11 +117,11 @@ namespace cereal
     auto & ptr = wrapper.ptr;
 
     uint32_t id = ar.registerSharedPointer( ptr.get() );
-    ar( id );
+    ar( _NVP("id", id) );
 
     if( id & detail::msb_32bit )
     {
-      ar( *ptr );
+      ar( _NVP("data", *ptr) );
     }
   }
 
@@ -178,11 +181,11 @@ namespace cereal
     // 1 == not null
 
     if( !ptr )
-      ar( uint8_t(0) );
+      ar( _NVP("id", uint8_t(0)) );
     else
     {
-      ar( uint8_t(1) );
-      ar( *ptr );
+      ar( _NVP("id", uint8_t(1)) );
+      ar( _NVP("data", *ptr) );
     }
   }
 
@@ -222,6 +225,8 @@ namespace cereal
       ptr.reset( nullptr );
     }
   }
+
+#undef _NVP
 
 } // namespace cereal
 

@@ -35,10 +35,14 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/map.hpp>
 
 //! Runs serialization to save data to an ostringstream
 /*! Used to time how long it takes to save data to an ostringstream.
@@ -49,12 +53,12 @@
     @param saveFunction A function taking in an ostringstream and the data and returning void
     @return The ostringstream and the time it took to save the data */
 template <class T>
-std::chrono::milliseconds
+std::chrono::nanoseconds
 saveData( T const & data, std::function<void(std::ostringstream &, T const&)> saveFunction, std::ostringstream & os )
 {
   auto start = std::chrono::high_resolution_clock::now();
   saveFunction( os, data );
-  return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - start );
+  return std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - start );
 }
 
 //! Runs serialization to load data to from an istringstream
@@ -66,7 +70,7 @@ saveData( T const & data, std::function<void(std::ostringstream &, T const&)> sa
     @param loadFunction A function taking in an istringstream and a data reference and returning void
     @return The loaded data and the time it took to save the data */
 template <class T>
-std::pair<T, std::chrono::milliseconds>
+std::pair<T, std::chrono::nanoseconds>
 loadData( std::ostringstream const & dataStream, std::function<void(std::istringstream &, T &)> loadFunction )
 {
   T data;
@@ -75,7 +79,7 @@ loadData( std::ostringstream const & dataStream, std::function<void(std::istring
   auto start = std::chrono::high_resolution_clock::now();
   loadFunction( os, data );
 
-  return {data, std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - start )};
+  return {data, std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now() - start )};
 }
 
 struct cerealBinary
@@ -141,11 +145,11 @@ void test( std::string const & name,
   std::cout << "-----------------------------------" << std::endl;
   std::cout << "Running test: " << name << std::endl;
 
-  std::chrono::milliseconds totalBoostSave{0};
-  std::chrono::milliseconds totalBoostLoad{0};
+  std::chrono::nanoseconds totalBoostSave{0};
+  std::chrono::nanoseconds totalBoostLoad{0};
 
-  std::chrono::milliseconds totalCerealSave{0};
-  std::chrono::milliseconds totalCerealLoad{0};
+  std::chrono::nanoseconds totalCerealSave{0};
+  std::chrono::nanoseconds totalCerealLoad{0};
 
   size_t boostSize = 0;
   size_t cerealSize = 0;
@@ -184,11 +188,11 @@ void test( std::string const & name,
   }
 
   // Averages
-  double averageBoostSave = totalBoostSave.count() / static_cast<double>( numAverages );
-  double averageBoostLoad = totalBoostLoad.count() / static_cast<double>( numAverages );
+  double averageBoostSave = std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostSave).count() / static_cast<double>( numAverages );
+  double averageBoostLoad = std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostLoad).count() / static_cast<double>( numAverages );
 
-  double averageCerealSave = totalCerealSave.count() / static_cast<double>( numAverages );
-  double averageCerealLoad = totalCerealLoad.count() / static_cast<double>( numAverages );
+  double averageCerealSave = std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealSave).count() / static_cast<double>( numAverages );
+  double averageCerealLoad = std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealLoad).count() / static_cast<double>( numAverages );
 
   // Percentages relative to boost
   double cerealSaveP = averageCerealSave / averageBoostSave;
@@ -295,72 +299,106 @@ int main()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
-  auto rngC = [&](){ return random_value<uint8_t>(gen); };
-  auto rngD = [&](){ return random_value<double>(gen); };
-  const bool randomize = false;
+  //auto rngC = [&](){ return random_value<uint8_t>(gen); };
+  //auto rngD = [&](){ return random_value<double>(gen); };
+  //const bool randomize = false;
 
-  //########################################
-  auto vectorDoubleTest = [&](size_t s, bool randomize)
+  ////########################################
+  //auto vectorDoubleTest = [&](size_t s, bool randomize)
+  //{
+  //  std::ostringstream name;
+  //  name << "Vector(double) size " << s;
+
+  //  std::vector<double> data(s);
+  //  if(randomize)
+  //    for( auto & d : data )
+  //      d = rngD();
+
+  //  test<binary>( name.str(), data );
+  //};
+
+  //vectorDoubleTest(1, randomize); // 8B
+  //vectorDoubleTest(16, randomize); // 128B
+  //vectorDoubleTest(1024, randomize); // 8KB
+  //vectorDoubleTest(1024*1024, randomize); // 8MB
+
+  ////########################################
+  //auto vectorCharTest = [&](size_t s, bool randomize)
+  //{
+  //  std::ostringstream name;
+  //  name << "Vector(uint8_t) size " << s;
+
+  //  std::vector<uint8_t> data(s);
+  //  if(randomize)
+  //    for( auto & d : data )
+  //      d = rngC();
+
+  //  test<binary>( name.str(), data );
+  //};
+
+  //vectorCharTest(1024*1024*64, randomize); // 1 GB
+
+  ////########################################
+  //auto vectorPoDStructTest = [&](size_t s)
+  //{
+  //  std::ostringstream name;
+  //  name << "Vector(PoDStruct) size " << s;
+
+  //  std::vector<PoDStruct> data(s);
+  //  test<binary>( name.str(), data );
+  //};
+
+  //vectorPoDStructTest(1);
+  //vectorPoDStructTest(64);
+  //vectorPoDStructTest(1024);
+  //vectorPoDStructTest(1024*1024);
+  //vectorPoDStructTest(1024*1024*4);
+
+  ////########################################
+  //auto vectorPoDChildTest = [&](size_t s)
+  //{
+  //  std::ostringstream name;
+  //  name << "Vector(PoDChild) size " << s;
+
+  //  std::vector<PoDChild> data(s);
+  //  test<binary>( name.str(), data );
+  //};
+  //
+  //vectorPoDChildTest(1024*64);
+
+  auto vectorStringTest = [&](size_t s)
   {
     std::ostringstream name;
-    name << "Vector(double) size " << s;
+    name << "Vector(String) size " << s;
 
-    std::vector<double> data(s);
-    if(randomize)
-      for( auto & d : data )
-        d = rngD();
+    std::vector<std::string> data(s);
+    for(size_t i=0; i<data.size(); ++i)
+      data[i] = random_basic_string<char>(gen);
 
     test<binary>( name.str(), data );
   };
+  
+  vectorStringTest(512);
+  vectorStringTest(1024);
+  vectorStringTest(1024*64);
+  vectorStringTest(1024*128);
 
-  vectorDoubleTest(1, randomize); // 8B
-  vectorDoubleTest(16, randomize); // 128B
-  vectorDoubleTest(1024, randomize); // 8KB
-  vectorDoubleTest(1024*1024, randomize); // 8MB
-
-  //########################################
-  auto vectorCharTest = [&](size_t s, bool randomize)
+  auto mapPoDStructTest = [&](size_t s)
   {
     std::ostringstream name;
-    name << "Vector(uint8_t) size " << s;
+    name << "Map(PoDStruct) size " <<s;
 
-    std::vector<uint8_t> data(s);
-    if(randomize)
-      for( auto & d : data )
-        d = rngC();
-
-    test<binary>( name.str(), data );
+    std::map<std::string, PoDStruct> m;
+    for(size_t i=0; i<s; ++i)
+      m[std::to_string(i)] = {};
+    test<binary>(name.str(), m);
   };
+  
 
-  vectorCharTest(1024*1024*64, randomize); // 1 GB
 
-  //########################################
-  auto vectorPoDStructTest = [&](size_t s)
-  {
-    std::ostringstream name;
-    name << "Vector(PoDStruct) size " << s;
 
-    std::vector<PoDStruct> data(s);
-    test<binary>( name.str(), data );
-  };
-
-  vectorPoDStructTest(1);
-  vectorPoDStructTest(64);
-  vectorPoDStructTest(1024);
-  vectorPoDStructTest(1024*1024);
-  vectorPoDStructTest(1024*1024*4);
-
-  //########################################
-  auto vectorPoDChildTest = [&](size_t s)
-  {
-    std::ostringstream name;
-    name << "Vector(PoDChild) size " << s;
-
-    std::vector<PoDChild> data(s);
-    test<binary>( name.str(), data );
-  };
-
-  vectorPoDChildTest(1024*64);
+  mapPoDStructTest(1024);
+  mapPoDStructTest(1024*64);
 
   return 0;
 }

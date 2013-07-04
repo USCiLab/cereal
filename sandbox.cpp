@@ -36,6 +36,7 @@
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -301,9 +302,14 @@ int main()
     //std::stringstream os;
     std::ofstream os("out.xml");
     cereal::XMLOutputArchive oar( os );
+
     oar( cereal::make_nvp("hello", 5 ) );
+
     std::string bla("bla");
     oar( bla );
+
+    auto intptr = std::make_shared<int>(99);
+    oar( CEREAL_NVP(intptr) );
 
     int x = 3;
     oar( CEREAL_NVP(x) );
@@ -330,6 +336,7 @@ int main()
     oar.saveBinaryValue( xxx, sizeof(int)*3 );
   }
 
+  if(true)
   {
     std::ifstream is("out.xml");
     cereal::XMLInputArchive iar( is );
@@ -341,6 +348,10 @@ int main()
     std::string bla;
     iar( bla );
     assert( bla == "bla" );
+
+    std::shared_ptr<int> intptr;
+    iar( CEREAL_NVP(intptr) );
+    assert( *intptr == 99 );
 
     int x;
     iar( CEREAL_NVP(x) );
