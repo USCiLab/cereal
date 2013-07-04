@@ -40,7 +40,7 @@ namespace cereal
       ar( make_size_tag( map.size() ) );
 
       for( const auto & i : map )
-        ar( i.first, i.second );
+        ar( make_map_item(i.first, i.second) );
     }
 
     template <class Archive, class MapT> inline
@@ -57,7 +57,7 @@ namespace cereal
         typename MapT::key_type key;
         typename MapT::mapped_type value;
 
-        ar( key, value );
+        ar( make_map_item(key, value) );
         map.insert( {key, value} );
       }
     }

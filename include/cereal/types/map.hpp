@@ -42,7 +42,7 @@ namespace cereal
 
       for( const auto & i : map )
       {
-        ar( ::cereal::make_map_item(i.first, i.second) );
+        ar( make_map_item(i.first, i.second) );
       }
     }
 
@@ -60,7 +60,7 @@ namespace cereal
         typename MapT::key_type key;
         typename MapT::mapped_type value;
 
-        ar( ::cereal::make_map_item(key, value) );
+        ar( make_map_item(key, value) );
         hint = map.insert(hint, {key, value} );
       }
     }
