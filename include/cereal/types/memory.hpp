@@ -39,7 +39,7 @@ namespace cereal
 
     //! A wrapper class to notify cereal that it is ok to serialize the contained pointer
     /*! This mechanism allows us to intercept and properly handle polymorphic pointers
-        \note Users should _not_ use this class directly */
+        @internal */
     template<class T>
       struct PtrWrapper
       {
@@ -48,7 +48,7 @@ namespace cereal
       };
 
     //! Make a PtrWrapper
-    /*! \note Users should _not_ use this method directly */
+    /*! @internal */
     template<class T>
       PtrWrapper<T> make_ptr_wrapper(T && t)
       {
@@ -69,7 +69,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
-    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
+    ar( detail::make_ptr_wrapper( ptr ) );
   }
 
   //! Saving std::weak_ptr for non polymorphic types
@@ -87,7 +87,7 @@ namespace cereal
   load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( sptr )) );
+    ar( detail::make_ptr_wrapper( sptr ) );
     ptr = sptr;
   }
 
@@ -104,7 +104,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ar( _NVP("ptr_wrapper", detail::make_ptr_wrapper( ptr )) );
+    ar( detail::make_ptr_wrapper( ptr ) );
   }
 
   // ######################################################################
