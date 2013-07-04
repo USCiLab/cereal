@@ -15,7 +15,7 @@ cereal uses features new to C++11 and requires a fairly compliant C++ compiler t
 
 In simple performance tests, cereal is usually faster than boost's serialization library and produces binary representations that take up less space.  When compared against another new C++11 serialization library, [Srl](https://github.com/night-shift/Srl), cereal can produce binary representations at 50% the size at 20x speed.  The source code for cereal is considerably easier to understand and extend than that of boost.
 
-## cereal is extensible
+### cereal is extensible
 
 cereal comes with binary, XML, and JSON serializers.  If you need something else, cereal was written to be easily extensible for adding custom serialization archives.
 
