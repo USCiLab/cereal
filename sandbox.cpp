@@ -299,9 +299,9 @@ int main()
   assert(e_in == e_out);
 
   {
-    //std::stringstream os;
     std::ofstream os("out.xml");
     cereal::XMLOutputArchive oar( os );
+    //cereal::XMLOutputArchive oar( std::cout );
 
     oar( cereal::make_nvp("hello", 5 ) );
 
@@ -310,6 +310,15 @@ int main()
 
     auto intptr = std::make_shared<int>(99);
     oar( CEREAL_NVP(intptr) );
+
+    std::map<std::string, int> map1 = 
+    {
+      {"one",   1},
+      {"two",   2},
+      {"three", 3}
+    };
+
+    oar( CEREAL_NVP(map1) );
 
     int x = 3;
     oar( CEREAL_NVP(x) );
@@ -352,6 +361,14 @@ int main()
     std::shared_ptr<int> intptr;
     iar( CEREAL_NVP(intptr) );
     assert( *intptr == 99 );
+
+    std::map<std::string, int> map1;
+
+    iar( CEREAL_NVP(map1) );
+    assert( map1["one"]   == 1 );
+    assert( map1["two"]   == 2 );
+    assert( map1["three"] == 3 );
+
 
     int x;
     iar( CEREAL_NVP(x) );

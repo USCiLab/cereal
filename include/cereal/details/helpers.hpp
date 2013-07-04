@@ -99,7 +99,9 @@ namespace cereal
                    cereal::make_nvp<Archive>(b) );
         }
       };
-      @endcode */
+      @endcode 
+
+      @internal */
   template <class T>
   class NameValuePair : detail::NameValuePairCore
   {
@@ -121,7 +123,8 @@ namespace cereal
                    the value can be both loaded and saved to.  If you pass an r-value reference,
                    the NameValuePair will store a copy of it instead of a reference.  Thus you should
                    only pass r-values in cases where this makes sense, such as the result of some
-                   size() call.  In either case, any constness will be stripped away */
+                   size() call.  In either case, any constness will be stripped away 
+      @internal */
       NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
 
       char const * name;
@@ -129,7 +132,8 @@ namespace cereal
   };
 
   //! A specialization of make_nvp<> that simply forwards the value for binary archives
-  /*! @relates NameValuePair */
+  /*! @relates NameValuePair 
+      @internal */
   template<class Archive, class T>
     typename 
     std::enable_if<std::is_same<Archive, ::cereal::BinaryInputArchive>::value ||
@@ -141,7 +145,8 @@ namespace cereal
       }
 
   //! A specialization of make_nvp<> that actually creates an nvp for non-binary archives
-  /*! @relates NameValuePair */
+  /*! @relates NameValuePair 
+      @internal */
   template<class Archive, class T>
     typename 
     std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
@@ -157,7 +162,9 @@ namespace cereal
   //! A wrapper around data that can be serialized in a binary fashion
   /*! This class is used to demarcate data that can safely be serialized
       as a binary chunk of data.  Individual archives can then choose how
-      best represent this during serialization. */
+      best represent this during serialization. 
+      
+      @internal */
   template <class T>
   struct BinaryData
   {
@@ -195,7 +202,9 @@ namespace cereal
       they choose to serialize size metadata for containers.  For some archive
       types, the size may be implicitly encoded in the output (e.g. JSON) and
       not need an explicit entry.  Specializing serialize or load/save for
-      your archive and SizeTags allows you to choose what happens */
+      your archive and SizeTags allows you to choose what happens 
+      
+      @internal */
   template <class T>
   class SizeTag
   {
@@ -212,6 +221,69 @@ namespace cereal
 
       Type size;
   };
+
+  // ######################################################################
+  //! A wrapper around a key and value for serializing data into maps.
+  /*! This class just provides a grouping of keys and values into a struct for
+      human readable archives. For example, XML archives will use this wrapper
+      to write maps like so:
+
+@code{.xml}
+<mymap>
+  <item0>
+    <key>MyFirstKey</key>
+    <value>MyFirstValue</value>
+  </item0>
+  <item1>
+    <key>MySecondKey</key>
+    <value>MySecondValue</value>
+  </item1>
+</mymap>
+@endcode 
+
+  \sa make_map_item 
+  @internal */
+  template <class Key, class Value>
+  struct MapItem
+  {
+    using DecayKey = typename std::decay<Key>::type;
+    using KeyType = typename std::conditional<
+      std::is_rvalue_reference<Key>::value,
+      DecayKey,
+      typename std::add_lvalue_reference<DecayKey>::type>::type;
+
+    using DecayValue = typename std::decay<Value>::type;
+    using ValueType = typename std::conditional<
+      std::is_rvalue_reference<Value>::value,
+      DecayValue,
+      typename std::add_lvalue_reference<DecayValue>::type>::type;
+
+    //! Construct a MapItem from a key and a value
+    /*! @internal */
+    MapItem( Key && key, Value && value ) : key(const_cast<KeyType>(key)), value(const_cast<ValueType>(value)) {}
+
+    KeyType key;
+    ValueType value;
+
+    //! Serialize the MapItem with the NVPs "key" and "value"
+    template<class Archive>
+      void serialize(Archive & archive)
+      {
+        archive( make_nvp<Archive>("key",   key),
+                 make_nvp<Archive>("value", value) );
+      }
+  };
+
+  //! Create a MapItem so that human readable archives will group keys and values together
+  /*! @internal 
+      @relates MapItem */
+  template<class KeyType, class ValueType>
+      MapItem<KeyType, ValueType> make_map_item(KeyType && key, ValueType && value)
+      {
+        return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
+      }
+
+
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_
