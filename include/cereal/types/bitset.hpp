@@ -49,21 +49,21 @@ namespace cereal
     try
     {
       auto const b = bits.to_ulong();
-      ar( bitset_detail::type::ulong );
-      ar( b );
+      ar( _CEREAL_NVP("type", bitset_detail::type::ulong) );
+      ar( _CEREAL_NVP("data", b) );
     }
     catch( std::overflow_error const & e )
     {
       try
       {
         auto const b = bits.to_ullong();
-        ar( bitset_detail::type::ullong );
-        ar( b );
+        ar( _CEREAL_NVP("type", bitset_detail::type::ullong) );
+        ar( _CEREAL_NVP("data", b) );
       }
       catch( std::overflow_error const & e )
       {
-        ar( bitset_detail::type::string );
-        ar( bits.to_string() );
+        ar( _CEREAL_NVP("type", bitset_detail::type::string) );
+        ar( _CEREAL_NVP("data", bits.to_string()) );
       }
     }
   }

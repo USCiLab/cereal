@@ -43,7 +43,7 @@ namespace cereal
       template<class T>
         void operator()(T const & value) const
         {
-          ar( value );
+          ar( _CEREAL_NVP("data", value) );
         }
 
       Archive & ar;
@@ -77,7 +77,7 @@ namespace cereal
   void save( Archive & ar, boost::variant<VariantTypes...> const & variant )
   {
     int32_t which = variant.which();
-    ar( which );
+    ar( _CEREAL_NVP("which", which) );
     binary_detail::variant_save_visitor<Archive> visitor(ar);
     variant.apply_visitor(visitor);
   }

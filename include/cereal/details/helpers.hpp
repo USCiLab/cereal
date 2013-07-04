@@ -161,6 +161,12 @@ namespace cereal
     return {name, std::forward<T>(value)};
   }
 
+  //! Convenience for creating a templated NVP
+  /*! For use in inteneral generic typing functions which have an
+      Archive type declared
+      @internal */
+#define _CEREAL_NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
+
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion
   /*! This class is used to demarcate data that can safely be serialized

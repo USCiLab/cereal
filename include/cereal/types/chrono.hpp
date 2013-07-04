@@ -35,7 +35,7 @@ namespace cereal
   template <class Archive, class R, class P> inline
   void save( Archive & ar, std::chrono::duration<R, P> const & dur )
   {
-    ar( dur.count() );
+    ar( _CEREAL_NVP("count", dur.count()) );
   }
 
   //! Loading std::chrono::duration
@@ -52,7 +52,7 @@ namespace cereal
   template <class Archive, class C, class D> inline
   void save( Archive & ar, std::chrono::time_point<C, D> const & dur )
   {
-    ar( dur.time_since_epoch() );
+    ar( _CEREAL_NVP("time_since_epoch", dur.time_since_epoch()) );
   }
 
   //! Loading std::chrono::time_point

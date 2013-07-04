@@ -41,7 +41,7 @@ namespace cereal
 
   //! Serialization for raw pointers
   template <class Archive, class T> inline
-  void serialize( Archive & ar, T * & t )
+  void serialize( Archive &, T * & )
   {
     static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
   }

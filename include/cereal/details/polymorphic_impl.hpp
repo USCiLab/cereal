@@ -188,13 +188,13 @@ namespace cereal
         std::uint32_t id = ar.registerPolymorphicType(name);
 
         // Serialize the id
-        ar( id );
+        ar( _CEREAL_NVP("polymorphic_id", id) );
 
         // If the msb of the id is 1, then the type name is new, and we should serialize it
         if( id & detail::msb_32bit )
         {
           std::string namestring(name);
-          ar(namestring);
+          ar( _CEREAL_NVP("polymorphic_name", namestring) );
         }
       }
 
@@ -212,7 +212,7 @@ namespace cereal
 
             std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
 
-            ar( memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
 
         serializers.unique_ptr =
@@ -224,7 +224,7 @@ namespace cereal
 
             std::unique_ptr<T const, EmptyDeleter<T const>> const ptr(static_cast<T const *>(dptr));
 
-            ar( memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
 
         StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );

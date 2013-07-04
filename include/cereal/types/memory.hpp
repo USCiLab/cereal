@@ -34,9 +34,6 @@ namespace cereal
 {
   namespace memory_detail
   {
-    // Shorthand so the code doesn't look as messy
-#define _NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
-
     //! A wrapper class to notify cereal that it is ok to serialize the contained pointer
     /*! This mechanism allows us to intercept and properly handle polymorphic pointers
         @internal */
@@ -61,7 +58,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
-    ar( _NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Loading std::shared_ptr, case when no user load and allocate for non polymorphic types
@@ -78,7 +75,7 @@ namespace cereal
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto sptr = ptr.lock();
-    ar( _NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
   }
 
   //! Loading std::weak_ptr for non polymorphic types
@@ -96,7 +93,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
-    ar( _NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate for non polymorphic types
@@ -117,11 +114,11 @@ namespace cereal
     auto & ptr = wrapper.ptr;
 
     uint32_t id = ar.registerSharedPointer( ptr.get() );
-    ar( _NVP("id", id) );
+    ar( _CEREAL_NVP("id", id) );
 
     if( id & detail::msb_32bit )
     {
-      ar( _NVP("data", *ptr) );
+      ar( _CEREAL_NVP("data", *ptr) );
     }
   }
 
@@ -181,11 +178,11 @@ namespace cereal
     // 1 == not null
 
     if( !ptr )
-      ar( _NVP("valid", uint8_t(0)) );
+      ar( _CEREAL_NVP("valid", uint8_t(0)) );
     else
     {
-      ar( _NVP("valid", uint8_t(1)) );
-      ar( _NVP("data", *ptr) );
+      ar( _CEREAL_NVP("valid", uint8_t(1)) );
+      ar( _CEREAL_NVP("data", *ptr) );
     }
   }
 
@@ -225,9 +222,6 @@ namespace cereal
       ptr.reset( nullptr );
     }
   }
-
-#undef _NVP
-
 } // namespace cereal
 
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_
