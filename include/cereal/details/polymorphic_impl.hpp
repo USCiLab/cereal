@@ -153,7 +153,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::shared_ptr<T> ptr;
 
-            ar( make_ptr_wrapper(ptr) );
+            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
 
             dptr = ptr;
           };
@@ -164,7 +164,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::unique_ptr<T> ptr;
 
-            ar( make_ptr_wrapper(ptr) );
+            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
 
             dptr.reset(ptr.release());
           };
@@ -212,7 +212,7 @@ namespace cereal
 
             std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
 
-            ar( detail::make_ptr_wrapper(ptr) );
+            ar( memory_detail::make_ptr_wrapper(ptr) );
           };
 
         serializers.unique_ptr =
@@ -224,7 +224,7 @@ namespace cereal
 
             std::unique_ptr<T const, EmptyDeleter<T const>> const ptr(static_cast<T const *>(dptr));
 
-            ar( detail::make_ptr_wrapper(ptr) );
+            ar( memory_detail::make_ptr_wrapper(ptr) );
           };
 
         StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );

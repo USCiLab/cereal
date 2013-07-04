@@ -87,8 +87,8 @@ namespace cereal
         if(nameid == 0)
         {
           typename ::cereal::detail::InputBindingMap<Archive>::Serializers emptySerializers;
-          emptySerializers.shared_ptr = [](void* ar, std::shared_ptr<void> & ptr) { ptr.reset(); };
-          emptySerializers.unique_ptr = [](void* ar, std::unique_ptr<void> & ptr) { ptr.reset(); };
+          emptySerializers.shared_ptr = [](void*, std::shared_ptr<void> & ptr) { ptr.reset(); };
+          emptySerializers.unique_ptr = [](void*, std::unique_ptr<void> & ptr) { ptr.reset(); };
           return emptySerializers;
         }
 
@@ -116,7 +116,7 @@ namespace cereal
       {
         if(nameid & detail::msb2_32bit)
         {
-          ar( detail::make_ptr_wrapper(ptr) );
+          ar( memory_detail::make_ptr_wrapper(ptr) );
           return true;
         }
         return false;
@@ -129,7 +129,7 @@ namespace cereal
       {
         if(nameid & detail::msb2_32bit)
         {
-          ar( detail::make_ptr_wrapper(ptr) );
+          ar( memory_detail::make_ptr_wrapper(ptr) );
           return true;
         }
         return false;
@@ -137,7 +137,7 @@ namespace cereal
 
     template<class Archive, class T> inline
       typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
-      serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
+      serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
       {
         if(nameid & detail::msb2_32bit)
           throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
@@ -146,7 +146,7 @@ namespace cereal
 
     template<class Archive, class T, class D> inline
       typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
-      serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
+      serialize_wrapper(Archive &, std::unique_ptr<T, D> &, std::uint32_t const nameid)
       {
         if(nameid & detail::msb2_32bit)
           throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
@@ -178,7 +178,7 @@ namespace cereal
       // cast with our polymorphic machinery
       ar( detail::msb2_32bit );
 
-      ar( detail::make_ptr_wrapper(ptr) );
+      ar( memory_detail::make_ptr_wrapper(ptr) );
 
       return;
     }
@@ -250,7 +250,7 @@ namespace cereal
       // cast with our polymorphic machinery
       ar( detail::msb2_32bit );
 
-      ar( detail::make_ptr_wrapper(ptr) );
+      ar( memory_detail::make_ptr_wrapper(ptr) );
 
       return;
     }

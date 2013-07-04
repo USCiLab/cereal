@@ -30,10 +30,10 @@
 #include <type_traits>
 #include <cstdint>
 #include <utility>
-#include <iostream>
 
 namespace cereal
 {
+  // forward decls
   class BinaryOutputArchive;
   class BinaryInputArchive;
 
@@ -45,8 +45,8 @@ namespace cereal
 
   //! For holding name value pairs
   /*! This pairs a name (some string) with some value such that an archive
-      can potentially take advantage of the pairing. 
-      
+      can potentially take advantage of the pairing.
+
       In serialization functions, NameValuePairs are usually created like so:
       @code{.cpp}
       struct MyStruct
@@ -56,11 +56,11 @@ namespace cereal
         template<class Archive>
         void serialize(Archive & archive)
         {
-          archive( CEREAL_NVP(a), 
-                   CEREAL_NVP(b), 
-                   CEREAL_NVP(c), 
-                   CEREAL_NVP(d), 
-                   CEREAL_NVP(e) ); 
+          archive( CEREAL_NVP(a),
+                   CEREAL_NVP(b),
+                   CEREAL_NVP(c),
+                   CEREAL_NVP(d),
+                   CEREAL_NVP(e) );
         }
       };
       @endcode
@@ -76,7 +76,7 @@ namespace cereal
         {
           archive( CEREAL_NVP(a),
                    CEREAL_NVP(b),
-                   cereal::make_nvp("var", my_embarrassing_variable_name) ); 
+                   cereal::make_nvp("var", my_embarrassing_variable_name) );
                    CEREAL_NVP(d),
                    CEREAL_NVP(e) );
         }
@@ -99,7 +99,11 @@ namespace cereal
                    cereal::make_nvp<Archive>(b) );
         }
       };
-      @endcode 
+      @endcode
+
+      This third method is generally only used when providing generic type
+      support.  Users writing their own serialize functions will normally
+      explicitly control whether they want to use NVPs or not.
 
       @internal */
   template <class T>
@@ -123,7 +127,7 @@ namespace cereal
                    the value can be both loaded and saved to.  If you pass an r-value reference,
                    the NameValuePair will store a copy of it instead of a reference.  Thus you should
                    only pass r-values in cases where this makes sense, such as the result of some
-                   size() call.  In either case, any constness will be stripped away 
+                   size() call.  In either case, any constness will be stripped away
       @internal */
       NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
 
@@ -132,38 +136,37 @@ namespace cereal
   };
 
   //! A specialization of make_nvp<> that simply forwards the value for binary archives
-  /*! @relates NameValuePair 
+  /*! @relates NameValuePair
       @internal */
-  template<class Archive, class T>
-    typename 
-    std::enable_if<std::is_same<Archive, ::cereal::BinaryInputArchive>::value ||
-                   std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
-    T && >::type
-      make_nvp(std::string const & name, T && value)
-      {
-        return std::forward<T>(value);
-      }
+  template<class Archive, class T> inline
+  typename
+  std::enable_if<std::is_same<Archive, ::cereal::BinaryInputArchive>::value ||
+                 std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
+  T && >::type
+  make_nvp( const char *, T && value )
+  {
+    return std::forward<T>(value);
+  }
 
   //! A specialization of make_nvp<> that actually creates an nvp for non-binary archives
-  /*! @relates NameValuePair 
+  /*! @relates NameValuePair
       @internal */
-  template<class Archive, class T>
-    typename 
-    std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
-                   !std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
-    NameValuePair<T> >::type
-      make_nvp(std::string const & name, T && value)
-      {
-        return {name.c_str(), std::forward<T>(value)};
-      }
-    
+  template<class Archive, class T> inline
+  typename
+  std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
+                 !std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
+  NameValuePair<T> >::type
+  make_nvp( const char * name, T && value)
+  {
+    return {name, std::forward<T>(value)};
+  }
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion
   /*! This class is used to demarcate data that can safely be serialized
       as a binary chunk of data.  Individual archives can then choose how
-      best represent this during serialization. 
-      
+      best represent this during serialization.
+
       @internal */
   template <class T>
   struct BinaryData
@@ -202,8 +205,8 @@ namespace cereal
       they choose to serialize size metadata for containers.  For some archive
       types, the size may be implicitly encoded in the output (e.g. JSON) and
       not need an explicit entry.  Specializing serialize or load/save for
-      your archive and SizeTags allows you to choose what happens 
-      
+      your archive and SizeTags allows you to choose what happens.
+
       @internal */
   template <class T>
   class SizeTag
@@ -214,7 +217,7 @@ namespace cereal
       using DT = typename std::decay<T>::type;
       using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
                                              DT,
-                                            typename std::add_lvalue_reference<DT>::type>::type;
+                                             typename std::add_lvalue_reference<DT>::type>::type;
 
     public:
       SizeTag( T && sz ) : size(const_cast<Type>(sz)) {}
@@ -228,21 +231,21 @@ namespace cereal
       human readable archives. For example, XML archives will use this wrapper
       to write maps like so:
 
-@code{.xml}
-<mymap>
-  <item0>
-    <key>MyFirstKey</key>
-    <value>MyFirstValue</value>
-  </item0>
-  <item1>
-    <key>MySecondKey</key>
-    <value>MySecondValue</value>
-  </item1>
-</mymap>
-@endcode 
+      @code{.xml}
+      <mymap>
+        <item0>
+          <key>MyFirstKey</key>
+          <value>MyFirstValue</value>
+        </item0>
+        <item1>
+          <key>MySecondKey</key>
+          <value>MySecondValue</value>
+        </item1>
+      </mymap>
+      @endcode
 
-  \sa make_map_item 
-  @internal */
+      \sa make_map_item
+      @internal */
   template <class Key, class Value>
   struct MapItem
   {
@@ -266,24 +269,22 @@ namespace cereal
     ValueType value;
 
     //! Serialize the MapItem with the NVPs "key" and "value"
-    template<class Archive>
-      void serialize(Archive & archive)
-      {
-        archive( make_nvp<Archive>("key",   key),
-                 make_nvp<Archive>("value", value) );
-      }
+    template <class Archive> inline
+    void serialize(Archive & archive)
+    {
+      archive( make_nvp<Archive>("key",   key),
+               make_nvp<Archive>("value", value) );
+    }
   };
 
   //! Create a MapItem so that human readable archives will group keys and values together
-  /*! @internal 
+  /*! @internal
       @relates MapItem */
-  template<class KeyType, class ValueType>
-      MapItem<KeyType, ValueType> make_map_item(KeyType && key, ValueType && value)
-      {
-        return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
-      }
-
-
+  template <class KeyType, class ValueType> inline
+  MapItem<KeyType, ValueType> make_map_item(KeyType && key, ValueType && value)
+  {
+    return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
+  }
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_

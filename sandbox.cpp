@@ -299,9 +299,9 @@ int main()
   assert(e_in == e_out);
 
   {
-    std::ofstream os("out.xml");
-    cereal::XMLOutputArchive oar( os );
-    //cereal::XMLOutputArchive oar( std::cout );
+    //std::ofstream os("out.xml");
+    //cereal::XMLOutputArchive oar( os );
+    cereal::XMLOutputArchive oar( std::cout );
 
     oar( cereal::make_nvp("hello", 5 ) );
 
@@ -311,7 +311,7 @@ int main()
     auto intptr = std::make_shared<int>(99);
     oar( CEREAL_NVP(intptr) );
 
-    std::map<std::string, int> map1 = 
+    std::map<std::string, int> map1 =
     {
       {"one",   1},
       {"two",   2},
@@ -342,10 +342,10 @@ int main()
 
     int xxx[] = {-1, 95, 3};
     oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
-    oar.saveBinaryValue( xxx, sizeof(int)*3 );
+    //oar.saveBinaryValue( xxx, sizeof(int)*3 );
   }
 
-  if(true)
+  if(false)
   {
     std::ifstream is("out.xml");
     cereal::XMLInputArchive iar( is );
