@@ -51,12 +51,13 @@ namespace cereal
 
       set.clear();
 
+      auto hint = set.begin();
       for( size_t i = 0; i < size; ++i )
       {
         typename SetT::key_type key;
 
         ar( key );
-        set.insert( key );
+        hint = set.insert(hint, key );
       }
     }
   }

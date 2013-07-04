@@ -51,13 +51,14 @@ namespace cereal
 
       map.clear();
 
+      auto hint = map.begin();
       for( size_t i = 0; i < size; ++i )
       {
         typename MapT::key_type key;
         typename MapT::mapped_type value;
 
         ar( key, value );
-        map.insert( {key, value} );
+        hint = map.insert(hint, {key, value} );
       }
     }
   }
