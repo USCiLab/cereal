@@ -694,12 +694,26 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
     iar(i_esermultimap);
     iar(i_esplmultimap);
 
-    // TODO: Fix these unit tests!
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_podmultimap.begin(),    i_podmultimap.end(),    o_podmultimap.begin(),  o_podmultimap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isermultimap.begin(),   i_isermultimap.end(),   o_isermultimap.begin(), o_isermultimap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_isplmultimap.begin(),   i_isplmultimap.end(),   o_isplmultimap.begin(), o_isplmultimap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esermultimap.begin(),   i_esermultimap.end(),   o_esermultimap.begin(), o_esermultimap.end());
-    //BOOST_CHECK_EQUAL_COLLECTIONS(i_esplmultimap.begin(),   i_esplmultimap.end(),   o_esplmultimap.begin(), o_esplmultimap.end());
+
+#define MULTIMAP_CHECK(InMap, OutMap) \
+    for( auto & pair : OutMap ) \
+    { \
+      auto const count = InMap.count( pair.first ); \
+      BOOST_CHECK_EQUAL( count, OutMap.count( pair.first ) ); \
+      auto find = InMap.find( pair.first ); \
+      bool found = false; \
+      for( size_t i = 0; i < count; ++i, ++find ) \
+        found |= find->second == pair.second; \
+      BOOST_CHECK( found ); \
+    }
+
+    MULTIMAP_CHECK( i_podmultimap, o_podmultimap );
+    MULTIMAP_CHECK( i_isermultimap, o_isermultimap );
+    MULTIMAP_CHECK( i_isplmultimap, o_isplmultimap );
+    MULTIMAP_CHECK( i_esermultimap, o_esermultimap );
+    MULTIMAP_CHECK( i_esplmultimap, o_esplmultimap );
+
+#undef MULTIMAP_CHECK
   }
 }
 
