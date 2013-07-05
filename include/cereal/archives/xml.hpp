@@ -290,6 +290,10 @@ namespace cereal
         loadValue( encoded );
 
         auto decoded = base64::decode( encoded );
+
+        if( size != decoded.size() )
+          throw Exception("Decoded binary data size does not match specified size");
+
         std::memcpy( data, decoded.data(), decoded.size() );
 
         finishNode();
@@ -401,7 +405,7 @@ namespace cereal
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
   template <class T>
-  void prologue( XMLOutputArchive & ar, T const & data )
+  void prologue( XMLOutputArchive & ar, T const & )
   {
     ar.startNode();
     ar.insertType<T>();
@@ -409,7 +413,7 @@ namespace cereal
 
   //! Prologue for all other types for XML input archives
   template <class T>
-  void prologue( XMLInputArchive & ar, T const & data )
+  void prologue( XMLInputArchive & ar, T const & )
   {
     ar.startNode();
   }
@@ -418,14 +422,14 @@ namespace cereal
   //! Epilogue for all other types other for XML output archives
   /*! Finishes the node created in the prologue */
   template <class T>
-  void epilogue( XMLOutputArchive & ar, T const & data )
+  void epilogue( XMLOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }
 
   //! Epilogue for all other types other for XML output archives
   template <class T>
-  void epilogue( XMLInputArchive & ar, T const & data )
+  void epilogue( XMLInputArchive & ar, T const & )
   {
     ar.finishNode();
   }
@@ -452,7 +456,7 @@ namespace cereal
   // ######################################################################
   //! Saving SizeTags to XML
   template <class T> inline
-  void save( XMLOutputArchive & ar, SizeTag<T> const & )
+  void save( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
   //! Loading SizeTags from XML
