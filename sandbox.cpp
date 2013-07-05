@@ -351,6 +351,12 @@ int main()
     int xxx[] = {-1, 95, 3};
     oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
     //oar.saveBinaryValue( xxx, sizeof(int)*3 );
+
+    std::unique_ptr<Derived> d1( new Derived() );
+    std::unique_ptr<Base> d2( new Derived() );
+    oar( d1 );
+    oar( d2 );
+    oar( d2 );
   }
 
   if(false)

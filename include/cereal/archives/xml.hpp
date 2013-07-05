@@ -135,6 +135,12 @@ namespace cereal
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
       }
 
+      //! Overload for uint8_t prevents them from being serialized as characters
+      void saveValue( uint8_t const & value )
+      {
+        saveValue( static_cast<uint32_t>( value ) );
+      }
+
       //! Saves some binary data, encoded as a base64 string, with an optional name
       /*! This will create a new node, optionally named, and insert a value that consists of
           the data encoded as a base64 string */

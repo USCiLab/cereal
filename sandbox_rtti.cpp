@@ -175,24 +175,6 @@ template <class T> void nop(T&&) {}
 
 int main()
 {
-  std::cout << std::boolalpha;
-
-  std::cout << cereal::traits::is_specialized_member_load_save<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << cereal::traits::is_specialized_member_load_save<DerivedVirtual&, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::is_specialized_non_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::is_input_serializable<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::is_specialized_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << cereal::traits::has_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-
-  std::cout << "sssssssssssss" <<std::endl;
-
-  std::cout << cereal::traits::has_member_load<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_load<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  std::cout << cereal::traits::has_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-  //std::cout << cereal::traits::has_non_member_serialize<DerivedVirtual, cereal::BinaryInputArchive>() << std::endl;
-
-
   {
     std::ofstream ostream("rtti.txt");
     cereal::BinaryOutputArchive oarchive(ostream);
