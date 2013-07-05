@@ -151,7 +151,11 @@ namespace cereal
       bool constexpr is_non_const_non_member_save()
       { return !has_non_member_save<T, A>() && detail::has_non_member_save_any<T, A>(); }
 
-
+    // ######################################################################
+    // Returns true if we have an invalid save function (non const)
+    template <class T, class A>
+    bool constexpr has_non_const_save()
+    { return is_non_const_member_save<T, A>() || is_non_const_non_member_save<T, A>(); }
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
@@ -167,6 +171,10 @@ namespace cereal
     template <class T, class OutputArchive>
       constexpr bool is_output_serializable()
       {
+        static_assert( !has_non_const_save<T, OutputArchive>(),
+                       "cereal detected a non const save. \n "
+                       "save functions must either be const member functions or accept const type aguments if non-member" );
+
         return
           has_member_save<T, OutputArchive>() ^
           has_non_member_save<T, OutputArchive>() ^
