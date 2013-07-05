@@ -61,12 +61,21 @@ class Base
 
     virtual void foo() = 0;
 
+  public:
     int x;
 };
 
 class Derived : public Base
 {
   public:
+    using Base::x;
+    Derived() = default;
+    Derived( int d, int b )
+    {
+      y = d;
+      x = b;
+    }
+
     template <class Archive>
     void save( Archive & ar ) const
     {
@@ -307,9 +316,9 @@ int main()
   assert(e_in == e_out);
 
   {
-    //std::ofstream os("out.xml");
-    //cereal::XMLOutputArchive oar( os );
-    cereal::XMLOutputArchive oar( std::cout );
+    std::ofstream os("out.xml");
+    cereal::XMLOutputArchive oar( os );
+    //cereal::XMLOutputArchive oar( std::cout );
 
     oar( cereal::make_nvp("hello", 5 ) );
 
@@ -352,11 +361,12 @@ int main()
     oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
     //oar.saveBinaryValue( xxx, sizeof(int)*3 );
 
-    std::unique_ptr<Derived> d1( new Derived() );
-    std::unique_ptr<Base> d2( new Derived() );
+    std::unique_ptr<Derived> d1( new Derived(3, 4) );
+    std::unique_ptr<Base> d2( new Derived(4, 5) );
+    std::shared_ptr<Base> d3( new Derived(5, 6) );
     oar( d1 );
     oar( d2 );
-    oar( d2 );
+    oar( d3 );
   }
 
   if(false)
@@ -433,6 +443,17 @@ int main()
     assert( xxx[0] == -1 );
     assert( xxx[1] == 95 );
     assert( xxx[2] == 3 );
+
+    std::unique_ptr<Derived> d1;
+    std::unique_ptr<Base> d2;
+    std::shared_ptr<Base> d3;
+
+    iar( d1 );
+    assert( d1->x == 4 && d1->y == 3 );
+    iar( d2 );
+    assert( ((Derived*)d2.get())->x == 5 && ((Derived*)d2.get())->y == 4 );
+    iar( d3 );
+    assert( ((Derived*)d3.get())->x == 6 && ((Derived*)d3.get())->y == 5 );
   }
 
 
