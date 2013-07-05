@@ -37,6 +37,9 @@
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/map.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/bitset.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <cxxabi.h>
 #include <sstream>
@@ -55,6 +58,8 @@ class Base
       std::cout << "Base serialize" << std::endl;
       ar( x );
     }
+
+    virtual void foo() = 0;
 
     int x;
 };
@@ -78,14 +83,17 @@ class Derived : public Base
       ar( y );
     }
 
+    void foo() {}
+
     int y;
 };
 
 namespace cereal
 {
   template <class Archive> struct specialize<Archive, Derived, cereal::specialization::member_load_save> {};
-  //template <class Archive> struct specialize<Archive, Derived, cereal::specialization::non_member_load_save> {};
 }
+
+CEREAL_REGISTER_TYPE(Derived);
 
 // ###################################
 struct Test1
@@ -213,7 +221,7 @@ struct Everything
 struct EmptyStruct
 {
   template<class Archive>
-  void serialize(Archive & ar)
+  void serialize(Archive &)
   {
     std::cout << "Side effects!" << std::endl;
   };
@@ -233,7 +241,7 @@ struct NoDefaultCtor
   int y;
 
   template <class Archive>
-  void serialize( Archive & archive )
+  void serialize( Archive & )
   {
   }
 
@@ -250,7 +258,7 @@ namespace cereal
   struct LoadAndAllocate<NoDefaultCtor>
   {
     template <class Archive>
-    static NoDefaultCtor * load_and_allocate( Archive & ar )
+    static NoDefaultCtor * load_and_allocate( Archive & )
     {
       return new NoDefaultCtor(5);
     }

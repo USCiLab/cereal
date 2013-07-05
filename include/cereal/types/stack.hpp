@@ -54,7 +54,7 @@ namespace cereal
   template <class Archive, class T, class C> inline
   void save( Archive & ar, std::stack<T, C> const & stack )
   {
-    ar( stack_detail::container( stack ) );
+    ar( _CEREAL_NVP("container", stack_detail::container( stack )) );
   }
 
   //! Loading for std::stack

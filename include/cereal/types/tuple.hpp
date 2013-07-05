@@ -41,7 +41,7 @@ namespace cereal
       template <class Archive, class ... Types> inline
       static void apply( Archive & ar, std::tuple<Types...> & tuple )
       {
-        ar( std::get<Height - 1>( tuple ) );
+        ar( _CEREAL_NVP("tuple_element", std::get<Height - 1>( tuple )) );
         serialize<Height - 1>::template apply( ar, tuple );
       }
     };
@@ -51,7 +51,7 @@ namespace cereal
     struct serialize<0>
     {
       template <class Archive, class ... Types> inline
-      static void apply( Archive & ar, std::tuple<Types...> & tuple )
+      static void apply( Archive &, std::tuple<Types...> & )
       { }
     };
   }

@@ -27,6 +27,7 @@
 
 #include <type_traits>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/xml.hpp>
 #include <cereal/types/polymorphic.hpp>
 #include <sstream>
 #include <fstream>
@@ -123,10 +124,63 @@ struct OurType : public OurBase
     }
 };
 
-template <class T> void nop(T&&t) {}
+struct BaseVirtual
+{
+  int x;
+  template <class Archive>
+  void serialize( Archive & ar )
+  { ar( x ); }
+  virtual void foo() = 0;
+};
+
+struct DerivedVirtual : public virtual BaseVirtual
+{
+  int y;
+  virtual void foo() {}
+
+  template <class Archive>
+  void save( Archive & ar ) const
+  {
+    ar( cereal::virtual_base_class<BaseVirtual>( this ) );
+    ar( y );
+  }
+
+  template <class Archive>
+  void load( Archive & ar )
+  {
+    ar( cereal::virtual_base_class<BaseVirtual>( this ) );
+    ar( y );
+  }
+};
+
+namespace cereal
+{
+  template <class Archive> struct specialize<Archive, DerivedVirtual, cereal::specialization::member_load_save> {};
+}
+
+//CEREAL_REGISTER_TYPE(DerivedVirtual);
+
+template <class T> void nop(T&&) {}
 
 int main()
 {
+  std::cout << std::boolalpha;
+
+  std::cout << cereal::traits::is_specialized_member_load_save<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << cereal::traits::is_specialized_non_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_output_serializable<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << cereal::traits::has_non_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  //std::cout << cereal::traits::is_specialized_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << "sssssssssssss" <<std::endl;
+  std::cout << cereal::traits::has_member_save<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_non_const_member_save<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::detail::has_member_save_any<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_non_member_save<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_non_member_serialize<DerivedVirtual, cereal::BinaryOutputArchive>() << std::endl;
+
+
   {
     std::ofstream ostream("rtti.txt");
     cereal::BinaryOutputArchive oarchive(ostream);

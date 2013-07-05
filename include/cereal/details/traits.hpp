@@ -43,13 +43,13 @@ namespace cereal
     // Member load_and_allocate
     template<typename T, typename A>
       bool constexpr has_member_load_and_allocate()
-      { return std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>() ) ), T*>::value; };
+      { return std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>() ) ), T*>::value; }
 
     // ######################################################################
     // Non Member load_and_allocate
     template<typename T, typename A>
       bool constexpr has_non_member_load_and_allocate()
-      { return std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>() ) ), T*>::value; };
+      { return std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>() ) ), T*>::value; }
 
     // ######################################################################
     // Has either a member or non member allocate
@@ -108,11 +108,50 @@ namespace cereal
         >: std::true_type {};
 
     // ######################################################################
+    // Non-const Member Save
+    namespace detail
+    {
+      // Detection of any (const or non const) member save
+      template<typename T, class A, typename Sfinae = void>
+        struct has_member_save_any: std::false_type {};
+
+      template<typename T, class A>
+        struct has_member_save_any< T, A,
+        typename Void<
+          decltype( access::non_const_member_save(std::declval<A&>(), std::declval<typename std::remove_const<T>::type &>() ) )
+          >::type
+          >: std::true_type {};
+    }
+
+    // Returns true if we detect a member save function that is not const
+    template <class T, class A>
+    constexpr bool is_non_const_member_save()
+    {
+      return !has_member_save<T, A>() && detail::has_member_save_any<T, A>();
+    }
+
+    // ######################################################################
     // Non Member Save
     char & save(...);
     template<typename T, typename A>
       bool constexpr has_non_member_save()
-      { return std::is_void<decltype(save(std::declval<A&>(), std::declval<T&>()))>::value; };
+      { return std::is_void<decltype(save(std::declval<A&>(), std::declval<T const &>()))>::value; }
+
+    // ######################################################################
+    // Non-const Non member Save
+    namespace detail
+    {
+      template<typename T, typename A>
+        bool constexpr has_non_member_save_any()
+        { return std::is_void<decltype(save(std::declval<A&>(), std::declval<typename std::remove_const<T>::type &>()))>::value; }
+    }
+
+    // Returns true if we detect a non-member save function that is not const
+    template<typename T, typename A>
+      bool constexpr is_non_const_non_member_save()
+      { return !has_non_member_save<T, A>() && detail::has_non_member_save_any<T, A>(); }
+
+
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
