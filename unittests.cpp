@@ -42,6 +42,7 @@
 #include <cereal/types/bitset.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/chrono.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <limits>
@@ -1878,3 +1879,111 @@ BOOST_AUTO_TEST_CASE( binary_chrono )
     BOOST_CHECK( o_duration3 == i_duration3 );
   }
 }
+
+// ######################################################################
+class SpecializedMSerialize
+{
+  public:
+    int x;
+
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void serialize( Archive & ar )
+    {
+      ar( x );
+    }
+};
+
+class SpecializedMSplit
+{
+  public:
+    int x;
+
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void save( Archive & ar ) const
+    {
+      ar( x );
+    }
+
+    template <class Archive>
+    void load( Archive & ar )
+    {
+      ar( x );
+    }
+};
+
+class SpecializedNMSerialize
+{
+  public:
+    int x;
+};
+
+template <class Archive>
+void serialize( Archive & ar, SpecializedNMSerialize & s )
+{
+  ar( s.x );
+}
+
+class SpecializedNMSplit
+{
+  public:
+    int x;
+};
+
+template <class Archive>
+void load( Archive & ar, SpecializedNMSplit & s )
+{
+  ar( s.x );
+}
+
+template <class Archive>
+void save( Archive & ar, SpecializedNMSplit const & s )
+{
+  ar( s.x );
+}
+
+namespace cereal
+{
+  template <class Archive> struct specialize<Archive, SpecializedMSerialize, cereal::specialization::member_serialize> {};
+  template <class Archive> struct specialize<Archive, SpecializedMSplit, cereal::specialization::member_load_save> {};
+  template <class Archive> struct specialize<Archive, SpecializedNMSerialize, cereal::specialization::non_member_serialize> {};
+  template <class Archive> struct specialize<Archive, SpecializedNMSplit, cereal::specialization::non_member_load_save> {};
+}
+
+BOOST_AUTO_TEST_CASE( structs_specialized )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::ostringstream os;
+    cereal::BinaryOutputArchive oar(os);
+
+    SpecializedMSerialize  o_iser = { random_value<int>(gen) };
+    SpecializedMSplit      o_ispl = { random_value<int>(gen) };
+    SpecializedNMSerialize o_eser = { random_value<int>(gen) };
+    SpecializedNMSplit     o_espl = { random_value<int>(gen) };
+
+    oar( o_iser, o_ispl, o_eser, o_espl);
+
+    std::istringstream is(os.str());
+    cereal::BinaryInputArchive iar(is);
+
+    decltype(o_iser) i_iser;
+    decltype(o_ispl) i_ispl;
+    decltype(o_eser) i_eser;
+    decltype(o_espl) i_espl;
+
+    iar( i_iser, i_ispl, i_eser, i_espl);
+
+    BOOST_CHECK(i_iser.x == o_iser.x);
+    BOOST_CHECK(i_ispl.x == o_ispl.x);
+    BOOST_CHECK(i_eser.x == o_eser.x);
+    BOOST_CHECK(i_espl.x == o_espl.x);
+  }
+}
+
