@@ -24,3 +24,5 @@ sandbox_rtti
 sandbox_json
 include_renamed
 .ycm_extra_conf.py*
+doc/html
+doc/latex
