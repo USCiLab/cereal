@@ -1,3 +1,5 @@
+/*! \file xml.hpp
+    \brief XML input and output archives */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -50,6 +52,7 @@ namespace cereal
 
   // ######################################################################
   //! An output archive designed to save data to XML
+  /*! \ingroup Archives */
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
@@ -224,6 +227,7 @@ namespace cereal
 
   // ######################################################################
   //! An output archive designed to save data to XML
+  /*! \ingroup Archives */
   class XMLInputArchive : public InputArchive<XMLInputArchive>
   {
     public:
