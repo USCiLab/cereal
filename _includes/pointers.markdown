@@ -3,9 +3,13 @@ Pointers
 
 cereal supports serializing smart pointers but not dumb pointers (that is to say raw pointers, such as `int *`).  Pointer support can be found by including `<cereal/types/memory.hpp>`
 
+---
+
 ### TLDR Version
 
 cereal works with modern smart pointers found in `<memory>` by including `<cereal/types/memory.hpp>` but does not support raw pointers.  Pointers to polymorphic types are also supported but detailed [elsewhere](polymorphism.html).  cereal needs access to either a default constructor or a a specialization of `cereal::LoadAndAllocate` for loading smart pointers.
+
+---
 
 ## Smart Pointers
 
@@ -14,6 +18,8 @@ All smart pointer types in C++11, `std::shared_ptr`, `std::unique_ptr`, and `std
 cereal will make sure that the data pointed to by an `std::shared_ptr` is serialized only once, even if several `std::shared_ptr` (or `std::weak_ptr`) that point to the same data are serialized in the same archive.  This means that when saving to an archive cereal will avoid duplication, and when loading from an archive, cereal will not allocate extraneous data.
 
 cereal will also properly handle pointers to polymorphic objects (e.g. `std::unique_ptr<Base> p( new Derived() )`.  This is detailed in the [polymorphic](polymorphism.html) wiki page.
+
+---
 
 ### Types with no default constructor
 
@@ -54,7 +60,9 @@ namespace cereal
       return new MyType( x );
     }
   };
-```
+``
+---
+`
 ### Implementation notes
 
 When saving an `std::shared_ptr`, we first check to make sure we haven't serialized it before.  This is done by keeping a map from addresses to pointer ids (an `std::uint32_t`), which are unique.  Pointers that are newly serialized are given a new id with the most significant bit set to `1`.  When saved, an `std::shared_ptr` will first output its id, which will either have its MSB set to `1` if it is the first instance of that id, or will be an id already in the archive.  This is immediately followed by the data found by dereferencing the pointer.  If the pointer was equal to `nullptr`, its id is set to `0` and nothing else is saved.
@@ -65,9 +73,13 @@ When serializing an `std::weak_ptr`, it is promoted to an `std::shared_ptr` by l
 
 `std::unique_ptr` is a bit easier since it contains a unique reference to the data it points to.  This means we can serialize it without doing any tracking.  The only extra metadata that we serialize is a single `std::uint8_t` containing a `1` if the pointer is valid and a `0` if the pointer is equal to `nullptr`.  When loading, we first look at the id before attempting to load its contents.
 
+---
+
 ## Raw/Dumb Pointers
 
 cereal does not support serializing raw (e.g. `int *`) pointers.
+
+---
 
 ### Pointer serialization rationale
 

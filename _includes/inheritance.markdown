@@ -3,9 +3,13 @@ Inheritance
 
 cereal fully supports serializing classes that use inheritance.  This page is concerned with how to serialize base classes from a derived class.  Another important and related feature of inheritance, polymorphism, is discussed [elsewhere](polymorphism.html).
 
+---
+
 ### TLDR Version
 
 Archive casted versions of derived classes within your serialize functions instead of calling serialize functions directly.  Use `cereal::base_class<BaseT>( this )` for non-virtual inheritance, and `cereal::virtual_base_class<BaseT>( this )` for virtual inheritance.
+
+---
 
 ## Normal Inheritance
 
@@ -39,6 +43,8 @@ struct Derived : public Base
   }
 };
 ```
+
+---
 
 ## Virtual Inheritance
 In virtual inheritance, only one copy of each base class will be contained within a derived object.  cereal provides a method for tracking virtual base classes, preventing multiple copies from being serialized.  If `cereal::base_class` were used in a situation where the same base class appeared in more than one traversal of the class hierarchy, it could potentially result in duplicate information being serialized.  To prevent this, use `cereal::virtual_base_class`, which lets cereal track the instantiation of base objects for a derived class, ensuring that only one copy of each base class is serialized.

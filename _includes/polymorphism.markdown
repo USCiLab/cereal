@@ -3,6 +3,8 @@ Polymorphism
 
 cereal supports serializing pointers to polymorphic base classes, and will automatically deduce the derived types at runtime.
 
+---
+
 ### TLDR Version
 
 If you want to serialize some data through pointers to base types:
@@ -10,6 +12,8 @@ If you want to serialize some data through pointers to base types:
 1. Include `<cereal/types/polymorphic.hpp>`
 2. Include all of the archives you want to be able to use with your class (`<cereal/archives/*.hpp`)
 3. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro to register all of your derived classes
+
+---
 
 ### Registering Polymorphic Types
 
@@ -90,6 +94,8 @@ int main()
   return 0;
 }
 ```
+
+---
 
 ### Registering Archives
 In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.

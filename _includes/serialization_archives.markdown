@@ -3,9 +3,13 @@ Serialization Archives
 
 cereal comes with support for binary, XML, and JSON serialization.
 
+---
+
 ### TLDR Version
 
 cereal comes with binary, XML, and JSON archives that allow loading and saving to these data types.  Archives can be used by including `<cereal/archives/xxxx.hpp>` for the particular archive type.  Archives need to be included before registering types for [polymorphism](polymorphism.html).
+
+---
 
 ## Archive Basics
 
@@ -29,13 +33,19 @@ The preferred way for working with archives is to create them, use (serialize wi
   // contents to its stream
 ```
 
+---
+
 ### Advanced Topic: Polymorphism
 
 Although detailed at length [elsewhere](polymorphism.html), if you will be serializing polymorphic data types through pointers to base objects, you must register the types.  This registration must happen **after** any archives are included.
 
+---
+
 ## Binary Data
 
 The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The binary archive is designed to produce compact bit level representations of data and is not human readable.  It is a good choice when computers will be looking at the data on both ends of the serialization.  The binary archive is also the fastest archive that comes with cereal.  Binary archives will ignore name-value pairs and only serialize the values.
+
+---
 
 ## XML
 
@@ -76,13 +86,19 @@ Note that if you choose to edit the generated XML by hand, you still need to mak
 
 XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.
 
+---
+
 ## JSON
 
 The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.
 
+---
+
 ## Adding More Archives
 
 Adding more archives to cereal is a fairly simple process that requires understanding a few key functions and some base types.
+
+---
 
 ### Prologues, Epilogues, and Serialization Functions
 
@@ -109,9 +125,13 @@ Optionally, an archive can also choose to support:
 
 Adding support for `cereal::BinaryData<T>` means that your archive can support optimized serialization of raw binary data.  If your archive accepts `cereal::BinaryData<T>`, cereal will attempt to package up any type (e.g. arrays of arithmetic data, strings, etc) that can be represented in this way as binary data.  If you are working with human readable output, this may not be the behavior you desire - in such cases it is best to **not** specialize for `cereal::BinaryData<T>` and instead provide users with explicit binary save/load functions that can be invoked directly on the archive, if they desire.  See `<cereal/archives/xml.hpp>` for an example of this.
 
+---
+
 ### The Base Archives
 
 All archives need to derive from `cereal::InputArchive` or `cereal::OutputArchive`, defined in `<cereal/cereal.hpp>`.
+
+---
 
 ### Registering Your Archive
 
