@@ -1,3 +1,5 @@
+/*! \file binary.hpp
+    \brief Binary input and output archives */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -35,7 +37,9 @@ namespace cereal
   // ######################################################################
   //! An output archive designed to save data in a compact binary representation
   /*! This archive outputs data to a stream in an extremely compact binary
-      representation with as little extra metadata as possible. */
+      representation with as little extra metadata as possible. 
+      
+      \ingroup Archives */
   class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>
   {
     public:
@@ -62,6 +66,7 @@ namespace cereal
 
   // ######################################################################
   //! An input archive designed to load data saved using BinaryOutputArchive
+  /*! \ingroup Archives */
   class BinaryInputArchive : public InputArchive<BinaryInputArchive, AllowEmptyClassElision>
   {
     public:

@@ -40,6 +40,8 @@
 
 namespace cereal
 {
+  //! \defgroup Archives Input and output archive types
+
   // ######################################################################
   //! An exception class thrown when things go wrong at runtime
   struct Exception : public std::runtime_error

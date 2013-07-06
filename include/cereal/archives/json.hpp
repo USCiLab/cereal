@@ -1,3 +1,5 @@
+/*! \file json.hpp
+    \brief JSON input and output archives */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -45,6 +47,8 @@ namespace cereal
 {
   // ######################################################################
   //! An output archive designed to save data to JSON
+  /*! \note Not working yet!
+      \ingroup Archives */
   class JSONOutputArchive : public OutputArchive<JSONOutputArchive>
   {
     typedef rapidjson::GenericWriteStream WriteStream;
@@ -151,6 +155,10 @@ namespace cereal
 
 
 
+  // ######################################################################
+  //! An input archive designed to load data from JSON
+  /*! \note Not working yet!
+      \ingroup Archives */
   class JSONInputArchive
   {
   };
