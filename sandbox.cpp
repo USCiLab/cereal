@@ -316,6 +316,15 @@ int main()
   assert(e_in == e_out);
 
   {
+    cereal::BinaryOutputArchive archive(std::cout);
+    int xxx[] = {-1, 95, 3};
+    archive( xxx );
+
+    cereal::XMLOutputArchive archive2(std::cout);
+    archive2( xxx );
+  }
+
+  {
     std::ofstream os("out.xml");
     cereal::XMLOutputArchive oar( os );
     //cereal::XMLOutputArchive oar( std::cout );
