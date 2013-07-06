@@ -1,0 +1,10 @@
+pygments: true
+permalink: /:title
+
+markdown:      redcarpet
+markdown_ext:  markdown,mkd,mkdn,md
+textile_ext:   textile
+
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript"]
+
