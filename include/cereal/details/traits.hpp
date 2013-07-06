@@ -236,19 +236,57 @@ namespace cereal
 
     template <class T, class A>
     constexpr auto is_specialized_member_serialize() -> bool
-    { return is_specialized<T, A>() && detail::is_specialized_member_serialize<T, A>(); }
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_member_serialize<T, A>() && has_member_serialize<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_member_serialize<T, A>()),
+                     "cereal detected member serialization specialization but no member serialize function" );
+      return is_specialized<T, A>() && detail::is_specialized_member_serialize<T, A>();
+    }
 
     template <class T, class A>
-    constexpr auto is_specialized_member_load_save() -> bool
-    { return is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>(); }
+    constexpr auto is_specialized_member_load() -> bool
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>() && has_member_load<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>()),
+                     "cereal detected member load specialization but no member load function" );
+      return is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>();
+    }
+
+    template <class T, class A>
+    constexpr auto is_specialized_member_save() -> bool
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>() && has_member_save<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>()),
+                     "cereal detected member save specialization but no member save function" );
+      return is_specialized<T, A>() && detail::is_specialized_member_load_save<T, A>();
+    }
 
     template <class T, class A>
     constexpr auto is_specialized_non_member_serialize() -> bool
-    { return is_specialized<T, A>() && detail::is_specialized_non_member_serialize<T, A>(); }
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_non_member_serialize<T, A>() && has_non_member_serialize<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_non_member_serialize<T, A>()),
+                     "cereal detected non-member serialization specialization but no non-member serialize function" );
+      return is_specialized<T, A>() && detail::is_specialized_non_member_serialize<T, A>();
+    }
 
     template <class T, class A>
-    constexpr auto is_specialized_non_member_load_save() -> bool
-    { return is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>(); }
+    constexpr auto is_specialized_non_member_load() -> bool
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>() && has_non_member_load<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>()),
+                     "cereal detected non-member load specialization but no non-member load function" );
+      return is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>();
+    }
+
+    template <class T, class A>
+    constexpr auto is_specialized_non_member_save() -> bool
+    {
+      static_assert( (is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>() && has_non_member_save<T, A>())
+                     || !(is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>()),
+                     "cereal detected non-member save specialization but no non-member save function" );
+      return is_specialized<T, A>() && detail::is_specialized_non_member_load_save<T, A>();
+    }
 
     // ######################################################################
     template <class T>
