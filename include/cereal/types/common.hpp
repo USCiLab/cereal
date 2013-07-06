@@ -27,7 +27,7 @@
 #ifndef CEREAL_TYPES_COMMON_HPP_
 #define CEREAL_TYPES_COMMON_HPP_
 
-#include <type_traits>
+#include <cereal/cereal.hpp>
 
 namespace cereal
 {
@@ -46,7 +46,34 @@ namespace cereal
     static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
   }
 
-  // TODO: move C style arrays into here
+  namespace common_detail
+  {
+    //! Serialization for arrays if BinaryData is supported
+    /*! @internal */
+    template <class Archive, class T> inline
+    void serializeArray( Archive & ar, T & array, std::true_type /* binary_supported */ )
+    {
+      ar( binary_data( array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type) ) );
+    }
+
+    //! Serialization for arrays if BinaryData is not supported
+    /*! @internal */
+    template <class Archive, class T> inline
+    void serializeArray( Archive & ar, T & array, std::false_type /* binary_supported */ )
+    {
+      for( auto & i : array )
+        ar( i );
+    }
+  }
+
+  //! Serialization for arrays
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_array<T>::value, void>::type
+  serialize(Archive & ar, T & array)
+  {
+    common_detail::serializeArray( ar, array,
+        std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>()>() );
+  }
 } // namespace cereal
 
 #endif // CEREAL_TYPES_COMMON_HPP_

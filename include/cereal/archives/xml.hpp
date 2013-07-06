@@ -28,6 +28,7 @@
 */
 #ifndef CEREAL_ARCHIVES_XML_HPP_
 #define CEREAL_ARCHIVES_XML_HPP_
+#include <iostream>
 
 #include <cereal/cereal.hpp>
 #include <cereal/details/util.hpp>
@@ -144,6 +145,12 @@ namespace cereal
         saveValue( static_cast<uint32_t>( value ) );
       }
 
+      //! Overload for int8_t prevents them from being serialized as characters
+      void saveValue( int8_t const & value )
+      {
+        saveValue( static_cast<int32_t>( value ) );
+      }
+
       //! Saves some binary data, encoded as a base64 string, with an optional name
       /*! This will create a new node, optionally named, and insert a value that consists of
           the data encoded as a base64 string */
@@ -235,13 +242,19 @@ namespace cereal
       {
         try
         {
+          itsData.push_back('\0'); // rapidxml will do terrible things without this
           itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & e )
         {
+          std::cout << "-----Original-----" << std::endl;
+          stream.seekg(0);
+          std::cout << std::string( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() ) << std::endl;
+
+          std::cout << "-----Error-----" << std::endl;
+          std::cout << e.what() << std::endl;
+          std::cout << e.where<char>() << std::endl;
           throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
-          //std::cout << e.what() << std::endl;
-          //std::cout << e.where<char>() << std::endl;
         }
 
         // Parse the root
@@ -265,13 +278,59 @@ namespace cereal
         itsNodes.top().advance();
       }
 
-      //! Loads a value from the current node
+      //! Loads a bool
       template <class T> inline
-      void loadValue( T & value )
+      typename std::enable_if<std::is_unsigned<T>::value && std::is_same<T, bool>::value, void>::type
+      loadValue( T & value )
       {
         std::istringstream is( itsNodes.top().node->value() );
         is.setf( std::ios::boolalpha );
         is >> value;
+      }
+
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
+      loadValue( T & value )
+      {
+        value = std::stoul( itsNodes.top().node->value() );
+      }
+
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
+      loadValue( T & value )
+      {
+        value = std::stoull( itsNodes.top().node->value() );
+      }
+
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
+      loadValue( T & value )
+      {
+        value = std::stoi( itsNodes.top().node->value() );
+      }
+
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
+      loadValue( T & value )
+      {
+        value = std::stol( itsNodes.top().node->value() );
+      }
+
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
+      loadValue( T & value )
+      {
+        value = std::stoll( itsNodes.top().node->value() );
+      }
+
+      void loadValue( float & value )
+      {
+        value = std::stof( itsNodes.top().node->value() );
+      }
+
+      void loadValue( double & value )
+      {
+        value = std::stod( itsNodes.top().node->value() );
       }
 
       //! Loads a string from the current node
@@ -350,7 +409,7 @@ namespace cereal
       }; // NodeInfo
 
     private:
-      std::vector<uint8_t> itsData;    //!< The raw data loaded
+      std::vector<char> itsData;    //!< The raw data loaded
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };

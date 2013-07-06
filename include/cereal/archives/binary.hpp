@@ -124,22 +124,6 @@ namespace cereal
     ar( t.size );
   }
 
-  //! Saving arrays
-  template <class T> inline
-  typename std::enable_if<std::is_array<T>::value, void>::type
-  save(BinaryOutputArchive & ar, T const & array)
-  {
-    ar.saveBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
-  }
-
-  //! Loading arrays
-  template <class T> inline
-  typename std::enable_if<std::is_array<T>::value, void>::type
-  load(BinaryInputArchive & ar, T & array)
-  {
-    ar.loadBinary(array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type));
-  }
-
   //! Saving binary data
   template <class T> inline
   void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)

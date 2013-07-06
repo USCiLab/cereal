@@ -45,6 +45,7 @@
 #include <cereal/types/polymorphic.hpp>
 
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/xml.hpp>
 #include <limits>
 #include <random>
 
@@ -194,7 +195,8 @@ std::string random_binary_string(std::mt19937 & gen)
 }
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_pod )
+template <class IArchive, class OArchive>
+void test_pod()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -212,18 +214,22 @@ BOOST_AUTO_TEST_CASE( binary_pod )
     float    const o_float  = random_value<float>(gen);
     double   const o_double = random_value<double>(gen);
 
+    std::cerr << i << std::endl;
+
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
-    oar(o_uint8);
-    oar(o_int8);
-    oar(o_uint16);
-    oar(o_int16);
-    oar(o_uint32);
-    oar(o_int32);
-    oar(o_uint64);
-    oar(o_int64);
-    oar(o_float);
-    oar(o_double);
+    {
+      OArchive oar(os);
+      oar(o_uint8);
+      oar(o_int8);
+      oar(o_uint16);
+      oar(o_int16);
+      oar(o_uint32);
+      oar(o_int32);
+      oar(o_uint64);
+      oar(o_int64);
+      oar(o_float);
+      oar(o_double);
+    }
 
     uint8_t  i_uint8  = 0.0;
     int8_t   i_int8   = 0.0;
@@ -237,17 +243,19 @@ BOOST_AUTO_TEST_CASE( binary_pod )
     double   i_double = 0.0;
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
-    iar(i_uint8);
-    iar(i_int8);
-    iar(i_uint16);
-    iar(i_int16);
-    iar(i_uint32);
-    iar(i_int32);
-    iar(i_uint64);
-    iar(i_int64);
-    iar(i_float);
-    iar(i_double);
+    {
+      IArchive iar(is);
+      iar(i_uint8);
+      iar(i_int8);
+      iar(i_uint16);
+      iar(i_int16);
+      iar(i_uint32);
+      iar(i_int32);
+      iar(i_uint64);
+      iar(i_int64);
+      iar(i_float);
+      iar(i_double);
+    }
 
     BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
     BOOST_CHECK_EQUAL(i_int8   , o_int8);
@@ -257,9 +265,19 @@ BOOST_AUTO_TEST_CASE( binary_pod )
     BOOST_CHECK_EQUAL(i_int32  , o_int32);
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
     BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_EQUAL(i_float  , o_float);
-    BOOST_CHECK_EQUAL(i_double , o_double);
+    BOOST_CHECK_CLOSE(i_float  , o_float, 1e-5);
+    BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
   }
+}
+
+BOOST_AUTO_TEST_CASE( binary_pod )
+{
+  test_pod<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_pod )
+{
+  test_pod<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
 // ######################################################################

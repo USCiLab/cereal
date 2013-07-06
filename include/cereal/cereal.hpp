@@ -36,7 +36,6 @@
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
 #include <cereal/types/base_class.hpp>
-#include <cereal/types/common.hpp>
 
 namespace cereal
 {
@@ -557,5 +556,8 @@ namespace cereal
       std::unordered_map<std::uint32_t, std::string> itsPolymorphicTypeMap;
   }; // class InputArchive
 } // namespace cereal
+
+// This include needs to come after things such as binary_data, make_nvp, etc
+#include <cereal/types/common.hpp>
 
 #endif // CEREAL_CEREAL_HPP_
