@@ -1,3 +1,3 @@
-A First Level Header
-====================
+Quick Start
+===========
 
