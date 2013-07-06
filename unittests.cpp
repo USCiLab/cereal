@@ -203,6 +203,7 @@ void test_pod()
 
   for(size_t i=0; i<100; ++i)
   {
+    bool     const o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
     uint8_t  const o_uint8  = random_value<uint8_t>(gen);
     int8_t   const o_int8   = random_value<int8_t>(gen);
     uint16_t const o_uint16 = random_value<uint16_t>(gen);
@@ -217,6 +218,7 @@ void test_pod()
     std::ostringstream os;
     {
       OArchive oar(os);
+      oar(o_bool);
       oar(o_uint8);
       oar(o_int8);
       oar(o_uint16);
@@ -229,6 +231,7 @@ void test_pod()
       oar(o_double);
     }
 
+    bool     i_bool   = false;
     uint8_t  i_uint8  = 0.0;
     int8_t   i_int8   = 0.0;
     uint16_t i_uint16 = 0.0;
@@ -243,6 +246,7 @@ void test_pod()
     std::istringstream is(os.str());
     {
       IArchive iar(is);
+      iar(i_bool);
       iar(i_uint8);
       iar(i_int8);
       iar(i_uint16);
@@ -255,6 +259,7 @@ void test_pod()
       iar(i_double);
     }
 
+    BOOST_CHECK_EQUAL(i_bool   , o_bool);
     BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
     BOOST_CHECK_EQUAL(i_int8   , o_int8);
     BOOST_CHECK_EQUAL(i_uint16 , o_uint16);
