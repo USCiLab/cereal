@@ -214,6 +214,8 @@ void test_pod()
     float    const o_float  = random_value<float>(gen);
     double   const o_double = random_value<double>(gen);
 
+    std::cerr << i << std::endl;
+
     std::ostringstream os;
     {
       OArchive oar(os);

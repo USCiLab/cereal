@@ -238,6 +238,7 @@ namespace cereal
       {
         try
         {
+          itsData.push_back('\0'); // rapidxml will do terrible things without this
           itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & e )
@@ -273,22 +274,25 @@ namespace cereal
         itsNodes.top().advance();
       }
 
-      // int
-      // long
-      // long long
-      // ulong
-      // ulong long
-      //
+      //! Loads a bool
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && std::is_same<T, bool>::value, void>::type
+      loadValue( T & value )
+      {
+        std::istringstream is( itsNodes.top().node->value() );
+        is.setf( std::ios::boolalpha );
+        is >> value;
+      }
 
       template <class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && sizeof(T) < sizeof(long long), void>::type
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
       loadValue( T & value )
       {
         value = std::stoul( itsNodes.top().node->value() );
       }
 
       template <class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && sizeof(T) >= sizeof(long long), void>::type
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
       loadValue( T & value )
       {
         value = std::stoull( itsNodes.top().node->value() );
@@ -401,7 +405,7 @@ namespace cereal
       }; // NodeInfo
 
     private:
-      std::vector<uint8_t> itsData;    //!< The raw data loaded
+      std::vector<char> itsData;    //!< The raw data loaded
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };
