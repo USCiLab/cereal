@@ -1,3 +1,4 @@
+auto: true
 pygments: true
 permalink: /:title
 
