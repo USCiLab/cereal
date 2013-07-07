@@ -1,3 +1,6 @@
+/*! \file queue.hpp
+    \brief Support for types found in <queue>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

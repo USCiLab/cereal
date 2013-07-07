@@ -1,3 +1,6 @@
+/*! \file stack.hpp
+    \brief Support for types found in <stack>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

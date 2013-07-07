@@ -40,7 +40,9 @@
 namespace cereal
 {
   //! \defgroup Archives Input and output archive types
-
+  //! \defgroup STLSupport Support for types found in the C++ Standard Library
+  //! \defgroup OtherTypes Support for miscellaneous types
+  
   // ######################################################################
   //! An exception class thrown when things go wrong at runtime
   struct Exception : public std::runtime_error

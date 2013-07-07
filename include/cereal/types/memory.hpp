@@ -1,3 +1,6 @@
+/*! \file memory.hpp
+    \brief Support for types found in <memory>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

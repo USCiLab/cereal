@@ -1,3 +1,6 @@
+/*! \file string.hpp
+    \brief Support for types found in <string>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

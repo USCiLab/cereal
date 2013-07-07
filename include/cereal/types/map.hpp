@@ -1,3 +1,6 @@
+/*! \file map.hpp
+    \brief Support for types found in <map>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

@@ -1,3 +1,6 @@
+/*! \file base_class.hpp
+    \brief Support for base classes (virtual and non-virtual)
+    \ingroup OtherTypes */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

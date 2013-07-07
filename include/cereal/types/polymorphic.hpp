@@ -1,3 +1,6 @@
+/*! \file polymorphic.hpp
+    \brief Support for pointers to polymorphic base classes
+    \ingroup OtherTypes */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

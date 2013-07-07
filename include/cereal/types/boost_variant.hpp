@@ -1,3 +1,6 @@
+/*! \file boost_variant.hpp
+    \brief Support for boost::variant
+    \ingroup OtherTypes */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

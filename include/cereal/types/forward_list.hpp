@@ -1,3 +1,6 @@
+/*! \file forward_list.hpp
+    \brief Support for types found in <forward_list>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

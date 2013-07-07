@@ -1,3 +1,6 @@
+/*! \file tuple.hpp
+    \brief Support for types found in <tuple>
+    \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

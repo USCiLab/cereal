@@ -1,3 +1,6 @@
+/*! \file common.hpp
+    \brief Support common types
+    \ingroup OtherTypes */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
