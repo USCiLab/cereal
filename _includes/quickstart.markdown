@@ -7,13 +7,13 @@ Quick Start
 
 cereal was designed to be included in your project, so just grab the latest
 version from [Github] (https://github.com/USCiLab/cereal) and drop it somewhere
-your project can find it.
+your project can find.
 
 ---
 
 ### Add Serialization Methods for Your Classes
 
-cereal has to know what data members to serialize in your classes. Let it know
+cereal has to know which data members to serialize in your classes. Let it know
 by implementing one of the following types of serialization methods.
 
 <br/>
@@ -168,4 +168,7 @@ int main()
 }
 ```
 
+### Learn more
 
+cereal can handle much more complex examples than the one above. Learn the ins
+and outs of the library by checking out the links on the left.
