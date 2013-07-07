@@ -14,112 +14,21 @@ your project can find.
 ### Add Serialization Methods for Your Classes
 
 cereal has to know which data members to serialize in your classes. Let it know
-by implementing one of the following types of serialization methods.
+by implementing a `serialize` method in your class.
 
-<br/>
+```{cpp}
+struct MyClass
+{
+  int x, y, z;
 
-{% capture class_begin %}struct MyClass {
-    int x, y, z;{% endcapture %}
-
-
-<div class="row">
-  <div class="span1"></div>
-  <div class="span5">
-
-  Internal serialize function
-
-  {% highlight cpp %}
-{{ class_begin }}
-
+  // This method lets cereal know which data members to serialize
   template<class Archive>
     void serialize(Archive & archive)
     {
-      archive( x, y, z ); 
+      archive( x, y, z );
     }
 };
-
-
-
-
-
-
-  {% endhighlight %}
-  </div>
-  <div class="span5">
-
-  Internal split/load functions
-
-  {% highlight cpp %}
-{{ class_begin }}
-
-  template<class Archive>
-    void save(Archive & archive) const
-    {
-      archive( x, y, z ); 
-    }
-
-  template<class Archive>
-    void load(Archive & archive)
-    {
-      archive( x, y, z ); 
-    }
-};
-  {% endhighlight %}
-  </div>
-</div>
-
-<div class="row">
-  <div class="span1"></div>
-  <div class="span5">
-
-  External serialize function
-
-  {% highlight cpp %}
-{{ class_begin }} 
-};
-
-template<class Archive>
-  void serialize(Archive & archive,
-                 MyClass & m)
-  {
-    archive( m.x, m.y, m.z );
-  }
-
-
-
-
-
-
-
-  {% endhighlight %}
-  </div>
-
-  <div class="span5">
-
-  External split/load functions
-
-  {% highlight cpp %}
-{{ class_begin }}
-};
-
-  template<class Archive>
-    void save(Archive & archive, 
-              MyClass const & m)
-    { 
-      archive( m.x, m.y, m.z ); 
-    }
-
-  template<class Archive>
-    void load(Archive & archive)
-              MyClass & m)
-    {
-      archive( m.x, m.y, m.z ); 
-    }
-  {% endhighlight %}
-  </div>
-</div>
-
-Internal serialization functions can also be made private or protected by adding `friend class cereal::access;` to your class.
+```
 
 ---
 
