@@ -59,7 +59,6 @@ namespace boost
   }
 }
 
-
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Cereal
 #include <boost/test/unit_test.hpp>
@@ -203,6 +202,7 @@ void test_pod()
 
   for(size_t i=0; i<100; ++i)
   {
+    bool     const o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
     uint8_t  const o_uint8  = random_value<uint8_t>(gen);
     int8_t   const o_int8   = random_value<int8_t>(gen);
     uint16_t const o_uint16 = random_value<uint16_t>(gen);
@@ -214,11 +214,10 @@ void test_pod()
     float    const o_float  = random_value<float>(gen);
     double   const o_double = random_value<double>(gen);
 
-    std::cerr << i << std::endl;
-
     std::ostringstream os;
     {
       OArchive oar(os);
+      oar(o_bool);
       oar(o_uint8);
       oar(o_int8);
       oar(o_uint16);
@@ -231,6 +230,7 @@ void test_pod()
       oar(o_double);
     }
 
+    bool     i_bool   = false;
     uint8_t  i_uint8  = 0.0;
     int8_t   i_int8   = 0.0;
     uint16_t i_uint16 = 0.0;
@@ -245,6 +245,7 @@ void test_pod()
     std::istringstream is(os.str());
     {
       IArchive iar(is);
+      iar(i_bool);
       iar(i_uint8);
       iar(i_int8);
       iar(i_uint16);
@@ -257,6 +258,7 @@ void test_pod()
       iar(i_double);
     }
 
+    BOOST_CHECK_EQUAL(i_bool   , o_bool);
     BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
     BOOST_CHECK_EQUAL(i_int8   , o_int8);
     BOOST_CHECK_EQUAL(i_uint16 , o_uint16);
@@ -281,7 +283,8 @@ BOOST_AUTO_TEST_CASE( xml_pod )
 }
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( structs )
+template <class IArchive, class OArchive>
+void test_structs()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -289,7 +292,7 @@ BOOST_AUTO_TEST_CASE( structs )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     StructInternalSerialize o_iser = { random_value<int>(gen), random_value<int>(gen) };
     StructInternalSplit     o_ispl = { random_value<int>(gen), random_value<int>(gen) };
@@ -299,7 +302,7 @@ BOOST_AUTO_TEST_CASE( structs )
     oar( o_iser, o_ispl, o_eser, o_espl);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     StructInternalSerialize i_iser;
     StructInternalSplit     i_ispl;
@@ -315,8 +318,19 @@ BOOST_AUTO_TEST_CASE( structs )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_structs )
+{
+  test_structs<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_structs )
+{
+  test_structs<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_array )
+template <class IArchive, class OArchive>
+void test_array()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -324,7 +338,7 @@ BOOST_AUTO_TEST_CASE( binary_array )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::array<int, 100> o_podarray;
     for(auto & elem : o_podarray)
@@ -353,7 +367,7 @@ BOOST_AUTO_TEST_CASE( binary_array )
     oar(o_esplarray);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::array<int, 100> i_podarray;
     std::array<StructInternalSerialize, 100> i_iserarray;
@@ -375,8 +389,19 @@ BOOST_AUTO_TEST_CASE( binary_array )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_array )
+{
+  test_array<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_array )
+{
+  test_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_deque )
+template <class IArchive, class OArchive>
+void test_deque()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -384,7 +409,7 @@ BOOST_AUTO_TEST_CASE( binary_deque )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::deque<int> o_poddeque(100);
     for(auto & elem : o_poddeque)
@@ -413,7 +438,7 @@ BOOST_AUTO_TEST_CASE( binary_deque )
     oar(o_espldeque);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::deque<int> i_poddeque;
     std::deque<StructInternalSerialize> i_iserdeque;
@@ -441,8 +466,19 @@ BOOST_AUTO_TEST_CASE( binary_deque )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_dequeue )
+{
+  test_deque<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_dequeue )
+{
+  test_deque<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_forward_list )
+template <class IArchive, class OArchive>
+void test_forward_list()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -450,7 +486,7 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::forward_list<int> o_podforward_list(100);
     for(auto & elem : o_podforward_list)
@@ -479,7 +515,7 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
     oar(o_esplforward_list);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::forward_list<int> i_podforward_list;
     std::forward_list<StructInternalSerialize> i_iserforward_list;
@@ -501,8 +537,19 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_forward_list )
+{
+  test_forward_list<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_forward_list )
+{
+  test_forward_list<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_list )
+template <class IArchive, class OArchive>
+void test_list()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -510,7 +557,7 @@ BOOST_AUTO_TEST_CASE( binary_list )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::list<int> o_podlist(100);
     for(auto & elem : o_podlist)
@@ -539,7 +586,7 @@ BOOST_AUTO_TEST_CASE( binary_list )
     oar(o_espllist);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::list<int> i_podlist;
     std::list<StructInternalSerialize> i_iserlist;
@@ -561,8 +608,19 @@ BOOST_AUTO_TEST_CASE( binary_list )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_list )
+{
+  test_list<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_list )
+{
+  test_list<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_map )
+template <class IArchive, class OArchive>
+void test_map()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -570,7 +628,7 @@ BOOST_AUTO_TEST_CASE( binary_map )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::map<size_t, std::vector<StructInternalSerialize>> o_vectormap;
     for(int j=0; j<10; ++j)
@@ -608,7 +666,7 @@ BOOST_AUTO_TEST_CASE( binary_map )
     oar(o_esplmap);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::map<size_t, std::vector<StructInternalSerialize>> i_vectormap;
     std::map<std::string, int> i_podmap;
@@ -641,8 +699,19 @@ BOOST_AUTO_TEST_CASE( binary_map )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_map )
+{
+  test_map<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_map )
+{
+  test_map<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_multimap )
+template <class IArchive, class OArchive>
+void test_multimap()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -650,7 +719,7 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::multimap<std::string, int> o_podmultimap;
     for(int j=0; j<100; ++j)
@@ -699,7 +768,7 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
     oar(o_esplmultimap);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::multimap<std::string, int> i_podmultimap;
     std::multimap<double, StructInternalSerialize>   i_isermultimap;
@@ -736,9 +805,19 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_multimap )
+{
+  test_multimap<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_multimap )
+{
+  test_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_memory )
+template <class IArchive, class OArchive>
+void test_memory()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -746,7 +825,7 @@ BOOST_AUTO_TEST_CASE( binary_memory )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_xptr2 = o_xptr1;
@@ -759,7 +838,7 @@ BOOST_AUTO_TEST_CASE( binary_memory )
     oar( o_nullptr1, o_nullptr2 );
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::shared_ptr<int> i_xptr1;
     std::shared_ptr<int> i_xptr2;
@@ -783,8 +862,19 @@ BOOST_AUTO_TEST_CASE( binary_memory )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_memory )
+{
+  test_memory<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_memory )
+{
+  test_memory<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_queue )
+template <class IArchive, class OArchive>
+void test_queue()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -792,7 +882,7 @@ BOOST_AUTO_TEST_CASE( binary_queue )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::queue<int> o_podqueue;
     for(int j=0; j<100; ++j)
@@ -821,7 +911,7 @@ BOOST_AUTO_TEST_CASE( binary_queue )
     oar(o_esplqueue);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::queue<int> i_podqueue;
     std::queue<StructInternalSerialize> i_iserqueue;
@@ -855,8 +945,19 @@ BOOST_AUTO_TEST_CASE( binary_queue )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_queue )
+{
+  test_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_queue )
+{
+  test_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_priority_queue )
+template <class IArchive, class OArchive>
+void test_priority_queue()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -864,7 +965,7 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::priority_queue<int> o_podpriority_queue;
     for(int j=0; j<100; ++j)
@@ -893,7 +994,7 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
     oar(o_esplpriority_queue);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::priority_queue<int> i_podpriority_queue;
     std::priority_queue<StructInternalSerialize> i_iserpriority_queue;
@@ -927,8 +1028,19 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_priority_queue )
+{
+  test_priority_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+//BOOST_AUTO_TEST_CASE( xml_priority_queue )
+//{
+//  test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+//}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_set )
+template <class IArchive, class OArchive>
+void test_set()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -936,7 +1048,7 @@ BOOST_AUTO_TEST_CASE( binary_set )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::set<int> o_podset;
     for(int j=0; j<100; ++j)
@@ -965,7 +1077,7 @@ BOOST_AUTO_TEST_CASE( binary_set )
     oar(o_esplset);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::set<int> i_podset;
     std::set<StructInternalSerialize>   i_iserset;
@@ -987,8 +1099,19 @@ BOOST_AUTO_TEST_CASE( binary_set )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_set )
+{
+  test_set<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_set )
+{
+  test_set<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_multiset )
+template <class IArchive, class OArchive>
+void test_multiset()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -996,7 +1119,7 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::multiset<int> o_podmultiset;
     for(int j=0; j<100; ++j)
@@ -1045,7 +1168,7 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
     oar(o_esplmultiset);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::multiset<int> i_podmultiset;
     std::multiset<StructInternalSerialize> i_isermultiset;
@@ -1086,9 +1209,19 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_multiset )
+{
+  test_multiset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_multiset )
+{
+  test_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
 
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_stack )
+template <class IArchive, class OArchive>
+void test_stack()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1096,7 +1229,7 @@ BOOST_AUTO_TEST_CASE( binary_stack )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::stack<int> o_podstack;
     for(int j=0; j<100; ++j)
@@ -1125,7 +1258,7 @@ BOOST_AUTO_TEST_CASE( binary_stack )
     oar(o_esplstack);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::stack<int> i_podstack;
     std::stack<StructInternalSerialize> i_iserstack;
@@ -1159,8 +1292,19 @@ BOOST_AUTO_TEST_CASE( binary_stack )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_stack )
+{
+  test_stack<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_stack )
+{
+  test_stack<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_string )
+template <class IArchive, class OArchive>
+void test_string()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1173,14 +1317,14 @@ BOOST_AUTO_TEST_CASE( binary_string )
     std::basic_string<char32_t> o_u32string = random_basic_string<char32_t>(gen);
 
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
     oar(o_string);
     oar(o_wstring);
     oar(o_u16string);
     oar(o_u32string);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::basic_string<char> i_string;
     std::basic_string<wchar_t> i_wstring;
@@ -1199,8 +1343,19 @@ BOOST_AUTO_TEST_CASE( binary_string )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_string )
+{
+  test_string<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+//BOOST_AUTO_TEST_CASE( xml_string )
+//{
+//  test_string<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+//}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_unordered_map )
+template <class IArchive, class OArchive>
+void test_unordered_map()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1208,7 +1363,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_map )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::unordered_map<std::string, int> o_podunordered_map;
     for(int j=0; j<100; ++j)
@@ -1237,7 +1392,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_map )
     oar(o_esplunordered_map);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::unordered_map<std::string, int> i_podunordered_map;
     std::unordered_map<double, StructInternalSerialize>   i_iserunordered_map;
@@ -1288,8 +1443,19 @@ BOOST_AUTO_TEST_CASE( binary_unordered_map )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_unordered_map )
+{
+  test_unordered_map<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_unordered_map )
+{
+  test_unordered_map<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
+template <class IArchive, class OArchive>
+void test_unordered_multimap()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1297,7 +1463,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::unordered_multimap<std::string, int> o_podunordered_multimap;
     for(int j=0; j<100; ++j)
@@ -1346,7 +1512,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
     oar(o_esplunordered_multimap);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::unordered_multimap<std::string, int> i_podunordered_multimap;
     std::unordered_multimap<double, StructInternalSerialize>   i_iserunordered_multimap;
@@ -1409,8 +1575,19 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
+{
+  test_unordered_multimap<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_unordered_multimap )
+{
+  test_unordered_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_unordered_set )
+template <class IArchive, class OArchive>
+void test_unordered_set()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1418,7 +1595,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::unordered_set<int> o_podunordered_set;
     for(int j=0; j<100; ++j)
@@ -1447,7 +1624,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
     oar(o_esplunordered_set);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::unordered_set<int> i_podunordered_set;
     std::unordered_set<StructInternalSerialize, StructHash<StructInternalSerialize>>   i_iserunordered_set;
@@ -1487,8 +1664,20 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
     }
   }
 }
+
+BOOST_AUTO_TEST_CASE( binary_unordered_set )
+{
+  test_unordered_set<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_unordered_set )
+{
+  test_unordered_set<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
+template <class IArchive, class OArchive>
+void test_unordered_multiset()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1496,7 +1685,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::unordered_multiset<int> o_podunordered_multiset;
     for(int j=0; j<100; ++j)
@@ -1545,7 +1734,7 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
     oar(o_esplunordered_multiset);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::unordered_multiset<int> i_podunordered_multiset;
     std::unordered_multiset<StructInternalSerialize, StructHash<StructInternalSerialize>> i_iserunordered_multiset;
@@ -1586,8 +1775,19 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
+{
+  test_unordered_multiset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_unordered_multiset )
+{
+  test_unordered_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_vector )
+template <class IArchive, class OArchive>
+void test_vector()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1595,7 +1795,7 @@ BOOST_AUTO_TEST_CASE( binary_vector )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::vector<int> o_podvector(100);
     for(auto & elem : o_podvector)
@@ -1624,7 +1824,7 @@ BOOST_AUTO_TEST_CASE( binary_vector )
     oar(o_esplvector);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::vector<int> i_podvector;
     std::vector<StructInternalSerialize> i_iservector;
@@ -1652,8 +1852,19 @@ BOOST_AUTO_TEST_CASE( binary_vector )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_vector )
+{
+  test_vector<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_vector )
+{
+  test_vector<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_pair )
+template <class IArchive, class OArchive>
+void test_pair()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1663,7 +1874,7 @@ BOOST_AUTO_TEST_CASE( binary_pair )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::pair<int, int> o_podpair = {rng(), rng()};
     std::pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = {{rng(), rng()}, {rng(), rng()}};
@@ -1678,7 +1889,7 @@ BOOST_AUTO_TEST_CASE( binary_pair )
     oar(o_esplpair);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::pair<int, int> i_podpair;
     std::pair<StructInternalSerialize, StructInternalSerialize> i_iserpair;
@@ -1709,8 +1920,19 @@ BOOST_AUTO_TEST_CASE( binary_pair )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_pair )
+{
+  test_pair<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_pair )
+{
+  test_pair<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_tuple )
+template <class IArchive, class OArchive>
+void test_tuple()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1720,7 +1942,7 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     auto o_podtuple = std::make_tuple( rng(), rng(), rng(), rng() );
     auto o_isertuple = std::make_tuple( StructInternalSerialize( rng(), rng() ),
@@ -1747,7 +1969,7 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
     oar(o_espltuple);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     decltype( o_podtuple  ) i_podtuple;
     decltype( o_isertuple ) i_isertuple;
@@ -1769,8 +1991,19 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_tuple )
+{
+  test_tuple<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_tuple )
+{
+  test_tuple<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_complex )
+template <class IArchive, class OArchive>
+void test_complex()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1782,7 +2015,7 @@ BOOST_AUTO_TEST_CASE( binary_complex )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::complex<float> o_float( rngF(), rngF() );
     std::complex<double> o_double( rngD(), rngD() );
@@ -1793,7 +2026,7 @@ BOOST_AUTO_TEST_CASE( binary_complex )
     oar(o_ldouble);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::complex<float> i_float;
     std::complex<double> i_double;
@@ -1809,8 +2042,19 @@ BOOST_AUTO_TEST_CASE( binary_complex )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_complex )
+{
+  test_complex<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_complex )
+{
+  test_complex<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_bitset )
+template <class IArchive, class OArchive>
+void test_bitset()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1822,7 +2066,7 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     std::bitset<32> o_bit32( rng32() );
     std::bitset<65> o_bit65( rng65() );
@@ -1833,7 +2077,7 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
     oar(o_bit256);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     std::bitset<32>  i_bit32;
     std::bitset<65>  i_bit65;
@@ -1849,13 +2093,24 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
   }
 }
 
+BOOST_AUTO_TEST_CASE( binary_bitset )
+{
+  test_bitset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_bitset )
+{
+  test_bitset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
 // ######################################################################
-BOOST_AUTO_TEST_CASE( binary_chrono )
+template <class IArchive, class OArchive>
+void test_chrono()
 {
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     auto o_timePoint1 = std::chrono::system_clock::now();
     auto o_timePoint2 = std::chrono::steady_clock::now();
@@ -1873,7 +2128,7 @@ BOOST_AUTO_TEST_CASE( binary_chrono )
     oar(o_duration3);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     decltype(o_timePoint1) i_timePoint1;
     decltype(o_timePoint2) i_timePoint2;
@@ -1896,6 +2151,16 @@ BOOST_AUTO_TEST_CASE( binary_chrono )
     BOOST_CHECK( o_duration2 == i_duration2 );
     BOOST_CHECK( o_duration3 == i_duration3 );
   }
+}
+
+BOOST_AUTO_TEST_CASE( binary_chrono )
+{
+  test_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_chrono )
+{
+  test_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
 // ######################################################################
@@ -1971,7 +2236,8 @@ namespace cereal
   template <class Archive> struct specialize<Archive, SpecializedNMSplit, cereal::specialization::non_member_load_save> {};
 }
 
-BOOST_AUTO_TEST_CASE( structs_specialized )
+template <class IArchive, class OArchive>
+void test_structs_specialized()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1979,7 +2245,7 @@ BOOST_AUTO_TEST_CASE( structs_specialized )
   for(int i=0; i<100; ++i)
   {
     std::ostringstream os;
-    cereal::BinaryOutputArchive oar(os);
+    OArchive oar(os);
 
     SpecializedMSerialize  o_iser = { random_value<int>(gen) };
     SpecializedMSplit      o_ispl = { random_value<int>(gen) };
@@ -1989,7 +2255,7 @@ BOOST_AUTO_TEST_CASE( structs_specialized )
     oar( o_iser, o_ispl, o_eser, o_espl);
 
     std::istringstream is(os.str());
-    cereal::BinaryInputArchive iar(is);
+    IArchive iar(is);
 
     decltype(o_iser) i_iser;
     decltype(o_ispl) i_ispl;
@@ -2003,5 +2269,15 @@ BOOST_AUTO_TEST_CASE( structs_specialized )
     BOOST_CHECK(i_eser.x == o_eser.x);
     BOOST_CHECK(i_espl.x == o_espl.x);
   }
+}
+
+BOOST_AUTO_TEST_CASE( binary_structs_specialized )
+{
+  test_structs_specialized<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_structs_specialized )
+{
+  test_structs_specialized<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 

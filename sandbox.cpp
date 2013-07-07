@@ -288,177 +288,174 @@ int main()
   e_out.t4 = {4};
   e_out.s = "Hello, World!";
 
-  //Test2 t2 = {22};
+  Test2 t2 = {22};
 
-  //{
-  //  std::ofstream os("out.txt");
-  //  cereal::BinaryOutputArchive archive(os);
-  //  archive(CEREAL_NVP(e_out));
-  //  archive(t2);
-  //}
-
-  //Everything e_in;
-
-  //{
-  //  std::ifstream is("out.txt");
-  //  cereal::BinaryInputArchive archive(is);
-  //  archive(CEREAL_NVP(e_in));
-  //  archive(t2);
-  //  std::remove("out.txt");
-  //}
-
-  //assert(e_in == e_out);
-
-  //{
-  //  cereal::BinaryOutputArchive archive(std::cout);
-  //  int xxx[] = {-1, 95, 3};
-  //  archive( xxx );
-
-  //  cereal::XMLOutputArchive archive2(std::cout);
-  //  archive2( xxx );
-  //}
-
-  for( int i = 0; i < 10; ++i )
   {
+    std::ofstream os("out.txt");
+    cereal::BinaryOutputArchive archive(os);
+    archive(CEREAL_NVP(e_out));
+    archive(t2);
+  }
+
+  Everything e_in;
+
+  {
+    std::ifstream is("out.txt");
+    cereal::BinaryInputArchive archive(is);
+    archive(CEREAL_NVP(e_in));
+    archive(t2);
+    std::remove("out.txt");
+  }
+
+  assert(e_in == e_out);
+
+  {
+    cereal::BinaryOutputArchive archive(std::cout);
+    int xxx[] = {-1, 95, 3};
+    archive( xxx );
+
+    cereal::XMLOutputArchive archive2(std::cout);
+    archive2( xxx );
+  }
+
+  {
+    std::ofstream os("out.xml");
+    cereal::XMLOutputArchive oar( os );
+    //cereal::XMLOutputArchive oar( std::cout );
+
+    oar( cereal::make_nvp("hello", 5 ) );
+
+    std::string bla("bla");
+    oar( bla );
+
+    auto intptr = std::make_shared<int>(99);
+    oar( CEREAL_NVP(intptr) );
+
+    std::map<std::string, int> map1 =
     {
-      std::ofstream os("out.xml");
-      cereal::XMLOutputArchive oar( os );
-      //cereal::XMLOutputArchive oar( std::cout );
+      {"one",   1},
+      {"two",   2},
+      {"three", 3}
+    };
 
-      oar( cereal::make_nvp("hello", 5 ) );
+    oar( CEREAL_NVP(map1) );
 
-      std::string bla("bla");
-      oar( bla );
+    int x = 3;
+    oar( CEREAL_NVP(x) );
+    oar( 5 );
+    oar( 3.3 );
+    oar( 3.2f );
+    oar( true );
 
-      auto intptr = std::make_shared<int>(99);
-      oar( CEREAL_NVP(intptr) );
+    std::array<int,5> arr = {{1, 2, 3, 4, 5}};
+    oar( arr );
 
-      std::map<std::string, int> map1 =
-      {
-        {"one",   1},
-        {"two",   2},
-        {"three", 3}
-      };
+    std::vector<std::string> vec = {"hey",
+                                    "there",
+                                    "buddy"};
 
-      oar( CEREAL_NVP(map1) );
+    std::vector<std::vector<std::string>> vec2 = {vec, vec, vec};
 
-      int x = 3;
-      oar( CEREAL_NVP(x) );
-      oar( 5 );
-      oar( 3.3 );
-      oar( 3.2f );
-      oar( true );
+    oar( cereal::make_nvp("EVERYTHING", e_out) );
+    oar( vec );
+    oar( vec2 );
 
-      std::array<int,5> arr = {{1, 2, 3, 4, 5}};
-      oar( arr );
+    int xxx[] = {-1, 95, 3};
+    oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
+    //oar.saveBinaryValue( xxx, sizeof(int)*3 );
 
-      std::vector<std::string> vec = {"hey",
-                                      "there",
-                                      "buddy"};
+    std::unique_ptr<Derived> d1( new Derived(3, 4) );
+    std::unique_ptr<Base> d2( new Derived(4, 5) );
+    std::shared_ptr<Base> d3( new Derived(5, 6) );
+    oar( d1 );
+    oar( d2 );
+    oar( d3 );
+  }
 
-      std::vector<std::vector<std::string>> vec2 = {vec, vec, vec};
+  {
+    std::ifstream is("out.xml");
+    cereal::XMLInputArchive iar( is );
 
-      oar( cereal::make_nvp("EVERYTHING", e_out) );
-      oar( vec );
-      oar( vec2 );
+    int hello;
+    iar( cereal::make_nvp("hello", hello) );
+    assert( hello == 5 );
 
-      int xxx[] = {-1, 95, 3};
-      oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
-      //oar.saveBinaryValue( xxx, sizeof(int)*3 );
+    std::string bla;
+    iar( bla );
+    assert( bla == "bla" );
 
-      std::unique_ptr<Derived> d1( new Derived(3, 4) );
-      std::unique_ptr<Base> d2( new Derived(4, 5) );
-      std::shared_ptr<Base> d3( new Derived(5, 6) );
-      oar( d1 );
-      oar( d2 );
-      oar( d3 );
+    std::shared_ptr<int> intptr;
+    iar( CEREAL_NVP(intptr) );
+    assert( *intptr == 99 );
+
+    std::map<std::string, int> map1;
+
+    iar( CEREAL_NVP(map1) );
+    assert( map1["one"]   == 1 );
+    assert( map1["two"]   == 2 );
+    assert( map1["three"] == 3 );
+
+
+    int x;
+    iar( CEREAL_NVP(x) );
+    assert( x == 3 );
+
+    int x5;
+    iar( x5 );
+    assert( x5 == 5 );
+
+    double x33;
+    iar( x33 );
+    assert( x33 == 3.3 );
+
+    float x32;
+    iar( x32 );
+    assert( x32 == 3.2f );
+
+    bool xtrue;
+    iar( xtrue );
+    assert( xtrue == true );
+
+    std::array<int,5> arr;
+    iar( arr );
+    for( size_t i = 0; i < 5; ++i )
+      assert( arr[i] == (i+1) );
+
+    Everything e;
+    iar( cereal::make_nvp("EVERYTHING", e) );
+    assert( e == e_out );
+
+    std::vector<std::string> vec;
+    iar( vec );
+    assert( vec[0] == "hey" );
+    assert( vec[1] == "there" );
+    assert( vec[2] == "buddy" );
+
+    std::vector<std::vector<std::string>> vec2;
+    iar( vec2 );
+    for( auto & v : vec2 )
+    {
+      assert( v[0] == "hey" );
+      assert( v[1] == "there" );
+      assert( v[2] == "buddy" );
     }
 
-    {
-      std::ifstream is("out.xml");
-      cereal::XMLInputArchive iar( is );
+    int xxx[3];
+    iar.loadBinaryValue( xxx, sizeof(int)*3 );
+    assert( xxx[0] == -1 );
+    assert( xxx[1] == 95 );
+    assert( xxx[2] == 3 );
 
-      int hello;
-      iar( cereal::make_nvp("hello", hello) );
-      assert( hello == 5 );
+    std::unique_ptr<Derived> d1;
+    std::unique_ptr<Base> d2;
+    std::shared_ptr<Base> d3;
 
-      std::string bla;
-      iar( bla );
-      assert( bla == "bla" );
-
-      std::shared_ptr<int> intptr;
-      iar( CEREAL_NVP(intptr) );
-      assert( *intptr == 99 );
-
-      std::map<std::string, int> map1;
-
-      iar( CEREAL_NVP(map1) );
-      assert( map1["one"]   == 1 );
-      assert( map1["two"]   == 2 );
-      assert( map1["three"] == 3 );
-
-
-      int x;
-      iar( CEREAL_NVP(x) );
-      assert( x == 3 );
-
-      int x5;
-      iar( x5 );
-      assert( x5 == 5 );
-
-      double x33;
-      iar( x33 );
-      assert( x33 == 3.3 );
-
-      float x32;
-      iar( x32 );
-      assert( x32 == 3.2f );
-
-      bool xtrue;
-      iar( xtrue );
-      assert( xtrue == true );
-
-      std::array<int,5> arr;
-      iar( arr );
-      for( size_t i = 0; i < 5; ++i )
-        assert( arr[i] == (i+1) );
-
-      Everything e;
-      iar( cereal::make_nvp("EVERYTHING", e) );
-      assert( e == e_out );
-
-      std::vector<std::string> vec;
-      iar( vec );
-      assert( vec[0] == "hey" );
-      assert( vec[1] == "there" );
-      assert( vec[2] == "buddy" );
-
-      std::vector<std::vector<std::string>> vec2;
-      iar( vec2 );
-      for( auto & v : vec2 )
-      {
-        assert( v[0] == "hey" );
-        assert( v[1] == "there" );
-        assert( v[2] == "buddy" );
-      }
-
-      int xxx[3];
-      iar.loadBinaryValue( xxx, sizeof(int)*3 );
-      assert( xxx[0] == -1 );
-      assert( xxx[1] == 95 );
-      assert( xxx[2] == 3 );
-
-      std::unique_ptr<Derived> d1;
-      std::unique_ptr<Base> d2;
-      std::shared_ptr<Base> d3;
-
-      iar( d1 );
-      assert( d1->x == 4 && d1->y == 3 );
-      iar( d2 );
-      assert( ((Derived*)d2.get())->x == 5 && ((Derived*)d2.get())->y == 4 );
-      iar( d3 );
-      assert( ((Derived*)d3.get())->x == 6 && ((Derived*)d3.get())->y == 5 );
-    }
+    iar( d1 );
+    assert( d1->x == 4 && d1->y == 3 );
+    iar( d2 );
+    assert( ((Derived*)d2.get())->x == 5 && ((Derived*)d2.get())->y == 4 );
+    iar( d3 );
+    assert( ((Derived*)d3.get())->x == 6 && ((Derived*)d3.get())->y == 5 );
   }
 
 
