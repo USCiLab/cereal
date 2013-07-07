@@ -41,11 +41,16 @@ Although detailed at length [elsewhere](polymorphism.html), if you will be seria
 
 ---
 
+<a name="binary_archive"></a>
+
 ## Binary Data
 
 The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The binary archive is designed to produce compact bit level representations of data and is not human readable.  It is a good choice when computers will be looking at the data on both ends of the serialization.  The binary archive is also the fastest archive that comes with cereal.  Binary archives will ignore name-value pairs and only serialize the values.
 
 ---
+
+
+<a name="xml_archive"></a>
 
 ## XML
 
@@ -87,6 +92,8 @@ Note that if you choose to edit the generated XML by hand, you still need to mak
 XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.
 
 ---
+
+<a name="json_archive"></a>
 
 ## JSON
 

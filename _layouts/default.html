@@ -43,13 +43,24 @@
   </head>
 
   <body>
-
     <div class="container-fluid">
+
+
+          <div class="navbar">
+            <div class="navbar-inner">
+              <a class="brand" href="{{ site.baseurl }}">cereal</a>
+              <ul class="nav">
+                <li><a href="{{ site.baseurl }}/index.html">Documentation</a></li>
+                <li><a href="{{ site.baseurl }}/assets/doxygen/index.html">Doxygen Docs</a></li>
+                <li><a href="https://github.com/USCiLab/cereal">Github</a></li>
+              </ul>
+            </div>
+          </div>
+
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <!--<li class="active"><a href="#">Link</a></li>-->
               <li class="nav-header">Documentation</li>
               <li><a href="index.html">Home</a></li>
               <li><a href="quickstart.html">Quick Start</a></li>
@@ -58,13 +69,11 @@
               <li><a href="pointers.html">Pointers (Smart and Dumb)</a></li>
               <li><a href="inheritance.html">Inheritance</a></li>
               <li><a href="polymorphism.html">Polymorphism</a></li>
-              <hr/>
-              <li><a href="{{ site.baseurl }}/assets/doxygen/index.html">Doxygen Docs</a></li>
             </ul>
 
           </div><!--/.well -->
         </div><!--/span-->
-        <div class="span9">
+        <div class="span7">
           {{content}}
         </div><!--/span-->
       </div><!--/row-->
