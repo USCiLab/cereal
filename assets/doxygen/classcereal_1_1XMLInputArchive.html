@@ -72,7 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -91,9 +91,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcereal_1_1XMLInputArchive-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cereal::XMLInputArchive Class Reference<div class="ingroups"><a class="el" href="group__Archives.html">Input and output archive types</a></div></div>  </div>
+<div class="title">cereal::XMLInputArchive Class Reference<div class="ingroups"><a class="el" href="group__Archives.html">Input and Output Archive Types</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -131,22 +132,45 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a06f0c412f74f3b538efac94886005b44">finishNode</a> ()</td></tr>
 <tr class="memdesc:a06f0c412f74f3b538efac94886005b44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finishes reading the current node. <br/></td></tr>
 <tr class="separator:a06f0c412f74f3b538efac94886005b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60a26917ee5e5d8c6a16faa19593e461"><td class="memTemplParams" colspan="2"><a class="anchor" id="a60a26917ee5e5d8c6a16faa19593e461"></a>
+<tr class="memitem:a2d74e31ee12ccb3b51aec4a66f68c8b4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2d74e31ee12ccb3b51aec4a66f68c8b4"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a60a26917ee5e5d8c6a16faa19593e461"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a60a26917ee5e5d8c6a16faa19593e461">loadValue</a> (T &amp;value)</td></tr>
-<tr class="memdesc:a60a26917ee5e5d8c6a16faa19593e461"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a value from the current node. <br/></td></tr>
-<tr class="separator:a60a26917ee5e5d8c6a16faa19593e461"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5874ffacb2c44546e71819cc23f7040e"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5874ffacb2c44546e71819cc23f7040e"></a>
-template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
-<tr class="memitem:a5874ffacb2c44546e71819cc23f7040e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a5874ffacb2c44546e71819cc23f7040e">loadValue</a> (std::basic_string&lt; CharT, Traits, Alloc &gt; &amp;str)</td></tr>
-<tr class="memdesc:a5874ffacb2c44546e71819cc23f7040e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a string from the current node. <br/></td></tr>
-<tr class="separator:a5874ffacb2c44546e71819cc23f7040e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12a944a053ce82391c36bc72c126929f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a12a944a053ce82391c36bc72c126929f">loadBinaryValue</a> (void *data, size_t size)</td></tr>
-<tr class="memdesc:a12a944a053ce82391c36bc72c126929f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads some binary data, encoded as a base64 string.  <a href="#a12a944a053ce82391c36bc72c126929f">More...</a><br/></td></tr>
-<tr class="separator:a12a944a053ce82391c36bc72c126929f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d74e31ee12ccb3b51aec4a66f68c8b4"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_unsigned&lt; T &gt;::<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a> <br class="typebreak"/>
+&amp;&amp;std::is_same&lt; T, bool &gt;<br class="typebreak"/>
+::<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a>, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a2d74e31ee12ccb3b51aec4a66f68c8b4">loadValue</a> (T &amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a>)</td></tr>
+<tr class="memdesc:a2d74e31ee12ccb3b51aec4a66f68c8b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a bool. <br/></td></tr>
+<tr class="separator:a2d74e31ee12ccb3b51aec4a66f68c8b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af070b92c109db95c106a1410c68854d6"><td class="memTemplParams" colspan="2"><a class="anchor" id="af070b92c109db95c106a1410c68854d6"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:af070b92c109db95c106a1410c68854d6"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_unsigned&lt; T &gt;::value <br class="typebreak"/>
+&amp;&amp;!std::is_same&lt; T, bool &gt;<br class="typebreak"/>
+::value &amp;&amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(T)&lt; <a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(long <br class="typebreak"/>
+long), void &gt;::type <a class="el" href="classcereal_1_1XMLInputArchive.html#a2d74e31ee12ccb3b51aec4a66f68c8b4">loadValue</a>(T <br class="typebreak"/>
+&amp;value){value=std::stoul(itsNodes.top().node-&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a> ())</td></tr>
+<tr class="memdesc:af070b92c109db95c106a1410c68854d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a type best represented as an unsigned long. <br/></td></tr>
+<tr class="separator:af070b92c109db95c106a1410c68854d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22b6e68e49c68c0da8a3baca1b44d847"><td class="memTemplParams" colspan="2"><a class="anchor" id="a22b6e68e49c68c0da8a3baca1b44d847"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a22b6e68e49c68c0da8a3baca1b44d847"><td class="memTemplItemLeft" align="right" valign="top">void::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>loadValue</b> (T &amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a>)</td></tr>
+<tr class="separator:a22b6e68e49c68c0da8a3baca1b44d847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e172393099044cf98213c046b443b57"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8e172393099044cf98213c046b443b57"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a8e172393099044cf98213c046b443b57"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_signed<br class="typebreak"/>
+&lt; T &gt;::value &amp;&amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(T)<br class="typebreak"/>
+&lt;=<a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(int), void &gt;::type <br class="typebreak"/>
+<a class="el" href="classcereal_1_1XMLInputArchive.html#a2d74e31ee12ccb3b51aec4a66f68c8b4">loadValue</a>(T &amp;value){value=std::stoi(itsNodes.top().node-&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a8e172393099044cf98213c046b443b57">value</a> ())</td></tr>
+<tr class="memdesc:a8e172393099044cf98213c046b443b57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a type best represented as an int. <br/></td></tr>
+<tr class="separator:a8e172393099044cf98213c046b443b57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35f130fe46e14bfbcab406094f60c2d5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a35f130fe46e14bfbcab406094f60c2d5"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a35f130fe46e14bfbcab406094f60c2d5"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_signed<br class="typebreak"/>
+&lt; T &gt;::<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a> &amp;&amp;(sizeof(T) &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a> (int))&amp;&amp;(sizeof(T)&lt;</td></tr>
+<tr class="memdesc:a35f130fe46e14bfbcab406094f60c2d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a type best represented as a long. <br/></td></tr>
+<tr class="separator:a35f130fe46e14bfbcab406094f60c2d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9ed2b9bd88b279e999b4df1f3f129f8"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad9ed2b9bd88b279e999b4df1f3f129f8"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad9ed2b9bd88b279e999b4df1f3f129f8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#ad9ed2b9bd88b279e999b4df1f3f129f8">loadSize</a> (T &amp;value)</td></tr>
+<tr class="memitem:ad9ed2b9bd88b279e999b4df1f3f129f8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#ad9ed2b9bd88b279e999b4df1f3f129f8">loadSize</a> (T &amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a>)</td></tr>
 <tr class="memdesc:ad9ed2b9bd88b279e999b4df1f3f129f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the size of the current node. <br/></td></tr>
 <tr class="separator:ad9ed2b9bd88b279e999b4df1f3f129f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcereal_1_1InputArchive"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcereal_1_1InputArchive')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcereal_1_1InputArchive.html">cereal::InputArchive&lt; XMLInputArchive &gt;</a></td></tr>
@@ -176,6 +200,17 @@ Static Public Member Functions</h2></td></tr>
 static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#aea4f24d0abcecddf5669b3406d875379">getNumChildren</a> (<a class="el" href="classrapidxml_1_1xml__node.html">rapidxml::xml_node</a>&lt;&gt; *node=nullptr)</td></tr>
 <tr class="memdesc:aea4f24d0abcecddf5669b3406d875379"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of children (usually interpreted as size) for the specified node. <br/></td></tr>
 <tr class="separator:aea4f24d0abcecddf5669b3406d875379"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a2e69754fccedcd4026d19d383df74e64"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2e69754fccedcd4026d19d383df74e64"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a2e69754fccedcd4026d19d383df74e64"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_unsigned&lt; T &gt;::<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a> <br class="typebreak"/>
+&amp;&amp;!std::is_same&lt; T, bool &gt;<br class="typebreak"/>
+::<a class="el" href="classcereal_1_1XMLInputArchive.html#af070b92c109db95c106a1410c68854d6">value</a> &amp;&amp;<a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(T) &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"> = <a class="el" href="classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5">sizeof</a>(long long)</td></tr>
+<tr class="memdesc:a2e69754fccedcd4026d19d383df74e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a type best represented as an unsigned long long. <br/></td></tr>
+<tr class="separator:a2e69754fccedcd4026d19d383df74e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An output archive designed to save data to XML. </p>
@@ -213,51 +248,13 @@ static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a12a944a053ce82391c36bc72c126929f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cereal::XMLInputArchive::loadBinaryValue </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Loads some binary data, encoded as a base64 string. </p>
-<p>This will automatically start and finish a node to load the data </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/cereal/archives/<a class="el" href="xml_8hpp_source.html">xml.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 5 2013 20:54:19 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 6 2013 19:22:35 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

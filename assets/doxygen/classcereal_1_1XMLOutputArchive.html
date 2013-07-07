@@ -72,7 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -92,7 +92,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcereal_1_1XMLOutputArchive-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cereal::XMLOutputArchive Class Reference<div class="ingroups"><a class="el" href="group__Archives.html">Input and output archive types</a></div></div>  </div>
+<div class="title">cereal::XMLOutputArchive Class Reference<div class="ingroups"><a class="el" href="group__Archives.html">Input and Output Archive Types</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -145,6 +145,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2d85b7350ab575fedeebcc0c31a56777">saveValue</a> (uint8_t const &amp;value)</td></tr>
 <tr class="memdesc:a2d85b7350ab575fedeebcc0c31a56777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload for uint8_t prevents them from being serialized as characters. <br/></td></tr>
 <tr class="separator:a2d85b7350ab575fedeebcc0c31a56777"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05f3803cec394e287d1088bc78f2381b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05f3803cec394e287d1088bc78f2381b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a05f3803cec394e287d1088bc78f2381b">saveValue</a> (int8_t const &amp;value)</td></tr>
+<tr class="memdesc:a05f3803cec394e287d1088bc78f2381b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload for int8_t prevents them from being serialized as characters. <br/></td></tr>
+<tr class="separator:a05f3803cec394e287d1088bc78f2381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2aa0db0f3e102d463b0cdb20e3caed10">saveBinaryValue</a> (const void *data, size_t size, const char *name=nullptr)</td></tr>
 <tr class="memdesc:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some binary data, encoded as a base64 string, with an optional name.  <a href="#a2aa0db0f3e102d463b0cdb20e3caed10">More...</a><br/></td></tr>
 <tr class="separator:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -327,7 +331,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 5 2013 20:54:19 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 6 2013 19:22:35 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

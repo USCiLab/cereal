@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['input_20and_20output_20archive_20types',['Input and output archive types',['../group__Archives.html',1,'']]],
+  ['input_20and_20output_20archive_20types',['Input and Output Archive Types',['../group__Archives.html',1,'']]],
   ['init_5fbinding',['init_binding',['../structcereal_1_1detail_1_1init__binding.html',1,'cereal::detail']]],
   ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html#a32c533e57346373d3600e02d1e47fdbf',1,'cereal::InputArchive']]],

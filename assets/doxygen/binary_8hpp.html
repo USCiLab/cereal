@@ -62,6 +62,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -132,18 +133,6 @@ template&lt;class T &gt; </td></tr>
 <tr class="memitem:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, SizeTag&lt; T &gt; &amp;t)</td></tr>
 <tr class="memdesc:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing SizeTags to binary.  <a href="#a42a7af89d6d5445bf7bdc35daa66d9bb">More...</a><br/></td></tr>
 <tr class="separator:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9decd05a0577163a6dc9ca5b5a271689"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9decd05a0577163a6dc9ca5b5a271689"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a9decd05a0577163a6dc9ca5b5a271689"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_array<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (BinaryOutputArchive &amp;ar, T const &amp;array)</td></tr>
-<tr class="memdesc:a9decd05a0577163a6dc9ca5b5a271689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving arrays. <br/></td></tr>
-<tr class="separator:a9decd05a0577163a6dc9ca5b5a271689"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bb78e24202b2c4c8ca181a842bae409"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7bb78e24202b2c4c8ca181a842bae409"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7bb78e24202b2c4c8ca181a842bae409"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_array<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (BinaryInputArchive &amp;ar, T &amp;array)</td></tr>
-<tr class="memdesc:a7bb78e24202b2c4c8ca181a842bae409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading arrays. <br/></td></tr>
-<tr class="separator:a7bb78e24202b2c4c8ca181a842bae409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd8924b66686b003f01b5ceafa9d6ce1"><td class="memTemplParams" colspan="2"><a class="anchor" id="acd8924b66686b003f01b5ceafa9d6ce1"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:acd8924b66686b003f01b5ceafa9d6ce1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (BinaryOutputArchive &amp;ar, BinaryData&lt; T &gt; const &amp;bd)</td></tr>
@@ -166,7 +155,7 @@ template&lt;class T &gt; </td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 5 2013 20:54:19 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
