@@ -1,5 +1,5 @@
 /*! \file bitset.hpp
-    \brief Support for types found in <bitset>
+    \brief Support for types found in \<bitset\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

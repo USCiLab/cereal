@@ -1,5 +1,5 @@
 /*! \file deque.hpp
-    \brief Support for types found in <deque>
+    \brief Support for types found in \<deque\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

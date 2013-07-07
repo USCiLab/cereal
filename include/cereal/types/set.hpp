@@ -1,5 +1,5 @@
 /*! \file set.hpp
-    \brief Support for types found in <set>
+    \brief Support for types found in \<set\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

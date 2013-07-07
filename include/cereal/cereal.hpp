@@ -39,9 +39,18 @@
 
 namespace cereal
 {
-  //! \defgroup Archives Input and output archive types
-  //! \defgroup STLSupport Support for types found in the C++ Standard Library
-  //! \defgroup OtherTypes Support for miscellaneous types
+  //! \defgroup Archives Input and Output Archive Types
+
+  /*! \defgroup TypeSupport Support for Serializing Various Types 
+      Serialization of many types is shipped with cereal, including most of the standard library as well as a few others.  */
+  
+  /*! \defgroup STLSupport Standard Library Support
+      Serialization methods for nearly all types found in the C++ standard library 
+      \ingroup TypeSupport */
+  
+  /*! \defgroup OtherTypes Miscellaneous Types Support
+      Support for various other types such as smart pointers to polymorphic base classes, boost::variant, etc. 
+      \ingroup TypeSupport */
   
   // ######################################################################
   //! An exception class thrown when things go wrong at runtime

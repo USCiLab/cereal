@@ -1,5 +1,5 @@
 /*! \file utility.hpp
-    \brief Support for types found in <utility>
+    \brief Support for types found in \<utility\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

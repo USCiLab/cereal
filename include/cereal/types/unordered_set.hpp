@@ -1,5 +1,5 @@
 /*! \file unordered_set.hpp
-    \brief Support for types found in <unordered_set>
+    \brief Support for types found in \<unordered_set\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

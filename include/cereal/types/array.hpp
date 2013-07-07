@@ -1,5 +1,5 @@
 /*! \file array.hpp
-    \brief Support for types found in <array>
+    \brief Support for types found in \<array\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

@@ -1,5 +1,5 @@
-/*! \file comples.hpp
-    \brief Support for types found in <complex>
+/*! \file complex.hpp
+    \brief Support for types found in \<complex\>
     \ingroup STLSupport */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

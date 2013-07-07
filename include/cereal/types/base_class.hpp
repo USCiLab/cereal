@@ -143,7 +143,9 @@ namespace cereal
           // If we had chosen to use static_cast<> instead, cereal would perform no tracking and
           // assume that every base class should be serialized (in this case leading to a duplicate
           // serialization of MyBase due to diamond inheritance
-      }; */
+      }; 
+     }
+     @endcode */
   template<class Base>
     struct virtual_base_class
     {
