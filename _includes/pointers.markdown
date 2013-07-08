@@ -19,8 +19,6 @@ cereal will make sure that the data pointed to by an `std::shared_ptr` is serial
 
 cereal will also properly handle pointers to polymorphic objects (e.g. `std::unique_ptr<Base> p( new Derived() )`.  This is detailed in the [polymorphic](polymorphism.html) wiki page.
 
----
-
 ### Types with no default constructor
 
 If you want to serialize a pointer to a type that does not have a default constructor, or a type that does not allow cereal access to its default constructor, you will need to provide a specialization of `cereal::LoadAndAllocate` for the type.  cereal will call the static method of this struct, `load_and_allocate`, which will be called instead of its normal serialization functionality to dynamically allocate a new instance of the type and load all of its contents.  Don't worry about returning the raw pointer here - cereal will contain it within a smart pointer.
@@ -62,8 +60,6 @@ namespace cereal
   };
 ```
 
----
-
 ### Implementation notes
 
 When saving an `std::shared_ptr`, we first check to make sure we haven't serialized it before.  This is done by keeping a map from addresses to pointer ids (an `std::uint32_t`), which are unique.  Pointers that are newly serialized are given a new id with the most significant bit set to `1`.  When saved, an `std::shared_ptr` will first output its id, which will either have its MSB set to `1` if it is the first instance of that id, or will be an id already in the archive.  This is immediately followed by the data found by dereferencing the pointer.  If the pointer was equal to `nullptr`, its id is set to `0` and nothing else is saved.
@@ -79,8 +75,6 @@ When serializing an `std::weak_ptr`, it is promoted to an `std::shared_ptr` by l
 ## Raw/Dumb Pointers
 
 cereal does not support serializing raw (e.g. `int *`) pointers.
-
----
 
 ### Pointer serialization rationale
 

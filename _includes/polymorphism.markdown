@@ -1,7 +1,7 @@
 Polymorphism
 ============
 
-cereal supports serializing pointers to polymorphic base classes, and will automatically deduce the derived types at runtime.
+cereal supports serializing smart pointers to polymorphic base classes and will automatically deduce the derived types at runtime.
 
 ---
 
@@ -22,6 +22,8 @@ When serializing a polymorphic base class pointer, cereal uses [Run-Time Type In
 **Important:** Before registering a type, you must be sure that every archive type that will be used has already been included.
 
 ```cpp
+// Include any archives you plan on using with your type before
+// you register it
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
 #include <cereal/archives/json.hpp>
@@ -109,3 +111,10 @@ namespace mynamespace
 CEREAL_REGISTER_ARCHIVE(mynamespace::MyNewOutputArchive);
 ```
 
+It is recommended to do this immediately following the declaration of your archive.
+
+---
+
+### Implementation notes
+
+Coming soon.

@@ -36,6 +36,8 @@ cereal's syntax will look familiar if you've used boost's serialization library.
 ```cpp
 #include <cereal/types/map.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/archives/binary.hpp>
+#include <fstream>
     
 struct MyRecord
 {
@@ -68,6 +70,17 @@ struct SomeData
     ar( data );
   }
 };
+
+int main()
+{
+  std::ofstream os("out.cereal");
+  cereal::BinaryOutputArchive archive( os );
+
+  SomeData myData;
+  os( myData );
+
+  return 0;
+}
 ```    
 
 ---
