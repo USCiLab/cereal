@@ -43,6 +43,7 @@ namespace cereal
   }
 
   //! Serialization for raw pointers
+  /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */
   template <class Archive, class T> inline
   void serialize( Archive &, T * & )
   {
@@ -69,7 +70,7 @@ namespace cereal
     }
   }
 
-  //! Serialization for arrays
+  //! Serialization for C style arrays
   template <class Archive, class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
   serialize(Archive & ar, T & array)

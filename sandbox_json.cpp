@@ -225,8 +225,13 @@ int main()
     std::ofstream os("file.json");
     cereal::JSONOutputArchive oar( os );
 
+    Fixture f1;
+
     int x = 10;
     double y = 99;
+
+    oar(CEREAL_NVP(f1));
+
     oar(CEREAL_NVP(x));
     oar(CEREAL_NVP(y));
   }
@@ -241,12 +246,17 @@ int main()
     std::ifstream is("file.json");
     cereal::JSONInputArchive iar( is );
 
+    Fixture f1;
+
     int x;
     double y;
+    iar(CEREAL_NVP(f1));
     iar(CEREAL_NVP(x));
     iar(CEREAL_NVP(y));
 
     std::cout << x << " " << y << std::endl;
+
+    std::cout << f1.f1.a << std::endl;
   }
 
   //{

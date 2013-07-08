@@ -196,6 +196,7 @@ namespace cereal
       void loadValue(unsigned & val)    { val = itsValueStack.top()->value.GetUint();   ++itsValueStack.top(); }
       void loadValue(int64_t & val)     { val = itsValueStack.top()->value.GetInt64();  ++itsValueStack.top(); }
       void loadValue(uint64_t & val)    { val = itsValueStack.top()->value.GetUint64(); ++itsValueStack.top(); }
+      void loadValue(float & val)       { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
       void loadValue(double & val)      { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
       void loadValue(std::string & val) { val = itsValueStack.top()->value.GetString(); ++itsValueStack.top(); }
 
@@ -391,6 +392,13 @@ namespace cereal
   void save(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     ar.saveValue( str );
+  }
+
+  //! loading string from JSON
+  template<class CharT, class Traits, class Alloc> inline
+  void load(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  {
+    ar.loadValue( str );
   }
 } // namespace cereal
 
