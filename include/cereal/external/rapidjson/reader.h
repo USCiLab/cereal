@@ -382,6 +382,16 @@ private:
 		return codepoint;
 	}
 
+  template<class Ch>
+    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
+    characterOk(Ch c)
+    { return true; }
+
+  template<class Ch>
+    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+    characterOk(Ch c)
+    { return c < 256; }
+
 	// Parse string, handling the prefix and suffix double quotes and escaping.
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseString(Stream& stream, Handler& handler) {
@@ -419,7 +429,7 @@ private:
 			Ch c = s.Take();
 			if (c == '\\') {	// Escape
 				Ch e = s.Take();
-				if ((sizeof(Ch) == 1 || e < 256) && escape[(unsigned char)e])
+				if ((sizeof(Ch) == 1 || characterOk(e)) && escape[(unsigned char)e])
 					RAPIDJSON_PUT(escape[(unsigned char)e]);
 				else if (e == 'u') {	// Unicode
 					unsigned codepoint = ParseHex4(s);

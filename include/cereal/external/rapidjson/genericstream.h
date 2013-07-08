@@ -16,28 +16,31 @@ namespace rapidjson {
       /*!
         \param is Input stream.
         */
-      GenericReadStream(std::istream& is) : is_(is) {
+      GenericReadStream(std::istream & is) : is_(&is) {
       }
 
+
       Ch Peek() const {
-        return static_cast<char>(is_.peek());
+        if(is_->eof()) return '\0';
+        return static_cast<char>(is_->peek());
       }
 
       Ch Take() {
-        return static_cast<char>(is_.get());
+        if(is_->eof()) return '\0';
+        return static_cast<char>(is_->get());
       }
 
       size_t Tell() const {
-        return (int)is_.tellg();
+        return (int)is_->tellg();
       }
 
       // Not implemented
-      void Put(Ch c) { RAPIDJSON_ASSERT(false); }
-      void Flush() { RAPIDJSON_ASSERT(false); }
-      Ch* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
+      void Put(Ch c)     { RAPIDJSON_ASSERT(false); }
+      void Flush()       { RAPIDJSON_ASSERT(false); }
+      Ch* PutBegin()     { RAPIDJSON_ASSERT(false); return 0; }
       size_t PutEnd(Ch*) { RAPIDJSON_ASSERT(false); return 0; }
 
-      std::istream& is_;
+      std::istream * is_;
   };
 
 
@@ -72,9 +75,9 @@ namespace rapidjson {
       }
 
       // Not implemented
-      char Peek() const { RAPIDJSON_ASSERT(false); }
-      char Take() { RAPIDJSON_ASSERT(false); }
-      char* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
+      char Peek() const    { RAPIDJSON_ASSERT(false); }
+      char Take()          { RAPIDJSON_ASSERT(false); }
+      char* PutBegin()     { RAPIDJSON_ASSERT(false); return 0; }
       size_t PutEnd(char*) { RAPIDJSON_ASSERT(false); return 0; }
 
     private:

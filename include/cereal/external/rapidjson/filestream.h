@@ -15,13 +15,14 @@ public:
 	typedef char Ch;	//!< Character type. Only support char.
 
 	FileStream(FILE* fp) : fp_(fp), count_(0) { Read(); }
-	char Peek() const { return current_; }
-	char Take() { char c = current_; Read(); return c; }
+
+	char Peek() const   { return current_; }
+	char Take()         { char c = current_; Read(); return c; }
 	size_t Tell() const { return count_; }
-	void Put(char c) { fputc(c, fp_); }
+	void Put(char c)    { fputc(c, fp_); }
 
 	// Not implemented
-	char* PutBegin() { return 0; }
+	char* PutBegin()     { return 0; }
 	size_t PutEnd(char*) { return 0; }
 
 private:
