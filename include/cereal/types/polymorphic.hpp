@@ -84,6 +84,7 @@ namespace cereal
   namespace polymorphic_detail
   {
     //! Get an input binding from the given archive by deserializing the type meta data
+    /*! @internal */
     template<class Archive> inline
     typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar, std::uint32_t const nameid)
     {
@@ -113,6 +114,7 @@ namespace cereal
     }
 
     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    /*! @internal */
     template<class Archive, class T> inline
     typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
@@ -126,6 +128,7 @@ namespace cereal
     }
 
     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    /*! @internal */
     template<class Archive, class T, class D> inline
     typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
@@ -138,6 +141,7 @@ namespace cereal
       return false;
     }
 
+    /*! @internal */
     template<class Archive, class T> inline
     typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
@@ -147,6 +151,7 @@ namespace cereal
       return false;
     }
 
+    /*! @internal */
     template<class Archive, class T, class D> inline
     typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive &, std::unique_ptr<T, D> &, std::uint32_t const nameid)

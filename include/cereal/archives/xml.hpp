@@ -52,16 +52,43 @@ namespace cereal
 
   // ######################################################################
   //! An output archive designed to save data to XML
+  /*! This archive uses RapidXML to build an in memory XML tree of the
+      data it serializes before outputting it to its stream upon destruction.
+      The envisioned way of using this archive is in an RAII fashion, letting
+      the automatic destruction of the object cause the flush to its stream.
+
+      XML archives provides a human readable output but at decreased
+      performance (both in time and space) compared to binary archives.
+
+      XML benefits greatly from name-value pairs, which if present, will
+      name the nodes in the output.  If these are not present, each level
+      of the output tree will be given an automatically generated delimited name.
+
+      The precision of the output archive controls the number of decimals output
+      for floating point numbers and should be sufficiently large (i.e. at least 20)
+      if there is a desire to have binary equality between the numbers output and
+      those read in.
+
+      XML archives can optionally print the type of everything they serialize, which
+      adds an attribute to each node.
+
+      XML archives do not output the size information for any dynamically sized structure
+      and instead infer it from the number of children for a node.  This means that data
+      can be hand edited for dynamic sized structures and will still be readable.  This
+      is accomplished through the cereal::SizeTag object, which will also add an attribute
+      to its parent field. */
   /*! \ingroup Archives */
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
-      //! Construct, outputting to the provided stream
+      //! Construct, outputting to the provided stream upon destruction
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout!
-          @param precision The precision for floating point output
+                        even cout!  Note that since this archive builds a tree in memory,
+                        it will not output to the stream until its destructor is called.
+          @param precision The precision for floating point output.  For input and output
+                           floating point to test equal, this should be at least 20
           @param outputType Controls whether type information will be printed in attributes */
-      XMLOutputArchive(std::ostream & stream, size_t precision = 10, bool outputType = false ) :
+      XMLOutputArchive(std::ostream & stream, size_t precision = 20, bool outputType = false ) :
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
         itsOutputType( outputType )
@@ -183,6 +210,11 @@ namespace cereal
         auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
 
         itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
+      }
+
+      void markDynamicSize()
+      {
+        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "size", "dynamic" ) );
       }
 
     protected:
@@ -383,9 +415,13 @@ namespace cereal
       }
 
       //! Gets the number of children (usually interpreted as size) for the specified node
-      static size_t getNumChildren( rapidxml::xml_node<> * node = nullptr )
+      static size_t getNumChildren( rapidxml::xml_node<> * node )
       {
         size_t size = 0;
+        if( node == nullptr )
+        {
+          std::cerr << "NUM CHILDREN CALLED ON NULL NODE" << std::endl;
+        }
         node = node->first_node(); // get first child
 
         while( node != nullptr )
@@ -459,8 +495,10 @@ namespace cereal
   //! Prologue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
   template <class T>
-  void prologue( XMLOutputArchive &, SizeTag<T> const & )
-  { }
+  void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
+  {
+    ar.markDynamicSize();
+  }
 
   template <class T>
   void prologue( XMLInputArchive &, SizeTag<T> const & )

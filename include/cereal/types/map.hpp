@@ -33,11 +33,11 @@
 #include <cereal/cereal.hpp>
 #include <map>
 
-
 namespace cereal
 {
   namespace map_detail
   {
+    //! @internal
     template <class Archive, class MapT> inline
     void save( Archive & ar, MapT const & map )
     {
@@ -49,6 +49,7 @@ namespace cereal
       }
     }
 
+    //! @internal
     template <class Archive, class MapT> inline
     void load( Archive & ar, MapT & map )
     {
@@ -69,28 +70,30 @@ namespace cereal
     }
   }
 
-  //! Saving for std::map to binary
+  //! Saving for std::map
   template <class Archive, class K, class T, class C, class A> inline
   void save( Archive & ar, std::map<K, T, C, A> const & map )
   {
     map_detail::save( ar, map );
   }
 
-  //! Loading for std::map to binary
+  //! Loading for std::map
   template <class Archive, class K, class T, class C, class A> inline
   void load( Archive & ar, std::map<K, T, C, A> & map )
   {
     map_detail::load( ar, map );
   }
 
-  //! Saving for std::multimap to binary
+  //! Saving for std::multimap
+  /*! @note serialization for this type is not guaranteed to preserve ordering */
   template <class Archive, class K, class T, class C, class A> inline
   void save( Archive & ar, std::multimap<K, T, C, A> const & multimap )
   {
     map_detail::save( ar, multimap );
   }
 
-  //! Loading for std::multimap to binary
+  //! Loading for std::multimap
+  /*! @note serialization for this type is not guaranteed to preserve ordering */
   template <class Archive, class K, class T, class C, class A> inline
   void load( Archive & ar, std::multimap<K, T, C, A> & multimap )
   {

@@ -291,25 +291,27 @@ void test_structs()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     StructInternalSerialize o_iser = { random_value<int>(gen), random_value<int>(gen) };
     StructInternalSplit     o_ispl = { random_value<int>(gen), random_value<int>(gen) };
     StructExternalSerialize o_eser = { random_value<int>(gen), random_value<int>(gen) };
     StructExternalSplit     o_espl = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar( o_iser, o_ispl, o_eser, o_espl);
-
-    std::istringstream is(os.str());
-    IArchive iar(is);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar( o_iser, o_ispl, o_eser, o_espl);
+    }
 
     StructInternalSerialize i_iser;
     StructInternalSplit     i_ispl;
     StructExternalSerialize i_eser;
     StructExternalSplit     i_espl;
 
-    iar( i_iser, i_ispl, i_eser, i_espl);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+      iar( i_iser, i_ispl, i_eser, i_espl);
+    }
 
     BOOST_CHECK(i_iser == o_iser);
     BOOST_CHECK(i_ispl == o_ispl);
@@ -337,9 +339,6 @@ void test_array()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::array<int, 100> o_podarray;
     for(auto & elem : o_podarray)
       elem = random_value<decltype(o_podarray)::value_type>(gen);
@@ -360,14 +359,16 @@ void test_array()
     for(auto & elem : o_esplarray)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar(o_podarray);
-    oar(o_iserarray);
-    oar(o_isplarray);
-    oar(o_eserarray);
-    oar(o_esplarray);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podarray);
+      oar(o_iserarray);
+      oar(o_isplarray);
+      oar(o_eserarray);
+      oar(o_esplarray);
+    }
 
     std::array<int, 100> i_podarray;
     std::array<StructInternalSerialize, 100> i_iserarray;
@@ -375,11 +376,16 @@ void test_array()
     std::array<StructExternalSerialize, 100> i_eserarray;
     std::array<StructExternalSplit, 100>     i_esplarray;
 
-    iar(i_podarray);
-    iar(i_iserarray);
-    iar(i_isplarray);
-    iar(i_eserarray);
-    iar(i_esplarray);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podarray);
+      iar(i_iserarray);
+      iar(i_isplarray);
+      iar(i_eserarray);
+      iar(i_esplarray);
+    }
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podarray.begin(),    i_podarray.end(),    o_podarray.begin(),  o_podarray.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserarray.begin(),   i_iserarray.end(),   o_iserarray.begin(), o_iserarray.end());
@@ -408,9 +414,6 @@ void test_deque()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::deque<int> o_poddeque(100);
     for(auto & elem : o_poddeque)
       elem = random_value<decltype(o_poddeque)::value_type>(gen);
@@ -431,14 +434,16 @@ void test_deque()
     for(auto & elem : o_espldeque)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar(o_poddeque);
-    oar(o_iserdeque);
-    oar(o_ispldeque);
-    oar(o_eserdeque);
-    oar(o_espldeque);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_poddeque);
+      oar(o_iserdeque);
+      oar(o_ispldeque);
+      oar(o_eserdeque);
+      oar(o_espldeque);
+    }
 
     std::deque<int> i_poddeque;
     std::deque<StructInternalSerialize> i_iserdeque;
@@ -446,11 +451,16 @@ void test_deque()
     std::deque<StructExternalSerialize> i_eserdeque;
     std::deque<StructExternalSplit>     i_espldeque;
 
-    iar(i_poddeque);
-    iar(i_iserdeque);
-    iar(i_ispldeque);
-    iar(i_eserdeque);
-    iar(i_espldeque);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_poddeque);
+      iar(i_iserdeque);
+      iar(i_ispldeque);
+      iar(i_eserdeque);
+      iar(i_espldeque);
+    }
 
     BOOST_CHECK_EQUAL(i_poddeque.size(),  o_poddeque.size());
     BOOST_CHECK_EQUAL(i_iserdeque.size(), o_iserdeque.size());
@@ -485,9 +495,6 @@ void test_forward_list()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::forward_list<int> o_podforward_list(100);
     for(auto & elem : o_podforward_list)
       elem = random_value<decltype(o_podforward_list)::value_type>(gen);
@@ -508,14 +515,16 @@ void test_forward_list()
     for(auto & elem : o_esplforward_list)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar(o_podforward_list);
-    oar(o_iserforward_list);
-    oar(o_isplforward_list);
-    oar(o_eserforward_list);
-    oar(o_esplforward_list);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podforward_list);
+      oar(o_iserforward_list);
+      oar(o_isplforward_list);
+      oar(o_eserforward_list);
+      oar(o_esplforward_list);
+    }
 
     std::forward_list<int> i_podforward_list;
     std::forward_list<StructInternalSerialize> i_iserforward_list;
@@ -523,11 +532,16 @@ void test_forward_list()
     std::forward_list<StructExternalSerialize> i_eserforward_list;
     std::forward_list<StructExternalSplit>     i_esplforward_list;
 
-    iar(i_podforward_list);
-    iar(i_iserforward_list);
-    iar(i_isplforward_list);
-    iar(i_eserforward_list);
-    iar(i_esplforward_list);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podforward_list);
+      iar(i_iserforward_list);
+      iar(i_isplforward_list);
+      iar(i_eserforward_list);
+      iar(i_esplforward_list);
+    }
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podforward_list.begin(),    i_podforward_list.end(),    o_podforward_list.begin(),  o_podforward_list.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserforward_list.begin(),   i_iserforward_list.end(),   o_iserforward_list.begin(), o_iserforward_list.end());
@@ -556,9 +570,6 @@ void test_list()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::list<int> o_podlist(100);
     for(auto & elem : o_podlist)
       elem = random_value<decltype(o_podlist)::value_type>(gen);
@@ -579,14 +590,16 @@ void test_list()
     for(auto & elem : o_espllist)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar(o_podlist);
-    oar(o_iserlist);
-    oar(o_ispllist);
-    oar(o_eserlist);
-    oar(o_espllist);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podlist);
+      oar(o_iserlist);
+      oar(o_ispllist);
+      oar(o_eserlist);
+      oar(o_espllist);
+    }
 
     std::list<int> i_podlist;
     std::list<StructInternalSerialize> i_iserlist;
@@ -594,11 +607,16 @@ void test_list()
     std::list<StructExternalSerialize> i_eserlist;
     std::list<StructExternalSplit>     i_espllist;
 
-    iar(i_podlist);
-    iar(i_iserlist);
-    iar(i_ispllist);
-    iar(i_eserlist);
-    iar(i_espllist);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podlist);
+      iar(i_iserlist);
+      iar(i_ispllist);
+      iar(i_eserlist);
+      iar(i_espllist);
+    }
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podlist.begin(),    i_podlist.end(),    o_podlist.begin(),  o_podlist.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserlist.begin(),   i_iserlist.end(),   o_iserlist.begin(), o_iserlist.end());
@@ -627,9 +645,6 @@ void test_map()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::map<size_t, std::vector<StructInternalSerialize>> o_vectormap;
     for(int j=0; j<10; ++j)
     {
@@ -642,13 +657,13 @@ void test_map()
     for(int j=0; j<100; ++j)
       o_podmap.insert({random_value<std::string>(gen), random_value<int>(gen)});
 
-    std::map<double, StructInternalSerialize> o_isermap;
+    std::map<int, StructInternalSerialize> o_isermap;
     for(int j=0; j<100; ++j)
-      o_isermap.insert({random_value<double>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+      o_isermap.insert({random_value<int>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
-    std::map<float, StructInternalSplit> o_isplmap;
+    std::map<int, StructInternalSplit> o_isplmap;
     for(int j=0; j<100; ++j)
-      o_isplmap.insert({random_value<float>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+      o_isplmap.insert({random_value<int>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
     std::map<uint32_t, StructExternalSerialize> o_esermap;
     for(int j=0; j<100; ++j)
@@ -658,29 +673,36 @@ void test_map()
     for(int j=0; j<100; ++j)
       o_esplmap.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
-    oar(o_vectormap);
-    oar(o_podmap);
-    oar(o_isermap);
-    oar(o_isplmap);
-    oar(o_esermap);
-    oar(o_esplmap);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_vectormap);
+      oar(o_podmap);
+      oar(o_isermap);
+      oar(o_isplmap);
+      oar(o_esermap);
+      oar(o_esplmap);
+    }
 
     std::map<size_t, std::vector<StructInternalSerialize>> i_vectormap;
     std::map<std::string, int> i_podmap;
-    std::map<double, StructInternalSerialize>   i_isermap;
-    std::map<float, StructInternalSplit>        i_isplmap;
+    std::map<int, StructInternalSerialize>   i_isermap;
+    std::map<int, StructInternalSplit>        i_isplmap;
     std::map<uint32_t, StructExternalSerialize> i_esermap;
     std::map<int8_t, StructExternalSplit>       i_esplmap;
 
-    iar(i_vectormap);
-    iar(i_podmap);
-    iar(i_isermap);
-    iar(i_isplmap);
-    iar(i_esermap);
-    iar(i_esplmap);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_vectormap);
+      iar(i_podmap);
+      iar(i_isermap);
+      iar(i_isplmap);
+      iar(i_esermap);
+      iar(i_esplmap);
+    }
 
     BOOST_CHECK_EQUAL(i_vectormap.size(), o_vectormap.size());
     auto o_v_it = o_vectormap.begin();
@@ -718,9 +740,6 @@ void test_multimap()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::multimap<std::string, int> o_podmultimap;
     for(int j=0; j<100; ++j)
     {
@@ -761,14 +780,16 @@ void test_multimap()
       o_esplmultimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    oar(o_podmultimap);
-    oar(o_isermultimap);
-    oar(o_isplmultimap);
-    oar(o_esermultimap);
-    oar(o_esplmultimap);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podmultimap);
+      oar(o_isermultimap);
+      oar(o_isplmultimap);
+      oar(o_esermultimap);
+      oar(o_esplmultimap);
+    }
 
     std::multimap<std::string, int> i_podmultimap;
     std::multimap<double, StructInternalSerialize>   i_isermultimap;
@@ -776,12 +797,16 @@ void test_multimap()
     std::multimap<uint32_t, StructExternalSerialize> i_esermultimap;
     std::multimap<int8_t, StructExternalSplit>       i_esplmultimap;
 
-    iar(i_podmultimap);
-    iar(i_isermultimap);
-    iar(i_isplmultimap);
-    iar(i_esermultimap);
-    iar(i_esplmultimap);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
 
+      iar(i_podmultimap);
+      iar(i_isermultimap);
+      iar(i_isplmultimap);
+      iar(i_esermultimap);
+      iar(i_esplmultimap);
+    }
 
 #define MULTIMAP_CHECK(InMap, OutMap) \
     for( auto & pair : OutMap ) \
@@ -824,21 +849,21 @@ void test_memory()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_xptr2 = o_xptr1;
     std::shared_ptr<int> o_yptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_yptr2 = o_yptr1;
     std::shared_ptr<int> o_nullptr1;
     std::shared_ptr<int> o_nullptr2;
-    oar( o_xptr1, o_xptr2 );
-    oar( o_yptr1, o_yptr2 );
-    oar( o_nullptr1, o_nullptr2 );
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+
+      oar( o_xptr1, o_xptr2 );
+      oar( o_yptr1, o_yptr2 );
+      oar( o_nullptr1, o_nullptr2 );
+    }
 
     std::shared_ptr<int> i_xptr1;
     std::shared_ptr<int> i_xptr2;
@@ -846,9 +871,15 @@ void test_memory()
     std::shared_ptr<int> i_yptr2;
     std::shared_ptr<int> i_nullptr1;
     std::shared_ptr<int> i_nullptr2;
-    iar( i_xptr1, i_xptr2);
-    iar( i_yptr1, i_yptr2);
-    oar( i_nullptr1, i_nullptr2 );
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar( i_xptr1, i_xptr2);
+      iar( i_yptr1, i_yptr2);
+      iar( i_nullptr1, i_nullptr2 );
+    }
 
     BOOST_CHECK_EQUAL(o_xptr1.get(), o_xptr2.get());
     BOOST_CHECK_EQUAL(i_xptr1.get(), i_xptr2.get());
@@ -881,9 +912,6 @@ void test_queue()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::queue<int> o_podqueue;
     for(int j=0; j<100; ++j)
       o_podqueue.push(random_value<int>(gen));
@@ -904,14 +932,16 @@ void test_queue()
     for(int j=0; j<100; ++j)
       o_esplqueue.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar(o_podqueue);
-    oar(o_iserqueue);
-    oar(o_isplqueue);
-    oar(o_eserqueue);
-    oar(o_esplqueue);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podqueue);
+      oar(o_iserqueue);
+      oar(o_isplqueue);
+      oar(o_eserqueue);
+      oar(o_esplqueue);
+    }
 
     std::queue<int> i_podqueue;
     std::queue<StructInternalSerialize> i_iserqueue;
@@ -919,11 +949,16 @@ void test_queue()
     std::queue<StructExternalSerialize> i_eserqueue;
     std::queue<StructExternalSplit>     i_esplqueue;
 
-    iar(i_podqueue);
-    iar(i_iserqueue);
-    iar(i_isplqueue);
-    iar(i_eserqueue);
-    iar(i_esplqueue);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podqueue);
+      iar(i_iserqueue);
+      iar(i_isplqueue);
+      iar(i_eserqueue);
+      iar(i_esplqueue);
+    }
 
     auto & i_podqueue_c  = cereal::queue_detail::container(i_podqueue);
     auto & i_iserqueue_c = cereal::queue_detail::container(i_iserqueue);
@@ -964,9 +999,6 @@ void test_priority_queue()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::priority_queue<int> o_podpriority_queue;
     for(int j=0; j<100; ++j)
       o_podpriority_queue.push(random_value<int>(gen));
@@ -987,14 +1019,16 @@ void test_priority_queue()
     for(int j=0; j<100; ++j)
       o_esplpriority_queue.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar(o_podpriority_queue);
-    oar(o_iserpriority_queue);
-    oar(o_isplpriority_queue);
-    oar(o_eserpriority_queue);
-    oar(o_esplpriority_queue);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podpriority_queue);
+      oar(o_iserpriority_queue);
+      oar(o_isplpriority_queue);
+      oar(o_eserpriority_queue);
+      oar(o_esplpriority_queue);
+    }
 
     std::priority_queue<int> i_podpriority_queue;
     std::priority_queue<StructInternalSerialize> i_iserpriority_queue;
@@ -1002,11 +1036,16 @@ void test_priority_queue()
     std::priority_queue<StructExternalSerialize> i_eserpriority_queue;
     std::priority_queue<StructExternalSplit>     i_esplpriority_queue;
 
-    iar(i_podpriority_queue);
-    iar(i_iserpriority_queue);
-    iar(i_isplpriority_queue);
-    iar(i_eserpriority_queue);
-    iar(i_esplpriority_queue);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podpriority_queue);
+      iar(i_iserpriority_queue);
+      iar(i_isplpriority_queue);
+      iar(i_eserpriority_queue);
+      iar(i_esplpriority_queue);
+    }
 
     auto & i_podpriority_queue_c  = cereal::queue_detail::container(i_podpriority_queue);
     auto & i_iserpriority_queue_c = cereal::queue_detail::container(i_iserpriority_queue);
@@ -1033,6 +1072,7 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
   test_priority_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+// TODO: xml doesn't do empty classes by default, need std::less
 //BOOST_AUTO_TEST_CASE( xml_priority_queue )
 //{
 //  test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1047,9 +1087,6 @@ void test_set()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::set<int> o_podset;
     for(int j=0; j<100; ++j)
       o_podset.insert(random_value<int>(gen));
@@ -1070,14 +1107,16 @@ void test_set()
     for(int j=0; j<100; ++j)
       o_esplset.insert({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar(o_podset);
-    oar(o_iserset);
-    oar(o_isplset);
-    oar(o_eserset);
-    oar(o_esplset);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podset);
+      oar(o_iserset);
+      oar(o_isplset);
+      oar(o_eserset);
+      oar(o_esplset);
+    }
 
     std::set<int> i_podset;
     std::set<StructInternalSerialize>   i_iserset;
@@ -1085,11 +1124,16 @@ void test_set()
     std::set<StructExternalSerialize> i_eserset;
     std::set<StructExternalSplit>       i_esplset;
 
-    iar(i_podset);
-    iar(i_iserset);
-    iar(i_isplset);
-    iar(i_eserset);
-    iar(i_esplset);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podset);
+      iar(i_iserset);
+      iar(i_isplset);
+      iar(i_eserset);
+      iar(i_esplset);
+    }
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podset.begin(),    i_podset.end(),    o_podset.begin(),  o_podset.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iserset.begin(),   i_iserset.end(),   o_iserset.begin(), o_iserset.end());
@@ -1118,9 +1162,6 @@ void test_multiset()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::multiset<int> o_podmultiset;
     for(int j=0; j<100; ++j)
     {
@@ -1161,14 +1202,16 @@ void test_multiset()
       o_esplmultiset.insert(value);
     }
 
-    oar(o_podmultiset);
-    oar(o_isermultiset);
-    oar(o_isplmultiset);
-    oar(o_esermultiset);
-    oar(o_esplmultiset);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podmultiset);
+      oar(o_isermultiset);
+      oar(o_isplmultiset);
+      oar(o_esermultiset);
+      oar(o_esplmultiset);
+    }
 
     std::multiset<int> i_podmultiset;
     std::multiset<StructInternalSerialize> i_isermultiset;
@@ -1176,11 +1219,16 @@ void test_multiset()
     std::multiset<StructExternalSerialize> i_esermultiset;
     std::multiset<StructExternalSplit>     i_esplmultiset;
 
-    iar(i_podmultiset);
-    iar(i_isermultiset);
-    iar(i_isplmultiset);
-    iar(i_esermultiset);
-    iar(i_esplmultiset);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podmultiset);
+      iar(i_isermultiset);
+      iar(i_isplmultiset);
+      iar(i_esermultiset);
+      iar(i_esplmultiset);
+    }
 
     for(auto const & p : i_podmultiset)
     {
@@ -1228,9 +1276,6 @@ void test_stack()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::stack<int> o_podstack;
     for(int j=0; j<100; ++j)
       o_podstack.push(random_value<int>(gen));
@@ -1251,14 +1296,16 @@ void test_stack()
     for(int j=0; j<100; ++j)
       o_esplstack.push({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar(o_podstack);
-    oar(o_iserstack);
-    oar(o_isplstack);
-    oar(o_eserstack);
-    oar(o_esplstack);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podstack);
+      oar(o_iserstack);
+      oar(o_isplstack);
+      oar(o_eserstack);
+      oar(o_esplstack);
+    }
 
     std::stack<int> i_podstack;
     std::stack<StructInternalSerialize> i_iserstack;
@@ -1266,11 +1313,16 @@ void test_stack()
     std::stack<StructExternalSerialize> i_eserstack;
     std::stack<StructExternalSplit>     i_esplstack;
 
-    iar(i_podstack);
-    iar(i_iserstack);
-    iar(i_isplstack);
-    iar(i_eserstack);
-    iar(i_esplstack);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podstack);
+      iar(i_iserstack);
+      iar(i_isplstack);
+      iar(i_eserstack);
+      iar(i_esplstack);
+    }
 
     auto & i_podstack_c  = cereal::stack_detail::container(i_podstack);
     auto & i_iserstack_c = cereal::stack_detail::container(i_iserstack);
@@ -1317,24 +1369,28 @@ void test_string()
     std::basic_string<char32_t> o_u32string = random_basic_string<char32_t>(gen);
 
     std::ostringstream os;
-    OArchive oar(os);
-    oar(o_string);
-    oar(o_wstring);
-    oar(o_u16string);
-    oar(o_u32string);
-
-    std::istringstream is(os.str());
-    IArchive iar(is);
+    {
+      OArchive oar(os);
+      oar(o_string);
+      oar(o_wstring);
+      oar(o_u16string);
+      oar(o_u32string);
+    }
 
     std::basic_string<char> i_string;
     std::basic_string<wchar_t> i_wstring;
     std::basic_string<char16_t> i_u16string;
     std::basic_string<char32_t> i_u32string;
 
-    iar(i_string);
-    iar(i_wstring);
-    iar(i_u16string);
-    iar(i_u32string);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_string);
+      iar(i_wstring);
+      iar(i_u16string);
+      iar(i_u32string);
+    }
 
     BOOST_CHECK_EQUAL(i_string, o_string);
     BOOST_CHECK_EQUAL_COLLECTIONS(i_wstring.begin(),     i_wstring.end(),   o_wstring.begin(),   o_wstring.end());
@@ -1348,6 +1404,7 @@ BOOST_AUTO_TEST_CASE( binary_string )
   test_string<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+// TODO: xml needs support for non standard strings
 //BOOST_AUTO_TEST_CASE( xml_string )
 //{
 //  test_string<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1362,9 +1419,6 @@ void test_unordered_map()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::unordered_map<std::string, int> o_podunordered_map;
     for(int j=0; j<100; ++j)
       o_podunordered_map.insert({random_value<std::string>(gen), random_value<int>(gen)});
@@ -1385,14 +1439,16 @@ void test_unordered_map()
     for(int j=0; j<100; ++j)
       o_esplunordered_map.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
-    oar(o_podunordered_map);
-    oar(o_iserunordered_map);
-    oar(o_isplunordered_map);
-    oar(o_eserunordered_map);
-    oar(o_esplunordered_map);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podunordered_map);
+      oar(o_iserunordered_map);
+      oar(o_isplunordered_map);
+      oar(o_eserunordered_map);
+      oar(o_esplunordered_map);
+    }
 
     std::unordered_map<std::string, int> i_podunordered_map;
     std::unordered_map<double, StructInternalSerialize>   i_iserunordered_map;
@@ -1400,11 +1456,16 @@ void test_unordered_map()
     std::unordered_map<uint32_t, StructExternalSerialize> i_eserunordered_map;
     std::unordered_map<int8_t, StructExternalSplit>       i_esplunordered_map;
 
-    iar(i_podunordered_map);
-    iar(i_iserunordered_map);
-    iar(i_isplunordered_map);
-    iar(i_eserunordered_map);
-    iar(i_esplunordered_map);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podunordered_map);
+      iar(i_iserunordered_map);
+      iar(i_isplunordered_map);
+      iar(i_eserunordered_map);
+      iar(i_esplunordered_map);
+    }
 
     for(auto const & p : i_podunordered_map)
     {
@@ -1462,9 +1523,6 @@ void test_unordered_multimap()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::unordered_multimap<std::string, int> o_podunordered_multimap;
     for(int j=0; j<100; ++j)
     {
@@ -1505,14 +1563,16 @@ void test_unordered_multimap()
       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    oar(o_podunordered_multimap);
-    oar(o_iserunordered_multimap);
-    oar(o_isplunordered_multimap);
-    oar(o_eserunordered_multimap);
-    oar(o_esplunordered_multimap);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podunordered_multimap);
+      oar(o_iserunordered_multimap);
+      oar(o_isplunordered_multimap);
+      oar(o_eserunordered_multimap);
+      oar(o_esplunordered_multimap);
+    }
 
     std::unordered_multimap<std::string, int> i_podunordered_multimap;
     std::unordered_multimap<double, StructInternalSerialize>   i_iserunordered_multimap;
@@ -1520,18 +1580,22 @@ void test_unordered_multimap()
     std::unordered_multimap<uint32_t, StructExternalSerialize> i_eserunordered_multimap;
     std::unordered_multimap<int8_t, StructExternalSplit>       i_esplunordered_multimap;
 
-    iar(i_podunordered_multimap);
-    iar(i_iserunordered_multimap);
-    iar(i_isplunordered_multimap);
-    iar(i_eserunordered_multimap);
-    iar(i_esplunordered_multimap);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podunordered_multimap);
+      iar(i_iserunordered_multimap);
+      iar(i_isplunordered_multimap);
+      iar(i_eserunordered_multimap);
+      iar(i_esplunordered_multimap);
+    }
 
     BOOST_CHECK_EQUAL(i_podunordered_multimap.size(),  o_podunordered_multimap.size());
     BOOST_CHECK_EQUAL(i_iserunordered_multimap.size(), o_iserunordered_multimap.size());
     BOOST_CHECK_EQUAL(i_isplunordered_multimap.size(), o_isplunordered_multimap.size());
     BOOST_CHECK_EQUAL(i_eserunordered_multimap.size(), o_eserunordered_multimap.size());
     BOOST_CHECK_EQUAL(i_esplunordered_multimap.size(), o_esplunordered_multimap.size());
-
 
     for(auto const & p : i_podunordered_multimap)
     {
@@ -1594,9 +1658,6 @@ void test_unordered_set()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::unordered_set<int> o_podunordered_set;
     for(int j=0; j<100; ++j)
       o_podunordered_set.insert(random_value<int>(gen));
@@ -1617,14 +1678,16 @@ void test_unordered_set()
     for(int j=0; j<100; ++j)
       o_esplunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
 
-    oar(o_podunordered_set);
-    oar(o_iserunordered_set);
-    oar(o_isplunordered_set);
-    oar(o_eserunordered_set);
-    oar(o_esplunordered_set);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podunordered_set);
+      oar(o_iserunordered_set);
+      oar(o_isplunordered_set);
+      oar(o_eserunordered_set);
+      oar(o_esplunordered_set);
+    }
 
     std::unordered_set<int> i_podunordered_set;
     std::unordered_set<StructInternalSerialize, StructHash<StructInternalSerialize>>   i_iserunordered_set;
@@ -1632,11 +1695,16 @@ void test_unordered_set()
     std::unordered_set<StructExternalSerialize, StructHash<StructExternalSerialize>>   i_eserunordered_set;
     std::unordered_set<StructExternalSplit, StructHash<StructExternalSplit>>           i_esplunordered_set;
 
-    iar(i_podunordered_set);
-    iar(i_iserunordered_set);
-    iar(i_isplunordered_set);
-    iar(i_eserunordered_set);
-    iar(i_esplunordered_set);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podunordered_set);
+      iar(i_iserunordered_set);
+      iar(i_isplunordered_set);
+      iar(i_eserunordered_set);
+      iar(i_esplunordered_set);
+    }
 
     for(auto const & p : i_podunordered_set)
     {
@@ -1684,9 +1752,6 @@ void test_unordered_multiset()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::unordered_multiset<int> o_podunordered_multiset;
     for(int j=0; j<100; ++j)
     {
@@ -1727,14 +1792,16 @@ void test_unordered_multiset()
       o_esplunordered_multiset.insert(value);
     }
 
-    oar(o_podunordered_multiset);
-    oar(o_iserunordered_multiset);
-    oar(o_isplunordered_multiset);
-    oar(o_eserunordered_multiset);
-    oar(o_esplunordered_multiset);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podunordered_multiset);
+      oar(o_iserunordered_multiset);
+      oar(o_isplunordered_multiset);
+      oar(o_eserunordered_multiset);
+      oar(o_esplunordered_multiset);
+    }
 
     std::unordered_multiset<int> i_podunordered_multiset;
     std::unordered_multiset<StructInternalSerialize, StructHash<StructInternalSerialize>> i_iserunordered_multiset;
@@ -1742,11 +1809,16 @@ void test_unordered_multiset()
     std::unordered_multiset<StructExternalSerialize, StructHash<StructExternalSerialize>> i_eserunordered_multiset;
     std::unordered_multiset<StructExternalSplit, StructHash<StructExternalSplit>>         i_esplunordered_multiset;
 
-    iar(i_podunordered_multiset);
-    iar(i_iserunordered_multiset);
-    iar(i_isplunordered_multiset);
-    iar(i_eserunordered_multiset);
-    iar(i_esplunordered_multiset);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podunordered_multiset);
+      iar(i_iserunordered_multiset);
+      iar(i_isplunordered_multiset);
+      iar(i_eserunordered_multiset);
+      iar(i_esplunordered_multiset);
+    }
 
     for(auto const & p : i_podunordered_multiset)
     {
@@ -1794,9 +1866,6 @@ void test_vector()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::vector<int> o_podvector(100);
     for(auto & elem : o_podvector)
       elem = random_value<decltype(o_podvector)::value_type>(gen);
@@ -1817,14 +1886,16 @@ void test_vector()
     for(auto & elem : o_esplvector)
       elem = { random_value<int>(gen), random_value<int>(gen) };
 
-    oar(o_podvector);
-    oar(o_iservector);
-    oar(o_isplvector);
-    oar(o_eservector);
-    oar(o_esplvector);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podvector);
+      oar(o_iservector);
+      oar(o_isplvector);
+      oar(o_eservector);
+      oar(o_esplvector);
+    }
 
     std::vector<int> i_podvector;
     std::vector<StructInternalSerialize> i_iservector;
@@ -1832,11 +1903,16 @@ void test_vector()
     std::vector<StructExternalSerialize> i_eservector;
     std::vector<StructExternalSplit>     i_esplvector;
 
-    iar(i_podvector);
-    iar(i_iservector);
-    iar(i_isplvector);
-    iar(i_eservector);
-    iar(i_esplvector);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podvector);
+      iar(i_iservector);
+      iar(i_isplvector);
+      iar(i_eservector);
+      iar(i_esplvector);
+    }
 
     BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
     BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
@@ -1873,23 +1949,22 @@ void test_pair()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::pair<int, int> o_podpair = {rng(), rng()};
     std::pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = {{rng(), rng()}, {rng(), rng()}};
     std::pair<StructInternalSplit, StructInternalSplit> o_isplpair = {{rng(), rng()}, {rng(), rng()}};
     std::pair<StructExternalSerialize, StructExternalSerialize> o_eserpair = {{rng(), rng()}, {rng(), rng()}};
     std::pair<StructExternalSplit, StructExternalSplit> o_esplpair = {{rng(), rng()}, {rng(), rng()}};
 
-    oar(o_podpair);
-    oar(o_iserpair);
-    oar(o_isplpair);
-    oar(o_eserpair);
-    oar(o_esplpair);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podpair);
+      oar(o_iserpair);
+      oar(o_isplpair);
+      oar(o_eserpair);
+      oar(o_esplpair);
+    }
 
     std::pair<int, int> i_podpair;
     std::pair<StructInternalSerialize, StructInternalSerialize> i_iserpair;
@@ -1897,11 +1972,16 @@ void test_pair()
     std::pair<StructExternalSerialize, StructExternalSerialize> i_eserpair;
     std::pair<StructExternalSplit, StructExternalSplit> i_esplpair;
 
-    iar(i_podpair);
-    iar(i_iserpair);
-    iar(i_isplpair);
-    iar(i_eserpair);
-    iar(i_esplpair);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podpair);
+      iar(i_iserpair);
+      iar(i_isplpair);
+      iar(i_eserpair);
+      iar(i_esplpair);
+    }
 
     BOOST_CHECK_EQUAL( i_podpair.first, o_podpair.first );
     BOOST_CHECK_EQUAL( i_podpair.second, o_podpair.second );
@@ -1941,9 +2021,6 @@ void test_tuple()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     auto o_podtuple = std::make_tuple( rng(), rng(), rng(), rng() );
     auto o_isertuple = std::make_tuple( StructInternalSerialize( rng(), rng() ),
         StructInternalSerialize( rng(), rng() ),
@@ -1962,14 +2039,16 @@ void test_tuple()
         StructExternalSerialize( rng(), rng() ),
         StructExternalSerialize( rng(), rng() ) );
 
-    oar(o_podtuple);
-    oar(o_isertuple);
-    oar(o_ispltuple);
-    oar(o_esertuple);
-    oar(o_espltuple);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_podtuple);
+      oar(o_isertuple);
+      oar(o_ispltuple);
+      oar(o_esertuple);
+      oar(o_espltuple);
+    }
 
     decltype( o_podtuple  ) i_podtuple;
     decltype( o_isertuple ) i_isertuple;
@@ -1977,11 +2056,16 @@ void test_tuple()
     decltype( o_esertuple ) i_esertuple;
     decltype( o_espltuple ) i_espltuple;
 
-    iar(i_podtuple);
-    iar(i_isertuple);
-    iar(i_ispltuple);
-    iar(i_esertuple);
-    iar(i_espltuple);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_podtuple);
+      iar(i_isertuple);
+      iar(i_ispltuple);
+      iar(i_esertuple);
+      iar(i_espltuple);
+    }
 
     BOOST_CHECK_EQUAL( i_podtuple == o_podtuple, true );
     BOOST_CHECK_EQUAL( i_isertuple == o_isertuple, true );
@@ -2014,27 +2098,31 @@ void test_complex()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::complex<float> o_float( rngF(), rngF() );
     std::complex<double> o_double( rngD(), rngD() );
     std::complex<long double> o_ldouble( rngLD(), rngLD() );
 
-    oar(o_float);
-    oar(o_double);
-    oar(o_ldouble);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_float);
+      oar(o_double);
+      oar(o_ldouble);
+    }
 
     std::complex<float> i_float;
     std::complex<double> i_double;
     std::complex<long double> i_ldouble;
 
-    iar(i_float);
-    iar(i_double);
-    iar(i_ldouble);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_float);
+      iar(i_double);
+      iar(i_ldouble);
+    }
 
     BOOST_CHECK_EQUAL( o_float, i_float );
     BOOST_CHECK_EQUAL( o_double, i_double );
@@ -2065,27 +2153,31 @@ void test_bitset()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     std::bitset<32> o_bit32( rng32() );
     std::bitset<65> o_bit65( rng65() );
     std::bitset<256> o_bit256( rng256() );
 
-    oar(o_bit32);
-    oar(o_bit65);
-    oar(o_bit256);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_bit32);
+      oar(o_bit65);
+      oar(o_bit256);
+    }
 
     std::bitset<32>  i_bit32;
     std::bitset<65>  i_bit65;
     std::bitset<256> i_bit256;
 
-    iar(i_bit32);
-    iar(i_bit65);
-    iar(i_bit256);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_bit32);
+      iar(i_bit65);
+      iar(i_bit256);
+    }
 
     BOOST_CHECK_EQUAL( o_bit32, i_bit32 );
     BOOST_CHECK_EQUAL( o_bit65, i_bit65 );
@@ -2109,9 +2201,6 @@ void test_chrono()
 {
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     auto o_timePoint1 = std::chrono::system_clock::now();
     auto o_timePoint2 = std::chrono::steady_clock::now();
     auto o_timePoint3 = std::chrono::high_resolution_clock::now();
@@ -2120,15 +2209,17 @@ void test_chrono()
     auto o_duration2 = std::chrono::steady_clock::now() - o_timePoint2;
     auto o_duration3 = std::chrono::high_resolution_clock::now() - o_timePoint3;
 
-    oar(o_timePoint1);
-    oar(o_timePoint2);
-    oar(o_timePoint3);
-    oar(o_duration1);
-    oar(o_duration2);
-    oar(o_duration3);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar(o_timePoint1);
+      oar(o_timePoint2);
+      oar(o_timePoint3);
+      oar(o_duration1);
+      oar(o_duration2);
+      oar(o_duration3);
+    }
 
     decltype(o_timePoint1) i_timePoint1;
     decltype(o_timePoint2) i_timePoint2;
@@ -2137,12 +2228,17 @@ void test_chrono()
     decltype(o_duration2) i_duration2;
     decltype(o_duration3) i_duration3;
 
-    iar(i_timePoint1);
-    iar(i_timePoint2);
-    iar(i_timePoint3);
-    iar(i_duration1);
-    iar(i_duration2);
-    iar(i_duration3);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_timePoint1);
+      iar(i_timePoint2);
+      iar(i_timePoint3);
+      iar(i_duration1);
+      iar(i_duration2);
+      iar(i_duration3);
+    }
 
     BOOST_CHECK( o_timePoint1 == i_timePoint1 );
     BOOST_CHECK( o_timePoint2 == i_timePoint2 );
@@ -2244,25 +2340,29 @@ void test_structs_specialized()
 
   for(int i=0; i<100; ++i)
   {
-    std::ostringstream os;
-    OArchive oar(os);
-
     SpecializedMSerialize  o_iser = { random_value<int>(gen) };
     SpecializedMSplit      o_ispl = { random_value<int>(gen) };
     SpecializedNMSerialize o_eser = { random_value<int>(gen) };
     SpecializedNMSplit     o_espl = { random_value<int>(gen) };
 
-    oar( o_iser, o_ispl, o_eser, o_espl);
+    std::ostringstream os;
+    {
+      OArchive oar(os);
 
-    std::istringstream is(os.str());
-    IArchive iar(is);
+      oar( o_iser, o_ispl, o_eser, o_espl);
+    }
 
     decltype(o_iser) i_iser;
     decltype(o_ispl) i_ispl;
     decltype(o_eser) i_eser;
     decltype(o_espl) i_espl;
 
-    iar( i_iser, i_ispl, i_eser, i_espl);
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar( i_iser, i_ispl, i_eser, i_espl);
+    }
 
     BOOST_CHECK(i_iser.x == o_iser.x);
     BOOST_CHECK(i_ispl.x == o_ispl.x);

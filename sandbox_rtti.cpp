@@ -104,9 +104,8 @@ struct OurBase
   virtual void foo() {}
 
   template<class Archive>
-    void serialize(Archive & ar)
+    void serialize(Archive &)
     { }
-
 };
 
 struct OurType : public OurBase
@@ -169,7 +168,10 @@ namespace cereal
   template <class Archive> struct specialize<Archive, TestType, cereal::specialization::member_serialize> {};
 }
 
-CEREAL_REGISTER_TYPE(DerivedVirtual);
+struct AAA
+{
+  virtual void foo() = 0;
+};
 
 template <class T> void nop(T&&) {}
 
