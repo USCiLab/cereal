@@ -273,6 +273,14 @@ struct SubFixture
             CEREAL_NVP(d),
             CEREAL_NVP(s) );
       }
+    void change()
+    {
+      a = 4;
+      b = 4;
+      c = 4;
+      d = 4;
+      s = "4";
+    }
 };
 
 struct Fixture
@@ -286,6 +294,12 @@ struct Fixture
             f3 );
       }
 
+    void change()
+    {
+      f1.change();
+      f2.change();
+      f3.change();
+    }
 };
 
 void foo(int t)
@@ -307,11 +321,33 @@ int main()
     cereal::JSONOutputArchive oar( std::cout );
 
     Fixture fixture;
-
     oar( CEREAL_NVP(fixture) );
+
+    std::vector<double> vecD = {1.23, 4.56, 7,89};
+    oar( CEREAL_NVP(vecD) );
+
+    bool b = true;
+    oar( cereal::make_nvp("coolean boolean", b) );
+
+    std::shared_ptr<std::string> sPtr = std::make_shared<std::string>("i'm a shared pointer");
+    oar( CEREAL_NVP(sPtr) );
+
+    int xxx[] = {-1, 95, 3};
+    oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
+    oar.saveBinaryValue( xxx, sizeof(int)*3 );
   }
 
   std::cout << std::endl;
+
+  {
+    cereal::JSONInputArchive iar( std::cin );
+
+    Fixture fixture; fixture.change();
+    //iar( fixture );
+
+    std::vector<double> vecD;
+    //iar( vecD );
+  }
 
 
   return 0;

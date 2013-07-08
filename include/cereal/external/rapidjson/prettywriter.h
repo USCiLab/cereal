@@ -20,9 +20,9 @@ public:
 	//! Constructor
 	/*! \param stream Output stream.
 		\param allocator User supplied allocator. If it is null, it will create a private one.
-		\param levelDepth Initial capacity of 
+		\param levelDepth Initial capacity of
 	*/
-	PrettyWriter(Stream& stream, Allocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) : 
+	PrettyWriter(Stream& stream, Allocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) :
 		Base(stream, allocator, levelDepth), indentChar_(' '), indentCharCount_(4) {}
 
 	//! Set custom indentation.

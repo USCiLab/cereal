@@ -34,6 +34,7 @@
 
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/genericstream.h>
+#include <cereal/external/rapidjson/reader.h>
 #include <cereal/external/base64.hpp>
 
 #include <sstream>
@@ -135,14 +136,17 @@ namespace cereal
           the data encoded as a base64 string */
       void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
       {
+        setNextName( name );
+        writeName();
+
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
+        saveValue( base64string );
       };
 
       void setOutputType(bool outputType)
       {
         itsOutputType = outputType;
       }
-
-    protected:
 
     private:
       WriteStream itsWriteStream;          //!< Rapidjson write stream
@@ -153,18 +157,28 @@ namespace cereal
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
   }; // JSONOutputArchive
 
-
-
   // ######################################################################
   //! An input archive designed to load data from JSON
   /*! \note Not working yet!
       \ingroup Archives */
-  class JSONInputArchive
+  class JSONInputArchive : public InputArchive<JSONInputArchive>
   {
+    //typedef rapidjson::GenericWriteStream WriteStream;
+    //typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
+
+    public:
+      //! Construct, outputting to the provided stream
+      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
+                        even cout! */
+      JSONInputArchive(std::istream & ) :
+        InputArchive<JSONInputArchive>(this)
+      {
+      }
   };
 
   // ######################################################################
   // JSONArchive prologue and epilogue functions
+  // ######################################################################
 
   //! Prologue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
@@ -194,7 +208,7 @@ namespace cereal
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
   template <class T>
-    typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & data )
   {
     ar.startNode();
@@ -203,21 +217,21 @@ namespace cereal
   //! Epilogue for all other types other for JSON archives
   /*! Finishes the node created in the prologue */
   template <class T>
-    typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   epilogue( JSONOutputArchive & ar, T const & data )
   {
     ar.finishNode();
   }
 
   template <class T>
-    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & data )
   {
     ar.writeName();
   }
 
   template <class T>
-    typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   epilogue( JSONOutputArchive & ar, T const & data )
   {
   }
@@ -235,6 +249,7 @@ namespace cereal
 
   // ######################################################################
   // Common JSONArchive serialization functions
+  // ######################################################################
 
   //! Serializing NVP types to JSON
   template <class Archive, class T> inline
@@ -248,7 +263,7 @@ namespace cereal
   //! Serializing SizeTags to JSON
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT(JSONInputArchive, JSONOutputArchive)
-  serialize( Archive & ar, SizeTag<T> & )
+  serialize( Archive &, SizeTag<T> & )
   { }
 
   //! Saving for arithmetic to JSON
@@ -265,11 +280,10 @@ namespace cereal
   {
     ar.saveValue( str );
   }
-
 } // namespace cereal
 
 // register archives for polymorphic support
+CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive);
 CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive);
 
 #endif // CEREAL_ARCHIVES_JSON_HPP_
-

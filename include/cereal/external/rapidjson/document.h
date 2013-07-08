@@ -26,11 +26,11 @@ namespace rapidjson {
 	\tparam Allocator	Allocator type for allocating memory of object, array and string.
 */
 #pragma pack (push, 4)
-template <typename Encoding, typename Allocator = MemoryPoolAllocator<> > 
+template <typename Encoding, typename Allocator = MemoryPoolAllocator<> >
 class GenericValue {
 public:
 	//! Name-value pair in an object.
-	struct Member { 
+	struct Member {
 		GenericValue<Encoding, Allocator> name;		//!< name of member (must be a string)
 		GenericValue<Encoding, Allocator> value;	//!< value of member.
 	};
@@ -74,7 +74,7 @@ public:
 	GenericValue(bool b) : flags_(b ? kTrueFlag : kFalseFlag) {}
 
 	//! Constructor for int value.
-	GenericValue(int i) : flags_(kNumberIntFlag) { 
+	GenericValue(int i) : flags_(kNumberIntFlag) {
 		data_.n.i64 = i;
 		if (i >= 0)
 			flags_ |= kUintFlag | kUint64Flag;
@@ -82,7 +82,7 @@ public:
 
 	//! Constructor for unsigned value.
 	GenericValue(unsigned u) : flags_(kNumberUintFlag) {
-		data_.n.u64 = u; 
+		data_.n.u64 = u;
 		if (!(u & 0x80000000))
 			flags_ |= kIntFlag | kInt64Flag;
 	}
@@ -116,7 +116,7 @@ public:
 	GenericValue(double d) : flags_(kNumberDoubleFlag) { data_.n.d = d; }
 
 	//! Constructor for constant string (i.e. do not make a copy of string)
-	GenericValue(const Ch* s, SizeType length) { 
+	GenericValue(const Ch* s, SizeType length) {
 		RAPIDJSON_ASSERT(s != NULL);
 		flags_ = kConstStringFlag;
 		data_.s.str = s;
@@ -342,7 +342,7 @@ public:
 	/*! This function do not deallocate memory in the array, i.e. the capacity is unchanged.
 	*/
 	void Clear() {
-		RAPIDJSON_ASSERT(IsArray()); 
+		RAPIDJSON_ASSERT(IsArray());
 		for (SizeType i = 0; i < data_.a.size; ++i)
 			data_.a.elements[i].~GenericValue();
 		data_.a.size = 0;
@@ -453,21 +453,21 @@ int z = a[0u].GetInt();				// This works too.
 
 	//! Set this value as a string without copying source string.
 	/*! This version has better performance with supplied length, and also support string containing null character.
-		\param s source string pointer. 
+		\param s source string pointer.
 		\param length The length of source string, excluding the trailing null terminator.
 		\return The value itself for fluent API.
 	*/
 	GenericValue& SetString(const Ch* s, SizeType length) { this->~GenericValue(); SetStringRaw(s, length); return *this; }
 
 	//! Set this value as a string without copying source string.
-	/*! \param s source string pointer. 
+	/*! \param s source string pointer.
 		\return The value itself for fluent API.
 	*/
 	GenericValue& SetString(const Ch* s) { return SetString(s, internal::StrLen(s)); }
 
 	//! Set this value as a string by copying from source string.
 	/*! This version has better performance with supplied length, and also support string containing null character.
-		\param s source string. 
+		\param s source string.
 		\param length The length of source string, excluding the trailing null terminator.
 		\param allocator Allocator for allocating copied buffer. Commonly use document.GetAllocator().
 		\return The value itself for fluent API.
@@ -475,7 +475,7 @@ int z = a[0u].GetInt();				// This works too.
 	GenericValue& SetString(const Ch* s, SizeType length, Allocator& allocator) { this->~GenericValue(); SetStringRaw(s, length, allocator); return *this; }
 
 	//! Set this value as a string by copying from source string.
-	/*!	\param s source string. 
+	/*!	\param s source string.
 		\param allocator Allocator for allocating copied buffer. Commonly use document.GetAllocator().
 		\return The value itself for fluent API.
 	*/
@@ -679,7 +679,7 @@ private:
 typedef GenericValue<UTF8<> > Value;
 
 ///////////////////////////////////////////////////////////////////////////////
-// GenericDocument 
+// GenericDocument
 
 //! A document for parsing JSON text as DOM.
 /*!
@@ -775,22 +775,22 @@ private:
 	void Uint64(uint64_t i) { new (stack_.template Push<ValueType>()) ValueType(i); }
 	void Double(double d) { new (stack_.template Push<ValueType>()) ValueType(d); }
 
-	void String(const Ch* str, SizeType length, bool copy) { 
-		if (copy) 
+	void String(const Ch* str, SizeType length, bool copy) {
+		if (copy)
 			new (stack_.template Push<ValueType>()) ValueType(str, length, GetAllocator());
 		else
 			new (stack_.template Push<ValueType>()) ValueType(str, length);
 	}
 
 	void StartObject() { new (stack_.template Push<ValueType>()) ValueType(kObjectType); }
-	
+
 	void EndObject(SizeType memberCount) {
 		typename ValueType::Member* members = stack_.template Pop<typename ValueType::Member>(memberCount);
 		stack_.template Top<ValueType>()->SetObjectRaw(members, (SizeType)memberCount, GetAllocator());
 	}
 
 	void StartArray() { new (stack_.template Push<ValueType>()) ValueType(kArrayType); }
-	
+
 	void EndArray(SizeType elementCount) {
 		ValueType* elements = stack_.template Pop<ValueType>(elementCount);
 		stack_.template Top<ValueType>()->SetArrayRaw(elements, elementCount, GetAllocator());
