@@ -165,9 +165,35 @@ namespace cereal
   // ######################################################################
   // Pointer serialization for polymorphic types
 
-  //! Saving std::shared_ptr for polymorphic types
+  //! Saving std::shared_ptr for polymorphic types, abstract
   template <class Archive, class T> inline
-  typename std::enable_if<std::is_polymorphic<T>::value, void>::type
+  typename std::enable_if<std::is_polymorphic<T>::value && std::is_abstract<T>::value, void>::type
+  save( Archive & ar, std::shared_ptr<T> const & ptr )
+  {
+    if(!ptr)
+    {
+      // same behavior as nullptr in memory implementation
+      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      return;
+    }
+
+    std::type_info const & ptrinfo = typeid(*ptr.get());
+    // ptrinfo can never be equal to T info since we can't have an instance
+    // of an abstract object
+    //  this implies we need to do the lookup
+
+    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+
+    auto binding = bindingMap.find(std::type_index(ptrinfo));
+    if(binding == bindingMap.end())
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+
+    binding->second.shared_ptr(&ar, ptr.get());
+  }
+
+  //! Saving std::shared_ptr for polymorphic types, not abstract
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_polymorphic<T>::value && !std::is_abstract<T>::value, void>::type
   save( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     if(!ptr)
@@ -237,9 +263,35 @@ namespace cereal
     ptr = sptr;
   }
 
-  //! Saving std::unique_ptr for polymorphic types
+  //! Saving std::unique_ptr for polymorphic types that are abstract
   template <class Archive, class T, class D> inline
-  typename std::enable_if<std::is_polymorphic<T>::value, void>::type
+  typename std::enable_if<std::is_polymorphic<T>::value && std::is_abstract<T>::value, void>::type
+  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  {
+    if(!ptr)
+    {
+      // same behavior as nullptr in memory implementation
+      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      return;
+    }
+
+    std::type_info const & ptrinfo = typeid(*ptr.get());
+    // ptrinfo can never be equal to T info since we can't have an instance
+    // of an abstract object
+    //  this implies we need to do the lookup
+
+    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+
+    auto binding = bindingMap.find(std::type_index(ptrinfo));
+    if(binding == bindingMap.end())
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+
+    binding->second.unique_ptr(&ar, ptr.get());
+  }
+
+  //! Saving std::unique_ptr for polymorphic types, not abstract
+  template <class Archive, class T, class D> inline
+  typename std::enable_if<std::is_polymorphic<T>::value && !std::is_abstract<T>::value, void>::type
   save( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     if(!ptr)

@@ -173,6 +173,15 @@ struct AAA
   virtual void foo() = 0;
 };
 
+struct BBB : AAA
+{
+  void foo() {}
+  template <class Archive>
+  void serialize( Archive & ) {}
+};
+
+CEREAL_REGISTER_TYPE(BBB);
+
 template <class T> void nop(T&&) {}
 
 int main()
@@ -193,6 +202,10 @@ int main()
     //oarchive(ptr3);
     //oarchive(ptr4);
     oarchive(ptr5);
+
+
+    std::shared_ptr<AAA> a = std::make_shared<BBB>();
+    oarchive(a);
   }
 
   {
@@ -212,6 +225,4 @@ int main()
     //iarchive(ptr4);
     iarchive(ptr5);
   }
-
-  //std::remove("rtti.txt");
 }
