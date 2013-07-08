@@ -37,6 +37,7 @@ namespace cereal
 {
   namespace set_detail
   {
+    //! @internal
     template <class Archive, class SetT> inline
     void save( Archive & ar, SetT const & set )
     {
@@ -46,6 +47,7 @@ namespace cereal
         ar( i );
     }
 
+    //! @internal
     template <class Archive, class SetT> inline
     void load( Archive & ar, SetT & set )
     {

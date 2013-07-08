@@ -38,6 +38,7 @@ namespace cereal
   namespace queue_detail
   {
     //! Allows access to the protected container in queue
+    /*! @internal */
     template <class T, class C> inline
     C const & container( std::queue<T, C> const & queue )
     {
@@ -53,6 +54,7 @@ namespace cereal
     }
 
     //! Allows access to the protected container in priority queue
+    /*! @internal */
     template <class T, class C, class Comp> inline
     C const & container( std::priority_queue<T, C, Comp> const & priority_queue )
     {
@@ -68,6 +70,7 @@ namespace cereal
     }
 
     //! Allows access to the protected comparator in priority queue
+    /*! @internal */
     template <class T, class C, class Comp> inline
     Comp const & comparator( std::priority_queue<T, C, Comp> const & priority_queue )
     {

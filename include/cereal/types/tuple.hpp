@@ -38,6 +38,7 @@ namespace cereal
   namespace tuple_detail
   {
     // unwinds a tuple to save it
+    //! @internal
     template <size_t Height>
     struct serialize
     {
@@ -50,6 +51,7 @@ namespace cereal
     };
 
     // Zero height specialization - nothing to do here
+    //! @internal
     template <>
     struct serialize<0>
     {

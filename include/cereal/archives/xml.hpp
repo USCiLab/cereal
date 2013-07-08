@@ -76,8 +76,8 @@ namespace cereal
       and instead infer it from the number of children for a node.  This means that data
       can be hand edited for dynamic sized structures and will still be readable.  This
       is accomplished through the cereal::SizeTag object, which will also add an attribute
-      to its parent field. */
-  /*! \ingroup Archives */
+      to its parent field.
+      \ingroup Archives */
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
@@ -212,9 +212,12 @@ namespace cereal
         itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
       }
 
-      void markDynamicSize()
+      //! Appends an attribute to the current top level node
+      void appendAttribute( const char * name, const char * value )
       {
-        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "size", "dynamic" ) );
+        auto namePtr =  itsXML.allocate_string( name );
+        auto valuePtr = itsXML.allocate_string( value );
+        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( namePtr, valuePtr ) );
       }
 
     protected:
@@ -259,7 +262,10 @@ namespace cereal
 
   // ######################################################################
   //! An output archive designed to save data to XML
-  /*! \ingroup Archives */
+  /*! This archive uses RapidXML to build an in memory XML tree of the
+      data in the stream it is given before loading any types serialized.
+
+      \ingroup Archives */
   class XMLInputArchive : public InputArchive<XMLInputArchive>
   {
     public:
@@ -497,7 +503,7 @@ namespace cereal
   template <class T>
   void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
   {
-    ar.markDynamicSize();
+    ar.appendAttribute( "size", "dynamic" );
   }
 
   template <class T>

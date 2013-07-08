@@ -37,6 +37,8 @@ namespace cereal
 {
   namespace bitset_detail
   {
+    //! The type the bitset is encoded with
+    /*! @internal */
     enum class type : uint8_t
     {
       ulong,

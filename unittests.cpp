@@ -59,6 +59,14 @@ namespace boost
   }
 }
 
+
+namespace cereal
+{
+  template <class Archive, class T>
+    void serialize( Archive &, std::less<T> & )
+    { }
+}
+
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Cereal
 #include <boost/test/unit_test.hpp>
@@ -1072,11 +1080,10 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
   test_priority_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-// TODO: xml doesn't do empty classes by default, need std::less
-//BOOST_AUTO_TEST_CASE( xml_priority_queue )
-//{
-//  test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-//}
+BOOST_AUTO_TEST_CASE( xml_priority_queue )
+{
+  test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
 
 // ######################################################################
 template <class IArchive, class OArchive>

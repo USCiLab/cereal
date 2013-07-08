@@ -111,6 +111,7 @@ namespace cereal
   // Pointer wrapper implementations follow below
 
   //! Saving std::shared_ptr (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T> inline
   void save( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> const &> const & wrapper )
   {
@@ -126,6 +127,7 @@ namespace cereal
   }
 
   //! Loading std::shared_ptr, case when user load and allocate (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T> inline
   typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
@@ -148,6 +150,7 @@ namespace cereal
   }
 
   //! Loading std::shared_ptr, case when no user load and allocate (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T> inline
   typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
@@ -171,6 +174,7 @@ namespace cereal
   }
 
   //! Saving std::unique_ptr (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T, class D> inline
   void save( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
   {
@@ -190,6 +194,7 @@ namespace cereal
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T, class D> inline
   typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
@@ -206,6 +211,7 @@ namespace cereal
   }
 
   //! Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation)
+  /*! @internal */
   template <class Archive, class T, class D> inline
   typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )

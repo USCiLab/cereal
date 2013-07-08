@@ -38,6 +38,7 @@ namespace cereal
 {
   namespace binary_detail
   {
+    //! @internal
     template <class Archive>
     struct variant_save_visitor : boost::static_visitor<>
     {
@@ -52,6 +53,7 @@ namespace cereal
       Archive & ar;
     };
 
+    //! @internal
     template<int N, class Variant, class ... Args, class Archive>
     typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
     load_variant(Archive & ar, int target, Variant & variant)
@@ -59,6 +61,7 @@ namespace cereal
       throw ::cereal::Exception("Error traversing variant during load");
     }
 
+    //! @internal
     template<int N, class Variant, class H, class ... T, class Archive>
     typename std::enable_if<N < boost::mpl::size<typename Variant::types>::value, void>::type
     load_variant(Archive & ar, int target, Variant & variant)

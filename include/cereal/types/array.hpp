@@ -55,7 +55,7 @@ namespace cereal
     ar( binary_data( array.data(), N * sizeof(T) ) );
   }
 
-  //! Saving for std::array all other types to binary
+  //! Saving for std::array all other types
   template <class Archive, class T, size_t N> inline
   typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
                           || !std::is_arithmetic<T>::value, void>::type
@@ -65,7 +65,7 @@ namespace cereal
       ar( i );
   }
 
-  //! Loading for std::array all other types to binary
+  //! Loading for std::array all other types
   template <class Archive, class T, size_t N> inline
   typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
                           || !std::is_arithmetic<T>::value, void>::type

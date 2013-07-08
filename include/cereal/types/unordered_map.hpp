@@ -37,6 +37,7 @@ namespace cereal
 {
   namespace unordered_map_detail
   {
+    //! @internal
     template <class Archive, class MapT> inline
     void save( Archive & ar, MapT const & map )
     {
@@ -46,6 +47,7 @@ namespace cereal
         ar( make_map_item(i.first, i.second) );
     }
 
+    //! @internal
     template <class Archive, class MapT> inline
     void load( Archive & ar, MapT & map )
     {
