@@ -35,6 +35,8 @@ namespace cereal
 {
   namespace util
   {
+    //! Demangles the type encoded in a string
+    /*! @internal */
     inline std::string demangle(std::string mangledName)
     {
       int status = 0;
@@ -49,6 +51,8 @@ namespace cereal
       return retName;
     }
 
+    //! Gets the demangled name of a type
+    /*! @internal */
     template<class T> inline
       std::string demangledName()
       { return demangle(typeid(T).name()); }

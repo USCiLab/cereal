@@ -28,8 +28,6 @@
 */
 #ifndef CEREAL_ARCHIVES_XML_HPP_
 #define CEREAL_ARCHIVES_XML_HPP_
-#include <iostream>
-
 #include <cereal/cereal.hpp>
 #include <cereal/details/util.hpp>
 
@@ -253,7 +251,7 @@ namespace cereal
       }; // NodeInfo
 
     private:
-      std::ostream & itsStream;
+      std::ostream & itsStream;        //!< The output stream
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
       std::ostringstream itsOS;        //!< Used to format strings internally
@@ -264,6 +262,10 @@ namespace cereal
   //! An output archive designed to save data to XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data in the stream it is given before loading any types serialized.
+
+      Input XML should have been produced by the XMLOutputArchive.  Data can
+      only be added to dynamically sized containers - the input archive will
+      determine their size by looking at the number of child nodes.
 
       \ingroup Archives */
   class XMLInputArchive : public InputArchive<XMLInputArchive>
@@ -285,19 +287,22 @@ namespace cereal
         }
         catch( rapidxml::parse_error const & e )
         {
-          std::cout << "-----Original-----" << std::endl;
-          stream.seekg(0);
-          std::cout << std::string( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() ) << std::endl;
+          //std::cerr << "-----Original-----" << std::endl;
+          //stream.seekg(0);
+          //std::cout << std::string( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() ) << std::endl;
 
-          std::cout << "-----Error-----" << std::endl;
-          std::cout << e.what() << std::endl;
-          std::cout << e.where<char>() << std::endl;
+          //std::cerr << "-----Error-----" << std::endl;
+          //std::cerr << e.what() << std::endl;
+          //std::cerr << e.where<char>() << std::endl;
           throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
         }
 
         // Parse the root
         auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
-        itsNodes.emplace( root );
+        if( root == nullptr )
+          throw Exception("Could not detect cereal root node - likely due to empty or invalid input");
+        else
+          itsNodes.emplace( root );
       }
 
       //! Prepares to start reading the next node
@@ -424,10 +429,6 @@ namespace cereal
       static size_t getNumChildren( rapidxml::xml_node<> * node )
       {
         size_t size = 0;
-        if( node == nullptr )
-        {
-          std::cerr << "NUM CHILDREN CALLED ON NULL NODE" << std::endl;
-        }
         node = node->first_node(); // get first child
 
         while( node != nullptr )
@@ -441,6 +442,8 @@ namespace cereal
 
     protected:
       //! A struct that contains metadata about a node
+      /*! Keeps track of some top level node, its number of
+          remaining children, and the current active child node */
       struct NodeInfo
       {
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
@@ -464,7 +467,7 @@ namespace cereal
       }; // NodeInfo
 
     private:
-      std::vector<char> itsData;    //!< The raw data loaded
+      std::vector<char> itsData;       //!< The raw data loaded
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };

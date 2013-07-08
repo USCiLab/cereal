@@ -2133,7 +2133,8 @@ void test_complex()
 
     BOOST_CHECK_EQUAL( o_float, i_float );
     BOOST_CHECK_EQUAL( o_double, i_double );
-    BOOST_CHECK_EQUAL( o_ldouble, i_ldouble );
+    BOOST_CHECK_CLOSE( o_ldouble.real(), i_ldouble.real(), 1e-5);
+    BOOST_CHECK_CLOSE( o_ldouble.imag(), i_ldouble.imag(), 1e-5);
   }
 }
 
