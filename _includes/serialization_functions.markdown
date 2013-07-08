@@ -1,9 +1,9 @@
 Serialization Functions
 =======================
 
-Because C++ lacks 
+Since C++ lacks 
 <a href="http://en.wikipedia.org/wiki/Reflection_(computer_programming)">reflection</a>,
-implementing serialization requires the user to specify which data members
+implementing serialization requires you to specify which data members
 should be serialized. cereal provides a number of ways to specify such
 serialization functions for your classes, even if you don't have access to
 their internals.
@@ -12,22 +12,22 @@ their internals.
 
 ### TLDR Version
 
-cereal supports serialization function definitions both inside and outside of
-classes. Those declared inside of functions can be made private or protected by
-making your class friends with `cereal::access`.
+cereal supports single serializaton functions (`serialize`) or split load/save pairs (`load` and `save`) either inside
+or outside of classes.  Internal serialization functions can be kept private so long as cereal is given access by
+befriending `cereal::access`.  cereal will tell you if you've made a mistake at compile time, if possible.
 
 ---
 
-### Types of Serialization Functions
+## Types of Serialization Functions
 
-Serialization functions can either be internal or external, functionality can
-either be in a single `serialize` function, or a split `save` and `load`
+Serialization functions can either be internal or external. Functionality can
+either be in a single `serialize` function, or a split `load` and `save`
 functions.  When possible, it is preferred to use a single internal `serialize`
 method, though split methods can be used when it is necessary e.g. to
-dynamically allocate memory upon loading a class.
-
+dynamically allocate memory upon loading a class.  Unlike boost, there is no need to explicitly tell cereal that it
+needs to use the split load-save pair; cereal will pick whichever is present and give a compile time error if it cannot
+disambiguate a single serialization method.
 <br/>
-
 {% capture class_begin %}struct MyClass 
 {
   int x, y, z;{% endcapture %}
@@ -43,10 +43,10 @@ dynamically allocate memory upon loading a class.
 {{ class_begin }}
 
   template<class Archive>
-    void serialize(Archive & archive)
-    {
-      archive( x, y, z ); 
-    }
+  void serialize(Archive & archive)
+  {
+    archive( x, y, z ); 
+  }
 };
 
 
@@ -63,16 +63,16 @@ dynamically allocate memory upon loading a class.
 {{ class_begin }}
 
   template<class Archive>
-    void save(Archive & archive) const
-    {
-      archive( x, y, z ); 
-    }
+  void save(Archive & archive) const
+  {
+    archive( x, y, z ); 
+  }
 
   template<class Archive>
-    void load(Archive & archive)
-    {
-      archive( x, y, z ); 
-    }
+  void load(Archive & archive)
+  {
+    archive( x, y, z ); 
+  }
 };{% endhighlight %}
   </div>
 </div>
@@ -88,11 +88,11 @@ dynamically allocate memory upon loading a class.
 };
 
 template<class Archive>
-  void serialize(Archive & archive,
-                 MyClass & m)
-  {
-    archive( m.x, m.y, m.z );
-  }
+void serialize(Archive & archive,
+               MyClass & m)
+{
+  archive( m.x, m.y, m.z );
+}
 
 
 
@@ -111,77 +111,104 @@ template<class Archive>
 };
 
 template<class Archive>
-  void save(Archive & archive, 
-            MyClass const & m)
-  { 
-    archive( m.x, m.y, m.z ); 
-  }
+void save(Archive & archive, 
+          MyClass const & m)
+{ 
+  archive( m.x, m.y, m.z ); 
+}
 
 template<class Archive>
-  void load(Archive & archive)
-            MyClass & m)
-  {
-    archive( m.x, m.y, m.z ); 
-  } {% endhighlight %}
+void load(Archive & archive)
+          MyClass & m)
+{
+  archive( m.x, m.y, m.z ); 
+} {% endhighlight %}
   </div>
 </div>
+<br/>
 
----
+Note that save functions are **const**.  cereal will throw a static assertion if it detects a non const save function.
 
-### No Default Constructors
+### Non-public serialization
 
-If you don't want to provide a default constructor for your class but do want
-to serialize smart pointers to it, you can define a `load_and_allocate` method
-that tells cereal how to create your object.
+Serialization functions can be placed under access control to be protected or private.  cereal will need access to them,
+and can be given access by befriending `cereal::access`, defined in `<cereal/access.hpp>`:
 
 ```{cpp}
-struct MyClass
+#include <cereal/access.hpp>
+
+class MyCoolClass
 {
-  MyClass() = delete;         // No default constructor!
-  MyClass(int x_) : x(x_) {}
+  private:
+    int secretX;
 
-  int x;
+    friend class cereal::access;
 
-  template<class Archive>
-    void serialize(Archive & archive)
-    { archive( x ); }
-
-  template<class Archive>
-  static MyClass * load_and_allocate(Archive & archive)
-  {
-    // Load the necessary data from the archive
-    int x_;
-    ar( x_ );
-
-    // Instantiate the class with the loaded data
-    return new MyClass(x_);
-  }
+    template <class Archive>
+    void serialize( Archive & ar )
+    {
+      ar( secretX );
+    }
 };
 ```
 
-<br/>
+### Inheritance
 
-You can even create `load_and_allocate` methods externallly, thought the syntax
-is a bit more verbose:
+Serialization functions, like any other function, will be inherited by derived classes.  Depending on the serialization
+method you have chosen to employ, this can cause some ambiguities that cereal is not happy with:
 
 ```{cpp}
-struct MyClass
-{
-  MyClass() = delete;
-  MyClass(int x_) : x(x_) {}
+#include <iostream>
+#include <cereal/archives/binary.hpp>
 
-  int x;
+struct MyBase
+{
+  template <class Archive>
+  void serialize( Archive & )
+  { }
 };
+
+struct MyDerived : MyBase
+{
+  template <class Archive>
+  void load( Archive & )
+  { }
+
+  template <class Archive>
+  void save( Archive & ) const
+  { }
+};
+
+int main()
+{
+  MyDerived d;
+  cereal::BinaryOutputArchive ar( std::cout );
+  ar( d ); // static assertion failure: cereal detected both a serialize and save/load pair for MyDerived
+}
+```
+
+In the above example, `MyDerived` inherits the public `serialize` function from `MyBase`, thus giving it both a
+`serialize` and `load`-`save` pair.  cereal is unable to disambiguate which it should call and thus gives a compile time
+static assertion.  
+
+Even if `serialize` was made `private` in `MyBase`, cereal would still have access to it from
+`MyDerived` because of the friend declaration to `cereal::access`, resulting in the same error.  The solution to this
+error is to provide an explicit disambiguation for cereal:
+
+```{cpp}
+#include <cereal/access.hpp>
 
 namespace cereal
 {
-  template <>
-  static MyClass * load_and_allocate<MyClass>(Archive & archive)
-  {
-    int x_;
-    ar( x_ );
-
-    return new MyClass(x_);
-  }
+  template <class Archive> struct specialize<Archive, MyDerived, cereal::specialization::member_load_save> {};
+  // cereal no longer has any ambiguity when serializing MyDerived
 }
 ```
+
+More information can be found by reading the doxygen documentation for `<cereal/access.hpp>`.
+
+### Default construction
+
+cereal requires access to a default constructor for types it serializes.  If you don't want to provide a default
+constructor but do want to serialize smart pointers to it, you can get around this restriction using a special overload,
+detailed in the [pointers](pointers) section of the documentation.

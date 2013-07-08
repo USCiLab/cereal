@@ -13,11 +13,11 @@ cereal comes with binary, XML, and JSON archives that allow loading and saving t
 
 ## Archive Basics
 
-Archives decide how to output or interpret data that is being serialized.  For the most part, users do not need to know the inner workings of an archive and can write serialization functions agnostic of the archive type, though cereal does support specializing serialization functions for specific types of archives.  For example, a serialization function for a JSON archive could include more human readable metadata than its binary variant.
+Archives decide how to output or interpret data that is being serialized.  For the most part, you do not need to know the inner workings of an archive and can write serialization functions agnostic of the archive type, though cereal does support specializing serialization functions for specific types of archives.  For example, a serialization function for a JSON archive could include more human readable metadata than its binary variant.
 
 Most cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
 
-The preferred way for working with archives is to create them, use (serialize with) them, and then destroy them.  Some archives (e.g. XML) are designed to output to their stream only on their destruction.  The best way to go about this is to let scoping automatically destroy archive objects when you are finished with them:
+The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  Archives are only guaranteed to have flushed their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
 
 ```cpp
 #include <cereal/archives/xml.hpp>
@@ -33,7 +33,9 @@ The preferred way for working with archives is to create them, use (serialize wi
   // contents to its stream
 ```
 
----
+cereal was not designed to be a robust long term storage solution - it is your responsibility to ensure compatability
+between saved and loaded cereal archives.  It is recommended that you use the same version of cereal for both loading
+and saving data.  If you wish to have behavior such as boost's [class versioning](http://www.boost.org/doc/libs/1_54_0/libs/serialization/doc/tutorial.html#versioning), you will need to implement it yourself.
 
 ### Advanced Topic: Polymorphism
 
@@ -66,8 +68,10 @@ XML archives, unlike binary, will utilize name-value pairs to give human readabl
 int main()
 {
   cereal::XMLOutputArchive archive( std::cout );
+  bool arr[] = {true, false};
   std::vector<int> vec = {1, 2, 3, 4, 5};
-  archive( CEREAL_NVP(vec) );
+  archive( CEREAL_NVP(vec),
+           arr );
 }
 ```
 
@@ -76,7 +80,7 @@ This causes the output XML:
 ```xml
 <?xml version="1.0"?>
 <cereal>
-  <vec> <!-- Note that no size is output for the container -->
+  <vec size="dynamic"> <!-- Note that no size is output for the container; it is marked as dynamicly sized -->
     <value0>1</value0> <!-- For things that don't have NVPs, names will be generated in a delmited fashion -->
     <value1>2</value1>
     <value2>3</value2>
@@ -84,12 +88,45 @@ This causes the output XML:
     <value4>5</value4>
     <!-- If desired, data could be inserted here before loading the XML -->
   </vec>
+  <value0> <!-- Note that since an array is fixed size, there is no size information -->
+    <value0>true</value0>
+    <value1>false</value1>
+  </value0>
 </cereal>
 ```
 
-Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.
+Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.
 
-XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.
+XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
+
+### Binary output
+
+XML archives also support explicit binary output, which will encode the data as a [base64](http://en.wikipedia.org/wiki/Base64) string:
+
+```{cpp}
+#include <cereal/archives/xml.hpp>
+#include <iostream>
+
+int main()
+{
+  cereal::XMLOutputArchive archive( std::cout );
+
+  int arr[] = {-1, 95, 3};
+  archive.saveBinaryValue( xxx, sizeof(int) * 3, "some_optional_name" );
+}
+```
+
+which will output:
+
+```xml
+<?xml version="1.0"?>
+<cereal>
+  <some_optional_name>/////18AAAADAAAA</some_optional_name>
+</cereal>
+
+```
+
+This data can be loaded in a similar fashion with `loadBinaryValue`.
 
 ---
 
@@ -97,15 +134,13 @@ XML can optionally output complete demangled type information as an attribute an
 
 ## JSON
 
-The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.
+The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.  JSON archives are very similar to XML archives in that they will take advantage of name-value pairs and automatically name things without them.  JSON archives also support inserting data into dynamically sized containers but do not explicitly mark which values are dynamically sized.
 
 ---
 
 ## Adding More Archives
 
 Adding more archives to cereal is a fairly simple process that requires understanding a few key functions and some base types.
-
----
 
 ### Prologues, Epilogues, and Serialization Functions
 
@@ -132,13 +167,9 @@ Optionally, an archive can also choose to support:
 
 Adding support for `cereal::BinaryData<T>` means that your archive can support optimized serialization of raw binary data.  If your archive accepts `cereal::BinaryData<T>`, cereal will attempt to package up any type (e.g. arrays of arithmetic data, strings, etc) that can be represented in this way as binary data.  If you are working with human readable output, this may not be the behavior you desire - in such cases it is best to **not** specialize for `cereal::BinaryData<T>` and instead provide users with explicit binary save/load functions that can be invoked directly on the archive, if they desire.  See `<cereal/archives/xml.hpp>` for an example of this.
 
----
-
 ### The Base Archives
 
 All archives need to derive from `cereal::InputArchive` or `cereal::OutputArchive`, defined in `<cereal/cereal.hpp>`.
-
----
 
 ### Registering Your Archive
 
