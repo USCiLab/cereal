@@ -35,6 +35,7 @@
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/genericstream.h>
 #include <cereal/external/rapidjson/reader.h>
+#include <cereal/external/rapidjson/document.h>
 #include <cereal/external/base64.hpp>
 
 #include <sstream>
@@ -74,16 +75,16 @@ namespace cereal
         itsWriter.EndObject();
       }
 
-      void saveValue(bool b)                { itsWriter.Bool(b);     }
-      void saveValue(int i)                 { itsWriter.Int(i);      }
-      void saveValue(unsigned u)            { itsWriter.Uint(u);     }
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);  }
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64); }
-      void saveValue(double d)              { itsWriter.Double(d);   }
-      void saveValue(std::string const & s) { rawString(s);          }
-      void saveValue(char const * s)        { itsWriter.String(s);   }
-      void saveNull()                       { itsWriter.Null();      }
+      void saveValue(bool b)                { itsWriter.Bool(b);                     }
+      void saveValue(int i)                 { itsWriter.Int(i);                      }
+      void saveValue(unsigned u)            { itsWriter.Uint(u);                     }
+      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                  }
+      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                 }
+      void saveValue(double d)              { itsWriter.Double(d);                   }
+      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), s.size()); }
+      void saveValue(char const * s)        { itsWriter.String(s);                   }
 
+      //! Write the name of the upcoming node
       void writeName()
       {
         if(itsNextName == nullptr)
@@ -96,11 +97,6 @@ namespace cereal
           saveValue(itsNextName);
           itsNextName = nullptr;
         }
-      }
-
-      void rawString(std::string const & s)
-      {
-        itsWriter.String(s.c_str(), s.size());
       }
 
       //! Creates a new node that is a child of the node at the top of the stack
@@ -163,47 +159,107 @@ namespace cereal
       \ingroup Archives */
   class JSONInputArchive : public InputArchive<JSONInputArchive>
   {
-    //typedef rapidjson::GenericWriteStream WriteStream;
-    //typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
+    typedef rapidjson::GenericReadStream ReadStream;
+    typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
+    typedef JSONValue::ConstMemberIterator JSONIterator;
 
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
-      JSONInputArchive(std::istream & ) :
-        InputArchive<JSONInputArchive>(this)
+      JSONInputArchive(std::istream & is) :
+        InputArchive<JSONInputArchive>(this),
+        itsReadStream(is)
       {
+        itsDocument.ParseStream<0>(itsReadStream);
+        itsValueStack.push(itsDocument.MemberBegin());
       }
+
+      void setNextName(char const * name)
+      {
+        itsNextName = name;
+      }
+
+      void startNode()
+      { 
+        itsValueStack.push(itsValueStack.top()->value.MemberBegin());
+      }
+
+      void finishNode()
+      { 
+        itsValueStack.pop();
+        ++itsValueStack.top();
+      }
+
+      void loadValue(bool & val)        { val = itsValueStack.top()->value.GetBool();   ++itsValueStack.top(); }
+      void loadValue(int & val)         { val = itsValueStack.top()->value.GetInt();    ++itsValueStack.top(); }
+      void loadValue(unsigned & val)    { val = itsValueStack.top()->value.GetUint();   ++itsValueStack.top(); }
+      void loadValue(int64_t & val)     { val = itsValueStack.top()->value.GetInt64();  ++itsValueStack.top(); }
+      void loadValue(uint64_t & val)    { val = itsValueStack.top()->value.GetUint64(); ++itsValueStack.top(); }
+      void loadValue(double & val)      { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
+      void loadValue(std::string & val) { val = itsValueStack.top()->value.GetString(); ++itsValueStack.top(); }
+
+    private:
+      char const * itsNextName;
+      ReadStream itsReadStream;               //!< Rapidjson write stream
+      std::stack<JSONIterator> itsValueStack; //!< Stack of values
+      rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 
   // ######################################################################
   // JSONArchive prologue and epilogue functions
   // ######################################################################
 
+  // ######################################################################
   //! Prologue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T>
   void prologue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
 
+  //! Prologue for NVPs for JSON archives
+  template <class T>
+  void prologue( JSONInputArchive &, NameValuePair<T> const & )
+  { }
+
+  // ######################################################################
   //! Epilogue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T>
   void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
+  
+  //! Epilogue for NVPs for JSON archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T>
+  void epilogue( JSONInputArchive &, NameValuePair<T> const & )
+  { }
 
+  // ######################################################################
   //! Prologue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON */
   template <class T>
   void prologue( JSONOutputArchive &, SizeTag<T> const & )
   { }
 
+  //! Prologue for SizeTags for JSON archives
+  template <class T>
+  void prologue( JSONInputArchive &, SizeTag<T> const & )
+  { }
+
+  // ######################################################################
   //! Epilogue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON */
   template <class T>
   void epilogue( JSONOutputArchive &, SizeTag<T> const & )
   { }
 
+  //! Epilogue for SizeTags for JSON archives
+  template <class T>
+  void epilogue( JSONInputArchive &, SizeTag<T> const & )
+  { }
+
+  // ######################################################################
   //! Prologue for all other types for JSON archives
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
@@ -214,6 +270,15 @@ namespace cereal
     ar.startNode();
   }
 
+  //! Prologue for all other types for JSON archives
+  template <class T>
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  prologue( JSONInputArchive & ar, T const & data )
+  {
+    ar.startNode();
+  }
+
+  // ######################################################################
   //! Epilogue for all other types other for JSON archives
   /*! Finishes the node created in the prologue */
   template <class T>
@@ -223,29 +288,68 @@ namespace cereal
     ar.finishNode();
   }
 
+  //! Epilogue for all other types other for JSON archives
+  template <class T>
+  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  epilogue( JSONInputArchive & ar, T const & data )
+  {
+    ar.finishNode();
+  }
+
+  // ######################################################################
+  //! Prologue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & data )
   {
     ar.writeName();
   }
-
+  
+  //! Prologue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONOutputArchive & ar, T const & data )
+  prologue( JSONInputArchive & ar, T const & data )
   {
   }
 
+  // ######################################################################
+  //! Epilogue for arithmetic types for JSON archives
+  template <class T>
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  epilogue( JSONOutputArchive & ar, T const & data )
+  { }
+
+  //! Epilogue for arithmetic types for JSON archives
+  template <class T>
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  epilogue( JSONInputArchive & ar, T const & data )
+  { }
+
+  // ######################################################################
+  //! Prologue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
   void prologue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     ar.writeName();
   }
 
+  //! Prologue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void prologue(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
   }
+
+
+  // ######################################################################
+  //! Epilogue for strings for JSON archives
+  template<class CharT, class Traits, class Alloc> inline
+  void epilogue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  { }
+  
+  //! Epilogue for strings for JSON archives
+  template<class CharT, class Traits, class Alloc> inline
+  void epilogue(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  { }
 
   // ######################################################################
   // Common JSONArchive serialization functions
@@ -272,6 +376,14 @@ namespace cereal
   save(JSONOutputArchive & ar, T const & t)
   {
     ar.saveValue( t );
+  }
+
+  //! Loading arithmetic from JSON
+  template<class T> inline
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  load(JSONInputArchive & ar, T & t)
+  {
+    ar.loadValue( t );
   }
 
   //! saving string to JSON

@@ -37,54 +37,14 @@
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
 
+#include <cereal/external/rapidjson/filestream.h>
+
 #include <cxxabi.h>
 #include <sstream>
 #include <fstream>
 #include <cassert>
 #include <complex>
 #include <iostream>
-
-class Base
-{
-  private:
-    friend class cereal::access;
-    template <class Archive>
-    void serialize( Archive & ar )
-    {
-      std::cout << "Base serialize" << std::endl;
-      ar( x );
-    }
-
-    int x;
-};
-
-class Derived : public Base
-{
-  public:
-    template <class Archive>
-    void save( Archive & ar ) const
-    {
-      ar( cereal::virtual_base_class<Base>(this) );
-      std::cout << "Derived save" << std::endl;
-      ar( y );
-    }
-
-    template <class Archive>
-    void load( Archive & ar )
-    {
-      ar( cereal::virtual_base_class<Base>(this) );
-      std::cout << "Derived load" << std::endl;
-      ar( y );
-    }
-
-    int y;
-};
-
-namespace cereal
-{
-  template <class Archive> struct specialize<Archive, Derived, cereal::specialization::member_load_save> {};
-  //template <class Archive> struct specialize<Archive, Derived, cereal::specialization::non_member_load_save> {};
-}
 
 // ###################################
 struct Test1
@@ -209,52 +169,6 @@ struct Everything
   }
 };
 
-struct EmptyStruct
-{
-  template<class Archive>
-  void serialize(Archive & ar)
-  {
-    std::cout << "Side effects!" << std::endl;
-  };
-};
-
-struct NonEmptyStruct
-{
-  int x, y, z;
-};
-
-struct NoDefaultCtor
-{
-  NoDefaultCtor() = delete;
-  NoDefaultCtor(int x) : y(x)
-  { }
-
-  int y;
-
-  template <class Archive>
-  void serialize( Archive & archive )
-  {
-  }
-
-  //template <class Archive>
-  //static NoDefaultCtor * load_and_allocate( Archive & ar )
-  //{
-  //  return new NoDefaultCtor(5);
-  //}
-};
-
-namespace cereal
-{
-  template <>
-  struct LoadAndAllocate<NoDefaultCtor>
-  {
-    template <class Archive>
-    static NoDefaultCtor * load_and_allocate( Archive & ar )
-    {
-      return new NoDefaultCtor(5);
-    }
-  };
-}
 
 struct SubFixture
 {
@@ -302,53 +216,57 @@ struct Fixture
     }
 };
 
-void foo(int t)
-{
-  std::cout << "int" << std::endl;
-}
-
-void foo(unsigned int t)
-{
-  std::cout << "unsigned int" << std::endl;
-}
-
 // ######################################################################
 int main()
 {
   std::cout << std::boolalpha << std::endl;
 
   {
-    cereal::JSONOutputArchive oar( std::cout );
+    std::ofstream os("file.json");
+    cereal::JSONOutputArchive oar( os );
 
-    Fixture fixture;
-    oar( CEREAL_NVP(fixture) );
-
-    std::vector<double> vecD = {1.23, 4.56, 7,89};
-    oar( CEREAL_NVP(vecD) );
-
-    bool b = true;
-    oar( cereal::make_nvp("coolean boolean", b) );
-
-    std::shared_ptr<std::string> sPtr = std::make_shared<std::string>("i'm a shared pointer");
-    oar( CEREAL_NVP(sPtr) );
-
-    int xxx[] = {-1, 95, 3};
-    oar.saveBinaryValue( xxx, sizeof(int)*3, "xxxbinary" );
-    oar.saveBinaryValue( xxx, sizeof(int)*3 );
+    int x = 10;
+    double y = 99;
+    oar(CEREAL_NVP(x));
+    oar(CEREAL_NVP(y));
   }
-
-  std::cout << std::endl;
 
   {
-    cereal::JSONInputArchive iar( std::cin );
-
-    Fixture fixture; fixture.change();
-    //iar( fixture );
-
-    std::vector<double> vecD;
-    //iar( vecD );
+    std::ifstream is("file.json");
+    std::string str((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
+    std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
+  {
+    std::ifstream is("file.json");
+    cereal::JSONInputArchive iar( is );
+
+    int x;
+    double y;
+    iar(CEREAL_NVP(x));
+    iar(CEREAL_NVP(y));
+
+    std::cout << x << " " << y << std::endl;
+  }
+
+  //{
+  //  std::ifstream is("file.json");
+  //  rapidjson::GenericReadStream itsReadStream(is);
+  //  rapidjson::Document itsDocument;
+  //  itsDocument.ParseStream<0>(itsReadStream);
+  //  
+  //  //FILE * f = std::fopen("file.json", "r");
+  //  //rapidjson::FileStream filestream(f);
+  //  //rapidjson::Document itsDocument;
+  //  //itsDocument.ParseStream<0>(filestream);
+
+  //  std::cout << itsDocument.IsObject() << std::endl;
+  //  std::cout << itsDocument.HasMember("x") << std::endl;
+
+  //  auto it = itsDocument.MemberBegin();
+  //  std::cout << it->name.GetString() << std::endl;
+  //  it->value.GetInt();
+  //}
 
   return 0;
 }
