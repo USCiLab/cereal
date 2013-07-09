@@ -1,0 +1,10 @@
+---
+layout: default
+title: About
+---
+
+{% capture about %}
+  {% include about.markdown %}
+{% endcapture %}
+{{ about | unindent | markdownify }}
+
