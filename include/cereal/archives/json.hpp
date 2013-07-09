@@ -229,6 +229,15 @@ namespace cereal
           return *this;
         }
 
+        GenericValue const & name()
+        {
+          switch(itsType)
+          {
+            case Member: return itsMemberIt->name;
+            default: throw cereal::Exception("Invalid Iterator Type!");
+          }
+        }
+
         GenericValue const & value()
         {
           switch(itsType)
@@ -319,8 +328,6 @@ namespace cereal
       //! Loads some binary data, encoded as a base64 string
       void loadBinaryValue( void * data, size_t size )
       {
-        startNode();
-
         std::string encoded;
         loadValue( encoded );
         auto decoded = base64::decode( encoded );
@@ -329,8 +336,6 @@ namespace cereal
           throw Exception("Decoded binary data size does not match specified size");
 
         std::memcpy( data, decoded.data(), decoded.size() );
-
-        finishNode();
       };
 
       void loadSize(size_t & size)

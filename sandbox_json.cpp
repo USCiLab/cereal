@@ -202,13 +202,25 @@ struct SubFixture
 struct Fixture
 {
   SubFixture f1, f2, f3;
-    template<class Archive>
-      void serialize(Archive & ar)
-      {
-        ar( f1,
-            CEREAL_NVP(f2),
-            f3 );
-      }
+  int array[4] = {1, 2, 3, 4};
+
+  template<class Archive>
+  void save(Archive & ar) const
+  {
+    ar( f1,
+        CEREAL_NVP(f2),
+        f3 );
+    ar.saveBinaryValue( array, sizeof(int)*4, "cool array man" );
+  }
+
+  template<class Archive>
+  void load(Archive & ar)
+  {
+    ar( f1,
+        CEREAL_NVP(f2),
+        f3 );
+    ar.loadBinaryValue( array, sizeof(int)*4 );
+  }
 
     void change()
     {
@@ -242,10 +254,10 @@ int main()
     std::ofstream os("file.json");
     cereal::JSONOutputArchive oar( os );
 
-    int arr[] = {-1, 3, 999};
-    oar( 5 );
-    oar.saveBinaryValue( arr, sizeof(int)*3, "cool beans" );
-    oar.saveBinaryValue( arr, sizeof(int)*3 );
+    auto f = std::make_shared<Fixture>();
+    auto f2 = f;
+    oar( f );
+    oar( f2 );
   }
 
   {
@@ -258,13 +270,12 @@ int main()
     std::ifstream is("file.json");
     cereal::JSONInputArchive iar( is );
 
-    int arr[3];
-    int x;
-    iar( x );
-    iar.loadBinaryValue( arr, sizeof(int) * 3 );
-    assert( arr[0] == -1 );
-    assert( arr[1] == 3 );
-    assert( arr[2] == 999 );
+    std::shared_ptr<Fixture> f, f2;
+    iar( f, f2 );
+    assert( f->array[0] == 1 );
+    assert( f->array[1] == 2 );
+    assert( f->array[2] == 3 );
+    assert( f->array[3] == 4 );
   }
 
   return 0;
