@@ -7,7 +7,7 @@ it.
 
 ---
 
-## Get cereal
+## Get cereal 
 
 cereal can be directly included in your project or installed anywhere you can access header files.  Grab the latest
 version from [Github](https://github.com/USCiLab/cereal) and drop it somewhere your project can find.

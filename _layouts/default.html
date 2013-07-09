@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
+  {% comment %}
+    {% assign cereal_font = 'Lobster' %}
+    {% assign cereal_font = 'Lily Script One' %}
+    {% assign cereal_font = 'Raleway' %}
+  {% endcomment %}
+
+    {% assign cereal_font = 'Kite One' %}
+
     <meta charset="utf-8">
     <title>cereal Docs{% if page.title }%} - {{page.title}}{% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link href='http://fonts.googleapis.com/css?family={{cereal_font | replace: ' ', '+'}}' rel='stylesheet' type='text/css'>
     <link href="{{ site.baseurl }}/assets/css/pygments.css" rel="stylesheet">
     <link href="{{ site.baseurl }}/assets/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
@@ -48,7 +58,7 @@
 
           <div class="navbar">
             <div class="navbar-inner">
-              <a class="brand" href="{{ site.baseurl }}">cereal</a>
+              <a class="brand" href="{{ site.baseurl }}" style="font-family: '{{cereal_font}}'; font-size: 28px;">cereal</a>
               <ul class="nav">
                 <li><a href="{{ site.baseurl }}/index.html">Documentation</a></li>
                 <li><a href="{{ site.baseurl }}/assets/doxygen/index.html">Doxygen Docs</a></li>
@@ -75,7 +85,9 @@
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span7">
-          {{content}}
+
+          {{content | replace: 'cereal ', '<font style="font-family: __cereal__font__;">cereal </font>' | replace: '__cereal__font__', cereal_font }}
+
         </div><!--/span-->
       </div><!--/row-->
     </div><!--/.fluid-container-->
