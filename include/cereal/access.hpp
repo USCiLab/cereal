@@ -1,3 +1,5 @@
+/*! \file access.hpp
+    \brief Access control, default construction, and serialization disambiguation */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

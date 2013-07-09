@@ -43,13 +43,32 @@
 #include <vector>
 #include <string>
 
-#include <iostream>
-
 namespace cereal
 {
   // ######################################################################
   //! An output archive designed to save data to JSON
-  /*! \note Not working yet!
+  /*! This archive uses RapidJSON to build serialie data to JSON.
+
+      JSON archives provides a human readable output but at decreased
+      performance (both in time and space) compared to binary archives.
+
+      JSON benefits greatly from name-value pairs, which if present, will
+      name the nodes in the output.  If these are not present, each level
+      of the output will be given an automatically generated delimited name.
+
+      The precision of the output archive controls the number of decimals output
+      for floating point numbers and should be sufficiently large (i.e. at least 20)
+      if there is a desire to have binary equality between the numbers output and
+      those read in.  In general you should expect a loss of precision when going
+      from floating point to text and back.
+
+      JSON archives do not output the size information for any dynamically sized structure
+      and instead infer it from the number of children for a node.  This means that data
+      can be hand edited for dynamic sized structures and will still be readable.  This
+      is accomplished through the cereal::SizeTag object, which will cause the archive
+      to output the data as a JSON array (e.g. marked by [] instead of {}), which indicates
+      that the container is variable sized and may be edited.
+
       \ingroup Archives */
   class JSONOutputArchive : public OutputArchive<JSONOutputArchive>
   {
@@ -98,11 +117,15 @@ namespace cereal
           saveValue( base64string );
         }
 
-      //! Write the name of the upcoming node
+      //! Write the name of the upcoming node and prepare object/array state
+      /*! Since writeName is called for every value that is output, regardless of
+          whether it has a name or not, it is the place where we will do a deferred
+          check of our node state and decide whether we are in an array or an object. */
       void writeName()
       {
         NodeType const & nodeType = itsNodeStack.top();
 
+        // Start up either an object or an array, depending on state
         if(nodeType == NodeType::StartArray)
         {
           itsWriter.StartArray();
@@ -114,6 +137,7 @@ namespace cereal
           itsWriter.StartObject();
         }
 
+        // Array types do not output names
         if(nodeType == NodeType::InArray) return;
 
         if(itsNextName == nullptr)
@@ -126,9 +150,9 @@ namespace cereal
           saveValue(itsNextName);
           itsNextName = nullptr;
         }
-
       }
 
+      //! Starts a new node in the JSON output
       void startNode()
       {
         writeName();
@@ -139,6 +163,11 @@ namespace cereal
       //! Designates the most recently added node as finished
       void finishNode()
       {
+        // if we ended up serializing an empty object or array, writeName
+        // will never have been called - so start and then immediately end
+        // the object/array.
+        //
+        // We'll also end any object/arrays we happen to be in
         switch(itsNodeStack.top())
         {
           case NodeType::StartArray:
@@ -157,6 +186,7 @@ namespace cereal
         itsNameCounter.pop();
       }
 
+      //! Designates that the current node should be output as an array, not an object
       void makeArray()
       {
         itsNodeStack.top() = NodeType::StartArray;
@@ -180,16 +210,9 @@ namespace cereal
         saveValue( base64string );
       };
 
-      void setOutputType(bool outputType)
-      {
-        itsOutputType = outputType;
-      }
-
     private:
       WriteStream itsWriteStream;          //!< Rapidjson write stream
       JSONWriter itsWriter;                //!< Rapidjson writer
-      std::ostringstream itsOS;            //!< Used to format strings internally
-      bool itsOutputType;                  //!< Controls whether type information is printed
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
@@ -197,7 +220,15 @@ namespace cereal
 
   // ######################################################################
   //! An input archive designed to load data from JSON
-  /*! \note Not working yet!
+  /*! This archive uses RapidJSON to read in a JSON archive.
+
+      Input JSON should have been produced by the JSONOutputArchive.  Data can
+      only be added to dynamically sized containers (marked by JSON arrays) -
+      the input archive will determine their size by looking at the number of child nodes.
+
+      The order of the items in the JSON archive must match what is expected in the
+      serialization functions.
+
       \ingroup Archives */
   class JSONInputArchive : public InputArchive<JSONInputArchive>
   {
@@ -207,6 +238,7 @@ namespace cereal
     typedef JSONValue::ConstValueIterator ValueIterator;
     typedef rapidjson::Document::GenericValue GenericValue;
 
+    //! An internal iterator that handles both array and object types
     class Iterator
     {
       public:
@@ -229,15 +261,6 @@ namespace cereal
           return *this;
         }
 
-        GenericValue const & name()
-        {
-          switch(itsType)
-          {
-            case Member: return itsMemberIt->name;
-            default: throw cereal::Exception("Invalid Iterator Type!");
-          }
-        }
-
         GenericValue const & value()
         {
           switch(itsType)
@@ -258,7 +281,7 @@ namespace cereal
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
-      JSONInputArchive(std::istream & is) :
+      JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
         itsReadStream(is)
       {
@@ -266,11 +289,7 @@ namespace cereal
         itsValueStack.push_back(itsDocument.MemberBegin());
       }
 
-      void setNextName(char const * name)
-      {
-        itsNextName = name;
-      }
-
+      //! Starts a new node, going into its proper iterator
       void startNode()
       {
         if(itsValueStack.back().value().IsArray())
@@ -279,13 +298,12 @@ namespace cereal
           itsValueStack.push_back(itsValueStack.back().value().MemberBegin());
       }
 
+      //! Finishes the most recently started node
       void finishNode()
       {
         itsValueStack.pop_back();
         ++itsValueStack.back();
       }
-
-      void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
 
       template<class T>
         typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
@@ -304,6 +322,7 @@ namespace cereal
           ++itsValueStack.back();
         }
 
+      void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
       void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
       void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
       void loadValue(float & val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
@@ -338,13 +357,13 @@ namespace cereal
         std::memcpy( data, decoded.data(), decoded.size() );
       };
 
+      //! Loads the size for a SizeTag
       void loadSize(size_t & size)
       {
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }
 
     private:
-      char const * itsNextName;
       ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsValueStack;    //!< Stack of values
       rapidjson::Document itsDocument;        //!< Rapidjson document
@@ -499,11 +518,16 @@ namespace cereal
   // ######################################################################
 
   //! Serializing NVP types to JSON
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(JSONInputArchive, JSONOutputArchive)
-  serialize( Archive & ar, NameValuePair<T> & t )
+  template <class T> inline
+  void save( JSONOutputArchive & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
+    ar( t.value );
+  }
+
+  template <class T> inline
+  void load( JSONInputArchive & ar, NameValuePair<T> & t )
+  {
     ar( t.value );
   }
 

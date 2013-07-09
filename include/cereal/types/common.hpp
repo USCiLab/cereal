@@ -1,5 +1,5 @@
 /*! \file common.hpp
-    \brief Support common types
+    \brief Support common types - always included automatically
     \ingroup OtherTypes */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant

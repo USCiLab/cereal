@@ -65,7 +65,8 @@ namespace cereal
       The precision of the output archive controls the number of decimals output
       for floating point numbers and should be sufficiently large (i.e. at least 20)
       if there is a desire to have binary equality between the numbers output and
-      those read in.
+      those read in.  In general you should expect a loss of precision when going
+      from floating point to text and back.
 
       XML archives can optionally print the type of everything they serialize, which
       adds an attribute to each node.
@@ -259,7 +260,7 @@ namespace cereal
   }; // XMLOutputArchive
 
   // ######################################################################
-  //! An output archive designed to save data to XML
+  //! An output archive designed to load data from XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data in the stream it is given before loading any types serialized.
 

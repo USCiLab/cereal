@@ -4,7 +4,6 @@
 // Copyright (C) 2006, 2009 Marcin Kalicinski
 // Version 1.13
 // Revision $DateTime: 2009/05/13 01:46:17 $
-//! \file rapidxml_utils.hpp This file contains high-level rapidxml utilities that can be useful
 //! in certain simple scenarios. They should probably not be used if maximizing performance is the main objective.
 
 #include "rapidxml.hpp"

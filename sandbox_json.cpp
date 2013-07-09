@@ -244,20 +244,48 @@ struct AAA
     }
 };
 
+class Stuff
+{
+  public:
+    Stuff() = default;
+
+    void fillData()
+    {
+      data = { {"imaginary", {{0, -1.0f},
+                              {0, -2.9932f},
+                              {0, -3.5f}}},
+               {"real", {{1.0f, 0},
+                         {2.2f, 0},
+                         {3.3f, 0}}} };
+    }
+
+  private:
+    std::map<std::string, std::vector<std::complex<float>>> data;
+
+    friend class cereal::access;
+
+    template <class Archive>
+    void serialize( Archive & ar )
+    {
+      ar( CEREAL_NVP(data) );
+    }
+};
+
 // ######################################################################
 int main()
 {
   std::cout << std::boolalpha << std::endl;
-  std::cout << std::setprecision(40);
 
   {
     std::ofstream os("file.json");
-    cereal::JSONOutputArchive oar( os );
+    cereal::JSONOutputArchive oar( os, 5 );
 
-    auto f = std::make_shared<Fixture>();
-    auto f2 = f;
-    oar( f );
-    oar( f2 );
+    //auto f = std::make_shared<Fixture>();
+    //auto f2 = f;
+    //oar( f );
+    //oar( f2 );
+    Stuff s; s.fillData();
+    oar( cereal::make_nvp("best data ever", s) );
   }
 
   {
@@ -266,17 +294,17 @@ int main()
     std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
-  {
-    std::ifstream is("file.json");
-    cereal::JSONInputArchive iar( is );
+  //{
+  //  std::ifstream is("file.json");
+  //  cereal::JSONInputArchive iar( is );
 
-    std::shared_ptr<Fixture> f, f2;
-    iar( f, f2 );
-    assert( f->array[0] == 1 );
-    assert( f->array[1] == 2 );
-    assert( f->array[2] == 3 );
-    assert( f->array[3] == 4 );
-  }
+  //  std::shared_ptr<Fixture> f, f2;
+  //  iar( f, f2 );
+  //  assert( f->array[0] == 1 );
+  //  assert( f->array[1] == 2 );
+  //  assert( f->array[2] == 3 );
+  //  assert( f->array[3] == 4 );
+  //}
 
   return 0;
 }
