@@ -95,7 +95,7 @@ This causes the output XML:
 </cereal>
 ```
 
-Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.
+Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.  At this time you cannot re-order nodes inside of an XML archive - they must appear in the same order as the serialization function expects them.
 
 XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
 
