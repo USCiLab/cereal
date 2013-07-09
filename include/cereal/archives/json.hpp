@@ -270,7 +270,7 @@ namespace cereal
       }
 
       void finishNode()
-      { 
+      {
         itsValueStack.pop_back();
         ++itsValueStack.back();
       }
@@ -279,19 +279,19 @@ namespace cereal
 
       template<class T>
         typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
-        loadValue(T & val)         
+        loadValue(T & val)
         {
           val = itsValueStack.back().value().GetInt();
-          ++itsValueStack.back(); 
+          ++itsValueStack.back();
         }
 
       template<class T>
         typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
                                 !std::is_same<bool, T>::value, void>::type
-        loadValue(T & val)         
+        loadValue(T & val)
         {
           val = itsValueStack.back().value().GetUint();
-          ++itsValueStack.back(); 
+          ++itsValueStack.back();
         }
 
       void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
@@ -301,7 +301,7 @@ namespace cereal
       void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
 
       template<class T>
-        typename std::enable_if<std::is_arithmetic<T>::value && 
+        typename std::enable_if<std::is_arithmetic<T>::value &&
                                 (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
         loadValue(T & val)
         {
@@ -337,11 +337,10 @@ namespace cereal
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }
 
-
     private:
       char const * itsNextName;
       ReadStream itsReadStream;               //!< Rapidjson write stream
-      std::vector<Iterator> itsValueStack;     //!< Stack of values
+      std::vector<Iterator> itsValueStack;    //!< Stack of values
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 
@@ -367,7 +366,7 @@ namespace cereal
   template <class T>
   void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
-  
+
   //! Epilogue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T>
@@ -379,11 +378,13 @@ namespace cereal
   /*! SizeTags are strictly ignored for JSON */
   template <class T>
   void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
-  { ar.makeArray(); }
+  {
+    ar.makeArray();
+  }
 
   //! Prologue for SizeTags for JSON archives
   template <class T>
-  void prologue( JSONInputArchive & ar, SizeTag<T> const & )
+  void prologue( JSONInputArchive &, SizeTag<T> const & )
   { }
 
   // ######################################################################
@@ -404,7 +405,7 @@ namespace cereal
       that may be given data by the type about to be archived */
   template <class T>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  prologue( JSONOutputArchive & ar, T const & data )
+  prologue( JSONOutputArchive & ar, T const & )
   {
     ar.startNode();
   }
@@ -412,7 +413,7 @@ namespace cereal
   //! Prologue for all other types for JSON archives
   template <class T>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  prologue( JSONInputArchive & ar, T const & data )
+  prologue( JSONInputArchive & ar, T const & )
   {
     ar.startNode();
   }
@@ -422,7 +423,7 @@ namespace cereal
   /*! Finishes the node created in the prologue */
   template <class T>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONOutputArchive & ar, T const & data )
+  epilogue( JSONOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }
@@ -430,7 +431,7 @@ namespace cereal
   //! Epilogue for all other types other for JSON archives
   template <class T>
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONInputArchive & ar, T const & data )
+  epilogue( JSONInputArchive & ar, T const & )
   {
     ar.finishNode();
   }
@@ -439,55 +440,52 @@ namespace cereal
   //! Prologue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  prologue( JSONOutputArchive & ar, T const & data )
+  prologue( JSONOutputArchive & ar, T const & )
   {
     ar.writeName();
   }
-  
+
   //! Prologue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  prologue( JSONInputArchive & ar, T const & data )
-  {
-  }
+  prologue( JSONInputArchive &, T const & )
+  { }
 
   // ######################################################################
   //! Epilogue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONOutputArchive & ar, T const & data )
+  epilogue( JSONOutputArchive &, T const & )
   { }
 
   //! Epilogue for arithmetic types for JSON archives
   template <class T>
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONInputArchive & ar, T const & data )
+  epilogue( JSONInputArchive &, T const & )
   { }
 
   // ######################################################################
   //! Prologue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
-  void prologue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void prologue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const &)
   {
     ar.writeName();
   }
 
   //! Prologue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
-  void prologue(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
-  {
-  }
-
+  void prologue(JSONInputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
+  { }
 
   // ######################################################################
   //! Epilogue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void epilogue(JSONOutputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
   { }
-  
+
   //! Epilogue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void epilogue(JSONInputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
   { }
 
   // ######################################################################
@@ -545,7 +543,6 @@ namespace cereal
   {
     ar.loadSize( st.size );
   }
-
 } // namespace cereal
 
 // register archives for polymorphic support

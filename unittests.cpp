@@ -1434,7 +1434,36 @@ BOOST_AUTO_TEST_CASE( json_stack )
 
 // ######################################################################
 template <class IArchive, class OArchive>
-void test_string()
+void test_string_basic()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(size_t i=0; i<100; ++i)
+  {
+    std::basic_string<char> o_string        = random_basic_string<char>(gen);
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar(o_string);
+    }
+
+    std::basic_string<char> i_string;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_string);
+    }
+
+    BOOST_CHECK_EQUAL(i_string, o_string);
+  }
+}
+
+template <class IArchive, class OArchive>
+void test_string_all()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1479,14 +1508,18 @@ void test_string()
 
 BOOST_AUTO_TEST_CASE( binary_string )
 {
-  test_string<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_string_all<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-// TODO: xml needs support for non standard strings
-//BOOST_AUTO_TEST_CASE( xml_string )
-//{
-//  test_string<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-//}
+BOOST_AUTO_TEST_CASE( xml_string_basic )
+{
+  test_string_basic<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_string_basic )
+{
+  test_string_basic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
 
 // ######################################################################
 template <class IArchive, class OArchive>
@@ -1614,18 +1647,18 @@ void test_unordered_multimap()
       o_podunordered_multimap.insert({key, random_value<int>(gen)});
     }
 
-    std::unordered_multimap<double, StructInternalSerialize> o_iserunordered_multimap;
+    std::unordered_multimap<int, StructInternalSerialize> o_iserunordered_multimap;
     for(int j=0; j<100; ++j)
     {
-      auto key = random_value<double>(gen);
+      auto key = random_value<int>(gen);
       o_iserunordered_multimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
       o_iserunordered_multimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    std::unordered_multimap<float, StructInternalSplit> o_isplunordered_multimap;
+    std::unordered_multimap<int, StructInternalSplit> o_isplunordered_multimap;
     for(int j=0; j<100; ++j)
     {
-      auto key = random_value<float>(gen);
+      auto key = random_value<int>(gen);
       o_isplunordered_multimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
       o_isplunordered_multimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
     }
@@ -1658,8 +1691,8 @@ void test_unordered_multimap()
     }
 
     std::unordered_multimap<std::string, int> i_podunordered_multimap;
-    std::unordered_multimap<double, StructInternalSerialize>   i_iserunordered_multimap;
-    std::unordered_multimap<float, StructInternalSplit>        i_isplunordered_multimap;
+    std::unordered_multimap<int, StructInternalSerialize>   i_iserunordered_multimap;
+    std::unordered_multimap<int, StructInternalSplit>        i_isplunordered_multimap;
     std::unordered_multimap<uint32_t, StructExternalSerialize> i_eserunordered_multimap;
     std::unordered_multimap<int8_t, StructExternalSplit>       i_esplunordered_multimap;
 
@@ -2237,7 +2270,8 @@ void test_complex()
     }
 
     BOOST_CHECK_EQUAL( o_float, i_float );
-    BOOST_CHECK_EQUAL( o_double, i_double );
+    BOOST_CHECK_CLOSE( o_double.real(), i_double.real(), 1e-5);
+    BOOST_CHECK_CLOSE( o_double.imag(), i_double.imag(), 1e-5);
     BOOST_CHECK_CLOSE( o_ldouble.real(), i_ldouble.real(), 1e-5);
     BOOST_CHECK_CLOSE( o_ldouble.imag(), i_ldouble.imag(), 1e-5);
   }

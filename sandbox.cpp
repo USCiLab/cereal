@@ -314,11 +314,13 @@ int main()
     int xxx[] = {-1, 95, 3};
     archive( xxx );
 
-    cereal::XMLOutputArchive archive2(std::cout, 10, true);
+    cereal::XMLOutputArchive archive2(std::cout, 10);
     archive2( xxx );
 
     std::vector<int> yyy = {1, 2, 3};
     archive2( yyy );
+
+    archive2.saveBinaryValue( xxx, sizeof(int)*3 );
   }
 
   {
