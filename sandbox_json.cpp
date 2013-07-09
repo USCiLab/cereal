@@ -242,20 +242,10 @@ int main()
     std::ofstream os("file.json");
     cereal::JSONOutputArchive oar( os );
 
-    //std::vector<int> x = {1, 2, 3, 4, 5};
-    std::multimap<float, AAA> x;
-    x.insert( std::make_pair(.9999999, AAA()) );
-    x.insert( std::make_pair(.9999999, AAA()) );
-
-    oar( CEREAL_NVP(x) );
-
-    for(auto i : x)
-    {
-      std::cout << i.first << std::endl;
-      std::cout << i.second.one << std::endl;
-      std::cout << i.second.two << std::endl;
-      std::cout << std::endl;
-    }
+    int arr[] = {-1, 3, 999};
+    oar( 5 );
+    oar.saveBinaryValue( arr, sizeof(int)*3, "cool beans" );
+    oar.saveBinaryValue( arr, sizeof(int)*3 );
   }
 
   {
@@ -268,29 +258,14 @@ int main()
     std::ifstream is("file.json");
     cereal::JSONInputArchive iar( is );
 
-    std::multimap<float, AAA> x;
-
-    iar( CEREAL_NVP(x) );
-
-    for(auto i : x)
-    {
-      std::cout << i.first << std::endl;
-      std::cout << i.second.one << std::endl;
-      std::cout << i.second.two << std::endl;
-      std::cout << std::endl;
-    }
-
+    int arr[3];
+    int x;
+    iar( x );
+    iar.loadBinaryValue( arr, sizeof(int) * 3 );
+    assert( arr[0] == -1 );
+    assert( arr[1] == 3 );
+    assert( arr[2] == 999 );
   }
 
-  //{
-  //  std::ifstream is("file.json");
-  //  rapidjson::GenericReadStream stream(is);
-  //  rapidjson::Document doc;
-  //  doc.ParseStream<0>(stream);
-
-  //  auto x = doc.MemberBegin();
-  //  std::cout << x->name.GetString() << std::endl;
-  //  std::cout << x->value.IsArray() << std::endl;
-  //}
   return 0;
 }

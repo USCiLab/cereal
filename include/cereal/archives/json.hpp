@@ -66,7 +66,8 @@ namespace cereal
       JSONOutputArchive(std::ostream & stream, int precision = 20) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream, precision)
+        itsWriter(itsWriteStream, precision),
+        itsNextName(nullptr)
       {
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
@@ -315,8 +316,8 @@ namespace cereal
           std::memcpy( &val, decoded.data(), decoded.size() );
         }
 
-      //! Loads some binary data, encoded as a base64 string, with an optional name
-      void loadBinaryValue( void * data, size_t size, char const * name = nullptr)
+      //! Loads some binary data, encoded as a base64 string
+      void loadBinaryValue( void * data, size_t size )
       {
         startNode();
 
