@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -95,16 +96,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>JSON input and output archives.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cereal/cereal.hpp&gt;</code><br/>
-<code>#include &lt;cereal/details/util.hpp&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="util_8hpp_source.html">cereal/details/util.hpp</a>&gt;</code><br/>
 <code>#include &lt;cereal/external/rapidjson/prettywriter.h&gt;</code><br/>
 <code>#include &lt;cereal/external/rapidjson/genericstream.h&gt;</code><br/>
+<code>#include &lt;cereal/external/rapidjson/reader.h&gt;</code><br/>
+<code>#include &lt;cereal/external/rapidjson/document.h&gt;</code><br/>
 <code>#include &lt;cereal/external/base64.hpp&gt;</code><br/>
 <code>#include &lt;sstream&gt;</code><br/>
 <code>#include &lt;stack&gt;</code><br/>
 <code>#include &lt;vector&gt;</code><br/>
 <code>#include &lt;string&gt;</code><br/>
-<code>#include &lt;iostream&gt;</code><br/>
 </div>
 <p><a href="json_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -123,58 +125,120 @@ Functions</h2></td></tr>
 <tr class="memitem:ac267b8915a13f4433fc25aa9d310ee40"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:ac267b8915a13f4433fc25aa9d310ee40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for NVPs for JSON archives.  <a href="#ac267b8915a13f4433fc25aa9d310ee40">More...</a><br/></td></tr>
 <tr class="separator:ac267b8915a13f4433fc25aa9d310ee40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae77f745fd34dd83fa6543e0fa478bdfa"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae77f745fd34dd83fa6543e0fa478bdfa"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ae77f745fd34dd83fa6543e0fa478bdfa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:ae77f745fd34dd83fa6543e0fa478bdfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for NVPs for JSON archives. <br/></td></tr>
+<tr class="separator:ae77f745fd34dd83fa6543e0fa478bdfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bec173adc6146ecc712921c2d257ade"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a3bec173adc6146ecc712921c2d257ade"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:a3bec173adc6146ecc712921c2d257ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for NVPs for JSON archives.  <a href="#a3bec173adc6146ecc712921c2d257ade">More...</a><br/></td></tr>
 <tr class="separator:a3bec173adc6146ecc712921c2d257ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af91b75c82b9cb04ac1cd8617ac10826c"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:af91b75c82b9cb04ac1cd8617ac10826c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
-<tr class="memdesc:af91b75c82b9cb04ac1cd8617ac10826c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for SizeTags for JSON archives.  <a href="#af91b75c82b9cb04ac1cd8617ac10826c">More...</a><br/></td></tr>
-<tr class="separator:af91b75c82b9cb04ac1cd8617ac10826c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99326c431920835d61e5bfc51b865f22"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a99326c431920835d61e5bfc51b865f22"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:a99326c431920835d61e5bfc51b865f22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for NVPs for JSON archives.  <a href="#a99326c431920835d61e5bfc51b865f22">More...</a><br/></td></tr>
+<tr class="separator:a99326c431920835d61e5bfc51b865f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f7ec98da774f9e0af596620859d8ccb"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a5f7ec98da774f9e0af596620859d8ccb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:a5f7ec98da774f9e0af596620859d8ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for SizeTags for JSON archives.  <a href="#a5f7ec98da774f9e0af596620859d8ccb">More...</a><br/></td></tr>
+<tr class="separator:a5f7ec98da774f9e0af596620859d8ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accec39647fd17ad5470e42a5c371701c"><td class="memTemplParams" colspan="2"><a class="anchor" id="accec39647fd17ad5470e42a5c371701c"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:accec39647fd17ad5470e42a5c371701c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:accec39647fd17ad5470e42a5c371701c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for SizeTags for JSON archives. <br/></td></tr>
+<tr class="separator:accec39647fd17ad5470e42a5c371701c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab92526cf5d3f4a642d918a027d2e4567"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ab92526cf5d3f4a642d918a027d2e4567"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:ab92526cf5d3f4a642d918a027d2e4567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for SizeTags for JSON archives.  <a href="#ab92526cf5d3f4a642d918a027d2e4567">More...</a><br/></td></tr>
 <tr class="separator:ab92526cf5d3f4a642d918a027d2e4567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad321b9ca21066f444a86ad33c3b77c8f"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad321b9ca21066f444a86ad33c3b77c8f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, T const &amp;data)</td></tr>
-<tr class="memdesc:ad321b9ca21066f444a86ad33c3b77c8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for JSON archives.  <a href="#ad321b9ca21066f444a86ad33c3b77c8f">More...</a><br/></td></tr>
-<tr class="separator:ad321b9ca21066f444a86ad33c3b77c8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b5fc458db7a962dacd5eb1b447abc24"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a8b5fc458db7a962dacd5eb1b447abc24"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;ar, T const &amp;data)</td></tr>
-<tr class="memdesc:a8b5fc458db7a962dacd5eb1b447abc24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for JSON archives.  <a href="#a8b5fc458db7a962dacd5eb1b447abc24">More...</a><br/></td></tr>
-<tr class="separator:a8b5fc458db7a962dacd5eb1b447abc24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bbd27599ce4c83f3bdf90399306d1c5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7bbd27599ce4c83f3bdf90399306d1c5"></a>
+<tr class="memitem:acb582097a98c0558c1a6b3cf0ef52270"><td class="memTemplParams" colspan="2"><a class="anchor" id="acb582097a98c0558c1a6b3cf0ef52270"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7bbd27599ce4c83f3bdf90399306d1c5"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, T const &amp;data)</td></tr>
-<tr class="separator:a7bbd27599ce4c83f3bdf90399306d1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c93931f5da55a45a1ffbd2d54d0d21d"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7c93931f5da55a45a1ffbd2d54d0d21d"></a>
+<tr class="memitem:acb582097a98c0558c1a6b3cf0ef52270"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:acb582097a98c0558c1a6b3cf0ef52270"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for SizeTags for JSON archives. <br/></td></tr>
+<tr class="separator:acb582097a98c0558c1a6b3cf0ef52270"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac94fc782a72f223f807fdd8f5cf28a10"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:ac94fc782a72f223f807fdd8f5cf28a10"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:ac94fc782a72f223f807fdd8f5cf28a10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for JSON archives.  <a href="#ac94fc782a72f223f807fdd8f5cf28a10">More...</a><br/></td></tr>
+<tr class="separator:ac94fc782a72f223f807fdd8f5cf28a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cec894fd4909cbac9ef6a2055dcd653"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1cec894fd4909cbac9ef6a2055dcd653"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7c93931f5da55a45a1ffbd2d54d0d21d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a1cec894fd4909cbac9ef6a2055dcd653"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:a1cec894fd4909cbac9ef6a2055dcd653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for JSON archives. <br/></td></tr>
+<tr class="separator:a1cec894fd4909cbac9ef6a2055dcd653"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac428bd071a546eca2f4af60bf77b4ee0"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:ac428bd071a546eca2f4af60bf77b4ee0"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:ac428bd071a546eca2f4af60bf77b4ee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for JSON archives.  <a href="#ac428bd071a546eca2f4af60bf77b4ee0">More...</a><br/></td></tr>
+<tr class="separator:ac428bd071a546eca2f4af60bf77b4ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea992ebd675e21abc330374fbf7bc612"><td class="memTemplParams" colspan="2"><a class="anchor" id="aea992ebd675e21abc330374fbf7bc612"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:aea992ebd675e21abc330374fbf7bc612"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:aea992ebd675e21abc330374fbf7bc612"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for JSON archives. <br/></td></tr>
+<tr class="separator:aea992ebd675e21abc330374fbf7bc612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a754065242a50205fca6e4f9969350155"><td class="memTemplParams" colspan="2"><a class="anchor" id="a754065242a50205fca6e4f9969350155"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a754065242a50205fca6e4f9969350155"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;ar, T const &amp;data)</td></tr>
-<tr class="separator:a7c93931f5da55a45a1ffbd2d54d0d21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4ef7bb49438e1af5c13bab93ff07d7d"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad4ef7bb49438e1af5c13bab93ff07d7d"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:a754065242a50205fca6e4f9969350155"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for arithmetic types for JSON archives. <br/></td></tr>
+<tr class="separator:a754065242a50205fca6e4f9969350155"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a735b12e3868296c35db296f2fc4c2b6c"><td class="memTemplParams" colspan="2"><a class="anchor" id="a735b12e3868296c35db296f2fc4c2b6c"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a735b12e3868296c35db296f2fc4c2b6c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;, T const &amp;)</td></tr>
+<tr class="memdesc:a735b12e3868296c35db296f2fc4c2b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for arithmetic types for JSON archives. <br/></td></tr>
+<tr class="separator:a735b12e3868296c35db296f2fc4c2b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5b34470e45441b2ffbed2dae9f76258"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab5b34470e45441b2ffbed2dae9f76258"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ab5b34470e45441b2ffbed2dae9f76258"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;, T const &amp;)</td></tr>
+<tr class="memdesc:ab5b34470e45441b2ffbed2dae9f76258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for arithmetic types for JSON archives. <br/></td></tr>
+<tr class="separator:ab5b34470e45441b2ffbed2dae9f76258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a912341d9cb36d1277dc6046a3c2bac87"><td class="memTemplParams" colspan="2"><a class="anchor" id="a912341d9cb36d1277dc6046a3c2bac87"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a912341d9cb36d1277dc6046a3c2bac87"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;, T const &amp;)</td></tr>
+<tr class="memdesc:a912341d9cb36d1277dc6046a3c2bac87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for arithmetic types for JSON archives. <br/></td></tr>
+<tr class="separator:a912341d9cb36d1277dc6046a3c2bac87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adacd1c15f7ed1793453e56a675bd0a78"><td class="memTemplParams" colspan="2"><a class="anchor" id="adacd1c15f7ed1793453e56a675bd0a78"></a>
 template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
-<tr class="memitem:ad4ef7bb49438e1af5c13bab93ff07d7d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;str)</td></tr>
-<tr class="separator:ad4ef7bb49438e1af5c13bab93ff07d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae46266c1d69f16f862c029ab8507133f"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae46266c1d69f16f862c029ab8507133f"></a>
+<tr class="memitem:adacd1c15f7ed1793453e56a675bd0a78"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;)</td></tr>
+<tr class="memdesc:adacd1c15f7ed1793453e56a675bd0a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for strings for JSON archives. <br/></td></tr>
+<tr class="separator:adacd1c15f7ed1793453e56a675bd0a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dde17944a1c24885e39ff673b402841"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4dde17944a1c24885e39ff673b402841"></a>
 template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
-<tr class="memitem:ae46266c1d69f16f862c029ab8507133f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;str)</td></tr>
-<tr class="separator:ae46266c1d69f16f862c029ab8507133f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
-<tr class="memdesc:aef54ff4b5afaa7967af7cdefecd6f134"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing NVP types to binary.  <a href="#aef54ff4b5afaa7967af7cdefecd6f134">More...</a><br/></td></tr>
-<tr class="separator:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, SizeTag&lt; T &gt; &amp;t)</td></tr>
-<tr class="memdesc:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing SizeTags to binary.  <a href="#a42a7af89d6d5445bf7bdc35daa66d9bb">More...</a><br/></td></tr>
-<tr class="separator:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dde17944a1c24885e39ff673b402841"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;)</td></tr>
+<tr class="memdesc:a4dde17944a1c24885e39ff673b402841"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for strings for JSON archives. <br/></td></tr>
+<tr class="separator:a4dde17944a1c24885e39ff673b402841"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa06f0f66ced9dd9c85377ba61054df94"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa06f0f66ced9dd9c85377ba61054df94"></a>
+template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
+<tr class="memitem:aa06f0f66ced9dd9c85377ba61054df94"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;)</td></tr>
+<tr class="memdesc:aa06f0f66ced9dd9c85377ba61054df94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for strings for JSON archives. <br/></td></tr>
+<tr class="separator:aa06f0f66ced9dd9c85377ba61054df94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a733225f7be628b7c4dfca463d6a44253"><td class="memTemplParams" colspan="2"><a class="anchor" id="a733225f7be628b7c4dfca463d6a44253"></a>
+template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
+<tr class="memitem:a733225f7be628b7c4dfca463d6a44253"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;)</td></tr>
+<tr class="memdesc:a733225f7be628b7c4dfca463d6a44253"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for strings for JSON archives. <br/></td></tr>
+<tr class="separator:a733225f7be628b7c4dfca463d6a44253"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9704eaf974570c9c9049d2c55f18472"><td class="memTemplParams" colspan="2"><a class="anchor" id="af9704eaf974570c9c9049d2c55f18472"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:af9704eaf974570c9c9049d2c55f18472"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (JSONOutputArchive &amp;ar, NameValuePair&lt; T &gt; const &amp;t)</td></tr>
+<tr class="memdesc:af9704eaf974570c9c9049d2c55f18472"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing NVP types to JSON. <br/></td></tr>
+<tr class="separator:af9704eaf974570c9c9049d2c55f18472"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2023c66768880e6ac081b5e067c4866a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2023c66768880e6ac081b5e067c4866a"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a2023c66768880e6ac081b5e067c4866a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (JSONInputArchive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
+<tr class="separator:a2023c66768880e6ac081b5e067c4866a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0710e09305e46f06a063a16322a5f584"><td class="memTemplParams" colspan="2"><a class="anchor" id="a0710e09305e46f06a063a16322a5f584"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a0710e09305e46f06a063a16322a5f584"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
@@ -182,11 +246,36 @@ template&lt;class T &gt; </td></tr>
 ::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (JSONOutputArchive &amp;ar, T const &amp;t)</td></tr>
 <tr class="memdesc:a0710e09305e46f06a063a16322a5f584"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for arithmetic to JSON. <br/></td></tr>
 <tr class="separator:a0710e09305e46f06a063a16322a5f584"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fe82d4561d7bf1823b09aedefce4fc1"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8fe82d4561d7bf1823b09aedefce4fc1"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a8fe82d4561d7bf1823b09aedefce4fc1"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (JSONInputArchive &amp;ar, T &amp;t)</td></tr>
+<tr class="memdesc:a8fe82d4561d7bf1823b09aedefce4fc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading arithmetic from JSON. <br/></td></tr>
+<tr class="separator:a8fe82d4561d7bf1823b09aedefce4fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a440f436a24a5c4303a51558cf3f357e1"><td class="memTemplParams" colspan="2"><a class="anchor" id="a440f436a24a5c4303a51558cf3f357e1"></a>
 template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
 <tr class="memitem:a440f436a24a5c4303a51558cf3f357e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (JSONOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;str)</td></tr>
 <tr class="memdesc:a440f436a24a5c4303a51558cf3f357e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">saving string to JSON <br/></td></tr>
 <tr class="separator:a440f436a24a5c4303a51558cf3f357e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3a6f6395dba28bed05e480262f08a36"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa3a6f6395dba28bed05e480262f08a36"></a>
+template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
+<tr class="memitem:aa3a6f6395dba28bed05e480262f08a36"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (JSONInputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; &amp;str)</td></tr>
+<tr class="memdesc:aa3a6f6395dba28bed05e480262f08a36"><td class="mdescLeft">&#160;</td><td class="mdescRight">loading string from JSON <br/></td></tr>
+<tr class="separator:aa3a6f6395dba28bed05e480262f08a36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad998c0d6a5877cfa4eac3918855f7c6a"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad998c0d6a5877cfa4eac3918855f7c6a"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ad998c0d6a5877cfa4eac3918855f7c6a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (JSONOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:ad998c0d6a5877cfa4eac3918855f7c6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving SizeTags to JSON. <br/></td></tr>
+<tr class="separator:ad998c0d6a5877cfa4eac3918855f7c6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a792e42e92134d5add3a27bb92ea1ea5e"><td class="memTemplParams" colspan="2"><a class="anchor" id="a792e42e92134d5add3a27bb92ea1ea5e"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a792e42e92134d5add3a27bb92ea1ea5e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (JSONInputArchive &amp;ar, SizeTag&lt; T &gt; &amp;st)</td></tr>
+<tr class="memdesc:a792e42e92134d5add3a27bb92ea1ea5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading SizeTags from JSON. <br/></td></tr>
+<tr class="separator:a792e42e92134d5add3a27bb92ea1ea5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a72285689e266a70ca85b128599fd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87a72285689e266a70ca85b128599fd3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>CEREAL_REGISTER_ARCHIVE</b> (<a class="el" href="classcereal_1_1JSONInputArchive.html">cereal::JSONInputArchive</a>)</td></tr>
+<tr class="separator:a87a72285689e266a70ca85b128599fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6753cf4ee19b1b2292e2f85324694e67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6753cf4ee19b1b2292e2f85324694e67"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>CEREAL_REGISTER_ARCHIVE</b> (<a class="el" href="classcereal_1_1JSONOutputArchive.html">cereal::JSONOutputArchive</a>)</td></tr>
 <tr class="separator:a6753cf4ee19b1b2292e2f85324694e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,7 +285,7 @@ template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

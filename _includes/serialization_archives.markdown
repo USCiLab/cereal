@@ -134,7 +134,54 @@ This data can be loaded in a similar fashion with `loadBinaryValue`.
 
 ## JSON
 
-The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.  JSON archives are very similar to XML archives in that they will take advantage of name-value pairs and automatically name things without them.  JSON archives also support inserting data into dynamically sized containers but do not explicitly mark which values are dynamically sized.
+The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.  JSON archives are very similar to XML archives in that they will take advantage of name-value pairs and automatically name things without them.  Consider the following nearly identical example as seen in the XML section:
+
+```cpp
+#include <iostream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
+
+int main()
+{
+  cereal::JSONOutputArchive archive( std::cout );
+  bool arr[] = {true, false};
+  std::vector<int> vec = {1, 2, 3, 4, 5};
+  archive( CEREAL_NVP(vec),
+           arr );
+}
+```
+
+This causes the output JSON:
+
+```json
+{
+    "vec": [
+        1,
+        2,
+        3,
+        4,
+        5
+    ],
+    "value0": {
+        "value0": true,
+        "value1": false
+    }
+}
+```
+
+Note how dynamically sized containers (e.g. `std::vector`) are serialized as JSON arrays, while fixed sized containers
+(e.g. `std::array`) are serialized as JSON objects.  This distinction is important as it allows you to hand insert data
+into variable sized containers in a JSON file by inserting elements into an array, whereas cereal will incorrectly load
+archives that have had data inserted into objects.  You can still hand edit values in objects, but you cannot append or
+deduct data from them.
+
+Please note that at this time cereal requires that the ordering of information in the JSON archive match what is
+expected in the serialization functions.  You may add data to arrays, but you cannot change the order of objects.
+
+### Binary output
+
+Just like XML, JSON archives support explicit binary output by encoding data in base64 strings.  The syntax is identical
+to the above XML example using the functions `saveBinaryValue` and `loadBinaryValue`.
 
 ---
 

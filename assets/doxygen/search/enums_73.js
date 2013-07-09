@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['specialization',['specialization',['../structcereal_1_1specialize.html#ac28bb730353e53b3066cc679e63bb108',1,'cereal']]]
+  ['specialization',['specialization',['../group__Access.html#gac28bb730353e53b3066cc679e63bb108',1,'cereal']]]
 ];

@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -72,7 +73,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>An output archive designed to save data to XML.  
+<p>An output archive designed to load data from XML.  
  <a href="classcereal_1_1XMLInputArchive.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="xml_8hpp_source.html">cereal/archives/xml.hpp</a>&gt;</code></p>
@@ -196,10 +197,10 @@ template&lt;class T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aea4f24d0abcecddf5669b3406d875379"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea4f24d0abcecddf5669b3406d875379"></a>
-static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#aea4f24d0abcecddf5669b3406d875379">getNumChildren</a> (<a class="el" href="classrapidxml_1_1xml__node.html">rapidxml::xml_node</a>&lt;&gt; *node=nullptr)</td></tr>
-<tr class="memdesc:aea4f24d0abcecddf5669b3406d875379"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of children (usually interpreted as size) for the specified node. <br/></td></tr>
-<tr class="separator:aea4f24d0abcecddf5669b3406d875379"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e396aeced2f05e4d76b0e4c7ef3f25d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e396aeced2f05e4d76b0e4c7ef3f25d"></a>
+static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html#a1e396aeced2f05e4d76b0e4c7ef3f25d">getNumChildren</a> (rapidxml::xml_node&lt;&gt; *node)</td></tr>
+<tr class="memdesc:a1e396aeced2f05e4d76b0e4c7ef3f25d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of children (usually interpreted as size) for the specified node. <br/></td></tr>
+<tr class="separator:a1e396aeced2f05e4d76b0e4c7ef3f25d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -213,7 +214,9 @@ template&lt;class T &gt; </td></tr>
 <tr class="separator:a2e69754fccedcd4026d19d383df74e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>An output archive designed to save data to XML. </p>
+<div class="textblock"><p>An output archive designed to load data from XML. </p>
+<p>This archive uses RapidXML to build an in memory XML tree of the data in the stream it is given before loading any types serialized.</p>
+<p>Input XML should have been produced by the <a class="el" href="classcereal_1_1XMLOutputArchive.html" title="An output archive designed to save data to XML.">XMLOutputArchive</a>. Data can only be added to dynamically sized containers - the input archive will determine their size by looking at the number of child nodes. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ab641ded4033d8e998e41dd002ece9184"></a>
 <div class="memitem">
@@ -254,7 +257,7 @@ template&lt;class T &gt; </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:35 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

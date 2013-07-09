@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -95,11 +96,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>XML input and output archives.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;iostream&gt;</code><br/>
-<code>#include &lt;cereal/cereal.hpp&gt;</code><br/>
-<code>#include &lt;cereal/details/util.hpp&gt;</code><br/>
-<code>#include &lt;<a class="el" href="rapidxml_8hpp_source.html">cereal/external/rapidxml/rapidxml.hpp</a>&gt;</code><br/>
-<code>#include &lt;<a class="el" href="rapidxml__print_8hpp_source.html">cereal/external/rapidxml/rapidxml_print.hpp</a>&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="util_8hpp_source.html">cereal/details/util.hpp</a>&gt;</code><br/>
+<code>#include &lt;cereal/external/rapidxml/rapidxml.hpp&gt;</code><br/>
+<code>#include &lt;cereal/external/rapidxml/rapidxml_print.hpp&gt;</code><br/>
 <code>#include &lt;cereal/external/base64.hpp&gt;</code><br/>
 <code>#include &lt;sstream&gt;</code><br/>
 <code>#include &lt;stack&gt;</code><br/>
@@ -118,7 +118,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct that contains metadata about a node.  <a href="structcereal_1_1XMLOutputArchive_1_1NodeInfo.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLInputArchive.html">cereal::XMLInputArchive</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An output archive designed to save data to XML.  <a href="classcereal_1_1XMLInputArchive.html#details">More...</a><br/></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An output archive designed to load data from XML.  <a href="classcereal_1_1XMLInputArchive.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1XMLInputArchive_1_1NodeInfo.html">cereal::XMLInputArchive::NodeInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct that contains metadata about a node.  <a href="structcereal_1_1XMLInputArchive_1_1NodeInfo.html#details">More...</a><br/></td></tr>
@@ -144,10 +144,10 @@ template&lt;class T &gt; </td></tr>
 <tr class="memitem:a5d1af5fa5a466ad0cd89513aab823b80"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:a5d1af5fa5a466ad0cd89513aab823b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for NVPs for XML input archives. <br/></td></tr>
 <tr class="separator:a5d1af5fa5a466ad0cd89513aab823b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56503148a06e445d97d5fc2313e915fc"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a56503148a06e445d97d5fc2313e915fc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
-<tr class="memdesc:a56503148a06e445d97d5fc2313e915fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for SizeTags for XML output archives.  <a href="#a56503148a06e445d97d5fc2313e915fc">More...</a><br/></td></tr>
-<tr class="separator:a56503148a06e445d97d5fc2313e915fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbb541e9594201d78a04cb11ad806ba0"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:adbb541e9594201d78a04cb11ad806ba0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;ar, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:adbb541e9594201d78a04cb11ad806ba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for SizeTags for XML output archives.  <a href="#adbb541e9594201d78a04cb11ad806ba0">More...</a><br/></td></tr>
+<tr class="separator:adbb541e9594201d78a04cb11ad806ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa25e6485f450649b931e07e0f6384a76"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa25e6485f450649b931e07e0f6384a76"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:aa25e6485f450649b931e07e0f6384a76"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
@@ -234,7 +234,7 @@ template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

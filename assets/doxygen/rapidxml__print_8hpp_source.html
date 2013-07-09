@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,413 +90,413 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">rapidxml_print.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="rapidxml__print_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_PRINT_HPP_INCLUDED</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_PRINT_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define RAPIDXML_PRINT_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Copyright (C) 2006, 2009 Marcin Kalicinski</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">// Version 1.13</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">// Revision $DateTime: 2009/05/13 01:46:17 $</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="rapidxml_8hpp.html" title="This file contains rapidxml parser and DOM implementation.">rapidxml.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">// Only include streams if not disabled</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_NO_STREAMS</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">    #include &lt;ostream&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">    #include &lt;iterator&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>rapidxml</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="comment">// Printing flags</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span> print_no_indenting = 0x1;   </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">// Internal</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">namespace </span>internal</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="comment">// Internal character operations</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="comment">// Copy characters from given range to given output iterator</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">inline</span> OutIt copy_chars(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end, OutIt out)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                *out++ = *begin++;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="comment">// Copy characters from given range to given output iterator and expand</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">// characters into references (&amp;lt; &amp;gt; &amp;apos; &amp;quot; &amp;amp;)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">inline</span> OutIt copy_and_expand_chars(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end, Ch noexpand, OutIt out)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keywordflow">if</span> (*begin == noexpand)</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                    *out++ = *begin;    <span class="comment">// No expansion, copy character</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    <span class="keywordflow">switch</span> (*begin)</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                    {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&lt;&#39;</span>):</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        *out++ = Ch(<span class="stringliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;l&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&gt;&#39;</span>):</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        *out++ = Ch(<span class="stringliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;g&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;\&#39;&#39;</span>):</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        *out++ = Ch(<span class="stringliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;a&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;p&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;o&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;s&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&quot;&#39;</span>):</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        *out++ = Ch(<span class="stringliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;q&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;u&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;o&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&amp;&#39;</span>):</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        *out++ = Ch(<span class="stringliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;a&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;m&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;p&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                    <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        *out++ = *begin;    <span class="comment">// No expansion, copy character</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                ++begin;    <span class="comment">// Step to next character</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="comment">// Fill given output iterator with repetitions of the same character</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">inline</span> OutIt fill_chars(OutIt out, <span class="keywordtype">int</span> n, Ch ch)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n; ++i)</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                *out++ = ch;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="comment">// Find character</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch, Ch ch&gt;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">bool</span> find_char(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end)</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <span class="keywordflow">if</span> (*begin++ == ch)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="comment">// Internal printing operations</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="comment">// Print node</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keyword">inline</span> OutIt print_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="comment">// Print children of the node</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keyword">inline</span> OutIt print_children(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        {</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordflow">for</span> (xml_node&lt;Ch&gt; *child = node-&gt;first_node(); child; child = child-&gt;next_sibling())</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                out = print_node(out, child, flags, indent);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        }</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="comment">// Print attributes of the node</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keyword">inline</span> OutIt print_attributes(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags)</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <span class="keywordflow">for</span> (xml_attribute&lt;Ch&gt; *attribute = node-&gt;first_attribute(); attribute; attribute = attribute-&gt;next_attribute())</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            {</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                <span class="keywordflow">if</span> (attribute-&gt;name() &amp;&amp; attribute-&gt;value())</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                    <span class="comment">// Print attribute name</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                    *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                    out = copy_chars(attribute-&gt;name(), attribute-&gt;name() + attribute-&gt;name_size(), out);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                    *out = Ch(<span class="charliteral">&#39;=&#39;</span>), ++out;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                    <span class="comment">// Print attribute value using appropriate quote type</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                    <span class="keywordflow">if</span> (find_char&lt;Ch, Ch(<span class="charliteral">&#39;&quot;&#39;</span>)&gt;(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size()))</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                    {</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                        out = copy_and_expand_chars(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size(), Ch(<span class="charliteral">&#39;&quot;&#39;</span>), out);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                    }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                    {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                        *out = Ch(<span class="charliteral">&#39;&quot;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                        out = copy_and_expand_chars(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size(), Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), out);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                        *out = Ch(<span class="charliteral">&#39;&quot;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                    }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                }</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        }</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="comment">// Print data node</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keyword">inline</span> OutIt print_data_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            assert(node-&gt;type() == node_data);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            out = copy_and_expand_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), Ch(0), out);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        }</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="comment">// Print data node</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keyword">inline</span> OutIt print_cdata_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        {</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            assert(node-&gt;type() == node_cdata);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>); ++out;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>); ++out;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            *out = Ch(<span class="charliteral">&#39;[&#39;</span>); ++out;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            *out = Ch(<span class="charliteral">&#39;C&#39;</span>); ++out;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            *out = Ch(<span class="charliteral">&#39;D&#39;</span>); ++out;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            *out = Ch(<span class="charliteral">&#39;A&#39;</span>); ++out;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            *out = Ch(<span class="charliteral">&#39;T&#39;</span>); ++out;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            *out = Ch(<span class="charliteral">&#39;A&#39;</span>); ++out;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            *out = Ch(<span class="charliteral">&#39;[&#39;</span>); ++out;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            out = copy_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), out);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;rapidxml.hpp&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">// Only include streams if not disabled</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_NO_STREAMS</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">    #include &lt;ostream&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">    #include &lt;iterator&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>rapidxml</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="comment">// Printing flags</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064">   22</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a> = 0x1;   </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// Internal</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">namespace </span>internal</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="comment">// Internal character operations</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="comment">// Copy characters from given range to given output iterator</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">inline</span> OutIt copy_chars(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end, OutIt out)</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                *out++ = *begin++;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">// Copy characters from given range to given output iterator and expand</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="comment">// characters into references (&amp;lt; &amp;gt; &amp;apos; &amp;quot; &amp;amp;)</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">inline</span> OutIt copy_and_expand_chars(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end, Ch noexpand, OutIt out)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">if</span> (*begin == noexpand)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                    *out++ = *begin;    <span class="comment">// No expansion, copy character</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                    <span class="keywordflow">switch</span> (*begin)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&lt;&#39;</span>):</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        *out++ = Ch(<span class="charliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;l&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&gt;&#39;</span>):</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        *out++ = Ch(<span class="charliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;g&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;\&#39;&#39;</span>):</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        *out++ = Ch(<span class="charliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;a&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;p&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;o&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;s&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&quot;&#39;</span>):</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        *out++ = Ch(<span class="charliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;q&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;u&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;o&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;t&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    <span class="keywordflow">case</span> Ch(<span class="charliteral">&#39;&amp;&#39;</span>):</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        *out++ = Ch(<span class="charliteral">&#39;&amp;&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;a&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;m&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;p&#39;</span>); *out++ = Ch(<span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        *out++ = *begin;    <span class="comment">// No expansion, copy character</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                    }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                ++begin;    <span class="comment">// Step to next character</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="comment">// Fill given output iterator with repetitions of the same character</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">inline</span> OutIt fill_chars(OutIt out, <span class="keywordtype">int</span> n, Ch ch)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; n; ++i)</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                *out++ = ch;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="comment">// Find character</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch, Ch ch&gt;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">bool</span> find_char(<span class="keyword">const</span> Ch *begin, <span class="keyword">const</span> Ch *end)</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordflow">while</span> (begin != end)</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">if</span> (*begin++ == ch)</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        }</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="comment">// Internal printing operations</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="comment">// Print node</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">inline</span> OutIt print_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="comment">// Print children of the node</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keyword">inline</span> OutIt print_children(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="keywordflow">for</span> (<a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *child = node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2dedeb4e04bb35e06a9a7bddf6ba652d">first_node</a>(); child; child = child-&gt;next_sibling())</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                out = print_node(out, child, flags, indent);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="comment">// Print attributes of the node</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">inline</span> OutIt print_attributes(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags)</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="keywordflow">for</span> (<a class="code" href="classrapidxml_1_1xml__attribute.html">xml_attribute&lt;Ch&gt;</a> *attribute = node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#ae426802be58114ffc41bf30ac6b8c37d">first_attribute</a>(); attribute; attribute = attribute-&gt;next_attribute())</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">if</span> (attribute-&gt;name() &amp;&amp; attribute-&gt;value())</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    <span class="comment">// Print attribute name</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                    *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                    out = copy_chars(attribute-&gt;name(), attribute-&gt;name() + attribute-&gt;name_size(), out);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                    *out = Ch(<span class="charliteral">&#39;=&#39;</span>), ++out;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                    <span class="comment">// Print attribute value using appropriate quote type</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                    <span class="keywordflow">if</span> (find_char&lt;Ch, Ch(<span class="charliteral">&#39;&quot;&#39;</span>)&gt;(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size()))</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                    {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        out = copy_and_expand_chars(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size(), Ch(<span class="charliteral">&#39;&quot;&#39;</span>), out);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                    }</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                    {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                        *out = Ch(<span class="charliteral">&#39;&quot;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                        out = copy_and_expand_chars(attribute-&gt;value(), attribute-&gt;value() + attribute-&gt;value_size(), Ch(<span class="charliteral">&#39;\&#39;&#39;</span>), out);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                        *out = Ch(<span class="charliteral">&#39;&quot;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                    }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="comment">// Print data node</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">inline</span> OutIt print_data_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca9d669d8e1f4ba9c7eeada4c14a11ad1d" title="A data node. Name is empty. Value contains data text.">node_data</a>);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            out = copy_and_expand_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), Ch(0), out);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="comment">// Print data node</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">inline</span> OutIt print_cdata_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        {</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7caccf0b363d3876a3f83ff9b1bcdaaa536" title="A CDATA node. Name is empty. Value contains data text.">node_cdata</a>);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>); ++out;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>); ++out;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            *out = Ch(<span class="charliteral">&#39;[&#39;</span>); ++out;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            *out = Ch(<span class="charliteral">&#39;C&#39;</span>); ++out;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            *out = Ch(<span class="charliteral">&#39;D&#39;</span>); ++out;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            *out = Ch(<span class="charliteral">&#39;A&#39;</span>); ++out;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            *out = Ch(<span class="charliteral">&#39;T&#39;</span>); ++out;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            *out = Ch(<span class="charliteral">&#39;A&#39;</span>); ++out;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            *out = Ch(<span class="charliteral">&#39;[&#39;</span>); ++out;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), out);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            *out = Ch(<span class="charliteral">&#39;]&#39;</span>); ++out;</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            *out = Ch(<span class="charliteral">&#39;]&#39;</span>); ++out;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            *out = Ch(<span class="charliteral">&#39;]&#39;</span>); ++out;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>); ++out;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        }</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="comment">// Print element node</span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keyword">inline</span> OutIt print_element_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            assert(node-&gt;type() == node_element);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="comment">// Print element name and attributes, if any</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            out = copy_chars(node-&gt;name(), node-&gt;name() + node-&gt;name_size(), out);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            out = print_attributes(out, node, flags);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            <span class="comment">// If node is childless</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            <span class="keywordflow">if</span> (node-&gt;value_size() == 0 &amp;&amp; !node-&gt;first_node())</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            {</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                <span class="comment">// Print childless node tag ending</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                *out = Ch(<span class="charliteral">&#39;/&#39;</span>), ++out;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;            }</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            {</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                <span class="comment">// Print normal node tag ending</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                <span class="comment">// Test if node contains a single data node only (and no other nodes)</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                xml_node&lt;Ch&gt; *child = node-&gt;first_node();</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                <span class="keywordflow">if</span> (!child)</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                {</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                    <span class="comment">// If node has no children, only print its value without indenting</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                    out = copy_and_expand_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), Ch(0), out);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                }</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (child-&gt;next_sibling() == 0 &amp;&amp; child-&gt;type() == node_data)</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                    <span class="comment">// If node has a sole data child, only print its value without indenting</span></div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                    out = copy_and_expand_chars(child-&gt;value(), child-&gt;value() + child-&gt;value_size(), Ch(0), out);</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                }</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                {</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    <span class="comment">// Print all children with full indenting</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                    <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\n&#39;</span>), ++out;</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                    out = print_children(out, node, flags, indent + 1);</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                    <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                        out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                }</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;                <span class="comment">// Print node end</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                *out = Ch(<span class="charliteral">&#39;/&#39;</span>), ++out;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                out = copy_chars(node-&gt;name(), node-&gt;name() + node-&gt;name_size(), out);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            }</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        }</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="comment">// Print declaration node</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        <span class="keyword">inline</span> OutIt print_declaration_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        {</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;            <span class="comment">// Print declaration start</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            *out = Ch(<span class="charliteral">&#39;x&#39;</span>), ++out;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            *out = Ch(<span class="charliteral">&#39;m&#39;</span>), ++out;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            *out = Ch(<span class="charliteral">&#39;l&#39;</span>), ++out;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="comment">// Print attributes</span></div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            out = print_attributes(out, node, flags);</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            <span class="comment">// Print declaration end</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        }</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="comment">// Print comment node</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keyword">inline</span> OutIt print_comment_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        {</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            assert(node-&gt;type() == node_comment);</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>), ++out;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>); ++out;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="comment">// Print element node</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keyword">inline</span> OutIt print_element_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        {</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca89cbeb4d28046326e4ee953d3c4047ff" title="An element node. Name contains element name. Value contains text of first data node.">node_element</a>);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            <span class="comment">// Print element name and attributes, if any</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a7e7f98b3d01e1eab8dc1ca69aad9af84">name_size</a>(), out);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            out = print_attributes(out, node, flags);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            <span class="comment">// If node is childless</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            <span class="keywordflow">if</span> (node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>() == 0 &amp;&amp; !node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2dedeb4e04bb35e06a9a7bddf6ba652d">first_node</a>())</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                <span class="comment">// Print childless node tag ending</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                *out = Ch(<span class="charliteral">&#39;/&#39;</span>), ++out;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            }</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                <span class="comment">// Print normal node tag ending</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                <span class="comment">// Test if node contains a single data node only (and no other nodes)</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *child = node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2dedeb4e04bb35e06a9a7bddf6ba652d">first_node</a>();</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                <span class="keywordflow">if</span> (!child)</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                {</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                    <span class="comment">// If node has no children, only print its value without indenting</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                    out = copy_and_expand_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), Ch(0), out);</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                }</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (child-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#ac59af4dd5f0ec715753e42467dff6aed">next_sibling</a>() == 0 &amp;&amp; child-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca9d669d8e1f4ba9c7eeada4c14a11ad1d" title="A data node. Name is empty. Value contains data text.">node_data</a>)</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                {</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                    <span class="comment">// If node has a sole data child, only print its value without indenting</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                    out = copy_and_expand_chars(child-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), child-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + child-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), Ch(0), out);</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                }</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                    <span class="comment">// Print all children with full indenting</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                        *out = Ch(<span class="charliteral">&#39;\n&#39;</span>), ++out;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                    out = print_children(out, node, flags, indent + 1);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                    <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                        out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                }</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                <span class="comment">// Print node end</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;                *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                *out = Ch(<span class="charliteral">&#39;/&#39;</span>), ++out;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a7e7f98b3d01e1eab8dc1ca69aad9af84">name_size</a>(), out);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;            }</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        }</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <span class="comment">// Print declaration node</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="keyword">inline</span> OutIt print_declaration_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;            <span class="comment">// Print declaration start</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            *out = Ch(<span class="charliteral">&#39;x&#39;</span>), ++out;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            *out = Ch(<span class="charliteral">&#39;m&#39;</span>), ++out;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            *out = Ch(<span class="charliteral">&#39;l&#39;</span>), ++out;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="comment">// Print attributes</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            out = print_attributes(out, node, flags);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;            <span class="comment">// Print declaration end</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        }</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        <span class="comment">// Print comment node</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="keyword">inline</span> OutIt print_comment_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca1a695e1384ec3bd4df3eff65ec609a96" title="A comment node. Name is empty. Value contains comment text.">node_comment</a>);</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>), ++out;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            out = copy_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), out);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), out);</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            *out = Ch(<span class="charliteral">&#39;-&#39;</span>), ++out;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        }</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="comment">// Print doctype node</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <span class="keyword">inline</span> OutIt print_doctype_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        {</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            assert(node-&gt;type() == node_doctype);</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>), ++out;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            *out = Ch(<span class="charliteral">&#39;D&#39;</span>), ++out;</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            *out = Ch(<span class="charliteral">&#39;O&#39;</span>), ++out;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            *out = Ch(<span class="charliteral">&#39;C&#39;</span>), ++out;</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            *out = Ch(<span class="charliteral">&#39;T&#39;</span>), ++out;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            *out = Ch(<span class="charliteral">&#39;Y&#39;</span>), ++out;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            *out = Ch(<span class="charliteral">&#39;P&#39;</span>), ++out;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            *out = Ch(<span class="charliteral">&#39;E&#39;</span>), ++out;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;            out = copy_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), out);</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        }</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="comment">// Print pi node</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keyword">inline</span> OutIt print_pi_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            assert(node-&gt;type() == node_pi);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            out = copy_chars(node-&gt;name(), node-&gt;name() + node-&gt;name_size(), out);</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            out = copy_chars(node-&gt;value(), node-&gt;value() + node-&gt;value_size(), out);</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="comment">// Print node</span></div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keyword">inline</span> OutIt print_node(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        {</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <span class="comment">// Print proper node type</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <span class="keywordflow">switch</span> (node-&gt;type())</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            {</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            <span class="comment">// Document</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            <span class="keywordflow">case</span> node_document:</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                out = print_children(out, node, flags, indent);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            <span class="comment">// Element</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            <span class="keywordflow">case</span> node_element:</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                out = print_element_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <span class="comment">// Data</span></div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            <span class="keywordflow">case</span> node_data:</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                out = print_data_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <span class="comment">// CDATA</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            <span class="keywordflow">case</span> node_cdata:</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                out = print_cdata_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            <span class="comment">// Declaration</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            <span class="keywordflow">case</span> node_declaration:</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                out = print_declaration_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <span class="comment">// Comment</span></div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            <span class="keywordflow">case</span> node_comment:</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                out = print_comment_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <span class="comment">// Doctype</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            <span class="keywordflow">case</span> node_doctype:</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                out = print_doctype_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="comment">// Pi</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;            <span class="keywordflow">case</span> node_pi:</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                out = print_pi_node(out, node, flags, indent);</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                <span class="comment">// Unknown</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                assert(0);</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            }</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            <span class="comment">// If indenting not disabled, add line break after node</span></div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; print_no_indenting))</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                *out = Ch(<span class="charliteral">&#39;\n&#39;</span>), ++out;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            <span class="comment">// Return modified iterator</span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        }</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    }</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="comment">// Printing</span></div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    <span class="keyword">inline</span> OutIt print(OutIt out, <span class="keyword">const</span> xml_node&lt;Ch&gt; &amp;node, <span class="keywordtype">int</span> flags = 0)</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    {</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        <span class="keywordflow">return</span> internal::print_node(out, &amp;node, flags, 0);</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    }</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_NO_STREAMS</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    <span class="keyword">inline</span> std::basic_ostream&lt;Ch&gt; &amp;print(std::basic_ostream&lt;Ch&gt; &amp;out, <span class="keyword">const</span> xml_node&lt;Ch&gt; &amp;node, <span class="keywordtype">int</span> flags = 0)</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    {</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        print(std::ostream_iterator&lt;Ch&gt;(out), node, flags);</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    }</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch&gt;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <span class="keyword">inline</span> std::basic_ostream&lt;Ch&gt; &amp;operator &lt;&lt;(std::basic_ostream&lt;Ch&gt; &amp;out, <span class="keyword">const</span> xml_node&lt;Ch&gt; &amp;node)</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    {</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        <span class="keywordflow">return</span> print(out, node);</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    }</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;}</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        }</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="comment">// Print doctype node</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        <span class="keyword">inline</span> OutIt print_doctype_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        {</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7cadf5002f2efabe231bed01d16f08f832c" title="A DOCTYPE node. Name is empty. Value contains DOCTYPE text.">node_doctype</a>);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            *out = Ch(<span class="charliteral">&#39;!&#39;</span>), ++out;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            *out = Ch(<span class="charliteral">&#39;D&#39;</span>), ++out;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            *out = Ch(<span class="charliteral">&#39;O&#39;</span>), ++out;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            *out = Ch(<span class="charliteral">&#39;C&#39;</span>), ++out;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            *out = Ch(<span class="charliteral">&#39;T&#39;</span>), ++out;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            *out = Ch(<span class="charliteral">&#39;Y&#39;</span>), ++out;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            *out = Ch(<span class="charliteral">&#39;P&#39;</span>), ++out;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            *out = Ch(<span class="charliteral">&#39;E&#39;</span>), ++out;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), out);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        }</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <span class="comment">// Print pi node</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="keyword">inline</span> OutIt print_pi_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        {</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            assert(node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>() == <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7caeb73b472e77347b9aa89525f16493b87" title="A PI node. Name contains target. Value contains instructions.">node_pi</a>);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                out = fill_chars(out, indent, Ch(<span class="charliteral">&#39;\t&#39;</span>));</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            *out = Ch(<span class="charliteral">&#39;&lt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9a09739310469995db078ebd0da3ed45">name</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a7e7f98b3d01e1eab8dc1ca69aad9af84">name_size</a>(), out);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            *out = Ch(<span class="charliteral">&#39; &#39;</span>), ++out;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            out = copy_chars(node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>(), node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#adcdaccff61c665f039d9344e447b7445">value</a>() + node-&gt;<a class="code" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size</a>(), out);</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            *out = Ch(<span class="charliteral">&#39;?&#39;</span>), ++out;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            *out = Ch(<span class="charliteral">&#39;&gt;&#39;</span>), ++out;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        }</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="comment">// Print node</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keyword">inline</span> OutIt print_node(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> *node, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> indent)</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <span class="comment">// Print proper node type</span></div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <span class="keywordflow">switch</span> (node-&gt;<a class="code" href="classrapidxml_1_1xml__node.html#a2c6a4315b98bcfa2e04fed3fa1b22c36">type</a>())</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            {</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            <span class="comment">// Document</span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca4023b6a1c7059fd8fbec2112d5c35424" title="A document node. Name and value are empty.">node_document</a>:</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                out = print_children(out, node, flags, indent);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            <span class="comment">// Element</span></div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca89cbeb4d28046326e4ee953d3c4047ff" title="An element node. Name contains element name. Value contains text of first data node.">node_element</a>:</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                out = print_element_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <span class="comment">// Data</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca9d669d8e1f4ba9c7eeada4c14a11ad1d" title="A data node. Name is empty. Value contains data text.">node_data</a>:</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                out = print_data_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            <span class="comment">// CDATA</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7caccf0b363d3876a3f83ff9b1bcdaaa536" title="A CDATA node. Name is empty. Value contains data text.">node_cdata</a>:</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                out = print_cdata_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;            <span class="comment">// Declaration</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7cafe4ca44261e5fbedf0eab43131751212" title="A declaration node. Name and value are empty. Declaration parameters (version, encoding and standalon...">node_declaration</a>:</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                out = print_declaration_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            <span class="comment">// Comment</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7ca1a695e1384ec3bd4df3eff65ec609a96" title="A comment node. Name is empty. Value contains comment text.">node_comment</a>:</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                out = print_comment_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            <span class="comment">// Doctype</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7cadf5002f2efabe231bed01d16f08f832c" title="A DOCTYPE node. Name is empty. Value contains DOCTYPE text.">node_doctype</a>:</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                out = print_doctype_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            <span class="comment">// Pi</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">case</span> <a class="code" href="namespacerapidxml.html#abb456db38f7efb746c4330eed6072a7caeb73b472e77347b9aa89525f16493b87" title="A PI node. Name contains target. Value contains instructions.">node_pi</a>:</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                out = print_pi_node(out, node, flags, indent);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                <span class="comment">// Unknown</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                assert(0);</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            <span class="comment">// If indenting not disabled, add line break after node</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            <span class="keywordflow">if</span> (!(flags &amp; <a class="code" href="namespacerapidxml.html#a65477b812a80f5bda693ec57e57de064" title="Printer flag instructing the printer to suppress indenting of XML. See print() function.">print_no_indenting</a>))</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                *out = Ch(<span class="charliteral">&#39;\n&#39;</span>), ++out;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            <span class="comment">// Return modified iterator</span></div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    }</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="comment">// Printing</span></div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> OutIt, <span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00391"></a><span class="lineno"><a class="code" href="namespacerapidxml.html#a0fb0be6eba49fb2e2646d5a72a0dc355">  391</a></span>&#160;    <span class="keyword">inline</span> OutIt <a class="code" href="namespacerapidxml.html#a0fb0be6eba49fb2e2646d5a72a0dc355">print</a>(OutIt out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> &amp;node, <span class="keywordtype">int</span> flags = 0)</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    {</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        <span class="keywordflow">return</span> internal::print_node(out, &amp;node, flags, 0);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    }</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#ifndef RAPIDXML_NO_STREAMS</span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00404"></a><span class="lineno"><a class="code" href="namespacerapidxml.html#a0d2e114d5dd85e13c23b8dab600720fe">  404</a></span>&#160;    <span class="keyword">inline</span> std::basic_ostream&lt;Ch&gt; &amp;<a class="code" href="namespacerapidxml.html#a0fb0be6eba49fb2e2646d5a72a0dc355">print</a>(std::basic_ostream&lt;Ch&gt; &amp;out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> &amp;node, <span class="keywordtype">int</span> flags = 0)</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    {</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;        <a class="code" href="namespacerapidxml.html#a0fb0be6eba49fb2e2646d5a72a0dc355">print</a>(std::ostream_iterator&lt;Ch&gt;(out), node, flags);</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    }</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Ch&gt;</div>
+<div class="line"><a name="l00415"></a><span class="lineno"><a class="code" href="namespacerapidxml.html#a9ed8e626dd81348caede1f92a6c8418a">  415</a></span>&#160;    <span class="keyword">inline</span> std::basic_ostream&lt;Ch&gt; &amp;operator &lt;&lt;(std::basic_ostream&lt;Ch&gt; &amp;out, <span class="keyword">const</span> <a class="code" href="classrapidxml_1_1xml__node.html">xml_node&lt;Ch&gt;</a> &amp;node)</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    {</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacerapidxml.html#a0fb0be6eba49fb2e2646d5a72a0dc355">print</a>(out, node);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    }</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;}</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 11:37:24 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

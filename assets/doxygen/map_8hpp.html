@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -94,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Support for types found in &lt;map&gt;  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cereal/cereal.hpp&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br/>
 <code>#include &lt;map&gt;</code><br/>
 </div>
 <p><a href="map_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -112,22 +113,20 @@ template&lt;class Archive , class MapT &gt; </td></tr>
 <tr class="memitem:ae2f3b92c8cc50dc391d19471aed96726"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae2f3b92c8cc50dc391d19471aed96726"></a>
 template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
 <tr class="memitem:ae2f3b92c8cc50dc391d19471aed96726"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::map&lt; K, T, C, A &gt; const &amp;map)</td></tr>
-<tr class="memdesc:ae2f3b92c8cc50dc391d19471aed96726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::map to binary. <br/></td></tr>
+<tr class="memdesc:ae2f3b92c8cc50dc391d19471aed96726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::map. <br/></td></tr>
 <tr class="separator:ae2f3b92c8cc50dc391d19471aed96726"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5601e94b6b471dfa29c37b64ac2eb223"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5601e94b6b471dfa29c37b64ac2eb223"></a>
 template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
 <tr class="memitem:a5601e94b6b471dfa29c37b64ac2eb223"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::map&lt; K, T, C, A &gt; &amp;map)</td></tr>
-<tr class="memdesc:a5601e94b6b471dfa29c37b64ac2eb223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::map to binary. <br/></td></tr>
+<tr class="memdesc:a5601e94b6b471dfa29c37b64ac2eb223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::map. <br/></td></tr>
 <tr class="separator:a5601e94b6b471dfa29c37b64ac2eb223"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac6cf1f23ab6732d62962afd2e8d9ebc8"></a>
-template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
+<tr class="memitem:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="memTemplParams" colspan="2">template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
 <tr class="memitem:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::multimap&lt; K, T, C, A &gt; const &amp;multimap)</td></tr>
-<tr class="memdesc:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::multimap to binary. <br/></td></tr>
+<tr class="memdesc:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::multimap.  <a href="#ac6cf1f23ab6732d62962afd2e8d9ebc8">More...</a><br/></td></tr>
 <tr class="separator:ac6cf1f23ab6732d62962afd2e8d9ebc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba6f7b589c5c8773b7a3452175b03303"><td class="memTemplParams" colspan="2"><a class="anchor" id="aba6f7b589c5c8773b7a3452175b03303"></a>
-template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
+<tr class="memitem:aba6f7b589c5c8773b7a3452175b03303"><td class="memTemplParams" colspan="2">template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
 <tr class="memitem:aba6f7b589c5c8773b7a3452175b03303"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::multimap&lt; K, T, C, A &gt; &amp;multimap)</td></tr>
-<tr class="memdesc:aba6f7b589c5c8773b7a3452175b03303"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::multimap to binary. <br/></td></tr>
+<tr class="memdesc:aba6f7b589c5c8773b7a3452175b03303"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::multimap.  <a href="#aba6f7b589c5c8773b7a3452175b03303">More...</a><br/></td></tr>
 <tr class="separator:aba6f7b589c5c8773b7a3452175b03303"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -135,7 +134,7 @@ template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

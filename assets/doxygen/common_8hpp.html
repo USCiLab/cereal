@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -92,9 +93,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Support common types.  
+<p>Support common types - always included automatically.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cereal/cereal.hpp&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br/>
 </div>
 <p><a href="common_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -106,10 +107,9 @@ template&lt;class Archive , class T &gt; </td></tr>
 &lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, T &amp;t)</td></tr>
 <tr class="memdesc:a9932029bbf010897bc98f33106bce2f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for enum types. <br/></td></tr>
 <tr class="separator:a9932029bbf010897bc98f33106bce2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a476cd888a47d6acdbe2994f095e67ff7"><td class="memTemplParams" colspan="2"><a class="anchor" id="a476cd888a47d6acdbe2994f095e67ff7"></a>
-template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a476cd888a47d6acdbe2994f095e67ff7"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:a476cd888a47d6acdbe2994f095e67ff7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;, T *&amp;)</td></tr>
-<tr class="memdesc:a476cd888a47d6acdbe2994f095e67ff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for raw pointers. <br/></td></tr>
+<tr class="memdesc:a476cd888a47d6acdbe2994f095e67ff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for raw pointers.  <a href="#a476cd888a47d6acdbe2994f095e67ff7">More...</a><br/></td></tr>
 <tr class="separator:a476cd888a47d6acdbe2994f095e67ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2abf02f44e6a5c2cd686b84791955fae"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2abf02f44e6a5c2cd686b84791955fae"></a>
 template&lt;class Archive , class T &gt; </td></tr>
@@ -125,15 +125,15 @@ template&lt;class Archive , class T &gt; </td></tr>
 template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:a5f210373fda0fda5ef436f507db010e2"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_array<br class="typebreak"/>
 &lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, T &amp;array)</td></tr>
-<tr class="memdesc:a5f210373fda0fda5ef436f507db010e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for arrays. <br/></td></tr>
+<tr class="memdesc:a5f210373fda0fda5ef436f507db010e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for C style arrays. <br/></td></tr>
 <tr class="separator:a5f210373fda0fda5ef436f507db010e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Support common types. </p>
+<div class="textblock"><p>Support common types - always included automatically. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

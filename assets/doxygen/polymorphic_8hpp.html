@@ -37,10 +37,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="../../index.html"><span>cereal</span></a></li>
+      <li><a href="index.html"><span>Doxygen&#160;Documentation</span></a></li>
+      <li><a href="modules.html"><span>Code&#160;Modules</span></a></li>
+      <li class="current"><a href="files.html"><span>Source&#160;File&#160;Documentation</span></a></li>
+      <li><a href="https://github.com/USCiLab/cereal"><span>Github</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -95,12 +96,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Support for pointers to polymorphic base classes.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cereal/cereal.hpp&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br/>
 <code>#include &lt;<a class="el" href="memory_8hpp_source.html">cereal/types/memory.hpp</a>&gt;</code><br/>
-<code>#include &lt;cereal/details/util.hpp&gt;</code><br/>
-<code>#include &lt;cereal/details/helpers.hpp&gt;</code><br/>
-<code>#include &lt;cereal/details/traits.hpp&gt;</code><br/>
-<code>#include &lt;cereal/details/polymorphic_impl.hpp&gt;</code><br/>
+<code>#include &lt;<a class="el" href="util_8hpp_source.html">cereal/details/util.hpp</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="helpers_8hpp_source.html">cereal/details/helpers.hpp</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="traits_8hpp_source.html">cereal/details/traits.hpp</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="polymorphic__impl_8hpp_source.html">cereal/details/polymorphic_impl.hpp</a>&gt;</code><br/>
 </div>
 <p><a href="polymorphic_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -152,13 +153,22 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 &amp;&amp;!traits::has_load_and_allocate<br class="typebreak"/>
 &lt; T, Archive &gt;), bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::unique_ptr&lt; T, D &gt; &amp;, std::uint32_t const nameid)</td></tr>
 <tr class="separator:adbc9b6d0ac30ffce3d4bdb90a7ae2897"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8357bd8fb3717e2e704d12ec70d7caf"><td class="memTemplParams" colspan="2"><a class="anchor" id="af8357bd8fb3717e2e704d12ec70d7caf"></a>
+<tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad375eb8b14ca04e568eefee2f915ce58"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:af8357bd8fb3717e2e704d12ec70d7caf"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
+::value &amp;&amp;std::is_abstract&lt; T &gt;<br class="typebreak"/>
 ::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:af8357bd8fb3717e2e704d12ec70d7caf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types. <br/></td></tr>
-<tr class="separator:af8357bd8fb3717e2e704d12ec70d7caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ad375eb8b14ca04e568eefee2f915ce58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, abstract. <br/></td></tr>
+<tr class="separator:ad375eb8b14ca04e568eefee2f915ce58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa12407de2c83f2c00d1da6b0376b019d"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa12407de2c83f2c00d1da6b0376b019d"></a>
+template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:aa12407de2c83f2c00d1da6b0376b019d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
+::value &amp;&amp;!std::is_abstract&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:aa12407de2c83f2c00d1da6b0376b019d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, not abstract. <br/></td></tr>
+<tr class="separator:aa12407de2c83f2c00d1da6b0376b019d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1bd9d48e5bf888a0fccb94468893953"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad1bd9d48e5bf888a0fccb94468893953"></a>
 template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:ad1bd9d48e5bf888a0fccb94468893953"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
@@ -180,13 +190,22 @@ template&lt;class Archive , class T &gt; </td></tr>
 ::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::weak_ptr&lt; T &gt; &amp;ptr)</td></tr>
 <tr class="memdesc:a904b1865fbe1a0acac552bd2ae0e1136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::weak_ptr for polymorphic types. <br/></td></tr>
 <tr class="separator:a904b1865fbe1a0acac552bd2ae0e1136"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0a2e245d263058fc4ffb897f5ecc48b"><td class="memTemplParams" colspan="2"><a class="anchor" id="af0a2e245d263058fc4ffb897f5ecc48b"></a>
+<tr class="memitem:a25ca0d069f51e6999d094090bc03d7fa"><td class="memTemplParams" colspan="2"><a class="anchor" id="a25ca0d069f51e6999d094090bc03d7fa"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:af0a2e245d263058fc4ffb897f5ecc48b"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a25ca0d069f51e6999d094090bc03d7fa"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
+::value &amp;&amp;std::is_abstract&lt; T &gt;<br class="typebreak"/>
 ::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:af0a2e245d263058fc4ffb897f5ecc48b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types. <br/></td></tr>
-<tr class="separator:af0a2e245d263058fc4ffb897f5ecc48b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a25ca0d069f51e6999d094090bc03d7fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types that are abstract. <br/></td></tr>
+<tr class="separator:a25ca0d069f51e6999d094090bc03d7fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78937267a72a59d88d890f45a294de41"><td class="memTemplParams" colspan="2"><a class="anchor" id="a78937267a72a59d88d890f45a294de41"></a>
+template&lt;class Archive , class T , class D &gt; </td></tr>
+<tr class="memitem:a78937267a72a59d88d890f45a294de41"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
+::value &amp;&amp;!std::is_abstract&lt; T &gt;<br class="typebreak"/>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:a78937267a72a59d88d890f45a294de41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types, not abstract. <br/></td></tr>
+<tr class="separator:a78937267a72a59d88d890f45a294de41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab580fdd7c909b445ae4105d45159894f"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab580fdd7c909b445ae4105d45159894f"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
 <tr class="memitem:ab580fdd7c909b445ae4105d45159894f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
@@ -266,7 +285,7 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:34 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

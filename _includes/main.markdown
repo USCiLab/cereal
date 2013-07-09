@@ -25,11 +25,17 @@ cereal comes with binary, XML, and JSON serializers.  If you need something else
 
 ### CEREAL is unit tested
 
-Trust something other than good faith - we've written a basic set of unit tests to make sure cereal is doing what it should be doing.  Somewhat ironically for a library designed to be used in place of boost, these unit tests currently require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
+Trust something other than good faith - we've written a basic set of unit tests to make sure cereal is doing what it should be doing.  Somewhat ironically for a library designed to be used in place of boost, these unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
 
 ---
 
-## CEREAL offers a familiar syntax to users of boost
+## CEREAL is easy to use
+
+Adding support for cereal is a simple as including a header file and writing a serialization function.  cereal's
+functionality is well documented.  cereal will do its best to give descriptive static assertions at compile time if you
+make any mistakes along the way.
+
+### CEREAL offers a familiar syntax to users of boost
 
 cereal's syntax will look familiar if you've used boost's serialization library.  cereal looks for serialization functions either defined in the type to be serialized or for non-member functions to do the same thing.  Unlike boost, cereal doesn't need to be told (in most cases) what type of functions to look for, and will warn you at compile time if you make a mistake.
 

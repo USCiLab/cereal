@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -72,7 +73,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,7 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>rapidxml</b></li><li class="navelem"><a class="el" href="classrapidxml_1_1xml__base.html">xml_base</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacerapidxml.html">rapidxml</a></li><li class="navelem"><a class="el" href="classrapidxml_1_1xml__base.html">xml_base</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -189,7 +190,7 @@ template&lt;class Ch  = char&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets name of the node. Interpretation of name depends on type of node. Note that name will not be zero-terminated if rapidxml::parse_no_string_terminators option was selected during parse. <br/>
+<p>Gets name of the node. Interpretation of name depends on type of node. Note that name will not be zero-terminated if <a class="el" href="namespacerapidxml.html#af3fc88ba6bee33482a2db81b1da36ea1">rapidxml::parse_no_string_terminators</a> option was selected during parse. <br/>
 <br/>
  Use <a class="el" href="classrapidxml_1_1xml__base.html#a7e7f98b3d01e1eab8dc1ca69aad9af84">name_size()</a> function to determine length of the name. </p>
 <dl class="section return"><dt>Returns</dt><dd>Name of node, or empty string if node has no name. </dd></dl>
@@ -353,7 +354,7 @@ template&lt;class Ch  = char&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets value of node. Interpretation of value depends on type of node. Note that value will not be zero-terminated if rapidxml::parse_no_string_terminators option was selected during parse. <br/>
+<p>Gets value of node. Interpretation of value depends on type of node. Note that value will not be zero-terminated if <a class="el" href="namespacerapidxml.html#af3fc88ba6bee33482a2db81b1da36ea1">rapidxml::parse_no_string_terminators</a> option was selected during parse. <br/>
 <br/>
  Use <a class="el" href="classrapidxml_1_1xml__base.html#a9fcf201ed0915ac18dd43b0b5dcfaf32">value_size()</a> function to determine length of the value. </p>
 <dl class="section return"><dt>Returns</dt><dd>Value of node, or empty string if node has no value. </dd></dl>
@@ -399,7 +400,7 @@ template&lt;class Ch  = char&gt; </div>
 <br/>
  Size of value must be specified separately, because it does not have to be zero terminated. Use <a class="el" href="classrapidxml_1_1xml__base.html#a81e63ec4bfd2d7ef0a6c2ed49be6e623">value(const Ch *)</a> function to have the length automatically calculated (string must be zero terminated). <br/>
 <br/>
- If an element has a child node of type node_data, it will take precedence over element value when printing. If you want to manipulate data of elements using values, use parser flag rapidxml::parse_no_data_nodes to prevent creation of data nodes by the parser. </p>
+ If an element has a child node of type node_data, it will take precedence over element value when printing. If you want to manipulate data of elements using values, use parser flag <a class="el" href="namespacerapidxml.html#ac2d21ef14a4e8936b94aca5d38b1a74d">rapidxml::parse_no_data_nodes</a> to prevent creation of data nodes by the parser. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">value</td><td>value of node to set. Does not have to be zero terminated. </td></tr>
@@ -476,7 +477,7 @@ template&lt;class Ch  = char&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 6 2013 19:22:40 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 11:37:27 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

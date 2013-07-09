@@ -5,7 +5,7 @@ var searchData=
   ['base_5fclass_5fid',['base_class_id',['../structcereal_1_1traits_1_1detail_1_1base__class__id.html',1,'cereal::traits::detail']]],
   ['base_5fclass_5fid_5fhash',['base_class_id_hash',['../structcereal_1_1traits_1_1detail_1_1base__class__id__hash.html',1,'cereal::traits::detail']]],
   ['binary_2ehpp',['binary.hpp',['../binary_8hpp.html',1,'']]],
-  ['binary_5fdata',['binary_data',['../structcereal_1_1BinaryData.html#a593d161603775672f91ab448ef65083e',1,'cereal::BinaryData']]],
+  ['binary_5fdata',['binary_data',['../group__Utility.html#ga593d161603775672f91ab448ef65083e',1,'cereal::BinaryData']]],
   ['binarydata',['BinaryData',['../structcereal_1_1BinaryData.html',1,'cereal']]],
   ['binaryinputarchive',['BinaryInputArchive',['../classcereal_1_1BinaryInputArchive.html',1,'cereal']]],
   ['binaryinputarchive',['BinaryInputArchive',['../classcereal_1_1BinaryInputArchive.html#a23eb5ff0ac7163632a2218361fe57c16',1,'cereal::BinaryInputArchive']]],
