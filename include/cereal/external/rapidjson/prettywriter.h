@@ -22,8 +22,8 @@ public:
 		\param allocator User supplied allocator. If it is null, it will create a private one.
 		\param levelDepth Initial capacity of
 	*/
-	PrettyWriter(Stream& stream, Allocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) :
-		Base(stream, allocator, levelDepth), indentChar_(' '), indentCharCount_(4) {}
+	PrettyWriter(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) :
+		Base(stream, precision, allocator, levelDepth), indentChar_(' '), indentCharCount_(4) {}
 
 	//! Set custom indentation.
 	/*! \param indentChar		Character for indentation. Must be whitespace character (' ', '\t', '\n', '\r').

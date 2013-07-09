@@ -53,20 +53,23 @@ namespace cereal
       \ingroup Archives */
   class JSONOutputArchive : public OutputArchive<JSONOutputArchive>
   {
+    enum class NodeType { StartObject, InObject, StartArray, InArray };
+
     typedef rapidjson::GenericWriteStream WriteStream;
     typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
 
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout! */
-      JSONOutputArchive(std::ostream & stream) :
+                        even cout!
+          @param precision The precision for floating point output */
+      JSONOutputArchive(std::ostream & stream, int precision = 20) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream)
+        itsWriter(itsWriteStream, precision)
       {
         itsNameCounter.push(0);
-        itsWriter.StartObject();
+        itsNodeStack.push(NodeType::StartObject);
       }
 
       //! Destructor, flushes the JSON
@@ -84,9 +87,34 @@ namespace cereal
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), s.size()); }
       void saveValue(char const * s)        { itsWriter.String(s);                   }
 
+      //! Save exotic arithmetic types as binary
+      template<class T>
+        typename std::enable_if<std::is_arithmetic<T>::value &&
+                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+        saveValue(T const & t)
+        {
+          auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
+          saveValue( base64string );
+        }
+
       //! Write the name of the upcoming node
       void writeName()
       {
+        NodeType const & nodeType = itsNodeStack.top();
+
+        if(nodeType == NodeType::StartArray)
+        {
+          itsWriter.StartArray();
+          itsNodeStack.top() = NodeType::InArray;
+        }
+        else if(nodeType == NodeType::StartObject)
+        {
+          itsNodeStack.top() = NodeType::InObject;
+          itsWriter.StartObject();
+        }
+
+        if(nodeType == NodeType::InArray) return;
+
         if(itsNextName == nullptr)
         {
           std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
@@ -97,28 +125,40 @@ namespace cereal
           saveValue(itsNextName);
           itsNextName = nullptr;
         }
+
       }
 
-      //! Creates a new node that is a child of the node at the top of the stack
-      /*! Nodes will be given a name that has either been pre-set by a name value pair,
-          or generated based upon a counter unique to the parent node.
-
-          The node will then be pushed onto the node stack. */
       void startNode()
       {
         writeName();
-
-        itsWriter.StartObject();
-
+        itsNodeStack.push(NodeType::StartObject);
         itsNameCounter.push(0);
       }
 
       //! Designates the most recently added node as finished
       void finishNode()
       {
-        itsWriter.EndObject();
+        switch(itsNodeStack.top())
+        {
+          case NodeType::StartArray:
+            itsWriter.StartArray();
+          case NodeType::InArray:
+            itsWriter.EndArray();
+            break;
+          case NodeType::StartObject:
+            itsWriter.StartObject();
+          case NodeType::InObject:
+            itsWriter.EndObject();
+            break;
+        }
 
+        itsNodeStack.pop();
         itsNameCounter.pop();
+      }
+
+      void makeArray()
+      {
+        itsNodeStack.top() = NodeType::StartArray;
       }
 
       //! Sets the name for the next node created with startNode
@@ -151,6 +191,7 @@ namespace cereal
       bool itsOutputType;                  //!< Controls whether type information is printed
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
+      std::stack<NodeType> itsNodeStack;
   }; // JSONOutputArchive
 
   // ######################################################################
@@ -192,13 +233,67 @@ namespace cereal
       }
 
       void loadValue(bool & val)        { val = itsValueStack.top()->value.GetBool();   ++itsValueStack.top(); }
-      void loadValue(int & val)         { val = itsValueStack.top()->value.GetInt();    ++itsValueStack.top(); }
-      void loadValue(unsigned & val)    { val = itsValueStack.top()->value.GetUint();   ++itsValueStack.top(); }
+
+      template<class T>
+        typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
+        loadValue(T & val)         
+        {
+          val = itsValueStack.top()->value.GetInt();
+          ++itsValueStack.top(); 
+        }
+
+      template<class T>
+        typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
+                                !std::is_same<bool, T>::value, void>::type
+        loadValue(T & val)         
+        {
+          val = itsValueStack.top()->value.GetUint();
+          ++itsValueStack.top(); 
+        }
+
       void loadValue(int64_t & val)     { val = itsValueStack.top()->value.GetInt64();  ++itsValueStack.top(); }
       void loadValue(uint64_t & val)    { val = itsValueStack.top()->value.GetUint64(); ++itsValueStack.top(); }
       void loadValue(float & val)       { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
       void loadValue(double & val)      { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
       void loadValue(std::string & val) { val = itsValueStack.top()->value.GetString(); ++itsValueStack.top(); }
+
+      template<class T>
+        typename std::enable_if<std::is_arithmetic<T>::value && 
+                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+        loadValue(T & val)
+        {
+          std::string encoded;
+          loadValue( encoded );
+          auto decoded = base64::decode( encoded );
+
+          if( sizeof(T) != decoded.size() )
+            throw Exception("Decoded binary data size does not match specified size");
+
+          std::memcpy( &val, decoded.data(), decoded.size() );
+        }
+
+      //! Loads some binary data, encoded as a base64 string, with an optional name
+      void loadBinaryValue( void * data, size_t size, char const * name = nullptr)
+      {
+        startNode();
+
+        std::string encoded;
+        loadValue( encoded );
+        auto decoded = base64::decode( encoded );
+
+        if( size != decoded.size() )
+          throw Exception("Decoded binary data size does not match specified size");
+
+        std::memcpy( data, decoded.data(), decoded.size() );
+
+        finishNode();
+      };
+
+      void loadSize(size_t & size)
+      {
+        size = itsValueStack.top()->value.Size();
+      }
+
 
     private:
       char const * itsNextName;
@@ -240,12 +335,12 @@ namespace cereal
   //! Prologue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON */
   template <class T>
-  void prologue( JSONOutputArchive &, SizeTag<T> const & )
-  { }
+  void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
+  { ar.makeArray(); }
 
   //! Prologue for SizeTags for JSON archives
   template <class T>
-  void prologue( JSONInputArchive &, SizeTag<T> const & )
+  void prologue( JSONInputArchive & ar, SizeTag<T> const & )
   { }
 
   // ######################################################################
@@ -365,12 +460,6 @@ namespace cereal
     ar( t.value );
   }
 
-  //! Serializing SizeTags to JSON
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(JSONInputArchive, JSONOutputArchive)
-  serialize( Archive &, SizeTag<T> & )
-  { }
-
   //! Saving for arithmetic to JSON
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
@@ -400,6 +489,20 @@ namespace cereal
   {
     ar.loadValue( str );
   }
+
+  // ######################################################################
+  //! Saving SizeTags to JSON
+  template <class T> inline
+  void save( JSONOutputArchive &, SizeTag<T> const & )
+  { }
+
+  //! Loading SizeTags from JSON
+  template <class T> inline
+  void load( JSONInputArchive & ar, SizeTag<T> & st )
+  {
+    ar.loadSize( st.size );
+  }
+
 } // namespace cereal
 
 // register archives for polymorphic support

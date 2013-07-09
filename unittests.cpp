@@ -46,6 +46,7 @@
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
+#include <cereal/archives/json.hpp>
 #include <limits>
 #include <random>
 
@@ -275,7 +276,7 @@ void test_pod()
     BOOST_CHECK_EQUAL(i_int32  , o_int32);
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
     BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_CLOSE(i_float  , o_float, 1e-5);
+    BOOST_CHECK_CLOSE(i_float  , o_float,  1e-5);
     BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
   }
 }
@@ -288,6 +289,11 @@ BOOST_AUTO_TEST_CASE( binary_pod )
 BOOST_AUTO_TEST_CASE( xml_pod )
 {
   test_pod<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_pod )
+{
+  test_pod<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -336,6 +342,11 @@ BOOST_AUTO_TEST_CASE( binary_structs )
 BOOST_AUTO_TEST_CASE( xml_structs )
 {
   test_structs<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_structs )
+{
+  test_structs<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -411,6 +422,11 @@ BOOST_AUTO_TEST_CASE( binary_array )
 BOOST_AUTO_TEST_CASE( xml_array )
 {
   test_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_array )
+{
+  test_array<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -494,6 +510,11 @@ BOOST_AUTO_TEST_CASE( xml_dequeue )
   test_deque<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_dequeue )
+{
+  test_deque<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_forward_list()
@@ -569,6 +590,11 @@ BOOST_AUTO_TEST_CASE( xml_forward_list )
   test_forward_list<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_forward_list )
+{
+  test_forward_list<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_list()
@@ -642,6 +668,11 @@ BOOST_AUTO_TEST_CASE( binary_list )
 BOOST_AUTO_TEST_CASE( xml_list )
 {
   test_list<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_list )
+{
+  test_list<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -737,6 +768,11 @@ BOOST_AUTO_TEST_CASE( binary_map )
 BOOST_AUTO_TEST_CASE( xml_map )
 {
   test_map<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_map )
+{
+  test_map<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -848,6 +884,11 @@ BOOST_AUTO_TEST_CASE( xml_multimap )
   test_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_multimap )
+{
+  test_multimap<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_memory()
@@ -909,6 +950,11 @@ BOOST_AUTO_TEST_CASE( binary_memory )
 BOOST_AUTO_TEST_CASE( xml_memory )
 {
   test_memory<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_memory )
+{
+  test_memory<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -998,6 +1044,11 @@ BOOST_AUTO_TEST_CASE( xml_queue )
   test_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_queue )
+{
+  test_queue<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_priority_queue()
@@ -1085,6 +1136,11 @@ BOOST_AUTO_TEST_CASE( xml_priority_queue )
   test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_priority_queue )
+{
+  test_priority_queue<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_set()
@@ -1158,6 +1214,11 @@ BOOST_AUTO_TEST_CASE( binary_set )
 BOOST_AUTO_TEST_CASE( xml_set )
 {
   test_set<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_set )
+{
+  test_set<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -1274,6 +1335,11 @@ BOOST_AUTO_TEST_CASE( xml_multiset )
   test_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_multiset )
+{
+  test_multiset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_stack()
@@ -1359,6 +1425,11 @@ BOOST_AUTO_TEST_CASE( binary_stack )
 BOOST_AUTO_TEST_CASE( xml_stack )
 {
   test_stack<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_stack )
+{
+  test_stack<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -1521,6 +1592,11 @@ BOOST_AUTO_TEST_CASE( xml_unordered_map )
   test_unordered_map<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_unordered_map )
+{
+  test_unordered_map<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_unordered_multimap()
@@ -1656,6 +1732,11 @@ BOOST_AUTO_TEST_CASE( xml_unordered_multimap )
   test_unordered_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_unordered_multimap )
+{
+  test_unordered_multimap<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_unordered_set()
@@ -1748,6 +1829,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_set )
 BOOST_AUTO_TEST_CASE( xml_unordered_set )
 {
   test_unordered_set<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_unordered_set )
+{
+  test_unordered_set<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -1864,6 +1950,11 @@ BOOST_AUTO_TEST_CASE( xml_unordered_multiset )
   test_unordered_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_unordered_multiset )
+{
+  test_unordered_multiset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_vector()
@@ -1945,6 +2036,11 @@ BOOST_AUTO_TEST_CASE( xml_vector )
   test_vector<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_vector )
+{
+  test_vector<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_pair()
@@ -2015,6 +2111,10 @@ BOOST_AUTO_TEST_CASE( binary_pair )
 BOOST_AUTO_TEST_CASE( xml_pair )
 {
   test_pair<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+BOOST_AUTO_TEST_CASE( json_pair )
+{
+  test_pair<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -2092,6 +2192,11 @@ BOOST_AUTO_TEST_CASE( xml_tuple )
   test_tuple<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_tuple )
+{
+  test_tuple<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_complex()
@@ -2148,6 +2253,11 @@ BOOST_AUTO_TEST_CASE( xml_complex )
   test_complex<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_complex )
+{
+  test_complex<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 template <class IArchive, class OArchive>
 void test_bitset()
@@ -2201,6 +2311,11 @@ BOOST_AUTO_TEST_CASE( binary_bitset )
 BOOST_AUTO_TEST_CASE( xml_bitset )
 {
   test_bitset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_bitset )
+{
+  test_bitset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -2265,6 +2380,11 @@ BOOST_AUTO_TEST_CASE( binary_chrono )
 BOOST_AUTO_TEST_CASE( xml_chrono )
 {
   test_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_chrono )
+{
+  test_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -2389,6 +2509,11 @@ BOOST_AUTO_TEST_CASE( xml_structs_specialized )
   test_structs_specialized<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( json_structs_specialized )
+{
+  test_structs_specialized<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 // ######################################################################
 struct PolyBase
 {
@@ -2497,4 +2622,9 @@ BOOST_AUTO_TEST_CASE( binary_polymorphic )
 BOOST_AUTO_TEST_CASE( xml_polymorphic )
 {
   test_polymorphic<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_polymorphic )
+{
+  test_polymorphic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }

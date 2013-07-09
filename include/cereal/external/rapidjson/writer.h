@@ -34,18 +34,31 @@ class Writer {
 public:
 	typedef typename Encoding::Ch Ch;
 
-	Writer(Stream& stream, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) : 
-		stream_(stream), level_stack_(allocator, levelDepth * sizeof(Level)) {}
+	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) : 
+		stream_(stream), level_stack_(allocator, levelDepth * sizeof(Level))
+  {
+		(void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
+		(void) snprintf(long_double_format, sizeof(long_double_format), "%%0.%dLg", precision);
+  }
+
+protected:
+  char double_format[32];
+  char long_double_format[32];
+public:
 
 	//@name Implementation of Handler
 	//@{
-	Writer& Null()					{ Prefix(kNullType);   WriteNull();			return *this; }
-	Writer& Bool(bool b)			{ Prefix(b ? kTrueType : kFalseType); WriteBool(b); return *this; }
-	Writer& Int(int i)				{ Prefix(kNumberType); WriteInt(i);			return *this; }
-	Writer& Uint(unsigned u)		{ Prefix(kNumberType); WriteUint(u);		return *this; }
-	Writer& Int64(int64_t i64)		{ Prefix(kNumberType); WriteInt64(i64);		return *this; }
-	Writer& Uint64(uint64_t u64)	{ Prefix(kNumberType); WriteUint64(u64);	return *this; }
-	Writer& Double(double d)		{ Prefix(kNumberType); WriteDouble(d);		return *this; }
+
+	Writer& Null()                          { Prefix(kNullType);   WriteNull();			return *this;             }
+	Writer& Bool(bool b)                    { Prefix(b ? kTrueType : kFalseType); WriteBool(b); return *this; }
+	Writer& Int(int i)                      { Prefix(kNumberType); WriteInt(i);			return *this;             }
+	Writer& Uint(unsigned u)                { Prefix(kNumberType); WriteUint(u);		return *this;             }
+	Writer& Int64(int64_t i64)              { Prefix(kNumberType); WriteInt64(i64);		return *this;           }
+	Writer& Uint64(uint64_t u64)            { Prefix(kNumberType); WriteUint64(u64);	return *this;           }
+	Writer& Double(double d)                { Prefix(kNumberType); WriteDouble(d);		return *this;           }
+	Writer& LongDouble(long double d)       { Prefix(kNumberType); WriteLongDouble(d);		return *this;       }
+	Writer& LongLong(long long d)           { Prefix(kNumberType); WriteLongLong(d);		return *this;         }
+	Writer& ULongLong(unsigned long long d) { Prefix(kNumberType); WriteULongLong(d);		return *this;         }
 
 	Writer& String(const Ch* str, SizeType length, bool copy = false) {
 		(void)copy;
@@ -171,9 +184,45 @@ protected:
 	void WriteDouble(double d) {
 		char buffer[100];
 #if _MSC_VER
-		int ret = sprintf_s(buffer, sizeof(buffer), "%g", d);
+		int ret = sprintf_s(buffer, sizeof(buffer), double_format, d);
 #else
-		int ret = snprintf(buffer, sizeof(buffer), "%g", d);
+		int ret = snprintf(buffer, sizeof(buffer), double_format, d);
+#endif
+		RAPIDJSON_ASSERT(ret >= 1);
+		for (int i = 0; i < ret; i++)
+			stream_.Put(buffer[i]);
+	}
+
+	void WriteLongDouble(long double d) {
+		char buffer[256];
+#if _MSC_VER
+		int ret = sprintf_s(buffer, sizeof(buffer), long_double_format, d);
+#else
+		int ret = snprintf(buffer, sizeof(buffer), long_double_format, d);
+#endif
+		RAPIDJSON_ASSERT(ret >= 1);
+		for (int i = 0; i < ret; i++)
+			stream_.Put(buffer[i]);
+	}
+
+	void WriteLongLong(long long d) {
+		char buffer[256];
+#if _MSC_VER
+		int ret = sprintf_s(buffer, sizeof(buffer), "%lld", d);
+#else
+		int ret = snprintf(buffer, sizeof(buffer), "%lld", d);
+#endif
+		RAPIDJSON_ASSERT(ret >= 1);
+		for (int i = 0; i < ret; i++)
+			stream_.Put(buffer[i]);
+	}
+
+	void WriteULongLong(unsigned long long d) {
+		char buffer[256];
+#if _MSC_VER
+		int ret = sprintf_s(buffer, sizeof(buffer), "%llu", d);
+#else
+		int ret = snprintf(buffer, sizeof(buffer), "%llu", d);
 #endif
 		RAPIDJSON_ASSERT(ret >= 1);
 		for (int i = 0; i < ret; i++)

@@ -216,6 +216,20 @@ struct Fixture
     }
 };
 
+struct AAA
+{
+  int one = 1, two = 2;
+
+  std::vector<std::vector<int>> three = {{1,2,3}, {4,5,6}, {}};
+
+  template<class Archive>
+    void serialize(Archive & ar)
+    {
+      ar( CEREAL_NVP(one), CEREAL_NVP(two) );
+      ar( CEREAL_NVP(three) );
+    }
+};
+
 // ######################################################################
 int main()
 {
@@ -225,15 +239,12 @@ int main()
     std::ofstream os("file.json");
     cereal::JSONOutputArchive oar( os );
 
-    Fixture f1;
+    //std::vector<int> x = {1, 2, 3, 4, 5};
+    //std::vector<AAA> x(3);
+    std::array<AAA, 5> x;
 
-    int x = 10;
-    double y = 99;
+    oar( CEREAL_NVP(x) );
 
-    oar(CEREAL_NVP(f1));
-
-    oar(CEREAL_NVP(x));
-    oar(CEREAL_NVP(y));
   }
 
   {
@@ -242,40 +253,14 @@ int main()
     std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
-  {
-    std::ifstream is("file.json");
-    cereal::JSONInputArchive iar( is );
-
-    Fixture f1;
-
-    int x;
-    double y;
-    iar(CEREAL_NVP(f1));
-    iar(CEREAL_NVP(x));
-    iar(CEREAL_NVP(y));
-
-    std::cout << x << " " << y << std::endl;
-
-    std::cout << f1.f1.a << std::endl;
-  }
-
   //{
   //  std::ifstream is("file.json");
-  //  rapidjson::GenericReadStream itsReadStream(is);
-  //  rapidjson::Document itsDocument;
-  //  itsDocument.ParseStream<0>(itsReadStream);
-  //  
-  //  //FILE * f = std::fopen("file.json", "r");
-  //  //rapidjson::FileStream filestream(f);
-  //  //rapidjson::Document itsDocument;
-  //  //itsDocument.ParseStream<0>(filestream);
+  //  cereal::JSONInputArchive iar( is );
 
-  //  std::cout << itsDocument.IsObject() << std::endl;
-  //  std::cout << itsDocument.HasMember("x") << std::endl;
+  //  std::vector<int> x;
 
-  //  auto it = itsDocument.MemberBegin();
-  //  std::cout << it->name.GetString() << std::endl;
-  //  it->value.GetInt();
+  //  iar( CEREAL_NVP(x) );
+
   //}
 
   return 0;
