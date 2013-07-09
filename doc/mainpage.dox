@@ -1,0 +1,18 @@
+/**
+\mainpage cereal code documentation
+
+\tableofcontents
+
+Aside from the <a href="../../index.html">documentation</a> presented on the main cereal site, this doxygen
+page offers code level documentation.
+
+\section modules Browse modules
+
+cereal's code is organized into modules of similar functionality.  Take a look at the <a href="modules.html">modules</a>
+section to learn more.  Average users will not need to understand the workings of any code that falls under the
+<i>internal</i> module.
+
+\section files Browse files
+
+If you need reference on a specific file, the <a href="files.html">files</a> page lists all files in cereal.
+*/
