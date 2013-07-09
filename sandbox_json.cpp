@@ -294,6 +294,15 @@ int main()
     std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
+  {
+  cereal::JSONOutputArchive archive( std::cout );
+  bool arr[] = {true, false};
+  std::vector<int> vec = {1, 2, 3, 4, 5};
+  archive( CEREAL_NVP(vec),
+           arr );
+  }
+
+
   //{
   //  std::ifstream is("file.json");
   //  cereal::JSONInputArchive iar( is );

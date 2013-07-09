@@ -283,7 +283,7 @@ namespace cereal
                         even cout! */
       JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
-        itsReadStream(is)
+        itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
         itsValueStack.push_back(itsDocument.MemberBegin());
