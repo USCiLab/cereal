@@ -41,21 +41,9 @@
 
 namespace cereal
 {
-  //! \defgroup Archives Input and Output Archive Types
-
-  /*! \defgroup TypeSupport Support for Serializing Various Types
-      Serialization of many types is shipped with cereal, including most of the standard library as well as a few others.  */
-
-  /*! \defgroup STLSupport Standard Library Support
-      Serialization methods for nearly all types found in the C++ standard library
-      \ingroup TypeSupport */
-
-  /*! \defgroup OtherTypes Miscellaneous Types Support
-      Support for various other types such as smart pointers to polymorphic base classes, boost::variant, etc.
-      \ingroup TypeSupport */
-
   // ######################################################################
   //! An exception class thrown when things go wrong at runtime
+  /*! @ingroup Utility */
   struct Exception : public std::runtime_error
   {
     using std::runtime_error::runtime_error;
@@ -63,7 +51,8 @@ namespace cereal
 
   // ######################################################################
   //! Creates a name value pair
-  /*! @relates NameValuePair */
+  /*! @relates NameValuePair
+      @ingroup Utility */
   template <class T> inline
   NameValuePair<T> make_nvp( std::string const & name, T && value )
   {
@@ -71,7 +60,8 @@ namespace cereal
   }
 
   //! Creates a name value pair
-  /*! @relates NameValuePair */
+  /*! @relates NameValuePair
+      @ingroup Utility */
   template <class T> inline
   NameValuePair<T> make_nvp( const char * name, T && value )
   {
@@ -79,14 +69,16 @@ namespace cereal
   }
 
   //! Creates a name value pair for the variable T with the same name as the variable
-  /*! @relates NameValuePair */
+  /*! @relates NameValuePair
+      @ingroup Utility */
   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 
   // ######################################################################
   //! Convenience function to create binary data for both const and non const pointers
   /*! @param data Pointer to beginning of the data
       @param size The size in bytes of the data
-      @relates BinaryData */
+      @relates BinaryData
+      @ingroup Utility */
   template <class T> inline
   BinaryData<T> binary_data( T && data, size_t size )
   {
@@ -96,9 +88,12 @@ namespace cereal
   // ######################################################################
   //! Creates a size tag from some variable.
   /*! Will normally be used to serialize size (e.g. size()) information for
-      containers.
+      variable size containers.  If you have a variable sized container,
+      the very first thing it serializes should be its size, wrapped in
+      a SizeTag.
 
-      @relates SizeTag */
+      @relates SizeTag
+      @ingroup Utility */
   template <class T>
   SizeTag<T> make_size_tag( T && sz )
   {
@@ -110,13 +105,15 @@ namespace cereal
   //! for processing some type
   /*! If designing a serializer that needs to set up any kind of special
       state or output extra information for a type, specialize this function
-      for the archive type and the types that require the extra information. */
+      for the archive type and the types that require the extra information.
+      @ingroup Internal */
   template <class Archive, class T>
   void prologue( Archive & /* archive */, T const & /* data */)
   { }
 
   //! Called after a type is serialized to tear down any special archive state
   //! for processing some type
+  /*! @ingroup Internal */
   template <class Archive, class T>
   void epilogue( Archive & /* archive */, T const & /* data */)
   { }
@@ -132,7 +129,8 @@ namespace cereal
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
         by using the traits is_output_serializable and is_input_serializable
-        in cereal/details/traits.hpp. */
+        in cereal/details/traits.hpp.
+      @ingroup Internal */
   enum Flags { AllowEmptyClassElision = 1 };
 
   // ######################################################################
@@ -140,7 +138,8 @@ namespace cereal
   /*! This registration should be done once per archive.  A good place to
       put this is immediately following the definition of your archive.
       Archive registration is only strictly necessary if you wish to
-      support pointers to polymorphic data types */
+      support pointers to polymorphic data types
+      @ingroup Internal */
   #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
   namespace cereal { namespace detail {                               \
   template <class T>                                                  \
@@ -162,7 +161,8 @@ namespace cereal
 
       @tparam ArchiveType The archive type that derives from OutputArchive
       @tparam Flags Flags to control advanced functionality.  See the Flags
-                    enum for more information. */
+                    enum for more information.
+      @ingroup Internal */
   template<class ArchiveType, std::uint32_t Flags = 0>
   class OutputArchive : public detail::OutputArchiveBase
   {
@@ -369,7 +369,8 @@ namespace cereal
 
       @tparam ArchiveType The archive type that derives from InputArchive
       @tparam Flags Flags to control advanced functionality.  See the Flags
-                    enum for more information. */
+                    enum for more information.
+      @ingroup Internal */
   template<class ArchiveType, std::uint32_t Flags = 0>
   class InputArchive : public detail::InputArchiveBase
   {

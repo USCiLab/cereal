@@ -1,3 +1,6 @@
+/*! \file util.hpp
+    \brief Internal misc utilities
+    \ingroup Internal */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

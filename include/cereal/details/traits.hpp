@@ -1,3 +1,6 @@
+/*! \file traits.hpp
+    \brief Internal type trait support
+    \ingroup Internal */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -350,9 +353,9 @@ namespace cereal
         {
           ar & m;
         }
+        @endcode
 
         If you need to do more restrictions in your enable_if, you will need to do this by hand.
-        @endcode
      */
     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
     typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type

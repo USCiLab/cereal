@@ -1,3 +1,6 @@
+/*! \file static_object.hpp
+    \brief Internal polymorphism static object support
+    \ingroup Internal */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

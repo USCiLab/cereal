@@ -16,3 +16,28 @@ section to learn more.  Average users will not need to understand the workings o
 
 If you need reference on a specific file, the <a href="files.html">files</a> page lists all files in cereal.
 */
+
+  //! \defgroup Archives Input and Output Archive Types
+
+  /*! \defgroup Access Access Control and Disambiguation
+      Provides ways to give cereal access to protected member functions, disambiguate
+      which serialization function cereal should use, and provide ways of using smart
+      pointers with types that have no default constructor */
+
+  /*! \defgroup Utility Utility Functionality
+      Name-value pairs, binary data wrappers, exceptions, and other utility functions */
+
+  /*! \defgroup TypeSupport Support for Serializing Various Types
+      Serialization of many types is shipped with cereal, including most of the standard library as well as a few others.  */
+
+  /*! \defgroup STLSupport Standard Library Support
+      Serialization methods for nearly all types found in the C++ standard library
+      \ingroup TypeSupport */
+
+  /*! \defgroup OtherTypes Miscellaneous Types Support
+      Support for various other types such as smart pointers to polymorphic base classes, boost::variant, etc.
+      \ingroup TypeSupport */
+
+  /*! \defgroup Internal Internal Functionality
+      Various classes and functions that are critical for the operation of cereal but of no
+      interest to users */

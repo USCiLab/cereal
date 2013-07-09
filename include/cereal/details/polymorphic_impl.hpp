@@ -1,3 +1,6 @@
+/*! \file polymorphic_impl.hpp
+    \brief Internal polymorphism support
+    \ingroup Internal */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.

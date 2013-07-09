@@ -76,7 +76,8 @@ namespace cereal
       } // end namespace cereal
       @endcode
 
-      @tparam T The type to specialize for */
+      @tparam T The type to specialize for
+      @ingroup Access */
   template <class T>
   struct LoadAndAllocate
   {
@@ -102,7 +103,8 @@ namespace cereal
             // some code
           }
       };
-      @endcode */
+      @endcode
+      @ingroup Access */
   class access
   {
     public:
@@ -136,7 +138,8 @@ namespace cereal
 
   //! A specifier used in conjunction with cereal::specialize to disambiguate
   //! serialization in special cases
-  /*! @relates specialize */
+  /*! @relates specialize
+      @ingroup Access */
   enum class specialization
   {
     member_serialize,
@@ -194,7 +197,8 @@ namespace cereal
       @endcode
 
       @tparam T The type to specialize the serialization for
-      @tparam S The specialization type to use for T */
+      @tparam S The specialization type to use for T
+      @ingroup Access */
   template <class Archive, class T, specialization S>
   struct specialize : public std::false_type {};
 } // namespace cereal

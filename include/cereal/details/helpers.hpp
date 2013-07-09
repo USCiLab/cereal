@@ -1,3 +1,6 @@
+/*! \file helpers.hpp
+    \brief Internal helper functionality
+    \ingroup Internal */
 /*
   Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
