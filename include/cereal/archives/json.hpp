@@ -202,7 +202,47 @@ namespace cereal
   {
     typedef rapidjson::GenericReadStream ReadStream;
     typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
-    typedef JSONValue::ConstMemberIterator JSONIterator;
+    typedef JSONValue::ConstMemberIterator MemberIterator;
+    typedef JSONValue::ConstValueIterator ValueIterator;
+    typedef rapidjson::Document::GenericValue GenericValue;
+
+    class Iterator
+    {
+      public:
+        Iterator() : itsType(Null) {}
+
+        Iterator(MemberIterator it) :
+          itsMemberIt(it), itsType(Member) {}
+
+        Iterator(ValueIterator it) :
+          itsValueIt(it), itsType(Value) {}
+
+        Iterator & operator++()
+        {
+          switch(itsType)
+          {
+            case Value : ++itsValueIt; break;
+            case Member: ++itsMemberIt; break;
+            case Null: throw cereal::Exception("Invalid Iterator Type!");
+          }
+          return *this;
+        }
+
+        GenericValue const & value()
+        {
+          switch(itsType)
+          {
+            case Value : return *itsValueIt;
+            case Member: return itsMemberIt->value;
+            case Null: throw cereal::Exception("Invalid Iterator Type!");
+          }
+        }
+
+      private:
+        MemberIterator itsMemberIt;
+        ValueIterator itsValueIt;
+        enum Type {Value, Member, Null} itsType;
+    };
 
     public:
       //! Construct, outputting to the provided stream
@@ -213,7 +253,7 @@ namespace cereal
         itsReadStream(is)
       {
         itsDocument.ParseStream<0>(itsReadStream);
-        itsValueStack.push(itsDocument.MemberBegin());
+        itsValueStack.push_back(itsDocument.MemberBegin());
       }
 
       void setNextName(char const * name)
@@ -222,24 +262,27 @@ namespace cereal
       }
 
       void startNode()
-      { 
-        itsValueStack.push(itsValueStack.top()->value.MemberBegin());
+      {
+        if(itsValueStack.back().value().IsArray())
+          itsValueStack.push_back(itsValueStack.back().value().Begin());
+        else
+          itsValueStack.push_back(itsValueStack.back().value().MemberBegin());
       }
 
       void finishNode()
       { 
-        itsValueStack.pop();
-        ++itsValueStack.top();
+        itsValueStack.pop_back();
+        ++itsValueStack.back();
       }
 
-      void loadValue(bool & val)        { val = itsValueStack.top()->value.GetBool();   ++itsValueStack.top(); }
+      void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
 
       template<class T>
         typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
         loadValue(T & val)         
         {
-          val = itsValueStack.top()->value.GetInt();
-          ++itsValueStack.top(); 
+          val = itsValueStack.back().value().GetInt();
+          ++itsValueStack.back(); 
         }
 
       template<class T>
@@ -247,15 +290,15 @@ namespace cereal
                                 !std::is_same<bool, T>::value, void>::type
         loadValue(T & val)         
         {
-          val = itsValueStack.top()->value.GetUint();
-          ++itsValueStack.top(); 
+          val = itsValueStack.back().value().GetUint();
+          ++itsValueStack.back(); 
         }
 
-      void loadValue(int64_t & val)     { val = itsValueStack.top()->value.GetInt64();  ++itsValueStack.top(); }
-      void loadValue(uint64_t & val)    { val = itsValueStack.top()->value.GetUint64(); ++itsValueStack.top(); }
-      void loadValue(float & val)       { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
-      void loadValue(double & val)      { val = itsValueStack.top()->value.GetDouble(); ++itsValueStack.top(); }
-      void loadValue(std::string & val) { val = itsValueStack.top()->value.GetString(); ++itsValueStack.top(); }
+      void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
+      void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
+      void loadValue(float & val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      void loadValue(double & val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
 
       template<class T>
         typename std::enable_if<std::is_arithmetic<T>::value && 
@@ -291,14 +334,14 @@ namespace cereal
 
       void loadSize(size_t & size)
       {
-        size = itsValueStack.top()->value.Size();
+        size = (itsValueStack.rbegin() + 1)->value().Size();
       }
 
 
     private:
       char const * itsNextName;
       ReadStream itsReadStream;               //!< Rapidjson write stream
-      std::stack<JSONIterator> itsValueStack; //!< Stack of values
+      std::vector<Iterator> itsValueStack;     //!< Stack of values
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 

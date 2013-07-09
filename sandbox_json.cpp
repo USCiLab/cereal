@@ -36,6 +36,7 @@
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 
 #include <cereal/external/rapidjson/filestream.h>
 
@@ -45,6 +46,7 @@
 #include <cassert>
 #include <complex>
 #include <iostream>
+#include <iomanip>
 
 // ###################################
 struct Test1
@@ -226,7 +228,7 @@ struct AAA
     void serialize(Archive & ar)
     {
       ar( CEREAL_NVP(one), CEREAL_NVP(two) );
-      ar( CEREAL_NVP(three) );
+      //ar( CEREAL_NVP(three) );
     }
 };
 
@@ -234,17 +236,26 @@ struct AAA
 int main()
 {
   std::cout << std::boolalpha << std::endl;
+  std::cout << std::setprecision(40);
 
   {
     std::ofstream os("file.json");
     cereal::JSONOutputArchive oar( os );
 
     //std::vector<int> x = {1, 2, 3, 4, 5};
-    //std::vector<AAA> x(3);
-    std::array<AAA, 5> x;
+    std::multimap<float, AAA> x;
+    x.insert( std::make_pair(.9999999, AAA()) );
+    x.insert( std::make_pair(.9999999, AAA()) );
 
     oar( CEREAL_NVP(x) );
 
+    for(auto i : x)
+    {
+      std::cout << i.first << std::endl;
+      std::cout << i.second.one << std::endl;
+      std::cout << i.second.two << std::endl;
+      std::cout << std::endl;
+    }
   }
 
   {
@@ -253,15 +264,33 @@ int main()
     std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
+  {
+    std::ifstream is("file.json");
+    cereal::JSONInputArchive iar( is );
+
+    std::multimap<float, AAA> x;
+
+    iar( CEREAL_NVP(x) );
+
+    for(auto i : x)
+    {
+      std::cout << i.first << std::endl;
+      std::cout << i.second.one << std::endl;
+      std::cout << i.second.two << std::endl;
+      std::cout << std::endl;
+    }
+
+  }
+
   //{
   //  std::ifstream is("file.json");
-  //  cereal::JSONInputArchive iar( is );
+  //  rapidjson::GenericReadStream stream(is);
+  //  rapidjson::Document doc;
+  //  doc.ParseStream<0>(stream);
 
-  //  std::vector<int> x;
-
-  //  iar( CEREAL_NVP(x) );
-
+  //  auto x = doc.MemberBegin();
+  //  std::cout << x->name.GetString() << std::endl;
+  //  std::cout << x->value.IsArray() << std::endl;
   //}
-
   return 0;
 }

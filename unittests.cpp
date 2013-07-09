@@ -792,18 +792,18 @@ void test_multimap()
       o_podmultimap.insert({key, random_value<int>(gen)});
     }
 
-    std::multimap<double, StructInternalSerialize> o_isermultimap;
+    std::multimap<uint8_t, StructInternalSerialize> o_isermultimap;
     for(int j=0; j<100; ++j)
     {
-      auto key = random_value<double>(gen);
+      auto key = random_value<uint8_t>(gen);
       o_isermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
       o_isermultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
     }
 
-    std::multimap<float, StructInternalSplit> o_isplmultimap;
+    std::multimap<int16_t, StructInternalSplit> o_isplmultimap;
     for(int j=0; j<100; ++j)
     {
-      auto key = random_value<float>(gen);
+      auto key = random_value<int16_t>(gen);
       o_isplmultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
       o_isplmultimap.insert({key, { random_value<int>(gen), random_value<int>(gen) }});
     }
@@ -836,8 +836,8 @@ void test_multimap()
     }
 
     std::multimap<std::string, int> i_podmultimap;
-    std::multimap<double, StructInternalSerialize>   i_isermultimap;
-    std::multimap<float, StructInternalSplit>        i_isplmultimap;
+    std::multimap<uint8_t, StructInternalSerialize>   i_isermultimap;
+    std::multimap<int16_t, StructInternalSplit>        i_isplmultimap;
     std::multimap<uint32_t, StructExternalSerialize> i_esermultimap;
     std::multimap<int8_t, StructExternalSplit>       i_esplmultimap;
 
@@ -1501,13 +1501,13 @@ void test_unordered_map()
     for(int j=0; j<100; ++j)
       o_podunordered_map.insert({random_value<std::string>(gen), random_value<int>(gen)});
 
-    std::unordered_map<double, StructInternalSerialize> o_iserunordered_map;
+    std::unordered_map<uint16_t, StructInternalSerialize> o_iserunordered_map;
     for(int j=0; j<100; ++j)
-      o_iserunordered_map.insert({random_value<double>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+      o_iserunordered_map.insert({random_value<uint16_t>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
-    std::unordered_map<float, StructInternalSplit> o_isplunordered_map;
+    std::unordered_map<uint16_t, StructInternalSplit> o_isplunordered_map;
     for(int j=0; j<100; ++j)
-      o_isplunordered_map.insert({random_value<float>(gen), { random_value<int>(gen), random_value<int>(gen) }});
+      o_isplunordered_map.insert({random_value<uint16_t>(gen), { random_value<int>(gen), random_value<int>(gen) }});
 
     std::unordered_map<uint32_t, StructExternalSerialize> o_eserunordered_map;
     for(int j=0; j<100; ++j)
@@ -1529,8 +1529,8 @@ void test_unordered_map()
     }
 
     std::unordered_map<std::string, int> i_podunordered_map;
-    std::unordered_map<double, StructInternalSerialize>   i_iserunordered_map;
-    std::unordered_map<float, StructInternalSplit>        i_isplunordered_map;
+    std::unordered_map<uint16_t, StructInternalSerialize>   i_iserunordered_map;
+    std::unordered_map<uint16_t, StructInternalSplit>        i_isplunordered_map;
     std::unordered_map<uint32_t, StructExternalSerialize> i_eserunordered_map;
     std::unordered_map<int8_t, StructExternalSplit>       i_esplunordered_map;
 
@@ -2532,7 +2532,7 @@ struct PolyBase
 
   bool operator==( PolyBase const & other ) const
   {
-    return x == other.x && y == other.y;
+    return x == other.x && std::abs(y - other.y) < 1e-5;
   }
 };
 
@@ -2554,7 +2554,7 @@ struct PolyDerived : PolyBase
 
   bool operator==( PolyDerived const & other ) const
   {
-    return PolyBase::operator==( other ) && a == other.a && b == other.b;
+    return PolyBase::operator==( other ) && a == other.a && std::abs(b - other.b) < 1e-5;
   }
 
   void foo() {}
