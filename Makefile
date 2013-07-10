@@ -1,5 +1,6 @@
 CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g
 CC=g++
+COVERAGE_OUTPUT=out
 
 all: unittests sandbox performance sandbox_rtti sandbox_json
 
@@ -21,10 +22,11 @@ performance: performance.cpp
 
 .PHONY: coverage
 coverage:
-	g++ -std=c++11 -I./include -Wall -Werror -g -O0 -coverage  unittests.cpp -o unittests -lboost_unit_test_framework
+	g++ -std=c++11 -I./include -Wall -Werror -g -O0 -coverage  unittests.cpp -o unittests_coverage -lboost_unit_test_framework
+	./unittests_coverage --show_progress
 	lcov --capture --directory . --output-file coverage.info --no-external
-	lcov --remove coverage.info '*/external/*' -o coverage.info
-	genhtml coverage.info --output-directory out
+	lcov --remove coverage.info '*/external/*' 'cereal/details/util.hpp' -o coverage.info
+	genhtml coverage.info --output-directory ${COVERAGE_OUTPUT}
 
 .PHONY: doc
 doc:

@@ -2662,3 +2662,10 @@ BOOST_AUTO_TEST_CASE( json_polymorphic )
 {
   test_polymorphic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+namespace mynamespace { struct MyCustomClass {}; }
+
+BOOST_AUTO_TEST_CASE( util )
+{
+  BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "mynamespace::MyCustomClass" );
+}
