@@ -1,7 +1,7 @@
 CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g
-CC=clang++
+CC=g++
 
-all: unittests sandbox performance sandbox_rtti
+all: unittests sandbox performance sandbox_rtti sandbox_json
 
 sandbox: sandbox.cpp
 	${CC} sandbox.cpp -o sandbox ${CPPFLAGS}
@@ -24,4 +24,4 @@ doc:
 	@doxygen ./doc/doxygen.cfg
 
 clean:
-	rm sandbox; rm unittests; rm performance; rm sandbox_rtti;
+	rm sandbox; rm unittests; rm performance; rm sandbox_rtti; rm sandbox_json;

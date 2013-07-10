@@ -423,7 +423,7 @@ int main()
 
     std::array<int,5> arr;
     iar( arr );
-    for( size_t i = 0; i < 5; ++i )
+    for( int i = 0; i < 5; ++i )
       assert( arr[i] == (i+1) );
 
     Everything e;
