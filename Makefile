@@ -1,5 +1,5 @@
-CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g
-CC=clang++
+CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g -O0 -coverage
+CC=g++
 
 all: unittests sandbox performance sandbox_rtti
 
@@ -18,6 +18,13 @@ unittests: unittests.cpp
 
 performance: performance.cpp
 	${CC} performance.cpp -o performance -lboost_serialization ${CPPFLAGS} -O3
+
+.PHONY: coverage
+coverage:
+	g++ -std=c++11 -I./include -Wall -Werror -g -O0 -coverage  unittests.cpp -o unittests -lboost_unit_test_framework
+	lcov --capture --directory . --output-file coverage.info --no-external
+	lcov --remove coverage.info '*/external/*' -o coverage.info
+	genhtml coverage.info --output-directory out
 
 .PHONY: doc
 doc:
