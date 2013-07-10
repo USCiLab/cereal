@@ -256,7 +256,7 @@ namespace cereal
           {
             case Value : ++itsValueIt; break;
             case Member: ++itsMemberIt; break;
-            case Null: throw cereal::Exception("Invalid Iterator Type!");
+            default: throw cereal::Exception("Invalid Iterator Type!");
           }
           return *this;
         }
@@ -267,7 +267,7 @@ namespace cereal
           {
             case Value : return *itsValueIt;
             case Member: return itsMemberIt->value;
-            case Null: throw cereal::Exception("Invalid Iterator Type!");
+            default: throw cereal::Exception("Invalid Iterator Type!");
           }
         }
 
