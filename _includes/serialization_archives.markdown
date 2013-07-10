@@ -58,7 +58,7 @@ The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The
 
 The XML archive can be used by including `<cereal/archives/xml.hpp>`.  XML is a human readable format and should not be used in situations where serialized data size is critical.  Unlike the binary archive, which outputs its data incrementally as serialization functions are called, the XML archive builds a tree in memory and only outputs it upon destruction of the archive.
 
-XML archives, unlike binary, will utilize name-value pairs to give human readable names to its output.  If a name-value pair is not supplied, it will automatically generate a delimited name.  XML archives do not need to output size metadata for variable size containers since the number of children of a node can be queried when loading the data.  This means that it is possible to add extra data manually to an XML archive before loading it:
+XML archives, unlike binary, will utilize name-value pairs to give human readable names to its output.  If a name-value pair is not supplied, it will automatically generate an enumerated name.  XML archives do not need to output size metadata for variable sized containers since the number of children of a node can be queried when loading the data.  This means that it is possible to add extra data manually to an XML archive before loading it:
 
 ```cpp
 #include <iostream>
@@ -80,8 +80,8 @@ This causes the output XML:
 ```xml
 <?xml version="1.0"?>
 <cereal>
-  <vec size="dynamic"> <!-- Note that no size is output for the container; it is marked as dynamicly sized -->
-    <value0>1</value0> <!-- For things that don't have NVPs, names will be generated in a delmited fashion -->
+  <vec size="dynamic"> <!-- Note that there is no listed size; it is marked as dynamic -->
+    <value0>1</value0> <!-- Names will be automatically created if NVPs are not supplied -->
     <value1>2</value1>
     <value2>3</value2>
     <value3>4</value3>
@@ -95,13 +95,17 @@ This causes the output XML:
 </cereal>
 ```
 
-Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.  At this time you cannot re-order nodes inside of an XML archive - they must appear in the same order as the serialization function expects them.
+Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.  
 
-XML can optionally output complete demangled type information as an attribute and offer control over the precision of output floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
+XML can optionally output complete demangled type information as an attribute and offers control over the output precision of floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
+
+<span class="label label-warning">Important!</span>
+At this time cereal requires that the ordering of information in the XML archive match what is
+expected in the serialization functions.  You may add data to dynamically sized arrays, but you cannot change the order of objects.
 
 ### Binary output
 
-XML archives also support explicit binary output, which will encode the data as a [base64](http://en.wikipedia.org/wiki/Base64) string:
+XML archives also support explicit binary input/output, which will encode the data as a [base64](http://en.wikipedia.org/wiki/Base64) string:
 
 ```{cpp}
 #include <cereal/archives/xml.hpp>
@@ -134,7 +138,12 @@ This data can be loaded in a similar fashion with `loadBinaryValue`.
 
 ## JSON
 
-The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON is a human readable format and should not be used in situations where serialized data size is critical.  JSON archives are very similar to XML archives in that they will take advantage of name-value pairs and automatically name things without them.  Consider the following nearly identical example as seen in the XML section:
+The JSON archive can be used by including `<cereal/archives/json.hpp>`.  JSON
+is a human readable format and should not be used in situations where
+serialized data size is critical.  JSON archives are very similar to XML
+archives in that they will take advantage of name-value pairs when available,
+and automatically generate names when they are not.  Consider the following
+nearly identical example as seen in the XML section:
 
 ```cpp
 #include <iostream>
@@ -175,8 +184,9 @@ into variable sized containers in a JSON file by inserting elements into an arra
 archives that have had data inserted into objects.  You can still hand edit values in objects, but you cannot append or
 deduct data from them.
 
-Please note that at this time cereal requires that the ordering of information in the JSON archive match what is
-expected in the serialization functions.  You may add data to arrays, but you cannot change the order of objects.
+<span class="label label-warning">Important!</span>
+At this time cereal requires that the ordering of information in the XML archive match what is
+expected in the serialization functions.  You may add data to dynamically sized arrays, but you cannot change the order of objects.
 
 ### Binary output
 

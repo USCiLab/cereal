@@ -38,8 +38,7 @@ struct Derived : public Base
     // We pass this cast to the base type for each base type we
     // need to serialize.  Do this instead of calling serialize functions
     // directly
-    ar( cereal::base_class<Base>( this ), 
-        y ); 
+    ar( cereal::base_class<Base>( this ), y ); 
   }
 };
 ```
@@ -70,8 +69,7 @@ struct Left : virtual Base
   template <class Archive>
   void serialize( Archive & ar )
   { 
-    ar( cereal::virtual_base_class<Base>( this ),
-        l );
+    ar( cereal::virtual_base_class<Base>( this ), l );
   }
 };
 
@@ -82,8 +80,7 @@ struct Right : virtual Base
   template <class Archive>
   void serialize( Archive & ar )
   { 
-    ar( cereal::virtual_base_class<Base>( this ),
-        r );
+    ar( cereal::virtual_base_class<Base>( this ), r );
   }
 };
 
@@ -94,10 +91,9 @@ struct Derived : virtual Left, virtual Right
   void serialize( Archive & ar )
   { 
     // Since we've used virtual inheritance and virtual_base_class,
-    // cereal will ensure that only one copy of each base class
+    // xCEREAL will ensure that only one copy of each base class
     // is serialized
-    ar( cereal::virtual_base_class<Base>( this ), 
-        y ); 
+    ar( cereal::virtual_base_class<Base>( this ), y ); 
   }
 };
 

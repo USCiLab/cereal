@@ -56,6 +56,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ site.baseurl }}/assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="{{ site.baseurl }}/assets/ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="{{ site.baseurl }}/assets/ico/favicon.png">
+
   </head>
 
   <body>
@@ -79,11 +80,12 @@
               <ul class="nav">
                 <li><a href="{{ site.baseurl }}/index.html">Documentation</a></li>
                 <li><a href="{{ site.baseurl }}/assets/doxygen/index.html">Doxygen Docs</a></li>
-                <li><a href="{{ site.baseurl }}/about.html">About</a></li>
                 <li><a href="https://github.com/USCiLab/cereal">Github</a></li>
               </ul>
 
               <ul class="nav pull-right">
+                <li><a href="{{ site.baseurl }}/about.html">About</a></li>
+                <li class="divider-vertical"></li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Download <b class="caret"></b> </a>
                 <ul class="dropdown-menu">
@@ -91,6 +93,7 @@
                   <li><a href="https://github.com/USCiLab/cereal/archive/v0.9.0.zip">v0.9.0 (.zip)</a></li>
                 </ul>
                 </li>
+                <li class="divider-vertical"></li>
               </ul>
 
 
@@ -120,7 +123,7 @@
         </div><!--/span-->
         <div class="span7">
 
-          {{content | replace: 'cereal ', '<font style="font-family: __cereal__font__;">cereal </font>' | replace: '__cereal__font__', cereal_font | replace: 'CEREAL', 'cereal' }}
+          {{content | replace: 'cereal ', '<font style="font-family: __cereal__font__;">cereal </font>' | replace: '__cereal__font__', cereal_font | replace: 'xCEREAL', 'cereal' }}
 
         </div><!--/span-->
       </div><!--/row-->
@@ -128,6 +131,13 @@
 
     <script type="text/javascript" src="{{ site.baseurl }}/assets/js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="{{ site.baseurl }}/assets/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+          // Highlight the current page in the side navbar
+          $('a[href = "{{page.url | replace_first: '/', ''}}"]').parent().addClass('active');
+          });
+    </script>
     
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

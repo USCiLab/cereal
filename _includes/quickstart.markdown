@@ -7,10 +7,10 @@ it.
 
 ---
 
-## Get CEREAL
+## Get xCEREAL
 
 cereal can be directly included in your project or installed anywhere you can access header files.  Grab the latest
-version from [Github](https://github.com/USCiLab/cereal) and drop it somewhere your project can find.
+version from [Github](https://github.com/USCiLab/cereal) or use the download links above, then drop it somewhere your project can find.
 
 ---
 
@@ -24,7 +24,7 @@ struct MyClass
 {
   int x, y, z;
 
-  // This method lets cereal know which data members to serialize
+  // This method lets xCEREAL know which data members to serialize
   template<class Archive>
   void serialize(Archive & archive)
   {
@@ -111,7 +111,7 @@ int main()
     double d;
 
     archive( CEREAL_NVP(m1), // Names the output the same as the variable name
-             someInt,        // No NVP - cereal will automatically generate a delimted name
+             someInt,        // No NVP - xCEREAL will automatically generate an enumerated name
              cereal::make_nvp("this name is way better", d) ); // specify a name of your choosing
   }
 
