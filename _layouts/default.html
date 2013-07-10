@@ -122,8 +122,7 @@
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span7">
-
-          {{content | replace: 'cereal ', '<font style="font-family: __cereal__font__;">cereal </font>' | replace: '__cereal__font__', cereal_font | replace: 'xCEREAL', 'cereal' }}
+          {{content | replace: "cereal&#39;s", '<font style="font-family: __cereal__font__;">cereal</font>&#39;s' | replace: 'cereal ', '<font style="font-family: __cereal__font__;">cereal </font>' | replace: '__cereal__font__', cereal_font | replace: 'xCEREAL', 'cereal' }}
 
         </div><!--/span-->
       </div><!--/row-->
