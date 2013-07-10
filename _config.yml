@@ -6,4 +6,4 @@ markdown:      redcarpet
 markdown_ext:  markdown,mkd,mkdn,md
 textile_ext:   textile
 
-baseurl: "http://uscilab.github.io/cereal/"
+baseurl: "http://uscilab.github.io/cereal"
