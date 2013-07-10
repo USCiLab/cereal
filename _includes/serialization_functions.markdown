@@ -127,7 +127,7 @@ void load(Archive & archive)
 </div>
 <br/>
 
-Note that save functions are **const**.  cereal will throw a static assertion if it detects a non const save function.
+<span class="label label-warning">Important!</span> Save functions are **const** (or take a **const** reference to your class).  cereal will throw a static assertion if it detects a non const save function.
 
 ### Non-public serialization
 
@@ -151,6 +151,8 @@ class MyCoolClass
     }
 };
 ```
+
+This also works with split save/load functions.
 
 ### Inheritance
 
@@ -183,7 +185,7 @@ int main()
 {
   MyDerived d;
   cereal::BinaryOutputArchive ar( std::cout );
-  ar( d ); // static assertion failure: cereal detected both a serialize and save/load pair for MyDerived
+  ar( d ); // static assertion failure: xCEREAL detected both a serialize and save/load pair for MyDerived
 }
 ```
 
@@ -191,8 +193,8 @@ In the above example, `MyDerived` inherits the public `serialize` function from 
 `serialize` and `load`-`save` pair.  cereal is unable to disambiguate which it should call and thus gives a compile time
 static assertion.  
 
-Even if `serialize` was made `private` in `MyBase`, cereal would still have access to it from
-`MyDerived` because of the friend declaration to `cereal::access`, resulting in the same error.  The solution to this
+Even if `serialize` was made `private` in the base class, cereal may still have access to it from
+the derived class because of a friend declaration to `cereal::access`, resulting in the same error.  The solution to this
 error is to provide an explicit disambiguation for cereal:
 
 ```{cpp}
@@ -201,11 +203,11 @@ error is to provide an explicit disambiguation for cereal:
 namespace cereal
 {
   template <class Archive> struct specialize<Archive, MyDerived, cereal::specialization::member_load_save> {};
-  // cereal no longer has any ambiguity when serializing MyDerived
+  // xCEREAL no longer has any ambiguity when serializing MyDerived
 }
 ```
 
-More information can be found by reading the doxygen documentation for `<cereal/access.hpp>`.
+More information can be found by reading the doxygen documentation for `<cereal/access.hpp>` [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1specialize.html).
 
 ### Default construction
 
