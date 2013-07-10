@@ -6,6 +6,8 @@ var searchData=
   ['map_2ehpp',['map.hpp',['../map_8hpp.html',1,'']]],
   ['mapitem',['MapItem',['../structcereal_1_1MapItem.html',1,'cereal']]],
   ['mapitem',['MapItem',['../structcereal_1_1MapItem.html#aee3d63b7cb1ab67edc60b2234e6f92db',1,'cereal::MapItem']]],
+  ['member_5fload_5fsave',['member_load_save',['../group__Access.html#ggac28bb730353e53b3066cc679e63bb108acc9b523fb1a01a9717e5db8bbe79fa79',1,'cereal']]],
+  ['member_5fserialize',['member_serialize',['../group__Access.html#ggac28bb730353e53b3066cc679e63bb108ad97b44dbc237796824c5e0084916056c',1,'cereal']]],
   ['memory_2ehpp',['memory.hpp',['../memory_8hpp.html',1,'']]],
   ['miscellaneous_20types_20support',['Miscellaneous Types Support',['../group__OtherTypes.html',1,'']]]
 ];

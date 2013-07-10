@@ -66,7 +66,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,10 +98,10 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:gac28bb730353e53b3066cc679e63bb108"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Access.html#gac28bb730353e53b3066cc679e63bb108">cereal::specialization</a> { <b>member_serialize</b>, 
-<b>member_load_save</b>, 
-<b>non_member_serialize</b>, 
-<b>non_member_load_save</b>
+<tr class="memitem:gac28bb730353e53b3066cc679e63bb108"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Access.html#gac28bb730353e53b3066cc679e63bb108">cereal::specialization</a> { <a class="el" href="group__Access.html#ggac28bb730353e53b3066cc679e63bb108ad97b44dbc237796824c5e0084916056c">cereal::specialize&lt; Archive, T, S &gt;::member_serialize</a>, 
+<a class="el" href="group__Access.html#ggac28bb730353e53b3066cc679e63bb108acc9b523fb1a01a9717e5db8bbe79fa79">cereal::specialize&lt; Archive, T, S &gt;::member_load_save</a>, 
+<a class="el" href="group__Access.html#ggac28bb730353e53b3066cc679e63bb108a775e9836a4de1cf177b88ce55b942bed">cereal::specialize&lt; Archive, T, S &gt;::non_member_serialize</a>, 
+<a class="el" href="group__Access.html#ggac28bb730353e53b3066cc679e63bb108a0ddb43e02ab3dabfe43df4325e97fd23">cereal::specialize&lt; Archive, T, S &gt;::non_member_load_save</a>
  }</td></tr>
 <tr class="separator:gac28bb730353e53b3066cc679e63bb108"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -128,13 +128,27 @@ template&lt;class Archive , class T , specialization S&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>A specifier used in conjunction with <a class="el" href="structcereal_1_1specialize.html" title="A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class...">cereal::specialize</a> to disambiguate serialization in special cases </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ggac28bb730353e53b3066cc679e63bb108ad97b44dbc237796824c5e0084916056c"></a>member_serialize</em>&nbsp;</td><td class="fielddoc">
+<p>Force the use of a member serialize function. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="ggac28bb730353e53b3066cc679e63bb108acc9b523fb1a01a9717e5db8bbe79fa79"></a>member_load_save</em>&nbsp;</td><td class="fielddoc">
+<p>Force the use of a member load/save pair. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="ggac28bb730353e53b3066cc679e63bb108a775e9836a4de1cf177b88ce55b942bed"></a>non_member_serialize</em>&nbsp;</td><td class="fielddoc">
+<p>Force the use of a non-member serialize function. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="ggac28bb730353e53b3066cc679e63bb108a0ddb43e02ab3dabfe43df4325e97fd23"></a>non_member_load_save</em>&nbsp;</td><td class="fielddoc">
+<p>Force the use of a non-member load/save pair. </p>
+</td></tr>
+</table>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jul 9 2013 16:09:30 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 10 2013 11:10:51 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
