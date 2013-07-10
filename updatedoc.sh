@@ -19,5 +19,4 @@ cp -r ${tempdir}/coverage* assets/coverage/
 
 cp -r ${tempdir}/html/* assets/doxygen/
 
-
 rm -rf ${tempdir}
