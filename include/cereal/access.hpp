@@ -142,10 +142,10 @@ namespace cereal
       @ingroup Access */
   enum class specialization
   {
-    member_serialize,
-    member_load_save,
-    non_member_serialize,
-    non_member_load_save
+    member_serialize,          //!< Force the use of a member serialize function
+    member_load_save,          //!< Force the use of a member load/save pair
+    non_member_serialize,      //!< Force the use of a non-member serialize function
+    non_member_load_save       //!< Force the use of a non-member load/save pair
   };
 
   //! A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class
