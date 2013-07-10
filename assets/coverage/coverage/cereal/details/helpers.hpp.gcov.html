@@ -105,7 +105,7 @@
 <span class="lineNum">      43 </span>            :   // ######################################################################
 <a name="44"><span class="lineNum">      44 </span>            :   namespace detail</a>
 <span class="lineNum">      45 </span>            :   {
-<span class="lineNum">      46 </span><span class="lineCov">    4812092 :     struct NameValuePairCore {};</span>
+<span class="lineNum">      46 </span><span class="lineCov">    4812104 :     struct NameValuePairCore {};</span>
 <span class="lineNum">      47 </span>            :   }
 <span class="lineNum">      48 </span>            : 
 <span class="lineNum">      49 </span>            :   //! For holding name value pairs
@@ -194,7 +194,7 @@
 <span class="lineNum">     132 </span>            :                    only pass r-values in cases where this makes sense, such as the result of some
 <a name="133"><span class="lineNum">     133 </span>            :                    size() call.  In either case, any constness will be stripped away</a>
 <span class="lineNum">     134 </span>            :       @internal */
-<span class="lineNum">     135 </span><span class="lineCov">    4812092 :       NameValuePair( char const * n, T &amp;&amp; v ) : name(n), value(const_cast&lt;Type&gt;(v)) {}</span>
+<span class="lineNum">     135 </span><span class="lineCov">    4812104 :       NameValuePair( char const * n, T &amp;&amp; v ) : name(n), value(const_cast&lt;Type&gt;(v)) {}</span>
 <span class="lineNum">     136 </span>            : 
 <span class="lineNum">     137 </span>            :       char const * name;
 <span class="lineNum">     138 </span>            :       Type value;
@@ -208,9 +208,9 @@
 <span class="lineNum">     146 </span>            :   std::enable_if&lt;std::is_same&lt;Archive, ::cereal::BinaryInputArchive&gt;::value ||
 <a name="147"><span class="lineNum">     147 </span>            :                  std::is_same&lt;Archive, ::cereal::BinaryOutputArchive&gt;::value,</a>
 <span class="lineNum">     148 </span>            :   T &amp;&amp; &gt;::type
-<span class="lineNum">     149 </span><span class="lineCov">    2406220 :   make_nvp( const char *, T &amp;&amp; value )</span>
+<span class="lineNum">     149 </span><span class="lineCov">    2406192 :   make_nvp( const char *, T &amp;&amp; value )</span>
 <span class="lineNum">     150 </span>            :   {
-<span class="lineNum">     151 </span><span class="lineCov">    2406220 :     return std::forward&lt;T&gt;(value);</span>
+<span class="lineNum">     151 </span><span class="lineCov">    2406192 :     return std::forward&lt;T&gt;(value);</span>
 <span class="lineNum">     152 </span>            :   }
 <span class="lineNum">     153 </span>            : 
 <span class="lineNum">     154 </span>            :   //! A specialization of make_nvp&lt;&gt; that actually creates an nvp for non-binary archives
@@ -221,9 +221,9 @@
 <span class="lineNum">     159 </span>            :   std::enable_if&lt;!std::is_same&lt;Archive, ::cereal::BinaryInputArchive&gt;::value &amp;&amp;
 <a name="160"><span class="lineNum">     160 </span>            :                  !std::is_same&lt;Archive, ::cereal::BinaryOutputArchive&gt;::value,</a>
 <span class="lineNum">     161 </span>            :   NameValuePair&lt;T&gt; &gt;::type
-<span class="lineNum">     162 </span><span class="lineCov">    4812092 :   make_nvp( const char * name, T &amp;&amp; value)</span>
+<span class="lineNum">     162 </span><span class="lineCov">    4812104 :   make_nvp( const char * name, T &amp;&amp; value)</span>
 <span class="lineNum">     163 </span>            :   {
-<span class="lineNum">     164 </span><span class="lineCov">    4812092 :     return {name, std::forward&lt;T&gt;(value)};</span>
+<span class="lineNum">     164 </span><span class="lineCov">    4812104 :     return {name, std::forward&lt;T&gt;(value)};</span>
 <span class="lineNum">     165 </span>            :   }
 <span class="lineNum">     166 </span>            : 
 <span class="lineNum">     167 </span>            :   //! Convenience for creating a templated NVP
@@ -248,7 +248,7 @@
 <span class="lineNum">     186 </span>            :                                          const void *,
 <a name="187"><span class="lineNum">     187 </span>            :                                          void *&gt;::type;</a>
 <span class="lineNum">     188 </span>            : 
-<span class="lineNum">     189 </span><span class="lineCov">     243768 :     BinaryData( T &amp;&amp; d, uint64_t s ) : data(d), size(s) {}</span>
+<span class="lineNum">     189 </span><span class="lineCov">     243792 :     BinaryData( T &amp;&amp; d, uint64_t s ) : data(d), size(s) {}</span>
 <span class="lineNum">     190 </span>            : 
 <span class="lineNum">     191 </span>            :     PT data;   //!&lt; pointer to beginning of data
 <span class="lineNum">     192 </span>            :     uint64_t size; //!&lt; size in bytes
@@ -291,7 +291,7 @@
 <span class="lineNum">     229 </span>            :                                              typename std::add_lvalue_reference&lt;DT&gt;::type&gt;::type;
 <a name="230"><span class="lineNum">     230 </span>            : </a>
 <span class="lineNum">     231 </span>            :     public:
-<span class="lineNum">     232 </span><span class="lineCov">     345768 :       SizeTag( T &amp;&amp; sz ) : size(const_cast&lt;Type&gt;(sz)) {}</span>
+<span class="lineNum">     232 </span><span class="lineCov">     345792 :       SizeTag( T &amp;&amp; sz ) : size(const_cast&lt;Type&gt;(sz)) {}</span>
 <span class="lineNum">     233 </span>            : 
 <span class="lineNum">     234 </span>            :       Type size;
 <span class="lineNum">     235 </span>            :   };
@@ -334,27 +334,27 @@
 <span class="lineNum">     272 </span>            : 
 <a name="273"><span class="lineNum">     273 </span>            :     //! Construct a MapItem from a key and a value</a>
 <span class="lineNum">     274 </span>            :     /*! @internal */
-<span class="lineNum">     275 </span><span class="lineCov">    3570756 :     MapItem( Key &amp;&amp; key, Value &amp;&amp; value ) : key(const_cast&lt;KeyType&gt;(key)), value(const_cast&lt;ValueType&gt;(value)) {}</span>
+<span class="lineNum">     275 </span><span class="lineCov">    3570748 :     MapItem( Key &amp;&amp; key, Value &amp;&amp; value ) : key(const_cast&lt;KeyType&gt;(key)), value(const_cast&lt;ValueType&gt;(value)) {}</span>
 <span class="lineNum">     276 </span>            : 
 <span class="lineNum">     277 </span>            :     KeyType key;
 <span class="lineNum">     278 </span>            :     ValueType value;
 <span class="lineNum">     279 </span>            : 
 <a name="280"><span class="lineNum">     280 </span>            :     //! Serialize the MapItem with the NVPs &quot;key&quot; and &quot;value&quot;</a>
 <span class="lineNum">     281 </span>            :     template &lt;class Archive&gt; inline
-<span class="lineNum">     282 </span><span class="lineCov">    3570756 :     void serialize(Archive &amp; archive)</span>
+<span class="lineNum">     282 </span><span class="lineCov">    3570748 :     void serialize(Archive &amp; archive)</span>
 <span class="lineNum">     283 </span>            :     {
-<span class="lineNum">     284 </span><span class="lineCov">    7141512 :       archive( make_nvp&lt;Archive&gt;(&quot;key&quot;,   key),</span>
-<span class="lineNum">     285 </span><span class="lineCov">    9521958 :                make_nvp&lt;Archive&gt;(&quot;value&quot;, value) );</span>
-<span class="lineNum">     286 </span><span class="lineCov">    3570756 :     }</span>
+<span class="lineNum">     284 </span><span class="lineCov">    7141496 :       archive( make_nvp&lt;Archive&gt;(&quot;key&quot;,   key),</span>
+<span class="lineNum">     285 </span><span class="lineCov">    9521948 :                make_nvp&lt;Archive&gt;(&quot;value&quot;, value) );</span>
+<span class="lineNum">     286 </span><span class="lineCov">    3570748 :     }</span>
 <span class="lineNum">     287 </span>            :   };
 <span class="lineNum">     288 </span>            : 
 <span class="lineNum">     289 </span>            :   //! Create a MapItem so that human readable archives will group keys and values together
 <span class="lineNum">     290 </span>            :   /*! @internal
 <a name="291"><span class="lineNum">     291 </span>            :       @relates MapItem */</a>
 <span class="lineNum">     292 </span>            :   template &lt;class KeyType, class ValueType&gt; inline
-<span class="lineNum">     293 </span><span class="lineCov">    3570756 :   MapItem&lt;KeyType, ValueType&gt; make_map_item(KeyType &amp;&amp; key, ValueType &amp;&amp; value)</span>
+<span class="lineNum">     293 </span><span class="lineCov">    3570748 :   MapItem&lt;KeyType, ValueType&gt; make_map_item(KeyType &amp;&amp; key, ValueType &amp;&amp; value)</span>
 <span class="lineNum">     294 </span>            :   {
-<span class="lineNum">     295 </span><span class="lineCov">    3570756 :     return {std::forward&lt;KeyType&gt;(key), std::forward&lt;ValueType&gt;(value)};</span>
+<span class="lineNum">     295 </span><span class="lineCov">    3570748 :     return {std::forward&lt;KeyType&gt;(key), std::forward&lt;ValueType&gt;(value)};</span>
 <span class="lineNum">     296 </span>            :   }
 <span class="lineNum">     297 </span>            : } // namespace cereal
 <span class="lineNum">     298 </span>            : 

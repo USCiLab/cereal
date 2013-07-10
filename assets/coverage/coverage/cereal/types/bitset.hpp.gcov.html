@@ -116,21 +116,21 @@
 <span class="lineNum">      54 </span>            :     try
 <span class="lineNum">      55 </span>            :     {
 <span class="lineNum">      56 </span><span class="lineCov">       1800 :       auto const b = bits.to_ulong();</span>
-<span class="lineNum">      57 </span><span class="lineCov">        916 :       ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ulong) );</span>
-<span class="lineNum">      58 </span><span class="lineCov">        916 :       ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">        911 :       ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ulong) );</span>
+<span class="lineNum">      58 </span><span class="lineCov">        911 :       ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
 <span class="lineNum">      59 </span>            :     }
-<span class="lineNum">      60 </span><span class="lineCov">        884 :     catch( std::overflow_error const &amp; e )</span>
+<span class="lineNum">      60 </span><span class="lineCov">        889 :     catch( std::overflow_error const &amp; e )</span>
 <span class="lineNum">      61 </span>            :     {
 <span class="lineNum">      62 </span>            :       try
 <span class="lineNum">      63 </span>            :       {
-<span class="lineNum">      64 </span><span class="lineCov">        884 :         auto const b = bits.to_ullong();</span>
+<span class="lineNum">      64 </span><span class="lineCov">        889 :         auto const b = bits.to_ullong();</span>
 <span class="lineNum">      65 </span>            :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ullong) );
 <span class="lineNum">      66 </span>            :         ar( _CEREAL_NVP(&quot;data&quot;, b) );
 <span class="lineNum">      67 </span>            :       }
-<span class="lineNum">      68 </span><span class="lineCov">        884 :       catch( std::overflow_error const &amp; e )</span>
+<span class="lineNum">      68 </span><span class="lineCov">        889 :       catch( std::overflow_error const &amp; e )</span>
 <span class="lineNum">      69 </span>            :       {
-<span class="lineNum">      70 </span><span class="lineCov">        884 :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::string) );</span>
-<span class="lineNum">      71 </span><span class="lineCov">        884 :         ar( _CEREAL_NVP(&quot;data&quot;, bits.to_string()) );</span>
+<span class="lineNum">      70 </span><span class="lineCov">        889 :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::string) );</span>
+<span class="lineNum">      71 </span><span class="lineCov">        889 :         ar( _CEREAL_NVP(&quot;data&quot;, bits.to_string()) );</span>
 <span class="lineNum">      72 </span>            :       }
 <span class="lineNum">      73 </span>            :     }
 <span class="lineNum">      74 </span><span class="lineCov">       1800 :   }</span>
@@ -147,9 +147,9 @@
 <span class="lineNum">      85 </span>            :       case bitset_detail::type::ulong:
 <span class="lineNum">      86 </span>            :       {
 <span class="lineNum">      87 </span>            :         unsigned long b;
-<span class="lineNum">      88 </span><span class="lineCov">        916 :         ar( b );</span>
-<span class="lineNum">      89 </span><span class="lineCov">        916 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">      90 </span><span class="lineCov">        916 :         break;</span>
+<span class="lineNum">      88 </span><span class="lineCov">        911 :         ar( b );</span>
+<span class="lineNum">      89 </span><span class="lineCov">        911 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">      90 </span><span class="lineCov">        911 :         break;</span>
 <span class="lineNum">      91 </span>            :       }
 <span class="lineNum">      92 </span>            :       case bitset_detail::type::ullong:
 <span class="lineNum">      93 </span>            :       {
@@ -160,10 +160,10 @@
 <span class="lineNum">      98 </span>            :       }
 <span class="lineNum">      99 </span>            :       case bitset_detail::type::string:
 <span class="lineNum">     100 </span>            :       {
-<span class="lineNum">     101 </span><span class="lineCov">        884 :         std::string b;</span>
-<span class="lineNum">     102 </span><span class="lineCov">        884 :         ar( b );</span>
-<span class="lineNum">     103 </span><span class="lineCov">        884 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">     104 </span><span class="lineCov">        884 :         break;</span>
+<span class="lineNum">     101 </span><span class="lineCov">        889 :         std::string b;</span>
+<span class="lineNum">     102 </span><span class="lineCov">        889 :         ar( b );</span>
+<span class="lineNum">     103 </span><span class="lineCov">        889 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">     104 </span><span class="lineCov">        889 :         break;</span>
 <span class="lineNum">     105 </span>            :       }
 <span class="lineNum">     106 </span>            :       default:
 <span class="lineNum">     107 </span><span class="lineNoCov">          0 :         throw Exception(&quot;Invalid bitset data representation&quot;);</span>

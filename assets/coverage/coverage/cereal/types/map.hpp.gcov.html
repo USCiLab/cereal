@@ -105,9 +105,9 @@
 <span class="lineNum">      43 </span>            :     {
 <span class="lineNum">      44 </span><span class="lineCov">       6600 :       ar( make_size_tag( map.size() ) );</span>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">     902340 :       for( const auto &amp; i : map )</span>
+<span class="lineNum">      46 </span><span class="lineCov">     902371 :       for( const auto &amp; i : map )</span>
 <span class="lineNum">      47 </span>            :       {
-<span class="lineNum">      48 </span><span class="lineCov">     895740 :         ar( make_map_item(i.first, i.second) );</span>
+<span class="lineNum">      48 </span><span class="lineCov">     895771 :         ar( make_map_item(i.first, i.second) );</span>
 <span class="lineNum">      49 </span>            :       }
 <span class="lineNum">      50 </span><span class="lineCov">       6600 :     }</span>
 <span class="lineNum">      51 </span>            : 
@@ -121,13 +121,13 @@
 <span class="lineNum">      59 </span><span class="lineCov">       6600 :       map.clear();</span>
 <span class="lineNum">      60 </span>            : 
 <span class="lineNum">      61 </span><span class="lineCov">       6600 :       auto hint = map.begin();</span>
-<span class="lineNum">      62 </span><span class="lineCov">     902340 :       for( size_t i = 0; i &lt; size; ++i )</span>
+<span class="lineNum">      62 </span><span class="lineCov">     902371 :       for( size_t i = 0; i &lt; size; ++i )</span>
 <span class="lineNum">      63 </span>            :       {
 <span class="lineNum">      64 </span><span class="lineCov">     180000 :         typename MapT::key_type key;</span>
-<span class="lineNum">      65 </span><span class="lineCov">     715740 :         typename MapT::mapped_type value;</span>
+<span class="lineNum">      65 </span><span class="lineCov">     715771 :         typename MapT::mapped_type value;</span>
 <span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span><span class="lineCov">     895740 :         ar( make_map_item(key, value) );</span>
-<span class="lineNum">      68 </span><span class="lineCov">     895740 :         hint = map.insert(hint, {key, value} );</span>
+<span class="lineNum">      67 </span><span class="lineCov">     895771 :         ar( make_map_item(key, value) );</span>
+<span class="lineNum">      68 </span><span class="lineCov">     895771 :         hint = map.insert(hint, {key, value} );</span>
 <span class="lineNum">      69 </span>            :       }
 <span class="lineNum">      70 </span><span class="lineCov">       6600 :     }</span>
 <span class="lineNum">      71 </span>            :   }

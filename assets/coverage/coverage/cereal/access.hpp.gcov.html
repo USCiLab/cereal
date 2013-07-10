@@ -171,12 +171,12 @@
 <span class="lineNum">     109 </span>            :   {
 <a name="110"><span class="lineNum">     110 </span>            :     public:</a>
 <span class="lineNum">     111 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     112 </span><span class="lineCov">    7185066 :         static auto member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.serialize(ar))</span>
-<span class="lineNum">     113 </span><span class="lineCov">    7185066 :         { t.serialize(ar); }</span>
+<span class="lineNum">     112 </span><span class="lineCov">    7185082 :         static auto member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.serialize(ar))</span>
+<span class="lineNum">     113 </span><span class="lineCov">    7185082 :         { t.serialize(ar); }</span>
 <a name="114"><span class="lineNum">     114 </span>            : </a>
 <span class="lineNum">     115 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     116 </span><span class="lineCov">    1204755 :         static auto member_save(Archive &amp; ar, T const &amp; t) -&gt; decltype(t.save(ar))</span>
-<span class="lineNum">     117 </span><span class="lineCov">    1204755 :         { t.save(ar); }</span>
+<span class="lineNum">     116 </span><span class="lineCov">    1204746 :         static auto member_save(Archive &amp; ar, T const &amp; t) -&gt; decltype(t.save(ar))</span>
+<span class="lineNum">     117 </span><span class="lineCov">    1204746 :         { t.save(ar); }</span>
 <span class="lineNum">     118 </span>            : 
 <span class="lineNum">     119 </span>            :       // Used during detection of non const member save
 <span class="lineNum">     120 </span>            :       template&lt;class Archive, class T&gt; inline
@@ -184,8 +184,8 @@
 <span class="lineNum">     122 </span>            :         { t.save(ar); }
 <a name="123"><span class="lineNum">     123 </span>            : </a>
 <span class="lineNum">     124 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     125 </span><span class="lineCov">    1204755 :         static auto member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.load(ar))</span>
-<span class="lineNum">     126 </span><span class="lineCov">    1204755 :         { t.load(ar); }</span>
+<span class="lineNum">     125 </span><span class="lineCov">    1204746 :         static auto member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.load(ar))</span>
+<span class="lineNum">     126 </span><span class="lineCov">    1204746 :         { t.load(ar); }</span>
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            :       template &lt;class T&gt;
 <span class="lineNum">     129 </span>            :         static void load_and_allocate(...)

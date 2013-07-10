@@ -184,48 +184,48 @@
 <span class="lineNum">     122 </span>            :           or generated based upon a counter unique to the parent node.
 <a name="123"><span class="lineNum">     123 </span>            : </a>
 <span class="lineNum">     124 </span>            :           The node will then be pushed onto the node stack. */
-<span class="lineNum">     125 </span><span class="lineCov">    7031955 :       void startNode()</span>
+<span class="lineNum">     125 </span><span class="lineCov">    7032130 :       void startNode()</span>
 <span class="lineNum">     126 </span>            :       {
 <span class="lineNum">     127 </span>            :         // generate a name for this new node
-<span class="lineNum">     128 </span><span class="lineCov">    7031955 :         const auto nameString = itsNodes.top().getValueName();</span>
+<span class="lineNum">     128 </span><span class="lineCov">    7032130 :         const auto nameString = itsNodes.top().getValueName();</span>
 <span class="lineNum">     129 </span>            : 
 <span class="lineNum">     130 </span>            :         // allocate strings for all of the data in the XML object
-<span class="lineNum">     131 </span><span class="lineCov">    7031955 :         auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );</span>
+<span class="lineNum">     131 </span><span class="lineCov">    7032130 :         auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );</span>
 <span class="lineNum">     132 </span>            : 
 <span class="lineNum">     133 </span>            :         // insert into the XML
-<span class="lineNum">     134 </span><span class="lineCov">    7031955 :         auto node = itsXML.allocate_node( rapidxml::node_element, namePtr, nullptr, nameString.size() );</span>
-<span class="lineNum">     135 </span><span class="lineCov">    7031955 :         itsNodes.top().node-&gt;append_node( node );</span>
-<span class="lineNum">     136 </span><span class="lineCov">    7031955 :         itsNodes.emplace( node );</span>
-<span class="lineNum">     137 </span><span class="lineCov">    7031955 :       }</span>
+<span class="lineNum">     134 </span><span class="lineCov">    7032130 :         auto node = itsXML.allocate_node( rapidxml::node_element, namePtr, nullptr, nameString.size() );</span>
+<span class="lineNum">     135 </span><span class="lineCov">    7032130 :         itsNodes.top().node-&gt;append_node( node );</span>
+<span class="lineNum">     136 </span><span class="lineCov">    7032130 :         itsNodes.emplace( node );</span>
+<span class="lineNum">     137 </span><span class="lineCov">    7032130 :       }</span>
 <a name="138"><span class="lineNum">     138 </span>            : </a>
 <span class="lineNum">     139 </span>            :       //! Designates the most recently added node as finished
-<span class="lineNum">     140 </span><span class="lineCov">    7031955 :       void finishNode()</span>
+<span class="lineNum">     140 </span><span class="lineCov">    7032130 :       void finishNode()</span>
 <span class="lineNum">     141 </span>            :       {
-<span class="lineNum">     142 </span><span class="lineCov">    7031955 :         itsNodes.pop();</span>
-<span class="lineNum">     143 </span><span class="lineCov">    7031955 :       }</span>
+<span class="lineNum">     142 </span><span class="lineCov">    7032130 :         itsNodes.pop();</span>
+<span class="lineNum">     143 </span><span class="lineCov">    7032130 :       }</span>
 <a name="144"><span class="lineNum">     144 </span>            : </a>
 <span class="lineNum">     145 </span>            :       //! Sets the name for the next node created with startNode
-<span class="lineNum">     146 </span><span class="lineCov">    1209742 :       void setNextName( const char * name )</span>
+<span class="lineNum">     146 </span><span class="lineCov">    1209812 :       void setNextName( const char * name )</span>
 <span class="lineNum">     147 </span>            :       {
-<span class="lineNum">     148 </span><span class="lineCov">    1209742 :         itsNodes.top().name = name;</span>
-<span class="lineNum">     149 </span><span class="lineCov">    1209742 :       }</span>
+<span class="lineNum">     148 </span><span class="lineCov">    1209812 :         itsNodes.top().name = name;</span>
+<span class="lineNum">     149 </span><span class="lineCov">    1209812 :       }</span>
 <span class="lineNum">     150 </span>            : 
 <span class="lineNum">     151 </span>            :       //! Saves some data, encoded as a string
 <span class="lineNum">     152 </span>            :       /*! The data will be be named with the most recent name if one exists,
 <span class="lineNum">     153 </span>            :           otherwise it will be given some default delimited value that depends upon
 <a name="154"><span class="lineNum">     154 </span>            :           the parent node */</a>
 <span class="lineNum">     155 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     156 </span><span class="lineCov">    4605013 :       void saveValue( T const &amp; value )</span>
+<span class="lineNum">     156 </span><span class="lineCov">    4605118 :       void saveValue( T const &amp; value )</span>
 <span class="lineNum">     157 </span>            :       {
-<span class="lineNum">     158 </span><span class="lineCov">    4605013 :         itsOS.clear(); itsOS.seekp(0);</span>
-<span class="lineNum">     159 </span><span class="lineCov">    4605013 :         itsOS &lt;&lt; value &lt;&lt; std::ends;</span>
+<span class="lineNum">     158 </span><span class="lineCov">    4605118 :         itsOS.clear(); itsOS.seekp(0);</span>
+<span class="lineNum">     159 </span><span class="lineCov">    4605118 :         itsOS &lt;&lt; value &lt;&lt; std::ends;</span>
 <span class="lineNum">     160 </span>            : 
 <span class="lineNum">     161 </span>            :         // allocate strings for all of the data in the XML object
-<span class="lineNum">     162 </span><span class="lineCov">    4605013 :         auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );</span>
+<span class="lineNum">     162 </span><span class="lineCov">    4605118 :         auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );</span>
 <span class="lineNum">     163 </span>            : 
 <span class="lineNum">     164 </span>            :         // insert into the XML
-<span class="lineNum">     165 </span><span class="lineCov">    4605013 :         itsNodes.top().node-&gt;append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );</span>
-<span class="lineNum">     166 </span><span class="lineCov">    4605013 :       }</span>
+<span class="lineNum">     165 </span><span class="lineCov">    4605118 :         itsNodes.top().node-&gt;append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );</span>
+<span class="lineNum">     166 </span><span class="lineCov">    4605118 :       }</span>
 <a name="167"><span class="lineNum">     167 </span>            : </a>
 <span class="lineNum">     168 </span>            :       //! Overload for uint8_t prevents them from being serialized as characters
 <span class="lineNum">     169 </span><span class="lineCov">      41000 :       void saveValue( uint8_t const &amp; value )</span>
@@ -234,10 +234,10 @@
 <span class="lineNum">     172 </span><span class="lineCov">      41000 :       }</span>
 <a name="173"><span class="lineNum">     173 </span>            : </a>
 <span class="lineNum">     174 </span>            :       //! Overload for int8_t prevents them from being serialized as characters
-<span class="lineNum">     175 </span><span class="lineCov">     113291 :       void saveValue( int8_t const &amp; value )</span>
+<span class="lineNum">     175 </span><span class="lineCov">     113328 :       void saveValue( int8_t const &amp; value )</span>
 <span class="lineNum">     176 </span>            :       {
-<span class="lineNum">     177 </span><span class="lineCov">     113291 :         saveValue( static_cast&lt;int32_t&gt;( value ) );</span>
-<span class="lineNum">     178 </span><span class="lineCov">     113291 :       }</span>
+<span class="lineNum">     177 </span><span class="lineCov">     113328 :         saveValue( static_cast&lt;int32_t&gt;( value ) );</span>
+<span class="lineNum">     178 </span><span class="lineCov">     113328 :       }</span>
 <span class="lineNum">     179 </span>            : 
 <span class="lineNum">     180 </span>            :       //! Saves some binary data, encoded as a base64 string, with an optional name
 <span class="lineNum">     181 </span>            :       /*! This will create a new node, optionally named, and insert a value that consists of
@@ -259,10 +259,10 @@
 <span class="lineNum">     197 </span>            : 
 <a name="198"><span class="lineNum">     198 </span>            :       //! Causes the type to be appended to the most recently made node if output type is set to true</a>
 <span class="lineNum">     199 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     200 </span><span class="lineCov">    7031955 :       void insertType()</span>
+<span class="lineNum">     200 </span><span class="lineCov">    7032130 :       void insertType()</span>
 <span class="lineNum">     201 </span>            :       {
-<span class="lineNum">     202 </span><span class="lineCov">    7031955 :         if( !itsOutputType )</span>
-<span class="lineNum">     203 </span><span class="lineCov">   14063910 :           return;</span>
+<span class="lineNum">     202 </span><span class="lineCov">    7032130 :         if( !itsOutputType )</span>
+<span class="lineNum">     203 </span><span class="lineCov">   14064260 :           return;</span>
 <span class="lineNum">     204 </span>            : 
 <span class="lineNum">     205 </span>            :         // generate a name for this new node
 <span class="lineNum">     206 </span><span class="lineNoCov">          0 :         const auto nameString = util::demangledName&lt;T&gt;();</span>
@@ -285,12 +285,12 @@
 <span class="lineNum">     223 </span>            :       //! A struct that contains metadata about a node
 <a name="224"><span class="lineNum">     224 </span>            :       struct NodeInfo</a>
 <span class="lineNum">     225 </span>            :       {
-<span class="lineNum">     226 </span><span class="lineCov">    7037355 :         NodeInfo( rapidxml::xml_node&lt;&gt; * n = nullptr,</span>
+<span class="lineNum">     226 </span><span class="lineCov">    7037530 :         NodeInfo( rapidxml::xml_node&lt;&gt; * n = nullptr,</span>
 <span class="lineNum">     227 </span>            :                   const char * nm = nullptr ) :
 <span class="lineNum">     228 </span>            :           node( n ),
 <span class="lineNum">     229 </span>            :           counter( 0 ),
-<span class="lineNum">     230 </span><span class="lineCov">    7037355 :           name( nm )</span>
-<span class="lineNum">     231 </span><span class="lineCov">    7037355 :         { }</span>
+<span class="lineNum">     230 </span><span class="lineCov">    7037530 :           name( nm )</span>
+<span class="lineNum">     231 </span><span class="lineCov">    7037530 :         { }</span>
 <span class="lineNum">     232 </span>            : 
 <span class="lineNum">     233 </span>            :         rapidxml::xml_node&lt;&gt; * node; //!&lt; A pointer to this node
 <span class="lineNum">     234 </span>            :         size_t counter;              //!&lt; The counter for naming child nodes
@@ -300,16 +300,16 @@
 <span class="lineNum">     238 </span>            :         /*! The name will be automatically generated using the counter if
 <a name="239"><span class="lineNum">     239 </span>            :             a name has not been previously set.  If a name has been previously</a>
 <span class="lineNum">     240 </span>            :             set, that name will be returned only once */
-<span class="lineNum">     241 </span><span class="lineCov">    7031955 :         std::string getValueName()</span>
+<span class="lineNum">     241 </span><span class="lineCov">    7032130 :         std::string getValueName()</span>
 <span class="lineNum">     242 </span>            :         {
-<span class="lineNum">     243 </span><span class="lineCov">    7031955 :           if( name )</span>
+<span class="lineNum">     243 </span><span class="lineCov">    7032130 :           if( name )</span>
 <span class="lineNum">     244 </span>            :           {
-<span class="lineNum">     245 </span><span class="lineCov">    1209742 :             auto n = name;</span>
-<span class="lineNum">     246 </span><span class="lineCov">    1209742 :             name = nullptr;</span>
-<span class="lineNum">     247 </span><span class="lineCov">    1209742 :             return {n};</span>
+<span class="lineNum">     245 </span><span class="lineCov">    1209812 :             auto n = name;</span>
+<span class="lineNum">     246 </span><span class="lineCov">    1209812 :             name = nullptr;</span>
+<span class="lineNum">     247 </span><span class="lineCov">    1209812 :             return {n};</span>
 <span class="lineNum">     248 </span>            :           }
 <span class="lineNum">     249 </span>            :           else
-<span class="lineNum">     250 </span><span class="lineCov">    5822213 :             return &quot;value&quot; + std::to_string( counter++ ) + &quot;\0&quot;;</span>
+<span class="lineNum">     250 </span><span class="lineCov">    5822318 :             return &quot;value&quot; + std::to_string( counter++ ) + &quot;\0&quot;;</span>
 <span class="lineNum">     251 </span>            :         }
 <span class="lineNum">     252 </span>            :       }; // NodeInfo
 <span class="lineNum">     253 </span>            : 
@@ -369,20 +369,20 @@
 <span class="lineNum">     307 </span><span class="lineCov">       5400 :       }</span>
 <a name="308"><span class="lineNum">     308 </span>            : </a>
 <span class="lineNum">     309 </span>            :       //! Prepares to start reading the next node
-<span class="lineNum">     310 </span><span class="lineCov">    7031955 :       void startNode()</span>
+<span class="lineNum">     310 </span><span class="lineCov">    7032130 :       void startNode()</span>
 <span class="lineNum">     311 </span>            :       {
-<span class="lineNum">     312 </span><span class="lineCov">    7031955 :         itsNodes.emplace( itsNodes.top().child );</span>
-<span class="lineNum">     313 </span><span class="lineCov">    7031955 :       }</span>
+<span class="lineNum">     312 </span><span class="lineCov">    7032130 :         itsNodes.emplace( itsNodes.top().child );</span>
+<span class="lineNum">     313 </span><span class="lineCov">    7032130 :       }</span>
 <a name="314"><span class="lineNum">     314 </span>            : </a>
 <span class="lineNum">     315 </span>            :       //! Finishes reading the current node
-<span class="lineNum">     316 </span><span class="lineCov">    7031955 :       void finishNode()</span>
+<span class="lineNum">     316 </span><span class="lineCov">    7032130 :       void finishNode()</span>
 <span class="lineNum">     317 </span>            :       {
 <span class="lineNum">     318 </span>            :         // remove current
-<span class="lineNum">     319 </span><span class="lineCov">    7031955 :         itsNodes.pop();</span>
+<span class="lineNum">     319 </span><span class="lineCov">    7032130 :         itsNodes.pop();</span>
 <span class="lineNum">     320 </span>            : 
 <span class="lineNum">     321 </span>            :         // advance parent
-<span class="lineNum">     322 </span><span class="lineCov">    7031955 :         itsNodes.top().advance();</span>
-<span class="lineNum">     323 </span><span class="lineCov">    7031955 :       }</span>
+<span class="lineNum">     322 </span><span class="lineCov">    7032130 :         itsNodes.top().advance();</span>
+<span class="lineNum">     323 </span><span class="lineCov">    7032130 :       }</span>
 <span class="lineNum">     324 </span>            : 
 <span class="lineNum">     325 </span>            :       //! Loads a bool
 <a name="326"><span class="lineNum">     326 </span>            :       template &lt;class T&gt; inline</a>
@@ -397,26 +397,26 @@
 <span class="lineNum">     335 </span>            :       //! Loads a type best represented as an unsigned long
 <a name="336"><span class="lineNum">     336 </span>            :       template &lt;class T&gt; inline</a>
 <span class="lineNum">     337 </span>            :       typename std::enable_if&lt;std::is_unsigned&lt;T&gt;::value &amp;&amp; !std::is_same&lt;T, bool&gt;::value &amp;&amp; sizeof(T) &lt; sizeof(long long), void&gt;::type
-<span class="lineNum">     338 </span><span class="lineCov">     203580 :       loadValue( T &amp; value )</span>
+<span class="lineNum">     338 </span><span class="lineCov">     203578 :       loadValue( T &amp; value )</span>
 <span class="lineNum">     339 </span>            :       {
-<span class="lineNum">     340 </span><span class="lineCov">     203580 :         value = std::stoul( itsNodes.top().node-&gt;value() );</span>
-<span class="lineNum">     341 </span><span class="lineCov">     203580 :       }</span>
+<span class="lineNum">     340 </span><span class="lineCov">     203578 :         value = std::stoul( itsNodes.top().node-&gt;value() );</span>
+<span class="lineNum">     341 </span><span class="lineCov">     203578 :       }</span>
 <span class="lineNum">     342 </span>            : 
 <span class="lineNum">     343 </span>            :       //! Loads a type best represented as an unsigned long long
 <a name="344"><span class="lineNum">     344 </span>            :       template &lt;class T&gt; inline</a>
 <span class="lineNum">     345 </span>            :       typename std::enable_if&lt;std::is_unsigned&lt;T&gt;::value &amp;&amp; !std::is_same&lt;T, bool&gt;::value &amp;&amp; sizeof(T) &gt;= sizeof(long long), void&gt;::type
-<span class="lineNum">     346 </span><span class="lineCov">       2503 :       loadValue( T &amp; value )</span>
+<span class="lineNum">     346 </span><span class="lineCov">       2505 :       loadValue( T &amp; value )</span>
 <span class="lineNum">     347 </span>            :       {
-<span class="lineNum">     348 </span><span class="lineCov">       2503 :         value = std::stoull( itsNodes.top().node-&gt;value() );</span>
-<span class="lineNum">     349 </span><span class="lineCov">       2503 :       }</span>
+<span class="lineNum">     348 </span><span class="lineCov">       2505 :         value = std::stoull( itsNodes.top().node-&gt;value() );</span>
+<span class="lineNum">     349 </span><span class="lineCov">       2505 :       }</span>
 <span class="lineNum">     350 </span>            : 
 <span class="lineNum">     351 </span>            :       //! Loads a type best represented as an int
 <a name="352"><span class="lineNum">     352 </span>            :       template &lt;class T&gt; inline</a>
 <span class="lineNum">     353 </span>            :       typename std::enable_if&lt;std::is_signed&lt;T&gt;::value &amp;&amp; sizeof(T) &lt;= sizeof(int), void&gt;::type
-<span class="lineNum">     354 </span><span class="lineCov">    4273833 :       loadValue( T &amp; value )</span>
+<span class="lineNum">     354 </span><span class="lineCov">    4273940 :       loadValue( T &amp; value )</span>
 <span class="lineNum">     355 </span>            :       {
-<span class="lineNum">     356 </span><span class="lineCov">    4273833 :         value = std::stoi( itsNodes.top().node-&gt;value() );</span>
-<span class="lineNum">     357 </span><span class="lineCov">    4273833 :       }</span>
+<span class="lineNum">     356 </span><span class="lineCov">    4273940 :         value = std::stoi( itsNodes.top().node-&gt;value() );</span>
+<span class="lineNum">     357 </span><span class="lineCov">    4273940 :       }</span>
 <span class="lineNum">     358 </span>            : 
 <span class="lineNum">     359 </span>            :       //! Loads a type best represented as a long
 <a name="360"><span class="lineNum">     360 </span>            :       template &lt;class T&gt; inline</a>
@@ -454,13 +454,13 @@
 <span class="lineNum">     392 </span>            : 
 <a name="393"><span class="lineNum">     393 </span>            :       //! Loads a string from the current node</a>
 <span class="lineNum">     394 </span>            :       template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     395 </span><span class="lineCov">     120697 :       void loadValue( std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str )</span>
+<span class="lineNum">     395 </span><span class="lineCov">     120695 :       void loadValue( std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str )</span>
 <span class="lineNum">     396 </span>            :       {
-<span class="lineNum">     397 </span><span class="lineCov">     120697 :         std::basic_istringstream&lt;CharT, Traits&gt; is( itsNodes.top().node-&gt;value() );</span>
+<span class="lineNum">     397 </span><span class="lineCov">     120695 :         std::basic_istringstream&lt;CharT, Traits&gt; is( itsNodes.top().node-&gt;value() );</span>
 <span class="lineNum">     398 </span>            : 
-<span class="lineNum">     399 </span><span class="lineCov">     120697 :         str.assign( std::istreambuf_iterator&lt;CharT, Traits&gt;( is ),</span>
-<span class="lineNum">     400 </span><span class="lineCov">     120697 :                     std::istreambuf_iterator&lt;CharT, Traits&gt;() );</span>
-<span class="lineNum">     401 </span><span class="lineCov">     120697 :       }</span>
+<span class="lineNum">     399 </span><span class="lineCov">     120695 :         str.assign( std::istreambuf_iterator&lt;CharT, Traits&gt;( is ),</span>
+<span class="lineNum">     400 </span><span class="lineCov">     120695 :                     std::istreambuf_iterator&lt;CharT, Traits&gt;() );</span>
+<span class="lineNum">     401 </span><span class="lineCov">     120695 :       }</span>
 <span class="lineNum">     402 </span>            : 
 <span class="lineNum">     403 </span>            :       //! Loads some binary data, encoded as a base64 string
 <span class="lineNum">     404 </span>            :       /*! This will automatically start and finish a node to load the data */
@@ -489,18 +489,18 @@
 <span class="lineNum">     427 </span><span class="lineCov">      17200 :       }</span>
 <a name="428"><span class="lineNum">     428 </span>            : </a>
 <span class="lineNum">     429 </span>            :       //! Gets the number of children (usually interpreted as size) for the specified node
-<span class="lineNum">     430 </span><span class="lineCov">    7054555 :       static size_t getNumChildren( rapidxml::xml_node&lt;&gt; * node )</span>
+<span class="lineNum">     430 </span><span class="lineCov">    7054730 :       static size_t getNumChildren( rapidxml::xml_node&lt;&gt; * node )</span>
 <span class="lineNum">     431 </span>            :       {
-<span class="lineNum">     432 </span><span class="lineCov">    7054555 :         size_t size = 0;</span>
-<span class="lineNum">     433 </span><span class="lineCov">    7054555 :         node = node-&gt;first_node(); // get first child</span>
+<span class="lineNum">     432 </span><span class="lineCov">    7054730 :         size_t size = 0;</span>
+<span class="lineNum">     433 </span><span class="lineCov">    7054730 :         node = node-&gt;first_node(); // get first child</span>
 <span class="lineNum">     434 </span>            : 
-<span class="lineNum">     435 </span><span class="lineCov">   23236136 :         while( node != nullptr )</span>
+<span class="lineNum">     435 </span><span class="lineCov">   23236696 :         while( node != nullptr )</span>
 <span class="lineNum">     436 </span>            :         {
-<span class="lineNum">     437 </span><span class="lineCov">    9127026 :           ++size;</span>
-<span class="lineNum">     438 </span><span class="lineCov">    9127026 :           node = node-&gt;next_sibling();</span>
+<span class="lineNum">     437 </span><span class="lineCov">    9127236 :           ++size;</span>
+<span class="lineNum">     438 </span><span class="lineCov">    9127236 :           node = node-&gt;next_sibling();</span>
 <span class="lineNum">     439 </span>            :         }
 <span class="lineNum">     440 </span>            : 
-<span class="lineNum">     441 </span><span class="lineCov">    7054555 :         return size;</span>
+<span class="lineNum">     441 </span><span class="lineCov">    7054730 :         return size;</span>
 <span class="lineNum">     442 </span>            :       }
 <span class="lineNum">     443 </span>            : 
 <span class="lineNum">     444 </span>            :     protected:
@@ -509,20 +509,20 @@
 <span class="lineNum">     447 </span>            :           remaining children, and the current active child node */
 <a name="448"><span class="lineNum">     448 </span>            :       struct NodeInfo</a>
 <span class="lineNum">     449 </span>            :       {
-<span class="lineNum">     450 </span><span class="lineCov">    7037355 :         NodeInfo( rapidxml::xml_node&lt;&gt; * n = nullptr ) :</span>
+<span class="lineNum">     450 </span><span class="lineCov">    7037530 :         NodeInfo( rapidxml::xml_node&lt;&gt; * n = nullptr ) :</span>
 <span class="lineNum">     451 </span>            :           node( n ),
 <span class="lineNum">     452 </span>            :           child( n ? n-&gt;first_node() : nullptr ),
-<span class="lineNum">     453 </span><span class="lineCov">    7037355 :           size( XMLInputArchive::getNumChildren( n ) )</span>
-<a name="454"><span class="lineNum">     454 </span><span class="lineCov">    7037355 :         { }</span></a>
+<span class="lineNum">     453 </span><span class="lineCov">    7037530 :           size( XMLInputArchive::getNumChildren( n ) )</span>
+<a name="454"><span class="lineNum">     454 </span><span class="lineCov">    7037530 :         { }</span></a>
 <span class="lineNum">     455 </span>            : 
-<span class="lineNum">     456 </span><span class="lineCov">    7031955 :         void advance()</span>
+<span class="lineNum">     456 </span><span class="lineCov">    7032130 :         void advance()</span>
 <span class="lineNum">     457 </span>            :         {
-<span class="lineNum">     458 </span><span class="lineCov">    7031955 :           if( size )</span>
+<span class="lineNum">     458 </span><span class="lineCov">    7032130 :           if( size )</span>
 <span class="lineNum">     459 </span>            :           {
-<span class="lineNum">     460 </span><span class="lineCov">    7031955 :             --size;</span>
-<span class="lineNum">     461 </span><span class="lineCov">    7031955 :             child = child-&gt;next_sibling();</span>
+<span class="lineNum">     460 </span><span class="lineCov">    7032130 :             --size;</span>
+<span class="lineNum">     461 </span><span class="lineCov">    7032130 :             child = child-&gt;next_sibling();</span>
 <span class="lineNum">     462 </span>            :           }
-<span class="lineNum">     463 </span><span class="lineCov">    7031955 :         }</span>
+<span class="lineNum">     463 </span><span class="lineCov">    7032130 :         }</span>
 <span class="lineNum">     464 </span>            : 
 <span class="lineNum">     465 </span>            :         rapidxml::xml_node&lt;&gt; * node;  //!&lt; A pointer to this node
 <span class="lineNum">     466 </span>            :         rapidxml::xml_node&lt;&gt; * child; //!&lt; A pointer to its current child
@@ -543,25 +543,25 @@
 <span class="lineNum">     481 </span>            :   //! Prologue for NVPs for XML output archives
 <a name="482"><span class="lineNum">     482 </span>            :   /*! NVPs do not start or finish nodes - they just set up the names */</a>
 <span class="lineNum">     483 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     484 </span><span class="lineCov">    1209742 :   void prologue( XMLOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     485 </span><span class="lineCov">    1209742 :   { }</span>
+<span class="lineNum">     484 </span><span class="lineCov">    1209812 :   void prologue( XMLOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     485 </span><span class="lineCov">    1209812 :   { }</span>
 <span class="lineNum">     486 </span>            : 
 <a name="487"><span class="lineNum">     487 </span>            :   //! Prologue for NVPs for XML input archives</a>
 <span class="lineNum">     488 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     489 </span><span class="lineCov">    1196142 :   void prologue( XMLInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     490 </span><span class="lineCov">    1196142 :   { }</span>
+<span class="lineNum">     489 </span><span class="lineCov">    1196212 :   void prologue( XMLInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     490 </span><span class="lineCov">    1196212 :   { }</span>
 <span class="lineNum">     491 </span>            : 
 <span class="lineNum">     492 </span>            :   // ######################################################################
 <span class="lineNum">     493 </span>            :   //! Epilogue for NVPs for XML output archives
 <a name="494"><span class="lineNum">     494 </span>            :   /*! NVPs do not start or finish nodes - they just set up the names */</a>
 <span class="lineNum">     495 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     496 </span><span class="lineCov">    1209742 :   void epilogue( XMLOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     497 </span><span class="lineCov">    1209742 :   { }</span>
+<span class="lineNum">     496 </span><span class="lineCov">    1209812 :   void epilogue( XMLOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     497 </span><span class="lineCov">    1209812 :   { }</span>
 <span class="lineNum">     498 </span>            : 
 <a name="499"><span class="lineNum">     499 </span>            :   //! Epilogue for NVPs for XML input archives</a>
 <span class="lineNum">     500 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     501 </span><span class="lineCov">    1196142 :   void epilogue( XMLInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     502 </span><span class="lineCov">    1196142 :   { }</span>
+<span class="lineNum">     501 </span><span class="lineCov">    1196212 :   void epilogue( XMLInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     502 </span><span class="lineCov">    1196212 :   { }</span>
 <span class="lineNum">     503 </span>            : 
 <span class="lineNum">     504 </span>            :   // ######################################################################
 <span class="lineNum">     505 </span>            :   //! Prologue for SizeTags for XML output archives
@@ -591,34 +591,34 @@
 <span class="lineNum">     529 </span>            :   /*! Starts a new node, named either automatically or by some NVP,
 <a name="530"><span class="lineNum">     530 </span>            :       that may be given data by the type about to be archived */</a>
 <span class="lineNum">     531 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     532 </span><span class="lineCov">    7031955 :   void prologue( XMLOutputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     532 </span><span class="lineCov">    7032130 :   void prologue( XMLOutputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     533 </span>            :   {
-<span class="lineNum">     534 </span><span class="lineCov">    7031955 :     ar.startNode();</span>
-<span class="lineNum">     535 </span><span class="lineCov">    7031955 :     ar.insertType&lt;T&gt;();</span>
-<span class="lineNum">     536 </span><span class="lineCov">    7031955 :   }</span>
+<span class="lineNum">     534 </span><span class="lineCov">    7032130 :     ar.startNode();</span>
+<span class="lineNum">     535 </span><span class="lineCov">    7032130 :     ar.insertType&lt;T&gt;();</span>
+<span class="lineNum">     536 </span><span class="lineCov">    7032130 :   }</span>
 <span class="lineNum">     537 </span>            : 
 <a name="538"><span class="lineNum">     538 </span>            :   //! Prologue for all other types for XML input archives</a>
 <span class="lineNum">     539 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     540 </span><span class="lineCov">    7031955 :   void prologue( XMLInputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     540 </span><span class="lineCov">    7032130 :   void prologue( XMLInputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     541 </span>            :   {
-<span class="lineNum">     542 </span><span class="lineCov">    7031955 :     ar.startNode();</span>
-<span class="lineNum">     543 </span><span class="lineCov">    7031955 :   }</span>
+<span class="lineNum">     542 </span><span class="lineCov">    7032130 :     ar.startNode();</span>
+<span class="lineNum">     543 </span><span class="lineCov">    7032130 :   }</span>
 <span class="lineNum">     544 </span>            : 
 <span class="lineNum">     545 </span>            :   // ######################################################################
 <span class="lineNum">     546 </span>            :   //! Epilogue for all other types other for XML output archives
 <a name="547"><span class="lineNum">     547 </span>            :   /*! Finishes the node created in the prologue */</a>
 <span class="lineNum">     548 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     549 </span><span class="lineCov">    7031955 :   void epilogue( XMLOutputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     549 </span><span class="lineCov">    7032130 :   void epilogue( XMLOutputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     550 </span>            :   {
-<span class="lineNum">     551 </span><span class="lineCov">    7031955 :     ar.finishNode();</span>
-<span class="lineNum">     552 </span><span class="lineCov">    7031955 :   }</span>
+<span class="lineNum">     551 </span><span class="lineCov">    7032130 :     ar.finishNode();</span>
+<span class="lineNum">     552 </span><span class="lineCov">    7032130 :   }</span>
 <span class="lineNum">     553 </span>            : 
 <a name="554"><span class="lineNum">     554 </span>            :   //! Epilogue for all other types other for XML output archives</a>
 <span class="lineNum">     555 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     556 </span><span class="lineCov">    7031955 :   void epilogue( XMLInputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     556 </span><span class="lineCov">    7032130 :   void epilogue( XMLInputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     557 </span>            :   {
-<span class="lineNum">     558 </span><span class="lineCov">    7031955 :     ar.finishNode();</span>
-<span class="lineNum">     559 </span><span class="lineCov">    7031955 :   }</span>
+<span class="lineNum">     558 </span><span class="lineCov">    7032130 :     ar.finishNode();</span>
+<span class="lineNum">     559 </span><span class="lineCov">    7032130 :   }</span>
 <span class="lineNum">     560 </span>            : 
 <span class="lineNum">     561 </span>            :   // ######################################################################
 <span class="lineNum">     562 </span>            :   // Common XMLArchive serialization functions
@@ -626,18 +626,18 @@
 <span class="lineNum">     564 </span>            : 
 <a name="565"><span class="lineNum">     565 </span>            :   //! Saving NVP types to XML</a>
 <span class="lineNum">     566 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     567 </span><span class="lineCov">    1209742 :   void save( XMLOutputArchive &amp; ar, NameValuePair&lt;T&gt; const &amp; t )</span>
+<span class="lineNum">     567 </span><span class="lineCov">    1209812 :   void save( XMLOutputArchive &amp; ar, NameValuePair&lt;T&gt; const &amp; t )</span>
 <span class="lineNum">     568 </span>            :   {
-<span class="lineNum">     569 </span><span class="lineCov">    1209742 :     ar.setNextName( t.name );</span>
-<span class="lineNum">     570 </span><span class="lineCov">    1209742 :     ar( t.value );</span>
-<span class="lineNum">     571 </span><span class="lineCov">    1209742 :   }</span>
+<span class="lineNum">     569 </span><span class="lineCov">    1209812 :     ar.setNextName( t.name );</span>
+<span class="lineNum">     570 </span><span class="lineCov">    1209812 :     ar( t.value );</span>
+<span class="lineNum">     571 </span><span class="lineCov">    1209812 :   }</span>
 <span class="lineNum">     572 </span>            : 
 <a name="573"><span class="lineNum">     573 </span>            :   //! Loading NVP types from XML</a>
 <span class="lineNum">     574 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     575 </span><span class="lineCov">    1196142 :   void load( XMLInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
+<span class="lineNum">     575 </span><span class="lineCov">    1196212 :   void load( XMLInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
 <span class="lineNum">     576 </span>            :   {
-<span class="lineNum">     577 </span><span class="lineCov">    1196142 :     ar( t.value );</span>
-<span class="lineNum">     578 </span><span class="lineCov">    1196142 :   }</span>
+<span class="lineNum">     577 </span><span class="lineCov">    1196212 :     ar( t.value );</span>
+<span class="lineNum">     578 </span><span class="lineCov">    1196212 :   }</span>
 <span class="lineNum">     579 </span>            : 
 <span class="lineNum">     580 </span>            :   // ######################################################################
 <a name="581"><span class="lineNum">     581 </span>            :   //! Saving SizeTags to XML</a>
@@ -656,33 +656,33 @@
 <span class="lineNum">     594 </span>            :   //! Saving for POD types to xml
 <a name="595"><span class="lineNum">     595 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     596 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     597 </span><span class="lineCov">    4484316 :   save(XMLOutputArchive &amp; ar, T const &amp; t)</span>
+<span class="lineNum">     597 </span><span class="lineCov">    4484423 :   save(XMLOutputArchive &amp; ar, T const &amp; t)</span>
 <span class="lineNum">     598 </span>            :   {
-<span class="lineNum">     599 </span><span class="lineCov">    4484316 :     ar.saveValue( t );</span>
-<span class="lineNum">     600 </span><span class="lineCov">    4484316 :   }</span>
+<span class="lineNum">     599 </span><span class="lineCov">    4484423 :     ar.saveValue( t );</span>
+<span class="lineNum">     600 </span><span class="lineCov">    4484423 :   }</span>
 <span class="lineNum">     601 </span>            : 
 <span class="lineNum">     602 </span>            :   //! Loading for POD types from xml
 <a name="603"><span class="lineNum">     603 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     604 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     605 </span><span class="lineCov">    4484316 :   load(XMLInputArchive &amp; ar, T &amp; t)</span>
+<span class="lineNum">     605 </span><span class="lineCov">    4484423 :   load(XMLInputArchive &amp; ar, T &amp; t)</span>
 <span class="lineNum">     606 </span>            :   {
-<span class="lineNum">     607 </span><span class="lineCov">    4484316 :     ar.loadValue( t );</span>
-<span class="lineNum">     608 </span><span class="lineCov">    4484316 :   }</span>
+<span class="lineNum">     607 </span><span class="lineCov">    4484423 :     ar.loadValue( t );</span>
+<span class="lineNum">     608 </span><span class="lineCov">    4484423 :   }</span>
 <span class="lineNum">     609 </span>            : 
 <span class="lineNum">     610 </span>            :   // ######################################################################
 <a name="611"><span class="lineNum">     611 </span>            :   //! saving string to xml</a>
 <span class="lineNum">     612 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     613 </span><span class="lineCov">     120697 :   void save(XMLOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
+<span class="lineNum">     613 </span><span class="lineCov">     120695 :   void save(XMLOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
 <span class="lineNum">     614 </span>            :   {
-<span class="lineNum">     615 </span><span class="lineCov">     120697 :     ar.saveValue( str );</span>
-<span class="lineNum">     616 </span><span class="lineCov">     120697 :   }</span>
+<span class="lineNum">     615 </span><span class="lineCov">     120695 :     ar.saveValue( str );</span>
+<span class="lineNum">     616 </span><span class="lineCov">     120695 :   }</span>
 <span class="lineNum">     617 </span>            : 
 <a name="618"><span class="lineNum">     618 </span>            :   //! loading string from xml</a>
 <span class="lineNum">     619 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     620 </span><span class="lineCov">     120697 :   void load(XMLInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
+<span class="lineNum">     620 </span><span class="lineCov">     120695 :   void load(XMLInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
 <span class="lineNum">     621 </span>            :   {
-<span class="lineNum">     622 </span><span class="lineCov">     120697 :     ar.loadValue( str );</span>
-<span class="lineNum">     623 </span><span class="lineCov">     120697 :   }</span>
+<span class="lineNum">     622 </span><span class="lineCov">     120695 :     ar.loadValue( str );</span>
+<span class="lineNum">     623 </span><span class="lineCov">     120695 :   }</span>
 <span class="lineNum">     624 </span>            : } // namespace cereal
 <span class="lineNum">     625 </span>            : 
 <span class="lineNum">     626 </span>            : // register archives for polymorphic support
