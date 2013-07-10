@@ -25,7 +25,7 @@ coverage:
 	g++ -std=c++11 -I./include -Wall -Werror -g -O0 -coverage  unittests.cpp -o unittests_coverage -lboost_unit_test_framework
 	./unittests_coverage --show_progress
 	lcov --capture --directory . --output-file coverage.info --no-external
-	lcov --remove coverage.info '*/external/*' 'cereal/details/util.hpp' -o coverage.info
+	lcov --remove coverage.info '*/external/*' 'cereal/details/util.hpp' 'unittests.cpp' -o coverage.info
 	genhtml coverage.info --output-directory ${COVERAGE_OUTPUT}
 
 .PHONY: doc
