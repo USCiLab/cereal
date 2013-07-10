@@ -26,7 +26,7 @@ coverage:
 	./unittests_coverage --show_progress
 	lcov --capture --directory . --output-file coverage.info --no-external
 	lcov --remove coverage.info '*/external/*' 'cereal/details/util.hpp' 'unittests.cpp' -o coverage.info
-	genhtml coverage.info --output-directory ${COVERAGE_OUTPUT}
+	genhtml --demangle-cpp coverage.info --output-directory ${COVERAGE_OUTPUT}
 
 .PHONY: doc
 doc:

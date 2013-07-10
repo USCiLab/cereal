@@ -7,15 +7,11 @@ set -e
 
 tempdir=`mktemp -d`
 
-make coverage COVERAGE_OUTPUT=${tempdir}/coverage
-
 make doc
 
 cp -r ./doc/html/ ${tempdir}
 
 git checkout gh-pages
-
-cp -r ${tempdir}/coverage* assets/coverage/
 
 cp -r ${tempdir}/html/* assets/doxygen/
 
