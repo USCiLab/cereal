@@ -101,35 +101,35 @@
 <span class="lineNum">      39 </span>            :   {
 <a name="40"><span class="lineNum">      40 </span>            :     //! Allows access to the protected container in stack</a>
 <span class="lineNum">      41 </span>            :     template &lt;class T, class C&gt; inline
-<span class="lineNum">      42 </span><span class="lineCov">       4500 :     C const &amp; container( std::stack&lt;T, C&gt; const &amp; stack )</span>
+<span class="lineNum">      42 </span><span class="lineCov">       9000 :     C const &amp; container( std::stack&lt;T, C&gt; const &amp; stack )</span>
 <span class="lineNum">      43 </span>            :     {
 <a name="44"><span class="lineNum">      44 </span>            :       struct H : public std::stack&lt;T, C&gt;</a>
 <span class="lineNum">      45 </span>            :       {
-<span class="lineNum">      46 </span><span class="lineCov">       4500 :         static C const &amp; get( std::stack&lt;T, C&gt; const &amp; s )</span>
+<span class="lineNum">      46 </span><span class="lineCov">       9000 :         static C const &amp; get( std::stack&lt;T, C&gt; const &amp; s )</span>
 <span class="lineNum">      47 </span>            :         {
-<span class="lineNum">      48 </span><span class="lineCov">       4500 :           return s.*(&amp;H::c);</span>
+<span class="lineNum">      48 </span><span class="lineCov">       9000 :           return s.*(&amp;H::c);</span>
 <span class="lineNum">      49 </span>            :         }
 <span class="lineNum">      50 </span>            :       };
 <span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span><span class="lineCov">       4500 :       return H::get( stack );</span>
+<span class="lineNum">      52 </span><span class="lineCov">       9000 :       return H::get( stack );</span>
 <span class="lineNum">      53 </span>            :     }
 <span class="lineNum">      54 </span>            :   }
 <span class="lineNum">      55 </span>            : 
 <a name="56"><span class="lineNum">      56 </span>            :   //! Saving for std::stack</a>
 <span class="lineNum">      57 </span>            :   template &lt;class Archive, class T, class C&gt; inline
-<span class="lineNum">      58 </span><span class="lineCov">       1500 :   void save( Archive &amp; ar, std::stack&lt;T, C&gt; const &amp; stack )</span>
+<span class="lineNum">      58 </span><span class="lineCov">       3000 :   void save( Archive &amp; ar, std::stack&lt;T, C&gt; const &amp; stack )</span>
 <span class="lineNum">      59 </span>            :   {
-<span class="lineNum">      60 </span><span class="lineCov">       1500 :     ar( _CEREAL_NVP(&quot;container&quot;, stack_detail::container( stack )) );</span>
-<span class="lineNum">      61 </span><span class="lineCov">       1500 :   }</span>
+<span class="lineNum">      60 </span><span class="lineCov">       3000 :     ar( _CEREAL_NVP(&quot;container&quot;, stack_detail::container( stack )) );</span>
+<span class="lineNum">      61 </span><span class="lineCov">       3000 :   }</span>
 <span class="lineNum">      62 </span>            : 
 <a name="63"><span class="lineNum">      63 </span>            :   //! Loading for std::stack</a>
 <span class="lineNum">      64 </span>            :   template &lt;class Archive, class T, class C&gt; inline
-<span class="lineNum">      65 </span><span class="lineCov">       1500 :   void load( Archive &amp; ar, std::stack&lt;T, C&gt; &amp; stack )</span>
+<span class="lineNum">      65 </span><span class="lineCov">       3000 :   void load( Archive &amp; ar, std::stack&lt;T, C&gt; &amp; stack )</span>
 <span class="lineNum">      66 </span>            :   {
-<span class="lineNum">      67 </span><span class="lineCov">       1500 :     C container;</span>
-<span class="lineNum">      68 </span><span class="lineCov">       1500 :     ar( container );</span>
-<span class="lineNum">      69 </span><span class="lineCov">       1500 :     stack = std::stack&lt;T, C&gt;( std::move( container ) );</span>
-<span class="lineNum">      70 </span><span class="lineCov">       1500 :   }</span>
+<span class="lineNum">      67 </span><span class="lineCov">       3000 :     C container;</span>
+<span class="lineNum">      68 </span><span class="lineCov">       3000 :     ar( container );</span>
+<span class="lineNum">      69 </span><span class="lineCov">       3000 :     stack = std::stack&lt;T, C&gt;( std::move( container ) );</span>
+<span class="lineNum">      70 </span><span class="lineCov">       3000 :   }</span>
 <span class="lineNum">      71 </span>            : } // namespace cereal
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            : #endif // CEREAL_TYPES_STACK_HPP_

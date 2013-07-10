@@ -144,121 +144,121 @@
 <span class="lineNum">      82 </span>            :       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
 <a name="83"><span class="lineNum">      83 </span>            :                         even cout!</a>
 <span class="lineNum">      84 </span>            :           @param precision The precision for floating point output */
-<span class="lineNum">      85 </span><span class="lineCov">       2700 :       JSONOutputArchive(std::ostream &amp; stream, int precision = 20) :</span>
+<span class="lineNum">      85 </span><span class="lineCov">       5400 :       JSONOutputArchive(std::ostream &amp; stream, int precision = 20) :</span>
 <span class="lineNum">      86 </span>            :         OutputArchive&lt;JSONOutputArchive&gt;(this),
 <span class="lineNum">      87 </span>            :         itsWriteStream(stream),
 <span class="lineNum">      88 </span>            :         itsWriter(itsWriteStream, precision),
-<span class="lineNum">      89 </span><span class="lineCov">       2700 :         itsNextName(nullptr)</span>
+<span class="lineNum">      89 </span><span class="lineCov">       5400 :         itsNextName(nullptr)</span>
 <span class="lineNum">      90 </span>            :       {
-<span class="lineNum">      91 </span><span class="lineCov">       2700 :         itsNameCounter.push(0);</span>
-<span class="lineNum">      92 </span><span class="lineCov">       2700 :         itsNodeStack.push(NodeType::StartObject);</span>
-<span class="lineNum">      93 </span><span class="lineCov">       2700 :       }</span>
+<span class="lineNum">      91 </span><span class="lineCov">       5400 :         itsNameCounter.push(0);</span>
+<span class="lineNum">      92 </span><span class="lineCov">       5400 :         itsNodeStack.push(NodeType::StartObject);</span>
+<span class="lineNum">      93 </span><span class="lineCov">       5400 :       }</span>
 <a name="94"><span class="lineNum">      94 </span>            : </a>
 <span class="lineNum">      95 </span>            :       //! Destructor, flushes the JSON
-<span class="lineNum">      96 </span><span class="lineCov">       2700 :       ~JSONOutputArchive()</span>
-<span class="lineNum">      97 </span><span class="lineCov">       2700 :       {</span>
-<span class="lineNum">      98 </span><span class="lineCov">       2700 :         itsWriter.EndObject();</span>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">       2700 :       }</span></a>
+<span class="lineNum">      96 </span><span class="lineCov">       5400 :       ~JSONOutputArchive()</span>
+<span class="lineNum">      97 </span><span class="lineCov">       5400 :       {</span>
+<span class="lineNum">      98 </span><span class="lineCov">       5400 :         itsWriter.EndObject();</span>
+<a name="99"><span class="lineNum">      99 </span><span class="lineCov">       5400 :       }</span></a>
 <a name="100"><span class="lineNum">     100 </span>            : </a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">        300 :       void saveValue(bool b)                { itsWriter.Bool(b);                     }</span></a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">    2177613 :       void saveValue(int i)                 { itsWriter.Int(i);                      }</span></a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">      61200 :       void saveValue(unsigned u)            { itsWriter.Uint(u);                     }</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">        700 :       void saveValue(int64_t i64)           { itsWriter.Int64(i64);                  }</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">       1247 :       void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                 }</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">       1000 :       void saveValue(double d)              { itsWriter.Double(d);                   }</span></a>
-<span class="lineNum">     107 </span><span class="lineCov">    1924195 :       void saveValue(std::string const &amp; s) { itsWriter.String(s.c_str(), s.size()); }</span>
-<span class="lineNum">     108 </span><span class="lineCov">     604942 :       void saveValue(char const * s)        { itsWriter.String(s);                   }</span>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">        600 :       void saveValue(bool b)                { itsWriter.Bool(b);                     }</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">    4355256 :       void saveValue(int i)                 { itsWriter.Int(i);                      }</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">     122400 :       void saveValue(unsigned u)            { itsWriter.Uint(u);                     }</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">       1400 :       void saveValue(int64_t i64)           { itsWriter.Int64(i64);                  }</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">       2497 :       void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                 }</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">       2000 :       void saveValue(double d)              { itsWriter.Double(d);                   }</span></a>
+<span class="lineNum">     107 </span><span class="lineCov">    3848407 :       void saveValue(std::string const &amp; s) { itsWriter.String(s.c_str(), s.size()); }</span>
+<span class="lineNum">     108 </span><span class="lineCov">    1209904 :       void saveValue(char const * s)        { itsWriter.String(s);                   }</span>
 <span class="lineNum">     109 </span>            : 
 <span class="lineNum">     110 </span>            :       //! Save exotic arithmetic types as binary
 <span class="lineNum">     111 </span>            :       template&lt;class T&gt;
 <a name="112"><span class="lineNum">     112 </span>            :         typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value &amp;&amp;</a>
 <span class="lineNum">     113 </span>            :                                 (sizeof(T) &gt;= sizeof(long double) || sizeof(T) &gt;= sizeof(long long)), void&gt;::type
-<span class="lineNum">     114 </span><span class="lineCov">        200 :         saveValue(T const &amp; t)</span>
+<span class="lineNum">     114 </span><span class="lineCov">        400 :         saveValue(T const &amp; t)</span>
 <span class="lineNum">     115 </span>            :         {
-<span class="lineNum">     116 </span><span class="lineCov">        200 :           auto base64string = base64::encode( reinterpret_cast&lt;const unsigned char *&gt;( &amp;t ), sizeof(T) );</span>
-<span class="lineNum">     117 </span><span class="lineCov">        200 :           saveValue( base64string );</span>
-<span class="lineNum">     118 </span><span class="lineCov">        200 :         }</span>
+<span class="lineNum">     116 </span><span class="lineCov">        400 :           auto base64string = base64::encode( reinterpret_cast&lt;const unsigned char *&gt;( &amp;t ), sizeof(T) );</span>
+<span class="lineNum">     117 </span><span class="lineCov">        400 :           saveValue( base64string );</span>
+<span class="lineNum">     118 </span><span class="lineCov">        400 :         }</span>
 <span class="lineNum">     119 </span>            : 
 <span class="lineNum">     120 </span>            :       //! Write the name of the upcoming node and prepare object/array state
 <span class="lineNum">     121 </span>            :       /*! Since writeName is called for every value that is output, regardless of
 <a name="122"><span class="lineNum">     122 </span>            :           whether it has a name or not, it is the place where we will do a deferred</a>
 <span class="lineNum">     123 </span>            :           check of our node state and decide whether we are in an array or an object. */
-<span class="lineNum">     124 </span><span class="lineCov">    3516155 :       void writeName()</span>
+<span class="lineNum">     124 </span><span class="lineCov">    7032360 :       void writeName()</span>
 <span class="lineNum">     125 </span>            :       {
-<span class="lineNum">     126 </span><span class="lineCov">    3516155 :         NodeType const &amp; nodeType = itsNodeStack.top();</span>
+<span class="lineNum">     126 </span><span class="lineCov">    7032360 :         NodeType const &amp; nodeType = itsNodeStack.top();</span>
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            :         // Start up either an object or an array, depending on state
-<span class="lineNum">     129 </span><span class="lineCov">    3516155 :         if(nodeType == NodeType::StartArray)</span>
+<span class="lineNum">     129 </span><span class="lineCov">    7032360 :         if(nodeType == NodeType::StartArray)</span>
 <span class="lineNum">     130 </span>            :         {
-<span class="lineNum">     131 </span><span class="lineCov">       8600 :           itsWriter.StartArray();</span>
-<span class="lineNum">     132 </span><span class="lineCov">       8600 :           itsNodeStack.top() = NodeType::InArray;</span>
+<span class="lineNum">     131 </span><span class="lineCov">      17200 :           itsWriter.StartArray();</span>
+<span class="lineNum">     132 </span><span class="lineCov">      17200 :           itsNodeStack.top() = NodeType::InArray;</span>
 <span class="lineNum">     133 </span>            :         }
-<span class="lineNum">     134 </span><span class="lineCov">    3507555 :         else if(nodeType == NodeType::StartObject)</span>
+<span class="lineNum">     134 </span><span class="lineCov">    7015160 :         else if(nodeType == NodeType::StartObject)</span>
 <span class="lineNum">     135 </span>            :         {
-<span class="lineNum">     136 </span><span class="lineCov">    1207142 :           itsNodeStack.top() = NodeType::InObject;</span>
-<span class="lineNum">     137 </span><span class="lineCov">    1207142 :           itsWriter.StartObject();</span>
+<span class="lineNum">     136 </span><span class="lineCov">    2414304 :           itsNodeStack.top() = NodeType::InObject;</span>
+<span class="lineNum">     137 </span><span class="lineCov">    2414304 :           itsWriter.StartObject();</span>
 <span class="lineNum">     138 </span>            :         }
 <span class="lineNum">     139 </span>            : 
 <span class="lineNum">     140 </span>            :         // Array types do not output names
-<span class="lineNum">     141 </span><span class="lineCov">    7032310 :         if(nodeType == NodeType::InArray) return;</span>
+<span class="lineNum">     141 </span><span class="lineCov">   14064720 :         if(nodeType == NodeType::InArray) return;</span>
 <span class="lineNum">     142 </span>            : 
-<span class="lineNum">     143 </span><span class="lineCov">    2468584 :         if(itsNextName == nullptr)</span>
+<span class="lineNum">     143 </span><span class="lineCov">    4937208 :         if(itsNextName == nullptr)</span>
 <span class="lineNum">     144 </span>            :         {
-<span class="lineNum">     145 </span><span class="lineCov">    1863642 :           std::string name = &quot;value&quot; + std::to_string( itsNameCounter.top()++ ) + &quot;\0&quot;;</span>
-<span class="lineNum">     146 </span><span class="lineCov">    1863642 :           saveValue(name);</span>
+<span class="lineNum">     145 </span><span class="lineCov">    3727304 :           std::string name = &quot;value&quot; + std::to_string( itsNameCounter.top()++ ) + &quot;\0&quot;;</span>
+<span class="lineNum">     146 </span><span class="lineCov">    3727304 :           saveValue(name);</span>
 <span class="lineNum">     147 </span>            :         }
 <span class="lineNum">     148 </span>            :         else
 <span class="lineNum">     149 </span>            :         {
-<span class="lineNum">     150 </span><span class="lineCov">     604942 :           saveValue(itsNextName);</span>
-<span class="lineNum">     151 </span><span class="lineCov">     604942 :           itsNextName = nullptr;</span>
+<span class="lineNum">     150 </span><span class="lineCov">    1209904 :           saveValue(itsNextName);</span>
+<span class="lineNum">     151 </span><span class="lineCov">    1209904 :           itsNextName = nullptr;</span>
 <span class="lineNum">     152 </span>            :         }
 <span class="lineNum">     153 </span>            :       }
 <a name="154"><span class="lineNum">     154 </span>            : </a>
 <span class="lineNum">     155 </span>            :       //! Starts a new node in the JSON output
-<span class="lineNum">     156 </span><span class="lineCov">    1213542 :       void startNode()</span>
+<span class="lineNum">     156 </span><span class="lineCov">    2427104 :       void startNode()</span>
 <span class="lineNum">     157 </span>            :       {
-<span class="lineNum">     158 </span><span class="lineCov">    1213542 :         writeName();</span>
-<span class="lineNum">     159 </span><span class="lineCov">    1213542 :         itsNodeStack.push(NodeType::StartObject);</span>
-<span class="lineNum">     160 </span><span class="lineCov">    1213542 :         itsNameCounter.push(0);</span>
-<span class="lineNum">     161 </span><span class="lineCov">    1213542 :       }</span>
+<span class="lineNum">     158 </span><span class="lineCov">    2427104 :         writeName();</span>
+<span class="lineNum">     159 </span><span class="lineCov">    2427104 :         itsNodeStack.push(NodeType::StartObject);</span>
+<span class="lineNum">     160 </span><span class="lineCov">    2427104 :         itsNameCounter.push(0);</span>
+<span class="lineNum">     161 </span><span class="lineCov">    2427104 :       }</span>
 <a name="162"><span class="lineNum">     162 </span>            : </a>
 <span class="lineNum">     163 </span>            :       //! Designates the most recently added node as finished
-<span class="lineNum">     164 </span><span class="lineCov">    1213542 :       void finishNode()</span>
+<span class="lineNum">     164 </span><span class="lineCov">    2427104 :       void finishNode()</span>
 <span class="lineNum">     165 </span>            :       {
 <span class="lineNum">     166 </span>            :         // if we ended up serializing an empty object or array, writeName
 <span class="lineNum">     167 </span>            :         // will never have been called - so start and then immediately end
 <span class="lineNum">     168 </span>            :         // the object/array.
 <span class="lineNum">     169 </span>            :         //
 <span class="lineNum">     170 </span>            :         // We'll also end any object/arrays we happen to be in
-<span class="lineNum">     171 </span><span class="lineCov">    1213542 :         switch(itsNodeStack.top())</span>
+<span class="lineNum">     171 </span><span class="lineCov">    2427104 :         switch(itsNodeStack.top())</span>
 <span class="lineNum">     172 </span>            :         {
 <span class="lineNum">     173 </span>            :           case NodeType::StartArray:
 <span class="lineNum">     174 </span><span class="lineNoCov">          0 :             itsWriter.StartArray();</span>
 <span class="lineNum">     175 </span>            :           case NodeType::InArray:
-<span class="lineNum">     176 </span><span class="lineCov">       8600 :             itsWriter.EndArray();</span>
-<span class="lineNum">     177 </span><span class="lineCov">       8600 :             break;</span>
+<span class="lineNum">     176 </span><span class="lineCov">      17200 :             itsWriter.EndArray();</span>
+<span class="lineNum">     177 </span><span class="lineCov">      17200 :             break;</span>
 <span class="lineNum">     178 </span>            :           case NodeType::StartObject:
-<span class="lineNum">     179 </span><span class="lineCov">        500 :             itsWriter.StartObject();</span>
+<span class="lineNum">     179 </span><span class="lineCov">       1000 :             itsWriter.StartObject();</span>
 <span class="lineNum">     180 </span>            :           case NodeType::InObject:
-<span class="lineNum">     181 </span><span class="lineCov">    1204942 :             itsWriter.EndObject();</span>
-<span class="lineNum">     182 </span><span class="lineCov">    1204942 :             break;</span>
+<span class="lineNum">     181 </span><span class="lineCov">    2409904 :             itsWriter.EndObject();</span>
+<span class="lineNum">     182 </span><span class="lineCov">    2409904 :             break;</span>
 <span class="lineNum">     183 </span>            :         }
 <span class="lineNum">     184 </span>            : 
-<span class="lineNum">     185 </span><span class="lineCov">    1213542 :         itsNodeStack.pop();</span>
-<span class="lineNum">     186 </span><span class="lineCov">    1213542 :         itsNameCounter.pop();</span>
-<span class="lineNum">     187 </span><span class="lineCov">    1213542 :       }</span>
+<span class="lineNum">     185 </span><span class="lineCov">    2427104 :         itsNodeStack.pop();</span>
+<span class="lineNum">     186 </span><span class="lineCov">    2427104 :         itsNameCounter.pop();</span>
+<span class="lineNum">     187 </span><span class="lineCov">    2427104 :       }</span>
 <a name="188"><span class="lineNum">     188 </span>            : </a>
 <span class="lineNum">     189 </span>            :       //! Designates that the current node should be output as an array, not an object
-<span class="lineNum">     190 </span><span class="lineCov">       8600 :       void makeArray()</span>
+<span class="lineNum">     190 </span><span class="lineCov">      17200 :       void makeArray()</span>
 <span class="lineNum">     191 </span>            :       {
-<span class="lineNum">     192 </span><span class="lineCov">       8600 :         itsNodeStack.top() = NodeType::StartArray;</span>
-<span class="lineNum">     193 </span><span class="lineCov">       8600 :       }</span>
+<span class="lineNum">     192 </span><span class="lineCov">      17200 :         itsNodeStack.top() = NodeType::StartArray;</span>
+<span class="lineNum">     193 </span><span class="lineCov">      17200 :       }</span>
 <a name="194"><span class="lineNum">     194 </span>            : </a>
 <span class="lineNum">     195 </span>            :       //! Sets the name for the next node created with startNode
-<span class="lineNum">     196 </span><span class="lineCov">     604942 :       void setNextName( const char * name )</span>
+<span class="lineNum">     196 </span><span class="lineCov">    1209904 :       void setNextName( const char * name )</span>
 <span class="lineNum">     197 </span>            :       {
-<span class="lineNum">     198 </span><span class="lineCov">     604942 :         itsNextName = name;</span>
-<span class="lineNum">     199 </span><span class="lineCov">     604942 :       }</span>
+<span class="lineNum">     198 </span><span class="lineCov">    1209904 :         itsNextName = name;</span>
+<span class="lineNum">     199 </span><span class="lineCov">    1209904 :       }</span>
 <span class="lineNum">     200 </span>            : 
 <span class="lineNum">     201 </span>            :       //! Saves some binary data, encoded as a base64 string, with an optional name
 <span class="lineNum">     202 </span>            :       /*! This will create a new node, optionally named, and insert a value that consists of
@@ -292,7 +292,7 @@
 <span class="lineNum">     230 </span>            :       serialization functions.
 <a name="231"><span class="lineNum">     231 </span>            : </a>
 <span class="lineNum">     232 </span>            :       \ingroup Archives */
-<span class="lineNum">     233 </span><span class="lineCov">       2700 :   class JSONInputArchive : public InputArchive&lt;JSONInputArchive&gt;</span>
+<span class="lineNum">     233 </span><span class="lineCov">       5400 :   class JSONInputArchive : public InputArchive&lt;JSONInputArchive&gt;</span>
 <span class="lineNum">     234 </span>            :   {
 <span class="lineNum">     235 </span>            :     typedef rapidjson::GenericReadStream ReadStream;
 <span class="lineNum">     236 </span>            :     typedef rapidjson::GenericValue&lt;rapidjson::UTF8&lt;&gt;&gt; JSONValue;
@@ -306,29 +306,29 @@
 <span class="lineNum">     244 </span>            :       public:
 <a name="245"><span class="lineNum">     245 </span>            :         Iterator() : itsType(Null) {}</a>
 <span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineCov">    1207642 :         Iterator(MemberIterator it) :</span>
-<a name="248"><span class="lineNum">     248 </span><span class="lineCov">    1207642 :           itsMemberIt(it), itsType(Member) {}</span></a>
+<span class="lineNum">     247 </span><span class="lineCov">    2415304 :         Iterator(MemberIterator it) :</span>
+<a name="248"><span class="lineNum">     248 </span><span class="lineCov">    2415304 :           itsMemberIt(it), itsType(Member) {}</span></a>
 <span class="lineNum">     249 </span>            : 
-<span class="lineNum">     250 </span><span class="lineCov">       8600 :         Iterator(ValueIterator it) :</span>
-<a name="251"><span class="lineNum">     251 </span><span class="lineCov">       8600 :           itsValueIt(it), itsType(Value) {}</span></a>
+<span class="lineNum">     250 </span><span class="lineCov">      17200 :         Iterator(ValueIterator it) :</span>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">      17200 :           itsValueIt(it), itsType(Value) {}</span></a>
 <span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span><span class="lineCov">    3516155 :         Iterator &amp; operator++()</span>
+<span class="lineNum">     253 </span><span class="lineCov">    7032360 :         Iterator &amp; operator++()</span>
 <span class="lineNum">     254 </span>            :         {
-<span class="lineNum">     255 </span><span class="lineCov">    3516155 :           switch(itsType)</span>
+<span class="lineNum">     255 </span><span class="lineCov">    7032360 :           switch(itsType)</span>
 <span class="lineNum">     256 </span>            :           {
-<span class="lineNum">     257 </span><span class="lineCov">    1047571 :             case Value : ++itsValueIt; break;</span>
-<span class="lineNum">     258 </span><span class="lineCov">    2468584 :             case Member: ++itsMemberIt; break;</span>
+<span class="lineNum">     257 </span><span class="lineCov">    2095152 :             case Value : ++itsValueIt; break;</span>
+<span class="lineNum">     258 </span><span class="lineCov">    4937208 :             case Member: ++itsMemberIt; break;</span>
 <span class="lineNum">     259 </span><span class="lineNoCov">          0 :             default: throw cereal::Exception(&quot;Invalid Iterator Type!&quot;);</span>
 <span class="lineNum">     260 </span>            :           }
-<span class="lineNum">     261 </span><span class="lineCov">    3516155 :           return *this;</span>
+<span class="lineNum">     261 </span><span class="lineCov">    7032360 :           return *this;</span>
 <a name="262"><span class="lineNum">     262 </span>            :         }</a>
 <span class="lineNum">     263 </span>            : 
-<span class="lineNum">     264 </span><span class="lineCov">    4738297 :         GenericValue const &amp; value()</span>
+<span class="lineNum">     264 </span><span class="lineCov">    9476664 :         GenericValue const &amp; value()</span>
 <span class="lineNum">     265 </span>            :         {
-<span class="lineNum">     266 </span><span class="lineCov">    4738297 :           switch(itsType)</span>
+<span class="lineNum">     266 </span><span class="lineCov">    9476664 :           switch(itsType)</span>
 <span class="lineNum">     267 </span>            :           {
-<span class="lineNum">     268 </span><span class="lineCov">    1965142 :             case Value : return *itsValueIt;</span>
-<span class="lineNum">     269 </span><span class="lineCov">    2773155 :             case Member: return itsMemberIt-&gt;value;</span>
+<span class="lineNum">     268 </span><span class="lineCov">    3930304 :             case Value : return *itsValueIt;</span>
+<span class="lineNum">     269 </span><span class="lineCov">    5546360 :             case Member: return itsMemberIt-&gt;value;</span>
 <span class="lineNum">     270 </span><span class="lineNoCov">          0 :             default: throw cereal::Exception(&quot;Invalid Iterator Type!&quot;);</span>
 <span class="lineNum">     271 </span>            :           }
 <span class="lineNum">     272 </span>            :         }
@@ -343,68 +343,68 @@
 <span class="lineNum">     281 </span>            :       //! Construct, outputting to the provided stream
 <a name="282"><span class="lineNum">     282 </span>            :       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or</a>
 <span class="lineNum">     283 </span>            :                         even cout! */
-<span class="lineNum">     284 </span><span class="lineCov">       2700 :       JSONInputArchive(std::istream &amp; stream) :</span>
+<span class="lineNum">     284 </span><span class="lineCov">       5400 :       JSONInputArchive(std::istream &amp; stream) :</span>
 <span class="lineNum">     285 </span>            :         InputArchive&lt;JSONInputArchive&gt;(this),
-<span class="lineNum">     286 </span><span class="lineCov">       2700 :         itsReadStream(stream)</span>
+<span class="lineNum">     286 </span><span class="lineCov">       5400 :         itsReadStream(stream)</span>
 <span class="lineNum">     287 </span>            :       {
-<span class="lineNum">     288 </span><span class="lineCov">       2700 :         itsDocument.ParseStream&lt;0&gt;(itsReadStream);</span>
-<span class="lineNum">     289 </span><span class="lineCov">       2700 :         itsValueStack.push_back(itsDocument.MemberBegin());</span>
-<span class="lineNum">     290 </span><span class="lineCov">       2700 :       }</span>
+<span class="lineNum">     288 </span><span class="lineCov">       5400 :         itsDocument.ParseStream&lt;0&gt;(itsReadStream);</span>
+<span class="lineNum">     289 </span><span class="lineCov">       5400 :         itsValueStack.push_back(itsDocument.MemberBegin());</span>
+<span class="lineNum">     290 </span><span class="lineCov">       5400 :       }</span>
 <a name="291"><span class="lineNum">     291 </span>            : </a>
 <span class="lineNum">     292 </span>            :       //! Starts a new node, going into its proper iterator
-<span class="lineNum">     293 </span><span class="lineCov">    1213542 :       void startNode()</span>
+<span class="lineNum">     293 </span><span class="lineCov">    2427104 :       void startNode()</span>
 <span class="lineNum">     294 </span>            :       {
-<span class="lineNum">     295 </span><span class="lineCov">    1213542 :         if(itsValueStack.back().value().IsArray())</span>
-<span class="lineNum">     296 </span><span class="lineCov">       8600 :           itsValueStack.push_back(itsValueStack.back().value().Begin());</span>
+<span class="lineNum">     295 </span><span class="lineCov">    2427104 :         if(itsValueStack.back().value().IsArray())</span>
+<span class="lineNum">     296 </span><span class="lineCov">      17200 :           itsValueStack.push_back(itsValueStack.back().value().Begin());</span>
 <span class="lineNum">     297 </span>            :         else
-<span class="lineNum">     298 </span><span class="lineCov">    1204942 :           itsValueStack.push_back(itsValueStack.back().value().MemberBegin());</span>
-<span class="lineNum">     299 </span><span class="lineCov">    1213542 :       }</span>
+<span class="lineNum">     298 </span><span class="lineCov">    2409904 :           itsValueStack.push_back(itsValueStack.back().value().MemberBegin());</span>
+<span class="lineNum">     299 </span><span class="lineCov">    2427104 :       }</span>
 <a name="300"><span class="lineNum">     300 </span>            : </a>
 <span class="lineNum">     301 </span>            :       //! Finishes the most recently started node
-<span class="lineNum">     302 </span><span class="lineCov">    1213542 :       void finishNode()</span>
+<span class="lineNum">     302 </span><span class="lineCov">    2427104 :       void finishNode()</span>
 <span class="lineNum">     303 </span>            :       {
-<span class="lineNum">     304 </span><span class="lineCov">    1213542 :         itsValueStack.pop_back();</span>
-<span class="lineNum">     305 </span><span class="lineCov">    1213542 :         ++itsValueStack.back();</span>
-<span class="lineNum">     306 </span><span class="lineCov">    1213542 :       }</span>
+<span class="lineNum">     304 </span><span class="lineCov">    2427104 :         itsValueStack.pop_back();</span>
+<span class="lineNum">     305 </span><span class="lineCov">    2427104 :         ++itsValueStack.back();</span>
+<span class="lineNum">     306 </span><span class="lineCov">    2427104 :       }</span>
 <span class="lineNum">     307 </span>            : 
 <a name="308"><span class="lineNum">     308 </span>            :       template&lt;class T&gt;</a>
 <span class="lineNum">     309 </span>            :         typename std::enable_if&lt;std::is_signed&lt;T&gt;::value &amp;&amp; sizeof(T) &lt; sizeof(int64_t), void&gt;::type
-<span class="lineNum">     310 </span><span class="lineCov">    2137034 :         loadValue(T &amp; val)</span>
+<span class="lineNum">     310 </span><span class="lineCov">    4274096 :         loadValue(T &amp; val)</span>
 <span class="lineNum">     311 </span>            :         {
-<span class="lineNum">     312 </span><span class="lineCov">    2137034 :           val = itsValueStack.back().value().GetInt();</span>
-<span class="lineNum">     313 </span><span class="lineCov">    2137034 :           ++itsValueStack.back();</span>
-<span class="lineNum">     314 </span><span class="lineCov">    2137034 :         }</span>
+<span class="lineNum">     312 </span><span class="lineCov">    4274096 :           val = itsValueStack.back().value().GetInt();</span>
+<span class="lineNum">     313 </span><span class="lineCov">    4274096 :           ++itsValueStack.back();</span>
+<span class="lineNum">     314 </span><span class="lineCov">    4274096 :         }</span>
 <span class="lineNum">     315 </span>            : 
 <span class="lineNum">     316 </span>            :       template&lt;class T&gt;
 <a name="317"><span class="lineNum">     317 </span>            :         typename std::enable_if&lt;(std::is_unsigned&lt;T&gt;::value &amp;&amp; sizeof(T) &lt; sizeof(uint64_t)) &amp;&amp;</a>
 <span class="lineNum">     318 </span>            :                                 !std::is_same&lt;bool, T&gt;::value, void&gt;::type
-<span class="lineNum">     319 </span><span class="lineCov">     101779 :         loadValue(T &amp; val)</span>
+<span class="lineNum">     319 </span><span class="lineCov">     203560 :         loadValue(T &amp; val)</span>
 <span class="lineNum">     320 </span>            :         {
-<span class="lineNum">     321 </span><span class="lineCov">     101779 :           val = itsValueStack.back().value().GetUint();</span>
-<span class="lineNum">     322 </span><span class="lineCov">     101779 :           ++itsValueStack.back();</span>
-<a name="323"><span class="lineNum">     323 </span><span class="lineCov">     101779 :         }</span></a>
+<span class="lineNum">     321 </span><span class="lineCov">     203560 :           val = itsValueStack.back().value().GetUint();</span>
+<span class="lineNum">     322 </span><span class="lineCov">     203560 :           ++itsValueStack.back();</span>
+<a name="323"><span class="lineNum">     323 </span><span class="lineCov">     203560 :         }</span></a>
 <a name="324"><span class="lineNum">     324 </span>            : </a>
-<a name="325"><span class="lineNum">     325 </span><span class="lineCov">        300 :       void loadValue(bool &amp; val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }</span></a>
-<a name="326"><span class="lineNum">     326 </span><span class="lineCov">        700 :       void loadValue(int64_t &amp; val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }</span></a>
-<a name="327"><span class="lineNum">     327 </span><span class="lineCov">       1247 :       void loadValue(uint64_t &amp; val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }</span></a>
-<a name="328"><span class="lineNum">     328 </span><span class="lineCov">        500 :       void loadValue(float &amp; val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }</span></a>
-<span class="lineNum">     329 </span><span class="lineCov">        500 :       void loadValue(double &amp; val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }</span>
-<span class="lineNum">     330 </span><span class="lineCov">      60553 :       void loadValue(std::string &amp; val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }</span>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">        600 :       void loadValue(bool &amp; val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }</span></a>
+<a name="326"><span class="lineNum">     326 </span><span class="lineCov">       1400 :       void loadValue(int64_t &amp; val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }</span></a>
+<a name="327"><span class="lineNum">     327 </span><span class="lineCov">       2497 :       void loadValue(uint64_t &amp; val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }</span></a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">       1000 :       void loadValue(float &amp; val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }</span></a>
+<span class="lineNum">     329 </span><span class="lineCov">       1000 :       void loadValue(double &amp; val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }</span>
+<span class="lineNum">     330 </span><span class="lineCov">     121103 :       void loadValue(std::string &amp; val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }</span>
 <span class="lineNum">     331 </span>            : 
 <span class="lineNum">     332 </span>            :       template&lt;class T&gt;
 <a name="333"><span class="lineNum">     333 </span>            :         typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value &amp;&amp;</a>
 <span class="lineNum">     334 </span>            :                                 (sizeof(T) &gt;= sizeof(long double) || sizeof(T) &gt;= sizeof(long long)), void&gt;::type
-<span class="lineNum">     335 </span><span class="lineCov">        200 :         loadValue(T &amp; val)</span>
+<span class="lineNum">     335 </span><span class="lineCov">        400 :         loadValue(T &amp; val)</span>
 <span class="lineNum">     336 </span>            :         {
-<span class="lineNum">     337 </span><span class="lineCov">        200 :           std::string encoded;</span>
-<span class="lineNum">     338 </span><span class="lineCov">        200 :           loadValue( encoded );</span>
-<span class="lineNum">     339 </span><span class="lineCov">        400 :           auto decoded = base64::decode( encoded );</span>
+<span class="lineNum">     337 </span><span class="lineCov">        400 :           std::string encoded;</span>
+<span class="lineNum">     338 </span><span class="lineCov">        400 :           loadValue( encoded );</span>
+<span class="lineNum">     339 </span><span class="lineCov">        800 :           auto decoded = base64::decode( encoded );</span>
 <span class="lineNum">     340 </span>            : 
-<span class="lineNum">     341 </span><span class="lineCov">        200 :           if( sizeof(T) != decoded.size() )</span>
+<span class="lineNum">     341 </span><span class="lineCov">        400 :           if( sizeof(T) != decoded.size() )</span>
 <span class="lineNum">     342 </span><span class="lineNoCov">          0 :             throw Exception(&quot;Decoded binary data size does not match specified size&quot;);</span>
 <span class="lineNum">     343 </span>            : 
-<span class="lineNum">     344 </span><span class="lineCov">        400 :           std::memcpy( &amp;val, decoded.data(), decoded.size() );</span>
-<span class="lineNum">     345 </span><span class="lineCov">        200 :         }</span>
+<span class="lineNum">     344 </span><span class="lineCov">        800 :           std::memcpy( &amp;val, decoded.data(), decoded.size() );</span>
+<span class="lineNum">     345 </span><span class="lineCov">        400 :         }</span>
 <span class="lineNum">     346 </span>            : 
 <span class="lineNum">     347 </span>            :       //! Loads some binary data, encoded as a base64 string
 <span class="lineNum">     348 </span>            :       void loadBinaryValue( void * data, size_t size )
@@ -420,10 +420,10 @@
 <span class="lineNum">     358 </span>            :       };
 <a name="359"><span class="lineNum">     359 </span>            : </a>
 <span class="lineNum">     360 </span>            :       //! Loads the size for a SizeTag
-<span class="lineNum">     361 </span><span class="lineCov">       8600 :       void loadSize(size_t &amp; size)</span>
+<span class="lineNum">     361 </span><span class="lineCov">      17200 :       void loadSize(size_t &amp; size)</span>
 <span class="lineNum">     362 </span>            :       {
-<span class="lineNum">     363 </span><span class="lineCov">       8600 :         size = (itsValueStack.rbegin() + 1)-&gt;value().Size();</span>
-<span class="lineNum">     364 </span><span class="lineCov">       8600 :       }</span>
+<span class="lineNum">     363 </span><span class="lineCov">      17200 :         size = (itsValueStack.rbegin() + 1)-&gt;value().Size();</span>
+<span class="lineNum">     364 </span><span class="lineCov">      17200 :       }</span>
 <span class="lineNum">     365 </span>            : 
 <span class="lineNum">     366 </span>            :     private:
 <span class="lineNum">     367 </span>            :       ReadStream itsReadStream;               //!&lt; Rapidjson write stream
@@ -439,52 +439,52 @@
 <span class="lineNum">     377 </span>            :   //! Prologue for NVPs for JSON archives
 <a name="378"><span class="lineNum">     378 </span>            :   /*! NVPs do not start or finish nodes - they just set up the names */</a>
 <span class="lineNum">     379 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     380 </span><span class="lineCov">     604942 :   void prologue( JSONOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     381 </span><span class="lineCov">     604942 :   { }</span>
+<span class="lineNum">     380 </span><span class="lineCov">    1209904 :   void prologue( JSONOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     381 </span><span class="lineCov">    1209904 :   { }</span>
 <span class="lineNum">     382 </span>            : 
 <a name="383"><span class="lineNum">     383 </span>            :   //! Prologue for NVPs for JSON archives</a>
 <span class="lineNum">     384 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     385 </span><span class="lineCov">     598142 :   void prologue( JSONInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     386 </span><span class="lineCov">     598142 :   { }</span>
+<span class="lineNum">     385 </span><span class="lineCov">    1196304 :   void prologue( JSONInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     386 </span><span class="lineCov">    1196304 :   { }</span>
 <span class="lineNum">     387 </span>            : 
 <span class="lineNum">     388 </span>            :   // ######################################################################
 <span class="lineNum">     389 </span>            :   //! Epilogue for NVPs for JSON archives
 <a name="390"><span class="lineNum">     390 </span>            :   /*! NVPs do not start or finish nodes - they just set up the names */</a>
 <span class="lineNum">     391 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     392 </span><span class="lineCov">     604942 :   void epilogue( JSONOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     393 </span><span class="lineCov">     604942 :   { }</span>
+<span class="lineNum">     392 </span><span class="lineCov">    1209904 :   void epilogue( JSONOutputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     393 </span><span class="lineCov">    1209904 :   { }</span>
 <span class="lineNum">     394 </span>            : 
 <span class="lineNum">     395 </span>            :   //! Epilogue for NVPs for JSON archives
 <a name="396"><span class="lineNum">     396 </span>            :   /*! NVPs do not start or finish nodes - they just set up the names */</a>
 <span class="lineNum">     397 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     398 </span><span class="lineCov">     598142 :   void epilogue( JSONInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     399 </span><span class="lineCov">     598142 :   { }</span>
+<span class="lineNum">     398 </span><span class="lineCov">    1196304 :   void epilogue( JSONInputArchive &amp;, NameValuePair&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     399 </span><span class="lineCov">    1196304 :   { }</span>
 <span class="lineNum">     400 </span>            : 
 <span class="lineNum">     401 </span>            :   // ######################################################################
 <span class="lineNum">     402 </span>            :   //! Prologue for SizeTags for JSON archives
 <a name="403"><span class="lineNum">     403 </span>            :   /*! SizeTags are strictly ignored for JSON */</a>
 <span class="lineNum">     404 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     405 </span><span class="lineCov">       8600 :   void prologue( JSONOutputArchive &amp; ar, SizeTag&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     405 </span><span class="lineCov">      17200 :   void prologue( JSONOutputArchive &amp; ar, SizeTag&lt;T&gt; const &amp; )</span>
 <span class="lineNum">     406 </span>            :   {
-<span class="lineNum">     407 </span><span class="lineCov">       8600 :     ar.makeArray();</span>
-<span class="lineNum">     408 </span><span class="lineCov">       8600 :   }</span>
+<span class="lineNum">     407 </span><span class="lineCov">      17200 :     ar.makeArray();</span>
+<span class="lineNum">     408 </span><span class="lineCov">      17200 :   }</span>
 <span class="lineNum">     409 </span>            : 
 <a name="410"><span class="lineNum">     410 </span>            :   //! Prologue for SizeTags for JSON archives</a>
 <span class="lineNum">     411 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     412 </span><span class="lineCov">       8600 :   void prologue( JSONInputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     413 </span><span class="lineCov">       8600 :   { }</span>
+<span class="lineNum">     412 </span><span class="lineCov">      17200 :   void prologue( JSONInputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     413 </span><span class="lineCov">      17200 :   { }</span>
 <span class="lineNum">     414 </span>            : 
 <span class="lineNum">     415 </span>            :   // ######################################################################
 <span class="lineNum">     416 </span>            :   //! Epilogue for SizeTags for JSON archives
 <a name="417"><span class="lineNum">     417 </span>            :   /*! SizeTags are strictly ignored for JSON */</a>
 <span class="lineNum">     418 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     419 </span><span class="lineCov">       8600 :   void epilogue( JSONOutputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     420 </span><span class="lineCov">       8600 :   { }</span>
+<span class="lineNum">     419 </span><span class="lineCov">      17200 :   void epilogue( JSONOutputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     420 </span><span class="lineCov">      17200 :   { }</span>
 <span class="lineNum">     421 </span>            : 
 <a name="422"><span class="lineNum">     422 </span>            :   //! Epilogue for SizeTags for JSON archives</a>
 <span class="lineNum">     423 </span>            :   template &lt;class T&gt;
-<span class="lineNum">     424 </span><span class="lineCov">       8600 :   void epilogue( JSONInputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     425 </span><span class="lineCov">       8600 :   { }</span>
+<span class="lineNum">     424 </span><span class="lineCov">      17200 :   void epilogue( JSONInputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     425 </span><span class="lineCov">      17200 :   { }</span>
 <span class="lineNum">     426 </span>            : 
 <span class="lineNum">     427 </span>            :   // ######################################################################
 <span class="lineNum">     428 </span>            :   //! Prologue for all other types for JSON archives
@@ -492,88 +492,88 @@
 <span class="lineNum">     430 </span>            :       that may be given data by the type about to be archived */
 <a name="431"><span class="lineNum">     431 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     432 </span>            :   typename std::enable_if&lt;!std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     433 </span><span class="lineCov">    1213542 :   prologue( JSONOutputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     433 </span><span class="lineCov">    2427104 :   prologue( JSONOutputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     434 </span>            :   {
-<span class="lineNum">     435 </span><span class="lineCov">    1213542 :     ar.startNode();</span>
-<span class="lineNum">     436 </span><span class="lineCov">    1213542 :   }</span>
+<span class="lineNum">     435 </span><span class="lineCov">    2427104 :     ar.startNode();</span>
+<span class="lineNum">     436 </span><span class="lineCov">    2427104 :   }</span>
 <span class="lineNum">     437 </span>            : 
 <span class="lineNum">     438 </span>            :   //! Prologue for all other types for JSON archives
 <a name="439"><span class="lineNum">     439 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     440 </span>            :   typename std::enable_if&lt;!std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     441 </span><span class="lineCov">    1213542 :   prologue( JSONInputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     441 </span><span class="lineCov">    2427104 :   prologue( JSONInputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     442 </span>            :   {
-<span class="lineNum">     443 </span><span class="lineCov">    1213542 :     ar.startNode();</span>
-<span class="lineNum">     444 </span><span class="lineCov">    1213542 :   }</span>
+<span class="lineNum">     443 </span><span class="lineCov">    2427104 :     ar.startNode();</span>
+<span class="lineNum">     444 </span><span class="lineCov">    2427104 :   }</span>
 <span class="lineNum">     445 </span>            : 
 <span class="lineNum">     446 </span>            :   // ######################################################################
 <span class="lineNum">     447 </span>            :   //! Epilogue for all other types other for JSON archives
 <span class="lineNum">     448 </span>            :   /*! Finishes the node created in the prologue */
 <a name="449"><span class="lineNum">     449 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     450 </span>            :   typename std::enable_if&lt;!std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     451 </span><span class="lineCov">    1213542 :   epilogue( JSONOutputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     451 </span><span class="lineCov">    2427104 :   epilogue( JSONOutputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     452 </span>            :   {
-<span class="lineNum">     453 </span><span class="lineCov">    1213542 :     ar.finishNode();</span>
-<span class="lineNum">     454 </span><span class="lineCov">    1213542 :   }</span>
+<span class="lineNum">     453 </span><span class="lineCov">    2427104 :     ar.finishNode();</span>
+<span class="lineNum">     454 </span><span class="lineCov">    2427104 :   }</span>
 <span class="lineNum">     455 </span>            : 
 <span class="lineNum">     456 </span>            :   //! Epilogue for all other types other for JSON archives
 <a name="457"><span class="lineNum">     457 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     458 </span>            :   typename std::enable_if&lt;!std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     459 </span><span class="lineCov">    1213542 :   epilogue( JSONInputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     459 </span><span class="lineCov">    2427104 :   epilogue( JSONInputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     460 </span>            :   {
-<span class="lineNum">     461 </span><span class="lineCov">    1213542 :     ar.finishNode();</span>
-<span class="lineNum">     462 </span><span class="lineCov">    1213542 :   }</span>
+<span class="lineNum">     461 </span><span class="lineCov">    2427104 :     ar.finishNode();</span>
+<span class="lineNum">     462 </span><span class="lineCov">    2427104 :   }</span>
 <span class="lineNum">     463 </span>            : 
 <span class="lineNum">     464 </span>            :   // ######################################################################
 <span class="lineNum">     465 </span>            :   //! Prologue for arithmetic types for JSON archives
 <a name="466"><span class="lineNum">     466 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     467 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     468 </span><span class="lineCov">    2242260 :   prologue( JSONOutputArchive &amp; ar, T const &amp; )</span>
+<span class="lineNum">     468 </span><span class="lineCov">    4484553 :   prologue( JSONOutputArchive &amp; ar, T const &amp; )</span>
 <span class="lineNum">     469 </span>            :   {
-<span class="lineNum">     470 </span><span class="lineCov">    2242260 :     ar.writeName();</span>
-<span class="lineNum">     471 </span><span class="lineCov">    2242260 :   }</span>
+<span class="lineNum">     470 </span><span class="lineCov">    4484553 :     ar.writeName();</span>
+<span class="lineNum">     471 </span><span class="lineCov">    4484553 :   }</span>
 <span class="lineNum">     472 </span>            : 
 <span class="lineNum">     473 </span>            :   //! Prologue for arithmetic types for JSON archives
 <a name="474"><span class="lineNum">     474 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     475 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     476 </span><span class="lineCov">    2242260 :   prologue( JSONInputArchive &amp;, T const &amp; )</span>
-<span class="lineNum">     477 </span><span class="lineCov">    2242260 :   { }</span>
+<span class="lineNum">     476 </span><span class="lineCov">    4484553 :   prologue( JSONInputArchive &amp;, T const &amp; )</span>
+<span class="lineNum">     477 </span><span class="lineCov">    4484553 :   { }</span>
 <span class="lineNum">     478 </span>            : 
 <span class="lineNum">     479 </span>            :   // ######################################################################
 <span class="lineNum">     480 </span>            :   //! Epilogue for arithmetic types for JSON archives
 <a name="481"><span class="lineNum">     481 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     482 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     483 </span><span class="lineCov">    2242260 :   epilogue( JSONOutputArchive &amp;, T const &amp; )</span>
-<span class="lineNum">     484 </span><span class="lineCov">    2242260 :   { }</span>
+<span class="lineNum">     483 </span><span class="lineCov">    4484553 :   epilogue( JSONOutputArchive &amp;, T const &amp; )</span>
+<span class="lineNum">     484 </span><span class="lineCov">    4484553 :   { }</span>
 <span class="lineNum">     485 </span>            : 
 <span class="lineNum">     486 </span>            :   //! Epilogue for arithmetic types for JSON archives
 <a name="487"><span class="lineNum">     487 </span>            :   template &lt;class T&gt;</a>
 <span class="lineNum">     488 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     489 </span><span class="lineCov">    2242260 :   epilogue( JSONInputArchive &amp;, T const &amp; )</span>
-<span class="lineNum">     490 </span><span class="lineCov">    2242260 :   { }</span>
+<span class="lineNum">     489 </span><span class="lineCov">    4484553 :   epilogue( JSONInputArchive &amp;, T const &amp; )</span>
+<span class="lineNum">     490 </span><span class="lineCov">    4484553 :   { }</span>
 <span class="lineNum">     491 </span>            : 
 <span class="lineNum">     492 </span>            :   // ######################################################################
 <a name="493"><span class="lineNum">     493 </span>            :   //! Prologue for strings for JSON archives</a>
 <span class="lineNum">     494 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     495 </span><span class="lineCov">      60353 :   void prologue(JSONOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
+<span class="lineNum">     495 </span><span class="lineCov">     120703 :   void prologue(JSONOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
 <span class="lineNum">     496 </span>            :   {
-<span class="lineNum">     497 </span><span class="lineCov">      60353 :     ar.writeName();</span>
-<span class="lineNum">     498 </span><span class="lineCov">      60353 :   }</span>
+<span class="lineNum">     497 </span><span class="lineCov">     120703 :     ar.writeName();</span>
+<span class="lineNum">     498 </span><span class="lineCov">     120703 :   }</span>
 <span class="lineNum">     499 </span>            : 
 <a name="500"><span class="lineNum">     500 </span>            :   //! Prologue for strings for JSON archives</a>
 <span class="lineNum">     501 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     502 </span><span class="lineCov">      60353 :   void prologue(JSONInputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
-<span class="lineNum">     503 </span><span class="lineCov">      60353 :   { }</span>
+<span class="lineNum">     502 </span><span class="lineCov">     120703 :   void prologue(JSONInputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
+<span class="lineNum">     503 </span><span class="lineCov">     120703 :   { }</span>
 <span class="lineNum">     504 </span>            : 
 <span class="lineNum">     505 </span>            :   // ######################################################################
 <a name="506"><span class="lineNum">     506 </span>            :   //! Epilogue for strings for JSON archives</a>
 <span class="lineNum">     507 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     508 </span><span class="lineCov">      60353 :   void epilogue(JSONOutputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
-<span class="lineNum">     509 </span><span class="lineCov">      60353 :   { }</span>
+<span class="lineNum">     508 </span><span class="lineCov">     120703 :   void epilogue(JSONOutputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
+<span class="lineNum">     509 </span><span class="lineCov">     120703 :   { }</span>
 <span class="lineNum">     510 </span>            : 
 <a name="511"><span class="lineNum">     511 </span>            :   //! Epilogue for strings for JSON archives</a>
 <span class="lineNum">     512 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     513 </span><span class="lineCov">      60353 :   void epilogue(JSONInputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
-<span class="lineNum">     514 </span><span class="lineCov">      60353 :   { }</span>
+<span class="lineNum">     513 </span><span class="lineCov">     120703 :   void epilogue(JSONInputArchive &amp;, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp;)</span>
+<span class="lineNum">     514 </span><span class="lineCov">     120703 :   { }</span>
 <span class="lineNum">     515 </span>            : 
 <span class="lineNum">     516 </span>            :   // ######################################################################
 <span class="lineNum">     517 </span>            :   // Common JSONArchive serialization functions
@@ -581,60 +581,60 @@
 <span class="lineNum">     519 </span>            : 
 <a name="520"><span class="lineNum">     520 </span>            :   //! Serializing NVP types to JSON</a>
 <span class="lineNum">     521 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     522 </span><span class="lineCov">     604942 :   void save( JSONOutputArchive &amp; ar, NameValuePair&lt;T&gt; const &amp; t )</span>
+<span class="lineNum">     522 </span><span class="lineCov">    1209904 :   void save( JSONOutputArchive &amp; ar, NameValuePair&lt;T&gt; const &amp; t )</span>
 <span class="lineNum">     523 </span>            :   {
-<span class="lineNum">     524 </span><span class="lineCov">     604942 :     ar.setNextName( t.name );</span>
-<span class="lineNum">     525 </span><span class="lineCov">     604942 :     ar( t.value );</span>
-<span class="lineNum">     526 </span><span class="lineCov">     604942 :   }</span>
+<span class="lineNum">     524 </span><span class="lineCov">    1209904 :     ar.setNextName( t.name );</span>
+<span class="lineNum">     525 </span><span class="lineCov">    1209904 :     ar( t.value );</span>
+<span class="lineNum">     526 </span><span class="lineCov">    1209904 :   }</span>
 <a name="527"><span class="lineNum">     527 </span>            : </a>
 <span class="lineNum">     528 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     529 </span><span class="lineCov">     598142 :   void load( JSONInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
+<span class="lineNum">     529 </span><span class="lineCov">    1196304 :   void load( JSONInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
 <span class="lineNum">     530 </span>            :   {
-<span class="lineNum">     531 </span><span class="lineCov">     598142 :     ar( t.value );</span>
-<span class="lineNum">     532 </span><span class="lineCov">     598142 :   }</span>
+<span class="lineNum">     531 </span><span class="lineCov">    1196304 :     ar( t.value );</span>
+<span class="lineNum">     532 </span><span class="lineCov">    1196304 :   }</span>
 <span class="lineNum">     533 </span>            : 
 <span class="lineNum">     534 </span>            :   //! Saving for arithmetic to JSON
 <a name="535"><span class="lineNum">     535 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     536 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     537 </span><span class="lineCov">    2242260 :   save(JSONOutputArchive &amp; ar, T const &amp; t)</span>
+<span class="lineNum">     537 </span><span class="lineCov">    4484553 :   save(JSONOutputArchive &amp; ar, T const &amp; t)</span>
 <span class="lineNum">     538 </span>            :   {
-<span class="lineNum">     539 </span><span class="lineCov">    2242260 :     ar.saveValue( t );</span>
-<span class="lineNum">     540 </span><span class="lineCov">    2242260 :   }</span>
+<span class="lineNum">     539 </span><span class="lineCov">    4484553 :     ar.saveValue( t );</span>
+<span class="lineNum">     540 </span><span class="lineCov">    4484553 :   }</span>
 <span class="lineNum">     541 </span>            : 
 <span class="lineNum">     542 </span>            :   //! Loading arithmetic from JSON
 <a name="543"><span class="lineNum">     543 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     544 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     545 </span><span class="lineCov">    2242260 :   load(JSONInputArchive &amp; ar, T &amp; t)</span>
+<span class="lineNum">     545 </span><span class="lineCov">    4484553 :   load(JSONInputArchive &amp; ar, T &amp; t)</span>
 <span class="lineNum">     546 </span>            :   {
-<span class="lineNum">     547 </span><span class="lineCov">    2242260 :     ar.loadValue( t );</span>
-<span class="lineNum">     548 </span><span class="lineCov">    2242260 :   }</span>
+<span class="lineNum">     547 </span><span class="lineCov">    4484553 :     ar.loadValue( t );</span>
+<span class="lineNum">     548 </span><span class="lineCov">    4484553 :   }</span>
 <span class="lineNum">     549 </span>            : 
 <a name="550"><span class="lineNum">     550 </span>            :   //! saving string to JSON</a>
 <span class="lineNum">     551 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     552 </span><span class="lineCov">      60353 :   void save(JSONOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
+<span class="lineNum">     552 </span><span class="lineCov">     120703 :   void save(JSONOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
 <span class="lineNum">     553 </span>            :   {
-<span class="lineNum">     554 </span><span class="lineCov">      60353 :     ar.saveValue( str );</span>
-<span class="lineNum">     555 </span><span class="lineCov">      60353 :   }</span>
+<span class="lineNum">     554 </span><span class="lineCov">     120703 :     ar.saveValue( str );</span>
+<span class="lineNum">     555 </span><span class="lineCov">     120703 :   }</span>
 <span class="lineNum">     556 </span>            : 
 <a name="557"><span class="lineNum">     557 </span>            :   //! loading string from JSON</a>
 <span class="lineNum">     558 </span>            :   template&lt;class CharT, class Traits, class Alloc&gt; inline
-<span class="lineNum">     559 </span><span class="lineCov">      60353 :   void load(JSONInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
+<span class="lineNum">     559 </span><span class="lineCov">     120703 :   void load(JSONInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
 <span class="lineNum">     560 </span>            :   {
-<span class="lineNum">     561 </span><span class="lineCov">      60353 :     ar.loadValue( str );</span>
-<span class="lineNum">     562 </span><span class="lineCov">      60353 :   }</span>
+<span class="lineNum">     561 </span><span class="lineCov">     120703 :     ar.loadValue( str );</span>
+<span class="lineNum">     562 </span><span class="lineCov">     120703 :   }</span>
 <span class="lineNum">     563 </span>            : 
 <span class="lineNum">     564 </span>            :   // ######################################################################
 <a name="565"><span class="lineNum">     565 </span>            :   //! Saving SizeTags to JSON</a>
 <span class="lineNum">     566 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     567 </span><span class="lineCov">       8600 :   void save( JSONOutputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
-<span class="lineNum">     568 </span><span class="lineCov">       8600 :   { }</span>
+<span class="lineNum">     567 </span><span class="lineCov">      17200 :   void save( JSONOutputArchive &amp;, SizeTag&lt;T&gt; const &amp; )</span>
+<span class="lineNum">     568 </span><span class="lineCov">      17200 :   { }</span>
 <span class="lineNum">     569 </span>            : 
 <a name="570"><span class="lineNum">     570 </span>            :   //! Loading SizeTags from JSON</a>
 <span class="lineNum">     571 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     572 </span><span class="lineCov">       8600 :   void load( JSONInputArchive &amp; ar, SizeTag&lt;T&gt; &amp; st )</span>
+<span class="lineNum">     572 </span><span class="lineCov">      17200 :   void load( JSONInputArchive &amp; ar, SizeTag&lt;T&gt; &amp; st )</span>
 <span class="lineNum">     573 </span>            :   {
-<span class="lineNum">     574 </span><span class="lineCov">       8600 :     ar.loadSize( st.size );</span>
-<span class="lineNum">     575 </span><span class="lineCov">       8600 :   }</span>
+<span class="lineNum">     574 </span><span class="lineCov">      17200 :     ar.loadSize( st.size );</span>
+<span class="lineNum">     575 </span><span class="lineCov">      17200 :   }</span>
 <span class="lineNum">     576 </span>            : } // namespace cereal
 <span class="lineNum">     577 </span>            : 
 <span class="lineNum">     578 </span>            : // register archives for polymorphic support

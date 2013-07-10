@@ -102,25 +102,25 @@
 <span class="lineNum">      40 </span>            :       representation with as little extra metadata as possible. 
 <a name="41"><span class="lineNum">      41 </span>            :       </a>
 <span class="lineNum">      42 </span>            :       \ingroup Archives */
-<span class="lineNum">      43 </span><span class="lineCov">       2700 :   class BinaryOutputArchive : public OutputArchive&lt;BinaryOutputArchive, AllowEmptyClassElision&gt;</span>
+<span class="lineNum">      43 </span><span class="lineCov">       5400 :   class BinaryOutputArchive : public OutputArchive&lt;BinaryOutputArchive, AllowEmptyClassElision&gt;</span>
 <span class="lineNum">      44 </span>            :   {
 <span class="lineNum">      45 </span>            :     public:
 <span class="lineNum">      46 </span>            :       //! Construct, outputting to the provided stream
 <a name="47"><span class="lineNum">      47 </span>            :       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or</a>
 <span class="lineNum">      48 </span>            :                         even cout! */
-<span class="lineNum">      49 </span><span class="lineCov">       2700 :       BinaryOutputArchive(std::ostream &amp; stream) :</span>
+<span class="lineNum">      49 </span><span class="lineCov">       5400 :       BinaryOutputArchive(std::ostream &amp; stream) :</span>
 <span class="lineNum">      50 </span>            :         OutputArchive&lt;BinaryOutputArchive, AllowEmptyClassElision&gt;(this),
-<span class="lineNum">      51 </span><span class="lineCov">       2700 :         itsStream(stream)</span>
-<span class="lineNum">      52 </span><span class="lineCov">       2700 :     { }</span>
+<span class="lineNum">      51 </span><span class="lineCov">       5400 :         itsStream(stream)</span>
+<span class="lineNum">      52 </span><span class="lineCov">       5400 :     { }</span>
 <a name="53"><span class="lineNum">      53 </span>            : </a>
 <span class="lineNum">      54 </span>            :       //! Writes size bytes of data to the output stream
-<span class="lineNum">      55 </span><span class="lineCov">    2342537 :       void saveBinary( const void * data, size_t size )</span>
+<span class="lineNum">      55 </span><span class="lineCov">    4684949 :       void saveBinary( const void * data, size_t size )</span>
 <span class="lineNum">      56 </span>            :       {
-<span class="lineNum">      57 </span><span class="lineCov">    2342537 :         size_t const writtenSize = itsStream.rdbuf()-&gt;sputn( reinterpret_cast&lt;const char*&gt;( data ), size );</span>
+<span class="lineNum">      57 </span><span class="lineCov">    4684949 :         size_t const writtenSize = itsStream.rdbuf()-&gt;sputn( reinterpret_cast&lt;const char*&gt;( data ), size );</span>
 <span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span><span class="lineCov">    2342537 :         if(writtenSize != size)</span>
+<span class="lineNum">      59 </span><span class="lineCov">    4684949 :         if(writtenSize != size)</span>
 <span class="lineNum">      60 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Failed to write &quot; + std::to_string(size) + &quot; bytes to output stream! Wrote &quot; + std::to_string(writtenSize));</span>
-<span class="lineNum">      61 </span><span class="lineCov">    2342537 :       }</span>
+<span class="lineNum">      61 </span><span class="lineCov">    4684949 :       }</span>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :     private:
 <span class="lineNum">      64 </span>            :       std::ostream &amp; itsStream;
@@ -129,23 +129,23 @@
 <span class="lineNum">      67 </span>            :   // ######################################################################
 <a name="68"><span class="lineNum">      68 </span>            :   //! An input archive designed to load data saved using BinaryOutputArchive</a>
 <span class="lineNum">      69 </span>            :   /*! \ingroup Archives */
-<span class="lineNum">      70 </span><span class="lineCov">       2700 :   class BinaryInputArchive : public InputArchive&lt;BinaryInputArchive, AllowEmptyClassElision&gt;</span>
+<span class="lineNum">      70 </span><span class="lineCov">       5400 :   class BinaryInputArchive : public InputArchive&lt;BinaryInputArchive, AllowEmptyClassElision&gt;</span>
 <span class="lineNum">      71 </span>            :   {
 <a name="72"><span class="lineNum">      72 </span>            :     public:</a>
 <span class="lineNum">      73 </span>            :       //! Construct, loading from the provided stream
-<span class="lineNum">      74 </span><span class="lineCov">       2700 :       BinaryInputArchive(std::istream &amp; stream) :</span>
+<span class="lineNum">      74 </span><span class="lineCov">       5400 :       BinaryInputArchive(std::istream &amp; stream) :</span>
 <span class="lineNum">      75 </span>            :         InputArchive&lt;BinaryInputArchive, AllowEmptyClassElision&gt;(this),
-<span class="lineNum">      76 </span><span class="lineCov">       2700 :         itsStream(stream)</span>
-<span class="lineNum">      77 </span><span class="lineCov">       2700 :     { }</span>
+<span class="lineNum">      76 </span><span class="lineCov">       5400 :         itsStream(stream)</span>
+<span class="lineNum">      77 </span><span class="lineCov">       5400 :     { }</span>
 <a name="78"><span class="lineNum">      78 </span>            : </a>
 <span class="lineNum">      79 </span>            :       //! Reads size bytes of data from the input stream
-<span class="lineNum">      80 </span><span class="lineCov">    2342537 :       void loadBinary( void * const data, size_t size )</span>
+<span class="lineNum">      80 </span><span class="lineCov">    4684949 :       void loadBinary( void * const data, size_t size )</span>
 <span class="lineNum">      81 </span>            :       {
-<span class="lineNum">      82 </span><span class="lineCov">    2342537 :         size_t const readSize = itsStream.rdbuf()-&gt;sgetn( reinterpret_cast&lt;char*&gt;( data ), size );</span>
+<span class="lineNum">      82 </span><span class="lineCov">    4684949 :         size_t const readSize = itsStream.rdbuf()-&gt;sgetn( reinterpret_cast&lt;char*&gt;( data ), size );</span>
 <span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineCov">    2342537 :         if(readSize != size)</span>
+<span class="lineNum">      84 </span><span class="lineCov">    4684949 :         if(readSize != size)</span>
 <span class="lineNum">      85 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Failed to read &quot; + std::to_string(size) + &quot; bytes from input stream! Read &quot; + std::to_string(readSize));</span>
-<span class="lineNum">      86 </span><span class="lineCov">    2342537 :       }</span>
+<span class="lineNum">      86 </span><span class="lineCov">    4684949 :       }</span>
 <span class="lineNum">      87 </span>            : 
 <span class="lineNum">      88 </span>            :     private:
 <span class="lineNum">      89 </span>            :       std::istream &amp; itsStream;
@@ -157,18 +157,18 @@
 <span class="lineNum">      95 </span>            :   //! Saving for POD types to binary
 <a name="96"><span class="lineNum">      96 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">      97 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">      98 </span><span class="lineCov">    2281594 :   save(BinaryOutputArchive &amp; ar, T const &amp; t)</span>
+<span class="lineNum">      98 </span><span class="lineCov">    4563065 :   save(BinaryOutputArchive &amp; ar, T const &amp; t)</span>
 <span class="lineNum">      99 </span>            :   {
-<span class="lineNum">     100 </span><span class="lineCov">    2281594 :     ar.saveBinary(std::addressof(t), sizeof(t));</span>
-<span class="lineNum">     101 </span><span class="lineCov">    2281594 :   }</span>
+<span class="lineNum">     100 </span><span class="lineCov">    4563065 :     ar.saveBinary(std::addressof(t), sizeof(t));</span>
+<span class="lineNum">     101 </span><span class="lineCov">    4563065 :   }</span>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :   //! Loading for POD types from binary
 <a name="104"><span class="lineNum">     104 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     105 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     106 </span><span class="lineCov">    2281594 :   load(BinaryInputArchive &amp; ar, T &amp; t)</span>
+<span class="lineNum">     106 </span><span class="lineCov">    4563065 :   load(BinaryInputArchive &amp; ar, T &amp; t)</span>
 <span class="lineNum">     107 </span>            :   {
-<span class="lineNum">     108 </span><span class="lineCov">    2281594 :     ar.loadBinary(std::addressof(t), sizeof(t));</span>
-<span class="lineNum">     109 </span><span class="lineCov">    2281594 :   }</span>
+<span class="lineNum">     108 </span><span class="lineCov">    4563065 :     ar.loadBinary(std::addressof(t), sizeof(t));</span>
+<span class="lineNum">     109 </span><span class="lineCov">    4563065 :   }</span>
 <span class="lineNum">     110 </span>            : 
 <span class="lineNum">     111 </span>            :   //! Serializing NVP types to binary
 <span class="lineNum">     112 </span>            :   template &lt;class Archive, class T&gt; inline
@@ -181,24 +181,24 @@
 <span class="lineNum">     119 </span>            :   //! Serializing SizeTags to binary
 <a name="120"><span class="lineNum">     120 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     121 </span>            :   CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-<span class="lineNum">     122 </span><span class="lineCov">     138486 :   serialize( Archive &amp; ar, SizeTag&lt;T&gt; &amp; t )</span>
+<span class="lineNum">     122 </span><span class="lineCov">     276968 :   serialize( Archive &amp; ar, SizeTag&lt;T&gt; &amp; t )</span>
 <span class="lineNum">     123 </span>            :   {
-<span class="lineNum">     124 </span><span class="lineCov">     138486 :     ar( t.size );</span>
-<span class="lineNum">     125 </span><span class="lineCov">     138486 :   }</span>
+<span class="lineNum">     124 </span><span class="lineCov">     276968 :     ar( t.size );</span>
+<span class="lineNum">     125 </span><span class="lineCov">     276968 :   }</span>
 <span class="lineNum">     126 </span>            : 
 <a name="127"><span class="lineNum">     127 </span>            :   //! Saving binary data</a>
 <span class="lineNum">     128 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     129 </span><span class="lineCov">      60943 :   void save(BinaryOutputArchive &amp; ar, BinaryData&lt;T&gt; const &amp; bd)</span>
+<span class="lineNum">     129 </span><span class="lineCov">     121884 :   void save(BinaryOutputArchive &amp; ar, BinaryData&lt;T&gt; const &amp; bd)</span>
 <span class="lineNum">     130 </span>            :   {
-<span class="lineNum">     131 </span><span class="lineCov">      60943 :     ar.saveBinary(bd.data, bd.size);</span>
-<span class="lineNum">     132 </span><span class="lineCov">      60943 :   }</span>
+<span class="lineNum">     131 </span><span class="lineCov">     121884 :     ar.saveBinary(bd.data, bd.size);</span>
+<span class="lineNum">     132 </span><span class="lineCov">     121884 :   }</span>
 <span class="lineNum">     133 </span>            : 
 <a name="134"><span class="lineNum">     134 </span>            :   //! Loading binary data</a>
 <span class="lineNum">     135 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     136 </span><span class="lineCov">      60943 :   void load(BinaryInputArchive &amp; ar, BinaryData&lt;T&gt; &amp; bd)</span>
+<span class="lineNum">     136 </span><span class="lineCov">     121884 :   void load(BinaryInputArchive &amp; ar, BinaryData&lt;T&gt; &amp; bd)</span>
 <span class="lineNum">     137 </span>            :   {
-<span class="lineNum">     138 </span><span class="lineCov">      60943 :     ar.loadBinary(bd.data, bd.size);</span>
-<span class="lineNum">     139 </span><span class="lineCov">      60943 :   }</span>
+<span class="lineNum">     138 </span><span class="lineCov">     121884 :     ar.loadBinary(bd.data, bd.size);</span>
+<span class="lineNum">     139 </span><span class="lineCov">     121884 :   }</span>
 <span class="lineNum">     140 </span>            : } // namespace cereal
 <span class="lineNum">     141 </span>            : 
 <span class="lineNum">     142 </span>            : // register archives for polymorphic support

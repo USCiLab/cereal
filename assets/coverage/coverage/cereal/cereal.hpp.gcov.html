@@ -142,9 +142,9 @@
 <span class="lineNum">      80 </span>            :       @relates BinaryData
 <a name="81"><span class="lineNum">      81 </span>            :       @ingroup Utility */</a>
 <span class="lineNum">      82 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">      83 </span><span class="lineCov">     121886 :   BinaryData&lt;T&gt; binary_data( T &amp;&amp; data, size_t size )</span>
+<span class="lineNum">      83 </span><span class="lineCov">     243768 :   BinaryData&lt;T&gt; binary_data( T &amp;&amp; data, size_t size )</span>
 <span class="lineNum">      84 </span>            :   {
-<span class="lineNum">      85 </span><span class="lineCov">     121886 :     return {std::forward&lt;T&gt;(data), size};</span>
+<span class="lineNum">      85 </span><span class="lineCov">     243768 :     return {std::forward&lt;T&gt;(data), size};</span>
 <span class="lineNum">      86 </span>            :   }
 <span class="lineNum">      87 </span>            : 
 <span class="lineNum">      88 </span>            :   // ######################################################################
@@ -157,9 +157,9 @@
 <span class="lineNum">      95 </span>            :       @relates SizeTag
 <a name="96"><span class="lineNum">      96 </span>            :       @ingroup Utility */</a>
 <span class="lineNum">      97 </span>            :   template &lt;class T&gt;
-<span class="lineNum">      98 </span><span class="lineCov">     172886 :   SizeTag&lt;T&gt; make_size_tag( T &amp;&amp; sz )</span>
+<span class="lineNum">      98 </span><span class="lineCov">     345768 :   SizeTag&lt;T&gt; make_size_tag( T &amp;&amp; sz )</span>
 <span class="lineNum">      99 </span>            :   {
-<span class="lineNum">     100 </span><span class="lineCov">     172886 :     return {std::forward&lt;T&gt;(sz)};</span>
+<span class="lineNum">     100 </span><span class="lineCov">     345768 :     return {std::forward&lt;T&gt;(sz)};</span>
 <span class="lineNum">     101 </span>            :   }
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :   // ######################################################################
@@ -170,15 +170,15 @@
 <span class="lineNum">     108 </span>            :       for the archive type and the types that require the extra information.
 <a name="109"><span class="lineNum">     109 </span>            :       @ingroup Internal */</a>
 <span class="lineNum">     110 </span>            :   template &lt;class Archive, class T&gt;
-<span class="lineNum">     111 </span><span class="lineCov">    7372038 :   void prologue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
-<span class="lineNum">     112 </span><span class="lineCov">    7372038 :   { }</span>
+<span class="lineNum">     111 </span><span class="lineCov">   14743654 :   void prologue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
+<span class="lineNum">     112 </span><span class="lineCov">   14743654 :   { }</span>
 <span class="lineNum">     113 </span>            : 
 <span class="lineNum">     114 </span>            :   //! Called after a type is serialized to tear down any special archive state
 <span class="lineNum">     115 </span>            :   //! for processing some type
 <a name="116"><span class="lineNum">     116 </span>            :   /*! @ingroup Internal */</a>
 <span class="lineNum">     117 </span>            :   template &lt;class Archive, class T&gt;
-<span class="lineNum">     118 </span><span class="lineCov">    7372038 :   void epilogue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
-<span class="lineNum">     119 </span><span class="lineCov">    7372038 :   { }</span>
+<span class="lineNum">     118 </span><span class="lineCov">   14743654 :   void epilogue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
+<span class="lineNum">     119 </span><span class="lineCov">   14743654 :   { }</span>
 <span class="lineNum">     120 </span>            : 
 <span class="lineNum">     121 </span>            :   // ######################################################################
 <span class="lineNum">     122 </span>            :   //! Special flags for archives
@@ -226,20 +226,20 @@
 <span class="lineNum">     164 </span>            :                     enum for more information.
 <a name="165"><span class="lineNum">     165 </span>            :       @ingroup Internal */</a>
 <span class="lineNum">     166 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
-<span class="lineNum">     167 </span><span class="lineCov">       8100 :   class OutputArchive : public detail::OutputArchiveBase</span>
+<span class="lineNum">     167 </span><span class="lineCov">      16200 :   class OutputArchive : public detail::OutputArchiveBase</span>
 <span class="lineNum">     168 </span>            :   {
 <span class="lineNum">     169 </span>            :     public:
 <a name="170"><span class="lineNum">     170 </span>            :       //! Construct the output archive</a>
 <span class="lineNum">     171 </span>            :       /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
-<span class="lineNum">     172 </span><span class="lineCov">       8100 :       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)</span>
-<span class="lineNum">     173 </span><span class="lineCov">       8100 :       { }</span>
+<span class="lineNum">     172 </span><span class="lineCov">      16200 :       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)</span>
+<span class="lineNum">     173 </span><span class="lineCov">      16200 :       { }</span>
 <span class="lineNum">     174 </span>            : 
 <a name="175"><span class="lineNum">     175 </span>            :       //! Serializes all passed in data</a>
 <span class="lineNum">     176 </span>            :       template &lt;class ... Types&gt; inline
-<span class="lineNum">     177 </span><span class="lineCov">    8347063 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
+<span class="lineNum">     177 </span><span class="lineCov">   16693632 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
 <span class="lineNum">     178 </span>            :       {
-<span class="lineNum">     179 </span><span class="lineCov">    8347063 :         self-&gt;process( std::forward&lt;Types&gt;( args )... );</span>
-<span class="lineNum">     180 </span><span class="lineCov">    8347063 :         return *self;</span>
+<span class="lineNum">     179 </span><span class="lineCov">   16693632 :         self-&gt;process( std::forward&lt;Types&gt;( args )... );</span>
+<span class="lineNum">     180 </span><span class="lineCov">   16693632 :         return *self;</span>
 <span class="lineNum">     181 </span>            :       }
 <span class="lineNum">     182 </span>            : 
 <span class="lineNum">     183 </span>            :       //! Registers a shared pointer with the archive
@@ -249,20 +249,20 @@
 <span class="lineNum">     187 </span>            : 
 <a name="188"><span class="lineNum">     188 </span>            :           @param addr The address (see shared_ptr get()) pointed to by the shared pointer</a>
 <span class="lineNum">     189 </span>            :           @return A key that uniquely identifies the pointer */
-<span class="lineNum">     190 </span><span class="lineCov">       2400 :       std::uint32_t registerSharedPointer( void const * addr )</span>
+<span class="lineNum">     190 </span><span class="lineCov">       4800 :       std::uint32_t registerSharedPointer( void const * addr )</span>
 <span class="lineNum">     191 </span>            :       {
 <span class="lineNum">     192 </span>            :         // Handle null pointers by just returning 0
-<span class="lineNum">     193 </span><span class="lineCov">       2400 :         if(addr == 0) return 0;</span>
+<span class="lineNum">     193 </span><span class="lineCov">       4800 :         if(addr == 0) return 0;</span>
 <span class="lineNum">     194 </span>            : 
-<span class="lineNum">     195 </span><span class="lineCov">       1800 :         auto id = itsSharedPointerMap.find( addr );</span>
-<span class="lineNum">     196 </span><span class="lineCov">       1800 :         if( id == itsSharedPointerMap.end() )</span>
+<span class="lineNum">     195 </span><span class="lineCov">       3600 :         auto id = itsSharedPointerMap.find( addr );</span>
+<span class="lineNum">     196 </span><span class="lineCov">       3600 :         if( id == itsSharedPointerMap.end() )</span>
 <span class="lineNum">     197 </span>            :         {
-<span class="lineNum">     198 </span><span class="lineCov">        900 :           auto ptrId = itsCurrentPointerId++;</span>
-<span class="lineNum">     199 </span><span class="lineCov">        900 :           itsSharedPointerMap.insert( {addr, ptrId} );</span>
-<span class="lineNum">     200 </span><span class="lineCov">        900 :           return ptrId | detail::msb_32bit; // mask MSB to be 1</span>
+<span class="lineNum">     198 </span><span class="lineCov">       1800 :           auto ptrId = itsCurrentPointerId++;</span>
+<span class="lineNum">     199 </span><span class="lineCov">       1800 :           itsSharedPointerMap.insert( {addr, ptrId} );</span>
+<span class="lineNum">     200 </span><span class="lineCov">       1800 :           return ptrId | detail::msb_32bit; // mask MSB to be 1</span>
 <span class="lineNum">     201 </span>            :         }
 <span class="lineNum">     202 </span>            :         else
-<span class="lineNum">     203 </span><span class="lineCov">        900 :           return id-&gt;second;</span>
+<span class="lineNum">     203 </span><span class="lineCov">       1800 :           return id-&gt;second;</span>
 <span class="lineNum">     204 </span>            :       }
 <span class="lineNum">     205 </span>            : 
 <span class="lineNum">     206 </span>            :       //! Registers a polymorphic type name with the archive
@@ -272,36 +272,36 @@
 <span class="lineNum">     210 </span>            : 
 <a name="211"><span class="lineNum">     211 </span>            :           @param name The name to associate with a polymorphic type</a>
 <span class="lineNum">     212 </span>            :           @return A key that uniquely identifies the polymorphic type name */
-<span class="lineNum">     213 </span><span class="lineCov">        900 :       std::uint32_t registerPolymorphicType( char const * name )</span>
+<span class="lineNum">     213 </span><span class="lineCov">       1800 :       std::uint32_t registerPolymorphicType( char const * name )</span>
 <span class="lineNum">     214 </span>            :       {
-<span class="lineNum">     215 </span><span class="lineCov">        900 :         auto id = itsPolymorphicTypeMap.find( name );</span>
-<span class="lineNum">     216 </span><span class="lineCov">        900 :         if( id == itsPolymorphicTypeMap.end() )</span>
+<span class="lineNum">     215 </span><span class="lineCov">       1800 :         auto id = itsPolymorphicTypeMap.find( name );</span>
+<span class="lineNum">     216 </span><span class="lineCov">       1800 :         if( id == itsPolymorphicTypeMap.end() )</span>
 <span class="lineNum">     217 </span>            :         {
-<span class="lineNum">     218 </span><span class="lineCov">        300 :           auto polyId = itsCurrentPolymorphicTypeId++;</span>
-<span class="lineNum">     219 </span><span class="lineCov">        300 :           itsPolymorphicTypeMap.insert( {name, polyId} );</span>
-<span class="lineNum">     220 </span><span class="lineCov">        300 :           return polyId | detail::msb_32bit; // mask MSB to be 1</span>
+<span class="lineNum">     218 </span><span class="lineCov">        600 :           auto polyId = itsCurrentPolymorphicTypeId++;</span>
+<span class="lineNum">     219 </span><span class="lineCov">        600 :           itsPolymorphicTypeMap.insert( {name, polyId} );</span>
+<span class="lineNum">     220 </span><span class="lineCov">        600 :           return polyId | detail::msb_32bit; // mask MSB to be 1</span>
 <span class="lineNum">     221 </span>            :         }
 <span class="lineNum">     222 </span>            :         else
-<span class="lineNum">     223 </span><span class="lineCov">        600 :           return id-&gt;second;</span>
+<span class="lineNum">     223 </span><span class="lineCov">       1200 :           return id-&gt;second;</span>
 <span class="lineNum">     224 </span>            :       }
 <span class="lineNum">     225 </span>            : 
 <span class="lineNum">     226 </span>            :     private:
 <a name="227"><span class="lineNum">     227 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
 <span class="lineNum">     228 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     229 </span><span class="lineCov">   11945455 :       void process( T &amp;&amp; head )</span>
+<span class="lineNum">     229 </span><span class="lineCov">   23890188 :       void process( T &amp;&amp; head )</span>
 <span class="lineNum">     230 </span>            :       {
-<span class="lineNum">     231 </span><span class="lineCov">   11945455 :         prologue( *self, head );</span>
-<span class="lineNum">     232 </span><span class="lineCov">   11945455 :         self-&gt;processImpl( head );</span>
-<span class="lineNum">     233 </span><span class="lineCov">   11945455 :         epilogue( *self, head );</span>
-<span class="lineNum">     234 </span><span class="lineCov">   11945455 :       }</span>
+<span class="lineNum">     231 </span><span class="lineCov">   23890188 :         prologue( *self, head );</span>
+<span class="lineNum">     232 </span><span class="lineCov">   23890188 :         self-&gt;processImpl( head );</span>
+<span class="lineNum">     233 </span><span class="lineCov">   23890188 :         epilogue( *self, head );</span>
+<span class="lineNum">     234 </span><span class="lineCov">   23890188 :       }</span>
 <span class="lineNum">     235 </span>            : 
 <a name="236"><span class="lineNum">     236 </span>            :       //! Unwinds to process all data</a>
 <span class="lineNum">     237 </span>            :       template &lt;class T, class ... Other&gt; inline
-<span class="lineNum">     238 </span><span class="lineCov">    3598392 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
+<span class="lineNum">     238 </span><span class="lineCov">    7196556 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
 <span class="lineNum">     239 </span>            :       {
-<span class="lineNum">     240 </span><span class="lineCov">    3598392 :         self-&gt;process( std::forward&lt;T&gt;( head ) );</span>
-<span class="lineNum">     241 </span><span class="lineCov">    3598392 :         self-&gt;process( std::forward&lt;Other&gt;( tail )... );</span>
-<span class="lineNum">     242 </span><span class="lineCov">    3598392 :       }</span>
+<span class="lineNum">     240 </span><span class="lineCov">    7196556 :         self-&gt;process( std::forward&lt;T&gt;( head ) );</span>
+<span class="lineNum">     241 </span><span class="lineCov">    7196556 :         self-&gt;process( std::forward&lt;Other&gt;( tail )... );</span>
+<span class="lineNum">     242 </span><span class="lineCov">    7196556 :       }</span>
 <span class="lineNum">     243 </span>            : 
 <span class="lineNum">     244 </span>            :       //! Serialization of a virtual_base_class wrapper
 <span class="lineNum">     245 </span>            :       /*! \sa virtual_base_class */
@@ -320,10 +320,10 @@
 <span class="lineNum">     258 </span>            :       //! Serialization of a base_class wrapper
 <a name="259"><span class="lineNum">     259 </span>            :       /*! \sa base_class */</a>
 <span class="lineNum">     260 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     261 </span><span class="lineCov">        600 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; const &amp; b)</span>
+<span class="lineNum">     261 </span><span class="lineCov">       1200 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; const &amp; b)</span>
 <span class="lineNum">     262 </span>            :       {
-<span class="lineNum">     263 </span><span class="lineCov">        600 :         self-&gt;processImpl( *b.base_ptr );</span>
-<span class="lineNum">     264 </span><span class="lineCov">        600 :         return *self;</span>
+<span class="lineNum">     263 </span><span class="lineCov">       1200 :         self-&gt;processImpl( *b.base_ptr );</span>
+<span class="lineNum">     264 </span><span class="lineCov">       1200 :         return *self;</span>
 <span class="lineNum">     265 </span>            :       }
 <span class="lineNum">     266 </span>            : 
 <span class="lineNum">     267 </span>            :       //! Member serialization
@@ -331,10 +331,10 @@
 <span class="lineNum">     269 </span>            :       typename std::enable_if&lt;traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;() ||
 <a name="270"><span class="lineNum">     270 </span>            :                               (traits::is_output_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_member_serialize&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     271 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     272 </span><span class="lineCov">    1796319 :       processImpl(T const &amp; t)</span>
+<span class="lineNum">     272 </span><span class="lineCov">    3592533 :       processImpl(T const &amp; t)</span>
 <span class="lineNum">     273 </span>            :       {
-<span class="lineNum">     274 </span><span class="lineCov">    1796319 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
-<span class="lineNum">     275 </span><span class="lineCov">    1796319 :         return *self;</span>
+<span class="lineNum">     274 </span><span class="lineCov">    3592533 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
+<span class="lineNum">     275 </span><span class="lineCov">    3592533 :         return *self;</span>
 <span class="lineNum">     276 </span>            :       }
 <span class="lineNum">     277 </span>            : 
 <span class="lineNum">     278 </span>            :       //! Non member serialization
@@ -342,10 +342,10 @@
 <span class="lineNum">     280 </span>            :       typename std::enable_if&lt;traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;() ||
 <a name="281"><span class="lineNum">     281 </span>            :                               (traits::is_output_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_non_member_serialize&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     282 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     283 </span><span class="lineCov">     678243 :       processImpl(T const &amp; t)</span>
+<span class="lineNum">     283 </span><span class="lineCov">    1356484 :       processImpl(T const &amp; t)</span>
 <span class="lineNum">     284 </span>            :       {
-<span class="lineNum">     285 </span><span class="lineCov">     678243 :         serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
-<span class="lineNum">     286 </span><span class="lineCov">     678243 :         return *self;</span>
+<span class="lineNum">     285 </span><span class="lineCov">    1356484 :         serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
+<span class="lineNum">     286 </span><span class="lineCov">    1356484 :         return *self;</span>
 <span class="lineNum">     287 </span>            :       }
 <span class="lineNum">     288 </span>            : 
 <span class="lineNum">     289 </span>            :       //! Member split (save)
@@ -353,10 +353,10 @@
 <span class="lineNum">     291 </span>            :       typename std::enable_if&lt;traits::is_specialized_member_save&lt;T, ArchiveType&gt;() ||
 <a name="292"><span class="lineNum">     292 </span>            :                               (traits::is_output_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_member_save&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     293 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     294 </span><span class="lineCov">     602382 :       processImpl(T const &amp; t)</span>
+<span class="lineNum">     294 </span><span class="lineCov">    1204755 :       processImpl(T const &amp; t)</span>
 <span class="lineNum">     295 </span>            :       {
-<span class="lineNum">     296 </span><span class="lineCov">     602382 :         access::member_save(*self, t);</span>
-<span class="lineNum">     297 </span><span class="lineCov">     602382 :         return *self;</span>
+<span class="lineNum">     296 </span><span class="lineCov">    1204755 :         access::member_save(*self, t);</span>
+<span class="lineNum">     297 </span><span class="lineCov">    1204755 :         return *self;</span>
 <span class="lineNum">     298 </span>            :       }
 <span class="lineNum">     299 </span>            : 
 <span class="lineNum">     300 </span>            :       //! Non member split (save)
@@ -364,10 +364,10 @@
 <span class="lineNum">     302 </span>            :       typename std::enable_if&lt;traits::is_specialized_non_member_save&lt;T, ArchiveType&gt;() ||
 <a name="303"><span class="lineNum">     303 </span>            :                               (traits::is_output_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_non_member_save&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     304 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     305 </span><span class="lineCov">    8868511 :       processImpl(T const &amp; t)</span>
+<span class="lineNum">     305 </span><span class="lineCov">   17736416 :       processImpl(T const &amp; t)</span>
 <span class="lineNum">     306 </span>            :       {
-<span class="lineNum">     307 </span><span class="lineCov">    8868511 :         save(*self, t);</span>
-<span class="lineNum">     308 </span><span class="lineCov">    8868511 :         return *self;</span>
+<span class="lineNum">     307 </span><span class="lineCov">   17736416 :         save(*self, t);</span>
+<span class="lineNum">     308 </span><span class="lineCov">   17736416 :         return *self;</span>
 <span class="lineNum">     309 </span>            :       }
 <span class="lineNum">     310 </span>            : 
 <span class="lineNum">     311 </span>            :       //! Empty class specialization
@@ -434,19 +434,19 @@
 <span class="lineNum">     372 </span>            :                     enum for more information.
 <a name="373"><span class="lineNum">     373 </span>            :       @ingroup Internal */</a>
 <span class="lineNum">     374 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
-<span class="lineNum">     375 </span><span class="lineCov">       8100 :   class InputArchive : public detail::InputArchiveBase</span>
+<span class="lineNum">     375 </span><span class="lineCov">      16200 :   class InputArchive : public detail::InputArchiveBase</span>
 <span class="lineNum">     376 </span>            :   {
 <span class="lineNum">     377 </span>            :     public:
 <a name="378"><span class="lineNum">     378 </span>            :       //! Construct the output archive</a>
 <span class="lineNum">     379 </span>            :       /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
-<span class="lineNum">     380 </span><span class="lineCov">       8100 :       InputArchive(ArchiveType * const self) : self(self) { }</span>
+<span class="lineNum">     380 </span><span class="lineCov">      16200 :       InputArchive(ArchiveType * const self) : self(self) { }</span>
 <span class="lineNum">     381 </span>            : 
 <a name="382"><span class="lineNum">     382 </span>            :       //! Serializes all passed in data</a>
 <span class="lineNum">     383 </span>            :       template &lt;class ... Types&gt; inline
-<span class="lineNum">     384 </span><span class="lineCov">    8333463 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
+<span class="lineNum">     384 </span><span class="lineCov">   16666432 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
 <span class="lineNum">     385 </span>            :       {
-<span class="lineNum">     386 </span><span class="lineCov">    8333463 :         process( std::forward&lt;Types&gt;( args )... );</span>
-<span class="lineNum">     387 </span><span class="lineCov">    8333463 :         return *self;</span>
+<span class="lineNum">     386 </span><span class="lineCov">   16666432 :         process( std::forward&lt;Types&gt;( args )... );</span>
+<span class="lineNum">     387 </span><span class="lineCov">   16666432 :         return *self;</span>
 <span class="lineNum">     388 </span>            :       }
 <span class="lineNum">     389 </span>            : 
 <span class="lineNum">     390 </span>            :       //! Retrieves a shared pointer given a unique key for it
@@ -455,15 +455,15 @@
 <span class="lineNum">     393 </span>            : 
 <a name="394"><span class="lineNum">     394 </span>            :           @param id The unique id that was serialized for the pointer</a>
 <span class="lineNum">     395 </span>            :           @return A shared pointer to the data */
-<span class="lineNum">     396 </span><span class="lineCov">       1500 :       std::shared_ptr&lt;void&gt; getSharedPointer(std::uint32_t const id)</span>
+<span class="lineNum">     396 </span><span class="lineCov">       3000 :       std::shared_ptr&lt;void&gt; getSharedPointer(std::uint32_t const id)</span>
 <span class="lineNum">     397 </span>            :       {
-<span class="lineNum">     398 </span><span class="lineCov">       1500 :         if(id == 0) return std::shared_ptr&lt;void&gt;(nullptr);</span>
+<span class="lineNum">     398 </span><span class="lineCov">       3000 :         if(id == 0) return std::shared_ptr&lt;void&gt;(nullptr);</span>
 <span class="lineNum">     399 </span>            : 
-<span class="lineNum">     400 </span><span class="lineCov">        900 :         auto ptr = itsSharedPointerMap.find( id );</span>
-<span class="lineNum">     401 </span><span class="lineCov">        900 :         if(ptr == itsSharedPointerMap.end())</span>
+<span class="lineNum">     400 </span><span class="lineCov">       1800 :         auto ptr = itsSharedPointerMap.find( id );</span>
+<span class="lineNum">     401 </span><span class="lineCov">       1800 :         if(ptr == itsSharedPointerMap.end())</span>
 <span class="lineNum">     402 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a smart pointer. Could not find id &quot; + std::to_string(id));</span>
 <span class="lineNum">     403 </span>            : 
-<span class="lineNum">     404 </span><span class="lineCov">        900 :         return ptr-&gt;second;</span>
+<span class="lineNum">     404 </span><span class="lineCov">       1800 :         return ptr-&gt;second;</span>
 <span class="lineNum">     405 </span>            :       }
 <span class="lineNum">     406 </span>            : 
 <span class="lineNum">     407 </span>            :       //! Registers a shared pointer to its unique identifier
@@ -472,11 +472,11 @@
 <span class="lineNum">     410 </span>            : 
 <a name="411"><span class="lineNum">     411 </span>            :           @param id The unique identifier for the shared pointer</a>
 <span class="lineNum">     412 </span>            :           @param ptr The actual shared pointer */
-<span class="lineNum">     413 </span><span class="lineCov">        900 :       void registerSharedPointer(std::uint32_t const id, std::shared_ptr&lt;void&gt; ptr)</span>
+<span class="lineNum">     413 </span><span class="lineCov">       1800 :       void registerSharedPointer(std::uint32_t const id, std::shared_ptr&lt;void&gt; ptr)</span>
 <span class="lineNum">     414 </span>            :       {
-<span class="lineNum">     415 </span><span class="lineCov">        900 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
-<span class="lineNum">     416 </span><span class="lineCov">        900 :         itsSharedPointerMap.insert( {stripped_id, ptr} );</span>
-<span class="lineNum">     417 </span><span class="lineCov">        900 :       }</span>
+<span class="lineNum">     415 </span><span class="lineCov">       1800 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
+<span class="lineNum">     416 </span><span class="lineCov">       1800 :         itsSharedPointerMap.insert( {stripped_id, ptr} );</span>
+<span class="lineNum">     417 </span><span class="lineCov">       1800 :       }</span>
 <span class="lineNum">     418 </span>            : 
 <span class="lineNum">     419 </span>            :       //! Retrieves the string for a polymorphic type given a unique key for it
 <span class="lineNum">     420 </span>            :       /*! This is used to retrieve a string previously registered during
@@ -484,14 +484,14 @@
 <span class="lineNum">     422 </span>            : 
 <a name="423"><span class="lineNum">     423 </span>            :           @param id The unique id that was serialized for the polymorphic type</a>
 <span class="lineNum">     424 </span>            :           @return The string identifier for the tyep */
-<span class="lineNum">     425 </span><span class="lineCov">        600 :       std::string getPolymorphicName(std::uint32_t const id)</span>
+<span class="lineNum">     425 </span><span class="lineCov">       1200 :       std::string getPolymorphicName(std::uint32_t const id)</span>
 <span class="lineNum">     426 </span>            :       {
-<span class="lineNum">     427 </span><span class="lineCov">        600 :         auto name = itsPolymorphicTypeMap.find( id );</span>
-<span class="lineNum">     428 </span><span class="lineCov">        600 :         if(name == itsPolymorphicTypeMap.end())</span>
+<span class="lineNum">     427 </span><span class="lineCov">       1200 :         auto name = itsPolymorphicTypeMap.find( id );</span>
+<span class="lineNum">     428 </span><span class="lineCov">       1200 :         if(name == itsPolymorphicTypeMap.end())</span>
 <span class="lineNum">     429 </span>            :         {
 <span class="lineNum">     430 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a polymorphic pointer. Could not find type id &quot; + std::to_string(id));</span>
 <span class="lineNum">     431 </span>            :         }
-<span class="lineNum">     432 </span><span class="lineCov">        600 :         return name-&gt;second;</span>
+<span class="lineNum">     432 </span><span class="lineCov">       1200 :         return name-&gt;second;</span>
 <span class="lineNum">     433 </span>            :       }
 <span class="lineNum">     434 </span>            : 
 <span class="lineNum">     435 </span>            :       //! Registers a polymorphic name string to its unique identifier
@@ -500,29 +500,29 @@
 <span class="lineNum">     438 </span>            : 
 <a name="439"><span class="lineNum">     439 </span>            :           @param id The unique identifier for the polymorphic type</a>
 <span class="lineNum">     440 </span>            :           @param name The name associated with the tyep */
-<span class="lineNum">     441 </span><span class="lineCov">        300 :       void registerPolymorphicName(std::uint32_t const id, std::string const &amp; name)</span>
+<span class="lineNum">     441 </span><span class="lineCov">        600 :       void registerPolymorphicName(std::uint32_t const id, std::string const &amp; name)</span>
 <span class="lineNum">     442 </span>            :       {
-<span class="lineNum">     443 </span><span class="lineCov">        300 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
-<span class="lineNum">     444 </span><span class="lineCov">        300 :         itsPolymorphicTypeMap.insert( {stripped_id, name} );</span>
-<span class="lineNum">     445 </span><span class="lineCov">        300 :       }</span>
+<span class="lineNum">     443 </span><span class="lineCov">        600 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
+<span class="lineNum">     444 </span><span class="lineCov">        600 :         itsPolymorphicTypeMap.insert( {stripped_id, name} );</span>
+<span class="lineNum">     445 </span><span class="lineCov">        600 :       }</span>
 <span class="lineNum">     446 </span>            : 
 <span class="lineNum">     447 </span>            :     private:
 <a name="448"><span class="lineNum">     448 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
 <span class="lineNum">     449 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     450 </span><span class="lineCov">   11931855 :       void process( T &amp;&amp; head )</span>
+<span class="lineNum">     450 </span><span class="lineCov">   23862988 :       void process( T &amp;&amp; head )</span>
 <span class="lineNum">     451 </span>            :       {
-<span class="lineNum">     452 </span><span class="lineCov">   11931855 :         prologue( *self, head );</span>
-<span class="lineNum">     453 </span><span class="lineCov">   11931855 :         self-&gt;processImpl( head );</span>
-<span class="lineNum">     454 </span><span class="lineCov">   11931855 :         epilogue( *self, head );</span>
-<span class="lineNum">     455 </span><span class="lineCov">   11931855 :       }</span>
+<span class="lineNum">     452 </span><span class="lineCov">   23862988 :         prologue( *self, head );</span>
+<span class="lineNum">     453 </span><span class="lineCov">   23862988 :         self-&gt;processImpl( head );</span>
+<span class="lineNum">     454 </span><span class="lineCov">   23862988 :         epilogue( *self, head );</span>
+<span class="lineNum">     455 </span><span class="lineCov">   23862988 :       }</span>
 <span class="lineNum">     456 </span>            : 
 <a name="457"><span class="lineNum">     457 </span>            :       //! Unwinds to process all data</a>
 <span class="lineNum">     458 </span>            :       template &lt;class T, class ... Other&gt; inline
-<span class="lineNum">     459 </span><span class="lineCov">    3598392 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
+<span class="lineNum">     459 </span><span class="lineCov">    7196556 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
 <span class="lineNum">     460 </span>            :       {
-<span class="lineNum">     461 </span><span class="lineCov">    3598392 :         process( std::forward&lt;T&gt;( head ) );</span>
-<span class="lineNum">     462 </span><span class="lineCov">    3598392 :         process( std::forward&lt;Other&gt;( tail )... );</span>
-<span class="lineNum">     463 </span><span class="lineCov">    3598392 :       }</span>
+<span class="lineNum">     461 </span><span class="lineCov">    7196556 :         process( std::forward&lt;T&gt;( head ) );</span>
+<span class="lineNum">     462 </span><span class="lineCov">    7196556 :         process( std::forward&lt;Other&gt;( tail )... );</span>
+<span class="lineNum">     463 </span><span class="lineCov">    7196556 :       }</span>
 <span class="lineNum">     464 </span>            : 
 <span class="lineNum">     465 </span>            :       //! Serialization of a virtual_base_class wrapper
 <span class="lineNum">     466 </span>            :       /*! \sa virtual_base_class */
@@ -541,10 +541,10 @@
 <span class="lineNum">     479 </span>            :       //! Serialization of a base_class wrapper
 <a name="480"><span class="lineNum">     480 </span>            :       /*! \sa base_class */</a>
 <span class="lineNum">     481 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     482 </span><span class="lineCov">        600 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; &amp; b)</span>
+<span class="lineNum">     482 </span><span class="lineCov">       1200 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; &amp; b)</span>
 <span class="lineNum">     483 </span>            :       {
-<span class="lineNum">     484 </span><span class="lineCov">        600 :         self-&gt;processImpl( *b.base_ptr );</span>
-<span class="lineNum">     485 </span><span class="lineCov">        600 :         return *self;</span>
+<span class="lineNum">     484 </span><span class="lineCov">       1200 :         self-&gt;processImpl( *b.base_ptr );</span>
+<span class="lineNum">     485 </span><span class="lineCov">       1200 :         return *self;</span>
 <span class="lineNum">     486 </span>            :       }
 <span class="lineNum">     487 </span>            : 
 <span class="lineNum">     488 </span>            : 
@@ -553,10 +553,10 @@
 <span class="lineNum">     491 </span>            :       typename std::enable_if&lt;traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;() ||
 <a name="492"><span class="lineNum">     492 </span>            :                               (traits::is_input_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_member_serialize&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     493 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     494 </span><span class="lineCov">    1796319 :       processImpl(T &amp; t)</span>
+<span class="lineNum">     494 </span><span class="lineCov">    3592533 :       processImpl(T &amp; t)</span>
 <span class="lineNum">     495 </span>            :       {
-<span class="lineNum">     496 </span><span class="lineCov">    1796319 :         access::member_serialize(*self, t);</span>
-<span class="lineNum">     497 </span><span class="lineCov">    1796319 :         return *self;</span>
+<span class="lineNum">     496 </span><span class="lineCov">    3592533 :         access::member_serialize(*self, t);</span>
+<span class="lineNum">     497 </span><span class="lineCov">    3592533 :         return *self;</span>
 <span class="lineNum">     498 </span>            :       }
 <span class="lineNum">     499 </span>            : 
 <span class="lineNum">     500 </span>            :       //! Non member serialization
@@ -564,10 +564,10 @@
 <span class="lineNum">     502 </span>            :       typename std::enable_if&lt;traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;() ||
 <a name="503"><span class="lineNum">     503 </span>            :                               (traits::is_input_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_non_member_serialize&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     504 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     505 </span><span class="lineCov">     678243 :       processImpl(T &amp; t)</span>
+<span class="lineNum">     505 </span><span class="lineCov">    1356484 :       processImpl(T &amp; t)</span>
 <span class="lineNum">     506 </span>            :       {
-<span class="lineNum">     507 </span><span class="lineCov">     678243 :         serialize(*self, t);</span>
-<span class="lineNum">     508 </span><span class="lineCov">     678243 :         return *self;</span>
+<span class="lineNum">     507 </span><span class="lineCov">    1356484 :         serialize(*self, t);</span>
+<span class="lineNum">     508 </span><span class="lineCov">    1356484 :         return *self;</span>
 <span class="lineNum">     509 </span>            :       }
 <span class="lineNum">     510 </span>            : 
 <span class="lineNum">     511 </span>            :       //! Member split (load)
@@ -575,10 +575,10 @@
 <span class="lineNum">     513 </span>            :       typename std::enable_if&lt;traits::is_specialized_member_load&lt;T, ArchiveType&gt;() ||
 <a name="514"><span class="lineNum">     514 </span>            :                               (traits::is_input_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_member_load&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     515 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     516 </span><span class="lineCov">     602382 :       processImpl(T &amp; t)</span>
+<span class="lineNum">     516 </span><span class="lineCov">    1204755 :       processImpl(T &amp; t)</span>
 <span class="lineNum">     517 </span>            :       {
-<span class="lineNum">     518 </span><span class="lineCov">     602382 :         access::member_load(*self, t);</span>
-<span class="lineNum">     519 </span><span class="lineCov">     602382 :         return *self;</span>
+<span class="lineNum">     518 </span><span class="lineCov">    1204755 :         access::member_load(*self, t);</span>
+<span class="lineNum">     519 </span><span class="lineCov">    1204755 :         return *self;</span>
 <span class="lineNum">     520 </span>            :       }
 <span class="lineNum">     521 </span>            : 
 <span class="lineNum">     522 </span>            :       //! Non member split (load)
@@ -586,10 +586,10 @@
 <span class="lineNum">     524 </span>            :       typename std::enable_if&lt;traits::is_specialized_non_member_load&lt;T, ArchiveType&gt;() ||
 <a name="525"><span class="lineNum">     525 </span>            :                               (traits::is_input_serializable&lt;T, ArchiveType&gt;() &amp;&amp; traits::has_non_member_load&lt;T, ArchiveType&gt;()),</a>
 <span class="lineNum">     526 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     527 </span><span class="lineCov">    8854911 :       processImpl(T &amp; t)</span>
+<span class="lineNum">     527 </span><span class="lineCov">   17709216 :       processImpl(T &amp; t)</span>
 <span class="lineNum">     528 </span>            :       {
-<span class="lineNum">     529 </span><span class="lineCov">    8854911 :         load(*self, t);</span>
-<span class="lineNum">     530 </span><span class="lineCov">    8854911 :         return *self;</span>
+<span class="lineNum">     529 </span><span class="lineCov">   17709216 :         load(*self, t);</span>
+<span class="lineNum">     530 </span><span class="lineCov">   17709216 :         return *self;</span>
 <span class="lineNum">     531 </span>            :       }
 <span class="lineNum">     532 </span>            : 
 <span class="lineNum">     533 </span>            :       //! Empty class specialization

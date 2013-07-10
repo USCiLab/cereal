@@ -100,23 +100,23 @@
 <span class="lineNum">      38 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="39"><span class="lineNum">      39 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      40 </span>            :   typename std::enable_if&lt;traits::is_output_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;(), void&gt;::type
-<span class="lineNum">      41 </span><span class="lineCov">      60643 :   save(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
+<span class="lineNum">      41 </span><span class="lineCov">     121284 :   save(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
 <span class="lineNum">      42 </span>            :   {
 <span class="lineNum">      43 </span>            :     // Save number of chars + the data
-<span class="lineNum">      44 </span><span class="lineCov">      60643 :     ar( make_size_tag( str.size() ) );</span>
-<span class="lineNum">      45 </span><span class="lineCov">      60643 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
-<span class="lineNum">      46 </span><span class="lineCov">      60643 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">     121284 :     ar( make_size_tag( str.size() ) );</span>
+<span class="lineNum">      45 </span><span class="lineCov">     121284 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
+<span class="lineNum">      46 </span><span class="lineCov">     121284 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="49"><span class="lineNum">      49 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      50 </span>            :   typename std::enable_if&lt;traits::is_input_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;(), void&gt;::type
-<span class="lineNum">      51 </span><span class="lineCov">      60643 :   load(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
+<span class="lineNum">      51 </span><span class="lineCov">     121284 :   load(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
 <span class="lineNum">      52 </span>            :   {
 <span class="lineNum">      53 </span>            :     size_t size;
-<span class="lineNum">      54 </span><span class="lineCov">      60643 :     ar( make_size_tag( size ) );</span>
-<span class="lineNum">      55 </span><span class="lineCov">      60643 :     str.resize(size);</span>
-<span class="lineNum">      56 </span><span class="lineCov">      60643 :     ar( binary_data( &amp;(*str.begin()), size * sizeof(CharT) ) );</span>
-<span class="lineNum">      57 </span><span class="lineCov">      60643 :   }</span>
+<span class="lineNum">      54 </span><span class="lineCov">     121284 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">     121284 :     str.resize(size);</span>
+<span class="lineNum">      56 </span><span class="lineCov">     121284 :     ar( binary_data( &amp;(*str.begin()), size * sizeof(CharT) ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">     121284 :   }</span>
 <span class="lineNum">      58 </span>            : } // namespace cereal
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            : #endif // CEREAL_TYPES_STRING_HPP_

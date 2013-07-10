@@ -132,9 +132,9 @@
 <span class="lineNum">      70 </span>            :     struct base_class
 <a name="71"><span class="lineNum">      71 </span>            :     {</a>
 <span class="lineNum">      72 </span>            :       template&lt;class Derived&gt;
-<span class="lineNum">      73 </span><span class="lineCov">       1200 :         base_class(Derived const * derived) :</span>
-<span class="lineNum">      74 </span><span class="lineCov">       1200 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
-<span class="lineNum">      75 </span><span class="lineCov">       1200 :       { }</span>
+<span class="lineNum">      73 </span><span class="lineCov">       2400 :         base_class(Derived const * derived) :</span>
+<span class="lineNum">      74 </span><span class="lineCov">       2400 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
+<span class="lineNum">      75 </span><span class="lineCov">       2400 :       { }</span>
 <span class="lineNum">      76 </span>            : 
 <span class="lineNum">      77 </span>            :         Base * base_ptr;
 <span class="lineNum">      78 </span>            :     };

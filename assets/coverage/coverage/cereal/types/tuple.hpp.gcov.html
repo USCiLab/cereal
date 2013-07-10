@@ -105,11 +105,11 @@
 <span class="lineNum">      43 </span>            :     struct serialize
 <a name="44"><span class="lineNum">      44 </span>            :     {</a>
 <span class="lineNum">      45 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      46 </span><span class="lineCov">      12000 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">      46 </span><span class="lineCov">      24000 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
 <span class="lineNum">      47 </span>            :       {
-<span class="lineNum">      48 </span><span class="lineCov">      12000 :         ar( _CEREAL_NVP(&quot;tuple_element&quot;, std::get&lt;Height - 1&gt;( tuple )) );</span>
-<span class="lineNum">      49 </span><span class="lineCov">      12000 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
-<span class="lineNum">      50 </span><span class="lineCov">      12000 :       }</span>
+<span class="lineNum">      48 </span><span class="lineCov">      24000 :         ar( _CEREAL_NVP(&quot;tuple_element&quot;, std::get&lt;Height - 1&gt;( tuple )) );</span>
+<span class="lineNum">      49 </span><span class="lineCov">      24000 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">      50 </span><span class="lineCov">      24000 :       }</span>
 <span class="lineNum">      51 </span>            :     };
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            :     // Zero height specialization - nothing to do here
@@ -118,17 +118,17 @@
 <span class="lineNum">      56 </span>            :     struct serialize&lt;0&gt;
 <a name="57"><span class="lineNum">      57 </span>            :     {</a>
 <span class="lineNum">      58 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      59 </span><span class="lineCov">       3000 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
-<span class="lineNum">      60 </span><span class="lineCov">       3000 :       { }</span>
+<span class="lineNum">      59 </span><span class="lineCov">       6000 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
+<span class="lineNum">      60 </span><span class="lineCov">       6000 :       { }</span>
 <span class="lineNum">      61 </span>            :     };
 <span class="lineNum">      62 </span>            :   }
 <span class="lineNum">      63 </span>            : 
 <a name="64"><span class="lineNum">      64 </span>            :   //! Serializing for std::tuple</a>
 <span class="lineNum">      65 </span>            :   template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      66 </span><span class="lineCov">       3000 :   void serialize( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">      66 </span><span class="lineCov">       6000 :   void serialize( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
 <span class="lineNum">      67 </span>            :   {
-<span class="lineNum">      68 </span><span class="lineCov">       3000 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
-<span class="lineNum">      69 </span><span class="lineCov">       3000 :   }</span>
+<span class="lineNum">      68 </span><span class="lineCov">       6000 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">      69 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      70 </span>            : } // namespace cereal
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            : #endif // CEREAL_TYPES_TUPLE_HPP_

@@ -109,28 +109,28 @@
 <span class="lineNum">      47 </span>            :     {
 <a name="48"><span class="lineNum">      48 </span>            :       private:</a>
 <span class="lineNum">      49 </span>            :         //! Forces instantiation at pre-execution time
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       1820 :         static void instantiate(T const &amp;) {}</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       3640 :         static void instantiate(T const &amp;) {}</span></a>
 <span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span><span class="lineCov">       1820 :         static T &amp; create()</span>
+<span class="lineNum">      52 </span><span class="lineCov">       3640 :         static T &amp; create()</span>
 <span class="lineNum">      53 </span>            :         {
-<span class="lineNum">      54 </span><span class="lineCov">       1818 :           static T t;</span>
-<span class="lineNum">      55 </span><span class="lineCov">       1820 :           instantiate(instance);</span>
-<span class="lineNum">      56 </span><span class="lineCov">       1820 :           return t;</span>
+<span class="lineNum">      54 </span><span class="lineCov">       3636 :           static T t;</span>
+<span class="lineNum">      55 </span><span class="lineCov">       3640 :           instantiate(instance);</span>
+<span class="lineNum">      56 </span><span class="lineCov">       3640 :           return t;</span>
 <span class="lineNum">      57 </span>            :         }
 <span class="lineNum">      58 </span>            : 
 <span class="lineNum">      59 </span>            :         StaticObject( StaticObject const &amp; other ) = delete;
 <a name="60"><span class="lineNum">      60 </span>            : </a>
 <span class="lineNum">      61 </span>            :       public:
-<span class="lineNum">      62 </span><span class="lineCov">       1807 :         static T &amp; getInstance()</span>
+<span class="lineNum">      62 </span><span class="lineCov">       3614 :         static T &amp; getInstance()</span>
 <span class="lineNum">      63 </span>            :         {
-<span class="lineNum">      64 </span><span class="lineCov">       1807 :           return create();</span>
+<span class="lineNum">      64 </span><span class="lineCov">       3614 :           return create();</span>
 <span class="lineNum">      65 </span>            :         }
 <span class="lineNum">      66 </span>            : 
 <span class="lineNum">      67 </span>            :       private:
 <span class="lineNum">      68 </span>            :         static T &amp; instance;
 <span class="lineNum">      69 </span>            :     };
 <span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span><span class="lineCov">          1 :     template &lt;class T&gt; T &amp; StaticObject&lt;T&gt;::instance = StaticObject&lt;T&gt;::create();</span>
+<span class="lineNum">      71 </span><span class="lineCov">          2 :     template &lt;class T&gt; T &amp; StaticObject&lt;T&gt;::instance = StaticObject&lt;T&gt;::create();</span>
 <span class="lineNum">      72 </span>            :   }
 <span class="lineNum">      73 </span>            : } // namespace cereal
 <span class="lineNum">      74 </span>            : 

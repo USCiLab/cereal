@@ -99,26 +99,26 @@
 <span class="lineNum">      37 </span>            : {
 <a name="38"><span class="lineNum">      38 </span>            :   //! Saving for std::list</a>
 <span class="lineNum">      39 </span>            :   template &lt;class Archive, class T, class A&gt; inline
-<span class="lineNum">      40 </span><span class="lineCov">       1500 :   void save( Archive &amp; ar, std::list&lt;T, A&gt; const &amp; list )</span>
+<span class="lineNum">      40 </span><span class="lineCov">       3000 :   void save( Archive &amp; ar, std::list&lt;T, A&gt; const &amp; list )</span>
 <span class="lineNum">      41 </span>            :   {
-<span class="lineNum">      42 </span><span class="lineCov">       1500 :     ar( make_size_tag( list.size() ) );</span>
+<span class="lineNum">      42 </span><span class="lineCov">       3000 :     ar( make_size_tag( list.size() ) );</span>
 <span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineCov">     151500 :     for( auto const &amp; i : list )</span>
-<span class="lineNum">      45 </span><span class="lineCov">     150000 :       ar( i );</span>
-<span class="lineNum">      46 </span><span class="lineCov">       1500 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">     303000 :     for( auto const &amp; i : list )</span>
+<span class="lineNum">      45 </span><span class="lineCov">     300000 :       ar( i );</span>
+<span class="lineNum">      46 </span><span class="lineCov">       3000 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <a name="48"><span class="lineNum">      48 </span>            :   //! Loading for std::list</a>
 <span class="lineNum">      49 </span>            :   template &lt;class Archive, class T, class A&gt; inline
-<span class="lineNum">      50 </span><span class="lineCov">       1500 :   void load( Archive &amp; ar, std::list&lt;T, A&gt; &amp; list )</span>
+<span class="lineNum">      50 </span><span class="lineCov">       3000 :   void load( Archive &amp; ar, std::list&lt;T, A&gt; &amp; list )</span>
 <span class="lineNum">      51 </span>            :   {
 <span class="lineNum">      52 </span>            :     size_t size;
-<span class="lineNum">      53 </span><span class="lineCov">       1500 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      53 </span><span class="lineCov">       3000 :     ar( make_size_tag( size ) );</span>
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">       1500 :     list.resize( size );</span>
+<span class="lineNum">      55 </span><span class="lineCov">       3000 :     list.resize( size );</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">     151500 :     for( auto &amp; i : list )</span>
-<span class="lineNum">      58 </span><span class="lineCov">     150000 :       ar( i );</span>
-<span class="lineNum">      59 </span><span class="lineCov">       1500 :   }</span>
+<span class="lineNum">      57 </span><span class="lineCov">     303000 :     for( auto &amp; i : list )</span>
+<span class="lineNum">      58 </span><span class="lineCov">     300000 :       ar( i );</span>
+<span class="lineNum">      59 </span><span class="lineCov">       3000 :   }</span>
 <span class="lineNum">      60 </span>            : } // namespace cereal
 <span class="lineNum">      61 </span>            : 
 <span class="lineNum">      62 </span>            : #endif // CEREAL_TYPES_LIST_HPP_

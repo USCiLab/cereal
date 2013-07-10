@@ -101,51 +101,51 @@
 <span class="lineNum">      39 </span>            :   template &lt;class Archive, class T, class A&gt; inline
 <a name="40"><span class="lineNum">      40 </span>            :   typename std::enable_if&lt;traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;()</a>
 <span class="lineNum">      41 </span>            :                           &amp;&amp; std::is_arithmetic&lt;T&gt;::value &amp;&amp; !std::is_same&lt;T, bool&gt;::value, void&gt;::type
-<span class="lineNum">      42 </span><span class="lineCov">        200 :   save( Archive &amp; ar, std::vector&lt;T, A&gt; const &amp; vector )</span>
+<span class="lineNum">      42 </span><span class="lineCov">        400 :   save( Archive &amp; ar, std::vector&lt;T, A&gt; const &amp; vector )</span>
 <span class="lineNum">      43 </span>            :   {
-<span class="lineNum">      44 </span><span class="lineCov">        200 :     ar( make_size_tag( vector.size() ) ); // number of elements</span>
-<span class="lineNum">      45 </span><span class="lineCov">        200 :     ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );</span>
-<span class="lineNum">      46 </span><span class="lineCov">        200 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">        400 :     ar( make_size_tag( vector.size() ) ); // number of elements</span>
+<span class="lineNum">      45 </span><span class="lineCov">        400 :     ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );</span>
+<span class="lineNum">      46 </span><span class="lineCov">        400 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :   //! Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported
 <span class="lineNum">      49 </span>            :   template &lt;class Archive, class T, class A&gt; inline
 <a name="50"><span class="lineNum">      50 </span>            :   typename std::enable_if&lt;traits::is_input_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;()</a>
 <span class="lineNum">      51 </span>            :                           &amp;&amp; std::is_arithmetic&lt;T&gt;::value &amp;&amp; !std::is_same&lt;T, bool&gt;::value, void&gt;::type
-<span class="lineNum">      52 </span><span class="lineCov">        200 :   load( Archive &amp; ar, std::vector&lt;T, A&gt; &amp; vector )</span>
+<span class="lineNum">      52 </span><span class="lineCov">        400 :   load( Archive &amp; ar, std::vector&lt;T, A&gt; &amp; vector )</span>
 <span class="lineNum">      53 </span>            :   {
 <span class="lineNum">      54 </span>            :     size_t vectorSize;
-<span class="lineNum">      55 </span><span class="lineCov">        200 :     ar( make_size_tag( vectorSize ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">        400 :     ar( make_size_tag( vectorSize ) );</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">        200 :     vector.resize( vectorSize );</span>
-<span class="lineNum">      58 </span><span class="lineCov">        200 :     ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );</span>
-<span class="lineNum">      59 </span><span class="lineCov">        200 :   }</span>
+<span class="lineNum">      57 </span><span class="lineCov">        400 :     vector.resize( vectorSize );</span>
+<span class="lineNum">      58 </span><span class="lineCov">        400 :     ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );</span>
+<span class="lineNum">      59 </span><span class="lineCov">        400 :   }</span>
 <span class="lineNum">      60 </span>            : 
 <span class="lineNum">      61 </span>            :   //! Serialization for non-arithmetic (and bool) vector types
 <span class="lineNum">      62 </span>            :   template &lt;class Archive, class T, class A&gt; inline
 <span class="lineNum">      63 </span>            :   typename std::enable_if&lt;!traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;()
 <a name="64"><span class="lineNum">      64 </span>            :                           || !std::is_arithmetic&lt;T&gt;::value</a>
 <span class="lineNum">      65 </span>            :                           || std::is_same&lt;T, bool&gt;::value, void&gt;::type
-<span class="lineNum">      66 </span><span class="lineCov">       5800 :   save( Archive &amp; ar, std::vector&lt;T, A&gt; const &amp; vector )</span>
+<span class="lineNum">      66 </span><span class="lineCov">      11600 :   save( Archive &amp; ar, std::vector&lt;T, A&gt; const &amp; vector )</span>
 <span class="lineNum">      67 </span>            :   {
-<span class="lineNum">      68 </span><span class="lineCov">       5800 :     ar( make_size_tag( vector.size() ) ); // number of elements</span>
-<span class="lineNum">      69 </span><span class="lineCov">     585800 :     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )</span>
-<span class="lineNum">      70 </span><span class="lineCov">     580000 :       ar( *it );</span>
-<span class="lineNum">      71 </span><span class="lineCov">       5800 :   }</span>
+<span class="lineNum">      68 </span><span class="lineCov">      11600 :     ar( make_size_tag( vector.size() ) ); // number of elements</span>
+<span class="lineNum">      69 </span><span class="lineCov">    1171600 :     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )</span>
+<span class="lineNum">      70 </span><span class="lineCov">    1160000 :       ar( *it );</span>
+<span class="lineNum">      71 </span><span class="lineCov">      11600 :   }</span>
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            :   //! Serialization for non-arithmetic (and bool) vector types
 <span class="lineNum">      74 </span>            :   template &lt;class Archive, class T, class A&gt; inline
 <span class="lineNum">      75 </span>            :   typename std::enable_if&lt;!traits::is_input_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;()
 <a name="76"><span class="lineNum">      76 </span>            :                           || !std::is_arithmetic&lt;T&gt;::value</a>
 <span class="lineNum">      77 </span>            :                           || std::is_same&lt;T, bool&gt;::value, void&gt;::type
-<span class="lineNum">      78 </span><span class="lineCov">       5800 :   load( Archive &amp; ar, std::vector&lt;T, A&gt; &amp; vector )</span>
+<span class="lineNum">      78 </span><span class="lineCov">      11600 :   load( Archive &amp; ar, std::vector&lt;T, A&gt; &amp; vector )</span>
 <span class="lineNum">      79 </span>            :   {
 <span class="lineNum">      80 </span>            :     size_t size;
-<span class="lineNum">      81 </span><span class="lineCov">       5800 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      81 </span><span class="lineCov">      11600 :     ar( make_size_tag( size ) );</span>
 <span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">       5800 :     vector.resize( size );</span>
-<span class="lineNum">      84 </span><span class="lineCov">     585800 :     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )</span>
-<span class="lineNum">      85 </span><span class="lineCov">     580000 :       ar( *it );</span>
-<span class="lineNum">      86 </span><span class="lineCov">       5800 :   }</span>
+<span class="lineNum">      83 </span><span class="lineCov">      11600 :     vector.resize( size );</span>
+<span class="lineNum">      84 </span><span class="lineCov">    1171600 :     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )</span>
+<span class="lineNum">      85 </span><span class="lineCov">    1160000 :       ar( *it );</span>
+<span class="lineNum">      86 </span><span class="lineCov">      11600 :   }</span>
 <span class="lineNum">      87 </span>            : } // namespace cereal
 <span class="lineNum">      88 </span>            : 
 <span class="lineNum">      89 </span>            : #endif // CEREAL_TYPES_VECTOR_HPP_

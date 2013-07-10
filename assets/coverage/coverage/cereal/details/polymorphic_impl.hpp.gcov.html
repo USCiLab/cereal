@@ -144,7 +144,7 @@
 <span class="lineNum">      82 </span>            :         properly cast the type to its real type in polymorphic scenarios for
 <a name="83"><span class="lineNum">      83 </span>            :         shared_ptr, weak_ptr, and unique_ptr. */</a>
 <span class="lineNum">      84 </span>            :     template &lt;class Archive&gt;
-<span class="lineNum">      85 </span><span class="lineCov">          3 :     struct OutputBindingMap</span>
+<span class="lineNum">      85 </span><span class="lineCov">          6 :     struct OutputBindingMap</span>
 <span class="lineNum">      86 </span>            :     {
 <span class="lineNum">      87 </span>            :       //! A serializer function
 <span class="lineNum">      88 </span>            :       /*! Serializer functions return nothing and take an archive as
@@ -154,7 +154,7 @@
 <span class="lineNum">      92 </span>            :       typedef std::function&lt;void(void*, void const *)&gt; Serializer;
 <a name="93"><span class="lineNum">      93 </span>            : </a>
 <span class="lineNum">      94 </span>            :       //! Struct containing the serializer functions for all pointer types
-<span class="lineNum">      95 </span><span class="lineCov">         15 :       struct Serializers</span>
+<span class="lineNum">      95 </span><span class="lineCov">         30 :       struct Serializers</span>
 <span class="lineNum">      96 </span>            :       {
 <span class="lineNum">      97 </span>            :         Serializer shared_ptr, //!&lt; Serializer function for shared/weak pointers
 <span class="lineNum">      98 </span>            :                    unique_ptr; //!&lt; Serializer function for unique pointers
@@ -170,7 +170,7 @@
 <span class="lineNum">     108 </span>            :         properly cast the type to its real type in polymorphic scenarios for
 <a name="109"><span class="lineNum">     109 </span>            :         shared_ptr, weak_ptr, and unique_ptr. */</a>
 <span class="lineNum">     110 </span>            :     template &lt;class Archive&gt;
-<span class="lineNum">     111 </span><span class="lineCov">          3 :     struct InputBindingMap</span>
+<span class="lineNum">     111 </span><span class="lineCov">          6 :     struct InputBindingMap</span>
 <span class="lineNum">     112 </span>            :     {
 <span class="lineNum">     113 </span>            :       //! Shared ptr serializer function
 <span class="lineNum">     114 </span>            :       /*! Serializer functions return nothing and take an archive as
@@ -183,7 +183,7 @@
 <span class="lineNum">     121 </span>            :       typedef std::function&lt;void(void*, std::unique_ptr&lt;void&gt; &amp; )&gt; UniqueSerializer;
 <a name="122"><span class="lineNum">     122 </span>            : </a>
 <span class="lineNum">     123 </span>            :       //! Struct containing the serializer functions for all pointer types
-<span class="lineNum">     124 </span><span class="lineCov">       1815 :       struct Serializers</span>
+<span class="lineNum">     124 </span><span class="lineCov">       3630 :       struct Serializers</span>
 <span class="lineNum">     125 </span>            :       {
 <span class="lineNum">     126 </span>            :         SharedSerializer shared_ptr; //!&lt; Serializer function for shared/weak pointers
 <span class="lineNum">     127 </span>            :         UniqueSerializer unique_ptr; //!&lt; Serializer function for unique pointers
@@ -194,7 +194,7 @@
 <span class="lineNum">     132 </span>            :     };
 <a name="133"><span class="lineNum">     133 </span>            : </a>
 <span class="lineNum">     134 </span>            :     //! An empty noop deleter
-<span class="lineNum">     135 </span><span class="lineCov">        900 :     template&lt;class T&gt; struct EmptyDeleter { void operator()(T *) const {} };</span>
+<span class="lineNum">     135 </span><span class="lineCov">       1800 :     template&lt;class T&gt; struct EmptyDeleter { void operator()(T *) const {} };</span>
 <span class="lineNum">     136 </span>            : 
 <span class="lineNum">     137 </span>            :     // forward decls for archives from cereal.hpp
 <span class="lineNum">     138 </span>            :     struct InputArchiveBase;
@@ -208,34 +208,34 @@
 <span class="lineNum">     146 </span>            :     template &lt;class Archive, class T&gt; struct InputBindingCreator
 <a name="147"><span class="lineNum">     147 </span>            :     {</a>
 <span class="lineNum">     148 </span>            :       //! Initialize the binding
-<span class="lineNum">     149 </span><span class="lineCov">          3 :       InputBindingCreator()</span>
+<span class="lineNum">     149 </span><span class="lineCov">          6 :       InputBindingCreator()</span>
 <span class="lineNum">     150 </span>            :       {
-<span class="lineNum">     151 </span><span class="lineCov">          3 :         typename InputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
+<span class="lineNum">     151 </span><span class="lineCov">          6 :         typename InputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
 <a name="152"><span class="lineNum">     152 </span>            : </a>
-<span class="lineNum">     153 </span><span class="lineCov">          3 :         serializers.shared_ptr =</span>
-<span class="lineNum">     154 </span><span class="lineCov">        600 :           [](void * arptr, std::shared_ptr&lt;void&gt; &amp; dptr)</span>
+<span class="lineNum">     153 </span><span class="lineCov">          6 :         serializers.shared_ptr =</span>
+<span class="lineNum">     154 </span><span class="lineCov">       1200 :           [](void * arptr, std::shared_ptr&lt;void&gt; &amp; dptr)</span>
 <span class="lineNum">     155 </span>            :           {
-<span class="lineNum">     156 </span><span class="lineCov">        600 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     157 </span><span class="lineCov">        600 :             std::shared_ptr&lt;T&gt; ptr;</span>
+<span class="lineNum">     156 </span><span class="lineCov">       1200 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
+<span class="lineNum">     157 </span><span class="lineCov">       1200 :             std::shared_ptr&lt;T&gt; ptr;</span>
 <span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span><span class="lineCov">        600 :             ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );</span>
+<span class="lineNum">     159 </span><span class="lineCov">       1200 :             ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );</span>
 <span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineCov">        600 :             dptr = ptr;</span>
-<span class="lineNum">     162 </span><span class="lineCov">        600 :           };</span>
+<span class="lineNum">     161 </span><span class="lineCov">       1200 :             dptr = ptr;</span>
+<span class="lineNum">     162 </span><span class="lineCov">       1200 :           };</span>
 <a name="163"><span class="lineNum">     163 </span>            : </a>
-<span class="lineNum">     164 </span><span class="lineCov">          3 :         serializers.unique_ptr =</span>
-<span class="lineNum">     165 </span><span class="lineCov">        300 :           [](void * arptr, std::unique_ptr&lt;void&gt; &amp; dptr)</span>
+<span class="lineNum">     164 </span><span class="lineCov">          6 :         serializers.unique_ptr =</span>
+<span class="lineNum">     165 </span><span class="lineCov">        600 :           [](void * arptr, std::unique_ptr&lt;void&gt; &amp; dptr)</span>
 <span class="lineNum">     166 </span>            :           {
-<span class="lineNum">     167 </span><span class="lineCov">        300 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     168 </span><span class="lineCov">        300 :             std::unique_ptr&lt;T&gt; ptr;</span>
+<span class="lineNum">     167 </span><span class="lineCov">        600 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
+<span class="lineNum">     168 </span><span class="lineCov">        600 :             std::unique_ptr&lt;T&gt; ptr;</span>
 <span class="lineNum">     169 </span>            : 
-<span class="lineNum">     170 </span><span class="lineCov">        300 :             ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );</span>
+<span class="lineNum">     170 </span><span class="lineCov">        600 :             ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );</span>
 <span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span><span class="lineCov">        300 :             dptr.reset(ptr.release());</span>
-<span class="lineNum">     173 </span><span class="lineCov">        300 :           };</span>
+<span class="lineNum">     172 </span><span class="lineCov">        600 :             dptr.reset(ptr.release());</span>
+<span class="lineNum">     173 </span><span class="lineCov">        600 :           };</span>
 <span class="lineNum">     174 </span>            : 
-<span class="lineNum">     175 </span><span class="lineCov">          3 :         StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::getInstance().map.insert( { std::string(binding_name&lt;T&gt;::name()), serializers } );</span>
-<span class="lineNum">     176 </span><span class="lineCov">          3 :       }</span>
+<span class="lineNum">     175 </span><span class="lineCov">          6 :         StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::getInstance().map.insert( { std::string(binding_name&lt;T&gt;::name()), serializers } );</span>
+<span class="lineNum">     176 </span><span class="lineCov">          6 :       }</span>
 <span class="lineNum">     177 </span>            :     };
 <span class="lineNum">     178 </span>            : 
 <span class="lineNum">     179 </span>            :     //! Creates a binding (map entry) between an output archive type and a polymorphic type
@@ -246,54 +246,54 @@
 <span class="lineNum">     184 </span>            :     template &lt;class Archive, class T&gt; struct OutputBindingCreator
 <a name="185"><span class="lineNum">     185 </span>            :     {</a>
 <span class="lineNum">     186 </span>            :       //! Writes appropriate metadata to the archive for this polymorphic type
-<span class="lineNum">     187 </span><span class="lineCov">        900 :       static void writeMetadata(Archive &amp; ar)</span>
+<span class="lineNum">     187 </span><span class="lineCov">       1800 :       static void writeMetadata(Archive &amp; ar)</span>
 <span class="lineNum">     188 </span>            :       {
 <span class="lineNum">     189 </span>            :         // Register the polymorphic type name with the archive, and get the id
-<span class="lineNum">     190 </span><span class="lineCov">        900 :         char const * name = binding_name&lt;T&gt;::name();</span>
-<span class="lineNum">     191 </span><span class="lineCov">        900 :         std::uint32_t id = ar.registerPolymorphicType(name);</span>
+<span class="lineNum">     190 </span><span class="lineCov">       1800 :         char const * name = binding_name&lt;T&gt;::name();</span>
+<span class="lineNum">     191 </span><span class="lineCov">       1800 :         std::uint32_t id = ar.registerPolymorphicType(name);</span>
 <span class="lineNum">     192 </span>            : 
 <span class="lineNum">     193 </span>            :         // Serialize the id
-<span class="lineNum">     194 </span><span class="lineCov">        900 :         ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, id) );</span>
+<span class="lineNum">     194 </span><span class="lineCov">       1800 :         ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, id) );</span>
 <span class="lineNum">     195 </span>            : 
 <span class="lineNum">     196 </span>            :         // If the msb of the id is 1, then the type name is new, and we should serialize it
-<span class="lineNum">     197 </span><span class="lineCov">        900 :         if( id &amp; detail::msb_32bit )</span>
+<span class="lineNum">     197 </span><span class="lineCov">       1800 :         if( id &amp; detail::msb_32bit )</span>
 <span class="lineNum">     198 </span>            :         {
-<span class="lineNum">     199 </span><span class="lineCov">        300 :           std::string namestring(name);</span>
-<span class="lineNum">     200 </span><span class="lineCov">        300 :           ar( _CEREAL_NVP(&quot;polymorphic_name&quot;, namestring) );</span>
+<span class="lineNum">     199 </span><span class="lineCov">        600 :           std::string namestring(name);</span>
+<span class="lineNum">     200 </span><span class="lineCov">        600 :           ar( _CEREAL_NVP(&quot;polymorphic_name&quot;, namestring) );</span>
 <span class="lineNum">     201 </span>            :         }
-<span class="lineNum">     202 </span><span class="lineCov">        900 :       }</span>
+<span class="lineNum">     202 </span><span class="lineCov">       1800 :       }</span>
 <a name="203"><span class="lineNum">     203 </span>            : </a>
 <span class="lineNum">     204 </span>            :       //! Initialize the binding
-<span class="lineNum">     205 </span><span class="lineCov">          3 :       OutputBindingCreator()</span>
+<span class="lineNum">     205 </span><span class="lineCov">          6 :       OutputBindingCreator()</span>
 <span class="lineNum">     206 </span>            :       {
-<span class="lineNum">     207 </span><span class="lineCov">          3 :         typename OutputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
+<span class="lineNum">     207 </span><span class="lineCov">          6 :         typename OutputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
 <a name="208"><span class="lineNum">     208 </span>            : </a>
-<span class="lineNum">     209 </span><span class="lineCov">          3 :         serializers.shared_ptr =</span>
-<span class="lineNum">     210 </span><span class="lineCov">        600 :           [](void * arptr, void const * dptr)</span>
+<span class="lineNum">     209 </span><span class="lineCov">          6 :         serializers.shared_ptr =</span>
+<span class="lineNum">     210 </span><span class="lineCov">       1200 :           [](void * arptr, void const * dptr)</span>
 <span class="lineNum">     211 </span>            :           {
-<span class="lineNum">     212 </span><span class="lineCov">        600 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
+<span class="lineNum">     212 </span><span class="lineCov">       1200 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
 <span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span><span class="lineCov">        600 :             writeMetadata(ar);</span>
+<span class="lineNum">     214 </span><span class="lineCov">       1200 :             writeMetadata(ar);</span>
 <span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span><span class="lineCov">        600 :             std::shared_ptr&lt;T const&gt; const ptr(static_cast&lt;T const *&gt;(dptr), EmptyDeleter&lt;T const&gt;());</span>
+<span class="lineNum">     216 </span><span class="lineCov">       1200 :             std::shared_ptr&lt;T const&gt; const ptr(static_cast&lt;T const *&gt;(dptr), EmptyDeleter&lt;T const&gt;());</span>
 <span class="lineNum">     217 </span>            : 
-<span class="lineNum">     218 </span><span class="lineCov">        600 :             ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
-<span class="lineNum">     219 </span><span class="lineCov">        600 :           };</span>
+<span class="lineNum">     218 </span><span class="lineCov">       1200 :             ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
+<span class="lineNum">     219 </span><span class="lineCov">       1200 :           };</span>
 <a name="220"><span class="lineNum">     220 </span>            : </a>
-<span class="lineNum">     221 </span><span class="lineCov">          3 :         serializers.unique_ptr =</span>
-<span class="lineNum">     222 </span><span class="lineCov">        300 :           [](void * arptr, void const * dptr)</span>
+<span class="lineNum">     221 </span><span class="lineCov">          6 :         serializers.unique_ptr =</span>
+<span class="lineNum">     222 </span><span class="lineCov">        600 :           [](void * arptr, void const * dptr)</span>
 <span class="lineNum">     223 </span>            :           {
-<span class="lineNum">     224 </span><span class="lineCov">        300 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
+<span class="lineNum">     224 </span><span class="lineCov">        600 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
 <span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span><span class="lineCov">        300 :             writeMetadata(ar);</span>
+<span class="lineNum">     226 </span><span class="lineCov">        600 :             writeMetadata(ar);</span>
 <span class="lineNum">     227 </span>            : 
-<span class="lineNum">     228 </span><span class="lineCov">        300 :             std::unique_ptr&lt;T const, EmptyDeleter&lt;T const&gt;&gt; const ptr(static_cast&lt;T const *&gt;(dptr));</span>
+<span class="lineNum">     228 </span><span class="lineCov">        600 :             std::unique_ptr&lt;T const, EmptyDeleter&lt;T const&gt;&gt; const ptr(static_cast&lt;T const *&gt;(dptr));</span>
 <span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span><span class="lineCov">        300 :             ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
-<span class="lineNum">     231 </span><span class="lineCov">        300 :           };</span>
+<span class="lineNum">     230 </span><span class="lineCov">        600 :             ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
+<span class="lineNum">     231 </span><span class="lineCov">        600 :           };</span>
 <span class="lineNum">     232 </span>            : 
-<span class="lineNum">     233 </span><span class="lineCov">          3 :         StaticObject&lt;OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );</span>
-<span class="lineNum">     234 </span><span class="lineCov">          3 :       }</span>
+<span class="lineNum">     233 </span><span class="lineCov">          6 :         StaticObject&lt;OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );</span>
+<span class="lineNum">     234 </span><span class="lineCov">          6 :       }</span>
 <span class="lineNum">     235 </span>            :     };
 <span class="lineNum">     236 </span>            : 
 <span class="lineNum">     237 </span>            :     //! Used to help out argument dependent lookup for finding potential overloads
@@ -357,10 +357,10 @@
 <span class="lineNum">     295 </span>            :     struct bind_to_archives
 <a name="296"><span class="lineNum">     296 </span>            :     {</a>
 <span class="lineNum">     297 </span>            :       //! Binding for non abstract types
-<span class="lineNum">     298 </span><span class="lineCov">          1 :       void bind(std::false_type) const</span>
+<span class="lineNum">     298 </span><span class="lineCov">          2 :       void bind(std::false_type) const</span>
 <span class="lineNum">     299 </span>            :       {
-<span class="lineNum">     300 </span><span class="lineCov">          1 :         instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );</span>
-<span class="lineNum">     301 </span><span class="lineCov">          1 :       }</span>
+<span class="lineNum">     300 </span><span class="lineCov">          2 :         instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );</span>
+<span class="lineNum">     301 </span><span class="lineCov">          2 :       }</span>
 <span class="lineNum">     302 </span>            : 
 <span class="lineNum">     303 </span>            :       //! Binding for abstract types
 <span class="lineNum">     304 </span>            :       void bind(std::true_type) const
@@ -369,10 +369,10 @@
 <span class="lineNum">     307 </span>            :       //! Binds the type T to all registered archives
 <a name="308"><span class="lineNum">     308 </span>            :       /*! If T is abstract, we will not serialize it and thus</a>
 <span class="lineNum">     309 </span>            :           do not need to make a binding */
-<span class="lineNum">     310 </span><span class="lineCov">          1 :       bind_to_archives const &amp; bind() const</span>
+<span class="lineNum">     310 </span><span class="lineCov">          2 :       bind_to_archives const &amp; bind() const</span>
 <span class="lineNum">     311 </span>            :       {
-<span class="lineNum">     312 </span><span class="lineCov">          1 :         bind( std::is_abstract&lt;T&gt;() );</span>
-<span class="lineNum">     313 </span><span class="lineCov">          1 :         return *this;</span>
+<span class="lineNum">     312 </span><span class="lineCov">          2 :         bind( std::is_abstract&lt;T&gt;() );</span>
+<span class="lineNum">     313 </span><span class="lineCov">          2 :         return *this;</span>
 <span class="lineNum">     314 </span>            :       }
 <span class="lineNum">     315 </span>            :     };
 <span class="lineNum">     316 </span>            : 
@@ -393,7 +393,7 @@
 <span class="lineNum">     331 </span>            : 
 <a name="332"><span class="lineNum">     332 </span>            :         See the documentation for the other functions to try and understand this */</a>
 <span class="lineNum">     333 </span>            :     template &lt;class T&gt;
-<span class="lineNum">     334 </span><span class="lineCov">          1 :     void instantiate_polymorphic_binding( T*, int, adl_tag ) {};</span>
+<span class="lineNum">     334 </span><span class="lineCov">          2 :     void instantiate_polymorphic_binding( T*, int, adl_tag ) {};</span>
 <span class="lineNum">     335 </span>            :   } // namespace detail
 <span class="lineNum">     336 </span>            : } // namespace cereal
 <span class="lineNum">     337 </span>            : 

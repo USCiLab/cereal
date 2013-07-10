@@ -98,37 +98,37 @@
 <span class="lineNum">      36 </span>            : {
 <a name="37"><span class="lineNum">      37 </span>            :   //! Saving std::chrono::duration</a>
 <span class="lineNum">      38 </span>            :   template &lt;class Archive, class R, class P&gt; inline
-<span class="lineNum">      39 </span><span class="lineCov">       1800 :   void save( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; const &amp; dur )</span>
+<span class="lineNum">      39 </span><span class="lineCov">       3600 :   void save( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; const &amp; dur )</span>
 <span class="lineNum">      40 </span>            :   {
-<span class="lineNum">      41 </span><span class="lineCov">       1800 :     ar( _CEREAL_NVP(&quot;count&quot;, dur.count()) );</span>
-<span class="lineNum">      42 </span><span class="lineCov">       1800 :   }</span>
+<span class="lineNum">      41 </span><span class="lineCov">       3600 :     ar( _CEREAL_NVP(&quot;count&quot;, dur.count()) );</span>
+<span class="lineNum">      42 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">      43 </span>            : 
 <a name="44"><span class="lineNum">      44 </span>            :   //! Loading std::chrono::duration</a>
 <span class="lineNum">      45 </span>            :   template &lt;class Archive, class R, class P&gt; inline
-<span class="lineNum">      46 </span><span class="lineCov">       1800 :   void load( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; &amp; dur )</span>
+<span class="lineNum">      46 </span><span class="lineCov">       3600 :   void load( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; &amp; dur )</span>
 <span class="lineNum">      47 </span>            :   {
 <span class="lineNum">      48 </span>            :     R count;
-<span class="lineNum">      49 </span><span class="lineCov">       1800 :     ar( count );</span>
+<span class="lineNum">      49 </span><span class="lineCov">       3600 :     ar( count );</span>
 <span class="lineNum">      50 </span>            : 
-<span class="lineNum">      51 </span><span class="lineCov">       1800 :     dur = std::chrono::duration&lt;R, P&gt;{count};</span>
-<span class="lineNum">      52 </span><span class="lineCov">       1800 :   }</span>
+<span class="lineNum">      51 </span><span class="lineCov">       3600 :     dur = std::chrono::duration&lt;R, P&gt;{count};</span>
+<span class="lineNum">      52 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">      53 </span>            : 
 <a name="54"><span class="lineNum">      54 </span>            :   //! Saving std::chrono::time_point</a>
 <span class="lineNum">      55 </span>            :   template &lt;class Archive, class C, class D&gt; inline
-<span class="lineNum">      56 </span><span class="lineCov">        900 :   void save( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; const &amp; dur )</span>
+<span class="lineNum">      56 </span><span class="lineCov">       1800 :   void save( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; const &amp; dur )</span>
 <span class="lineNum">      57 </span>            :   {
-<span class="lineNum">      58 </span><span class="lineCov">        900 :     ar( _CEREAL_NVP(&quot;time_since_epoch&quot;, dur.time_since_epoch()) );</span>
-<span class="lineNum">      59 </span><span class="lineCov">        900 :   }</span>
+<span class="lineNum">      58 </span><span class="lineCov">       1800 :     ar( _CEREAL_NVP(&quot;time_since_epoch&quot;, dur.time_since_epoch()) );</span>
+<span class="lineNum">      59 </span><span class="lineCov">       1800 :   }</span>
 <span class="lineNum">      60 </span>            : 
 <a name="61"><span class="lineNum">      61 </span>            :   //! Loading std::chrono::time_point</a>
 <span class="lineNum">      62 </span>            :   template &lt;class Archive, class C, class D&gt; inline
-<span class="lineNum">      63 </span><span class="lineCov">        900 :   void load( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; &amp; dur )</span>
+<span class="lineNum">      63 </span><span class="lineCov">       1800 :   void load( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; &amp; dur )</span>
 <span class="lineNum">      64 </span>            :   {
-<span class="lineNum">      65 </span><span class="lineCov">        900 :     D elapsed;</span>
-<span class="lineNum">      66 </span><span class="lineCov">        900 :     ar( elapsed );</span>
+<span class="lineNum">      65 </span><span class="lineCov">       1800 :     D elapsed;</span>
+<span class="lineNum">      66 </span><span class="lineCov">       1800 :     ar( elapsed );</span>
 <span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span><span class="lineCov">        900 :     dur = std::chrono::time_point&lt;C, D&gt;{elapsed};</span>
-<span class="lineNum">      69 </span><span class="lineCov">        900 :   }</span>
+<span class="lineNum">      68 </span><span class="lineCov">       1800 :     dur = std::chrono::time_point&lt;C, D&gt;{elapsed};</span>
+<span class="lineNum">      69 </span><span class="lineCov">       1800 :   }</span>
 <span class="lineNum">      70 </span>            : } // namespace cereal
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            : #endif // CEREAL_TYPES_CHRONO_HPP_
