@@ -23,8 +23,8 @@ befriending `cereal::access`.  cereal will tell you if you've made a mistake at 
 Serialization functions can either be internal or external. Functionality can
 either be in a single `serialize` function, or a split `load` and `save`
 functions.  When possible, it is preferred to use a single internal `serialize`
-method, though split methods can be used when it is necessary e.g. to
-dynamically allocate memory upon loading a class.  Unlike boost, there is no need to explicitly tell cereal that it
+method, though split methods can be used when it is necessary (e.g. to
+dynamically allocate memory upon loading a class).  Unlike boost, there is no need to explicitly tell cereal that it
 needs to use the split load-save pair; cereal will pick whichever is present and give a compile time error if it cannot
 disambiguate a single serialization method.
 <br/>
@@ -129,6 +129,9 @@ void load(Archive & archive)
 
 Note that save functions are **const**.  cereal will throw a static assertion if it detects a non const save function.
 
+External serialization functions should be placed either in the same namespace as the types they serialize or in the
+`cereal` namespace so that the compiler can find them properly.
+
 ### Non-public serialization
 
 Serialization functions can be placed under access control to be protected or private.  cereal will need access to them,
@@ -183,7 +186,7 @@ int main()
 {
   MyDerived d;
   cereal::BinaryOutputArchive ar( std::cout );
-  ar( d ); // static assertion failure: cereal detected both a serialize and save/load pair for MyDerived
+  ar( d ); // static assertion failure: detected both a serialize and save/load pair for MyDerived
 }
 ```
 
@@ -201,7 +204,7 @@ error is to provide an explicit disambiguation for cereal:
 namespace cereal
 {
   template <class Archive> struct specialize<Archive, MyDerived, cereal::specialization::member_load_save> {};
-  // cereal no longer has any ambiguity when serializing MyDerived
+  // no longer any ambiguity when serializing MyDerived
 }
 ```
 
