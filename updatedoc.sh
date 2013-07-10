@@ -14,6 +14,7 @@ cp -r ./doc/html/ ${tempdir}
 git checkout gh-pages
 
 rm -rf assets/doxygen
+mkdir assets/doxygen
 cp -r ${tempdir}/html/* assets/doxygen/
 
 rm -rf ${tempdir}
