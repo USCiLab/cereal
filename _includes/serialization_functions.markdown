@@ -23,8 +23,8 @@ befriending `cereal::access`.  cereal will tell you if you've made a mistake at 
 Serialization functions can either be internal or external. Functionality can
 either be in a single `serialize` function, or a split `load` and `save`
 functions.  When possible, it is preferred to use a single internal `serialize`
-method, though split methods can be used when it is necessary e.g. to
-dynamically allocate memory upon loading a class.  Unlike boost, there is no need to explicitly tell cereal that it
+method, though split methods can be used when it is necessary (e.g. to
+dynamically allocate memory upon loading a class).  Unlike boost, there is no need to explicitly tell cereal that it
 needs to use the split load-save pair; cereal will pick whichever is present and give a compile time error if it cannot
 disambiguate a single serialization method.
 <br/>
@@ -128,6 +128,9 @@ void load(Archive & archive)
 <br/>
 
 <span class="label label-warning">Important!</span> Save functions are **const** (or take a **const** reference to your class).  cereal will throw a static assertion if it detects a non const save function.
+
+External serialization functions should be placed either in the same namespace as the types they serialize or in the
+`cereal` namespace so that the compiler can find them properly.
 
 ### Non-public serialization
 

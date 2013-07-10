@@ -110,3 +110,7 @@ which will produce the following JSON:
     }
 }
 ```
+
+More information on the archives and functions used in the above example can be found in the [serialization
+functions](serialization_functions.html) and [serialization archives](serialization_archives.html) sections of the
+documentation.

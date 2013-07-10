@@ -17,7 +17,7 @@ If you want to serialize some data through pointers to base types:
 
 ### Registering Polymorphic Types
 
-When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each type.  When writing the object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
+When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type.  When writing the object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
 
 <span class="label label-warning">Important!</span>
 Before registering a type, you must be sure that every archive type that will be used has already been included.
@@ -39,7 +39,9 @@ Before registering a type, you must be sure that every archive type that will be
 struct BaseClass
 {
   virtual void sayType() = 0;
-  template<class Archive> void serialize( Archive & ar ) { }
+  // Note that abstract base classes do not require a serialization function,
+  // although there is nothing wrong with having one if the class has data
+  // to serialize
 };
 
 // A class derived from BaseClass
@@ -118,4 +120,6 @@ It is recommended to do this immediately following the declaration of your archi
 
 ### Implementation notes
 
-Coming soon.
+The implementation for polymorphic support can be considered a simplified version of that found in boost's serialization library.  Please
+see `<cereal/types/polymorphic.hpp>` and `<cereal/details/polymorphic_impl.hpp>` for acknowledgement and implementation
+notes.

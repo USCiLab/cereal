@@ -13,7 +13,7 @@ cereal comes with binary, XML, and JSON archives that allow loading and saving t
 
 ## Archive Basics
 
-Archives decide how to output or interpret data that is being serialized.  For the most part, you do not need to know the inner workings of an archive and can write serialization functions agnostic of the archive type, though cereal does support specializing serialization functions for specific types of archives.  For example, a serialization function for a JSON archive could include more human readable metadata than its binary variant.
+Archives decide how to output or interpret data that is being serialized.  For the most part, you do not need to know the inner workings of an archive and can write serialization functions agnostic of the archive type, though cereal does support specializing serialization functions for specific types of archives (e.g. a serialization function for a JSON archive could include more human readable metadata than its binary variant).
 
 Most cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
 
@@ -101,7 +101,9 @@ XML can optionally output complete demangled type information as an attribute an
 
 <span class="label label-warning">Important!</span>
 At this time cereal requires that the ordering of information in the XML archive match what is
-expected in the serialization functions.  You may add data to dynamically sized arrays, but you cannot change the order of objects.
+expected in the serialization functions.  You may add data to dynamically sized containers, but you cannot change the order of nodes.
+
+The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
 
 ### Binary output
 
@@ -143,7 +145,7 @@ is a human readable format and should not be used in situations where
 serialized data size is critical.  JSON archives are very similar to XML
 archives in that they will take advantage of name-value pairs when available,
 and automatically generate names when they are not.  Consider the following
-nearly identical example as seen in the XML section:
+nearly identical example to that seen in the XML section:
 
 ```cpp
 #include <iostream>
@@ -180,13 +182,15 @@ This causes the output JSON:
 
 Note how dynamically sized containers (e.g. `std::vector`) are serialized as JSON arrays, while fixed sized containers
 (e.g. `std::array`) are serialized as JSON objects.  This distinction is important as it allows you to hand insert data
-into variable sized containers in a JSON file by inserting elements into an array, whereas cereal will incorrectly load
-archives that have had data inserted into objects.  You can still hand edit values in objects, but you cannot append or
+into variable sized containers in a JSON file by inserting elements into an array, whereas you cannot insert new data
+into objects.  You can still hand edit values in objects, but you cannot append or
 deduct data from them.
 
 <span class="label label-warning">Important!</span>
 At this time cereal requires that the ordering of information in the XML archive match what is
-expected in the serialization functions.  You may add data to dynamically sized arrays, but you cannot change the order of objects.
+expected in the serialization functions.  You may add data to dynamically sized containers (JSON arrays), but you cannot change the order of objects.
+
+The JSON serialization is powered by [rapidjson](http://code.google.com/p/rapidjson/).
 
 ### Binary output
 
@@ -219,10 +223,14 @@ Although most types are handled in a generic fashion, it is necessary to explici
 
 Optionally, an archive can also choose to support:
 
-* C style arrays, detected with `std::is_array`
 * Binary data output, detected with `cereal::BinaryData<T>`
+* `std::string`, which by default will try to use `cereal::BinaryData<T>` encodings.
 
 Adding support for `cereal::BinaryData<T>` means that your archive can support optimized serialization of raw binary data.  If your archive accepts `cereal::BinaryData<T>`, cereal will attempt to package up any type (e.g. arrays of arithmetic data, strings, etc) that can be represented in this way as binary data.  If you are working with human readable output, this may not be the behavior you desire - in such cases it is best to **not** specialize for `cereal::BinaryData<T>` and instead provide users with explicit binary save/load functions that can be invoked directly on the archive, if they desire.  See `<cereal/archives/xml.hpp>` for an example of this.
+
+Note that the generic implementation for `std::string` is to serialize its data in a binary fashion by wrapping the
+internals in `cereal::BinaryData<T>`.  If your archive does not support this, or you wish to have different behavior for
+strings, such as outputting readable characters, you will need to specialize string serialization functions for your archive.
 
 ### The Base Archives
 
@@ -232,3 +240,6 @@ All archives need to derive from `cereal::InputArchive` or `cereal::OutputArchiv
 
 To enable polymorphic support, your archive must be registered with the `CEREAL_REGISTER_ARCHIVE` macro, defined in `<cereal/cereal.hpp>`.  This is best done immediately following the definition of your archive.
 
+### Learn More
+
+The best way to learn how to write archives is by digging into the [doxygen documentation]({{ site.baseurl }}/assets/doxygen/index.html) and looking at the various archives in `<cereal/archives>`.

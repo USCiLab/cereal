@@ -10,7 +10,7 @@ it.
 ## Get xCEREAL
 
 cereal can be directly included in your project or installed anywhere you can access header files.  Grab the latest
-version from [Github](https://github.com/USCiLab/cereal) or use the download links above, then drop it somewhere your project can find.
+version from [Github](https://github.com/USCiLab/cereal) or use the download links above, then drop the cereal folder from the include directory (`cereal_base_dir/include/cereal`) somewhere your project can find.  There's nothing to build or make - cereal is header only.
 
 ---
 
@@ -65,7 +65,8 @@ Include your preferred archive with one of:
 ## Serialize your data
 
 Create a cereal archive and send the data you want to serialize to it.  Archives are designed to be used in an [RAII](http://en.wikipedia.org/wiki/RAII)
-manner and are guaranteed to flush their contents only on destruction (though it may happen earlier):
+manner and are guaranteed to flush their contents only on destruction (though it may happen earlier).  Archives
+generally take either an [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) or an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) object in their constructor:
 
 ```{cpp}
 #include <cereal/archives/binary.hpp>
