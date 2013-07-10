@@ -11,6 +11,8 @@ make coverage COVERAGE_OUTPUT=${tempdir}/coverage
 
 git checkout gh-pages
 
+rm -rf assets/coverage
+
 cp -r ${tempdir}/coverage* assets/coverage/
 
 rm -rf ${tempdir}
