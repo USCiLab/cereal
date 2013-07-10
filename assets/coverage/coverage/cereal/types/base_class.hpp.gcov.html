@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - cereal/types/base_class.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/types</a> - base_class.hpp<span style="font-size: 80%;"> (source / <a href="base_class.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2013-07-10</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*! \file base_class.hpp</a>
+<span class="lineNum">       2 </span>            :     \brief Support for base classes (virtual and non-virtual)
+<span class="lineNum">       3 </span>            :     \ingroup OtherTypes */
+<span class="lineNum">       4 </span>            : /*
+<span class="lineNum">       5 </span>            :   Copyright (c) 2013, Randolph Voorhies, Shane Grant
+<span class="lineNum">       6 </span>            :   All rights reserved.
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            :   Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       9 </span>            :   modification, are permitted provided that the following conditions are met:
+<span class="lineNum">      10 </span>            :       * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :         notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            :       * Redistributions in binary form must reproduce the above copyright
+<span class="lineNum">      13 </span>            :         notice, this list of conditions and the following disclaimer in the
+<span class="lineNum">      14 </span>            :         documentation and/or other materials provided with the distribution.
+<span class="lineNum">      15 </span>            :       * Neither the name of cereal nor the
+<span class="lineNum">      16 </span>            :         names of its contributors may be used to endorse or promote products
+<span class="lineNum">      17 </span>            :         derived from this software without specific prior written permission.
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+<span class="lineNum">      20 </span>            :   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+<span class="lineNum">      21 </span>            :   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+<span class="lineNum">      22 </span>            :   DISCLAIMED. IN NO EVENT SHALL &lt;COPYRIGHT HOLDER&gt; BE LIABLE FOR ANY
+<span class="lineNum">      23 </span>            :   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+<span class="lineNum">      24 </span>            :   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+<span class="lineNum">      25 </span>            :   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+<span class="lineNum">      26 </span>            :   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      27 </span>            :   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+<span class="lineNum">      28 </span>            :   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      29 </span>            : */
+<span class="lineNum">      30 </span>            : #ifndef CEREAL_TYPES_BASE_CLASS_HPP_
+<span class="lineNum">      31 </span>            : #define CEREAL_TYPES_BASE_CLASS_HPP_
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : namespace cereal
+<span class="lineNum">      34 </span>            : {
+<span class="lineNum">      35 </span>            :   //! Casts a derived class to its non-virtual base class in a way that safely supports abstract classes
+<span class="lineNum">      36 </span>            :   /*! This should be used in cases when a derived type needs to serialize its base type. This is better than directly
+<span class="lineNum">      37 </span>            :       using static_cast, as it allows for serialization of pure virtual (abstract) base classes. 
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :       \sa virtual_base_class
+<span class="lineNum">      40 </span>            :       
+<span class="lineNum">      41 </span>            :       @code{.cpp}
+<span class="lineNum">      42 </span>            :       struct MyBase
+<span class="lineNum">      43 </span>            :       {
+<span class="lineNum">      44 </span>            :         int x;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :         virtual void foo() = 0;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">      49 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">      50 </span>            :         {
+<span class="lineNum">      51 </span>            :           ar( x );
+<span class="lineNum">      52 </span>            :         }
+<span class="lineNum">      53 </span>            :       };
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :       struct MyDerived : public MyBase //&lt;-- Note non-virtual inheritance
+<span class="lineNum">      56 </span>            :       {
+<span class="lineNum">      57 </span>            :         int y;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            :         virtual void foo() {};
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">      62 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">      63 </span>            :         {
+<span class="lineNum">      64 </span>            :           ar( cereal::base_class&lt;MyBase&gt;(this) );
+<span class="lineNum">      65 </span>            :           ar( y );
+<span class="lineNum">      66 </span>            :         }
+<span class="lineNum">      67 </span>            :       };
+<span class="lineNum">      68 </span>            :       @endcode */
+<span class="lineNum">      69 </span>            :   template&lt;class Base&gt;
+<span class="lineNum">      70 </span>            :     struct base_class
+<a name="71"><span class="lineNum">      71 </span>            :     {</a>
+<span class="lineNum">      72 </span>            :       template&lt;class Derived&gt;
+<span class="lineNum">      73 </span><span class="lineCov">       1200 :         base_class(Derived const * derived) :</span>
+<span class="lineNum">      74 </span><span class="lineCov">       1200 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
+<span class="lineNum">      75 </span><span class="lineCov">       1200 :       { }</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :         Base * base_ptr;
+<span class="lineNum">      78 </span>            :     };
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :   //! Casts a derived class to its virtual base class in a way that allows cereal to track inheritance
+<span class="lineNum">      81 </span>            :   /*! This should be used in cases when a derived type features virtual inheritance from some
+<span class="lineNum">      82 </span>            :       base type.  This allows cereal to track the inheritance and to avoid making duplicate copies
+<span class="lineNum">      83 </span>            :       during serialization.
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :       It is safe to use virtual_base_class in all circumstances for serializing base classes, even in cases
+<span class="lineNum">      86 </span>            :       where virtual inheritance does not take place, though it may be slightly faster to utilize
+<span class="lineNum">      87 </span>            :       cereal::base_class&lt;&gt; if you do not need to worry about virtual inheritance.
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :       \sa base_class
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            :       @code{.cpp}
+<span class="lineNum">      92 </span>            :       struct MyBase
+<span class="lineNum">      93 </span>            :       { 
+<span class="lineNum">      94 </span>            :         int x;
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">      97 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">      98 </span>            :         {
+<span class="lineNum">      99 </span>            :           ar( x );
+<span class="lineNum">     100 </span>            :         }
+<span class="lineNum">     101 </span>            :       };
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :       struct MyLeft : virtual MyBase //&lt;-- Note the virtual inheritance
+<span class="lineNum">     104 </span>            :       {
+<span class="lineNum">     105 </span>            :         int y;
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     108 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">     109 </span>            :         {
+<span class="lineNum">     110 </span>            :           ar( cereal::virtual_base_class&lt;MyBase&gt;( this ) );
+<span class="lineNum">     111 </span>            :           ar( y );
+<span class="lineNum">     112 </span>            :         }
+<span class="lineNum">     113 </span>            :       };
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span>            :       struct MyRight : virtual MyBase
+<span class="lineNum">     116 </span>            :       {
+<span class="lineNum">     117 </span>            :         int z;
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     120 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">     121 </span>            :         {
+<span class="lineNum">     122 </span>            :           ar( cereal::virtual_base_clas&lt;MyBase&gt;( this ) );
+<span class="lineNum">     123 </span>            :           ar( z );
+<span class="lineNum">     124 </span>            :         }
+<span class="lineNum">     125 </span>            :       };
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span>            :       // diamond virtual inheritance; contains one copy of each base class
+<span class="lineNum">     128 </span>            :       struct MyDerived : virtual MyLeft, virtual MyRight
+<span class="lineNum">     129 </span>            :       {
+<span class="lineNum">     130 </span>            :         int a;
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     133 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">     134 </span>            :         {
+<span class="lineNum">     135 </span>            :           ar( cereal::virtual_base_class&lt;MyLeft&gt;( this ) );  // safely serialize data members in MyLeft
+<span class="lineNum">     136 </span>            :           ar( cereal::virtual_base_class&lt;MyRight&gt;( this ) ); // safely serialize data members in MyRight
+<span class="lineNum">     137 </span>            :           ar( a );
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            :           // Because we used virtual_base_class, cereal will ensure that only one instance of MyBase is
+<span class="lineNum">     140 </span>            :           // serialized as we traverse the inheritance heirarchy. This means that there will be one copy 
+<span class="lineNum">     141 </span>            :           // each of the variables x, y, z, and a
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :           // If we had chosen to use static_cast&lt;&gt; instead, cereal would perform no tracking and
+<span class="lineNum">     144 </span>            :           // assume that every base class should be serialized (in this case leading to a duplicate
+<span class="lineNum">     145 </span>            :           // serialization of MyBase due to diamond inheritance
+<span class="lineNum">     146 </span>            :       }; 
+<span class="lineNum">     147 </span>            :      }
+<span class="lineNum">     148 </span>            :      @endcode */
+<span class="lineNum">     149 </span>            :   template&lt;class Base&gt;
+<span class="lineNum">     150 </span>            :     struct virtual_base_class
+<span class="lineNum">     151 </span>            :     {
+<span class="lineNum">     152 </span>            :       template&lt;class Derived&gt;
+<span class="lineNum">     153 </span>            :         virtual_base_class(Derived const * derived) :
+<span class="lineNum">     154 </span>            :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))
+<span class="lineNum">     155 </span>            :       { }
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            :         Base * base_ptr;
+<span class="lineNum">     158 </span>            :     };
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            : } // namespace cereal
+<span class="lineNum">     161 </span>            : #endif // CEREAL_TYPES_BASE_CLASS_HPP_
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

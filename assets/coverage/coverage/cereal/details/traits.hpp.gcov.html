@@ -1,0 +1,488 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - cereal/details/traits.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/details</a> - traits.hpp<span style="font-size: 80%;"> (source / <a href="traits.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2013-07-10</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*! \file traits.hpp</a>
+<span class="lineNum">       2 </span>            :     \brief Internal type trait support
+<span class="lineNum">       3 </span>            :     \ingroup Internal */
+<span class="lineNum">       4 </span>            : /*
+<span class="lineNum">       5 </span>            :   Copyright (c) 2013, Randolph Voorhies, Shane Grant
+<span class="lineNum">       6 </span>            :   All rights reserved.
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            :   Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       9 </span>            :   modification, are permitted provided that the following conditions are met:
+<span class="lineNum">      10 </span>            :       * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :         notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            :       * Redistributions in binary form must reproduce the above copyright
+<span class="lineNum">      13 </span>            :         notice, this list of conditions and the following disclaimer in the
+<span class="lineNum">      14 </span>            :         documentation and/or other materials provided with the distribution.
+<span class="lineNum">      15 </span>            :       * Neither the name of cereal nor the
+<span class="lineNum">      16 </span>            :         names of its contributors may be used to endorse or promote products
+<span class="lineNum">      17 </span>            :         derived from this software without specific prior written permission.
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+<span class="lineNum">      20 </span>            :   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+<span class="lineNum">      21 </span>            :   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+<span class="lineNum">      22 </span>            :   DISCLAIMED. IN NO EVENT SHALL &lt;COPYRIGHT HOLDER&gt; BE LIABLE FOR ANY
+<span class="lineNum">      23 </span>            :   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+<span class="lineNum">      24 </span>            :   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+<span class="lineNum">      25 </span>            :   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+<span class="lineNum">      26 </span>            :   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      27 </span>            :   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+<span class="lineNum">      28 </span>            :   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      29 </span>            : */
+<span class="lineNum">      30 </span>            : #ifndef CEREAL_DETAILS_TRAITS_HPP_
+<span class="lineNum">      31 </span>            : #define CEREAL_DETAILS_TRAITS_HPP_
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      34 </span>            : #include &lt;typeindex&gt;
+<span class="lineNum">      35 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : #include &lt;cereal/access.hpp&gt;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : namespace cereal
+<span class="lineNum">      40 </span>            : {
+<span class="lineNum">      41 </span>            :   namespace traits
+<span class="lineNum">      42 </span>            :   {
+<span class="lineNum">      43 </span>            :     template&lt;typename&gt; struct Void { typedef void type; };
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            :     // ######################################################################
+<span class="lineNum">      46 </span>            :     // Member load_and_allocate
+<span class="lineNum">      47 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">      48 </span>            :       bool constexpr has_member_load_and_allocate()
+<span class="lineNum">      49 </span>            :       { return std::is_same&lt;decltype( access::load_and_allocate&lt;T&gt;( std::declval&lt;A&amp;&gt;() ) ), T*&gt;::value; }
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :     // ######################################################################
+<span class="lineNum">      52 </span>            :     // Non Member load_and_allocate
+<span class="lineNum">      53 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">      54 </span>            :       bool constexpr has_non_member_load_and_allocate()
+<span class="lineNum">      55 </span>            :       { return std::is_same&lt;decltype( LoadAndAllocate&lt;T&gt;::load_and_allocate( std::declval&lt;A&amp;&gt;() ) ), T*&gt;::value; }
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :     // ######################################################################
+<span class="lineNum">      58 </span>            :     // Has either a member or non member allocate
+<span class="lineNum">      59 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">      60 </span>            :       bool constexpr has_load_and_allocate()
+<span class="lineNum">      61 </span>            :       { return has_member_load_and_allocate&lt;T, A&gt;() || has_non_member_load_and_allocate&lt;T, A&gt;(); }
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :     // ######################################################################
+<span class="lineNum">      64 </span>            :     // Member Serialize
+<span class="lineNum">      65 </span>            :     template&lt;typename T, class A, typename Sfinae = void&gt;
+<span class="lineNum">      66 </span>            :       struct has_member_serialize: std::false_type {};
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :     template&lt;typename T, class A&gt;
+<span class="lineNum">      69 </span>            :       struct has_member_serialize&lt; T, A,
+<span class="lineNum">      70 </span>            :       typename Void&lt;
+<span class="lineNum">      71 </span>            :         decltype( access::member_serialize(std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;() ) )
+<span class="lineNum">      72 </span>            :         &gt;::type
+<span class="lineNum">      73 </span>            :         &gt;: std::true_type {};
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :     // ######################################################################
+<span class="lineNum">      76 </span>            :     // Non Member Serialize
+<span class="lineNum">      77 </span>            :     char &amp; serialize(...);
+<span class="lineNum">      78 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">      79 </span>            :       bool constexpr has_non_member_serialize()
+<span class="lineNum">      80 </span>            :       { return std::is_void&lt;decltype(serialize(std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;()))&gt;::value; };
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :     // ######################################################################
+<span class="lineNum">      83 </span>            :     // Member Load
+<span class="lineNum">      84 </span>            :     template&lt;typename T, class A, typename Sfinae = void&gt;
+<span class="lineNum">      85 </span>            :       struct has_member_load: std::false_type {};
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :     template&lt;typename T, class A&gt;
+<span class="lineNum">      88 </span>            :       struct has_member_load&lt; T, A,
+<span class="lineNum">      89 </span>            :       typename Void&lt;
+<span class="lineNum">      90 </span>            :         decltype( access::member_load(std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;() ) )
+<span class="lineNum">      91 </span>            :         &gt;::type
+<span class="lineNum">      92 </span>            :         &gt;: std::true_type {};
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            :     // ######################################################################
+<span class="lineNum">      95 </span>            :     // Non Member Load
+<span class="lineNum">      96 </span>            :     char &amp; load(...);
+<span class="lineNum">      97 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">      98 </span>            :       bool constexpr has_non_member_load()
+<span class="lineNum">      99 </span>            :       { return std::is_void&lt;decltype(load(std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;()))&gt;::value; };
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :     // ######################################################################
+<span class="lineNum">     102 </span>            :     // Member Save
+<span class="lineNum">     103 </span>            :     template&lt;typename T, class A, typename Sfinae = void&gt;
+<span class="lineNum">     104 </span>            :       struct has_member_save: std::false_type {};
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            :     template&lt;typename T, class A&gt;
+<span class="lineNum">     107 </span>            :       struct has_member_save&lt; T, A,
+<span class="lineNum">     108 </span>            :       typename Void&lt;
+<span class="lineNum">     109 </span>            :         decltype( access::member_save(std::declval&lt;A&amp;&gt;(), std::declval&lt;T const &amp;&gt;() ) )
+<span class="lineNum">     110 </span>            :         &gt;::type
+<span class="lineNum">     111 </span>            :         &gt;: std::true_type {};
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :     // ######################################################################
+<span class="lineNum">     114 </span>            :     // Non-const Member Save
+<span class="lineNum">     115 </span>            :     namespace detail
+<span class="lineNum">     116 </span>            :     {
+<span class="lineNum">     117 </span>            :       // Detection of any (const or non const) member save
+<span class="lineNum">     118 </span>            :       template&lt;typename T, class A, typename Sfinae = void&gt;
+<span class="lineNum">     119 </span>            :         struct has_member_save_any: std::false_type {};
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :       template&lt;typename T, class A&gt;
+<span class="lineNum">     122 </span>            :         struct has_member_save_any&lt; T, A,
+<span class="lineNum">     123 </span>            :         typename Void&lt;
+<span class="lineNum">     124 </span>            :           decltype( access::non_const_member_save(std::declval&lt;A&amp;&gt;(), std::declval&lt;typename std::remove_const&lt;T&gt;::type &amp;&gt;() ) )
+<span class="lineNum">     125 </span>            :           &gt;::type
+<span class="lineNum">     126 </span>            :           &gt;: std::true_type {};
+<span class="lineNum">     127 </span>            :     }
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            :     // Returns true if we detect a member save function that is not const
+<span class="lineNum">     130 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     131 </span>            :     constexpr bool is_non_const_member_save()
+<span class="lineNum">     132 </span>            :     {
+<span class="lineNum">     133 </span>            :       return !has_member_save&lt;T, A&gt;() &amp;&amp; detail::has_member_save_any&lt;T, A&gt;();
+<span class="lineNum">     134 </span>            :     }
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            :     // ######################################################################
+<span class="lineNum">     137 </span>            :     // Non Member Save
+<span class="lineNum">     138 </span>            :     char &amp; save(...);
+<span class="lineNum">     139 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     140 </span>            :       bool constexpr has_non_member_save()
+<span class="lineNum">     141 </span>            :       { return std::is_void&lt;decltype(save(std::declval&lt;A&amp;&gt;(), std::declval&lt;T const &amp;&gt;()))&gt;::value; }
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :     // ######################################################################
+<span class="lineNum">     144 </span>            :     // Non-const Non member Save
+<span class="lineNum">     145 </span>            :     namespace detail
+<span class="lineNum">     146 </span>            :     {
+<span class="lineNum">     147 </span>            :       template&lt;typename T, typename A&gt;
+<span class="lineNum">     148 </span>            :         bool constexpr has_non_member_save_any()
+<span class="lineNum">     149 </span>            :         { return std::is_void&lt;decltype(save(std::declval&lt;A&amp;&gt;(), std::declval&lt;typename std::remove_const&lt;T&gt;::type &amp;&gt;()))&gt;::value; }
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            :     // Returns true if we detect a non-member save function that is not const
+<span class="lineNum">     153 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     154 </span>            :       bool constexpr is_non_const_non_member_save()
+<span class="lineNum">     155 </span>            :       { return !has_non_member_save&lt;T, A&gt;() &amp;&amp; detail::has_non_member_save_any&lt;T, A&gt;(); }
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            :     // ######################################################################
+<span class="lineNum">     158 </span>            :     // Returns true if we have an invalid save function (non const)
+<span class="lineNum">     159 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     160 </span>            :     bool constexpr has_non_const_save()
+<span class="lineNum">     161 </span>            :     { return is_non_const_member_save&lt;T, A&gt;() || is_non_const_non_member_save&lt;T, A&gt;(); }
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :     // ######################################################################
+<span class="lineNum">     164 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     165 </span>            :       constexpr bool has_member_split()
+<span class="lineNum">     166 </span>            :       { return has_member_load&lt;T, InputArchive&gt;() &amp;&amp; has_member_save&lt;T, OutputArchive&gt;(); }
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :     // ######################################################################
+<span class="lineNum">     169 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     170 </span>            :       constexpr bool has_non_member_split()
+<span class="lineNum">     171 </span>            :       { return has_non_member_load&lt;T, InputArchive&gt;() &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;(); }
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            :     // ######################################################################
+<span class="lineNum">     174 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">     175 </span>            :       constexpr bool is_output_serializable()
+<span class="lineNum">     176 </span>            :       {
+<span class="lineNum">     177 </span>            :         static_assert( !has_non_const_save&lt;T, OutputArchive&gt;(),
+<span class="lineNum">     178 </span>            :                        &quot;cereal detected a non const save. \n &quot;
+<span class="lineNum">     179 </span>            :                        &quot;save functions must either be const member functions or accept const type aguments if non-member&quot; );
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span>            :         return
+<span class="lineNum">     182 </span>            :           has_member_save&lt;T, OutputArchive&gt;() ^
+<span class="lineNum">     183 </span>            :           has_non_member_save&lt;T, OutputArchive&gt;() ^
+<span class="lineNum">     184 </span>            :           has_member_serialize&lt;T, OutputArchive&gt;() ^
+<span class="lineNum">     185 </span>            :           has_non_member_serialize&lt;T, OutputArchive&gt;();
+<span class="lineNum">     186 </span>            :       }
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :     // ######################################################################
+<span class="lineNum">     189 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">     190 </span>            :       constexpr bool is_input_serializable()
+<span class="lineNum">     191 </span>            :       {
+<span class="lineNum">     192 </span>            :         return
+<span class="lineNum">     193 </span>            :           has_member_load&lt;T, InputArchive&gt;() ^
+<span class="lineNum">     194 </span>            :           has_non_member_load&lt;T, InputArchive&gt;() ^
+<span class="lineNum">     195 </span>            :           has_member_serialize&lt;T, InputArchive&gt;() ^
+<span class="lineNum">     196 </span>            :           has_non_member_serialize&lt;T, InputArchive&gt;();
+<span class="lineNum">     197 </span>            :       }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :     // ######################################################################
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            :     namespace detail
+<span class="lineNum">     202 </span>            :     {
+<span class="lineNum">     203 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     204 </span>            :       constexpr auto is_specialized_member_serialize() -&gt; bool
+<span class="lineNum">     205 </span>            :       { return !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::member_serialize&gt;&gt;(); }
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     208 </span>            :       constexpr auto is_specialized_member_load_save() -&gt; bool
+<span class="lineNum">     209 </span>            :       { return !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::member_load_save&gt;&gt;(); }
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     212 </span>            :       constexpr auto is_specialized_non_member_serialize() -&gt; bool
+<span class="lineNum">     213 </span>            :       { return !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::non_member_serialize&gt;&gt;(); }
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     216 </span>            :       constexpr auto is_specialized_non_member_load_save() -&gt; bool
+<span class="lineNum">     217 </span>            :       { return !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::non_member_load_save&gt;&gt;(); }
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span>            :       // Considered an error if specialization exists for more than one type
+<span class="lineNum">     220 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     221 </span>            :       constexpr auto is_specialized_error() -&gt; bool
+<span class="lineNum">     222 </span>            :       {
+<span class="lineNum">     223 </span>            :         return (is_specialized_member_serialize&lt;T, A&gt;() +
+<span class="lineNum">     224 </span>            :                 is_specialized_member_load_save&lt;T, A&gt;() +
+<span class="lineNum">     225 </span>            :                 is_specialized_non_member_serialize&lt;T, A&gt;() +
+<span class="lineNum">     226 </span>            :                 is_specialized_non_member_load_save&lt;T, A&gt;()) &lt;= 1;
+<span class="lineNum">     227 </span>            :       }
+<span class="lineNum">     228 </span>            :     } // namespace detail
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     231 </span>            :     constexpr auto is_specialized() -&gt; bool
+<span class="lineNum">     232 </span>            :     {
+<span class="lineNum">     233 </span>            :       static_assert(detail::is_specialized_error&lt;T, A&gt;(), &quot;More than one explicit specialization detected for type.&quot;);
+<span class="lineNum">     234 </span>            :       return detail::is_specialized_member_serialize&lt;T, A&gt;() ||
+<span class="lineNum">     235 </span>            :              detail::is_specialized_member_load_save&lt;T, A&gt;() ||
+<span class="lineNum">     236 </span>            :              detail::is_specialized_non_member_serialize&lt;T, A&gt;() ||
+<span class="lineNum">     237 </span>            :              detail::is_specialized_non_member_load_save&lt;T, A&gt;();
+<span class="lineNum">     238 </span>            :     }
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     241 </span>            :     constexpr auto is_specialized_member_serialize() -&gt; bool
+<span class="lineNum">     242 </span>            :     {
+<span class="lineNum">     243 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;() &amp;&amp; has_member_serialize&lt;T, A&gt;())
+<span class="lineNum">     244 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;()),
+<span class="lineNum">     245 </span>            :                      &quot;cereal detected member serialization specialization but no member serialize function&quot; );
+<span class="lineNum">     246 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;();
+<span class="lineNum">     247 </span>            :     }
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     250 </span>            :     constexpr auto is_specialized_member_load() -&gt; bool
+<span class="lineNum">     251 </span>            :     {
+<span class="lineNum">     252 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;() &amp;&amp; has_member_load&lt;T, A&gt;())
+<span class="lineNum">     253 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;()),
+<span class="lineNum">     254 </span>            :                      &quot;cereal detected member load specialization but no member load function&quot; );
+<span class="lineNum">     255 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;();
+<span class="lineNum">     256 </span>            :     }
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     259 </span>            :     constexpr auto is_specialized_member_save() -&gt; bool
+<span class="lineNum">     260 </span>            :     {
+<span class="lineNum">     261 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;() &amp;&amp; has_member_save&lt;T, A&gt;())
+<span class="lineNum">     262 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;()),
+<span class="lineNum">     263 </span>            :                      &quot;cereal detected member save specialization but no member save function&quot; );
+<span class="lineNum">     264 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;();
+<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     268 </span>            :     constexpr auto is_specialized_non_member_serialize() -&gt; bool
+<span class="lineNum">     269 </span>            :     {
+<span class="lineNum">     270 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;() &amp;&amp; has_non_member_serialize&lt;T, A&gt;())
+<span class="lineNum">     271 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;()),
+<span class="lineNum">     272 </span>            :                      &quot;cereal detected non-member serialization specialization but no non-member serialize function&quot; );
+<span class="lineNum">     273 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;();
+<span class="lineNum">     274 </span>            :     }
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     277 </span>            :     constexpr auto is_specialized_non_member_load() -&gt; bool
+<span class="lineNum">     278 </span>            :     {
+<span class="lineNum">     279 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;() &amp;&amp; has_non_member_load&lt;T, A&gt;())
+<span class="lineNum">     280 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;()),
+<span class="lineNum">     281 </span>            :                      &quot;cereal detected non-member load specialization but no non-member load function&quot; );
+<span class="lineNum">     282 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;();
+<span class="lineNum">     283 </span>            :     }
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     286 </span>            :     constexpr auto is_specialized_non_member_save() -&gt; bool
+<span class="lineNum">     287 </span>            :     {
+<span class="lineNum">     288 </span>            :       static_assert( (is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;() &amp;&amp; has_non_member_save&lt;T, A&gt;())
+<span class="lineNum">     289 </span>            :                      || !(is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;()),
+<span class="lineNum">     290 </span>            :                      &quot;cereal detected non-member save specialization but no non-member save function&quot; );
+<span class="lineNum">     291 </span>            :       return is_specialized&lt;T, A&gt;() &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;();
+<span class="lineNum">     292 </span>            :     }
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span>            :     // ######################################################################
+<span class="lineNum">     295 </span>            :     template &lt;class T&gt;
+<span class="lineNum">     296 </span>            :     constexpr size_t sizeof_array( size_t rank = std::rank&lt;T&gt;::value )
+<span class="lineNum">     297 </span>            :     {
+<span class="lineNum">     298 </span>            :       return rank == 0 ? 1 : std::extent&lt;T&gt;::value * sizeof_array&lt;typename std::remove_extent&lt;T&gt;::type&gt;( rank - 1 );
+<span class="lineNum">     299 </span>            :     }
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span>            :     // ######################################################################
+<span class="lineNum">     302 </span>            :     namespace detail
+<span class="lineNum">     303 </span>            :     {
+<span class="lineNum">     304 </span>            :       template &lt;class T, typename Enable = void&gt;
+<span class="lineNum">     305 </span>            :         struct is_empty_class_impl
+<span class="lineNum">     306 </span>            :         { static constexpr bool value = false; };
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span>            :       template &lt;class T&gt;
+<span class="lineNum">     309 </span>            :         struct is_empty_class_impl&lt;T, typename std::enable_if&lt;std::is_class&lt;T&gt;::value&gt;::type&gt;
+<span class="lineNum">     310 </span>            :         {
+<span class="lineNum">     311 </span>            :           struct S : T
+<span class="lineNum">     312 </span>            :           { uint8_t t; };
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :           static constexpr bool value = sizeof(S) == sizeof(uint8_t);
+<span class="lineNum">     315 </span>            :         };
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :       struct base_class_id
+<span class="lineNum">     318 </span>            :       {
+<span class="lineNum">     319 </span>            :         template&lt;class T&gt;
+<span class="lineNum">     320 </span>            :           base_class_id(T const * const t) :
+<span class="lineNum">     321 </span>            :           type(typeid(T)),
+<span class="lineNum">     322 </span>            :           ptr(t),
+<span class="lineNum">     323 </span>            :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))
+<span class="lineNum">     324 </span>            :           { }
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span>            :           bool operator==(base_class_id const &amp; other) const
+<span class="lineNum">     327 </span>            :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span>            :           std::type_index type;
+<span class="lineNum">     330 </span>            :           void const * ptr;
+<span class="lineNum">     331 </span>            :           size_t hash;
+<span class="lineNum">     332 </span>            :       };
+<span class="lineNum">     333 </span>            :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };
+<span class="lineNum">     334 </span>            :     }
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span>            :     template&lt;class T&gt;
+<span class="lineNum">     337 </span>            :       using is_empty_class = std::integral_constant&lt;bool, detail::is_empty_class_impl&lt;T&gt;::value&gt;;
+<span class="lineNum">     338 </span>            : 
+<span class="lineNum">     339 </span>            :     // ######################################################################
+<span class="lineNum">     340 </span>            :     //! A macro to use to restrict which types of archives your function will work for.
+<span class="lineNum">     341 </span>            :     /*! This requires you to have a template class parameter named Archive and replaces the void return
+<span class="lineNum">     342 </span>            :         type for your function.
+<span class="lineNum">     343 </span>            : 
+<span class="lineNum">     344 </span>            :         INTYPE refers to the input archive type you wish to restrict on.
+<span class="lineNum">     345 </span>            :         OUTTYPE refers to the output archive type you wish to restrict on.
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span>            :         For example, if we want to limit a serialize to only work with binary serialization:
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span>            :         @code{.cpp}
+<span class="lineNum">     350 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     351 </span>            :         CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
+<span class="lineNum">     352 </span>            :         serialize( Archive &amp; ar, MyCoolType &amp; m )
+<span class="lineNum">     353 </span>            :         {
+<span class="lineNum">     354 </span>            :           ar &amp; m;
+<span class="lineNum">     355 </span>            :         }
+<span class="lineNum">     356 </span>            :         @endcode
+<span class="lineNum">     357 </span>            : 
+<span class="lineNum">     358 </span>            :         If you need to do more restrictions in your enable_if, you will need to do this by hand.
+<span class="lineNum">     359 </span>            :      */
+<span class="lineNum">     360 </span>            :     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
+<span class="lineNum">     361 </span>            :     typename std::enable_if&lt;std::is_same&lt;Archive, INTYPE&gt;::value || std::is_same&lt;Archive, OUTTYPE&gt;::value, void&gt;::type
+<span class="lineNum">     362 </span>            :   } // namespace traits
+<span class="lineNum">     363 </span>            : 
+<span class="lineNum">     364 </span>            :   namespace detail
+<span class="lineNum">     365 </span>            :   {
+<span class="lineNum">     366 </span>            :     template &lt;class T, class A, bool Member = traits::has_member_load_and_allocate&lt;T, A&gt;(), bool NonMember = traits::has_non_member_load_and_allocate&lt;T, A&gt;()&gt;
+<span class="lineNum">     367 </span>            :     struct Load
+<span class="lineNum">     368 </span>            :     {
+<span class="lineNum">     369 </span>            :       static_assert( !sizeof(T), &quot;Cereal detected both member and non member load_and_allocate functions!&quot; );
+<span class="lineNum">     370 </span>            :       static T * load_andor_allocate( A &amp; ar )
+<span class="lineNum">     371 </span>            :       { return nullptr; }
+<span class="lineNum">     372 </span>            :     };
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     375 </span>            :     struct Load&lt;T, A, false, false&gt;
+<span class="lineNum">     376 </span>            :     {
+<span class="lineNum">     377 </span>            :       static_assert( std::is_default_constructible&lt;T&gt;::value,
+<span class="lineNum">     378 </span>            :                      &quot;Trying to serialize a an object with no default constructor.\n\n&quot;
+<span class="lineNum">     379 </span>            :                      &quot;Types must either be default constructible or define either a member or non member Construct function.\n&quot;
+<span class="lineNum">     380 </span>            :                      &quot;Construct functions generally have the signature:\n\n&quot;
+<span class="lineNum">     381 </span>            :                      &quot;template &lt;class Archive&gt;\n&quot;
+<span class="lineNum">     382 </span>            :                      &quot;static T * load_and_allocate(Archive &amp; ar)\n&quot;
+<span class="lineNum">     383 </span>            :                      &quot;{\n&quot;
+<span class="lineNum">     384 </span>            :                      &quot;  var a;\n&quot;
+<span class="lineNum">     385 </span>            :                      &quot;  ar &amp; a\n&quot;
+<a name="386"><span class="lineNum">     386 </span>            :                      &quot;  return new T(a);\n&quot;</a>
+<span class="lineNum">     387 </span>            :                      &quot;}\n\n&quot; );
+<span class="lineNum">     388 </span><span class="lineCov">       1200 :       static T * load_andor_allocate( A &amp; ar )</span>
+<span class="lineNum">     389 </span><span class="lineCov">       1200 :       { return new T(); }</span>
+<span class="lineNum">     390 </span>            :     };
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     393 </span>            :     struct Load&lt;T, A, true, false&gt;
+<span class="lineNum">     394 </span>            :     {
+<span class="lineNum">     395 </span>            :       static T * load_andor_allocate( A &amp; ar )
+<span class="lineNum">     396 </span>            :       {
+<span class="lineNum">     397 </span>            :         return access::load_and_allocate&lt;T&gt;( ar );
+<span class="lineNum">     398 </span>            :       }
+<span class="lineNum">     399 </span>            :     };
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     402 </span>            :     struct Load&lt;T, A, false, true&gt;
+<span class="lineNum">     403 </span>            :     {
+<span class="lineNum">     404 </span>            :       static T * load_andor_allocate( A &amp; ar )
+<span class="lineNum">     405 </span>            :       {
+<span class="lineNum">     406 </span>            :         return LoadAndAllocate&lt;T&gt;::load_and_allocate( ar );
+<span class="lineNum">     407 </span>            :       }
+<span class="lineNum">     408 </span>            :     };
+<span class="lineNum">     409 </span>            :   } // namespace detail
+<span class="lineNum">     410 </span>            : } // namespace cereal
+<span class="lineNum">     411 </span>            : 
+<span class="lineNum">     412 </span>            : #endif // CEREAL_DETAILS_TRAITS_HPP_
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
