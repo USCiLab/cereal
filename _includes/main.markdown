@@ -1,7 +1,38 @@
 xCEREAL - A C++11 library for serialization
 ==========================================
 
-cereal is a header-only C++11 serialization library.  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings, XML, or JSON.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.
+
+{% assign iconversion = 2 %}
+
+{% if iconversion == 1 %}
+
+<div class="row-fluid">
+   <div class="span12 pagination-centered"><img class="pagination-centered" src="{{ site.baseurl }}/assets/img/cerealboxside.png"></img></div>
+</div>
+
+cereal is a header-only C++11 serialization library.  cereal takes arbitrary
+data types and reversibly turns them into different representations, such as
+compact binary encodings, XML, or JSON.  cereal was designed to be fast,
+light-weight, and easy to extend - it has no external dependencies and can be
+easily bundled with other code or used standalone.
+{% endif %}
+
+
+
+{% if iconversion == 2 %}
+<div class="media">
+  <img class="media-object pull-right" src="{{ site.baseurl }}/assets/img/cerealboxside.png"></img>
+  <div class="media-body">
+  <div class="media">
+  cereal is a header-only C++11 serialization library.  cereal takes arbitrary
+  data types and reversibly turns them into different representations, such as
+  compact binary encodings, XML, or JSON.  cereal was designed to be fast,
+  light-weight, and easy to extend - it has no external dependencies and can be
+  easily bundled with other code or used standalone.
+  </div>
+  </div>
+</div>
+{% endif %}
 
 ---
 
