@@ -59,7 +59,7 @@ int main()
   cereal::BinaryOutputArchive archive( os );
 
   SomeData myData;
-  os( myData );
+  archive( myData );
 
   return 0;
 }
