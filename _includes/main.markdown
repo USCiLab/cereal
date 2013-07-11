@@ -52,11 +52,11 @@ In simple performance tests, cereal is usually faster than boost's serialization
 
 ### xCEREAL is extensible
 
-cereal comes with binary, XML, and JSON serializers.  If you need something else, cereal was written to be easily extensible for adding custom serialization archives.
+cereal comes with excellent standard library support as well as binary, XML, and JSON serializers.  If you need something else, cereal was written to be easily extensible for adding custom serialization archives or types.
 
 ### xCEREAL is unit tested
 
-Trust something other than good faith - we've written a basic set of unit tests to make sure cereal is doing what it should be doing.  These unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
+Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/coverage/index.html)!) to make sure cereal is doing what it should be doing.  These unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
 
 ---
 
