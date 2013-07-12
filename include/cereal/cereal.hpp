@@ -29,6 +29,7 @@
 #ifndef CEREAL_CEREAL_HPP_
 #define CEREAL_CEREAL_HPP_
 
+#include <stdexcept>
 #include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
@@ -46,7 +47,8 @@ namespace cereal
   /*! @ingroup Utility */
   struct Exception : public std::runtime_error
   {
-    using std::runtime_error::runtime_error;
+    Exception( const std::string& what ) : std::runtime_error(what) {}
+    Exception( const char* what ) : std::runtime_error(what) {}
   };
 
   // ######################################################################

@@ -207,7 +207,7 @@ namespace cereal
         typename OutputBindingMap<Archive>::Serializers serializers;
 
         serializers.shared_ptr =
-          [](void * arptr, void const * dptr)
+          [&](void * arptr, void const * dptr)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
 
@@ -219,7 +219,7 @@ namespace cereal
           };
 
         serializers.unique_ptr =
-          [](void * arptr, void const * dptr)
+          [&](void * arptr, void const * dptr)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
 
