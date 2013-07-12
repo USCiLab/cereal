@@ -27,6 +27,7 @@
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/xml.hpp>
 
 #include <cereal/types/string.hpp>
@@ -464,8 +465,37 @@ int main()
   }
 
   {
-    std::ofstream b("test.out");
-    cereal::BinaryOutputArchive oar(b, true);
+    std::ofstream b("endian.out");
+    cereal::PortableBinaryOutputArchive oar(b);
+
+    bool bb = true;
+    char a = 'a';
+    int x = 1234;
+    float y = 1.324f;
+    double z = 3.1452;
+    long double d = 1.123451234512345;
+    long long j = 2394873298472343;
+
+    oar( bb, a, x, y, z, d, j );
+    std::cout << bb << " " << a << " " << x << " " << y << " " << z << " " << d << " " << j << std::endl;
+  }
+  {
+    std::ifstream b("endian.out");
+    cereal::PortableBinaryInputArchive iar(b);
+
+    bool bb;
+    char a;
+    int x;
+    float y;
+    double z;
+    long double d;
+    long long j;
+
+    iar( bb, a, x, y, z, d, j );
+
+    std::cout << bb << " " << a << " " << x << " " << y << " " << z << " " << d << " " << j << std::endl;
+
+    std::remove("endian.out");
   }
 
 
