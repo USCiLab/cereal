@@ -11,7 +11,7 @@ If you want to serialize some data through pointers to base types:
 
 1. Include `<cereal/types/polymorphic.hpp>`
 2. Include all of the archives you want to be able to use with your class (`<cereal/archives/*.hpp`)
-3. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro to register all of your derived classes
+3. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro in a .cpp file to register all of your derived classes
 
 ---
 
@@ -22,9 +22,49 @@ When serializing a polymorphic base class pointer, cereal uses [Run-Time Type In
 <span class="label label-warning">Important!</span>
 Before registering a type, you must be sure that every archive type that will be used has already been included.
 
-```cpp
-// Include any archives you plan on using with your type before
-// you register it
+<span class="label label-warning">Important!</span>
+Calling `CEREAL_REGISTER_TYPE` in a header file will result in linker errors if the header is included more than once. Call it in a .cpp file instead.
+
+#### myclasses.hpp
+``` {cpp}
+ // A pure virtual base class
+struct BaseClass
+{
+  virtual void sayType() = 0;
+};
+
+// A class derived from BaseClass
+struct DerivedClassOne : public BaseClass
+{
+  void sayType();
+
+  int x;
+
+  template<class Archive>
+    void serialize( Archive & ar )
+    { ar( x ); }
+};
+
+// Another class derived from BaseClass
+struct EmbarrassingDerivedClass : public BaseClass
+{
+  void sayType();
+
+  float y;
+
+  template<class Archive>
+    void serialize( Archive & ar )
+    { ar( y ); }
+};
+```
+
+#### myclasses.cpp
+``` {cpp}
+
+#include "myclasses.hpp"
+#include <iostream>
+
+// Include any archives you plan on using with your type before you register it
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
 #include <cereal/archives/json.hpp>
@@ -32,42 +72,33 @@ Before registering a type, you must be sure that every archive type that will be
 // Include the polymorphic serialization and registration mechanisms
 #include <cereal/types/polymorphic.hpp>
 
-#include <iostream>
-#include <fstream>
-
-// An abstract base class
-struct BaseClass
+void DerivedClassOne::sayType()
 {
-  virtual void sayType() = 0;
-  // Note that abstract base classes do not require a serialization function,
-  // although there is nothing wrong with having one if the class has data
-  // to serialize
-};
+  std::cout << "DerivedClassOne" << std::endl; 
+}
 
-// A class derived from BaseClass
-struct DerivedClassOne : public BaseClass
+void EmbarrassingDerivedClass::sayType()
 {
-  void sayType() { std::cout << "DerivedClassOne" << std::endl; }
+  std::cout << "EmbarrassingDerivedClass. Wait.. I mean DerivedClassTwo!" << std::endl; 
+}
 
-  template<class Archive>
-    void serialize( Archive & ar )
-    { ar( x ); }
-
-  int x;
-};
+// Register DerivedClassOne
 CEREAL_REGISTER_TYPE(DerivedClassOne);
 
-// Another class derived from BaseClass
-struct EmbarrassingDerivedClass : public BaseClass
-{
-  void sayType() { std::cout << "EmbarrassingDerivedClass. Wait.. I mean DerivedClassTwo!" << std::endl; }
-  float y;
-
-  template<class Archive>
-    void serialize( Archive & ar )
-    { ar( y ); }
-};
+// Register EmbarassingDerivedClass with a less embarrasing name
 CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
+
+```
+
+#### main.cpp
+``` {cpp}
+#include "myclasses.hpp"
+
+#include <cereal/archives/xml.hpp>
+#include <cereal/types/polymorphic.hpp>
+
+#include <iostream>
+#include <fstream>
 
 int main()
 {
