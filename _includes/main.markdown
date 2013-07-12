@@ -1,7 +1,14 @@
+
 xCEREAL - A C++11 library for serialization
 ==========================================
 
-cereal is a header-only C++11 serialization library.  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings, XML, or JSON.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.
+<img class="media-object pull-right" src="{{ site.baseurl }}/assets/img/cerealboxside.png"></img>
+
+cereal is a header-only C++11 serialization library.  cereal takes arbitrary
+data types and reversibly turns them into different representations, such as
+compact binary encodings, XML, or JSON.  cereal was designed to be fast,
+light-weight, and easy to extend - it has no external dependencies and can be
+easily bundled with other code or used standalone.
 
 ---
 
@@ -21,11 +28,11 @@ In simple performance tests, cereal is usually faster than boost's serialization
 
 ### xCEREAL is extensible
 
-cereal comes with binary, XML, and JSON serializers.  If you need something else, cereal was written to be easily extensible for adding custom serialization archives.
+cereal comes with excellent standard library support as well as binary, XML, and JSON serializers.  If you need something else, cereal was written to be easily extensible for adding custom serialization archives or types.
 
 ### xCEREAL is unit tested
 
-Trust something other than good faith - we've written a basic set of unit tests to make sure cereal is doing what it should be doing.  These unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
+Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/coverage/index.html)!) to make sure cereal is doing what it should be doing.  These unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
 
 ---
 
@@ -83,7 +90,7 @@ int main()
   cereal::BinaryOutputArchive archive( os );
 
   SomeData myData;
-  os( myData );
+  archive( myData );
 
   return 0;
 }
