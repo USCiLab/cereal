@@ -36,7 +36,7 @@
 
 namespace cereal
 {
-  namespace binary_detail
+  namespace variant_detail
   {
     //! @internal
     template <class Archive>
@@ -76,7 +76,7 @@ namespace cereal
         load_variant<N+1, Variant, T...>(ar, target, variant);
     }
 
-  } // namespace binary_detail
+  } // namespace variant_detail
 
   //! Saving for boost::variant
   template <class Archive, typename... VariantTypes> inline
@@ -84,7 +84,7 @@ namespace cereal
   {
     int32_t which = variant.which();
     ar( _CEREAL_NVP("which", which) );
-    binary_detail::variant_save_visitor<Archive> visitor(ar);
+    variant_detail::variant_save_visitor<Archive> visitor(ar);
     variant.apply_visitor(visitor);
   }
 
@@ -99,7 +99,7 @@ namespace cereal
     if(which >= boost::mpl::size<types>::value)
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 
-    binary_detail::load_variant<0, boost::variant<VariantTypes...>, VariantTypes...>(ar, which, variant);
+    variant_detail::load_variant<0, boost::variant<VariantTypes...>, VariantTypes...>(ar, which, variant);
   }
 } // namespace cereal
 
