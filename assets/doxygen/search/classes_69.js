@@ -4,6 +4,7 @@ var searchData=
   ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchive_3c_20binaryinputarchive_2c_20allowemptyclasselision_20_3e',['InputArchive&lt; BinaryInputArchive, AllowEmptyClassElision &gt;',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchive_3c_20jsoninputarchive_20_3e',['InputArchive&lt; JSONInputArchive &gt;',['../classcereal_1_1InputArchive.html',1,'cereal']]],
+  ['inputarchive_3c_20portablebinaryinputarchive_2c_20allowemptyclasselision_20_3e',['InputArchive&lt; PortableBinaryInputArchive, AllowEmptyClassElision &gt;',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchive_3c_20xmlinputarchive_20_3e',['InputArchive&lt; XMLInputArchive &gt;',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchivebase',['InputArchiveBase',['../structcereal_1_1detail_1_1InputArchiveBase.html',1,'cereal::detail']]],
   ['inputbindingcreator',['InputBindingCreator',['../structcereal_1_1detail_1_1InputBindingCreator.html',1,'cereal::detail']]],
