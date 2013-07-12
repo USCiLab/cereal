@@ -45,6 +45,7 @@
 #include <cereal/types/polymorphic.hpp>
 
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/xml.hpp>
 #include <cereal/archives/json.hpp>
 #include <limits>
@@ -286,6 +287,11 @@ BOOST_AUTO_TEST_CASE( binary_pod )
   test_pod<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_pod )
+{
+  test_pod<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_pod )
 {
   test_pod<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -337,6 +343,11 @@ void test_structs()
 BOOST_AUTO_TEST_CASE( binary_structs )
 {
   test_structs<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_structs )
+{
+  test_structs<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_structs )
@@ -417,6 +428,11 @@ void test_array()
 BOOST_AUTO_TEST_CASE( binary_array )
 {
   test_array<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_array )
+{
+  test_array<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_array )
@@ -505,6 +521,11 @@ BOOST_AUTO_TEST_CASE( binary_dequeue )
   test_deque<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_dequeue )
+{
+  test_deque<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_dequeue )
 {
   test_deque<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -585,6 +606,11 @@ BOOST_AUTO_TEST_CASE( binary_forward_list )
   test_forward_list<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_forward_list )
+{
+  test_forward_list<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_forward_list )
 {
   test_forward_list<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -663,6 +689,11 @@ void test_list()
 BOOST_AUTO_TEST_CASE( binary_list )
 {
   test_list<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_list )
+{
+  test_list<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_list )
@@ -763,6 +794,11 @@ void test_map()
 BOOST_AUTO_TEST_CASE( binary_map )
 {
   test_map<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_map )
+{
+  test_map<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_map )
@@ -879,6 +915,11 @@ BOOST_AUTO_TEST_CASE( binary_multimap )
   test_multimap<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_multimap )
+{
+  test_multimap<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_multimap )
 {
   test_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -945,6 +986,11 @@ void test_memory()
 BOOST_AUTO_TEST_CASE( binary_memory )
 {
   test_memory<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_memory )
+{
+  test_memory<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_memory )
@@ -1039,6 +1085,11 @@ BOOST_AUTO_TEST_CASE( binary_queue )
   test_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_queue )
+{
+  test_queue<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_queue )
 {
   test_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1131,6 +1182,11 @@ BOOST_AUTO_TEST_CASE( binary_priority_queue )
   test_priority_queue<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_priority_queue )
+{
+  test_priority_queue<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_priority_queue )
 {
   test_priority_queue<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1209,6 +1265,11 @@ void test_set()
 BOOST_AUTO_TEST_CASE( binary_set )
 {
   test_set<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_set )
+{
+  test_set<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_set )
@@ -1330,6 +1391,11 @@ BOOST_AUTO_TEST_CASE( binary_multiset )
   test_multiset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_multiset )
+{
+  test_multiset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_multiset )
 {
   test_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1422,6 +1488,11 @@ BOOST_AUTO_TEST_CASE( binary_stack )
   test_stack<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_stack )
+{
+  test_stack<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_stack )
 {
   test_stack<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1509,6 +1580,11 @@ void test_string_all()
 BOOST_AUTO_TEST_CASE( binary_string )
 {
   test_string_all<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_string )
+{
+  test_string_all<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_string_basic )
@@ -1618,6 +1694,11 @@ void test_unordered_map()
 BOOST_AUTO_TEST_CASE( binary_unordered_map )
 {
   test_unordered_map<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_unordered_map )
+{
+  test_unordered_map<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_unordered_map )
@@ -1760,6 +1841,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multimap )
   test_unordered_multimap<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_unordered_multimap )
+{
+  test_unordered_multimap<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_unordered_multimap )
 {
   test_unordered_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -1857,6 +1943,11 @@ void test_unordered_set()
 BOOST_AUTO_TEST_CASE( binary_unordered_set )
 {
   test_unordered_set<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_unordered_set )
+{
+  test_unordered_set<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_unordered_set )
@@ -1978,6 +2069,11 @@ BOOST_AUTO_TEST_CASE( binary_unordered_multiset )
   test_unordered_multiset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_unordered_multiset )
+{
+  test_unordered_multiset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_unordered_multiset )
 {
   test_unordered_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2064,6 +2160,11 @@ BOOST_AUTO_TEST_CASE( binary_vector )
   test_vector<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_vector )
+{
+  test_vector<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_vector )
 {
   test_vector<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2139,6 +2240,11 @@ void test_pair()
 BOOST_AUTO_TEST_CASE( binary_pair )
 {
   test_pair<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_pair )
+{
+  test_pair<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_pair )
@@ -2220,6 +2326,11 @@ BOOST_AUTO_TEST_CASE( binary_tuple )
   test_tuple<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_tuple )
+{
+  test_tuple<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_tuple )
 {
   test_tuple<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2282,6 +2393,11 @@ BOOST_AUTO_TEST_CASE( binary_complex )
   test_complex<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_complex )
+{
+  test_complex<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_complex )
 {
   test_complex<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2340,6 +2456,11 @@ void test_bitset()
 BOOST_AUTO_TEST_CASE( binary_bitset )
 {
   test_bitset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_bitset )
+{
+  test_bitset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_bitset )
@@ -2409,6 +2530,11 @@ void test_chrono()
 BOOST_AUTO_TEST_CASE( binary_chrono )
 {
   test_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_chrono )
+{
+  test_chrono<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 BOOST_AUTO_TEST_CASE( xml_chrono )
@@ -2538,6 +2664,11 @@ BOOST_AUTO_TEST_CASE( binary_structs_specialized )
   test_structs_specialized<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_structs_specialized )
+{
+  test_structs_specialized<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_structs_specialized )
 {
   test_structs_specialized<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2653,6 +2784,11 @@ BOOST_AUTO_TEST_CASE( binary_polymorphic )
   test_polymorphic<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( portable_binary_polymorphic )
+{
+  test_polymorphic<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( xml_polymorphic )
 {
   test_polymorphic<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
@@ -2668,4 +2804,116 @@ namespace mynamespace { struct MyCustomClass {}; }
 BOOST_AUTO_TEST_CASE( util )
 {
   BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "mynamespace::MyCustomClass" );
+}
+
+template <class T>
+inline void swapBytes( T & t )
+{
+  cereal::portable_binary_detail::swap_bytes<sizeof(T)>( reinterpret_cast<std::uint8_t*>(&t) );
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_archive )
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(size_t i=0; i<100; ++i)
+  {
+    bool     o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
+    uint8_t  o_uint8  = random_value<uint8_t>(gen);
+    int8_t   o_int8   = random_value<int8_t>(gen);
+    uint16_t o_uint16 = random_value<uint16_t>(gen);
+    int16_t  o_int16  = random_value<int16_t>(gen);
+    uint32_t o_uint32 = random_value<uint32_t>(gen);
+    int32_t  o_int32  = random_value<int32_t>(gen);
+    uint64_t o_uint64 = random_value<uint64_t>(gen);
+    int64_t  o_int64  = random_value<int64_t>(gen);
+    float    o_float  = random_value<float>(gen);
+    double   o_double = random_value<double>(gen);
+
+    // swap the bytes on all of the data
+    swapBytes(o_bool);
+    swapBytes(o_uint8);
+    swapBytes(o_int8);
+    swapBytes(o_uint16);
+    swapBytes(o_int16);
+    swapBytes(o_uint32);
+    swapBytes(o_int32);
+    swapBytes(o_uint64);
+    swapBytes(o_int64);
+    swapBytes(o_float);
+    swapBytes(o_double);
+
+    std::ostringstream os;
+    {
+      cereal::BinaryOutputArchive oar(os);
+      // manually insert incorrect endian encoding
+      oar(!cereal::portable_binary_detail::is_little_endian());
+
+      oar(o_bool);
+      oar(o_uint8);
+      oar(o_int8);
+      oar(o_uint16);
+      oar(o_int16);
+      oar(o_uint32);
+      oar(o_int32);
+      oar(o_uint64);
+      oar(o_int64);
+      oar(o_float);
+      oar(o_double);
+    }
+
+    // swap back to original values
+    swapBytes(o_bool);
+    swapBytes(o_uint8);
+    swapBytes(o_int8);
+    swapBytes(o_uint16);
+    swapBytes(o_int16);
+    swapBytes(o_uint32);
+    swapBytes(o_int32);
+    swapBytes(o_uint64);
+    swapBytes(o_int64);
+    swapBytes(o_float);
+    swapBytes(o_double);
+
+    bool     i_bool   = false;
+    uint8_t  i_uint8  = 0.0;
+    int8_t   i_int8   = 0.0;
+    uint16_t i_uint16 = 0.0;
+    int16_t  i_int16  = 0.0;
+    uint32_t i_uint32 = 0.0;
+    int32_t  i_int32  = 0.0;
+    uint64_t i_uint64 = 0.0;
+    int64_t  i_int64  = 0.0;
+    float    i_float  = 0.0;
+    double   i_double = 0.0;
+
+    std::istringstream is(os.str());
+    {
+      cereal::PortableBinaryInputArchive iar(is);
+      iar(i_bool);
+      iar(i_uint8);
+      iar(i_int8);
+      iar(i_uint16);
+      iar(i_int16);
+      iar(i_uint32);
+      iar(i_int32);
+      iar(i_uint64);
+      iar(i_int64);
+      iar(i_float);
+      iar(i_double);
+    }
+
+    BOOST_CHECK_EQUAL(i_bool   , o_bool);
+    BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
+    BOOST_CHECK_EQUAL(i_int8   , o_int8);
+    BOOST_CHECK_EQUAL(i_uint16 , o_uint16);
+    BOOST_CHECK_EQUAL(i_int16  , o_int16);
+    BOOST_CHECK_EQUAL(i_uint32 , o_uint32);
+    BOOST_CHECK_EQUAL(i_int32  , o_int32);
+    BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
+    BOOST_CHECK_EQUAL(i_int64  , o_int64);
+    BOOST_CHECK_CLOSE(i_float  , o_float,  1e-5);
+    BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
+  }
 }
