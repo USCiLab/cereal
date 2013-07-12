@@ -38,80 +38,7 @@
 #include <cereal/details/traits.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 
-//! Binds a polymorhic type to all registered archives
-/*! This binds a polymorphic type to all registered archives that
-    have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
-    after all archives are registered (usually after the archives themselves
-    have been included) and after the type itself has been
-    registered.
-
-    This happens automatically when using CEREAL_REGISTER_TYPE or
-    CEREAL_REGISTER_TYPE_WITH_NAME.
-
-    If using CEREAL_REGISTER_TYPE_WITHOUT_BINDING or its named variant
-    CEREAL_REGISTER_TYPE_WITH_NAME_WITHOUT_BINDING, this will need
-    to be called explicitly.
-
-    This should only be invoked directly if the polymorphic types
-    will be used across compilation units, placed in a static library,
-    or in a dynamic library.
-
-    Only one instance of CEREAL_BIND_TO_ARCHIVES can exist for
-    any type you wish to enable polymorphic support for, even
-    across compilation units.  */
-#define CEREAL_BIND_TO_ARCHIVES(T)                           \
-    namespace cereal {                                       \
-    namespace detail {                                       \
-    template<>                                               \
-    struct init_binding<T> {                                 \
-        static bind_to_archives<T> const & b;                \
-    };                                                       \
-    bind_to_archives<T> const & init_binding<T>::b =         \
-        ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T >                             \
-        >::getInstance().bind();                             \
-    }} // end namespaces
-
-//! Registers a polymorphic type with cereal without binding it to archives
-/*! Polymorphic types must be registered before pointers
-    to them can be serialized through a base class pointer.
-
-    Unlike CEREAL_REGISTER_TYPE, this macro does not perform
-    binding of the type to any archives; it merely exports
-    naming information about the type.  As a result of this
-    you do not need to have registered archives when this is
-    called, however they must have been registered by the time
-    CEREAL_BIND_TO_ARCHIVES is called.
-
-    This should be used instead of CEREAL_REGISTER_TYPE if
-    the binding would appear in multiple translation
-    units or be used in dynamic library.
-
-    This should be placed after the declaration of your
-    derived type (in its header).
-
-    @note This requires you to explicitly call
-          CEREAL_BIND_TO_ARCHIVES in the file that defines
-          your class.  See CEREAL_BIND_TO_ARCHIVES for
-          more information.
-
-    Registering a type lets cereal know how to properly
-    serialize it when a pointer to a base object is
-    used in conjunction with a derived class.
-
-    Polymorphic support in cereal requires RTTI to be
-    enabled */
-#define CEREAL_REGISTER_TYPE_WITHOUT_BINDING(T)          \
-  namespace cereal {                                     \
-  namespace detail {                                     \
-  template <>                                            \
-  struct binding_name<T>                                 \
-  {                                                      \
-    static constexpr char const * name() { return #T; }; \
-  };                                                     \
-  } } /* end namespaces */
-
-//! Fully registers and binds a polymorphic type with cereal
+//! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
     to them can be serialized.  This also assumes that
     all relevent archives have also previously been
@@ -120,10 +47,6 @@
     that type registration needs to happen after specific
     archives to be used are included.
 
-    @note This fully registers and binds a type to all available archives.
-          This means that it must appear in exactly one translation unit
-          and requires that relavent archives have already been registered.
-
     Registering a type lets cereal know how to properly
     serialize it when a pointer to a base object is
     used in conjunction with a derived class.
@@ -131,31 +54,29 @@
     Polymorphic support in cereal requires RTTI to be
     enabled */
 #define CEREAL_REGISTER_TYPE(T)                          \
-  CEREAL_REGISTER_TYPE_WITHOUT_BINDING(T);               \
+  namespace cereal {                                     \
+  namespace detail {                                     \
+  template <>                                            \
+  struct binding_name<T>                                 \
+  {                                                      \
+    static constexpr char const * name() { return #T; }; \
+  };                                                     \
+  } } /* end namespaces */                               \
   CEREAL_BIND_TO_ARCHIVES(T);
 
-//! Registers (without binding) a polymorphic type with cereal, giving it a
-//! user defined name
-/*! In some cases the default name used with
-    CEREAL_REGISTER_TYPE_WITHOUT_BINDING (the name of the type) may not be
-    suitable.  This macro allows any name to be associated
-    with the type.  The name should be unique */
-#define CEREAL_REGISTER_TYPE_WITH_NAME_WITHOUT_BINDING(T, Name) \
-  namespace cereal {                                            \
-  namespace detail {                                            \
-  template <>                                                   \
-  struct binding_name<T>                                        \
-  { static constexpr char const * name() { return Name; }; };   \
-  } } /* end namespaces */
-
-//! Fully registers and binds a polymorphic type with cereal, giving it a
+//! Registers a polymorphic type with cereal, giving it a
 //! user defined name
 /*! In some cases the default name used with
     CEREAL_REGISTER_TYPE (the name of the type) may not be
     suitable.  This macro allows any name to be associated
     with the type.  The name should be unique */
 #define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)               \
-  CEREAL_REGISTER_TYPE_WITH_NAME_WITHOUT_BINDING(T, Name);    \
+  namespace cereal {                                          \
+  namespace detail {                                          \
+  template <>                                                 \
+  struct binding_name<T>                                      \
+  { static constexpr char const * name() { return Name; }; }; \
+  } } /* end namespaces */                                    \
   CEREAL_BIND_TO_ARCHIVES(T);
 
 namespace cereal

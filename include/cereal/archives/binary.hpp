@@ -31,25 +31,45 @@
 
 #include <cereal/cereal.hpp>
 #include <sstream>
+#include <byteswap.h>
 
 namespace cereal
 {
+  namespace binary_detail
+  {
+    //! Returns true if the current machine is little endian
+    /*! @ingroup Internal */
+    inline const bool is_little_endian()
+    {
+      static std::int32_t test = 1;
+      return *reinterpret_cast<std::int8_t*>( &test );
+    }
+  }
+
   // ######################################################################
   //! An output archive designed to save data in a compact binary representation
   /*! This archive outputs data to a stream in an extremely compact binary
-      representation with as little extra metadata as possible. 
-      
+      representation with as little extra metadata as possible.
+
       \ingroup Archives */
   class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout! */
-      BinaryOutputArchive(std::ostream & stream) :
+                        even cout!
+          @param saveEndianness Whether we should output the endianness of the computer
+                                serializing data. This only needs to be done if you
+                                intend to send data across machines with different
+                                endianness.  If you enable this, be sure to enable it
+                                when loading the archive. */
+      BinaryOutputArchive(std::ostream & stream, bool saveEndianness = false) :
         OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
-    { }
+      {
+        if( saveEndianness )
+          this->operator()( binary_detail::is_little_endian() );
+      }
 
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, size_t size )
@@ -71,7 +91,13 @@ namespace cereal
   {
     public:
       //! Construct, loading from the provided stream
-      BinaryInputArchive(std::istream & stream) :
+      /*! @param stream The stream to read from.
+          @param saveEndianness Whether we should output the endianness of the computer
+                                serializing data. This only needs to be done if you
+                                intend to send data across machines with different
+                                endianness.  If you enable this, be sure to enable it
+                                when loading the archive. */
+      BinaryInputArchive(std::istream & stream, bool loadEndianness = false) :
         InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
     { }

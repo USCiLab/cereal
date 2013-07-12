@@ -463,6 +463,10 @@ int main()
     assert( ((Derived*)d3.get())->x == 6 && ((Derived*)d3.get())->y == 5 );
   }
 
+  {
+    std::ofstream b("test.out");
+    cereal::BinaryOutputArchive oar(b, true);
+  }
 
 
 
