@@ -39,7 +39,7 @@ namespace cereal
   template <class Archive, class T, class A> inline
   void save( Archive & ar, std::list<T, A> const & list )
   {
-    ar( make_size_tag( list.size() ) );
+    ar( make_size_tag( static_cast<size_type>(list.size()) ) );
 
     for( auto const & i : list )
       ar( i );
@@ -49,7 +49,7 @@ namespace cereal
   template <class Archive, class T, class A> inline
   void load( Archive & ar, std::list<T, A> & list )
   {
-    size_t size;
+    size_type size;
     ar( make_size_tag( size ) );
 
     list.resize( size );

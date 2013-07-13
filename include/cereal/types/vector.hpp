@@ -41,7 +41,7 @@ namespace cereal
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( make_size_tag( vector.size() ) ); // number of elements
+    ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
     ar( binary_data( vector.data(), vector.size() * sizeof(T) ) );
   }
 
@@ -51,7 +51,7 @@ namespace cereal
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   load( Archive & ar, std::vector<T, A> & vector )
   {
-    size_t vectorSize;
+    size_type vectorSize;
     ar( make_size_tag( vectorSize ) );
 
     vector.resize( vectorSize );
@@ -65,7 +65,7 @@ namespace cereal
                           || std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
-    ar( make_size_tag( vector.size() ) ); // number of elements
+    ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar( *it );
   }
@@ -77,7 +77,7 @@ namespace cereal
                           || std::is_same<T, bool>::value, void>::type
   load( Archive & ar, std::vector<T, A> & vector )
   {
-    size_t size;
+    size_type size;
     ar( make_size_tag( size ) );
 
     vector.resize( size );

@@ -41,7 +41,7 @@ namespace cereal
     template <class Archive, class MapT> inline
     void save( Archive & ar, MapT const & map )
     {
-      ar( make_size_tag( map.size() ) );
+      ar( make_size_tag( static_cast<size_type>(map.size()) ) );
 
       for( const auto & i : map )
         ar( make_map_item(i.first, i.second) );
@@ -51,13 +51,13 @@ namespace cereal
     template <class Archive, class MapT> inline
     void load( Archive & ar, MapT & map )
     {
-      size_t size;
+      size_type size;
       ar( make_size_tag( size ) );
 
       map.clear();
       map.reserve( size );
 
-      for( size_t i = 0; i < size; ++i )
+      for( size_type i = 0; i < size; ++i )
       {
         typename MapT::key_type key;
         typename MapT::mapped_type value;

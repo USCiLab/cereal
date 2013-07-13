@@ -41,7 +41,7 @@ namespace cereal
     template <class Archive, class SetT> inline
     void save( Archive & ar, SetT const & set )
     {
-      ar( make_size_tag( set.size() ) );
+      ar( make_size_tag( static_cast<size_type>(set.size()) ) );
 
       for( const auto & i : set )
         ar( i );
@@ -51,13 +51,13 @@ namespace cereal
     template <class Archive, class SetT> inline
     void load( Archive & ar, SetT & set )
     {
-      size_t size;
+      size_type size;
       ar( make_size_tag( size ) );
 
       set.clear();
       set.reserve( size );
 
-      for( size_t i = 0; i < size; ++i )
+      for( size_type i = 0; i < size; ++i )
       {
         typename SetT::key_type key;
 
