@@ -2,7 +2,7 @@ Quick Start
 ===========
 
 This is a quick guide to get cereal up and running in a matter of minutes.  The only prerequisite for running cereal is
-a modern C++11 compliant compiler, such as GCC 4.8.1 or clang 3.3.  Older versions might work, but we can't guarantee
+a modern C++11 compliant compiler, such as GCC 4.7.3 or clang 3.3.  Older versions might work, but we can't guarantee
 it.
 
 ---

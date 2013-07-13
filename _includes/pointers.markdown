@@ -21,7 +21,9 @@ cereal will also properly handle pointers to polymorphic objects (e.g. `std::uni
 
 ### Types with no default constructor
 
-If you want to serialize a pointer to a type that does not have a default constructor, or a type that does not allow cereal access to its default constructor, you will need to provide a specialization of `cereal::LoadAndAllocate` for the type.  cereal will call the static method of this struct, `load_and_allocate`, which will be called instead of its normal serialization functionality to dynamically allocate a new instance of the type and load all of its contents.  Don't worry about returning the raw pointer here - cereal will contain it within a smart pointer.
+If you want to serialize a pointer to a type that does not have a default constructor, or a type that does not allow cereal access to its default constructor, you will either need to provide a member static function `load_and_allocate` or provide a specialization of `cereal::LoadAndAllocate` for the type.  
+
+If you choose to use the external version, specializing `cereal::LoadAndAllocate`, cereal will call the static method of this struct, `load_and_allocate`, which will be called instead of its normal serialization functionality to dynamically allocate a new instance of the type and load all of its contents.  Don't worry about returning the raw pointer here - cereal will contain it within a smart pointer.
 
 ```cpp
 #include <cereal/access.hpp> // For LoadAndAllocate
@@ -37,9 +39,18 @@ struct MyType
   {
     ar( myX );
   }
+
+  // We could define load_and_allocate internally
+  //static MyType * load_and_allocate( Archive & ar )
+  //{
+  //  int x;
+  //  ar( x );
+  //  return new MyType( x );
+  //}
 };
 
 // Provide a specialization for LoadAndAllocate for your type
+// if you want to do it externally.
 namespace cereal
 {
   template <> struct LoadAndAllocate<MyType>
