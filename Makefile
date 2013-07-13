@@ -1,4 +1,4 @@
-CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g
+CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g 
 CC=g++
 COVERAGE_OUTPUT=out
 

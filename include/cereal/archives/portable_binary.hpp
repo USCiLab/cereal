@@ -118,7 +118,8 @@ namespace cereal
       /*! @param stream The stream to read from. */
       PortableBinaryInputArchive(std::istream & stream) :
         InputArchive<PortableBinaryInputArchive, AllowEmptyClassElision>(this),
-        itsStream(stream)
+        itsStream(stream),
+        itsConvertEndianness( false )
       {
         bool streamLittleEndian;
         this->operator()( streamLittleEndian );

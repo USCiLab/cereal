@@ -31,6 +31,7 @@
 
 #include <stdexcept>
 #include <type_traits>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <cstddef>

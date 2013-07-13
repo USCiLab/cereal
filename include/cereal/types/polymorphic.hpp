@@ -88,11 +88,12 @@ namespace cereal
     template<class Archive> inline
     typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar, std::uint32_t const nameid)
     {
+      // If the nameid is zero, we serialized a null pointer
       if(nameid == 0)
       {
         typename ::cereal::detail::InputBindingMap<Archive>::Serializers emptySerializers;
         emptySerializers.shared_ptr = [](void*, std::shared_ptr<void> & ptr) { ptr.reset(); };
-        emptySerializers.unique_ptr = [](void*, std::unique_ptr<void> & ptr) { ptr.reset(); };
+        emptySerializers.unique_ptr = [](void*, std::unique_ptr<void, ::cereal::detail::EmptyDeleter<void>> & ptr) { ptr.reset( nullptr ); };
         return emptySerializers;
       }
 
@@ -114,7 +115,9 @@ namespace cereal
     }
 
     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-    /*! @internal */
+    /*! This check lets us try and skip doing polymorphic machinery if we can get away with
+        using the derived class serialize function
+        @internal */
     template<class Archive, class T> inline
     typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
@@ -128,7 +131,9 @@ namespace cereal
     }
 
     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-    /*! @internal */
+    /*! This check lets us try and skip doing polymorphic machinery if we can get away with
+        using the derived class serialize function
+        @internal */
     template<class Archive, class T, class D> inline
     typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
@@ -141,7 +146,12 @@ namespace cereal
       return false;
     }
 
-    /*! @internal */
+    //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    /*! This case is for when we can't actually construct the shared pointer.  Normally this would be caught
+        as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
+        the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
+        this was a polymorphic type serialized by its proper pointer type
+        @internal */
     template<class Archive, class T> inline
     typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
@@ -151,7 +161,12 @@ namespace cereal
       return false;
     }
 
-    /*! @internal */
+    //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+    /*! This case is for when we can't actually construct the unique pointer.  Normally this would be caught
+        as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
+        the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
+        this was a polymorphic type serialized by its proper pointer type
+        @internal */
     template<class Archive, class T, class D> inline
     typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
     serialize_wrapper(Archive &, std::unique_ptr<T, D> &, std::uint32_t const nameid)
@@ -337,7 +352,7 @@ namespace cereal
       return;
 
     auto binding = polymorphic_detail::getInputBinding(ar, nameid);
-    std::unique_ptr<void> result;
+    std::unique_ptr<void, ::cereal::detail::EmptyDeleter<void>> result;
     binding.unique_ptr(&ar, result);
     ptr.reset(static_cast<T*>(result.release()));
   }

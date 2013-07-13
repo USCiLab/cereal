@@ -102,6 +102,9 @@ namespace cereal
       std::map<std::type_index, Serializers> map;
     };
 
+    //! An empty noop deleter
+    template<class T> struct EmptyDeleter { void operator()(T *) const {} };
+
     //! A structure holding a map from type name strings to input serializer functions
     /*! A static object of this map should be created for each registered archive
         type, containing entries for every registered type that describe how to
@@ -118,7 +121,7 @@ namespace cereal
           correct type. */
       typedef std::function<void(void*, std::shared_ptr<void> & )> SharedSerializer;
       //! Unique ptr serializer function
-      typedef std::function<void(void*, std::unique_ptr<void> & )> UniqueSerializer;
+      typedef std::function<void(void*, std::unique_ptr<void, EmptyDeleter<void>> & )> UniqueSerializer;
 
       //! Struct containing the serializer functions for all pointer types
       struct Serializers
@@ -130,9 +133,6 @@ namespace cereal
       //! A map of serializers for pointers of all registered types
       std::map<std::string, Serializers> map;
     };
-
-    //! An empty noop deleter
-    template<class T> struct EmptyDeleter { void operator()(T *) const {} };
 
     // forward decls for archives from cereal.hpp
     struct InputArchiveBase;
@@ -162,7 +162,7 @@ namespace cereal
           };
 
         serializers.unique_ptr =
-          [](void * arptr, std::unique_ptr<void> & dptr)
+          [](void * arptr, std::unique_ptr<void, EmptyDeleter<void>> & dptr)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
             std::unique_ptr<T> ptr;
