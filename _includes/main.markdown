@@ -18,7 +18,7 @@ Serialization support for pretty much every type in the [standard library](http:
 
 ### xCEREAL requires a compliant C++11 compiler
 
-cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3 and clang++ 3.3 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  Until VC++ support is currently under development and will require Visual Studio 2013 preview or newer.
+cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3 and clang++ 3.3 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  VC++ support is currently under development and will target versions 2013 preview and newer.
 
 ---
 
