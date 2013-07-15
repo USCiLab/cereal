@@ -12,6 +12,13 @@
 *.la
 *.a
 
+# Visual studio cruft
+*.opensdf
+*.sdf
+*.suo
+vs2012/Debug
+vs2012/Release
+
 out.txt
 ptr.txt
 test.txt

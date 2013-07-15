@@ -110,24 +110,16 @@ namespace cereal
   {
     public:
       template<class Archive, class T> inline
-        static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
-        { t.serialize(ar); }
-
-      //template <class Archive, class T> inline
-      //  static traits::no member_serialize(...); 
-      
+      static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
+      { t.serialize(ar); }
+            
       template<class Archive, class T> inline
-        static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
-        { t.save(ar); }
-
-      // Used during detection of non const member save
-      template<class Archive, class T> inline
-        static auto non_const_member_save(Archive & ar, T & t) -> decltype(t.save(ar))
-        { t.save(ar); }
+      static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
+      { t.save(ar); }
 
       template<class Archive, class T> inline
-        static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
-        { t.load(ar); }
+      static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
+      { t.load(ar); }
 
       template <class T>
         static void load_and_allocate(...)

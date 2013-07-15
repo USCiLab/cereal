@@ -21,12 +21,22 @@ struct Test
   }
 
   template <class Archive>
+  void load( Archive & ar )
+  {
+    std::cout << "locked and loaded" << std::endl;
+  }
+
+  template <class Archive>
   static Test * load_and_allocate( Archive & ar )
   { }
 };
 
 template <class Archive>
 void serialize( Archive & ar, Test & t )
+{ }
+
+template <class Archive>
+void load( Archive & ar, Test & t )
 { }
 
 //namespace cereal
@@ -40,22 +50,31 @@ void serialize( Archive & ar, Test & t )
 //  };
 //}
 
+template <class T>
+void bla( T & t )
+{
+  t = 4;
+}
+
 int main()
 {
   std::cout << std::boolalpha;
   //std::cout << cereal::traits::has_member_serialize<Test, Archive>::value << std::endl;
-
-  Test t; Archive a;
-
+  
   // Test Load and Allocate internal/external
-  std::cout << "load_and_allocate" << std::endl;
+  std::cout << "\tload_and_allocate" << std::endl;
   std::cout << cereal::traits::has_member_load_and_allocate<Test, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_load_and_allocate<Test, Archive>::value << std::endl;
 
   // serialize
-  std::cout << "serialize" << std::endl;
-  std::cout << cereal::traits::has_member_serialize<Test, Archive>::value << std::endl;  
+  std::cout << "\tserialize" << std::endl;
+  std::cout << cereal::traits::has_member_serialize<Test, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_serialize<Test, Archive>::value << std::endl;
 
+  // load
+  std::cout << "\tload" << std::endl;
+  std::cout << cereal::traits::has_member_load<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_load<Test, Archive>::value << std::endl;
+  
   return 0;
 }
