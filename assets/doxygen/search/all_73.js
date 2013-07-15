@@ -12,7 +12,7 @@ var searchData=
   ['serializers',['Serializers',['../structcereal_1_1detail_1_1InputBindingMap_1_1Serializers.html',1,'cereal::detail::InputBindingMap']]],
   ['set_2ehpp',['set.hpp',['../set_8hpp.html',1,'']]],
   ['setnextname',['setNextName',['../classcereal_1_1XMLOutputArchive.html#aa301c06076e60466516f7d69198c2185',1,'cereal::XMLOutputArchive']]],
-  ['shared_5fptr',['shared_ptr',['../structcereal_1_1detail_1_1OutputBindingMap_1_1Serializers.html#a8602064aeec6a847f1fe81fe9461ea18',1,'cereal::detail::OutputBindingMap::Serializers::shared_ptr()'],['../structcereal_1_1detail_1_1InputBindingMap_1_1Serializers.html#ae4043c36202a1c63655df1734b048210',1,'cereal::detail::InputBindingMap::Serializers::shared_ptr()']]],
+  ['shared_5fptr',['shared_ptr',['../structcereal_1_1detail_1_1OutputBindingMap_1_1Serializers.html#a8602064aeec6a847f1fe81fe9461ea18',1,'cereal::detail::OutputBindingMap::Serializers']]],
   ['sharedserializer',['SharedSerializer',['../structcereal_1_1detail_1_1InputBindingMap.html#a61446513878e80b8570c8a1f4a793cf6',1,'cereal::detail::InputBindingMap']]],
   ['size',['size',['../structcereal_1_1BinaryData.html#a6c5b15fee4187ac9d948081a3ea9cfe3',1,'cereal::BinaryData']]],
   ['sizeof',['sizeof',['../classcereal_1_1XMLInputArchive.html#a35f130fe46e14bfbcab406094f60c2d5',1,'cereal::XMLInputArchive']]],
