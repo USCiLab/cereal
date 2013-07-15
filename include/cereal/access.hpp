@@ -30,6 +30,7 @@
 #define CEREAL_ACCESS_HPP_
 
 #include <type_traits>
+#include <iostream>
 
 namespace cereal
 {
@@ -86,7 +87,7 @@ namespace cereal
     static void load_and_allocate(...)
     { }
   };
-
+  
   //! A class that can be made a friend to give cereal access to non public functions
   /*! If you desire non-public serialization functions within a class, cereal can only
       access these if you declare cereal::access a friend.
@@ -112,6 +113,9 @@ namespace cereal
         static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
         { t.serialize(ar); }
 
+      //template <class Archive, class T> inline
+      //  static traits::no member_serialize(...); 
+      
       template<class Archive, class T> inline
         static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
         { t.save(ar); }
