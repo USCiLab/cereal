@@ -1,8 +1,44 @@
-//#include <cereal/access.hpp>
+#include <cereal/access.hpp>
 #include <cereal/details/traits.hpp>
+#include <cereal/details/helpers.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/cereal.hpp>
+
+#include <cereal/types/array.hpp>
+#include <cereal/types/bitset.hpp>
+#include <cereal/types/boost_variant.hpp>
+#include <cereal/types/chrono.hpp>
+#include <cereal/types/common.hpp>
+#include <cereal/types/complex.hpp>
+#include <cereal/types/deque.hpp>
+#include <cereal/types/forward_list.hpp>
+#include <cereal/types/list.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+
+#include <cereal/details/util.hpp>
+
+#include <cereal/details/polymorphic_impl.hpp>
+#include <cereal/types/polymorphic.hpp>
+
+#include <cereal/types/queue.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/stack.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/tuple.hpp>
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/unordered_set.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/vector.hpp>
+
+#include <cereal/archives/binary.hpp>
+//#include <cereal/archives/portable_binary.hpp>
+#include <cereal/archives/xml.hpp>
+//#include <cereal/archives/json.hpp>
 
 #include <iostream>
 #include <type_traits>
+#include <functional>
 
 struct Archive {};
 
@@ -54,6 +90,23 @@ namespace cereal
   };
 }
 
+struct A
+{
+  virtual void foo() = 0;
+};
+
+struct B : A
+{
+  void foo() {}
+};
+
+struct C
+{
+  char a;
+};
+
+CEREAL_REGISTER_TYPE(B);
+
 int main()
 {
   std::cout << std::boolalpha;
@@ -86,6 +139,24 @@ int main()
   // serialiable
   std::cout << "\toutput serializable" << std::endl;
   std::cout << cereal::traits::is_output_serializable<Test, Archive>::value << std::endl;
-  
+
+
+  // array size
+  int x[5][3][2];
+  std::cout << cereal::traits::sizeof_array<decltype(x)>::value << std::endl;
+
+  std::cout << typeid(A).name() << std::endl;
+  std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
+
+  typedef std::function<void(void*, void const *)> Serializer;
+
+  std::numeric_limits<char>::max();
+
+  {
+    cereal::XMLOutputArchive ar( std::cout );
+    ar( 5 );
+    //ar( cereal::make_nvp("hello", 2.4f ) );
+  }
+    
   return 0;
 }

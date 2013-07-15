@@ -37,7 +37,7 @@ namespace cereal
 {
   //! Serialization for basic_string types, if binary data is supported
   template<class Archive, class CharT, class Traits, class Alloc> inline
-  typename std::enable_if<traits::is_output_serializable<BinaryData<CharT>, Archive>(), void>::type
+  typename std::enable_if<traits::is_output_serializable<BinaryData<CharT>, Archive>::value, void>::type
   save(Archive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     // Save number of chars + the data
@@ -47,7 +47,7 @@ namespace cereal
 
   //! Serialization for basic_string types, if binary data is supported
   template<class Archive, class CharT, class Traits, class Alloc> inline
-  typename std::enable_if<traits::is_input_serializable<BinaryData<CharT>, Archive>(), void>::type
+  typename std::enable_if<traits::is_input_serializable<BinaryData<CharT>, Archive>::value, void>::type
   load(Archive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     size_type size;

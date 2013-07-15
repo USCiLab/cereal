@@ -122,10 +122,10 @@ namespace cereal
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
       // otherwise, we store a reference
-      using DT = typename std::decay<T>::type;
-      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
-                                             DT,
-                                            typename std::add_lvalue_reference<DT>::type>::type;
+      typedef typename std::decay<T>::type DT;
+      typedef typename std::conditional<std::is_rvalue_reference<T>::value,
+                                        DT,
+                                        typename std::add_lvalue_reference<DT>::type>::type Type;
       // prevent nested nvps
       static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
                      "Cannot pair a name to a NameValuePair" );
@@ -189,9 +189,9 @@ namespace cereal
   {
     //! Internally store the pointer as a void *, keeping const if created with
     //! a const pointer
-    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
-                                         const void *,
-                                         void *>::type;
+    typedef typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
+                                      const void *,
+                                      void *>::type PT;
 
     BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
 
@@ -230,10 +230,10 @@ namespace cereal
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
       // otherwise, we store a reference
-      using DT = typename std::decay<T>::type;
-      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
-                                             DT,
-                                             typename std::add_lvalue_reference<DT>::type>::type;
+      typedef typename std::decay<T>::type DT;
+      typedef typename std::conditional<std::is_rvalue_reference<T>::value,
+                                        DT,
+                                        typename std::add_lvalue_reference<DT>::type>::type Type;
 
     public:
       SizeTag( T && sz ) : size(const_cast<Type>(sz)) {}
@@ -265,17 +265,17 @@ namespace cereal
   template <class Key, class Value>
   struct MapItem
   {
-    using DecayKey = typename std::decay<Key>::type;
-    using KeyType = typename std::conditional<
+    typedef typename std::decay<Key>::type DecayKey;
+    typedef typename std::conditional<
       std::is_rvalue_reference<Key>::value,
       DecayKey,
-      typename std::add_lvalue_reference<DecayKey>::type>::type;
+      typename std::add_lvalue_reference<DecayKey>::type>::type KeyType;
 
-    using DecayValue = typename std::decay<Value>::type;
-    using ValueType = typename std::conditional<
+    typedef typename std::decay<Value>::type DecayValue;
+    typedef typename std::conditional<
       std::is_rvalue_reference<Value>::value,
       DecayValue,
-      typename std::add_lvalue_reference<DecayValue>::type>::type;
+      typename std::add_lvalue_reference<DecayValue>::type>::type ValueType;
 
     //! Construct a MapItem from a key and a value
     /*! @internal */

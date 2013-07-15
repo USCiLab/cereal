@@ -16,6 +16,7 @@
 *.opensdf
 *.sdf
 *.suo
+*.user
 vs2012/Debug
 vs2012/Release
 

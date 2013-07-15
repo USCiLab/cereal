@@ -56,7 +56,7 @@ namespace cereal
           return t;
         }
 
-        StaticObject( StaticObject const & other ) = delete;
+        StaticObject( StaticObject const & other ) {}
 
       public:
         static T & getInstance()

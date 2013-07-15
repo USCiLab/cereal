@@ -47,6 +47,7 @@
 #include <cereal/details/static_object.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
+#include <functional>
 #include <typeindex>
 #include <map>
 
@@ -297,7 +298,7 @@ namespace cereal
       //! Binding for non abstract types
       void bind(std::false_type) const
       {
-        instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );
+        instantiate_polymorphic_binding( (T*)0, 0, adl_tag() );
       }
 
       //! Binding for abstract types

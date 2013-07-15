@@ -286,7 +286,7 @@ namespace cereal
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
           itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
-        catch( rapidxml::parse_error const & e )
+        catch( rapidxml::parse_error const & )
         {
           //std::cerr << "-----Original-----" << std::endl;
           //stream.seekg(0);
