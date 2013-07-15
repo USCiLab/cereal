@@ -201,18 +201,18 @@ void test( std::string const & name,
 
   std::cout << "  Boost results:" << std::endl;
   std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
-    % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( totalBoostSave.count() );
+    % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostSave).count() );
   std::cout << std::endl;
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
-    % averageBoostLoad % 1.0 % static_cast<double>( totalBoostLoad.count() );
+    % averageBoostLoad % 1.0 % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostLoad).count() );
   std::cout << std::endl;
 
   std::cout << "  Cereal results:" << std::endl;
   std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
-    % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( totalCerealSave.count() );
+    % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealSave).count() );
   std::cout << std::endl;
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
-    % averageCerealLoad % cerealLoadP % static_cast<double>( totalCerealLoad.count() );
+    % averageCerealLoad % cerealLoadP % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealLoad).count() );
   std::cout << std::endl;
 }
 
@@ -237,9 +237,9 @@ random_value(std::mt19937 & gen)
 }
 
 template<class C>
-std::basic_string<C> random_basic_string(std::mt19937 & gen)
+std::basic_string<C> random_basic_string(std::mt19937 & gen, size_t maxSize = 30)
 {
-  std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
+  std::basic_string<C> s(std::uniform_int_distribution<int>(3, maxSize)(gen), ' ');
   for(C & c : s)
     c = std::uniform_int_distribution<C>(' ', '~')(gen);
   return s;
@@ -274,7 +274,7 @@ struct PoDStruct
   };
 };
 
-struct PoDChild : PoDStruct
+struct PoDChild : virtual PoDStruct
 {
   PoDChild() : v(1024)
   { }
@@ -299,73 +299,90 @@ int main()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
-  //auto rngC = [&](){ return random_value<uint8_t>(gen); };
-  //auto rngD = [&](){ return random_value<double>(gen); };
-  //const bool randomize = false;
+  auto rngC = [&](){ return random_value<uint8_t>(gen); };
+  auto rngD = [&](){ return random_value<double>(gen); };
+  const bool randomize = false;
 
-  ////########################################
-  //auto vectorDoubleTest = [&](size_t s, bool randomize)
-  //{
-  //  std::ostringstream name;
-  //  name << "Vector(double) size " << s;
+  //########################################
+  auto vectorDoubleTest = [&](size_t s, bool randomize)
+  {
+    std::ostringstream name;
+    name << "Vector(double) size " << s;
 
-  //  std::vector<double> data(s);
-  //  if(randomize)
-  //    for( auto & d : data )
-  //      d = rngD();
+    std::vector<double> data(s);
+    if(randomize)
+      for( auto & d : data )
+        d = rngD();
 
-  //  test<binary>( name.str(), data );
-  //};
+    test<binary>( name.str(), data );
+  };
 
-  //vectorDoubleTest(1, randomize); // 8B
-  //vectorDoubleTest(16, randomize); // 128B
-  //vectorDoubleTest(1024, randomize); // 8KB
-  //vectorDoubleTest(1024*1024, randomize); // 8MB
+  vectorDoubleTest(1, randomize); // 8B
+  vectorDoubleTest(16, randomize); // 128B
+  vectorDoubleTest(1024, randomize); // 8KB
+  vectorDoubleTest(1024*1024, randomize); // 8MB
 
-  ////########################################
-  //auto vectorCharTest = [&](size_t s, bool randomize)
-  //{
-  //  std::ostringstream name;
-  //  name << "Vector(uint8_t) size " << s;
+  //########################################
+  auto vectorCharTest = [&](size_t s, bool randomize)
+  {
+    std::ostringstream name;
+    name << "Vector(uint8_t) size " << s;
 
-  //  std::vector<uint8_t> data(s);
-  //  if(randomize)
-  //    for( auto & d : data )
-  //      d = rngC();
+    std::vector<uint8_t> data(s);
+    if(randomize)
+      for( auto & d : data )
+        d = rngC();
 
-  //  test<binary>( name.str(), data );
-  //};
+    test<binary>( name.str(), data );
+  };
 
-  //vectorCharTest(1024*1024*64, randomize); // 1 GB
+  vectorCharTest(1024*1024*64, randomize);
 
-  ////########################################
-  //auto vectorPoDStructTest = [&](size_t s)
-  //{
-  //  std::ostringstream name;
-  //  name << "Vector(PoDStruct) size " << s;
+  //########################################
+  auto vectorPoDStructTest = [&](size_t s)
+  {
+    std::ostringstream name;
+    name << "Vector(PoDStruct) size " << s;
 
-  //  std::vector<PoDStruct> data(s);
-  //  test<binary>( name.str(), data );
-  //};
+    std::vector<PoDStruct> data(s);
+    test<binary>( name.str(), data );
+  };
 
-  //vectorPoDStructTest(1);
-  //vectorPoDStructTest(64);
-  //vectorPoDStructTest(1024);
-  //vectorPoDStructTest(1024*1024);
-  //vectorPoDStructTest(1024*1024*4);
+  vectorPoDStructTest(1);
+  vectorPoDStructTest(64);
+  vectorPoDStructTest(1024);
+  vectorPoDStructTest(1024*1024);
+  vectorPoDStructTest(1024*1024*2);
 
-  ////########################################
-  //auto vectorPoDChildTest = [&](size_t s)
-  //{
-  //  std::ostringstream name;
-  //  name << "Vector(PoDChild) size " << s;
+  //########################################
+  auto vectorPoDChildTest = [&](size_t s)
+  {
+    std::ostringstream name;
+    name << "Vector(PoDChild) size " << s;
 
-  //  std::vector<PoDChild> data(s);
-  //  test<binary>( name.str(), data );
-  //};
-  //
-  //vectorPoDChildTest(1024*64);
+    std::vector<PoDChild> data(s);
+    test<binary>( name.str(), data );
+  };
 
+  vectorPoDChildTest(1024);
+  vectorPoDChildTest(1024*32);
+
+  //########################################
+  auto stringTest = [&](size_t s)
+  {
+    std::ostringstream name;
+    name << "String size " << s;
+
+    std::string data = random_basic_string<char>(gen, s);
+    std::cout << "data.size " << data.size() << std::endl;
+    test<binary>( name.str(), data );
+  };
+
+  stringTest(200000);
+  stringTest(2000000);
+  stringTest(20000000);
+
+  //########################################
   auto vectorStringTest = [&](size_t s)
   {
     std::ostringstream name;
@@ -383,6 +400,7 @@ int main()
   vectorStringTest(1024*64);
   vectorStringTest(1024*128);
 
+  //########################################
   auto mapPoDStructTest = [&](size_t s)
   {
     std::ostringstream name;
@@ -393,9 +411,6 @@ int main()
       m[std::to_string(i)] = {};
     test<binary>(name.str(), m);
   };
-
-
-
 
   mapPoDStructTest(1024);
   mapPoDStructTest(1024*64);
