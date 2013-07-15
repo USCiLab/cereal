@@ -39,21 +39,19 @@ template <class Archive>
 void load( Archive & ar, Test & t )
 { }
 
-//namespace cereal
-//{
-//  template <>
-//  struct LoadAndAllocate<Test>
-//  {
-//    template <class Archive>
-//    static Test * load_and_allocate( Archive & ar )
-//    { }
-//  };
-//}
+template <class Archive>
+void save( Archive & ar, Test const & t )
+{ }
 
-template <class T>
-void bla( T & t )
+namespace cereal
 {
-  t = 4;
+  template <>
+  struct LoadAndAllocate<Test>
+  {
+    template <class Archive>
+    static Test * load_and_allocate( Archive & ar )
+    { }
+  };
 }
 
 int main()
@@ -75,6 +73,19 @@ int main()
   std::cout << "\tload" << std::endl;
   std::cout << cereal::traits::has_member_load<Test, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_load<Test, Archive>::value << std::endl;
+
+  // save
+  std::cout << "\tsave" << std::endl;
+  std::cout << cereal::traits::has_member_save<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_save<Test, Archive>::value << std::endl;
+
+  // member split
+  std::cout << "\tmember split" << std::endl;
+  std::cout << cereal::traits::has_member_split<Test, Archive, Archive>::value << std::endl;
+
+  // serialiable
+  std::cout << "\toutput serializable" << std::endl;
+  std::cout << cereal::traits::is_output_serializable<Test, Archive>::value << std::endl;
   
   return 0;
 }

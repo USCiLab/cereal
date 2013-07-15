@@ -118,6 +118,10 @@ namespace cereal
       { t.save(ar); }
 
       template<class Archive, class T> inline
+      static auto member_save_non_const(Archive & ar, T & t) -> decltype(t.save(ar))
+      { t.save(ar); }
+
+      template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
 
