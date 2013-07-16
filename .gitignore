@@ -17,8 +17,9 @@
 *.sdf
 *.suo
 *.user
-vs2012/Debug
-vs2012/Release
+*/x64
+*/Debug*
+*/Release*
 
 out.txt
 ptr.txt

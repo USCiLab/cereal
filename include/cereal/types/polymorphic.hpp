@@ -38,7 +38,7 @@
 #include <cereal/details/traits.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define CONSTEXPR 
 #else
 #define CONSTEXPR constexpr

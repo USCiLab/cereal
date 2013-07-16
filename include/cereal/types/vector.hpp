@@ -80,7 +80,7 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
 
-    vector.resize( size );
+    vector.resize( static_cast<std::size_t>( size ) );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar( *it );
   }

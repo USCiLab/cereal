@@ -76,7 +76,7 @@ namespace cereal
   serialize(Archive & ar, T & array)
   {
     common_detail::serializeArray( ar, array,
-        std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>()>() );
+        std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>::value>() );
   }
 } // namespace cereal
 

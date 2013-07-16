@@ -166,26 +166,33 @@ int main()
   cereal::access::member_load( a, t );
   cereal::access::member_serialize( a, t );
 
-  //std::stringstream ss;
+  std::stringstream ss;
   {
-    cereal::JSONOutputArchive ar( std::cout );
+    cereal::JSONOutputArchive ar( ss );
     ar( 5 );
     ar( cereal::make_nvp("hello", 2.4f ) );
     std::string s = "hey yo";
     ar( CEREAL_NVP( s ) );
+    int darp [] = { 1, 2, 3 };
+    ar.saveBinaryValue( darp, sizeof(int) * 3, "darp" );
   }
-  //{
-  //  cereal::JSONInputArchive ar( ss );
-  //  int x;
-  //  ar( x );
-  //  assert( x == 5 );
-  //  float f;
-  //  ar( f );
-  //  assert( f == 2.4f );
-  //  std::string s;
-  //  ar( s );
-  //  assert( s == "hey yo" );
-  //}
+  {
+    cereal::JSONInputArchive ar( ss );
+    int x;
+    ar( x );
+    assert( x == 5 );
+    float f;
+    ar( f );
+    assert( f == 2.4f );
+    std::string s;
+    ar( s );
+    assert( s == "hey yo" );
+    int darp[3];
+    ar.loadBinaryValue( darp, sizeof(int) * 3 );
+    assert( darp[0] == 1 );
+    assert( darp[1] == 2 );
+    assert( darp[2] == 3 );
+  }
    
   return 0;
 }

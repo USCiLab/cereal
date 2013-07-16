@@ -98,14 +98,14 @@ namespace cereal
         itsWriter.EndObject();
       }
 
-      void saveValue(bool b)                { itsWriter.Bool(b);                     }
-      void saveValue(int i)                 { itsWriter.Int(i);                      }
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                     }
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                  }
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                 }
-      void saveValue(double d)              { itsWriter.Double(d);                   }
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), s.size()); }
-      void saveValue(char const * s)        { itsWriter.String(s);                   }
+      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
+      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
+      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
+      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
+      void saveValue(double d)              { itsWriter.Double(d);                                                       }
+      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
 
       //! Save exotic arithmetic types as binary
       template<class T>

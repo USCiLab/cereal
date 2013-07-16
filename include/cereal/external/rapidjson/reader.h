@@ -383,7 +383,7 @@ private:
 	}
 
   // cereal Temporary until constexpr support is added in RTM
-#ifdef _WIN32
+#ifdef _MSC_VER
   template <class Ch>
   bool characterOk( Ch c )
   {

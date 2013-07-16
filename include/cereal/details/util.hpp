@@ -33,7 +33,7 @@
 #include <typeinfo>
 #include <string>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 namespace cereal
 {
   namespace util
