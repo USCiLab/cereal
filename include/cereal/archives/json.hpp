@@ -325,7 +325,7 @@ namespace cereal
       void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
       void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
       void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
-      void loadValue(float & val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      void loadValue(float & val)       { val = static_cast<float>(itsValueStack.back().value().GetDouble()); ++itsValueStack.back(); }
       void loadValue(double & val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
       void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
 

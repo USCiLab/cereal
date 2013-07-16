@@ -32,9 +32,9 @@
 #include <cereal/types/vector.hpp>
 
 #include <cereal/archives/binary.hpp>
-//#include <cereal/archives/portable_binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/xml.hpp>
-//#include <cereal/archives/json.hpp>
+#include <cereal/archives/json.hpp>
 
 #include <iostream>
 #include <type_traits>
@@ -109,7 +109,6 @@ CEREAL_REGISTER_TYPE(B);
 
 int main()
 {
-  std::cout << std::boolalpha;
 
   typedef Test T;
   
@@ -153,42 +152,40 @@ int main()
   std::cout << cereal::traits::is_specialized<T, Archive>::value << std::endl;
 
   // array size
-  int x[5][3][2];
+  typedef int arr[5][3][2];
   std::cout << "\tarray size" << std::endl;
-  std::cout << cereal::traits::sizeof_array<decltype(x)>::value << std::endl;
+  std::cout << cereal::traits::sizeof_array<arr>::value << std::endl;
 
   std::cout << typeid(A).name() << std::endl;
   std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
 
-  
   Archive a;
   T t;
-  
 
   cereal::access::member_save( a, t );
   cereal::access::member_load( a, t );
   cereal::access::member_serialize( a, t );
 
-  std::stringstream ss;
+  //std::stringstream ss;
   {
-    cereal::BinaryOutputArchive ar( ss );
+    cereal::JSONOutputArchive ar( std::cout );
     ar( 5 );
     ar( cereal::make_nvp("hello", 2.4f ) );
     std::string s = "hey yo";
     ar( CEREAL_NVP( s ) );
   }
-  {
-    cereal::BinaryInputArchive ar( ss );
-    int x;
-    ar( x );
-    assert( x == 5 );
-    float f;
-    ar( f );
-    assert( f == 2.4f );
-    std::string s;
-    ar( s );
-    assert( s == "hey yo" );
-  }
+  //{
+  //  cereal::JSONInputArchive ar( ss );
+  //  int x;
+  //  ar( x );
+  //  assert( x == 5 );
+  //  float f;
+  //  ar( f );
+  //  assert( f == 2.4f );
+  //  std::string s;
+  //  ar( s );
+  //  assert( s == "hey yo" );
+  //}
    
   return 0;
 }

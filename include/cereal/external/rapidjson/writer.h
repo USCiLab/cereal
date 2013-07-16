@@ -37,8 +37,14 @@ public:
 	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) : 
 		stream_(stream), level_stack_(allocator, levelDepth * sizeof(Level))
   {
-		(void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
-		(void) snprintf(long_double_format, sizeof(long_double_format), "%%0.%dLg", precision);
+#if _MSC_VER
+    (void) sprintf_s(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) sprintf_s( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#else
+    (void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) snprintf( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#endif
+
   }
 
 protected:
@@ -170,15 +176,33 @@ protected:
 		} while (p != buffer);
 	}
 
+  // cereal Temporary until constexpr support is added in RTM
+#ifdef _WIN32
+  template <class Ch>
+  bool characterOk( Ch c )
+  {
+    return c < 256;
+  }
+
+  template <>
+  bool characterOk<char>( Ch )
+  {
+    return true;
+  }
+
+#else
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk(Ch c)
-    { return true; }
+  typename std::enable_if < std::numeric_limits<Ch>::max() < 265, bool>::type
+    characterOk( Ch c )
+  {
+    return true;
+  }
 
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+  typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
     characterOk(Ch c)
-    { return c < 256; }
+  { return c < 256; }
+#endif
 
 	//! \todo Optimization with custom double-to-string converter.
 	void WriteDouble(double d) {

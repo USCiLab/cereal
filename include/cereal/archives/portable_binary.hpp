@@ -42,7 +42,7 @@ namespace cereal
     inline bool is_little_endian()
     {
       static std::int32_t test = 1;
-      return *reinterpret_cast<std::int8_t*>( &test );
+      return *reinterpret_cast<std::int8_t*>( &test ) == 1;
     }
 
     //! Swaps the order of bytes for some chunk of memory

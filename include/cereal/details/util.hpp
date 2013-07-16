@@ -34,7 +34,6 @@
 #include <string>
 
 #ifdef _WIN32
-
 namespace cereal
 {
   namespace util
