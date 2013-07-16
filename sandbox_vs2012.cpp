@@ -171,14 +171,14 @@ int main()
 
   std::stringstream ss;
   {
-    cereal::XMLOutputArchive ar( ss, 20, true );
+    cereal::BinaryOutputArchive ar( ss );
     ar( 5 );
     ar( cereal::make_nvp("hello", 2.4f ) );
     std::string s = "hey yo";
     ar( CEREAL_NVP( s ) );
   }
   {
-    cereal::XMLInputArchive ar( ss );
+    cereal::BinaryInputArchive ar( ss );
     int x;
     ar( x );
     assert( x == 5 );

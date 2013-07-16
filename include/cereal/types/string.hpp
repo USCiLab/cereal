@@ -52,8 +52,8 @@ namespace cereal
   {
     size_type size;
     ar( make_size_tag( size ) );
-    str.resize(size);
-    ar( binary_data( &(*str.begin()), size * sizeof(CharT) ) );
+    str.resize(static_cast<std::size_t>(size));
+    ar( binary_data( &(*str.begin()), static_cast<std::size_t>(size) * sizeof(CharT) ) );
   }
 } // namespace cereal
 
