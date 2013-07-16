@@ -155,7 +155,7 @@ namespace cereal
       template <class T> inline
       void saveValue( T const & value )
       {
-        itsOS.clear(); itsOS.seekp(0);
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
         // allocate strings for all of the data in the XML object

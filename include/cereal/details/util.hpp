@@ -37,17 +37,23 @@
 
 namespace cereal
 {
-  //! Demangles the type encoded in a string
-  /*! @internal */
-  inline std::string demangle(std::string const & name)
-  { return name; }
+  namespace util
+  {
+    //! Demangles the type encoded in a string
+    /*! @internal */
+    inline std::string demangle( std::string const & name )
+    {
+      return name;
+    }
 
-  //! Gets the demangled name of a type
-  /*! @internal */
-  template <class T> inline
-  std::string demangledName()
-  { return typeid(T).name(); }
-
+    //! Gets the demangled name of a type
+    /*! @internal */
+    template <class T> inline
+      std::string demangledName()
+    {
+      return typeid( T ).name();
+    }
+  } // namespace util
 } // namespace cereal
 #else // clang or gcc
 #include <cxxabi.h>

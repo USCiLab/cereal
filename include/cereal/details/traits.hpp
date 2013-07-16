@@ -64,8 +64,7 @@ namespace cereal
 
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
-        the type has the proper member function for the given archive.  It will also perform
-        a static check to make sure that the member function is not const */
+        the type has the proper member function for the given archive. */
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
     namespace detail                                                                                                               \
     {                                                                                                                              \
@@ -77,28 +76,14 @@ namespace cereal
         template <class, class>                                                                                                    \
         static no test(...);                                                                                                       \
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                               \
-                                                                                                                                   \
-        template <class TT, class AA>                                                                                              \
-        static auto test2(int) -> decltype( cereal::access::member_##name( std::declval<AA &>(),                                   \
-                                            std::declval<TT const &>() ) == 1, yes());                                             \
-        template <class, class>                                                                                                    \
-        static no test2(...);                                                                                                      \
-        static const bool const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                                         \
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_##name## : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value>                       \
-    {                                                                                                                              \
-      typedef typename detail::has_member_##name##_impl<T, A> check;                                                               \
-      static_assert( !check::const_type,                                                                                           \
-        "cereal detected a const " #name ".\n"                                                                                     \
-        #name " member functions must always be non-const" );                                                                      \
-    };
+    struct has_member_##name## : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};                
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
-        the type has the proper non-member function for the given archive.  It will also perform
-        a static check to make sure that the non-member function does not take its type parameter as const */
+        the type has the proper non-member function for the given archive. */
     #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(name)                                                                                  \
     namespace detail                                                                                                               \
     {                                                                                                                              \
@@ -108,25 +93,12 @@ namespace cereal
         template <class TT, class AA>                                                                                              \
         static auto test(int) -> decltype( ##name( std::declval<AA&>(), std::declval<TT&>() ) == 1, yes());                        \
         template <class, class>                                                                                                    \
-        static no test(...);                                                                                                       \
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                               \
-                                                                                                                                   \
-        template <class TT, class AA>                                                                                              \
-        static auto test2(int) -> decltype( ##name( std::declval<AA &>(),                                                          \
-                                            std::declval<TT const &>() ) == 1, yes());                                             \
-        template <class, class>                                                                                                    \
-        static no test2(...);                                                                                                      \
-        static const bool const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                                         \
+        static no test( ... );                                                                                                       \
+        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                               \
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_##name## : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value>               \
-    {                                                                                                                              \
-      typedef typename detail::has_non_member_##name##_impl<T, A> check;                                                           \
-      static_assert( !check::const_type,                                                                                           \
-        "cereal detected a const type parameter to" #name ".\n"                                                                    \
-        #name " non-member functions must always accept their types as non-const" );                                               \
-    };
+    struct has_non_member_##name## : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
 
     template<typename> struct Void { typedef void type; };
 
@@ -260,7 +232,7 @@ namespace cereal
 
       template <class T, class A>
       struct is_specialized_member_load_save : std::integral_constant<bool,
-        std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save>>::value> {};
+        !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save>>::value> {};
 
       template <class T, class A>
       struct is_specialized_non_member_serialize : std::integral_constant<bool,

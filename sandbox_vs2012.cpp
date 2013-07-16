@@ -110,53 +110,85 @@ CEREAL_REGISTER_TYPE(B);
 int main()
 {
   std::cout << std::boolalpha;
-  //std::cout << cereal::traits::has_member_serialize<Test, Archive>::value << std::endl;
+
+  typedef Test T;
   
   // Test Load and Allocate internal/external
   std::cout << "\tload_and_allocate" << std::endl;
-  std::cout << cereal::traits::has_member_load_and_allocate<Test, Archive>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_load_and_allocate<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_member_load_and_allocate<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_load_and_allocate<T, Archive>::value << std::endl;
 
   // serialize
   std::cout << "\tserialize" << std::endl;
-  std::cout << cereal::traits::has_member_serialize<Test, Archive>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_serialize<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_member_serialize<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_serialize<T, Archive>::value << std::endl;
 
   // load
   std::cout << "\tload" << std::endl;
-  std::cout << cereal::traits::has_member_load<Test, Archive>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_load<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_member_load<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_load<T, Archive>::value << std::endl;
 
   // save
   std::cout << "\tsave" << std::endl;
-  std::cout << cereal::traits::has_member_save<Test, Archive>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_save<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_member_save<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_save<T, Archive>::value << std::endl;
 
-  // member split
-  std::cout << "\tmember split" << std::endl;
-  std::cout << cereal::traits::has_member_split<Test, Archive, Archive>::value << std::endl;
+  // splittable
+  std::cout << "\t splittable" << std::endl;
+  std::cout << cereal::traits::has_member_split<T, Archive, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_split<T, Archive, Archive>::value << std::endl;
 
   // serialiable
   std::cout << "\toutput serializable" << std::endl;
-  std::cout << cereal::traits::is_output_serializable<Test, Archive>::value << std::endl;
+  std::cout << cereal::traits::is_output_serializable<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::is_input_serializable<T, Archive>::value << std::endl;
 
+  // specialized
+  std::cout << "\tspecialized" << std::endl;
+  std::cout << cereal::traits::detail::is_specialized_member_serialize<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::detail::is_specialized_member_load_save<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::detail::is_specialized_non_member_serialize<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::detail::is_specialized_non_member_load_save<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::detail::is_specialized_error<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::is_specialized<T, Archive>::value << std::endl;
 
   // array size
   int x[5][3][2];
+  std::cout << "\tarray size" << std::endl;
   std::cout << cereal::traits::sizeof_array<decltype(x)>::value << std::endl;
 
   std::cout << typeid(A).name() << std::endl;
   std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
 
-  typedef std::function<void(void*, void const *)> Serializer;
+  
+  Archive a;
+  T t;
+  
 
-  std::numeric_limits<char>::max();
+  cereal::access::member_save( a, t );
+  cereal::access::member_load( a, t );
+  cereal::access::member_serialize( a, t );
 
+  std::stringstream ss;
   {
-    cereal::XMLOutputArchive ar( std::cout );
+    cereal::XMLOutputArchive ar( ss, 20, true );
     ar( 5 );
-    //ar( cereal::make_nvp("hello", 2.4f ) );
+    ar( cereal::make_nvp("hello", 2.4f ) );
+    std::string s = "hey yo";
+    ar( CEREAL_NVP( s ) );
   }
-    
+  {
+    cereal::XMLInputArchive ar( ss );
+    int x;
+    ar( x );
+    assert( x == 5 );
+    float f;
+    ar( f );
+    assert( f == 2.4f );
+    std::string s;
+    ar( s );
+    assert( s == "hey yo" );
+  }
+   
   return 0;
 }

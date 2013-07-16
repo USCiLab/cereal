@@ -297,8 +297,8 @@ namespace cereal
     {
       //! Binding for non abstract types
       void bind(std::false_type) const
-      {
-        instantiate_polymorphic_binding( (T*)0, 0, adl_tag() );
+	  {
+		instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
       }
 
       //! Binding for abstract types
