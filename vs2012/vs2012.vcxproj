@@ -75,9 +75,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\sandbox_vs2012.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\include\cereal\access.hpp" />
     <ClInclude Include="..\include\cereal\archives\binary.hpp" />
     <ClInclude Include="..\include\cereal\archives\json.hpp" />
@@ -127,6 +124,9 @@
     <ClInclude Include="..\include\cereal\types\unordered_set.hpp" />
     <ClInclude Include="..\include\cereal\types\utility.hpp" />
     <ClInclude Include="..\include\cereal\types\vector.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sandbox_vs2012.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
