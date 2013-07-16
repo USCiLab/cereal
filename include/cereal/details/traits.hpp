@@ -79,7 +79,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_##name## : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};                
+    struct has_member_##name## : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -105,7 +105,7 @@ namespace cereal
     // ######################################################################
     // Member load_and_allocate
     template<typename T, typename A>
-    struct has_member_load_and_allocate : 
+    struct has_member_load_and_allocate :
       std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>() ) ), T*>::value> {};
 
     // ######################################################################
@@ -120,7 +120,7 @@ namespace cereal
     struct has_load_and_allocate : std::integral_constant<bool,
       has_member_load_and_allocate<T, A>::value || has_non_member_load_and_allocate<T, A>::value>
     { };
-    
+
     // ######################################################################
     // Member Serialize
     CEREAL_MAKE_HAS_MEMBER_TEST(serialize);
@@ -136,65 +136,65 @@ namespace cereal
     // ######################################################################
     // Non Member Load
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(load);
-    
+
     // ######################################################################
     // Member Save
-    namespace detail                                                                                                              
-    {                                                                                                                             
-      template <class T, class A>                                                                                                 
-      struct has_member_save_impl                                                                                            
-      {                                                                                                                           
-        template <class TT, class AA>                                                                                             
+    namespace detail
+    {
+      template <class T, class A>
+      struct has_member_save_impl
+      {
+        template <class TT, class AA>
         static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>() ) == 1, yes());
-        template <class, class>                                                                                                   
-        static no test(...);                                                                                                      
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;    
-                                                                                                                                          
-        template <class TT, class AA>                                                                                             
-        static auto test2(int) -> decltype( cereal::access::member_save_non_const( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ) == 1, yes());                                            
-        template <class, class>                                                                                                   
-        static no test2(...);                                                                                                     
-        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                                        
-      };                                                                                                                          
+        template <class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
+
+        template <class TT, class AA>
+        static auto test2(int) -> decltype( cereal::access::member_save_non_const( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ) == 1, yes());
+        template <class, class>
+        static no test2(...);
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+      };
     } // end namespace detail
 
-    template <class T, class A>                                                                                                   
-    struct has_member_save : std::integral_constant<bool, detail::has_member_save_impl<T, A>::value>                      
-    {                                                                                                                             
-      typedef typename detail::has_member_save_impl<T, A> check;                                                              
-      static_assert( check::value || !check::not_const_type,                                                                                          
-        "cereal detected a non-const save.\n"                                                                                    
-        "save member functions must always be const" );                                                                     
+    template <class T, class A>
+    struct has_member_save : std::integral_constant<bool, detail::has_member_save_impl<T, A>::value>
+    {
+      typedef typename detail::has_member_save_impl<T, A> check;
+      static_assert( check::value || !check::not_const_type,
+        "cereal detected a non-const save.\n"
+        "save member functions must always be const" );
     };
 
     // ######################################################################
     // Non-const Member Save
-    namespace detail                                                                                                              
-    {                                                                                                                             
-      template <class T, class A>                                                                                                 
-      struct has_non_member_save_impl                                                                                            
-      {                                                                                                                           
-        template <class TT, class AA>                                                                                             
+    namespace detail
+    {
+      template <class T, class A>
+      struct has_non_member_save_impl
+      {
+        template <class TT, class AA>
         static auto test(int) -> decltype( save( std::declval<AA&>(), std::declval<TT const &>() ) == 1, yes());
-        template <class, class>                                                                                                   
-        static no test(...);                                                                                                      
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;    
-                                                                                                                                          
-        template <class TT, class AA>                                                                                             
-        static auto test2(int) -> decltype( save( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ) == 1, yes());                                            
-        template <class, class>                                                                                                   
-        static no test2(...);                                                                                                     
-        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                                        
-      };                                                                                                                          
+        template <class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
+
+        template <class TT, class AA>
+        static auto test2(int) -> decltype( save( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ) == 1, yes());
+        template <class, class>
+        static no test2(...);
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+      };
     } // end namespace detail
 
-    template <class T, class A>                                                                                                   
-    struct has_non_member_save : std::integral_constant<bool, detail::has_non_member_save_impl<T, A>::value>                      
-    {                                                                                                                             
-      typedef typename detail::has_non_member_save_impl<T, A> check;                                                              
-      static_assert( check::value || !check::not_const_type,                                                                                          
-        "cereal detected a non-const type parameter in non-member save.\n"                                                                                    
-        "save non-member functions must always pass their types as const" );                                                                     
+    template <class T, class A>
+    struct has_non_member_save : std::integral_constant<bool, detail::has_non_member_save_impl<T, A>::value>
+    {
+      typedef typename detail::has_non_member_save_impl<T, A> check;
+      static_assert( check::value || !check::not_const_type,
+        "cereal detected a non-const type parameter in non-member save.\n"
+        "save non-member functions must always pass their types as const" );
     };
 
     // ######################################################################
@@ -314,25 +314,6 @@ namespace cereal
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
                      "cereal detected non-member save specialization but no non-member save function" );
     };
-
-    // ######################################################################
-    namespace detail
-    {
-      template <class T, size_t rank = std::rank<T>::value>
-      struct sizeof_array_impl
-      {
-        static const auto value = std::extent<T>::value * sizeof_array_impl<typename std::remove_extent<T>::type, rank - 1>::value;
-      };
-
-      template <class T>
-      struct sizeof_array_impl<T, 0>
-      {
-        static const auto value = 1;
-      };
-    };
-
-    template <class T>
-    struct sizeof_array : std::integral_constant<std::size_t, detail::sizeof_array_impl<T>::value> {};
 
     // ######################################################################
     namespace detail
