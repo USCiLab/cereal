@@ -13,6 +13,9 @@ sandbox_json: sandbox_json.cpp
 sandbox_rtti: sandbox_rtti.cpp
 	${CC} sandbox_rtti.cpp -o sandbox_rtti ${CPPFLAGS} -O3
 
+sandbox_vs: sandbox_vs.cpp
+	${CC} sandbox_vs.cpp -o sandbox_vs ${CPPFLAGS}
+
 unittests: unittests.cpp
 	${CC} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
 	./unittests --show_progress

@@ -49,10 +49,10 @@ namespace cereal
     /*! @param data The data as a uint8_t pointer
         @tparam DataSize The true size of the data
         @ingroup Internal */
-    template <size_t DataSize>
+    template <std::size_t DataSize>
     inline void swap_bytes( std::uint8_t * data )
     {
-      for( size_t i = 0, end = DataSize / 2; i < end; ++i )
+      for( std::size_t i = 0, end = DataSize / 2; i < end; ++i )
         std::swap( data[i], data[DataSize - i - 1] );
     }
   } // end namespace portable_binary_detail
@@ -85,9 +85,9 @@ namespace cereal
     }
 
       //! Writes size bytes of data to the output stream
-      void saveBinary( const void * data, size_t size )
+      void saveBinary( const void * data, std::size_t size )
       {
-        auto const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
+        auto const writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
@@ -138,11 +138,11 @@ namespace cereal
       /*! @param data The data to save
           @param size The number of bytes in the data
           @tparam DataSize T The size of the actual type of the data elements being loaded */
-      template <size_t DataSize>
-      void loadBinary( void * const data, size_t size )
+      template <std::size_t DataSize>
+      void loadBinary( void * const data, std::size_t size )
       {
         // load data
-        auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
+        auto const readSize = static_cast<std::size_t>( itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size ) );
 
         if(readSize != size)
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
@@ -151,7 +151,7 @@ namespace cereal
         if( itsConvertEndianness )
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
-          for( size_t i = 0; i < size; i += DataSize )
+          for( std::size_t i = 0; i < size; i += DataSize )
             portable_binary_detail::swap_bytes<DataSize>( ptr );
         }
       }

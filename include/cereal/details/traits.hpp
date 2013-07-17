@@ -43,25 +43,6 @@ namespace cereal
     typedef std::true_type yes;
     typedef std::false_type no;
 
-
-
-
-    ////! Tests whether a type has a non const member save function
-    //namespace
-    //{
-    //  template <class T, class A>
-    //  struct has_non_const_member_save_impl
-    //  {
-    //    template <class TT, class AA>
-    //    static auto test(int) -> decltype( cereal::access::non_const_member_save( std::declval<AA&>(), std::declval<TT&>() ) == 1, yes());
-    //    static no test(...);
-    //    static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
-    //  };
-    //} // end anon namespace
-
-    //template <class T, class A>
-    //struct has_non_const_member_save : std::integral_constant<bool, has_non_const_member_save_impl<T, A>::value> {};
-
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
@@ -79,7 +60,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_##name## : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};
+    struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -91,14 +72,14 @@ namespace cereal
       struct has_non_member_##name##_impl                                                                                          \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( ##name( std::declval<AA&>(), std::declval<TT&>() ) == 1, yes());                        \
+        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>() ) == 1, yes());                          \
         template <class, class>                                                                                                    \
-        static no test( ... );                                                                                                       \
-        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                               \
+        static no test( ... );                                                                                                     \
+        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_##name## : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
+    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
 
     template<typename> struct Void { typedef void type; };
 
