@@ -110,7 +110,7 @@ struct OurBase
 
 struct OurType : public OurBase
 {
-  OurType() = default;
+  OurType() : OurBase(), x() {}
   OurType(int x_) : x(x_) {}
   void foo() {}
 
@@ -201,11 +201,11 @@ int main()
     //oarchive(ptr2);
     //oarchive(ptr3);
     //oarchive(ptr4);
-    oarchive(ptr5);
+    //oarchive(ptr5);
+    
 
-
-    std::shared_ptr<AAA> a = std::make_shared<BBB>();
-    oarchive(a);
+    //std::shared_ptr<AAA> a = std::make_shared<BBB>();
+    //oarchive(a);
   }
 
   {
@@ -223,6 +223,6 @@ int main()
     //iarchive(ptr2);
     //iarchive(ptr3);
     //iarchive(ptr4);
-    iarchive(ptr5);
+    //iarchive(ptr5);
   }
 }

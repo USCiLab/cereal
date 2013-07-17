@@ -136,7 +136,7 @@ namespace cereal
   template <class T> inline
   void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)
   {
-    ar.saveBinary(bd.data, static_cast<std::size_t>(bd.size));
+    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 
   //! Loading binary data

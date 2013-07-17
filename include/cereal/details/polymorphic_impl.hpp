@@ -65,7 +65,7 @@
     };                                                       \
     bind_to_archives<T> const & init_binding<T>::b =         \
         ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T >                             \
+            bind_to_archives<T>                              \
         >::getInstance().bind();                             \
     }} // end namespaces
 
@@ -271,15 +271,17 @@ namespace cereal
     template <class Archive, class T>
     struct polymorphic_serialization_support
     {
-//#ifdef _MSC_VER
-  //    virtual void instantiate();
-//#else
+#ifdef _MSC_VER
+      //! Creates the appropriate bindings depending on whether the archive supports
+      //! saving or loading
+      virtual void instantiate();
+#else // NOT _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       static void instantiate();
       //! This typedef causes the compiler to instantiate this static function
       typedef instantiate_function<instantiate> unused;
-//#endif
+#endif // _MSC_VER
     };
 
     // instantiate implementation
@@ -314,6 +316,8 @@ namespace cereal
           do not need to make a binding */
       bind_to_archives const & bind() const
       {
+        static_assert( std::is_polymorphic<T>::value,
+                       "Attempting to register non polymorphic type" );
         bind( std::is_abstract<T>() );
         return *this;
       }

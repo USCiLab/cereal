@@ -40,13 +40,13 @@
 
 #include <cereal/external/rapidjson/filestream.h>
 
-#include <cxxabi.h>
 #include <sstream>
 #include <fstream>
 #include <cassert>
 #include <complex>
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 // ###################################
 struct Test1
@@ -174,11 +174,18 @@ struct Everything
 
 struct SubFixture
 {
-    int a      = 3;
-    uint64_t b = 9999;
-    float c    = 100.1;
-    double d   = 2000.9;
-    std::string s = "hello, world!";
+  SubFixture() : a( 3 ),
+    b( 9999 ),
+    c( 100.1f ),
+    d( 2000.9 ),
+    s( "hello, world!" )
+  {}
+
+  int a;
+  uint64_t b;
+  float c;
+  double d;
+  std::string s;
 
     template<class Archive>
       void serialize(Archive & ar)
@@ -202,7 +209,15 @@ struct SubFixture
 struct Fixture
 {
   SubFixture f1, f2, f3;
-  int array[4] = {1, 2, 3, 4};
+  int array[4];
+
+  Fixture()
+  {
+    array[0] = 1;
+    array[1] = 2;
+    array[2] = 3;
+    array[3] = 4;
+  }
 
   template<class Archive>
   void save(Archive & ar) const
@@ -232,9 +247,10 @@ struct Fixture
 
 struct AAA
 {
-  int one = 1, two = 2;
+  AAA() : one( 1 ), two( 2 ), three( { {1, 2, 3}, { 4, 5, 6 }, {} } ) {}
+  int one, two;
 
-  std::vector<std::vector<int>> three = {{1,2,3}, {4,5,6}, {}};
+  std::vector<std::vector<int>> three;
 
   template<class Archive>
     void serialize(Archive & ar)
@@ -247,16 +263,18 @@ struct AAA
 class Stuff
 {
   public:
-    Stuff() = default;
+    Stuff() {}
 
     void fillData()
     {
-      data = { {"imaginary", {{0, -1.0f},
-                              {0, -2.9932f},
-                              {0, -3.5f}}},
-               {"real", {{1.0f, 0},
-                         {2.2f, 0},
-                         {3.3f, 0}}} };
+      std::vector<std::complex<float>> t1{ {0, -1.0f},
+                          { 0, -2.9932f },
+                          { 0, -3.5f } };
+      std::vector<std::complex<float>> t2{ {1.0f, 0},
+                     { 2.2f, 0 },
+                     { 3.3f, 0 } };
+      data["imaginary"] = t1;
+      data["real"] = t2;
     }
 
   private:
@@ -300,6 +318,10 @@ int main()
   std::vector<int> vec = {1, 2, 3, 4, 5};
   archive( CEREAL_NVP(vec),
            arr );
+    auto f = std::make_shared<Fixture>();
+    auto f2 = f;
+    archive( f );
+    archive( f2 );
   }
 
 

@@ -1,3 +1,5 @@
+#define BOOST_ALL_NO_LIB
+
 #include <cereal/access.hpp>
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
@@ -98,6 +100,12 @@ struct A
 struct B : A
 {
   void foo() {}
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    std::cout << "i'm in your b" << std::endl;
+  }
 };
 
 struct C
@@ -109,8 +117,8 @@ CEREAL_REGISTER_TYPE(B);
 
 int main()
 {
-
   typedef Test T;
+  std::cout << std::boolalpha;
   
   // Test Load and Allocate internal/external
   std::cout << "\tload_and_allocate" << std::endl;
@@ -152,10 +160,6 @@ int main()
   std::cout << cereal::traits::is_specialized<T, Archive>::value << std::endl;
 
   // array size
-  typedef int arr[5][3][2];
-  std::cout << "\tarray size" << std::endl;
-  std::cout << cereal::traits::sizeof_array<arr>::value << std::endl;
-
   std::cout << typeid(A).name() << std::endl;
   std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
 
@@ -175,6 +179,8 @@ int main()
     ar( CEREAL_NVP( s ) );
     int darp [] = { 1, 2, 3 };
     ar.saveBinaryValue( darp, sizeof(int) * 3, "darp" );
+    std::unique_ptr<A> ptr( new B() );
+    ar( CEREAL_NVP( ptr ) );
   }
   {
     cereal::JSONInputArchive ar( ss );
@@ -192,6 +198,11 @@ int main()
     assert( darp[0] == 1 );
     assert( darp[1] == 2 );
     assert( darp[2] == 3 );
+    std::unique_ptr<A> ptr;
+    std::cout << "----------" << std::endl;
+    std::cout << std::is_default_constructible<A>::value << std::endl;
+    std::cout << cereal::traits::has_load_and_allocate<A, cereal::JSONInputArchive>::value << std::endl;
+    ar( ptr );
   }
    
   return 0;

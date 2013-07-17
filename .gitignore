@@ -20,6 +20,8 @@
 */x64
 */Debug*
 */Release*
+*.log
+*.tlog*
 
 out.txt
 ptr.txt
@@ -28,10 +30,11 @@ unittests
 boost_serialize
 arr.txt
 performance
-sandbox
-sandbox_rtti
-sandbox_json
+./sandbox
+./sandbox_rtti
+./sandbox_json
 include_renamed
 .ycm_extra_conf.py*
 doc/html
+rtti.txt
 doc/latex

@@ -31,7 +31,6 @@
 #define CEREAL_DETAILS_STATIC_OBJECT_HPP_
 
 #include <cereal/details/util.hpp>
-#include <iostream>
 
 namespace cereal
 {
@@ -50,7 +49,7 @@ namespace cereal
     {
       private:
         //! Forces instantiation at pre-execution time
-        static void instantiate( T const & ) { std::cout << "static object: " << cereal::util::demangledName<T>() << std::endl;  }
+        static void instantiate( T const & ) {}
 
         static T & create()
         {

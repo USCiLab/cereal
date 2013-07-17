@@ -211,7 +211,7 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.saveBinary(bd.data, bd.size);
+    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 
   //! Loading binary data from portable binary
@@ -223,7 +223,7 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.template loadBinary<sizeof(TT)>(bd.data, bd.size);
+    ar.template loadBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 } // namespace cereal
 

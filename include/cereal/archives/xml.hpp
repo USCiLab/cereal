@@ -337,7 +337,7 @@ namespace cereal
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
       loadValue( T & value )
       {
-        value = std::stoul( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoul( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as an unsigned long long
@@ -345,7 +345,7 @@ namespace cereal
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
       loadValue( T & value )
       {
-        value = std::stoull( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoull( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as an int
@@ -353,7 +353,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
       loadValue( T & value )
       {
-        value = std::stoi( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoi( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a long
@@ -361,7 +361,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
       loadValue( T & value )
       {
-        value = std::stol( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stol( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a long long
@@ -369,7 +369,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
       loadValue( T & value )
       {
-        value = std::stoll( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoll( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a float
