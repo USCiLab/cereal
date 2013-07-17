@@ -47,7 +47,7 @@ struct Archive {};
 struct Test
 {
   template <class Archive>
-  void serialize( Archive & ar )
+  void serialzize( Archive & ar )
   {
     std::cout << "hey there" << std::endl;
   }
