@@ -53,7 +53,7 @@ namespace cereal
       BinaryOutputArchive(std::ostream & stream) :
         OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
-    { }
+      { }
 
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, std::size_t size )

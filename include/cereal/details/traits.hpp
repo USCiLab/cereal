@@ -53,7 +53,7 @@ namespace cereal
       struct has_member_##name##_impl                                                                                              \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>() ), yes()); \
+        static auto test(int) -> decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>() ), yes());      \
         template <class, class>                                                                                                    \
         static no test(...);                                                                                                       \
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                               \
@@ -72,7 +72,7 @@ namespace cereal
       struct has_non_member_##name##_impl                                                                                          \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>() ), yes());                          \
+        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>() ), yes());                               \
         template <class, class>                                                                                                    \
         static no test( ... );                                                                                                     \
         static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
