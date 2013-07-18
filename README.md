@@ -69,3 +69,7 @@ int main()
 ## cereal has a permissive license
 
 cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-Clause).
+
+---
+
+Were you looking for the Haskell cereal?  Go <a href="https://github.com/GaloisInc/cereal">here</a>.
