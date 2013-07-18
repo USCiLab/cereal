@@ -101,3 +101,8 @@ int main()
 ## xCEREAL has a permissive license
 
 cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-Clause).
+
+---
+
+
+<small>If you were looking for the Haskell library named cereal, you probably meant to go <a href="http://hackage.haskell.org/package/cereal-0.3.5.2">here</a>.</small>
