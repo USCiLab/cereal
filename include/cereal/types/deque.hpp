@@ -52,7 +52,7 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
 
-    deque.resize( size );
+    deque.resize( static_cast<size_t>( size ) );
 
     for( auto & i : deque )
       ar( i );

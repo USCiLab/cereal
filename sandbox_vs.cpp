@@ -217,6 +217,6 @@ int main()
   //  std::cout << cereal::traits::has_load_and_allocate<A, cereal::JSONInputArchive>::value << std::endl;
   //  ar( ptr );
   //}
-
+  
   return 0;
 }

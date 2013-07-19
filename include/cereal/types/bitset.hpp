@@ -57,7 +57,7 @@ namespace cereal
       ar( _CEREAL_NVP("type", bitset_detail::type::ulong) );
       ar( _CEREAL_NVP("data", b) );
     }
-    catch( std::overflow_error const & e )
+    catch( std::overflow_error const & )
     {
       try
       {
@@ -65,7 +65,7 @@ namespace cereal
         ar( _CEREAL_NVP("type", bitset_detail::type::ullong) );
         ar( _CEREAL_NVP("data", b) );
       }
-      catch( std::overflow_error const & e )
+      catch( std::overflow_error const & )
       {
         ar( _CEREAL_NVP("type", bitset_detail::type::string) );
         ar( _CEREAL_NVP("data", bits.to_string()) );

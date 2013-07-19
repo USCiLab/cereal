@@ -106,16 +106,26 @@ namespace cereal
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+#ifdef _MSC_VER
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
+      template <class T> inline
+      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
+
+      void saveValue( unsigned long lu ){ saveLong( lu ); };
+#endif
 
       //! Save exotic arithmetic types as binary
       template<class T>
-        typename std::enable_if<std::is_arithmetic<T>::value &&
-                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-        saveValue(T const & t)
-        {
-          auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
-          saveValue( base64string );
-        }
+      typename std::enable_if<std::is_arithmetic<T>::value &&
+                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+      saveValue(T const & t)
+      {
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
+        saveValue( base64string );
+      }
 
       //! Write the name of the upcoming node and prepare object/array state
       /*! Since writeName is called for every value that is output, regardless of
@@ -358,7 +368,7 @@ namespace cereal
       };
 
       //! Loads the size for a SizeTag
-      void loadSize(size_t & size)
+      void loadSize(size_type & size)
       {
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }

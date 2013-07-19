@@ -52,7 +52,7 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
 
-    list.resize( size );
+    list.resize( static_cast<size_t>( size ) );
 
     for( auto & i : list )
       ar( i );

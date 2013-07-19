@@ -54,8 +54,8 @@ namespace cereal
     size_type vectorSize;
     ar( make_size_tag( vectorSize ) );
 
-    vector.resize( vectorSize );
-    ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );
+    vector.resize( static_cast<std::size_t>( vectorSize ) );
+    ar( binary_data( vector.data(), static_cast<std::size_t>( vectorSize ) * sizeof(T) ) );
   }
 
   //! Serialization for non-arithmetic (and bool) vector types

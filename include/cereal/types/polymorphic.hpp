@@ -39,7 +39,7 @@
 #include <cereal/details/polymorphic_impl.hpp>
 
 #ifdef _MSC_VER
-#define CONSTEXPR 
+#define CONSTEXPR
 #else
 #define CONSTEXPR constexpr
 #endif
@@ -128,7 +128,7 @@ namespace cereal
         default constructors, but on clang/gcc this will return false.  So we also need to check for that here.
         @internal */
     template<class Archive, class T> inline
-    typename std::enable_if<(std::is_default_constructible<T>::value 
+    typename std::enable_if<(std::is_default_constructible<T>::value
                              || traits::has_load_and_allocate<T, Archive>::value)
                              && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
@@ -146,7 +146,7 @@ namespace cereal
         using the derived class serialize function
         @internal */
     template<class Archive, class T, class D> inline
-    typename std::enable_if<(std::is_default_constructible<T>::value 
+    typename std::enable_if<(std::is_default_constructible<T>::value
                              || traits::has_load_and_allocate<T, Archive>::value)
                              && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
@@ -166,7 +166,7 @@ namespace cereal
         this was a polymorphic type serialized by its proper pointer type
         @internal */
     template<class Archive, class T> inline
-    typename std::enable_if<(!std::is_default_constructible<T>::value 
+    typename std::enable_if<(!std::is_default_constructible<T>::value
                              && !traits::has_load_and_allocate<T, Archive>::value)
                              || std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
