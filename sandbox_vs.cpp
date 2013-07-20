@@ -1,5 +1,3 @@
-#define BOOST_ALL_NO_LIB
-
 #include <cereal/access.hpp>
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>

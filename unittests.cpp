@@ -24,9 +24,6 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifdef _MSC_VER
-#define BOOST_ALL_NO_LIB
-#endif // _MSC_VER
 #include <cereal/types/memory.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
