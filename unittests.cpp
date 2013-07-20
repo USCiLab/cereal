@@ -180,7 +180,7 @@ random_value(std::mt19937 & gen)
 template<class T>
 typename std::enable_if<std::is_integral<T>::value && sizeof(T) == sizeof(char), T>::type
 random_value(std::mt19937 & gen)
-{ return static_cast<T>( std::uniform_int_distribution<uint64_t>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen) ); }
+{ return static_cast<T>( std::uniform_int_distribution<int64_t>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen) ); }
 
 template<class T>
 typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
@@ -2808,10 +2808,17 @@ BOOST_AUTO_TEST_CASE( json_polymorphic )
 
 namespace mynamespace { struct MyCustomClass {}; }
 
+#ifdef _MSC_VER
+BOOST_AUTO_TEST_CASE( util )
+{
+  BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "struct mynamespace::MyCustomClass" );
+}
+#else
 BOOST_AUTO_TEST_CASE( util )
 {
   BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "mynamespace::MyCustomClass" );
 }
+#endif
 
 template <class T>
 inline void swapBytes( T & t )
