@@ -106,14 +106,25 @@ namespace cereal
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+
 #ifdef _MSC_VER
+      // Visual Studio has problems disambiguating the above for unsigned long, so we provide an explicit
+      // overload for long and serialize it as its size necessitates
+      //
+      // When loading we don't need to do this specialization since we catch the types with
+      // templates according to their size
+
+      //! 32 bit long saving
       template <class T> inline
       typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
       saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
+
+      //! non 32 bit long saving
       template <class T> inline
       typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
       saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
 
+      //! MSVC only long overload
       void saveValue( unsigned long lu ){ saveLong( lu ); };
 #endif
 

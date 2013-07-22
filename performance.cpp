@@ -200,18 +200,18 @@ void test( std::string const & name,
 
   std::cout << "  Boost results:" << std::endl;
   std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
-    % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( totalBoostSave.count() );
+    % averageBoostSave % 1.0 % (boostSize / 1024.0) % 1.0 % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostSave).count() );
   std::cout << std::endl;
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
-    % averageBoostLoad % 1.0 % static_cast<double>( totalBoostLoad.count() );
+    % averageBoostLoad % 1.0 % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalBoostLoad).count() );
   std::cout << std::endl;
 
   std::cout << "  Cereal results:" << std::endl;
   std::cout << boost::format("\tsave | time: %06.4fms (%1.2f) size: %20.8fkb (%1.8f) total: %6.1fms")
-    % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( totalCerealSave.count() );
+    % averageCerealSave % cerealSaveP % (cerealSize / 1024.0) % cerealSizeP % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealSave).count() );
   std::cout << std::endl;
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
-    % averageCerealLoad % cerealLoadP % static_cast<double>( totalCerealLoad.count() );
+    % averageCerealLoad % cerealLoadP % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealLoad).count() );
   std::cout << std::endl;
 }
 
