@@ -24,6 +24,11 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable : 4244)
+#endif
+
 #include <sstream>
 #include <iostream>
 #include <chrono>
@@ -166,9 +171,6 @@ void test( std::string const & name,
 
       auto loadResult = loadData<DataT>( os, {SerializationT::boost::template load<DataT>} );
       totalBoostLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
 
     // Cereal
@@ -181,9 +183,6 @@ void test( std::string const & name,
 
       auto loadResult = loadData<DataT>( os, {SerializationT::cereal::template load<DataT>} );
       totalCerealLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
   }
 
@@ -241,7 +240,7 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen)
 {
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(C & c : s)
-    c = std::uniform_int_distribution<C>(' ', '~')(gen);
+    c = static_cast<C>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
   return s;
 }
 
@@ -390,7 +389,7 @@ int main()
 
     std::map<std::string, PoDStruct> m;
     for(size_t i=0; i<s; ++i)
-      m[std::to_string(i)] = {};
+      m[std::to_string(i)] = PoDStruct();
     test<binary>(name.str(), m);
   };
 
@@ -402,3 +401,7 @@ int main()
 
   return 0;
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

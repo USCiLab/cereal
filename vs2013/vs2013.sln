@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sandbox_rtti", "sandbox_rtt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittests\unittests.vcxproj", "{D447E13A-97A4-4907-9F61-A9BCCDB91EF7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "performance", "performance\performance.vcxproj", "{2F374733-FCA8-4CBB-91A0-2B0B34393D86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,12 @@ Global
 		{D447E13A-97A4-4907-9F61-A9BCCDB91EF7}.Release|Win32.Build.0 = Release|Win32
 		{D447E13A-97A4-4907-9F61-A9BCCDB91EF7}.Release|x64.ActiveCfg = Release|x64
 		{D447E13A-97A4-4907-9F61-A9BCCDB91EF7}.Release|x64.Build.0 = Release|x64
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Debug|Win32.Build.0 = Debug|Win32
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Debug|x64.ActiveCfg = Debug|Win32
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Release|Win32.ActiveCfg = Release|Win32
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Release|Win32.Build.0 = Release|Win32
+		{2F374733-FCA8-4CBB-91A0-2B0B34393D86}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
