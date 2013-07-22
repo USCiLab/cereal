@@ -31,6 +31,7 @@
 
 #include <cereal/cereal.hpp>
 #include <sstream>
+#include <limits>
 
 namespace cereal
 {
@@ -38,7 +39,7 @@ namespace cereal
   {
     //! Returns true if the current machine is little endian
     /*! @ingroup Internal */
-    inline const bool is_little_endian()
+    inline bool is_little_endian()
     {
       static std::int32_t test = 1;
       return *reinterpret_cast<std::int8_t*>( &test );
@@ -57,14 +58,17 @@ namespace cereal
   } // end namespace portable_binary_detail
 
   // ######################################################################
-  //! An output archive designed to save data in a compact binary representation
-  //! portable over architectures with different endianness
+  //! An output archive designed to save data in a compact binary representation portable over different architectures
   /*! This archive outputs data to a stream in an extremely compact binary
-    representation with as little extra metadata as possible.
+      representation with as little extra metadata as possible.
 
-    This archive will record the endianness of the data and assuming that
-    the user takes care of ensuring serialized types are the same size
-    across machines, is portable over different architectures.
+      This archive will record the endianness of the data and assuming that
+      the user takes care of ensuring serialized types are the same size
+      across machines, is portable over different architectures.
+
+      \warning This archive has not been thoroughly tested across different architectures.
+               Please report any issues, optimizations, or feature requests at
+               <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
   class PortableBinaryOutputArchive : public OutputArchive<PortableBinaryOutputArchive, AllowEmptyClassElision>
@@ -96,19 +100,23 @@ namespace cereal
   // ######################################################################
   //! An input archive designed to load data saved using PortableBinaryOutputArchive
   /*! This archive outputs data to a stream in an extremely compact binary
-    representation with as little extra metadata as possible.
+      representation with as little extra metadata as possible.
 
-    This archive will load the endianness of the serialized data and
-    if necessary transform it to match that of the local machine.  This comes
-    at a significant performance cost compared to non portable archives if
-    the transformation is necessary, and also causes a small performance hit
-    even if it is not necessary.
+      This archive will load the endianness of the serialized data and
+      if necessary transform it to match that of the local machine.  This comes
+      at a significant performance cost compared to non portable archives if
+      the transformation is necessary, and also causes a small performance hit
+      even if it is not necessary.
 
-    It is recommended to use portable archives only if you know that you will
-    be sending binary data to machines with different endianness.
+      It is recommended to use portable archives only if you know that you will
+      be sending binary data to machines with different endianness.
 
-    The archive will do nothing to ensure types are the same size - that is
-    the responsibility of the user.
+      The archive will do nothing to ensure types are the same size - that is
+      the responsibility of the user.
+
+      \warning This archive has not been thoroughly tested across different architectures.
+               Please report any issues, optimizations, or feature requests at
+               <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
   class PortableBinaryInputArchive : public InputArchive<PortableBinaryInputArchive, AllowEmptyClassElision>
@@ -161,6 +169,9 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save(PortableBinaryOutputArchive & ar, T const & t)
   {
+    static_assert( !std::is_floating_point<T>::value ||
+                   (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
+                   "Portable binary only supports IEEE 754 standardized floating point" );
     ar.saveBinary(std::addressof(t), sizeof(t));
   }
 
@@ -169,6 +180,9 @@ namespace cereal
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   load(PortableBinaryInputArchive & ar, T & t)
   {
+    static_assert( !std::is_floating_point<T>::value ||
+                   (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
+                   "Portable binary only supports IEEE 754 standardized floating point" );
     ar.template loadBinary<sizeof(T)>(std::addressof(t), sizeof(t));
   }
 
@@ -192,6 +206,11 @@ namespace cereal
   template <class T> inline
   void save(PortableBinaryOutputArchive & ar, BinaryData<T> const & bd)
   {
+    typedef typename std::remove_pointer<T>::type TT;
+    static_assert( !std::is_floating_point<TT>::value ||
+                   (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
+                   "Portable binary only supports IEEE 754 standardized floating point" );
+
     ar.saveBinary(bd.data, bd.size);
   }
 
@@ -199,7 +218,12 @@ namespace cereal
   template <class T> inline
   void load(PortableBinaryInputArchive & ar, BinaryData<T> & bd)
   {
-    ar.template loadBinary<sizeof(typename std::remove_pointer<T>::type)>(bd.data, bd.size);
+    typedef typename std::remove_pointer<T>::type TT;
+    static_assert( !std::is_floating_point<TT>::value ||
+                   (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
+                   "Portable binary only supports IEEE 754 standardized floating point" );
+
+    ar.template loadBinary<sizeof(TT)>(bd.data, bd.size);
   }
 } // namespace cereal
 

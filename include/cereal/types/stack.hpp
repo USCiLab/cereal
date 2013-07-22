@@ -33,6 +33,9 @@
 #include <cereal/cereal.hpp>
 #include <stack>
 
+// The default container for stack is deque, so let's include that too
+#include <cereal/types/deque.hpp>
+
 namespace cereal
 {
   namespace stack_detail

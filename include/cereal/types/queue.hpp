@@ -33,6 +33,9 @@
 #include <cereal/details/helpers.hpp>
 #include <queue>
 
+// The default container for queue is deque, so let's include that too
+#include <cereal/types/deque.hpp>
+
 namespace cereal
 {
   namespace queue_detail

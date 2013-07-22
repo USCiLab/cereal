@@ -42,7 +42,7 @@ namespace cereal
     // write the size - note that this is slow because we need to traverse
     // the entire list. there are ways we could avoid this but this was chosen
     // since it works in the most general fashion with any archive type
-    const size_t size = std::distance( forward_list.begin(), forward_list.end() );
+    size_type const size = std::distance( forward_list.begin(), forward_list.end() );
 
     ar( make_size_tag( size ) );
 
@@ -55,7 +55,7 @@ namespace cereal
   template <class Archive, class T, class A>
   void load( Archive & ar, std::forward_list<T, A> & forward_list )
   {
-    size_t size;
+    size_type size;
     ar( make_size_tag( size ) );
 
     forward_list.resize( size );

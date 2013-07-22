@@ -41,7 +41,7 @@ namespace cereal
   save(Archive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     // Save number of chars + the data
-    ar( make_size_tag( str.size() ) );
+    ar( make_size_tag( static_cast<size_type>(str.size()) ) );
     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );
   }
 
@@ -50,7 +50,7 @@ namespace cereal
   typename std::enable_if<traits::is_input_serializable<BinaryData<CharT>, Archive>(), void>::type
   load(Archive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
-    size_t size;
+    size_type size;
     ar( make_size_tag( size ) );
     str.resize(size);
     ar( binary_data( &(*str.begin()), size * sizeof(CharT) ) );
