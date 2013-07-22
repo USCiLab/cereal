@@ -81,8 +81,6 @@ namespace cereal
     template <class T, class A>                                                                                                    \
     struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
 
-    template<typename> struct Void { typedef void type; };
-
     // ######################################################################
     // Member load_and_allocate
     template<typename T, typename A>
