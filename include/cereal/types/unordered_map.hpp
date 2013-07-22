@@ -55,7 +55,7 @@ namespace cereal
       ar( make_size_tag( size ) );
 
       map.clear();
-      map.reserve( size );
+      map.reserve( static_cast<std::size_t>( size ) );
 
       for( size_type i = 0; i < size; ++i )
       {

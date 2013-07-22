@@ -38,6 +38,12 @@
 #include <cereal/details/traits.hpp>
 #include <cereal/details/polymorphic_impl.hpp>
 
+#ifdef _MSC_VER
+#define CONSTEXPR
+#else
+#define CONSTEXPR constexpr
+#endif
+
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
     to them can be serialized.  This also assumes that
@@ -59,7 +65,7 @@
   template <>                                            \
   struct binding_name<T>                                 \
   {                                                      \
-    static constexpr char const * name() { return #T; }; \
+    static CONSTEXPR char const * name() { return #T; }; \
   };                                                     \
   } } /* end namespaces */                               \
   CEREAL_BIND_TO_ARCHIVES(T);
@@ -75,7 +81,7 @@
   namespace detail {                                          \
   template <>                                                 \
   struct binding_name<T>                                      \
-  { static constexpr char const * name() { return Name; }; }; \
+  { static CONSTEXPR char const * name() { return Name; }; }; \
   } } /* end namespaces */                                    \
   CEREAL_BIND_TO_ARCHIVES(T);
 
@@ -117,9 +123,14 @@ namespace cereal
     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
     /*! This check lets us try and skip doing polymorphic machinery if we can get away with
         using the derived class serialize function
+
+        Note that on MSVC 2013 preview, is_default_constructible<T> returns true for abstract classes with
+        default constructors, but on clang/gcc this will return false.  So we also need to check for that here.
         @internal */
     template<class Archive, class T> inline
-    typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
+    typename std::enable_if<(std::is_default_constructible<T>::value
+                             || traits::has_load_and_allocate<T, Archive>::value)
+                             && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)
@@ -135,7 +146,9 @@ namespace cereal
         using the derived class serialize function
         @internal */
     template<class Archive, class T, class D> inline
-    typename std::enable_if<std::is_default_constructible<T>::value || traits::has_load_and_allocate<T, Archive>(), bool>::type
+    typename std::enable_if<(std::is_default_constructible<T>::value
+                             || traits::has_load_and_allocate<T, Archive>::value)
+                             && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)
@@ -153,7 +166,9 @@ namespace cereal
         this was a polymorphic type serialized by its proper pointer type
         @internal */
     template<class Archive, class T> inline
-    typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
+    typename std::enable_if<(!std::is_default_constructible<T>::value
+                             && !traits::has_load_and_allocate<T, Archive>::value)
+                             || std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)
@@ -168,7 +183,9 @@ namespace cereal
         this was a polymorphic type serialized by its proper pointer type
         @internal */
     template<class Archive, class T, class D> inline
-    typename std::enable_if<!std::is_default_constructible<T>::value && !traits::has_load_and_allocate<T, Archive>(), bool>::type
+     typename std::enable_if<(!std::is_default_constructible<T>::value
+                               && !traits::has_load_and_allocate<T, Archive>::value)
+                               || std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive &, std::unique_ptr<T, D> &, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)

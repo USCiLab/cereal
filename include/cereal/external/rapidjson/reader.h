@@ -382,15 +382,35 @@ private:
 		return codepoint;
 	}
 
+  // cereal Temporary until constexpr support is added in RTM
+#ifdef _MSC_VER
+  template <class Ch>
+  bool characterOk( Ch c )
+  {
+    return c < 256;
+  }
+
+  template <>
+  bool characterOk<char>( Ch )
+  {
+    return true;
+  }
+
+#else
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk(Ch c)
-    { return true; }
+  typename std::enable_if < std::numeric_limits<Ch>::max() < 265, bool>::type
+    characterOk( Ch c )
+  {
+    return true;
+  }
 
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
-    characterOk(Ch c)
-    { return c < 256; }
+  typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+    characterOk( Ch c )
+  {
+    return c < 256;
+  }
+#endif
 
 	// Parse string, handling the prefix and suffix double quotes and escaping.
 	template<unsigned parseFlags, typename Stream, typename Handler>

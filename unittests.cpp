@@ -75,6 +75,8 @@ namespace cereal
 
 struct StructBase
 {
+  StructBase() {}
+  StructBase( int xx, int yy ) : x( xx ), y( yy ) {}
   int x, y;
   bool operator==(StructBase const & other) const
   { return x == other.x && y == other.y; }
@@ -171,9 +173,14 @@ random_value(std::mt19937 & gen)
 { return std::uniform_real_distribution<T>(-10000.0, 10000.0)(gen); }
 
 template<class T>
-typename std::enable_if<std::is_integral<T>::value, T>::type
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) != sizeof(char), T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
+
+template<class T>
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) == sizeof(char), T>::type
+random_value(std::mt19937 & gen)
+{ return static_cast<T>( std::uniform_int_distribution<int64_t>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen) ); }
 
 template<class T>
 typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
@@ -181,7 +188,7 @@ random_value(std::mt19937 & gen)
 {
   std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(char & c : s)
-    c = std::uniform_int_distribution<char>(' ', '~')(gen);
+    c = static_cast<char>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
   return s;
 }
 
@@ -190,7 +197,7 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen)
 {
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(C & c : s)
-    c = std::uniform_int_distribution<C>(' ', '~')(gen);
+    c = static_cast<C>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
   return s;
 }
 
@@ -199,7 +206,7 @@ std::string random_binary_string(std::mt19937 & gen)
 {
   std::string s(N, ' ');
   for(auto & c : s )
-    c = std::uniform_int_distribution<char>('0', '1')(gen);
+     c = static_cast<char>( std::uniform_int_distribution<int>( '0', '1' )(gen) );
   return s;
 }
 
@@ -241,16 +248,16 @@ void test_pod()
     }
 
     bool     i_bool   = false;
-    uint8_t  i_uint8  = 0.0;
-    int8_t   i_int8   = 0.0;
-    uint16_t i_uint16 = 0.0;
-    int16_t  i_int16  = 0.0;
-    uint32_t i_uint32 = 0.0;
-    int32_t  i_int32  = 0.0;
-    uint64_t i_uint64 = 0.0;
-    int64_t  i_int64  = 0.0;
-    float    i_float  = 0.0;
-    double   i_double = 0.0;
+    uint8_t  i_uint8  = 0;
+    int8_t   i_int8   = 0;
+    uint16_t i_uint16 = 0;
+    int16_t  i_int16  = 0;
+    uint32_t i_uint32 = 0;
+    int32_t  i_int32  = 0;
+    uint64_t i_uint64 = 0;
+    int64_t  i_int64  = 0;
+    float    i_float  = 0;
+    double   i_double = 0;
 
     std::istringstream is(os.str());
     {
@@ -277,7 +284,7 @@ void test_pod()
     BOOST_CHECK_EQUAL(i_int32  , o_int32);
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
     BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_CLOSE(i_float  , o_float,  1e-5);
+    BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5);
     BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
   }
 }
@@ -371,23 +378,23 @@ void test_array()
   {
     std::array<int, 100> o_podarray;
     for(auto & elem : o_podarray)
-      elem = random_value<decltype(o_podarray)::value_type>(gen);
+      elem = random_value<int>(gen);
 
     std::array<StructInternalSerialize, 100> o_iserarray;
     for(auto & elem : o_iserarray)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::array<StructInternalSplit, 100> o_isplarray;
     for(auto & elem : o_isplarray)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::array<StructExternalSerialize, 100> o_eserarray;
     for(auto & elem : o_eserarray)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::array<StructExternalSplit, 100> o_esplarray;
     for(auto & elem : o_esplarray)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -456,23 +463,23 @@ void test_deque()
   {
     std::deque<int> o_poddeque(100);
     for(auto & elem : o_poddeque)
-      elem = random_value<decltype(o_poddeque)::value_type>(gen);
+      elem = random_value<int>(gen);
 
     std::deque<StructInternalSerialize> o_iserdeque(100);
     for(auto & elem : o_iserdeque)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::deque<StructInternalSplit> o_ispldeque(100);
     for(auto & elem : o_ispldeque)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::deque<StructExternalSerialize> o_eserdeque(100);
     for(auto & elem : o_eserdeque)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::deque<StructExternalSplit> o_espldeque(100);
     for(auto & elem : o_espldeque)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -547,23 +554,23 @@ void test_forward_list()
   {
     std::forward_list<int> o_podforward_list(100);
     for(auto & elem : o_podforward_list)
-      elem = random_value<decltype(o_podforward_list)::value_type>(gen);
+      elem = random_value<int>(gen);
 
     std::forward_list<StructInternalSerialize> o_iserforward_list(100);
     for(auto & elem : o_iserforward_list)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::forward_list<StructInternalSplit> o_isplforward_list(100);
     for(auto & elem : o_isplforward_list)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::forward_list<StructExternalSerialize> o_eserforward_list(100);
     for(auto & elem : o_eserforward_list)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::forward_list<StructExternalSplit> o_esplforward_list(100);
     for(auto & elem : o_esplforward_list)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -632,23 +639,23 @@ void test_list()
   {
     std::list<int> o_podlist(100);
     for(auto & elem : o_podlist)
-      elem = random_value<decltype(o_podlist)::value_type>(gen);
+      elem = random_value<int>(gen);
 
     std::list<StructInternalSerialize> o_iserlist(100);
     for(auto & elem : o_iserlist)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::list<StructInternalSplit> o_ispllist(100);
     for(auto & elem : o_ispllist)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::list<StructExternalSerialize> o_eserlist(100);
     for(auto & elem : o_eserlist)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::list<StructExternalSplit> o_espllist(100);
     for(auto & elem : o_espllist)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -2095,23 +2102,23 @@ void test_vector()
   {
     std::vector<int> o_podvector(100);
     for(auto & elem : o_podvector)
-      elem = random_value<decltype(o_podvector)::value_type>(gen);
+      elem = random_value<int>(gen);
 
     std::vector<StructInternalSerialize> o_iservector(100);
     for(auto & elem : o_iservector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::vector<StructInternalSplit> o_isplvector(100);
     for(auto & elem : o_isplvector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::vector<StructExternalSerialize> o_eservector(100);
     for(auto & elem : o_eservector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
     std::vector<StructExternalSplit> o_esplvector(100);
     for(auto & elem : o_esplvector)
-      elem = { random_value<int>(gen), random_value<int>(gen) };
+      elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -2682,7 +2689,7 @@ BOOST_AUTO_TEST_CASE( json_structs_specialized )
 // ######################################################################
 struct PolyBase
 {
-  PolyBase() = default;
+  PolyBase() {}
   PolyBase( int xx, float yy ) : x(xx), y(yy) {}
   int x;
   float y;
@@ -2703,7 +2710,7 @@ struct PolyBase
 
 struct PolyDerived : PolyBase
 {
-  PolyDerived() = default;
+  PolyDerived() {}
   PolyDerived( int xx, float yy, bool aa, double bb ) :
     PolyBase( xx, yy ), a(aa), b(bb) {}
 
@@ -2739,7 +2746,7 @@ void test_polymorphic()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  auto rngB = [&](){ return random_value<int>( gen ) % 2; };
+  auto rngB = [&](){ return random_value<int>( gen ) % 2 == 0; };
   auto rngI = [&](){ return random_value<int>( gen ); };
   auto rngF = [&](){ return random_value<float>( gen ); };
   auto rngD = [&](){ return random_value<double>( gen ); };
@@ -2801,10 +2808,17 @@ BOOST_AUTO_TEST_CASE( json_polymorphic )
 
 namespace mynamespace { struct MyCustomClass {}; }
 
+#ifdef _MSC_VER
+BOOST_AUTO_TEST_CASE( util )
+{
+  BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "struct mynamespace::MyCustomClass" );
+}
+#else
 BOOST_AUTO_TEST_CASE( util )
 {
   BOOST_CHECK_EQUAL( cereal::util::demangledName<mynamespace::MyCustomClass>(), "mynamespace::MyCustomClass" );
 }
+#endif
 
 template <class T>
 inline void swapBytes( T & t )
@@ -2877,16 +2891,16 @@ BOOST_AUTO_TEST_CASE( portable_binary_archive )
     swapBytes(o_double);
 
     bool     i_bool   = false;
-    uint8_t  i_uint8  = 0.0;
-    int8_t   i_int8   = 0.0;
-    uint16_t i_uint16 = 0.0;
-    int16_t  i_int16  = 0.0;
-    uint32_t i_uint32 = 0.0;
-    int32_t  i_int32  = 0.0;
-    uint64_t i_uint64 = 0.0;
-    int64_t  i_int64  = 0.0;
-    float    i_float  = 0.0;
-    double   i_double = 0.0;
+    uint8_t  i_uint8  = 0;
+    int8_t   i_int8   = 0;
+    uint16_t i_uint16 = 0;
+    int16_t  i_int16  = 0;
+    uint32_t i_uint32 = 0;
+    int32_t  i_int32  = 0;
+    uint64_t i_uint64 = 0;
+    int64_t  i_int64  = 0;
+    float    i_float  = 0;
+    double   i_double = 0;
 
     std::istringstream is(os.str());
     {
@@ -2913,7 +2927,7 @@ BOOST_AUTO_TEST_CASE( portable_binary_archive )
     BOOST_CHECK_EQUAL(i_int32  , o_int32);
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
     BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_CLOSE(i_float  , o_float,  1e-5);
+    BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5);
     BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
   }
 }

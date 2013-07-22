@@ -269,8 +269,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
-                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
+                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -280,8 +280,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
-                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
+                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -291,8 +291,8 @@ namespace cereal
 
       //! Member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_save<T, ArchiveType>() ||
-                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_member_save<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_member_save<T, ArchiveType>::value ||
+                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_save<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -302,8 +302,8 @@ namespace cereal
 
       //! Non member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_save<T, ArchiveType>() ||
-                              (traits::is_output_serializable<T, ArchiveType>() && traits::has_non_member_save<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_non_member_save<T, ArchiveType>::value ||
+                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_save<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -314,7 +314,7 @@ namespace cereal
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
-          !traits::is_output_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
+          !traits::is_output_serializable<T, ArchiveType>::value && std::is_empty<T>::value, ArchiveType &>::type
       processImpl(T const &)
       {
         return *self;
@@ -322,12 +322,12 @@ namespace cereal
 
       //! No matching serialization
       template <class T> inline
-      typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_output_serializable<T, ArchiveType>() &&
-        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
+      typename std::enable_if<!traits::is_specialized<T, ArchiveType>::value && !traits::is_output_serializable<T, ArchiveType>::value &&
+        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)),
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
             "Serialize functions generally have the following signature:\n\n"
             "template<class Archive>\n"
@@ -491,8 +491,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>() ||
-                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_serialize<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
+                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -502,8 +502,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>() ||
-                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_serialize<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
+                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -513,8 +513,8 @@ namespace cereal
 
       //! Member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_load<T, ArchiveType>() ||
-                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_member_load<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_member_load<T, ArchiveType>::value ||
+                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_load<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -524,8 +524,8 @@ namespace cereal
 
       //! Non member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_load<T, ArchiveType>() ||
-                              (traits::is_input_serializable<T, ArchiveType>() && traits::has_non_member_load<T, ArchiveType>()),
+      typename std::enable_if<traits::is_specialized_non_member_load<T, ArchiveType>::value ||
+                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_load<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -536,7 +536,7 @@ namespace cereal
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
-          !traits::is_input_serializable<T, ArchiveType>() && traits::is_empty_class<T>(), ArchiveType &>::type
+          !traits::is_input_serializable<T, ArchiveType>::value && std::is_empty<T>::value, ArchiveType &>::type
       processImpl(T const &)
       {
         return *self;
@@ -544,12 +544,12 @@ namespace cereal
 
       //! No matching serialization
       template <class T> inline
-      typename std::enable_if<!traits::is_specialized<T, ArchiveType>() && !traits::is_input_serializable<T, ArchiveType>() &&
-        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !traits::is_empty_class<T>())),
+      typename std::enable_if<!traits::is_specialized<T, ArchiveType>::value && !traits::is_input_serializable<T, ArchiveType>::value &&
+        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)),
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>(), "Trying to serialize an unserializable type with an output archive.\n\n"
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive.\n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both).\n"
             "Serialize functions generally have the following signature:\n\n"
             "template<class Archive>\n"

@@ -38,26 +38,26 @@ namespace cereal
   //! Saving for std::array primitive types
   //! using binary serialization, if supported
   template <class Archive, class T, size_t N> inline
-  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>::value
                           && std::is_arithmetic<T>::value, void>::type
   save( Archive & ar, std::array<T, N> const & array )
   {
-    ar( binary_data( array.data(), N * sizeof(T) ) );
+    ar( binary_data( array.data(), sizeof(array) ) );
   }
 
   //! Loading for std::array primitive types
   //! using binary serialization, if supported
   template <class Archive, class T, size_t N> inline
-  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>::value
                           && std::is_arithmetic<T>::value, void>::type
   load( Archive & ar, std::array<T, N> & array )
   {
-    ar( binary_data( array.data(), N * sizeof(T) ) );
+    ar( binary_data( array.data(), sizeof(array) ) );
   }
 
   //! Saving for std::array all other types
   template <class Archive, class T, size_t N> inline
-  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>::value
                           || !std::is_arithmetic<T>::value, void>::type
   save( Archive & ar, std::array<T, N> const & array )
   {
@@ -67,7 +67,7 @@ namespace cereal
 
   //! Loading for std::array all other types
   template <class Archive, class T, size_t N> inline
-  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
                           || !std::is_arithmetic<T>::value, void>::type
   load( Archive & ar, std::array<T, N> & array )
   {

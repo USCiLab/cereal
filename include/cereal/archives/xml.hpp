@@ -155,7 +155,7 @@ namespace cereal
       template <class T> inline
       void saveValue( T const & value )
       {
-        itsOS.clear(); itsOS.seekp(0);
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
         // allocate strings for all of the data in the XML object
@@ -286,7 +286,7 @@ namespace cereal
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
           itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
-        catch( rapidxml::parse_error const & e )
+        catch( rapidxml::parse_error const & )
         {
           //std::cerr << "-----Original-----" << std::endl;
           //stream.seekg(0);
@@ -337,7 +337,7 @@ namespace cereal
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
       loadValue( T & value )
       {
-        value = std::stoul( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoul( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as an unsigned long long
@@ -345,7 +345,7 @@ namespace cereal
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
       loadValue( T & value )
       {
-        value = std::stoull( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoull( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as an int
@@ -353,7 +353,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
       loadValue( T & value )
       {
-        value = std::stoi( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoi( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a long
@@ -361,7 +361,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
       loadValue( T & value )
       {
-        value = std::stol( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stol( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a long long
@@ -369,7 +369,7 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
       loadValue( T & value )
       {
-        value = std::stoll( itsNodes.top().node->value() );
+        value = static_cast<T>( std::stoll( itsNodes.top().node->value() ) );
       }
 
       //! Loads a type best represented as a float

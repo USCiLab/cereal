@@ -42,7 +42,7 @@
 #include <cereal/types/bitset.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-#include <cxxabi.h>
+//#include <cxxabi.h>
 #include <sstream>
 #include <fstream>
 #include <cassert>
@@ -70,7 +70,7 @@ class Derived : public Base
 {
   public:
     using Base::x;
-    Derived() = default;
+    Derived() : Base(), y() {}
     Derived( int d, int b )
     {
       y = d;
@@ -244,7 +244,9 @@ struct NonEmptyStruct
 
 struct NoDefaultCtor
 {
-  NoDefaultCtor() = delete;
+private:
+  NoDefaultCtor() {};
+public:
   NoDefaultCtor(int x) : y(x)
   { }
 

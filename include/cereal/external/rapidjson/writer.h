@@ -21,7 +21,7 @@ namespace rapidjson {
 
 	User may programmatically calls the functions of a writer to generate JSON text.
 
-	On the other side, a writer can also be passed to objects that generates events, 
+	On the other side, a writer can also be passed to objects that generates events,
 
 	for example Reader::Parse() and Document::Accept().
 
@@ -34,11 +34,17 @@ class Writer {
 public:
 	typedef typename Encoding::Ch Ch;
 
-	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) : 
+	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) :
 		stream_(stream), level_stack_(allocator, levelDepth * sizeof(Level))
   {
-		(void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
-		(void) snprintf(long_double_format, sizeof(long_double_format), "%%0.%dLg", precision);
+#if _MSC_VER
+    (void) sprintf_s(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) sprintf_s( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#else
+    (void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) snprintf( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#endif
+
   }
 
 protected:
@@ -170,15 +176,33 @@ protected:
 		} while (p != buffer);
 	}
 
+  // cereal Temporary until constexpr support is added in RTM
+#ifdef _MSC_VER
+  template <class Ch>
+  bool characterOk( Ch c )
+  {
+    return c < 256;
+  }
+
+  template <>
+  bool characterOk<char>( Ch )
+  {
+    return true;
+  }
+
+#else
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk(Ch c)
-    { return true; }
+  typename std::enable_if < std::numeric_limits<Ch>::max() < 265, bool>::type
+    characterOk( Ch c )
+  {
+    return true;
+  }
 
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+  typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
     characterOk(Ch c)
-    { return c < 256; }
+  { return c < 256; }
+#endif
 
 	//! \todo Optimization with custom double-to-string converter.
 	void WriteDouble(double d) {
@@ -272,7 +296,7 @@ protected:
 		if (level_stack_.GetSize() != 0) { // this value is not at root
 			Level* level = level_stack_.template Top<Level>();
 			if (level->valueCount > 0) {
-				if (level->inArray) 
+				if (level->inArray)
 					stream_.Put(','); // add comma if it is not the first element in array
 				else  // in object
 					stream_.Put((level->valueCount % 2 == 0) ? ',' : ':');

@@ -37,7 +37,7 @@ namespace cereal
 {
   //! Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported
   template <class Archive, class T, class A> inline
-  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>::value
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
   {
@@ -47,20 +47,20 @@ namespace cereal
 
   //! Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported
   template <class Archive, class T, class A> inline
-  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>::value
                           && std::is_arithmetic<T>::value && !std::is_same<T, bool>::value, void>::type
   load( Archive & ar, std::vector<T, A> & vector )
   {
     size_type vectorSize;
     ar( make_size_tag( vectorSize ) );
 
-    vector.resize( vectorSize );
-    ar( binary_data( vector.data(), vectorSize * sizeof(T) ) );
+    vector.resize( static_cast<std::size_t>( vectorSize ) );
+    ar( binary_data( vector.data(), static_cast<std::size_t>( vectorSize ) * sizeof(T) ) );
   }
 
   //! Serialization for non-arithmetic (and bool) vector types
   template <class Archive, class T, class A> inline
-  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>::value
                           || !std::is_arithmetic<T>::value
                           || std::is_same<T, bool>::value, void>::type
   save( Archive & ar, std::vector<T, A> const & vector )
@@ -72,7 +72,7 @@ namespace cereal
 
   //! Serialization for non-arithmetic (and bool) vector types
   template <class Archive, class T, class A> inline
-  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>()
+  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
                           || !std::is_arithmetic<T>::value
                           || std::is_same<T, bool>::value, void>::type
   load( Archive & ar, std::vector<T, A> & vector )
@@ -80,7 +80,7 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
 
-    vector.resize( size );
+    vector.resize( static_cast<std::size_t>( size ) );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar( *it );
   }

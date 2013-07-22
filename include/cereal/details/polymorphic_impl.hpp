@@ -47,6 +47,7 @@
 #include <cereal/details/static_object.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
+#include <functional>
 #include <typeindex>
 #include <map>
 
@@ -64,7 +65,7 @@
     };                                                       \
     bind_to_archives<T> const & init_binding<T>::b =         \
         ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T >                             \
+            bind_to_archives<T>                              \
         >::getInstance().bind();                             \
     }} // end namespaces
 
@@ -242,20 +243,20 @@ namespace cereal
     template <class Archive, class T>
     struct create_bindings
     {
-        static const InputBindingCreator<Archive, T> &
-        load(std::true_type)
-        {
-          return cereal::detail::StaticObject<InputBindingCreator<Archive, T>>::getInstance();
-        }
+      static const InputBindingCreator<Archive, T> &
+      load(std::true_type)
+      {
+        return cereal::detail::StaticObject<InputBindingCreator<Archive, T>>::getInstance();
+      }
 
-        static const OutputBindingCreator<Archive, T> &
-        save(std::true_type)
-        {
-          return cereal::detail::StaticObject<OutputBindingCreator<Archive, T>>::getInstance();
-        }
+      static const OutputBindingCreator<Archive, T> &
+      save(std::true_type)
+      {
+        return cereal::detail::StaticObject<OutputBindingCreator<Archive, T>>::getInstance();
+      }
 
-        inline static void load(std::false_type) {}
-        inline static void save(std::false_type) {}
+      inline static void load(std::false_type) {}
+      inline static void save(std::false_type) {}
     };
 
     //! When specialized, causes the compiler to instantiate its parameter
@@ -270,20 +271,26 @@ namespace cereal
     template <class Archive, class T>
     struct polymorphic_serialization_support
     {
+#ifdef _MSC_VER
+      //! Creates the appropriate bindings depending on whether the archive supports
+      //! saving or loading
+      virtual void instantiate();
+#else // NOT _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       static void instantiate();
       //! This typedef causes the compiler to instantiate this static function
       typedef instantiate_function<instantiate> unused;
+#endif // _MSC_VER
     };
 
     // instantiate implementation
     template <class Archive, class T>
     void polymorphic_serialization_support<Archive,T>::instantiate()
     {
-        create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
 
-        create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
     }
 
     //! Begins the binding process of a type to all registered archives
@@ -296,8 +303,8 @@ namespace cereal
     {
       //! Binding for non abstract types
       void bind(std::false_type) const
-      {
-        instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );
+	    {
+		    instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
       }
 
       //! Binding for abstract types
@@ -309,6 +316,8 @@ namespace cereal
           do not need to make a binding */
       bind_to_archives const & bind() const
       {
+        static_assert( std::is_polymorphic<T>::value,
+                       "Attempting to register non polymorphic type" );
         bind( std::is_abstract<T>() );
         return *this;
       }

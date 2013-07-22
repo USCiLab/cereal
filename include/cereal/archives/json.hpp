@@ -98,24 +98,45 @@ namespace cereal
         itsWriter.EndObject();
       }
 
-      void saveValue(bool b)                { itsWriter.Bool(b);                     }
-      void saveValue(int i)                 { itsWriter.Int(i);                      }
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                     }
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                  }
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                 }
-      void saveValue(double d)              { itsWriter.Double(d);                   }
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), s.size()); }
-      void saveValue(char const * s)        { itsWriter.String(s);                   }
+      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
+      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
+      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
+      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
+      void saveValue(double d)              { itsWriter.Double(d);                                                       }
+      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+
+#ifdef _MSC_VER
+      // Visual Studio has problems disambiguating the above for unsigned long, so we provide an explicit
+      // overload for long and serialize it as its size necessitates
+      //
+      // When loading we don't need to do this specialization since we catch the types with
+      // templates according to their size
+
+      //! 32 bit long saving
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
+
+      //! non 32 bit long saving
+      template <class T> inline
+      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
+
+      //! MSVC only long overload
+      void saveValue( unsigned long lu ){ saveLong( lu ); };
+#endif
 
       //! Save exotic arithmetic types as binary
       template<class T>
-        typename std::enable_if<std::is_arithmetic<T>::value &&
-                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-        saveValue(T const & t)
-        {
-          auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
-          saveValue( base64string );
-        }
+      typename std::enable_if<std::is_arithmetic<T>::value &&
+                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+      saveValue(T const & t)
+      {
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
+        saveValue( base64string );
+      }
 
       //! Write the name of the upcoming node and prepare object/array state
       /*! Since writeName is called for every value that is output, regardless of
@@ -325,7 +346,7 @@ namespace cereal
       void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
       void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
       void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
-      void loadValue(float & val)       { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      void loadValue(float & val)       { val = static_cast<float>(itsValueStack.back().value().GetDouble()); ++itsValueStack.back(); }
       void loadValue(double & val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
       void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
 
@@ -358,7 +379,7 @@ namespace cereal
       };
 
       //! Loads the size for a SizeTag
-      void loadSize(size_t & size)
+      void loadSize(size_type & size)
       {
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }

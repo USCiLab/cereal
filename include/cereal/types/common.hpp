@@ -52,15 +52,15 @@ namespace cereal
 
   namespace common_detail
   {
-    //! Serialization for arrays if BinaryData is supported
+    //! Serialization for arrays if BinaryData is supported and we are arithmetic
     /*! @internal */
     template <class Archive, class T> inline
     void serializeArray( Archive & ar, T & array, std::true_type /* binary_supported */ )
     {
-      ar( binary_data( array, traits::sizeof_array<T>() * sizeof(typename std::remove_all_extents<T>::type) ) );
+      ar( binary_data( array, sizeof(array) ) );
     }
 
-    //! Serialization for arrays if BinaryData is not supported
+    //! Serialization for arrays if BinaryData is not supported or we are not arithmetic
     /*! @internal */
     template <class Archive, class T> inline
     void serializeArray( Archive & ar, T & array, std::false_type /* binary_supported */ )
@@ -76,7 +76,8 @@ namespace cereal
   serialize(Archive & ar, T & array)
   {
     common_detail::serializeArray( ar, array,
-        std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>()>() );
+        std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>::value &&
+                                     std::is_arithmetic<typename std::remove_all_extents<T>::type>::value>() );
   }
 } // namespace cereal
 

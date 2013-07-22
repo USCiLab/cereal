@@ -129,7 +129,7 @@ namespace cereal
   //! Loading std::shared_ptr, case when user load and allocate (wrapper implementation)
   /*! @internal */
   template <class Archive, class T> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -152,7 +152,7 @@ namespace cereal
   //! Loading std::shared_ptr, case when no user load and allocate (wrapper implementation)
   /*! @internal */
   template <class Archive, class T> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -196,7 +196,7 @@ namespace cereal
   //! Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation)
   /*! @internal */
   template <class Archive, class T, class D> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
@@ -213,7 +213,7 @@ namespace cereal
   //! Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation)
   /*! @internal */
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>(), void>::type
+  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;

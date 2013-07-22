@@ -24,6 +24,11 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable : 4244 4267)
+#endif
+
 #include <sstream>
 #include <iostream>
 #include <chrono>
@@ -166,9 +171,6 @@ void test( std::string const & name,
 
       auto loadResult = loadData<DataT>( os, {SerializationT::boost::template load<DataT>} );
       totalBoostLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
 
     // Cereal
@@ -181,9 +183,6 @@ void test( std::string const & name,
 
       auto loadResult = loadData<DataT>( os, {SerializationT::cereal::template load<DataT>} );
       totalCerealLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
   }
 
@@ -222,9 +221,14 @@ random_value(std::mt19937 & gen)
 { return std::uniform_real_distribution<T>(-10000.0, 10000.0)(gen); }
 
 template<class T>
-typename std::enable_if<std::is_integral<T>::value, T>::type
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) != sizeof(char), T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
+
+template<class T>
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) == sizeof(char), T>::type
+random_value(std::mt19937 & gen)
+{ return static_cast<T>( std::uniform_int_distribution<int64_t>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen) ); }
 
 template<class T>
 typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
@@ -241,7 +245,8 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen, size_t maxSize = 30
 {
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, maxSize)(gen), ' ');
   for(C & c : s)
-    c = std::uniform_int_distribution<C>(' ', '~')(gen);
+    c = static_cast<C>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
+  return s;
   return s;
 }
 
@@ -408,7 +413,7 @@ int main()
 
     std::map<std::string, PoDStruct> m;
     for(size_t i=0; i<s; ++i)
-      m[std::to_string(i)] = {};
+      m[std::to_string( i )] = PoDStruct();
     test<binary>(name.str(), m);
   };
 
@@ -417,3 +422,7 @@ int main()
 
   return 0;
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
