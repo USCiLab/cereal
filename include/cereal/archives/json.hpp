@@ -358,7 +358,7 @@ namespace cereal
       };
 
       //! Loads the size for a SizeTag
-      void loadSize(size_t & size)
+      void loadSize(size_type & size)
       {
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }
