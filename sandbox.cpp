@@ -500,6 +500,50 @@ int main()
     std::remove("endian.out");
   }
 
+  {
+    std::ofstream ss("xml_ordering.out");
+    cereal::XMLOutputArchive ar(ss);
+
+    double one = 1;
+    double two = 2;
+    double three = 3;
+    std::vector<int> four = {1, 2, 3, 4};
+
+    // Output is ordered 3 2 1 4
+    ar( three, CEREAL_NVP(two), one, cereal::make_nvp("five", four) );
+  }
+
+  {
+    std::ifstream ss("xml_ordering.out");
+    cereal::XMLInputArchive ar(ss);
+
+    // Output prodered out of order, try to load in order 1 2 3 4
+    double one;
+    double two;
+    double three;
+    std::vector<int> four;
+
+    ar( one ); // cereal can only give warnings if you used an NVP!
+    ar( CEREAL_NVP( two ) );
+    ar( three );
+
+    try
+    {
+      ar( CEREAL_NVP( three ) );
+    }
+    catch( cereal::Exception const & e )
+    {
+      std::cout << e.what() << std::endl;
+      std::cout << "Looked for three but we didn't use an NVP when saving" << std::endl;
+    }
+    ar( cereal::make_nvp("five", four) );
+
+    std::cout << one << std::endl;
+    std::cout << two << std::endl;
+    std::cout << three << std::endl;
+    for( auto i : four ) std::cout << i << " ";
+    std::cout << std::endl;
+  }
 
 
   return 0;

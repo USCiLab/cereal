@@ -309,7 +309,23 @@ namespace cereal
       //! Prepares to start reading the next node
       void startNode()
       {
-        itsNodes.emplace( itsNodes.top().child );
+        auto next = itsNodes.top().child;
+        auto const expectedName = itsNodes.top().name;
+
+        std::cerr << "Expected name was " << expectedName << ", actual name was: " << next->name() << std::endl;
+
+        // If the expected name does not match the loaded name, try to load the NVP name
+        // If we can't find the NVP name, throw an exception
+        if( expectedName && std::strcmp( next->name(), expectedName ) != 0 )
+        {
+          std::cerr << "Loading " << expectedName << std::endl;
+          next = itsXML.first_node( expectedName );
+          if( next == nullptr )
+            throw Exception("XML Parsing failed - provided NVP not found");
+        }
+
+        itsNodes.emplace( next );
+        //itsNodes.emplace( itsNodes.top().child );
       }
 
       //! Finishes reading the current node
@@ -320,6 +336,16 @@ namespace cereal
 
         // advance parent
         itsNodes.top().advance();
+
+        // Reset name
+        itsNodes.top().name = nullptr;
+      }
+
+      //! Sets the name for the next node created with startNode
+      void setNextName( const char * name )
+      {
+        std::cerr << "Setting next name to be " << name << std::endl;
+        itsNodes.top().name = name;
       }
 
       //! Loads a bool
@@ -450,7 +476,8 @@ namespace cereal
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
           child( n ? n->first_node() : nullptr ),
-          size( XMLInputArchive::getNumChildren( n ) )
+          size( XMLInputArchive::getNumChildren( n ) ),
+          name( nullptr )
         { }
 
         void advance()
@@ -465,6 +492,7 @@ namespace cereal
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
         size_t size;
+        const char * name;            //!< The NVP name for next next child node
       }; // NodeInfo
 
     private:
@@ -574,6 +602,7 @@ namespace cereal
   template <class T> inline
   void load( XMLInputArchive & ar, NameValuePair<T> & t )
   {
+    ar.setNextName( t.name );
     ar( t.value );
   }
 
