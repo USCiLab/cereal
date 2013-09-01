@@ -2104,6 +2104,10 @@ void test_vector()
     for(auto & elem : o_podvector)
       elem = random_value<int>(gen);
 
+    std::vector<bool> o_boolvector; o_boolvector.reserve(100);
+    for( size_t i = 0; i < 100; ++i )
+      o_boolvector[i] = (random_value<int>(gen) % 2) == 0;
+
     std::vector<StructInternalSerialize> o_iservector(100);
     for(auto & elem : o_iservector)
       elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
@@ -2125,6 +2129,7 @@ void test_vector()
       OArchive oar(os);
 
       oar(o_podvector);
+      oar(o_boolvector);
       oar(o_iservector);
       oar(o_isplvector);
       oar(o_eservector);
@@ -2132,6 +2137,7 @@ void test_vector()
     }
 
     std::vector<int> i_podvector;
+    std::vector<bool> i_boolvector;
     std::vector<StructInternalSerialize> i_iservector;
     std::vector<StructInternalSplit>     i_isplvector;
     std::vector<StructExternalSerialize> i_eservector;
@@ -2142,6 +2148,7 @@ void test_vector()
       IArchive iar(is);
 
       iar(i_podvector);
+      iar(i_boolvector);
       iar(i_iservector);
       iar(i_isplvector);
       iar(i_eservector);
@@ -2149,12 +2156,14 @@ void test_vector()
     }
 
     BOOST_CHECK_EQUAL(i_podvector.size(),  o_podvector.size());
+    BOOST_CHECK_EQUAL(i_boolvector.size(),  o_boolvector.size());
     BOOST_CHECK_EQUAL(i_iservector.size(), o_iservector.size());
     BOOST_CHECK_EQUAL(i_isplvector.size(), o_isplvector.size());
     BOOST_CHECK_EQUAL(i_eservector.size(), o_eservector.size());
     BOOST_CHECK_EQUAL(i_esplvector.size(), o_esplvector.size());
 
     BOOST_CHECK_EQUAL_COLLECTIONS(i_podvector.begin(),    i_podvector.end(),    o_podvector.begin(),  o_podvector.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_boolvector.begin(),    i_boolvector.end(),    o_boolvector.begin(),  o_boolvector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_iservector.begin(),   i_iservector.end(),   o_iservector.begin(), o_iservector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_isplvector.begin(),   i_isplvector.end(),   o_isplvector.begin(), o_isplvector.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_eservector.begin(),   i_eservector.end(),   o_eservector.begin(), o_eservector.end());
@@ -2930,4 +2939,129 @@ BOOST_AUTO_TEST_CASE( portable_binary_archive )
     BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5);
     BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
   }
+}
+
+// ######################################################################
+struct unordered_naming
+{
+  int x;
+  int y;
+  int z;
+
+  template <class Archive>
+  void save( Archive & ar ) const
+  {
+    ar( CEREAL_NVP(x),
+        CEREAL_NVP(z),
+        CEREAL_NVP(y) );
+  }
+
+  template <class Archive>
+  void load( Archive & ar )
+  {
+    ar( x,
+        CEREAL_NVP(y),
+        z );
+  }
+
+  bool operator==( unordered_naming const & other ) const
+  {
+    return x == other.x && y == other.y && z == other.z;
+  }
+};
+
+std::ostream& operator<<(std::ostream& os, unordered_naming const & s)
+{
+  os << "[x: " << s.x << " y: " << s.y << " z: " << s.z << "]";
+  return os;
+}
+
+template <class IArchive, class OArchive>
+void test_unordered_loads()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rngB = [&](){ return random_value<int>( gen ) % 2 == 0; };
+  auto rngI = [&](){ return random_value<int>( gen ); };
+  auto rngF = [&](){ return random_value<float>( gen ); };
+  auto rngD = [&](){ return random_value<double>( gen ); };
+  auto rngS = [&](){ return random_basic_string<char>( gen ); };
+
+  for(int i=0; i<100; ++i)
+  {
+    auto const name1 = rngS();
+    auto const name2 = rngS();
+    auto const name3 = rngS();
+    auto const name4 = rngS();
+    auto const name5 = rngS();
+    auto const name6 = rngS();
+    auto const name7 = rngS();
+
+    int o_int1 = rngI();
+    double o_double2 = rngD();
+    std::vector<bool> o_vecbool3 = { rngB(), rngB(), rngB(), rngB(), rngB() };
+    int o_int4 = rngI();
+    int o_int5 = rngI();
+    int o_int6 = rngI();
+    std::pair<float, unordered_naming> o_un7;
+    o_un7.first = rngF();
+    o_un7.second.x = rngI();
+    o_un7.second.y = rngI();
+    o_un7.second.z = rngI();
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+
+      oar( cereal::make_nvp( name1, o_int1 ),
+           cereal::make_nvp( name2, o_double2 ),
+           cereal::make_nvp( name3, o_vecbool3 ),
+           cereal::make_nvp( name4, o_int4 ),
+           cereal::make_nvp( name5, o_int5 ),
+           cereal::make_nvp( name6, o_int6 ),
+           cereal::make_nvp( name7, o_un7 ) );
+    }
+
+    decltype(o_int1) i_int1;
+    decltype(o_double2) i_double2;
+    decltype(o_vecbool3) i_vecbool3;
+    decltype(o_int4) i_int4;
+    decltype(o_int5) i_int5;
+    decltype(o_int6) i_int6;
+    decltype(o_un7) i_un7;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar( cereal::make_nvp( name7, o_un7 ),
+           cereal::make_nvp( name2, i_double2 ),
+           cereal::make_nvp( name4, i_int4 ),
+           cereal::make_nvp( name3, i_vecbool3 ),
+           cereal::make_nvp( name1, i_int1 ),
+           cereal::make_nvp( name5, i_int5 ),
+           i_int6 );
+    }
+
+    BOOST_CHECK_EQUAL(o_int1, i_int1);
+    BOOST_CHECK_EQUAL(o_double2, i_double2);
+    BOOST_CHECK_EQUAL(o_vecbool3.size(), i_vecbool3.size());
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_vecbool3.begin(),    i_vecbool3.end(),    o_vecbool3.begin(),  o_vecbool3.end());
+    BOOST_CHECK_EQUAL(o_int4, i_int4);
+    BOOST_CHECK_EQUAL(o_int5, i_int5);
+    BOOST_CHECK_EQUAL(o_int6, i_int6);
+    BOOST_CHECK_EQUAL(o_un7.first, i_un7.first);
+    BOOST_CHECK_EQUAL(o_un7.second, i_un7.second);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( xml_unordered_loads )
+{
+  test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_unordered_loads )
+{
+  test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }

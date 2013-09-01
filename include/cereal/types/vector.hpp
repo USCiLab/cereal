@@ -70,7 +70,7 @@ namespace cereal
       ar( *it );
   }
 
-  //! Serialization for non-arithmetic (and bool) vector types
+  //! Serialization for non-arithmetic (not bool) vector types
   template <class Archive, class T, class A> inline
   typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
                           || !std::is_arithmetic<T>::value
@@ -83,6 +83,13 @@ namespace cereal
     vector.resize( static_cast<std::size_t>( size ) );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
       ar( *it );
+  }
+
+  //! Specialization for serializing vector of bool references
+  template <class Archive> inline
+  void serialize( Archive & ar, std::vector<bool>::reference & r )
+  {
+    ar( static_cast<bool>( r ) );
   }
 } // namespace cereal
 
