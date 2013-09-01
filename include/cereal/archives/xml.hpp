@@ -307,25 +307,32 @@ namespace cereal
       }
 
       //! Prepares to start reading the next node
+      /*! This places the next node to be parsed onto the nodes stack.
+
+          By default our strategy is to start with the document root node and then
+          recursively iterate through all children in the order they show up in the document.
+          We don't need to know NVPs do to this; we'll just blindly load in the order things appear in.
+
+          We check to see if the specified NVP matches what the next automatically loaded node is.  If they
+          match, we just continue as normal, going in order.  If they don't match, we attempt to find a node
+          named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception. */
       void startNode()
       {
-        auto next = itsNodes.top().child;
-        auto const expectedName = itsNodes.top().name;
+        auto next = itsNodes.top().child; // By default we would move to the next child node
+        auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
 
-        std::cerr << "Expected name was " << expectedName << ", actual name was: " << next->name() << std::endl;
-
-        // If the expected name does not match the loaded name, try to load the NVP name
-        // If we can't find the NVP name, throw an exception
-        if( expectedName && std::strcmp( next->name(), expectedName ) != 0 )
+        // If we were given an NVP name, look for it in the current level of the document.
+        //  We only need to do this if we are either at the end of the current level (next is nullptr) or
+        //  the NVP name does not match the name of the node we would normally read next
+        if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
         {
-          std::cerr << "Loading " << expectedName << std::endl;
-          next = itsXML.first_node( expectedName );
+          next = itsNodes.top().node->first_node( expectedName );
+
           if( next == nullptr )
             throw Exception("XML Parsing failed - provided NVP not found");
         }
 
         itsNodes.emplace( next );
-        //itsNodes.emplace( itsNodes.top().child );
       }
 
       //! Finishes reading the current node
@@ -344,7 +351,6 @@ namespace cereal
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        std::cerr << "Setting next name to be " << name << std::endl;
         itsNodes.top().name = name;
       }
 

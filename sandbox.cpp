@@ -537,6 +537,7 @@ int main()
       std::cout << "Looked for three but we didn't use an NVP when saving" << std::endl;
     }
     ar( cereal::make_nvp("five", four) );
+    ar( cereal::make_nvp("five", four) ); // do it a second time since it shouldn't matter as we provide the name
 
     std::cout << one << std::endl;
     std::cout << two << std::endl;
