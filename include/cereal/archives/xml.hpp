@@ -321,12 +321,17 @@ namespace cereal
         auto next = itsNodes.top().child; // By default we would move to the next child node
         auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
 
+        //std::cerr << "End of nodes? " << (next == nullptr) << std::endl;
+        //std::cerr << "Expected name: " << (expectedName ? expectedName : "null") << std::endl;
+        //std::cerr << "Next name: " << (next && next->name() ? next->name() : "null") << std::endl;
+
         // If we were given an NVP name, look for it in the current level of the document.
         //  We only need to do this if we are either at the end of the current level (next is nullptr) or
         //  the NVP name does not match the name of the node we would normally read next
         if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
         {
-          next = itsNodes.top().node->first_node( expectedName );
+          //std::cerr << "Loading " << expectedName << std::endl;
+          next = itsNodes.top().search( expectedName );
 
           if( next == nullptr )
             throw Exception("XML Parsing failed - provided NVP not found");
@@ -338,6 +343,7 @@ namespace cereal
       //! Finishes reading the current node
       void finishNode()
       {
+        //std::cerr << "FINISH NODE: " << itsNodes.top().node->name() << std::endl;
         // remove current
         itsNodes.pop();
 
@@ -486,14 +492,50 @@ namespace cereal
           name( nullptr )
         { }
 
+        //! Advances to the next sibling node of the child
         void advance()
         {
-          if( size )
+          //std::cerr << "\tPrevious size was " << size << std::endl;
+          if( --size )
           {
-            --size;
+            //--size;
+            //std::cerr << "Advancing " << child->name();
             child = child->next_sibling();
+            //std::cerr << " to " << (child ? child->name() : "null") << std::endl;
           }
         }
+
+        //! Searches for a child with the given name in this node
+        /*! @param name The name to search for (must be null terminated)
+            @return The node if found, nullptr otherwise */
+        rapidxml::xml_node<> * search( const char * name )
+        {
+          if( node && name )
+          {
+            size_t new_size = XMLInputArchive::getNumChildren( node );
+            size_t name_size = rapidxml::internal::measure( name );
+
+            //std::cerr << "Searching for " << name << " with length " << name_size << std::endl;
+            //std::cerr << "Resetting to base height of " << new_size << std::endl;
+
+            for( auto child = node->first_node(); child != nullptr; child = child->next_sibling() )
+            {
+              //std::cerr << "Current child name: " << child->name() << " at height " << new_size << std::endl;
+
+              if( rapidxml::internal::compare( child->name(), child->name_size(), name, name_size, true ) )
+              {
+                //std::cerr << "Found a match at size " << new_size << std::endl;
+                size = new_size;
+                return child;
+              }
+              --new_size;
+
+            }
+          }
+
+          return nullptr;
+        }
+
 
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child

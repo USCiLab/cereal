@@ -48,6 +48,7 @@
 #include <cassert>
 #include <complex>
 #include <iostream>
+#include <random>
 
 class Base
 {
@@ -275,6 +276,109 @@ namespace cereal
       return new NoDefaultCtor(5);
     }
   };
+}
+
+struct unordered_naming
+{
+  int x;
+  int y;
+  int z;
+
+  template <class Archive>
+  void save( Archive & ar ) const
+  {
+    ar( CEREAL_NVP(x),
+        CEREAL_NVP(z),
+        CEREAL_NVP(y) );
+  }
+
+  template <class Archive>
+  void load( Archive & ar )
+  {
+    ar( x,
+        CEREAL_NVP(y),
+        CEREAL_NVP(z) );
+  }
+
+  bool operator==( unordered_naming const & other ) const
+  {
+    return x == other.x && y == other.y && z == other.z;
+  }
+};
+
+std::ostream& operator<<(std::ostream& os, unordered_naming const & s)
+{
+  os << "[x: " << s.x << " y: " << s.y << " z: " << s.z << "]";
+  return os;
+}
+
+template <class IArchive, class OArchive>
+void test_unordered_loads()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rngB = [](){ return true; };
+  auto rngI = [](){ return 1; };
+  auto rngF = [](){ return 2.0f; };
+  auto rngD = [](){ return 3.2; };
+
+  for(int i=0; i<1; ++i)
+  {
+    auto const name1 = "1";
+    auto const name2 = "2";
+    auto const name3 = "3";
+    auto const name4 = "4";
+    auto const name5 = "5";
+    auto const name6 = "6";
+    auto const name7 = "7";
+
+    int o_int1 = rngI();
+    double o_double2 = rngD();
+    std::vector<bool> o_vecbool3 = { rngB(), rngB(), rngB(), rngB(), rngB() };
+    int o_int4 = rngI();
+    int o_int5 = rngI();
+    int o_int6 = rngI();
+    std::pair<float, unordered_naming> o_un7;
+    o_un7.first = rngF();
+    o_un7.second.x = rngI();
+    o_un7.second.y = rngI();
+    o_un7.second.z = rngI();
+
+    {
+      std::ofstream os("test.xml");
+      OArchive oar(os);
+
+      oar( cereal::make_nvp( name1, o_int1 ),
+           cereal::make_nvp( name2, o_double2 ),
+           cereal::make_nvp( name3, o_vecbool3 ),
+           cereal::make_nvp( name4, o_int4 ),
+           cereal::make_nvp( name5, o_int5 ),
+           cereal::make_nvp( name6, o_int6 ),
+           cereal::make_nvp( name7, o_un7 ) );
+    }
+
+    decltype(o_int1) i_int1;
+    decltype(o_double2) i_double2;
+    decltype(o_vecbool3) i_vecbool3;
+    decltype(o_int4) i_int4;
+    decltype(o_int5) i_int5;
+    decltype(o_int6) i_int6;
+    decltype(o_un7) i_un7;
+
+    std::ifstream is("test.xml");
+    {
+      IArchive iar(is);
+
+      iar( cereal::make_nvp( name7, o_un7 ),
+           cereal::make_nvp( name2, i_double2 ),
+           cereal::make_nvp( name4, i_int4 ),
+           cereal::make_nvp( name3, i_vecbool3 ),
+           cereal::make_nvp( name1, i_int1 ),
+           cereal::make_nvp( name5, i_int5 ),
+           i_int6 );
+    }
+  }
 }
 
 // ######################################################################
@@ -545,6 +649,9 @@ int main()
     for( auto i : four ) std::cout << i << " ";
     std::cout << std::endl;
   }
+
+  std::cerr << "-------------------------" << std::endl;
+  test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 
 
   return 0;
