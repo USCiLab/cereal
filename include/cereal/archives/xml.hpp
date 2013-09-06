@@ -326,8 +326,8 @@ namespace cereal
         //std::cerr << "Next name: " << (next && next->name() ? next->name() : "null") << std::endl;
 
         // If we were given an NVP name, look for it in the current level of the document.
-        //  We only need to do this if we are either at the end of the current level (next is nullptr) or
-        //  the NVP name does not match the name of the node we would normally read next
+        //    We only need to do this if either we have exhausted the siblings of the current level or
+        //    the NVP name does not match the name of the node we would normally read next
         if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
         {
           //std::cerr << "Loading " << expectedName << std::endl;
@@ -348,6 +348,7 @@ namespace cereal
         itsNodes.pop();
 
         // advance parent
+        std::cerr << "Advancing node whose parent is " << itsNodes.top().node->name() << std::endl;
         itsNodes.top().advance();
 
         // Reset name
@@ -487,21 +488,25 @@ namespace cereal
       {
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
-          child( n ? n->first_node() : nullptr ),
+          child( n->first_node() ),
           size( XMLInputArchive::getNumChildren( n ) ),
           name( nullptr )
-        { }
+        {
+          std::cerr << "Parent " << node->name() << " first child is " << (child ? child->name() : "null") << std::endl;
+        }
 
         //! Advances to the next sibling node of the child
+        /*! If this is the last sibling child will be null after calling */
         void advance()
         {
-          //std::cerr << "\tPrevious size was " << size << std::endl;
-          if( --size )
+          std::cerr << "  node " << node->name() << " size " << size << std::endl;
+          if( size > 0 )
           {
-            //--size;
-            //std::cerr << "Advancing " << child->name();
+            --size;
+            std::cerr << "Advancing node, new size is " << size << " child was previously: " << (child ? child->name() : "null") << std::endl;
             child = child->next_sibling();
-            //std::cerr << " to " << (child ? child->name() : "null") << std::endl;
+
+            std::cerr << "New child is " << (child ? child->name() : "null") << std::endl;
           }
         }
 
@@ -515,21 +520,22 @@ namespace cereal
             size_t new_size = XMLInputArchive::getNumChildren( node );
             size_t name_size = rapidxml::internal::measure( name );
 
-            //std::cerr << "Searching for " << name << " with length " << name_size << std::endl;
+            std::cerr << "Searching for " << name << " with length " << name_size << std::endl;
             //std::cerr << "Resetting to base height of " << new_size << std::endl;
 
-            for( auto child = node->first_node(); child != nullptr; child = child->next_sibling() )
+            for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
             {
               //std::cerr << "Current child name: " << child->name() << " at height " << new_size << std::endl;
 
-              if( rapidxml::internal::compare( child->name(), child->name_size(), name, name_size, true ) )
+              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), name, name_size, true ) )
               {
-                //std::cerr << "Found a match at size " << new_size << std::endl;
+                std::cerr << "Found a match at size " << new_size << std::endl;
                 size = new_size;
-                return child;
+                child = new_child;
+
+                return new_child;
               }
               --new_size;
-
             }
           }
 
@@ -539,7 +545,7 @@ namespace cereal
 
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
-        size_t size;
+        size_t size;                  //!< The remaining number of children for this node
         const char * name;            //!< The NVP name for next next child node
       }; // NodeInfo
 
