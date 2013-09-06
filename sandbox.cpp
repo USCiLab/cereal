@@ -318,12 +318,11 @@ void test_unordered_loads()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  auto rngB = [](){ return true; };
   auto rngI = [](){ return 1; };
   auto rngF = [](){ return 2.0f; };
   auto rngD = [](){ return 3.2; };
 
-  for(int i=0; i<1; ++i)
+  for(int i=0; i<100; ++i)
   {
     auto const name1 = "1";
     auto const name2 = "2";
@@ -335,7 +334,7 @@ void test_unordered_loads()
 
     int o_int1 = rngI();
     double o_double2 = rngD();
-    std::vector<bool> o_vecbool3 = { rngB(), rngB(), rngB(), rngB(), rngB() };
+    std::vector<bool> o_vecbool3 = { true, false, true, false, true };
     int o_int4 = rngI();
     int o_int5 = rngI();
     int o_int6 = rngI();

@@ -318,8 +318,10 @@ namespace cereal
           named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception. */
       void startNode()
       {
+        //std::cerr << "..Starting node from parent " << itsNodes.top().node->name() << std::endl;
         auto next = itsNodes.top().child; // By default we would move to the next child node
         auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
+        //std::cerr << "...Default child would be " << (next ? next->name() : "null") << std::endl;
 
         //std::cerr << "End of nodes? " << (next == nullptr) << std::endl;
         //std::cerr << "Expected name: " << (expectedName ? expectedName : "null") << std::endl;
@@ -343,12 +345,11 @@ namespace cereal
       //! Finishes reading the current node
       void finishNode()
       {
-        //std::cerr << "FINISH NODE: " << itsNodes.top().node->name() << std::endl;
         // remove current
         itsNodes.pop();
 
         // advance parent
-        std::cerr << "Advancing node whose parent is " << itsNodes.top().node->name() << std::endl;
+        //std::cerr << "Advancing node whose parent is " << itsNodes.top().node->name() << std::endl;
         itsNodes.top().advance();
 
         // Reset name
@@ -492,21 +493,21 @@ namespace cereal
           size( XMLInputArchive::getNumChildren( n ) ),
           name( nullptr )
         {
-          std::cerr << "Parent " << node->name() << " first child is " << (child ? child->name() : "null") << std::endl;
+          //std::cerr << "Parent " << node->name() << " first child is " << (child ? child->name() : "null") << std::endl;
         }
 
         //! Advances to the next sibling node of the child
         /*! If this is the last sibling child will be null after calling */
         void advance()
         {
-          std::cerr << "  node " << node->name() << " size " << size << std::endl;
+          //std::cerr << "  node " << node->name() << " size " << size << std::endl;
           if( size > 0 )
           {
             --size;
-            std::cerr << "Advancing node, new size is " << size << " child was previously: " << (child ? child->name() : "null") << std::endl;
+            //std::cerr << "Advancing node, new size is " << size << " child was previously: " << (child ? child->name() : "null") << std::endl;
             child = child->next_sibling();
 
-            std::cerr << "New child is " << (child ? child->name() : "null") << std::endl;
+            //std::cerr << "New child is " << (child ? child->name() : "null") << std::endl;
           }
         }
 
@@ -520,7 +521,7 @@ namespace cereal
             size_t new_size = XMLInputArchive::getNumChildren( node );
             size_t name_size = rapidxml::internal::measure( name );
 
-            std::cerr << "Searching for " << name << " with length " << name_size << std::endl;
+            //std::cerr << "Searching for " << name << " with length " << name_size << std::endl;
             //std::cerr << "Resetting to base height of " << new_size << std::endl;
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
@@ -529,7 +530,7 @@ namespace cereal
 
               if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), name, name_size, true ) )
               {
-                std::cerr << "Found a match at size " << new_size << std::endl;
+                //std::cerr << "Found a match at size " << new_size << std::endl;
                 size = new_size;
                 child = new_child;
 

@@ -3061,7 +3061,7 @@ BOOST_AUTO_TEST_CASE( xml_unordered_loads )
   test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( json_unordered_loads )
-{
-  test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+//BOOST_AUTO_TEST_CASE( json_unordered_loads )
+//{
+//  test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+//}
