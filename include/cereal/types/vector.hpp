@@ -101,7 +101,11 @@ namespace cereal
 
     vector.resize( static_cast<std::size_t>( size ) );
     for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( static_cast<bool>( *it ) );
+    {
+      bool b;
+      ar( b );
+      *it = b;
+    }
   }
 } // namespace cereal
 

@@ -188,7 +188,7 @@ random_value(std::mt19937 & gen)
 {
   std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(char & c : s)
-    c = static_cast<char>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
+    c = static_cast<char>( std::uniform_int_distribution<int>( 'A', 'Z' )(gen) );
   return s;
 }
 
@@ -197,7 +197,7 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen)
 {
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(C & c : s)
-    c = static_cast<C>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
+    c = static_cast<C>( std::uniform_int_distribution<int>( 'A', 'Z' )(gen) );
   return s;
 }
 
@@ -2961,7 +2961,7 @@ struct unordered_naming
   {
     ar( x,
         CEREAL_NVP(y),
-        z );
+        CEREAL_NVP(z) );
   }
 
   bool operator==( unordered_naming const & other ) const
@@ -3035,7 +3035,7 @@ void test_unordered_loads()
     {
       IArchive iar(is);
 
-      iar( cereal::make_nvp( name7, o_un7 ),
+      iar( cereal::make_nvp( name7, i_un7 ),
            cereal::make_nvp( name2, i_double2 ),
            cereal::make_nvp( name4, i_int4 ),
            cereal::make_nvp( name3, i_vecbool3 ),
