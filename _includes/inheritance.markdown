@@ -93,7 +93,9 @@ struct Derived : virtual Left, virtual Right
     // Since we've used virtual inheritance and virtual_base_class,
     // xCEREAL will ensure that only one copy of each base class
     // is serialized
-    ar( cereal::virtual_base_class<Base>( this ), y ); 
+    ar( cereal::virtual_base_class<Left>( this ),
+        cereal::virtual_base_class<Right>( this ),
+        y );
   }
 };
 
