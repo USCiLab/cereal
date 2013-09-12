@@ -62,7 +62,7 @@ namespace cereal
         typename SetT::key_type key;
 
         ar( key );
-        hint = set.insert(hint, key );
+        hint = set.emplace_hint( hint, std::move( key ) );
       }
     }
   }

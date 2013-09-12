@@ -63,7 +63,7 @@ namespace cereal
         typename MapT::mapped_type value;
 
         ar( make_map_item(key, value) );
-        map.insert( {key, value} );
+        map.emplace( std::move( key ), std::move( value ) );
       }
     }
   }

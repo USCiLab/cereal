@@ -798,6 +798,55 @@ void test_map()
   }
 }
 
+template <class IArchive, class OArchive>
+void test_map_memory()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int i=0; i<100; ++i)
+  {
+    std::map<int, std::unique_ptr<int>> o_uniqueptrMap;
+    std::map<int, std::shared_ptr<int>> o_sharedptrMap;
+
+    for(int j=0; j<100; ++j)
+    {
+      o_uniqueptrMap.emplace( random_value<int>(gen), std::unique_ptr<int>( new int( random_value<int>(gen) ) ) );
+      o_sharedptrMap.emplace( random_value<int>(gen), std::make_shared<int>( random_value<int>(gen) ) );
+    }
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+
+      oar( o_uniqueptrMap );
+      oar( o_sharedptrMap );
+    }
+
+    decltype( o_uniqueptrMap ) i_uniqueptrMap;
+    decltype( o_sharedptrMap ) i_sharedptrMap;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar( i_uniqueptrMap );
+      iar( i_sharedptrMap );
+    }
+
+    BOOST_CHECK_EQUAL(o_sharedptrMap.size(), i_sharedptrMap.size());
+    BOOST_CHECK_EQUAL(o_uniqueptrMap.size(), i_uniqueptrMap.size());
+
+    auto o_v_it = o_uniqueptrMap.begin();
+    auto i_v_it = i_uniqueptrMap.begin();
+    for(;o_v_it != o_uniqueptrMap.end(); ++o_v_it, ++i_v_it)
+    {
+      BOOST_CHECK_EQUAL(i_v_it->first, o_v_it->first);
+      BOOST_CHECK_EQUAL(*i_v_it->second, *o_v_it->second);
+    }
+  }
+}
+
 BOOST_AUTO_TEST_CASE( binary_map )
 {
   test_map<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
@@ -816,6 +865,26 @@ BOOST_AUTO_TEST_CASE( xml_map )
 BOOST_AUTO_TEST_CASE( json_map )
 {
   test_map<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( binary_map_memory )
+{
+  test_map_memory<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_map_memory )
+{
+  test_map_memory<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_map_memory )
+{
+  test_map_memory<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_map_memory )
+{
+  test_map_memory<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
