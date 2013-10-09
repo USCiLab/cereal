@@ -176,7 +176,7 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
-      //! Saves some data, encoded as a string
+      //! Saves some data, encoded as a string, into the current top level node
       /*! The data will be be named with the most recent name if one exists,
           otherwise it will be given some default delimited value that depends upon
           the parent node */
@@ -284,6 +284,10 @@ namespace cereal
   class XMLInputArchive : public InputArchive<XMLInputArchive>
   {
     public:
+      /*! @name External Functionality
+          Common use cases for directly interacting with an XMLInputArchive */
+      //! @{
+
       //! Construct, reading in from the provided stream
       /*! Reads in an entire XML document from some stream and parses it as soon
           as serialization starts
@@ -317,6 +321,31 @@ namespace cereal
         else
           itsNodes.emplace( root );
       }
+
+      //! Loads some binary data, encoded as a base64 string
+      /*! This will automatically start and finish a node to load the data */
+      void loadBinaryValue( void * data, size_t size )
+      {
+        startNode();
+
+        std::string encoded;
+        loadValue( encoded );
+
+        auto decoded = base64::decode( encoded );
+
+        if( size != decoded.size() )
+          throw Exception("Decoded binary data size does not match specified size");
+
+        std::memcpy( data, decoded.data(), decoded.size() );
+
+        finishNode();
+      };
+
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the XMLInputArchive */
+      //! @{
 
       //! Prepares to start reading the next node
       /*! This places the next node to be parsed onto the nodes stack.
@@ -366,7 +395,7 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
-      //! Loads a bool
+      //! Loads a bool from the current top node
       template <class T> inline
       typename std::enable_if<std::is_unsigned<T>::value && std::is_same<T, bool>::value, void>::type
       loadValue( T & value )
@@ -376,7 +405,7 @@ namespace cereal
         is >> value;
       }
 
-      //! Loads a type best represented as an unsigned long
+      //! Loads a type best represented as an unsigned long from the current top node
       template <class T> inline
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
       loadValue( T & value )
@@ -384,7 +413,7 @@ namespace cereal
         value = static_cast<T>( std::stoul( itsNodes.top().node->value() ) );
       }
 
-      //! Loads a type best represented as an unsigned long long
+      //! Loads a type best represented as an unsigned long long from the current top node
       template <class T> inline
       typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
       loadValue( T & value )
@@ -392,7 +421,7 @@ namespace cereal
         value = static_cast<T>( std::stoull( itsNodes.top().node->value() ) );
       }
 
-      //! Loads a type best represented as an int
+      //! Loads a type best represented as an int from the current top node
       template <class T> inline
       typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
       loadValue( T & value )
@@ -400,7 +429,7 @@ namespace cereal
         value = static_cast<T>( std::stoi( itsNodes.top().node->value() ) );
       }
 
-      //! Loads a type best represented as a long
+      //! Loads a type best represented as a long from the current top node
       template <class T> inline
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
       loadValue( T & value )
@@ -408,7 +437,7 @@ namespace cereal
         value = static_cast<T>( std::stol( itsNodes.top().node->value() ) );
       }
 
-      //! Loads a type best represented as a long long
+      //! Loads a type best represented as a long long from the current top node
       template <class T> inline
       typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
       loadValue( T & value )
@@ -416,25 +445,25 @@ namespace cereal
         value = static_cast<T>( std::stoll( itsNodes.top().node->value() ) );
       }
 
-      //! Loads a type best represented as a float
+      //! Loads a type best represented as a float from the current top node
       void loadValue( float & value )
       {
         value = std::stof( itsNodes.top().node->value() );
       }
 
-      //! Loads a type best represented as a double
+      //! Loads a type best represented as a double from the current top node
       void loadValue( double & value )
       {
         value = std::stod( itsNodes.top().node->value() );
       }
 
-      //! Loads a type best represented as a long double
+      //! Loads a type best represented as a long double from the current top node
       void loadValue( long double & value )
       {
         value = std::stold( itsNodes.top().node->value() );
       }
 
-      //! Loads a string from the current node
+      //! Loads a string from the current node from the current top node
       template<class CharT, class Traits, class Alloc> inline
       void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
       {
@@ -444,32 +473,14 @@ namespace cereal
                     std::istreambuf_iterator<CharT, Traits>() );
       }
 
-      //! Loads some binary data, encoded as a base64 string
-      /*! This will automatically start and finish a node to load the data */
-      void loadBinaryValue( void * data, size_t size )
-      {
-        startNode();
-
-        std::string encoded;
-        loadValue( encoded );
-
-        auto decoded = base64::decode( encoded );
-
-        if( size != decoded.size() )
-          throw Exception("Decoded binary data size does not match specified size");
-
-        std::memcpy( data, decoded.data(), decoded.size() );
-
-        finishNode();
-      };
-
-      //! Loads the size of the current node
+      //! Loads the size of the current top node
       template <class T> inline
       void loadSize( T & value )
       {
         value = getNumChildren( itsNodes.top().node );
       }
 
+    protected:
       //! Gets the number of children (usually interpreted as size) for the specified node
       static size_t getNumChildren( rapidxml::xml_node<> * node )
       {
@@ -485,7 +496,6 @@ namespace cereal
         return size;
       }
 
-    protected:
       //! A struct that contains metadata about a node
       /*! Keeps track of some top level node, its number of
           remaining children, and the current active child node */
@@ -534,7 +544,6 @@ namespace cereal
 
           return nullptr;
         }
-
 
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
