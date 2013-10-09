@@ -80,6 +80,10 @@ namespace cereal
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
+      /*! @name External Functionality
+          Common use cases for directly interacting with an XMLOutputArchive */
+      //! @{
+
       //! Construct, outputting to the provided stream upon destruction
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!  Note that since this archive builds a tree in memory,
@@ -116,6 +120,30 @@ namespace cereal
         itsStream << itsXML;
         itsXML.clear();
       }
+
+      //! Saves some binary data, encoded as a base64 string, with an optional name
+      /*! This will create a new node, optionally named, and insert a value that consists of
+          the data encoded as a base64 string */
+      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
+      {
+        itsNodes.top().name = name;
+
+        startNode();
+
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
+        saveValue( base64string );
+
+        if( itsOutputType )
+          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
+
+        finishNode();
+      };
+
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the XMLOutputArchive */
+      //! @{
 
       //! Creates a new node that is a child of the node at the top of the stack
       /*! Nodes will be given a name that has either been pre-set by a name value pair,
@@ -177,24 +205,6 @@ namespace cereal
         saveValue( static_cast<int32_t>( value ) );
       }
 
-      //! Saves some binary data, encoded as a base64 string, with an optional name
-      /*! This will create a new node, optionally named, and insert a value that consists of
-          the data encoded as a base64 string */
-      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
-      {
-        itsNodes.top().name = name;
-
-        startNode();
-
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
-        saveValue( base64string );
-
-        if( itsOutputType )
-          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
-
-        finishNode();
-      };
-
       //! Causes the type to be appended to the most recently made node if output type is set to true
       template <class T> inline
       void insertType()
@@ -250,6 +260,8 @@ namespace cereal
             return "value" + std::to_string( counter++ ) + "\0";
         }
       }; // NodeInfo
+
+      //! @}
 
     private:
       std::ostream & itsStream;        //!< The output stream
