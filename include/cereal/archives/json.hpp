@@ -78,6 +78,10 @@ namespace cereal
     typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
 
     public:
+      /*! @name Common Functionality
+          Common use cases for directly interacting with an JSONOutputArchive */
+      //! @{
+
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!
@@ -98,82 +102,27 @@ namespace cereal
         itsWriter.EndObject();
       }
 
-      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
-      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
-      void saveValue(double d)              { itsWriter.Double(d);                                                       }
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
-      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
-
-#ifdef _MSC_VER
-      // Visual Studio has problems disambiguating the above for unsigned long, so we provide an explicit
-      // overload for long and serialize it as its size necessitates
-      //
-      // When loading we don't need to do this specialization since we catch the types with
-      // templates according to their size
-
-      //! 32 bit long saving
-      template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
-
-      //! non 32 bit long saving
-      template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
-
-      //! MSVC only long overload
-      void saveValue( unsigned long lu ){ saveLong( lu ); };
-#endif
-
-      //! Save exotic arithmetic types as binary
-      template<class T>
-      typename std::enable_if<std::is_arithmetic<T>::value &&
-                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-      saveValue(T const & t)
+      //! Saves some binary data, encoded as a base64 string, with an optional name
+      /*! This will create a new node, optionally named, and insert a value that consists of
+          the data encoded as a base64 string */
+      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
       {
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
+        setNextName( name );
+        writeName();
+
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
         saveValue( base64string );
-      }
+      };
 
-      //! Write the name of the upcoming node and prepare object/array state
-      /*! Since writeName is called for every value that is output, regardless of
-          whether it has a name or not, it is the place where we will do a deferred
-          check of our node state and decide whether we are in an array or an object. */
-      void writeName()
-      {
-        NodeType const & nodeType = itsNodeStack.top();
-
-        // Start up either an object or an array, depending on state
-        if(nodeType == NodeType::StartArray)
-        {
-          itsWriter.StartArray();
-          itsNodeStack.top() = NodeType::InArray;
-        }
-        else if(nodeType == NodeType::StartObject)
-        {
-          itsNodeStack.top() = NodeType::InObject;
-          itsWriter.StartObject();
-        }
-
-        // Array types do not output names
-        if(nodeType == NodeType::InArray) return;
-
-        if(itsNextName == nullptr)
-        {
-          std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
-          saveValue(name);
-        }
-        else
-        {
-          saveValue(itsNextName);
-          itsNextName = nullptr;
-        }
-      }
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the JSONOutputArchive */
+      //! @{
 
       //! Starts a new node in the JSON output
+      /*! The node can optionally be given a name by calling setNextName prior
+          to creating the node */
       void startNode()
       {
         writeName();
@@ -207,29 +156,111 @@ namespace cereal
         itsNameCounter.pop();
       }
 
-      //! Designates that the current node should be output as an array, not an object
-      void makeArray()
-      {
-        itsNodeStack.top() = NodeType::StartArray;
-      }
-
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
         itsNextName = name;
       }
 
-      //! Saves some binary data, encoded as a base64 string, with an optional name
-      /*! This will create a new node, optionally named, and insert a value that consists of
-          the data encoded as a base64 string */
-      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
-      {
-        setNextName( name );
-        writeName();
+      //! Saves a bool to the current node
+      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
+      //! Saves an int to the current node
+      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
+      //! Saves a uint to the current node
+      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+      //! Saves an int64 to the current node
+      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
+      //! Saves a uint64 to the current node
+      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
+      //! Saves a double to the current node
+      void saveValue(double d)              { itsWriter.Double(d);                                                       }
+      //! Saves a string to the current node
+      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+      //! Saves a const char * to the current node
+      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
 
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
+#ifdef _MSC_VER
+      // Visual Studio has problems disambiguating the above for unsigned long, so we provide an explicit
+      // overload for long and serialize it as its size necessitates
+      //
+      // When loading we don't need to do this specialization since we catch the types with
+      // templates according to their size
+
+      //! 32 bit long saving to current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
+
+      //! non 32 bit long saving to current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
+      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
+
+      //! MSVC only long overload to current node
+      void saveValue( unsigned long lu ){ saveLong( lu ); };
+#endif
+
+      //! Save exotic arithmetic types as binary to current node
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value &&
+                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+      saveValue(T const & t)
+      {
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
         saveValue( base64string );
-      };
+      }
+
+      //! Write the name of the upcoming node and prepare object/array state
+      /*! Since writeName is called for every value that is output, regardless of
+          whether it has a name or not, it is the place where we will do a deferred
+          check of our node state and decide whether we are in an array or an object.
+
+          The general workflow of saving to the JSON archive is:
+
+            1. (optional) Set the name for the next node to be created, usually done by an NVP
+            2. Start the node
+            3. (if there is data to save) Write the name of the node (this function)
+            4. (if there is data to save) Save the data (with saveValue)
+            5. Finish the node
+          */
+      void writeName()
+      {
+        NodeType const & nodeType = itsNodeStack.top();
+
+        // Start up either an object or an array, depending on state
+        if(nodeType == NodeType::StartArray)
+        {
+          itsWriter.StartArray();
+          itsNodeStack.top() = NodeType::InArray;
+        }
+        else if(nodeType == NodeType::StartObject)
+        {
+          itsNodeStack.top() = NodeType::InObject;
+          itsWriter.StartObject();
+        }
+
+        // Array types do not output names
+        if(nodeType == NodeType::InArray) return;
+
+        if(itsNextName == nullptr)
+        {
+          std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
+          saveValue(name);
+        }
+        else
+        {
+          saveValue(itsNextName);
+          itsNextName = nullptr;
+        }
+      }
+
+      //! Designates that the current node should be output as an array, not an object
+      void makeArray()
+      {
+        itsNodeStack.top() = NodeType::StartArray;
+      }
+
+      //! @}
 
     private:
       WriteStream itsWriteStream;          //!< Rapidjson write stream
@@ -421,7 +452,8 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for SizeTags for JSON archives
-  /*! SizeTags are strictly ignored for JSON */
+  /*! SizeTags are strictly ignored for JSON, they just indicate
+      that the current node should be made into an array */
   template <class T>
   void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
   {
@@ -586,7 +618,9 @@ namespace cereal
   //! Saving SizeTags to JSON
   template <class T> inline
   void save( JSONOutputArchive &, SizeTag<T> const & )
-  { }
+  {
+    // nothing to do here, we don't explicitly save the size
+  }
 
   //! Loading SizeTags from JSON
   template <class T> inline

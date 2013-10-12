@@ -652,6 +652,5 @@ int main()
   std::cerr << "-------------------------" << std::endl;
   test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 
-
   return 0;
 }

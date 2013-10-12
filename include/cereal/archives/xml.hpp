@@ -80,7 +80,7 @@ namespace cereal
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
-      /*! @name External Functionality
+      /*! @name Common Functionality
           Common use cases for directly interacting with an XMLOutputArchive */
       //! @{
 
@@ -122,8 +122,9 @@ namespace cereal
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
-      /*! This will create a new node, optionally named, and insert a value that consists of
-          the data encoded as a base64 string */
+      /*! This can be called directly by users and it will automatically create a child node for
+          the current XML node, populate it with a base64 encoded string, and optionally name
+          it.  The node will be finished after it has been populated.  */
       void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
       {
         itsNodes.top().name = name;
@@ -147,7 +148,8 @@ namespace cereal
 
       //! Creates a new node that is a child of the node at the top of the stack
       /*! Nodes will be given a name that has either been pre-set by a name value pair,
-          or generated based upon a counter unique to the parent node.
+          or generated based upon a counter unique to the parent node.  If you want to
+          give a node a specific name, use setNextName prior to calling startNode.
 
           The node will then be pushed onto the node stack. */
       void startNode()
@@ -205,7 +207,7 @@ namespace cereal
         saveValue( static_cast<int32_t>( value ) );
       }
 
-      //! Causes the type to be appended to the most recently made node if output type is set to true
+      //! Causes the type to be appended as an attribute to the most recently made node if output type is set to true
       template <class T> inline
       void insertType()
       {
@@ -278,13 +280,39 @@ namespace cereal
 
       Input XML should have been produced by the XMLOutputArchive.  Data can
       only be added to dynamically sized containers - the input archive will
-      determine their size by looking at the number of child nodes.
+      determine their size by looking at the number of child nodes.  Data that
+      did not originate from an XMLOutputArchive is not officially supported,
+      but may be possible to use if properly formatted.
+
+      The XMLInputArchive does not require that nodes are loaded in the same
+      order they were saved by XMLOutputArchive.  Using name value pairs (NVPs),
+      it is possible to load in an out of order fashion or otherwise skip/select
+      specific nodes to load.
+
+      The default behavior of the input archive is to read sequentially starting
+      with the first node and exploring its children.  When a given NVP does
+      not match the read in name for a node, the archive will search for that
+      node at the current level and load it if it exists.  After loading an out of
+      order node, the archive will then proceed back to loading sequentially from
+      its new position.
+
+      Consider this simple example where loading of some data is skipped:
+
+      @code{cpp}
+      // imagine the input file has someData(1-9) saved in order at the top level node
+      ar( someData1, someData2, someData3 );        // XML loads in the order it sees in the file
+      ar( cereal::make_nvp( "hello", someData6 ) ); // NVP given does not
+                                                    // match expected NVP name, so we search
+                                                    // for the given NVP and load that value
+      ar( someData7, someData8, someData9 );        // with no NVP given, loading resumes at its
+                                                    // current location, proceeding sequentially
+      @endcode
 
       \ingroup Archives */
   class XMLInputArchive : public InputArchive<XMLInputArchive>
   {
     public:
-      /*! @name External Functionality
+      /*! @name Common Functionality
           Common use cases for directly interacting with an XMLInputArchive */
       //! @{
 
@@ -322,10 +350,15 @@ namespace cereal
           itsNodes.emplace( root );
       }
 
-      //! Loads some binary data, encoded as a base64 string
-      /*! This will automatically start and finish a node to load the data */
-      void loadBinaryValue( void * data, size_t size )
+      //! Loads some binary data, encoded as a base64 string, optionally specified by some name
+      /*! This will automatically start and finish a node to load the data, and can be called directly by
+          users.
+
+          Note that this follows the same ordering rules specified in the class description in regards
+          to loading in/out of order */
+      void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
       {
+        setNextName( name );
         startNode();
 
         std::string encoded;
@@ -550,6 +583,8 @@ namespace cereal
         size_t size;                  //!< The remaining number of children for this node
         const char * name;            //!< The NVP name for next next child node
       }; // NodeInfo
+
+      //! @}
 
     private:
       std::vector<char> itsData;       //!< The raw data loaded
