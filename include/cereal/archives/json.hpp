@@ -303,7 +303,7 @@ namespace cereal
         itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
-        itsValueStack.push_back(itsDocument.MemberBegin());
+        itsIteratorStack.push_back(itsDocument.MemberBegin());
       }
 
       //! Loads some binary data, encoded as a base64 string
@@ -329,17 +329,22 @@ namespace cereal
       //! @{
 
       //! An internal iterator that handles both array and object types
+      /*! This class is a variant and holds both types of iterators that
+          rapidJSON supports - one for arrays and one for objects. */
       class Iterator
       {
         public:
-          Iterator() : itsType(Null) {}
+          Iterator() : nextName( nullptr ), itsType(Null) {}
 
           Iterator(MemberIterator it) :
+            nextName( nullptr ),
             itsMemberIt(it), itsType(Member) {}
 
           Iterator(ValueIterator it) :
+            nextName( nullptr ),
             itsValueIt(it), itsType(Value) {}
 
+          //! Advance to the next node
           Iterator & operator++()
           {
             switch(itsType)
@@ -351,6 +356,7 @@ namespace cereal
             return *this;
           }
 
+          //! Get the value of the current node
           GenericValue const & value()
           {
             switch(itsType)
@@ -361,27 +367,72 @@ namespace cereal
             }
           }
 
+          //! Get the name of the current node, or nullptr if it has no name
+          const char * name() const
+          {
+            switch(itsType)
+            {
+              case Member:
+                return itsMemberIt->name.GetString();
+              default:
+                return nullptr;
+            }
+          }
+
+        public:
+          const char * nextName;                   //!< The NVP name for next next child node
+
         private:
-          MemberIterator itsMemberIt;
-          ValueIterator itsValueIt;
-          enum Type {Value, Member, Null} itsType;
+          MemberIterator itsMemberIt;              //!< The member iterator (object)
+          ValueIterator itsValueIt;                //!< The value iterator (array)
+          enum Type {Value, Member, Null} itsType; //!< Whether this holds values (array) or members (objects) or nothing
       };
 
     public:
       //! Starts a new node, going into its proper iterator
+      /*! This places an iterator for the next node to be parsed onto the iterator stack.  If the next
+          node is an array, this will be a value iterator, otherwise it will be a member iterator.
+
+          By default our strategy is to start with the document root node and then recursively iteratoe through
+          all children in the order they show up in the document.
+          We don't need to know NVPs to do this; we'll just blindly load in the order things appear in.
+
+          We check to see if the specified NVP matches what the next automatically loaded node is.  If they
+          match, we just continue as normal, going in order.  If they don't match, we attempt to find a node
+          named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception */
       void startNode()
       {
-        if(itsValueStack.back().value().IsArray())
-          itsValueStack.push_back(itsValueStack.back().value().Begin());
+        auto const expectedName = itsIteratorStack.back().nextName; // this is the expected name from the NVP, if provided
+        auto const actualName   = itsIteratorStack.back().name();   // this is the name our next node actually has
+
+        // If we were given an NVP name, look for it in the current level of the document.
+        //    We only need to do this if the NVP name does not match the name of the node we would normally read next
+        if( expectedName && ( std::strcmp( expectedName, actualName) ) != 0 )
+        {
+          if( !actualName || !itsIteratorStack.back().value().HasMember( actualName ) )
+            throw Exception("JSON Parsing failed - provided NVP not found");
+        }
         else
-          itsValueStack.push_back(itsValueStack.back().value().MemberBegin());
+        {
+          // proceed as normal
+          if(itsIteratorStack.back().value().IsArray())
+            itsIteratorStack.push_back(itsIteratorStack.back().value().Begin());
+          else
+            itsIteratorStack.push_back(itsIteratorStack.back().value().MemberBegin());
+        }
       }
 
       //! Finishes the most recently started node
       void finishNode()
       {
-        itsValueStack.pop_back();
-        ++itsValueStack.back();
+        itsIteratorStack.pop_back();
+        ++itsIteratorStack.back();
+      }
+
+      //! Sets the name for the next node created with startNode
+      void setNextName( const char * name )
+      {
+        itsIteratorStack.back().nextName = name;
       }
 
       //! Loads a value from the current node - small signed overload
@@ -389,8 +440,8 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
       loadValue(T & val)
       {
-        val = itsValueStack.back().value().GetInt();
-        ++itsValueStack.back();
+        val = itsIteratorStack.back().value().GetInt();
+        ++itsIteratorStack.back();
       }
 
       //! Loads a value from the current node - small unsigned overload
@@ -399,22 +450,22 @@ namespace cereal
                               !std::is_same<bool, T>::value, void>::type
       loadValue(T & val)
       {
-        val = itsValueStack.back().value().GetUint();
-        ++itsValueStack.back();
+        val = itsIteratorStack.back().value().GetUint();
+        ++itsIteratorStack.back();
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
+      void loadValue(bool & val)        { val = itsIteratorStack.back().value().GetBool();   ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
-      void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
+      void loadValue(int64_t & val)     { val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
-      void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
+      void loadValue(uint64_t & val)    { val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - float overload
-      void loadValue(float & val)       { val = static_cast<float>(itsValueStack.back().value().GetDouble()); ++itsValueStack.back(); }
+      void loadValue(float & val)       { val = static_cast<float>(itsIteratorStack.back().value().GetDouble()); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - double overload
-      void loadValue(double & val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      void loadValue(double & val)      { val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
-      void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
+      void loadValue(std::string & val) { val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
       //! Loads a value from the current node - long double and long long overloads
       /*! These data types will automatically be encoded as base64 strings */
@@ -436,14 +487,14 @@ namespace cereal
       //! Loads the size for a SizeTag
       void loadSize(size_type & size)
       {
-        size = (itsValueStack.rbegin() + 1)->value().Size();
+        size = (itsIteratorStack.rbegin() + 1)->value().Size();
       }
 
       //! @}
 
     private:
       ReadStream itsReadStream;               //!< Rapidjson write stream
-      std::vector<Iterator> itsValueStack;    //!< Stack of values
+      std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 
@@ -607,6 +658,7 @@ namespace cereal
   template <class T> inline
   void load( JSONInputArchive & ar, NameValuePair<T> & t )
   {
+    ar.setNextName( t.name );
     ar( t.value );
   }
 
