@@ -599,47 +599,47 @@ namespace cereal
   // ######################################################################
   //! Prologue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void prologue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Prologue for NVPs for XML input archives
-  template <class T>
+  template <class T> inline
   void prologue( XMLInputArchive &, NameValuePair<T> const & )
   { }
 
   // ######################################################################
   //! Epilogue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void epilogue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Epilogue for NVPs for XML input archives
-  template <class T>
+  template <class T> inline
   void epilogue( XMLInputArchive &, NameValuePair<T> const & )
   { }
 
   // ######################################################################
   //! Prologue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
-  template <class T>
+  template <class T> inline
   void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
   {
     ar.appendAttribute( "size", "dynamic" );
   }
 
-  template <class T>
+  template <class T> inline
   void prologue( XMLInputArchive &, SizeTag<T> const & )
   { }
 
   //! Epilogue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
-  template <class T>
+  template <class T> inline
   void epilogue( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
-  template <class T>
+  template <class T> inline
   void epilogue( XMLInputArchive &, SizeTag<T> const & )
   { }
 
@@ -647,7 +647,7 @@ namespace cereal
   //! Prologue for all other types for XML output archives
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
-  template <class T>
+  template <class T> inline
   void prologue( XMLOutputArchive & ar, T const & )
   {
     ar.startNode();
@@ -655,7 +655,7 @@ namespace cereal
   }
 
   //! Prologue for all other types for XML input archives
-  template <class T>
+  template <class T> inline
   void prologue( XMLInputArchive & ar, T const & )
   {
     ar.startNode();
@@ -664,14 +664,14 @@ namespace cereal
   // ######################################################################
   //! Epilogue for all other types other for XML output archives
   /*! Finishes the node created in the prologue */
-  template <class T>
+  template <class T> inline
   void epilogue( XMLOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }
 
   //! Epilogue for all other types other for XML output archives
-  template <class T>
+  template <class T> inline
   void epilogue( XMLInputArchive & ar, T const & )
   {
     ar.finishNode();

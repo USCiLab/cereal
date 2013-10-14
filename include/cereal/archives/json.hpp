@@ -201,7 +201,7 @@ namespace cereal
 #endif
 
       //! Save exotic arithmetic types as binary to current node
-      template<class T>
+      template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       saveValue(T const & t)
@@ -284,55 +284,20 @@ namespace cereal
       \ingroup Archives */
   class JSONInputArchive : public InputArchive<JSONInputArchive>
   {
-    typedef rapidjson::GenericReadStream ReadStream;
-    typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
-    typedef JSONValue::ConstMemberIterator MemberIterator;
-    typedef JSONValue::ConstValueIterator ValueIterator;
-    typedef rapidjson::Document::GenericValue GenericValue;
-
-    //! An internal iterator that handles both array and object types
-    class Iterator
-    {
-      public:
-        Iterator() : itsType(Null) {}
-
-        Iterator(MemberIterator it) :
-          itsMemberIt(it), itsType(Member) {}
-
-        Iterator(ValueIterator it) :
-          itsValueIt(it), itsType(Value) {}
-
-        Iterator & operator++()
-        {
-          switch(itsType)
-          {
-            case Value : ++itsValueIt; break;
-            case Member: ++itsMemberIt; break;
-            default: throw cereal::Exception("Invalid Iterator Type!");
-          }
-          return *this;
-        }
-
-        GenericValue const & value()
-        {
-          switch(itsType)
-          {
-            case Value : return *itsValueIt;
-            case Member: return itsMemberIt->value;
-            default: throw cereal::Exception("Invalid Iterator Type!");
-          }
-        }
-
-      private:
-        MemberIterator itsMemberIt;
-        ValueIterator itsValueIt;
-        enum Type {Value, Member, Null} itsType;
-    };
+    private:
+      typedef rapidjson::GenericReadStream ReadStream;
+      typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
+      typedef JSONValue::ConstMemberIterator MemberIterator;
+      typedef JSONValue::ConstValueIterator ValueIterator;
+      typedef rapidjson::Document::GenericValue GenericValue;
 
     public:
-      //! Construct, outputting to the provided stream
-      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout! */
+      /*! @name Common Functionality
+          Common use cases for directly interacting with an JSONInputArchive */
+      //! @{
+
+      //! Construct, reading from the provided stream
+      /*! @param stream The stream to read from */
       JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
         itsReadStream(stream)
@@ -341,6 +306,68 @@ namespace cereal
         itsValueStack.push_back(itsDocument.MemberBegin());
       }
 
+      //! Loads some binary data, encoded as a base64 string
+      /*! This will automatically start and finish a node to load the data, and can be called directly by
+          users. */
+      void loadBinaryValue( void * data, size_t size )
+      {
+        std::string encoded;
+        loadValue( encoded );
+        auto decoded = base64::decode( encoded );
+
+        if( size != decoded.size() )
+          throw Exception("Decoded binary data size does not match specified size");
+
+        std::memcpy( data, decoded.data(), decoded.size() );
+      };
+
+    private:
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the JSONInputArchive */
+      //! @{
+
+      //! An internal iterator that handles both array and object types
+      class Iterator
+      {
+        public:
+          Iterator() : itsType(Null) {}
+
+          Iterator(MemberIterator it) :
+            itsMemberIt(it), itsType(Member) {}
+
+          Iterator(ValueIterator it) :
+            itsValueIt(it), itsType(Value) {}
+
+          Iterator & operator++()
+          {
+            switch(itsType)
+            {
+              case Value : ++itsValueIt; break;
+              case Member: ++itsMemberIt; break;
+              default: throw cereal::Exception("Invalid Iterator Type!");
+            }
+            return *this;
+          }
+
+          GenericValue const & value()
+          {
+            switch(itsType)
+            {
+              case Value : return *itsValueIt;
+              case Member: return itsMemberIt->value;
+              default: throw cereal::Exception("Invalid Iterator Type!");
+            }
+          }
+
+        private:
+          MemberIterator itsMemberIt;
+          ValueIterator itsValueIt;
+          enum Type {Value, Member, Null} itsType;
+      };
+
+    public:
       //! Starts a new node, going into its proper iterator
       void startNode()
       {
@@ -357,63 +384,62 @@ namespace cereal
         ++itsValueStack.back();
       }
 
-      template<class T>
-        typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
-        loadValue(T & val)
-        {
-          val = itsValueStack.back().value().GetInt();
-          ++itsValueStack.back();
-        }
+      //! Loads a value from the current node - small signed overload
+      template<class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
+      loadValue(T & val)
+      {
+        val = itsValueStack.back().value().GetInt();
+        ++itsValueStack.back();
+      }
 
-      template<class T>
-        typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
-                                !std::is_same<bool, T>::value, void>::type
-        loadValue(T & val)
-        {
-          val = itsValueStack.back().value().GetUint();
-          ++itsValueStack.back();
-        }
+      //! Loads a value from the current node - small unsigned overload
+      template<class T> inline
+      typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
+                              !std::is_same<bool, T>::value, void>::type
+      loadValue(T & val)
+      {
+        val = itsValueStack.back().value().GetUint();
+        ++itsValueStack.back();
+      }
 
+      //! Loads a value from the current node - bool overload
       void loadValue(bool & val)        { val = itsValueStack.back().value().GetBool();   ++itsValueStack.back(); }
+      //! Loads a value from the current node - int64 overload
       void loadValue(int64_t & val)     { val = itsValueStack.back().value().GetInt64();  ++itsValueStack.back(); }
+      //! Loads a value from the current node - uint64 overload
       void loadValue(uint64_t & val)    { val = itsValueStack.back().value().GetUint64(); ++itsValueStack.back(); }
+      //! Loads a value from the current node - float overload
       void loadValue(float & val)       { val = static_cast<float>(itsValueStack.back().value().GetDouble()); ++itsValueStack.back(); }
+      //! Loads a value from the current node - double overload
       void loadValue(double & val)      { val = itsValueStack.back().value().GetDouble(); ++itsValueStack.back(); }
+      //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { val = itsValueStack.back().value().GetString(); ++itsValueStack.back(); }
 
-      template<class T>
-        typename std::enable_if<std::is_arithmetic<T>::value &&
-                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-        loadValue(T & val)
-        {
-          std::string encoded;
-          loadValue( encoded );
-          auto decoded = base64::decode( encoded );
-
-          if( sizeof(T) != decoded.size() )
-            throw Exception("Decoded binary data size does not match specified size");
-
-          std::memcpy( &val, decoded.data(), decoded.size() );
-        }
-
-      //! Loads some binary data, encoded as a base64 string
-      void loadBinaryValue( void * data, size_t size )
+      //! Loads a value from the current node - long double and long long overloads
+      /*! These data types will automatically be encoded as base64 strings */
+      template<class T> inline
+      typename std::enable_if<std::is_arithmetic<T>::value &&
+                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+      loadValue(T & val)
       {
         std::string encoded;
         loadValue( encoded );
         auto decoded = base64::decode( encoded );
 
-        if( size != decoded.size() )
+        if( sizeof(T) != decoded.size() )
           throw Exception("Decoded binary data size does not match specified size");
 
-        std::memcpy( data, decoded.data(), decoded.size() );
-      };
+        std::memcpy( &val, decoded.data(), decoded.size() );
+      }
 
       //! Loads the size for a SizeTag
       void loadSize(size_type & size)
       {
         size = (itsValueStack.rbegin() + 1)->value().Size();
       }
+
+      //! @}
 
     private:
       ReadStream itsReadStream;               //!< Rapidjson write stream
@@ -428,25 +454,25 @@ namespace cereal
   // ######################################################################
   //! Prologue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void prologue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Prologue for NVPs for JSON archives
-  template <class T>
+  template <class T> inline
   void prologue( JSONInputArchive &, NameValuePair<T> const & )
   { }
 
   // ######################################################################
   //! Epilogue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Epilogue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void epilogue( JSONInputArchive &, NameValuePair<T> const & )
   { }
 
@@ -454,26 +480,26 @@ namespace cereal
   //! Prologue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON, they just indicate
       that the current node should be made into an array */
-  template <class T>
+  template <class T> inline
   void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
   {
     ar.makeArray();
   }
 
   //! Prologue for SizeTags for JSON archives
-  template <class T>
+  template <class T> inline
   void prologue( JSONInputArchive &, SizeTag<T> const & )
   { }
 
   // ######################################################################
   //! Epilogue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON */
-  template <class T>
+  template <class T> inline
   void epilogue( JSONOutputArchive &, SizeTag<T> const & )
   { }
 
   //! Epilogue for SizeTags for JSON archives
-  template <class T>
+  template <class T> inline
   void epilogue( JSONInputArchive &, SizeTag<T> const & )
   { }
 
@@ -481,7 +507,7 @@ namespace cereal
   //! Prologue for all other types for JSON archives
   /*! Starts a new node, named either automatically or by some NVP,
       that may be given data by the type about to be archived */
-  template <class T>
+  template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & )
   {
@@ -489,7 +515,7 @@ namespace cereal
   }
 
   //! Prologue for all other types for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   prologue( JSONInputArchive & ar, T const & )
   {
@@ -499,7 +525,7 @@ namespace cereal
   // ######################################################################
   //! Epilogue for all other types other for JSON archives
   /*! Finishes the node created in the prologue */
-  template <class T>
+  template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   epilogue( JSONOutputArchive & ar, T const & )
   {
@@ -507,7 +533,7 @@ namespace cereal
   }
 
   //! Epilogue for all other types other for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
   epilogue( JSONInputArchive & ar, T const & )
   {
@@ -516,7 +542,7 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for arithmetic types for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & )
   {
@@ -524,20 +550,20 @@ namespace cereal
   }
 
   //! Prologue for arithmetic types for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   prologue( JSONInputArchive &, T const & )
   { }
 
   // ######################################################################
   //! Epilogue for arithmetic types for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   epilogue( JSONOutputArchive &, T const & )
   { }
 
   //! Epilogue for arithmetic types for JSON archives
-  template <class T>
+  template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   epilogue( JSONInputArchive &, T const & )
   { }
