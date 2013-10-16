@@ -121,8 +121,12 @@ namespace cereal
   {
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
-      // otherwise, we store a reference
-      typedef typename std::decay<T>::type DT;
+      // otherwise, we store a reference.  If we were passed an array, don't
+      // decay the type - keep it as an array, and then proceed as normal
+      // with the RValue business
+      typedef typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
+                                        typename std::remove_cv<T>::type,
+                                        typename std::decay<T>::type>::type DT;
       typedef typename std::conditional<std::is_rvalue_reference<T>::value,
                                         DT,
                                         typename std::add_lvalue_reference<DT>::type>::type Type;
