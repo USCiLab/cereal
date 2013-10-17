@@ -360,7 +360,7 @@ namespace cereal
             switch(itsType)
             {
               case Value : ++itsValueIt; break;
-              case Member: std::cerr << "Advancing from " << name() << std::endl; ++itsMemberIt; break;
+              case Member: /*std::cerr << "Advancing from " << name() << std::endl;*/ ++itsMemberIt; break;
               default: throw cereal::Exception("Invalid Iterator Type!");
             }
             return *this;
@@ -410,16 +410,18 @@ namespace cereal
         // The name an NVP provided with setNextName()
         if( itsNextName )
         {
-          std::cerr << "Next name is " << itsNextName << std::endl;
-          std::cerr << itsIteratorStack.size() << std::endl;
+          //std::cerr << "Next name is " << itsNextName << std::endl;
+          //std::cerr << itsIteratorStack.size() << std::endl;
           // The actual name of the current node
           auto const actualName = itsIteratorStack.back().name();
 
-          if( itsIteratorStack.back().value().IsNull() || ( actualName && std::strcmp( itsNextName, actualName ) != 0 ) )
+          //std::cerr << "Actual name was: " << (actualName?actualName:"null") << std::endl;
+          // when at end of an iterator, the next name will be null
+
+          if( itsIteratorStack.back().value().IsNull() || !actualName || std::strcmp( itsNextName, actualName ) != 0 )
           {
-            std::cerr << "Searching for " << itsNextName << std::endl;
-            std::cerr << "Actual name was: " << (actualName?actualName:"null") << std::endl;
-            std::cerr << itsIteratorStack.size() << std::endl;
+            //std::cerr << "Searching for " << itsNextName << std::endl;
+            //std::cerr << itsIteratorStack.size() << std::endl;
             // names don't match, perform a search and adjust our current iterator
             itsIteratorStack.back().search( itsNextName,
             /*if*/   (itsIteratorStack.size() > 1 ?
@@ -458,7 +460,7 @@ namespace cereal
       {
         itsIteratorStack.pop_back();
         ++itsIteratorStack.back();
-        std::cerr << "Finishing a node " << itsIteratorStack.size() << std::endl;
+        //std::cerr << "Finishing a node " << itsIteratorStack.size() << std::endl;
       }
 
       //! Sets the name for the next node created with startNode
