@@ -122,7 +122,9 @@ namespace cereal
 
       //! Starts a new node in the JSON output
       /*! The node can optionally be given a name by calling setNextName prior
-          to creating the node */
+          to creating the node
+
+          Nodes only need to be started for types that are themselves objects or arrays */
       void startNode()
       {
         writeName();
@@ -300,17 +302,24 @@ namespace cereal
       /*! @param stream The stream to read from */
       JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
+        itsNextName( nullptr ),
         itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
-        itsIteratorStack.push_back(itsDocument.MemberBegin());
+        itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
 
       //! Loads some binary data, encoded as a base64 string
       /*! This will automatically start and finish a node to load the data, and can be called directly by
-          users. */
-      void loadBinaryValue( void * data, size_t size )
+          users.
+
+          Note that this follows the same ordering rules specified in the class description in regards
+          to loading in/out of order */
+
+      void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
       {
+        itsNextName = name;
+
         std::string encoded;
         loadValue( encoded );
         auto decoded = base64::decode( encoded );
@@ -319,6 +328,7 @@ namespace cereal
           throw Exception("Decoded binary data size does not match specified size");
 
         std::memcpy( data, decoded.data(), decoded.size() );
+        itsNextName = nullptr;
       };
 
     private:
@@ -334,15 +344,15 @@ namespace cereal
       class Iterator
       {
         public:
-          Iterator() : nextName( nullptr ), itsType(Null) {}
+          Iterator() : itsType(Null) {}
 
-          Iterator(MemberIterator it) :
-            nextName( nullptr ),
-            itsMemberIt(it), itsType(Member) {}
+          Iterator(MemberIterator begin, MemberIterator end) :
+            itsMemberIt(begin), itsMemberItEnd(end), itsType(Member)
+          { }
 
-          Iterator(ValueIterator it) :
-            nextName( nullptr ),
-            itsValueIt(it), itsType(Value) {}
+          Iterator(ValueIterator begin, ValueIterator end) :
+            itsValueIt(begin), itsValueItEnd(end), itsType(Value)
+          { }
 
           //! Advance to the next node
           Iterator & operator++()
@@ -350,7 +360,7 @@ namespace cereal
             switch(itsType)
             {
               case Value : ++itsValueIt; break;
-              case Member: ++itsMemberIt; break;
+              case Member: std::cerr << "Advancing from " << name() << std::endl; ++itsMemberIt; break;
               default: throw cereal::Exception("Invalid Iterator Type!");
             }
             return *this;
@@ -370,23 +380,56 @@ namespace cereal
           //! Get the name of the current node, or nullptr if it has no name
           const char * name() const
           {
-            switch(itsType)
-            {
-              case Member:
-                return itsMemberIt->name.GetString();
-              default:
-                return nullptr;
-            }
+            if( itsType == Member && itsMemberIt != itsMemberItEnd )
+              return itsMemberIt->name.GetString();
+            else
+              return nullptr;
           }
 
-        public:
-          const char * nextName;                   //!< The NVP name for next next child node
+          //! Adjust our position such that we are at the node with the given name
+          /*! @throws Exception if no such named node exists */
+          inline void search( const char * name, GenericValue const & parent )
+          {
+            auto member = parent.FindMember( name );
+            if( member )
+              itsMemberIt = member;
+            else
+              throw Exception("JSON Parsing failed - provided NVP not found");
+          }
 
         private:
-          MemberIterator itsMemberIt;              //!< The member iterator (object)
-          ValueIterator itsValueIt;                //!< The value iterator (array)
-          enum Type {Value, Member, Null} itsType; //!< Whether this holds values (array) or members (objects) or nothing
+          MemberIterator itsMemberIt, itsMemberItEnd; //!< The member iterator (object)
+          ValueIterator itsValueIt, itsValueItEnd;    //!< The value iterator (array)
+          enum Type {Value, Member, Null} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
       };
+
+      //! Searches for the expectedName node if it doesn't match the actualName
+      /*! @throws Exception if an expectedName is given and not found */
+      inline void search()
+      {
+        // The name an NVP provided with setNextName()
+        if( itsNextName )
+        {
+          std::cerr << "Next name is " << itsNextName << std::endl;
+          std::cerr << itsIteratorStack.size() << std::endl;
+          // The actual name of the current node
+          auto const actualName = itsIteratorStack.back().name();
+
+          if( itsIteratorStack.back().value().IsNull() || ( actualName && std::strcmp( itsNextName, actualName ) != 0 ) )
+          {
+            std::cerr << "Searching for " << itsNextName << std::endl;
+            std::cerr << "Actual name was: " << (actualName?actualName:"null") << std::endl;
+            std::cerr << itsIteratorStack.size() << std::endl;
+            // names don't match, perform a search and adjust our current iterator
+            itsIteratorStack.back().search( itsNextName,
+            /*if*/   (itsIteratorStack.size() > 1 ?
+            /*then*/ (itsIteratorStack.rbegin() + 1)->value() :
+            /*else*/ itsDocument ) );
+          }
+        }
+
+        itsNextName = nullptr;
+      }
 
     public:
       //! Starts a new node, going into its proper iterator
@@ -402,24 +445,12 @@ namespace cereal
           named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception */
       void startNode()
       {
-        auto const expectedName = itsIteratorStack.back().nextName; // this is the expected name from the NVP, if provided
-        auto const actualName   = itsIteratorStack.back().name();   // this is the name our next node actually has
+        search();
 
-        // If we were given an NVP name, look for it in the current level of the document.
-        //    We only need to do this if the NVP name does not match the name of the node we would normally read next
-        if( expectedName && ( std::strcmp( expectedName, actualName) ) != 0 )
-        {
-          if( !actualName || !itsIteratorStack.back().value().HasMember( actualName ) )
-            throw Exception("JSON Parsing failed - provided NVP not found");
-        }
+        if(itsIteratorStack.back().value().IsArray())
+          itsIteratorStack.emplace_back(itsIteratorStack.back().value().Begin(), itsIteratorStack.back().value().End());
         else
-        {
-          // proceed as normal
-          if(itsIteratorStack.back().value().IsArray())
-            itsIteratorStack.push_back(itsIteratorStack.back().value().Begin());
-          else
-            itsIteratorStack.push_back(itsIteratorStack.back().value().MemberBegin());
-        }
+          itsIteratorStack.emplace_back(itsIteratorStack.back().value().MemberBegin(), itsIteratorStack.back().value().MemberEnd());
       }
 
       //! Finishes the most recently started node
@@ -427,12 +458,13 @@ namespace cereal
       {
         itsIteratorStack.pop_back();
         ++itsIteratorStack.back();
+        std::cerr << "Finishing a node " << itsIteratorStack.size() << std::endl;
       }
 
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsIteratorStack.back().nextName = name;
+        itsNextName = name;
       }
 
       //! Loads a value from the current node - small signed overload
@@ -440,6 +472,8 @@ namespace cereal
       typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
       loadValue(T & val)
       {
+        search();
+
         val = itsIteratorStack.back().value().GetInt();
         ++itsIteratorStack.back();
       }
@@ -450,22 +484,24 @@ namespace cereal
                               !std::is_same<bool, T>::value, void>::type
       loadValue(T & val)
       {
+        search();
+
         val = itsIteratorStack.back().value().GetUint();
         ++itsIteratorStack.back();
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { val = itsIteratorStack.back().value().GetBool();   ++itsIteratorStack.back(); }
+      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool();   ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
-      void loadValue(int64_t & val)     { val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
+      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
-      void loadValue(uint64_t & val)    { val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
+      void loadValue(uint64_t & val)    { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - float overload
-      void loadValue(float & val)       { val = static_cast<float>(itsIteratorStack.back().value().GetDouble()); ++itsIteratorStack.back(); }
+      void loadValue(float & val)       { search(); val = static_cast<float>(itsIteratorStack.back().value().GetDouble()); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - double overload
-      void loadValue(double & val)      { val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
+      void loadValue(double & val)      { search(); val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
-      void loadValue(std::string & val) { val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
+      void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
       //! Loads a value from the current node - long double and long long overloads
       /*! These data types will automatically be encoded as base64 strings */
@@ -493,6 +529,7 @@ namespace cereal
       //! @}
 
     private:
+      const char * itsNextName;               //!< Next name set by NVP
       ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       rapidjson::Document itsDocument;        //!< Rapidjson document

@@ -614,6 +614,7 @@ private:
 		Array a;
 	};	// 12 bytes in 32-bit mode, 16 bytes in 64-bit mode
 
+public:
 	//! Find member by name.
 	Member* FindMember(const Ch* name) {
 		RAPIDJSON_ASSERT(name);
@@ -629,6 +630,7 @@ private:
 		return 0;
 	}
 	const Member* FindMember(const Ch* name) const { return const_cast<GenericValue&>(*this).FindMember(name); }
+private:
 
 	// Initialize this value as array with initial data, without calling destructor.
 	void SetArrayRaw(GenericValue* values, SizeType count, Allocator& alloctaor) {

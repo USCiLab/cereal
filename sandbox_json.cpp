@@ -289,6 +289,38 @@ class Stuff
     }
 };
 
+struct OOJson
+{
+  OOJson() = default;
+  OOJson( int aa, int bb, bool cc, double dd ) :
+    a( aa ), b( bb ), c{ cc, dd }
+  {
+    d[0] = 0; d[1] = 1; d[2] = 2;
+  }
+
+  int a;
+  int b;
+  std::pair<bool, double> c;
+  float d[3];
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( CEREAL_NVP(c) );
+    ar( CEREAL_NVP(a) );
+    ar( b );
+    ar( CEREAL_NVP(d) );
+  }
+};
+
+template <class T>
+void ARRAY( T && a )
+{
+  std::cerr << "---------------" << std::endl;
+  std::cerr << std::is_array<typename std::remove_reference<T>::type>::value << std::endl;
+  std::cerr << std::is_array<T>::value << std::endl;
+}
+
 // ######################################################################
 int main()
 {
@@ -303,6 +335,7 @@ int main()
     //oar( f );
     //oar( f2 );
     Stuff s; s.fillData();
+    //ARRAY( s );
     oar( cereal::make_nvp("best data ever", s) );
   }
 
@@ -331,6 +364,66 @@ int main()
 
     archive( Bla::x );
   }
+
+  // test out of order
+  std::stringstream oos;
+  {
+    cereal::JSONOutputArchive ar(oos);
+    cereal::JSONOutputArchive ar2(std::cout);
+
+    ar( cereal::make_nvp( "1", 1 ),
+        cereal::make_nvp( "2", 2 ),
+        3,
+        0, // unused
+        cereal::make_nvp( "4", 4 ),
+        cereal::make_nvp( "5", 5 ) );
+
+    int x = 33;
+    ar.saveBinaryValue( &x, sizeof(int), "bla" );
+
+    ar2( cereal::make_nvp( "1", 1 ),
+         cereal::make_nvp( "2", 2 ),
+         3,
+         0, // unused
+         cereal::make_nvp( "4", 4 ),
+         cereal::make_nvp( "5", 5 ) );
+    ar2.saveBinaryValue( &x, sizeof(int), "bla" );
+
+    OOJson oo( 1, 2, 3, 4 );
+    ar( CEREAL_NVP(oo) );
+    ar2( CEREAL_NVP(oo) );
+
+    //int bla[][3] = {{1,2,3},{4,5,6}};
+    //ar2( cereal::make_nvp("asdf", bla) );
+    //ARRAY(asdf);
+  }
+
+  {
+    cereal::JSONInputArchive ar(oos);
+    int i1, i2, i3, i4, i5, x;
+
+    ar( i1 );
+    ar( cereal::make_nvp( "2", i2 ), i3 );
+
+    ar( cereal::make_nvp( "4", i4 ),
+        i5 );
+
+    ar.loadBinaryValue( &x, sizeof(int) );
+
+    OOJson ii;
+    ar( cereal::make_nvp("oo", ii) );
+    ar( cereal::make_nvp( "2", i2 ) );
+
+    std::cout << i1 << " " << i2 << " " << i3 << " " << i4 << " " << i5 << std::endl;
+    std::cout << x << std::endl;
+    std::cout << ii.a << " " << ii.b << " " << ii.c.first << " " << ii.c.second << " ";
+    for( auto z : ii.d )
+      std::cout << z << " ";
+    std::cout << std::endl;
+
+  }
+
+
 
 
   //{

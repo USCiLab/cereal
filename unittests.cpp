@@ -3082,8 +3082,17 @@ void test_unordered_loads()
     std::ostringstream os;
     {
       OArchive oar(os);
+      OArchive oar2(std::cout);
 
       oar( cereal::make_nvp( name1, o_int1 ),
+           cereal::make_nvp( name2, o_double2 ),
+           cereal::make_nvp( name3, o_vecbool3 ),
+           cereal::make_nvp( name4, o_int4 ),
+           cereal::make_nvp( name5, o_int5 ),
+           cereal::make_nvp( name6, o_int6 ),
+           cereal::make_nvp( name7, o_un7 ) );
+
+      oar2( cereal::make_nvp( name1, o_int1 ),
            cereal::make_nvp( name2, o_double2 ),
            cereal::make_nvp( name3, o_vecbool3 ),
            cereal::make_nvp( name4, o_int4 ),
@@ -3114,7 +3123,7 @@ void test_unordered_loads()
     }
 
     BOOST_CHECK_EQUAL(o_int1, i_int1);
-    BOOST_CHECK_EQUAL(o_double2, i_double2);
+    BOOST_CHECK_CLOSE(o_double2 , o_double2, 1e-5);
     BOOST_CHECK_EQUAL(o_vecbool3.size(), i_vecbool3.size());
     BOOST_CHECK_EQUAL_COLLECTIONS(i_vecbool3.begin(),    i_vecbool3.end(),    o_vecbool3.begin(),  o_vecbool3.end());
     BOOST_CHECK_EQUAL(o_int4, i_int4);
@@ -3130,7 +3139,7 @@ BOOST_AUTO_TEST_CASE( xml_unordered_loads )
   test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-//BOOST_AUTO_TEST_CASE( json_unordered_loads )
-//{
-//  test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-//}
+BOOST_AUTO_TEST_CASE( json_unordered_loads )
+{
+  test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
