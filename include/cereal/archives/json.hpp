@@ -279,9 +279,32 @@ namespace cereal
       Input JSON should have been produced by the JSONOutputArchive.  Data can
       only be added to dynamically sized containers (marked by JSON arrays) -
       the input archive will determine their size by looking at the number of child nodes.
+      Only JSON originating from a JSONOutputArchive is officially supported, but data
+      from other sources may work if properly formatted.
 
-      The order of the items in the JSON archive must match what is expected in the
-      serialization functions.
+      The JSONInputArchive does not require that nodes are loaded in the same
+      order they were saved by JSONOutputArchive.  Using name value pairs (NVPs),
+      it is possible to load in an out of order fashion or otherwise skip/select
+      specific nodes to load.
+
+      The default behavior of the input archive is to read sequentially starting
+      with the first node and exploring its children.  When a given NVP does
+      not match the read in name for a node, the archive will search for that
+      node at the current level and load it if it exists.  After loading an out of
+      order node, the archive will then proceed back to loading sequentially from
+      its new position.
+
+      Consider this simple example where loading of some data is skipped:
+
+      @code{cpp}
+      // imagine the input file has someData(1-9) saved in order at the top level node
+      ar( someData1, someData2, someData3 );        // XML loads in the order it sees in the file
+      ar( cereal::make_nvp( "hello", someData6 ) ); // NVP given does not
+                                                    // match expected NVP name, so we search
+                                                    // for the given NVP and load that value
+      ar( someData7, someData8, someData9 );        // with no NVP given, loading resumes at its
+                                                    // current location, proceeding sequentially
+      @endcode
 
       \ingroup Archives */
   class JSONInputArchive : public InputArchive<JSONInputArchive>
@@ -344,25 +367,20 @@ namespace cereal
       class Iterator
       {
         public:
-          Iterator() : itsType(Null) {}
+          Iterator() : itsIndex( 0 ), itsType(Null) {}
 
           Iterator(MemberIterator begin, MemberIterator end) :
-            itsMemberIt(begin), itsMemberItEnd(end), itsType(Member)
+            itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
           { }
 
           Iterator(ValueIterator begin, ValueIterator end) :
-            itsValueIt(begin), itsValueItEnd(end), itsType(Value)
+            itsValueItBegin(begin), itsValueItEnd(end), itsIndex(0), itsType(Value)
           { }
 
           //! Advance to the next node
           Iterator & operator++()
           {
-            switch(itsType)
-            {
-              case Value : ++itsValueIt; break;
-              case Member: /*std::cerr << "Advancing from " << name() << std::endl;*/ ++itsMemberIt; break;
-              default: throw cereal::Exception("Invalid Iterator Type!");
-            }
+            ++itsIndex;
             return *this;
           }
 
@@ -371,8 +389,8 @@ namespace cereal
           {
             switch(itsType)
             {
-              case Value : return *itsValueIt;
-              case Member: return itsMemberIt->value;
+              case Value : return itsValueItBegin[itsIndex];
+              case Member: return itsMemberItBegin[itsIndex].value;
               default: throw cereal::Exception("Invalid Iterator Type!");
             }
           }
@@ -380,54 +398,54 @@ namespace cereal
           //! Get the name of the current node, or nullptr if it has no name
           const char * name() const
           {
-            if( itsType == Member && itsMemberIt != itsMemberItEnd )
-              return itsMemberIt->name.GetString();
+            if( itsType == Member && (itsMemberItBegin + itsIndex) != itsMemberItEnd )
+              return itsMemberItBegin[itsIndex].name.GetString();
             else
               return nullptr;
           }
 
           //! Adjust our position such that we are at the node with the given name
           /*! @throws Exception if no such named node exists */
-          inline void search( const char * name, GenericValue const & parent )
+          inline void search( const char * name )//, GenericValue const & parent )
           {
-            auto member = parent.FindMember( name );
-            if( member )
-              itsMemberIt = member;
-            else
-              throw Exception("JSON Parsing failed - provided NVP not found");
+            size_t index = 0;
+            for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
+              if( std::strcmp( name, it->name.GetString() ) == 0 )
+              {
+                itsIndex = index;
+                return;
+              }
+
+            throw Exception("JSON Parsing failed - provided NVP not found");
           }
 
         private:
-          MemberIterator itsMemberIt, itsMemberItEnd; //!< The member iterator (object)
-          ValueIterator itsValueIt, itsValueItEnd;    //!< The value iterator (array)
+          MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
+          ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
+          size_t itsIndex;                                 //!< The current index of this iterator
           enum Type {Value, Member, Null} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
       };
 
       //! Searches for the expectedName node if it doesn't match the actualName
-      /*! @throws Exception if an expectedName is given and not found */
+      /*! This needs to be called before every load or node start occurs.  This function will
+          check to see if an NVP has been provided (with setNextName) and if so, see if that name matches the actual
+          next name given.  If the names do not match, it will search in the current level of the JSON for that name.
+          If the name is not found, an exception will be thrown.
+
+          Resets the NVP name after called.
+
+          @throws Exception if an expectedName is given and not found */
       inline void search()
       {
         // The name an NVP provided with setNextName()
         if( itsNextName )
         {
-          //std::cerr << "Next name is " << itsNextName << std::endl;
-          //std::cerr << itsIteratorStack.size() << std::endl;
           // The actual name of the current node
           auto const actualName = itsIteratorStack.back().name();
 
-          //std::cerr << "Actual name was: " << (actualName?actualName:"null") << std::endl;
-          // when at end of an iterator, the next name will be null
-
-          if( itsIteratorStack.back().value().IsNull() || !actualName || std::strcmp( itsNextName, actualName ) != 0 )
-          {
-            //std::cerr << "Searching for " << itsNextName << std::endl;
-            //std::cerr << itsIteratorStack.size() << std::endl;
-            // names don't match, perform a search and adjust our current iterator
-            itsIteratorStack.back().search( itsNextName,
-            /*if*/   (itsIteratorStack.size() > 1 ?
-            /*then*/ (itsIteratorStack.rbegin() + 1)->value() :
-            /*else*/ itsDocument ) );
-          }
+          // Do a search if we don't see a name coming up, or if the names don't match
+          if( !actualName || std::strcmp( itsNextName, actualName ) != 0 )
+            itsIteratorStack.back().search( itsNextName );
         }
 
         itsNextName = nullptr;
@@ -438,13 +456,12 @@ namespace cereal
       /*! This places an iterator for the next node to be parsed onto the iterator stack.  If the next
           node is an array, this will be a value iterator, otherwise it will be a member iterator.
 
-          By default our strategy is to start with the document root node and then recursively iteratoe through
+          By default our strategy is to start with the document root node and then recursively iterate through
           all children in the order they show up in the document.
           We don't need to know NVPs to do this; we'll just blindly load in the order things appear in.
 
-          We check to see if the specified NVP matches what the next automatically loaded node is.  If they
-          match, we just continue as normal, going in order.  If they don't match, we attempt to find a node
-          named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception */
+          If we were given an NVP, we will search for it if it does not match our the name of the next node
+          that would normally be loaded.  This functionality is provided by search(). */
       void startNode()
       {
         search();
@@ -460,7 +477,6 @@ namespace cereal
       {
         itsIteratorStack.pop_back();
         ++itsIteratorStack.back();
-        //std::cerr << "Finishing a node " << itsIteratorStack.size() << std::endl;
       }
 
       //! Sets the name for the next node created with startNode

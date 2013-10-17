@@ -583,6 +583,8 @@ int main()
 
     oar( bb, a, x, y, z, d, j );
     std::cout << bb << " " << a << " " << x << " " << y << " " << z << " " << d << " " << j << std::endl;
+    // valgrind will complain about uninitialized bytes here - seems to be the padding caused by the long double and
+    // long long allocations (this padding just exists on the stack and is never used anywhere)
   }
   {
     std::ifstream b("endian.out");
