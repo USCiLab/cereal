@@ -385,10 +385,10 @@ int main()
     ar2( CEREAL_NVP(oo) );
 
     // boost stuff
-    ar & cereal::make_nvp("usingop&", oo ) & 5;
+    ar & cereal::make_nvp("usingop&", oo ) & 6;
     ar << 5 << 4 << 3;
 
-    ar2 & cereal::make_nvp("usingop&", oo ) & 5;
+    ar2 & cereal::make_nvp("usingop&", oo ) & 6;
     ar2 << 5 << 4 << 3;
   }
 
@@ -414,6 +414,16 @@ int main()
     for( auto z : ii.d )
       std::cout << z << " ";
     std::cout << std::endl;
+
+    OOJson oo;
+    ar >> cereal::make_nvp("usingop&", oo );
+    std::cout << oo.a << " " << oo.b << " " << oo.c.first << " " << oo.c.second << " ";
+    for( auto z : oo.d )
+      std::cout << z << " ";
+
+    int aa, a, b, c;
+    ar & aa & a & b & c;
+    std::cout << aa << " " << a << " " << b << " " << c << std::endl;
 
   }
 
