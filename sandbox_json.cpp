@@ -313,14 +313,6 @@ struct OOJson
   }
 };
 
-template <class T>
-void ARRAY( T && a )
-{
-  std::cerr << "---------------" << std::endl;
-  std::cerr << std::is_array<typename std::remove_reference<T>::type>::value << std::endl;
-  std::cerr << std::is_array<T>::value << std::endl;
-}
-
 // ######################################################################
 int main()
 {
@@ -335,7 +327,6 @@ int main()
     //oar( f );
     //oar( f2 );
     Stuff s; s.fillData();
-    //ARRAY( s );
     oar( cereal::make_nvp("best data ever", s) );
   }
 
@@ -393,9 +384,12 @@ int main()
     ar( CEREAL_NVP(oo) );
     ar2( CEREAL_NVP(oo) );
 
-    //int bla[][3] = {{1,2,3},{4,5,6}};
-    //ar2( cereal::make_nvp("asdf", bla) );
-    //ARRAY(asdf);
+    // boost stuff
+    ar & cereal::make_nvp("usingop&", oo ) & 5;
+    ar << 5 << 4 << 3;
+
+    ar2 & cereal::make_nvp("usingop&", oo ) & 5;
+    ar2 << 5 << 4 << 3;
   }
 
   {

@@ -183,6 +183,35 @@ namespace cereal
         return *self;
       }
 
+      /*! @name Boost Transition Layer
+          Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
+          a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
+      //! @{
+
+      //! Serializes passed in data
+      /*! This is a boost compatability layer and is not the preferred way of using
+          cereal.  If you are transitioning from boost, use this until you can
+          transition to the operator() overload */
+      template <class T> inline
+      ArchiveType & operator&( T && arg )
+      {
+        self->process( std::forward<T>( arg ) );
+        return *self;
+      }
+
+      //! Serializes passed in data
+      /*! This is a boost compatability layer and is not the preferred way of using
+          cereal.  If you are transitioning from boost, use this until you can
+          transition to the operator() overload */
+      template <class T> inline
+      ArchiveType & operator<<( T && arg )
+      {
+        self->process( std::forward<T>( arg ) );
+        return *self;
+      }
+
+      //! @}
+
       //! Registers a shared pointer with the archive
       /*! This function is used to track shared pointer targets to prevent
           unnecessary saves from taking place if multiple shared pointers
@@ -389,6 +418,35 @@ namespace cereal
         process( std::forward<Types>( args )... );
         return *self;
       }
+
+      /*! @name Boost Transition Layer
+          Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
+          a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
+      //! @{
+
+      //! Serializes passed in data
+      /*! This is a boost compatability layer and is not the preferred way of using
+          cereal.  If you are transitioning from boost, use this until you can
+          transition to the operator() overload */
+      template <class T> inline
+      ArchiveType & operator&( T && arg )
+      {
+        self->process( std::forward<T>( arg ) );
+        return *self;
+      }
+
+      //! Serializes passed in data
+      /*! This is a boost compatability layer and is not the preferred way of using
+          cereal.  If you are transitioning from boost, use this until you can
+          transition to the operator() overload */
+      template <class T> inline
+      ArchiveType & operator>>( T && arg )
+      {
+        self->process( std::forward<T>( arg ) );
+        return *self;
+      }
+
+      //! @}
 
       //! Retrieves a shared pointer given a unique key for it
       /*! This is used to retrieve a previously registered shared_ptr
