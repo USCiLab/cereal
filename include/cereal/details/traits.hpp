@@ -316,7 +316,6 @@ namespace cereal
       struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
     } // namespace detail
 
-
     // ######################################################################
     //! A macro to use to restrict which types of archives your function will work for.
     /*! This requires you to have a template class parameter named Archive and replaces the void return
@@ -388,6 +387,9 @@ namespace cereal
         return LoadAndAllocate<T>::load_and_allocate( ar );
       }
     };
+
+    //! Version information class - used in Boost Transition Layer
+    template <class T> struct Version;
   } // namespace detail
 } // namespace cereal
 

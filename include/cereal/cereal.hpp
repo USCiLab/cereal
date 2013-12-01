@@ -384,6 +384,9 @@ namespace cereal
 
       //! The id to be given to the next polymorphic type name
       std::uint32_t itsCurrentPolymorphicTypeId;
+
+      //! Keeps track of classes that have versioning information associated with them
+      std::unordered_set<size_type> itsVersionedTypes;
   }; // class OutputArchive
 
   // ######################################################################

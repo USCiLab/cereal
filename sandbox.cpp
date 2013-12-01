@@ -656,3 +656,5 @@ int main()
 
   return 0;
 }
+
+CEREAL_CLASS_VERSION(std::vector<int>, 1);

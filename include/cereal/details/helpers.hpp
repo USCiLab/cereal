@@ -36,7 +36,6 @@
 
 namespace cereal
 {
-
   //! The size type used by cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
    * a fixed size type instead of size_t, which may vary from machine to
@@ -305,6 +304,16 @@ namespace cereal
   {
     return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
   }
+
+  //! Defines a class version for some type
+  /*! This is part of the Boost Transition Layer and is not the recommended way
+      of using cereal.  This works identically to how it does in Boost serialization,
+      providing a version number associated with some type that is available by specifying
+      a second parameter to serialize, save, or load. */
+  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                                          \
+  namespace cereal { namespace detail {                                                       \
+    template <> struct Version<TYPE> { static const std::uint32_t version = VERSION_NUMBER; };\
+  } } // end namespaces
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_
