@@ -329,6 +329,22 @@ namespace cereal
       has_non_member_versioned_serialize<T, InputArchive>::value> {};
 
     // ######################################################################
+    template <class T, class OutputArchive>
+    struct is_output_versioned : std::integral_constant<bool,
+      has_member_versioned_save<T, OutputArchive>::value ||
+      has_non_member_versioned_save<T, OutputArchive>::value ||
+      has_member_versioned_serialize<T, OutputArchive>::value ||
+      has_non_member_versioned_serialize<T, OutputArchive>::value> {};
+
+    // ######################################################################
+    template <class T, class InputArchive>
+    struct is_input_versioned : std::integral_constant<bool,
+      has_member_versioned_load<T, InputArchive>::value ||
+      has_non_member_versioned_load<T, InputArchive>::value ||
+      has_member_versioned_serialize<T, InputArchive>::value ||
+      has_non_member_versioned_serialize<T, InputArchive>::value> {};
+
+    // ######################################################################
     namespace detail
     {
       template <class T, class A>
