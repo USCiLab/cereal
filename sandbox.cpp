@@ -380,6 +380,26 @@ void test_unordered_loads()
   }
 }
 
+struct BoostTransitionMS
+{
+  BoostTransitionMS( int xx ) : x(xx) {}
+
+  int x;
+
+  //template <class Archive>
+  //void serialize( Archive & ar )
+  //{
+  //  ar( x );
+  //}
+
+  template <class Archive>
+  void serialize( Archive & ar, const std::uint32_t version )
+  {
+    std::cout << "BoostTransitionMS " << version << std::endl;
+    ar( x );
+  }
+};
+
 // ######################################################################
 int main()
 {
@@ -652,7 +672,8 @@ int main()
   }
 
   std::cerr << "-------------------------" << std::endl;
-  test_unordered_loads<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  std::cout << cereal::traits::has_member_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::has_member_versioned_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
 
   return 0;
 }

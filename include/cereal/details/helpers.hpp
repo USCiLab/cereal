@@ -309,7 +309,14 @@ namespace cereal
   /*! This is part of the Boost Transition Layer and is not the recommended way
       of using cereal.  This works identically to how it does in Boost serialization,
       providing a version number associated with some type that is available by specifying
-      a second parameter to serialize, save, or load. */
+      a second parameter to serialize, save, or load.
+
+      If you are using the two parameter versions of serialization functions, a default
+      value of 0 will be used for version unless you specify otherwise with this macro.
+
+      The recommended way of performing versioning in cereal is to implement it yourself
+      on a class by class basis as required, creating a thin wrapper if you do not have
+      access to the internals of a class. */
   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                                          \
   namespace cereal { namespace detail {                                                       \
     template <> struct Version<TYPE> { static const std::uint32_t version = VERSION_NUMBER; };\

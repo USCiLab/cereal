@@ -87,7 +87,7 @@ namespace cereal
     static void load_and_allocate(...)
     { }
   };
-  
+
   //! A class that can be made a friend to give cereal access to non public functions
   /*! If you desire non-public serialization functions within a class, cereal can only
       access these if you declare cereal::access a friend.
@@ -112,7 +112,7 @@ namespace cereal
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
       { t.serialize(ar); }
-            
+
       template<class Archive, class T> inline
       static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
       { t.save(ar); }
@@ -124,6 +124,25 @@ namespace cereal
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
+
+      /*! @name Boost Transition Layer */
+      //! @{
+      template<class Archive, class T> inline
+      static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
+      { t.serialize(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
+      { t.save(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
+      { t.save(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
+      { t.load(ar, version); }
+      //! @}
 
       template <class T>
         static void load_and_allocate(...)

@@ -81,6 +81,44 @@ namespace cereal
     template <class T, class A>                                                                                                    \
     struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
 
+    //! Creates a test for whether a non const member function exists with a version parameter
+    /*! This creates a class derived from std::integral_constant that will be true if
+        the type has the proper member function for the given archive. */
+    #define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(name)                                                                            \
+    namespace detail                                                                                                               \
+    {                                                                                                                              \
+      template <class T, class A>                                                                                                  \
+      struct has_member_versioned_##name##_impl                                                                                    \
+      {                                                                                                                            \
+        template <class TT, class AA>                                                                                              \
+        static auto test(int) -> decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>(), 0 ), yes());   \
+        template <class, class>                                                                                                    \
+        static no test(...);                                                                                                       \
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                               \
+      };                                                                                                                           \
+    } /* end namespace detail */                                                                                                   \
+    template <class T, class A>                                                                                                    \
+    struct has_member_versioned_##name : std::integral_constant<bool, detail::has_member_versioned_##name##_impl<T, A>::value> {};
+
+    //! Creates a test for whether a non const non-member function exists with a version parameter
+    /*! This creates a class derived from std::integral_constant that will be true if
+        the type has the proper non-member function for the given archive. */
+    #define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(name)                                                                        \
+    namespace detail                                                                                                               \
+    {                                                                                                                              \
+      template <class T, class A>                                                                                                  \
+      struct has_non_member_versioned_##name##_impl                                                                                \
+      {                                                                                                                            \
+        template <class TT, class AA>                                                                                              \
+        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>(), 0 ), yes());                            \
+        template <class, class>                                                                                                    \
+        static no test( ... );                                                                                                     \
+        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
+      };                                                                                                                           \
+    } /* end namespace detail */                                                                                                   \
+    template <class T, class A>                                                                                                    \
+    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {};
+
     // ######################################################################
     // Member load_and_allocate
     template<typename T, typename A>
@@ -105,16 +143,32 @@ namespace cereal
     CEREAL_MAKE_HAS_MEMBER_TEST(serialize);
 
     // ######################################################################
+    // Member Serialize (versioned, Boost Transition Layer)
+    CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(serialize);
+
+    // ######################################################################
     // Non Member Serialize
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize);
+
+    // ######################################################################
+    // Non Member Serialize (versioned, Boost Transition Layer)
+    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize);
 
     // ######################################################################
     // Member Load
     CEREAL_MAKE_HAS_MEMBER_TEST(load);
 
     // ######################################################################
+    // Member Load (versioned, Boost Transition Layer)
+    CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(load);
+
+    // ######################################################################
     // Non Member Load
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(load);
+
+    // ######################################################################
+    // Non Member Load (versioned, Boost Transition Layer)
+    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
 
     // ######################################################################
     // Member Save
@@ -147,6 +201,36 @@ namespace cereal
     };
 
     // ######################################################################
+    // Member Save (versioned, Boost Transition Layer)
+    namespace detail
+    {
+      template <class T, class A>
+      struct has_member_versioned_save_impl
+      {
+        template <class TT, class AA>
+        static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
+        template <class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
+
+        template <class TT, class AA>
+        static auto test2(int) -> decltype( cereal::access::member_save_non_const( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        template <class, class>
+        static no test2(...);
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+      };
+    } // end namespace detail
+
+    template <class T, class A>
+    struct has_member_versioned_save : std::integral_constant<bool, detail::has_member_versioned_save_impl<T, A>::value>
+    {
+      typedef typename detail::has_member_versioned_save_impl<T, A> check;
+      static_assert( check::value || !check::not_const_type,
+        "cereal detected a versioned non-const save.\n"
+        "save member functions must always be const" );
+    };
+
+    // ######################################################################
     // Non-const Member Save
     namespace detail
     {
@@ -173,6 +257,36 @@ namespace cereal
       typedef typename detail::has_non_member_save_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
         "cereal detected a non-const type parameter in non-member save.\n"
+        "save non-member functions must always pass their types as const" );
+    };
+
+    // ######################################################################
+    // Non-const Member Save (versioned, Boost Transition Layer)
+    namespace detail
+    {
+      template <class T, class A>
+      struct has_non_member_versioned_save_impl
+      {
+        template <class TT, class AA>
+        static auto test(int) -> decltype( save( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
+        template <class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
+
+        template <class TT, class AA>
+        static auto test2(int) -> decltype( save( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        template <class, class>
+        static no test2(...);
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+      };
+    } // end namespace detail
+
+    template <class T, class A>
+    struct has_non_member_versioned_save : std::integral_constant<bool, detail::has_non_member_versioned_save_impl<T, A>::value>
+    {
+      typedef typename detail::has_non_member_versioned_save_impl<T, A> check;
+      static_assert( check::value || !check::not_const_type,
+        "cereal detected a non-const type parameter in versioned non-member save.\n"
         "save non-member functions must always pass their types as const" );
     };
 
