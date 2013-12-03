@@ -136,14 +136,17 @@ struct binary
     some data.  Result is output to standard out.
 
     @tparam SerializationT The serialization struct that has all save and load functions
-    @tparam DataT The type of data to test
+    @tparam DataTCereal The type of data to test for cereal
+    @tparam DataTBoost The type of data to test for boost
     @param name The name for this test
-    @param data The data to serialize
+    @param data The data to serialize for cereal
+    @param data The data to serialize for boost
     @param numAverages The number of times to average
     @param validateData Whether data should be validated (input == output) */
-template <class SerializationT, class DataT>
+template <class SerializationT, class DataTCereal, class DataTBoost>
 void test( std::string const & name,
-            DataT const & data,
+            DataTCereal const & dataC,
+            DataTBoost const & dataB,
             size_t numAverages = 100,
             bool validateData = false )
 {
@@ -164,24 +167,24 @@ void test( std::string const & name,
     // Boost
     {
       std::ostringstream os;
-      auto saveResult = saveData<DataT>( data, {SerializationT::boost::template save<DataT>}, os );
+      auto saveResult = saveData<DataTBoost>( dataB, {SerializationT::boost::template save<DataTBoost>}, os );
       totalBoostSave += saveResult;
       if(!boostSize)
         boostSize = os.tellp();
 
-      auto loadResult = loadData<DataT>( os, {SerializationT::boost::template load<DataT>} );
+      auto loadResult = loadData<DataTBoost>( os, {SerializationT::boost::template load<DataTBoost>} );
       totalBoostLoad += loadResult.second;
     }
 
     // Cereal
     {
       std::ostringstream os;
-      auto saveResult = saveData<DataT>( data, {SerializationT::cereal::template save<DataT>}, os );
+      auto saveResult = saveData<DataTCereal>( dataC, {SerializationT::cereal::template save<DataTCereal>}, os );
       totalCerealSave += saveResult;
       if(!cerealSize)
         cerealSize = os.tellp();
 
-      auto loadResult = loadData<DataT>( os, {SerializationT::cereal::template load<DataT>} );
+      auto loadResult = loadData<DataTCereal>( os, {SerializationT::cereal::template load<DataTCereal>} );
       totalCerealLoad += loadResult.second;
     }
   }
@@ -213,6 +216,15 @@ void test( std::string const & name,
   std::cout << boost::format("\tload | time: %06.4fms (%1.2f) total: %6.1fms")
     % averageCerealLoad % cerealLoadP % static_cast<double>( std::chrono::duration_cast<std::chrono::milliseconds>(totalCerealLoad).count() );
   std::cout << std::endl;
+}
+
+template <class SerializationT, class DataT>
+void test( std::string const & name,
+            DataT const & data,
+            size_t numAverages = 100,
+            bool validateData = false )
+{
+  return test<SerializationT, DataT, DataT>( name, data, data, numAverages, validateData );
 }
 
 template<class T>
@@ -259,7 +271,7 @@ std::string random_binary_string(std::mt19937 & gen)
   return s;
 }
 
-struct PoDStruct
+struct PoDStructCereal
 {
   int32_t a;
   int64_t b;
@@ -271,6 +283,14 @@ struct PoDStruct
   {
     ar(a, b, c, d);
   };
+};
+
+struct PoDStructBoost
+{
+  int32_t a;
+  int64_t b;
+  float c;
+  double d;
 
   template <class Archive>
   void serialize( Archive & ar, const unsigned int version )
@@ -279,9 +299,9 @@ struct PoDStruct
   };
 };
 
-struct PoDChild : virtual PoDStruct
+struct PoDChildCereal : virtual PoDStructCereal
 {
-  PoDChild() : v(1024)
+  PoDChildCereal() : v(1024)
   { }
 
   std::vector<float> v;
@@ -289,13 +309,21 @@ struct PoDChild : virtual PoDStruct
   template <class Archive>
   void serialize( Archive & ar )
   {
-    ar( cereal::virtual_base_class<PoDStruct>(this), v );
+    ar( cereal::virtual_base_class<PoDStructCereal>(this), v );
   };
+};
+
+struct PoDChildBoost : virtual PoDStructBoost
+{
+  PoDChildBoost() : v(1024)
+  { }
+
+  std::vector<float> v;
 
   template <class Archive>
   void serialize( Archive & ar, const unsigned int version )
   {
-    ar & boost::serialization::base_object<PoDStruct>(*this);
+    ar & boost::serialization::base_object<PoDStructBoost>(*this);
     ar & v;
   };
 };
@@ -349,8 +377,9 @@ int main()
     std::ostringstream name;
     name << "Vector(PoDStruct) size " << s;
 
-    std::vector<PoDStruct> data(s);
-    test<binary>( name.str(), data );
+    std::vector<PoDStructCereal> dataC(s);
+    std::vector<PoDStructBoost> dataB(s);
+    test<binary>( name.str(), dataC, dataB );
   };
 
   vectorPoDStructTest(1);
@@ -365,8 +394,9 @@ int main()
     std::ostringstream name;
     name << "Vector(PoDChild) size " << s;
 
-    std::vector<PoDChild> data(s);
-    test<binary>( name.str(), data );
+    std::vector<PoDChildCereal> dataC(s);
+    std::vector<PoDChildBoost> dataB(s);
+    test<binary>( name.str(), dataC, dataB );
   };
 
   vectorPoDChildTest(1024);
@@ -411,10 +441,14 @@ int main()
     std::ostringstream name;
     name << "Map(PoDStruct) size " <<s;
 
-    std::map<std::string, PoDStruct> m;
+    std::map<std::string, PoDStructCereal> mC;
+    std::map<std::string, PoDStructBoost> mB;
     for(size_t i=0; i<s; ++i)
-      m[std::to_string( i )] = PoDStruct();
-    test<binary>(name.str(), m);
+    {
+      mC[std::to_string( i )] = PoDStructCereal();
+      mB[std::to_string( i )] = PoDStructBoost();
+    }
+    test<binary>(name.str(), mC, mB);
   };
 
   mapPoDStructTest(1024);

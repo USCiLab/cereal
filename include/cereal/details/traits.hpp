@@ -293,12 +293,14 @@ namespace cereal
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
     struct has_member_split : std::integral_constant<bool,
-      has_member_load<T, InputArchive>::value && has_member_save<T, OutputArchive>::value> {};
+      (has_member_load<T, InputArchive>::value && has_member_save<T, OutputArchive>::value) ||
+      (has_member_versioned_load<T, InputArchive>::value && has_member_versioned_save<T, OutputArchive>::value)> {};
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
     struct has_non_member_split : std::integral_constant<bool,
-      has_non_member_load<T, InputArchive>::value && has_non_member_save<T, OutputArchive>::value> {};
+      (has_non_member_load<T, InputArchive>::value && has_non_member_save<T, OutputArchive>::value) ||
+      (has_non_member_versioned_load<T, InputArchive>::value && has_non_member_versioned_save<T, OutputArchive>::value)> {};
 
     // ######################################################################
     template <class T, class OutputArchive>
@@ -306,15 +308,25 @@ namespace cereal
       has_member_save<T, OutputArchive>::value ^
       has_non_member_save<T, OutputArchive>::value ^
       has_member_serialize<T, OutputArchive>::value ^
-      has_non_member_serialize<T, OutputArchive>::value> {};
+      has_non_member_serialize<T, OutputArchive>::value ^
+      /*-versioned---------------------------------------------------------*/
+      has_member_versioned_save<T, OutputArchive>::value ^
+      has_non_member_versioned_save<T, OutputArchive>::value ^
+      has_member_versioned_serialize<T, OutputArchive>::value ^
+      has_non_member_versioned_serialize<T, OutputArchive>::value> {};
 
     // ######################################################################
     template <class T, class InputArchive>
-      struct is_input_serializable : std::integral_constant<bool,
-          has_member_load<T, InputArchive>::value ^
-          has_non_member_load<T, InputArchive>::value ^
-          has_member_serialize<T, InputArchive>::value ^
-          has_non_member_serialize<T, InputArchive>::value> {};
+    struct is_input_serializable : std::integral_constant<bool,
+      has_member_load<T, InputArchive>::value ^
+      has_non_member_load<T, InputArchive>::value ^
+      has_member_serialize<T, InputArchive>::value ^
+      has_non_member_serialize<T, InputArchive>::value ^
+      /*-versioned---------------------------------------------------------*/
+      has_member_versioned_load<T, InputArchive>::value ^
+      has_non_member_versioned_load<T, InputArchive>::value ^
+      has_member_versioned_serialize<T, InputArchive>::value ^
+      has_non_member_versioned_serialize<T, InputArchive>::value> {};
 
     // ######################################################################
     namespace detail
@@ -503,7 +515,10 @@ namespace cereal
     };
 
     //! Version information class - used in Boost Transition Layer
-    template <class T> struct Version;
+    template <class T> struct Version
+    {
+      static const std::uint32_t version = 0;
+    };
   } // namespace detail
 } // namespace cereal
 

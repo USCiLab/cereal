@@ -356,10 +356,11 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive.\n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both).\n"
-            "Serialize functions generally have the following signature:\n\n"
-            "template<class Archive>\n"
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
+            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
+            "In addition, you may not mix versioned (Boost Transition Layer) with non-versioned serialization functions. \n"
+            "Serialize functions generally have the following signature: \n\n"
+            "template<class Archive> \n"
             "  void serialize(Archive & ar)\n"
             "  {\n"
             "    ar( member1, member2, member3 );\n"
@@ -549,7 +550,6 @@ namespace cereal
         return *self;
       }
 
-
       //! Member serialization
       template <class T> inline
       typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
@@ -610,10 +610,11 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive.\n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both).\n"
-            "Serialize functions generally have the following signature:\n\n"
-            "template<class Archive>\n"
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
+            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
+            "In addition, you may not mix versioned (Boost Transition Layer) with non-versioned serialization functions. \n"
+            "Serialize functions generally have the following signature: \n\n"
+            "template<class Archive> \n"
             "  void serialize(Archive & ar)\n"
             "  {\n"
             "    ar( member1, member2, member3 );\n"
