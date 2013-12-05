@@ -674,8 +674,24 @@ int main()
   std::cerr << "-------------------------" << std::endl;
   std::cout << cereal::traits::has_member_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
   std::cout << cereal::traits::has_member_versioned_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_output_serializable<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
+  std::cout << cereal::traits::is_output_versioned<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
+
+  std::cout << (cereal::traits::is_output_serializable<BoostTransitionMS, cereal::BinaryOutputArchive>::value &&
+    cereal::traits::has_member_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>::value &&
+    cereal::traits::is_output_versioned<BoostTransitionMS, cereal::BinaryOutputArchive>::value )<< std::endl;
+
+  {
+    // Boost transition layer stuff
+    cereal::XMLOutputArchive ar(std::cout);
+
+    BoostTransitionMS b(3);
+
+    ar( b );
+    ar( b );
+  }
 
   return 0;
 }
 
-CEREAL_CLASS_VERSION(std::vector<int>, 1);
+CEREAL_CLASS_VERSION(BoostTransitionMS, 1);
