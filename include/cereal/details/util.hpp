@@ -56,6 +56,7 @@ namespace cereal
 } // namespace cereal
 #else // clang or gcc
 #include <cxxabi.h>
+#include <cstdlib>
 namespace cereal
 {
   namespace util
