@@ -220,7 +220,7 @@ namespace cereal
           @internal
           @param addr The address (see shared_ptr get()) pointed to by the shared pointer
           @return A key that uniquely identifies the pointer */
-      std::uint32_t registerSharedPointer( void const * addr )
+      inline std::uint32_t registerSharedPointer( void const * addr )
       {
         // Handle null pointers by just returning 0
         if(addr == 0) return 0;
@@ -244,7 +244,7 @@ namespace cereal
           @internal
           @param name The name to associate with a polymorphic type
           @return A key that uniquely identifies the polymorphic type name */
-      std::uint32_t registerPolymorphicType( char const * name )
+      inline std::uint32_t registerPolymorphicType( char const * name )
       {
         auto id = itsPolymorphicTypeMap.find( name );
         if( id == itsPolymorphicTypeMap.end() )
@@ -273,24 +273,6 @@ namespace cereal
       {
         self->process( std::forward<T>( head ) );
         self->process( std::forward<Other>( tail )... );
-      }
-
-      /*! @name Boost Transition Layer (private)
-          Specific private functionality and overrides for enabling the Boost Transition Layer */
-      //! @{
-
-      //! Registers a class version with the archive and serializes it if necessary
-      /*! If this is the first time this class has been serialized, we will record its
-          version number and serialize that.
-
-          @tparam T The type of the class being serialized
-          @param version The version number associated with it */
-      template <class T> inline
-      void registerClassVersion( const std::uint32_t version )
-      {
-        const auto insertResult = itsVersionedTypes.insert( std::type_index(typeid(T)).hash_code() );
-        if( insertResult.second ) // insertion took place, serialize the version number
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
       }
 
 
@@ -325,18 +307,6 @@ namespace cereal
       processImpl(T const & t)
       {
         access::member_serialize(*self, const_cast<T &>(t));
-        return *self;
-      }
-
-      //! Member serialization
-      /*! Boost Transition Layer version */
-      template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
-                              ArchiveType &>::type
-      processImpl(T const & t)
-      {
-        registerClassVersion<T>( detail::Version<T>::version );
-        access::member_serialize(*self, const_cast<T &>(t), detail::Version<T>::version);
         return *self;
       }
 
@@ -400,6 +370,74 @@ namespace cereal
             "  }\n\n" );
         return *self;
       }
+
+      /*! @name Boost Transition Layer (private)
+          Specific private functionality and overrides for enabling the Boost Transition Layer */
+      //! @{
+
+      //! Registers a class version with the archive and serializes it if necessary
+      /*! If this is the first time this class has been serialized, we will record its
+          version number and serialize that.
+
+          @tparam T The type of the class being serialized
+          @param version The version number associated with it */
+      template <class T> inline
+      void registerClassVersion( const std::uint32_t version )
+      {
+        const auto insertResult = itsVersionedTypes.insert( std::type_index(typeid(T)).hash_code() );
+        if( insertResult.second ) // insertion took place, serialize the version number
+          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+      }
+
+      //! Member serialization
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        access::member_serialize(*self, const_cast<T &>(t), detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Non member serialization
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        serialize(*self, const_cast<T &>(t), detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Member split (save)
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_save<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        access::member_save(*self, t, detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Non member split (save)
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_save<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        save(*self, t, detail::Version<T>::version);
+        return *self;
+      }
+
+      //! @}
 
     private:
       ArchiveType * const self;
@@ -491,7 +529,7 @@ namespace cereal
 
           @param id The unique id that was serialized for the pointer
           @return A shared pointer to the data */
-      std::shared_ptr<void> getSharedPointer(std::uint32_t const id)
+      inline std::shared_ptr<void> getSharedPointer(std::uint32_t const id)
       {
         if(id == 0) return std::shared_ptr<void>(nullptr);
 
@@ -508,7 +546,7 @@ namespace cereal
 
           @param id The unique identifier for the shared pointer
           @param ptr The actual shared pointer */
-      void registerSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
+      inline void registerSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
         itsSharedPointerMap.insert( {stripped_id, ptr} );
@@ -520,7 +558,7 @@ namespace cereal
 
           @param id The unique id that was serialized for the polymorphic type
           @return The string identifier for the tyep */
-      std::string getPolymorphicName(std::uint32_t const id)
+      inline std::string getPolymorphicName(std::uint32_t const id)
       {
         auto name = itsPolymorphicTypeMap.find( id );
         if(name == itsPolymorphicTypeMap.end())
@@ -536,7 +574,7 @@ namespace cereal
 
           @param id The unique identifier for the polymorphic type
           @param name The name associated with the tyep */
-      void registerPolymorphicName(std::uint32_t const id, std::string const & name)
+      inline void registerPolymorphicName(std::uint32_t const id, std::string const & name)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
         itsPolymorphicTypeMap.insert( {stripped_id, name} );
