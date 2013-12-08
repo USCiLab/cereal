@@ -33,6 +33,7 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <string>
+#include <cstdlib>
 
 namespace cereal
 {
