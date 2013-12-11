@@ -173,10 +173,7 @@ namespace cereal
       //! Construct the output archive
       /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
-      {
-        // Immediately dump all version information
-        self->process( make_nvp<ArchiveType>( "cereal_version_information", detail::Versions ) );
-      }
+      { }
 
       //! Serializes all passed in data
       template <class ... Types> inline
@@ -387,7 +384,8 @@ namespace cereal
       template <class T> inline
       void registerClassVersion( const std::uint32_t version )
       {
-        const auto insertResult = itsVersionedTypes.insert( std::type_index(typeid(T)).hash_code() );
+        static const auto hash = std::type_index(typeid(T)).hash_code();
+        const auto insertResult = itsVersionedTypes.insert( hash );
         if( insertResult.second ) // insertion took place, serialize the version number
           process( make_nvp<ArchiveType>("cereal_class_version", version) );
       }
@@ -696,6 +694,85 @@ namespace cereal
         return *self;
       }
 
+      /*! @name Boost Transition Layer (private)
+          Specific private functionality and overrides for enabling the Boost Transition Layer */
+      //! @{
+
+      //! Registers a class version with the archive and serializes it if necessary
+      /*! If this is the first time this class has been serialized, we will record its
+          version number and serialize that.
+
+          @tparam T The type of the class being serialized
+          @param version The version number associated with it */
+      template <class T> inline
+      std::uint32_t loadClassVersion()
+      {
+        static const auto hash = std::type_index(typeid(T)).hash_code();
+        auto lookupResult = itsVersionedTypes.find( hash );
+
+        if( lookupResult != itsVersionedTypes.end() ) // already exists
+          return lookupResult->second;
+        else // need to load
+        {
+          std::uint32_t version;
+
+          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          itsVersionedTypes.emplace_hint( lookupResult, hash, version );
+
+          return version;
+        }
+      }
+
+      //! Member serialization
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        static const auto version = loadClassVersion<T>();
+        access::member_serialize(*self, t, version);
+        return *self;
+      }
+
+      //! Non member serialization
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        static const auto version = loadClassVersion<T>();
+        serialize(*self, t, version);
+        return *self;
+      }
+
+      //! Member split (load)
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_load<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        static const auto version = loadClassVersion<T>();
+        access::member_load(*self, t, version);
+        return *self;
+      }
+
+      //! Non member split (load)
+      /*! Boost Transition Layer version */
+      template <class T> inline
+      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_load<T, ArchiveType>::value,
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        static const auto version = loadClassVersion<T>();
+        load(*self, t, version);
+        return *self;
+      }
+
+      //! @}
+
     private:
       ArchiveType * const self;
 
@@ -707,6 +784,9 @@ namespace cereal
 
       //! Maps from name ids to names
       std::unordered_map<std::uint32_t, std::string> itsPolymorphicTypeMap;
+
+      //! Maps from type hash codes to version numbers
+      std::unordered_map<std::size_t, std::uint32_t> itsVersionedTypes;
   }; // class InputArchive
 } // namespace cereal
 

@@ -305,6 +305,28 @@ namespace cereal
     return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
   }
 
+  namespace detail
+  {
+    //! Holds all registered version information
+    struct Versions
+    {
+      static std::unordered_map<std::size_t, std::uint32_t> mapping;
+    }; // struct Versions
+
+    //! Initialize the mapping
+    std::unordered_map<std::size_t, std::uint32_t> Versions::mapping = {};
+
+    //! Version information class - used in Boost Transition Layer
+    /*! This is the base case for classes that have not been explicitly
+        registered */
+    template <class T> struct Version
+    {
+      static const std::uint32_t version = 0;
+      // we don't need to explicitly register these types since they
+      // always get a version number of 0
+    };
+  } // namespace detail
+
   //! Defines a class version for some type
   /*! This is part of the Boost Transition Layer and is not the recommended way
       of using cereal.  This works identically to how it does in Boost serialization,

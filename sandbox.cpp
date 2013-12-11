@@ -383,7 +383,11 @@ void test_unordered_loads()
 class BoostTransitionMS
 {
   public:
+    BoostTransitionMS() {}
     BoostTransitionMS( int xx ) : x(xx) {}
+
+    int getX(){ return x; }
+    void setX( int xx ){ x = xx; }
 
   private:
     friend class cereal::access;
@@ -397,7 +401,11 @@ class BoostTransitionMS
 class BoostTransitionSplit
 {
   public:
+    BoostTransitionSplit() {}
     BoostTransitionSplit( int xx ) : x(xx) {}
+
+    int getX(){ return x; }
+    void setX( int xx ){ x = xx; }
 
   private:
     friend class cereal::access;
@@ -415,6 +423,7 @@ class BoostTransitionSplit
 class BoostTransitionNMS
 {
   public:
+    BoostTransitionNMS() {}
     BoostTransitionNMS( int xx ) : x(xx) {}
 
     int x;
@@ -422,11 +431,12 @@ class BoostTransitionNMS
 
 template <class Archive>
 void serialize( Archive & ar, BoostTransitionNMS & bnms, const std::uint32_t version )
-{ ar( bnms.x ); }
+{ ar( bnms.x ); std::cout << "NMS version: " << version << std::endl; }
 
 struct BoostTransitionNMSplit
 {
   public:
+    BoostTransitionNMSplit() {}
     BoostTransitionNMSplit( int xx ) : x(xx) {}
 
     int x;
@@ -434,11 +444,11 @@ struct BoostTransitionNMSplit
 
 template <class Archive>
 void save( Archive & ar, BoostTransitionNMSplit const & bnsplit, const std::uint32_t version )
-{ ar( bnsplit.x ); }
+{ ar( bnsplit.x ); std::cout << "NMsave version: " << version << std::endl; }
 
 template <class Archive>
 void load( Archive & ar, BoostTransitionNMSplit & bnsplit, const std::uint32_t version )
-{ ar( bnsplit.x ); }
+{ ar( bnsplit.x ); std::cout << "NMload version: " << version << std::endl; }
 
 // ######################################################################
 int main()
@@ -711,22 +721,10 @@ int main()
     std::cout << std::endl;
   }
 
-  std::cerr << "-------------------------" << std::endl;
-  std::cout << cereal::traits::has_member_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::has_member_versioned_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::is_output_serializable<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
-  std::cout << cereal::traits::is_output_versioned<BoostTransitionMS, cereal::BinaryOutputArchive>() << std::endl;
-
-  std::cout << (cereal::traits::is_output_serializable<BoostTransitionMS, cereal::BinaryOutputArchive>::value &&
-    cereal::traits::has_member_serialize<BoostTransitionMS, cereal::BinaryOutputArchive>::value &&
-    cereal::traits::is_output_versioned<BoostTransitionMS, cereal::BinaryOutputArchive>::value )<< std::endl;
-
-  std::cout << "---------snarf" << std::endl;
-  std::cout << cereal::traits::has_non_member_serialize<BoostTransitionNMS, cereal::BinaryOutputArchive>() << std::endl;
-
   {
     // Boost transition layer stuff
-    cereal::XMLOutputArchive ar(std::cout);
+    std::ofstream ss("cereal_version.out");
+    cereal::XMLOutputArchive ar(ss);
 
     BoostTransitionMS b(3);
     ar( b, b );
@@ -739,6 +737,40 @@ int main()
 
     BoostTransitionNMSplit e(32);
     ar( e, e );
+  }
+
+  {
+    // Boost transition layer stuff
+    std::ifstream ss("cereal_version.out");
+    cereal::XMLInputArchive ar(ss);
+
+    BoostTransitionMS b;
+    ar( b );
+    assert( b.getX() == 3 );
+    b.setX( 0 );
+    ar( b );
+    assert( b.getX() == 3 );
+
+    BoostTransitionSplit c;
+    ar( c );
+    assert( c.getX() == 4 );
+    c.setX( 0 );
+    ar( c );
+    assert( c.getX() == 4 );
+
+    BoostTransitionNMS d;
+    ar( d );
+    assert( d.x == 5 );
+    d.x = 0;
+    ar( d );
+    assert( d.x == 5 );
+
+    BoostTransitionNMSplit e;
+    ar( e );
+    assert( e.x == 32 );
+    e.x = 0;
+    ar( e );
+    assert( e.x == 32 );
   }
 
   return 0;
