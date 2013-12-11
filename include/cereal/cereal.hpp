@@ -173,7 +173,10 @@ namespace cereal
       //! Construct the output archive
       /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
       OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
-      { }
+      {
+        // Immediately dump all version information
+        self->process( make_nvp<ArchiveType>( "cereal_version_information", detail::Versions ) );
+      }
 
       //! Serializes all passed in data
       template <class ... Types> inline

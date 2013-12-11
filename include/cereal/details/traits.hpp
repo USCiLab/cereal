@@ -530,10 +530,27 @@ namespace cereal
       }
     };
 
+    namespace
+    {
+
+    }
+    //! Holds all registered version information
+    struct Versions
+    {
+      std::unordered_map<std::size_t, std::uint32_t> mapping;
+    };
+
+    //! Initialize the mapping
+    std::unordered_map<std::size_t, std::uint32_t> Versions::mapping = {};
+
     //! Version information class - used in Boost Transition Layer
+    /*! This is the base case for classes that have not been explicitly
+        registered */
     template <class T> struct Version
     {
       static const std::uint32_t version = 0;
+      // we don't need to explicitly register these types since they
+      // always get a version number of 0
     };
   } // namespace detail
 } // namespace cereal
