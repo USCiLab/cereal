@@ -150,6 +150,68 @@ namespace cereal
   instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \
   } } // end namespaces
 
+  //! Defines a class version for some type
+  /*! Versioning information is optional and adds some small amount of
+      overhead to serialization.  This overhead will occur both in terms of
+      space in the archive (the version information for each class will be
+      stored exactly once) as well as runtime (versioned serialization functions
+      must check to see if they need to load or store version information).
+
+      Versioning is useful if you plan on fundamentally changing the way some
+      type is serialized in the future.  Versioned serialization functions
+      cannot be used to load non-versioned data.
+
+      By default, all types have an assumed version value of zero.  By
+      using this macro, you may change the version number associated with
+      some type.  cereal will then use this value as a second parameter
+      to your serialization functions.
+
+      The interface for the serialization functions is nearly identical
+      to non-versioned serialization with the addition of a second parameter,
+      const std::uint32_t version, which will be supplied with the correct
+      version number.  Serializing the version number on a save happens
+      automatically.
+
+      Versioning cannot be mixed with non-versioned serialization functions.
+
+      Example interface for versioning on a non-member serialize function:
+
+      @code{cpp}
+      CEREAL_CLASS_VERSION( Mytype, 77 ); // register class version
+
+      template <class Archive>
+      void serialize( Archive & ar, Mytype & t, const std::uint32_t version )
+      {
+        // When performing a load, the version associated with the class
+        // is whatever it was when that data was originally serialized
+        //
+        // When we save, we'll use the version that is defined in the macro
+
+        if( version >= some_number )
+          // do this
+        else
+          // do that
+      }
+      @endcode
+
+      Interfaces for other forms of serialization functions is similar.
+      */
+  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
+  namespace cereal { namespace detail {                                          \
+    template <> struct Version<TYPE>                                             \
+    {                                                                            \
+      static const std::uint32_t version = VERSION_NUMBER;                       \
+      static Version<TYPE> registerVersion()                                     \
+      {                                                                          \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
+             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        return {};                                                               \
+      }                                                                          \
+    }; /* end Version */                                                         \
+    static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \
+      Version<TYPE>::registerVersion();                                          \
+  } } // end namespaces
+
   //! The base output archive class
   /*! This is the base output archive for all output archives.  If you create
       a custom archive class, it should derive from this, passing itself as
@@ -275,7 +337,6 @@ namespace cereal
         self->process( std::forward<Other>( tail )... );
       }
 
-
       //! Serialization of a virtual_base_class wrapper
       /*! \sa virtual_base_class */
       template <class T> inline
@@ -361,7 +422,7 @@ namespace cereal
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "In addition, you may not mix versioned (Boost Transition Layer) with non-versioned serialization functions. \n"
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
             "Serialize functions generally have the following signature: \n\n"
             "template<class Archive> \n"
             "  void serialize(Archive & ar)\n"
@@ -370,10 +431,6 @@ namespace cereal
             "  }\n\n" );
         return *self;
       }
-
-      /*! @name Boost Transition Layer (private)
-          Specific private functionality and overrides for enabling the Boost Transition Layer */
-      //! @{
 
       //! Registers a class version with the archive and serializes it if necessary
       /*! If this is the first time this class has been serialized, we will record its
@@ -391,7 +448,7 @@ namespace cereal
       }
 
       //! Member serialization
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -403,7 +460,7 @@ namespace cereal
       }
 
       //! Non member serialization
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -415,7 +472,7 @@ namespace cereal
       }
 
       //! Member split (save)
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_save<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -427,7 +484,7 @@ namespace cereal
       }
 
       //! Non member split (save)
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_save<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -437,8 +494,6 @@ namespace cereal
         save(*self, t, detail::Version<T>::version);
         return *self;
       }
-
-      //! @}
 
     private:
       ArchiveType * const self;
@@ -684,7 +739,7 @@ namespace cereal
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
             "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "In addition, you may not mix versioned (Boost Transition Layer) with non-versioned serialization functions. \n"
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
             "Serialize functions generally have the following signature: \n\n"
             "template<class Archive> \n"
             "  void serialize(Archive & ar)\n"
@@ -693,10 +748,6 @@ namespace cereal
             "  }\n\n" );
         return *self;
       }
-
-      /*! @name Boost Transition Layer (private)
-          Specific private functionality and overrides for enabling the Boost Transition Layer */
-      //! @{
 
       //! Registers a class version with the archive and serializes it if necessary
       /*! If this is the first time this class has been serialized, we will record its
@@ -724,7 +775,7 @@ namespace cereal
       }
 
       //! Member serialization
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -736,7 +787,7 @@ namespace cereal
       }
 
       //! Non member serialization
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -748,7 +799,7 @@ namespace cereal
       }
 
       //! Member split (load)
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_load<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -760,7 +811,7 @@ namespace cereal
       }
 
       //! Non member split (load)
-      /*! Boost Transition Layer version */
+      /*! Versioning implementation */
       template <class T> inline
       typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_load<T, ArchiveType>::value,
                               ArchiveType &>::type
@@ -770,8 +821,6 @@ namespace cereal
         load(*self, t, version);
         return *self;
       }
-
-      //! @}
 
     private:
       ArchiveType * const self;

@@ -143,7 +143,7 @@ namespace cereal
     CEREAL_MAKE_HAS_MEMBER_TEST(serialize);
 
     // ######################################################################
-    // Member Serialize (versioned, Boost Transition Layer)
+    // Member Serialize (versioned)
     CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(serialize);
 
     // ######################################################################
@@ -151,7 +151,7 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize);
 
     // ######################################################################
-    // Non Member Serialize (versioned, Boost Transition Layer)
+    // Non Member Serialize (versioned)
     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize);
 
     // ######################################################################
@@ -159,7 +159,7 @@ namespace cereal
     CEREAL_MAKE_HAS_MEMBER_TEST(load);
 
     // ######################################################################
-    // Member Load (versioned, Boost Transition Layer)
+    // Member Load (versioned)
     CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(load);
 
     // ######################################################################
@@ -167,7 +167,7 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(load);
 
     // ######################################################################
-    // Non Member Load (versioned, Boost Transition Layer)
+    // Non Member Load (versioned)
     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
 
     // ######################################################################
@@ -201,7 +201,7 @@ namespace cereal
     };
 
     // ######################################################################
-    // Member Save (versioned, Boost Transition Layer)
+    // Member Save (versioned)
     namespace detail
     {
       template <class T, class A>
@@ -261,7 +261,7 @@ namespace cereal
     };
 
     // ######################################################################
-    // Non-const Member Save (versioned, Boost Transition Layer)
+    // Non-const Member Save (versioned)
     namespace detail
     {
       template <class T, class A>

@@ -316,7 +316,7 @@ namespace cereal
       std::unordered_map<std::size_t, std::uint32_t> mapping;
     }; // struct Versions
 
-    //! Version information class - used in Boost Transition Layer
+    //! Version information class
     /*! This is the base case for classes that have not been explicitly
         registered */
     template <class T> struct Version
@@ -326,34 +326,6 @@ namespace cereal
       // always get a version number of 0
     };
   } // namespace detail
-
-  //! Defines a class version for some type
-  /*! This is part of the Boost Transition Layer and is not the recommended way
-      of using cereal.  This works identically to how it does in Boost serialization,
-      providing a version number associated with some type that is available by specifying
-      a second parameter to serialize, save, or load.
-
-      If you are using the two parameter versions of serialization functions, a default
-      value of 0 will be used for version unless you specify otherwise with this macro.
-
-      The recommended way of performing versioning in cereal is to implement it yourself
-      on a class by class basis as required, creating a thin wrapper if you do not have
-      access to the internals of a class. */
-  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
-  namespace cereal { namespace detail {                                          \
-    template <> struct Version<TYPE>                                             \
-    {                                                                            \
-      static const std::uint32_t version = VERSION_NUMBER;                       \
-      static Version<TYPE> registerVersion()                                     \
-      {                                                                          \
-        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
-             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
-        return {};                                                               \
-      }                                                                          \
-    }; /* end Version */                                                         \
-    static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \
-      Version<TYPE>::registerVersion();                                          \
-  } } // end namespaces
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_
