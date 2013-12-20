@@ -336,6 +336,7 @@ int main()
     std::cout << "---------------------" << std::endl << str << std::endl << "---------------------" << std::endl;
   }
 
+  // playground
   {
     cereal::JSONOutputArchive archive( std::cout );
     bool arr[] = {true, false};
@@ -424,23 +425,7 @@ int main()
     int aa, a, b, c;
     ar & aa & a & b & c;
     std::cout << aa << " " << a << " " << b << " " << c << std::endl;
-
   }
-
-
-
-
-  //{
-  //  std::ifstream is("file.json");
-  //  cereal::JSONInputArchive iar( is );
-
-  //  std::shared_ptr<Fixture> f, f2;
-  //  iar( f, f2 );
-  //  assert( f->array[0] == 1 );
-  //  assert( f->array[1] == 2 );
-  //  assert( f->array[2] == 3 );
-  //  assert( f->array[3] == 4 );
-  //}
 
   return 0;
 }

@@ -90,10 +90,9 @@ namespace cereal
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!  Note that since this archive builds a tree in memory,
                         it will not output to the stream until its destructor is called.
-          @param precision The precision for floating point output.  For input and output
-                           floating point to test equal, this should be at least 20
+          @param precision The precision for floating point output.
           @param outputType Controls whether type information will be printed in attributes */
-      XMLOutputArchive(std::ostream & stream, size_t precision = 20, bool outputType = false ) :
+      XMLOutputArchive(std::ostream & stream, size_t precision = std::numeric_limits<double>::max_digits10, bool outputType = false ) :
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
         itsOutputType( outputType )

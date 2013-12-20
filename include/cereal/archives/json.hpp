@@ -38,6 +38,7 @@
 #include <cereal/external/rapidjson/document.h>
 #include <cereal/external/base64.hpp>
 
+#include <limits>
 #include <sstream>
 #include <stack>
 #include <vector>
@@ -86,7 +87,7 @@ namespace cereal
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!
           @param precision The precision for floating point output */
-      JSONOutputArchive(std::ostream & stream, int precision = 20) :
+      JSONOutputArchive(std::ostream & stream, int precision = std::numeric_limits<double>::max_digits10) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, precision),

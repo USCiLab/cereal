@@ -9,6 +9,11 @@
 #include "internal/stack.h"
 #include <csetjmp>
 
+// All part of denormalized parsing
+#include <limits> // for numeric_limits
+#include <cmath> // for fpclassify
+#include <sstream>
+
 #ifdef RAPIDJSON_SSE42
 #include <nmmintrin.h>
 #elif defined(RAPIDJSON_SSE2)
@@ -28,7 +33,6 @@
 	longjmp(jmpbuf_, 1); \
 	RAPIDJSON_MULTILINEMACRO_END
 #endif
-#include <iostream>
 namespace rapidjson {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -629,7 +633,7 @@ private:
 			}
 
 			while (s.Peek() >= '0' && s.Peek() <= '9') {
-				if (expFrac > -16) {
+				if (expFrac > -20) {
 					d = d * 10 + (s.Peek() - '0');
 					--expFrac;
 				}
@@ -659,7 +663,19 @@ private:
 				while (s.Peek() >= '0' && s.Peek() <= '9') {
 					exp = exp * 10 + (s.Take() - '0');
 					if (exp > 308) {
-						RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+            // Attempt denormalized construction
+            std::stringstream ss;
+            ss.precision( std::numeric_limits<double>::max_digits10 );
+            ss << d * internal::Pow10(expFrac) << 'e' << (expMinus ? '-' : '+') << exp;
+
+            double dd;
+            ss >> dd;
+
+            if( std::fpclassify( dd ) == FP_SUBNORMAL )
+              handler.Double( dd );
+            else
+						  RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+
 						return;
 					}
 				}
