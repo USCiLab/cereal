@@ -28,7 +28,7 @@
 	longjmp(jmpbuf_, 1); \
 	RAPIDJSON_MULTILINEMACRO_END
 #endif
-
+#include <iostream>
 namespace rapidjson {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -327,14 +327,17 @@ private:
 		}
 	}
 
+  // Parses for null or NaN
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseNull(Stream& stream, Handler& handler) {
 		RAPIDJSON_ASSERT(stream.Peek() == 'n');
 		stream.Take();
 
-		if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
+    if( stream.Peek() == 'a' && stream.Take() == 'a' && stream.Take() == 'n' )
+      handler.Double( std::numeric_limits<double>::quiet_NaN() );
+    else if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
 			handler.Null();
-		else
+    else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
 
@@ -513,6 +516,7 @@ private:
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseNumber(Stream& stream, Handler& handler) {
 		Stream s = stream; // Local copy for optimization
+
 		// Parse minus
 		bool minus = false;
 		if (s.Peek() == '-') {
