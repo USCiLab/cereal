@@ -490,7 +490,7 @@ namespace cereal
     struct Load
     {
       static_assert( !sizeof(T), "Cereal detected both member and non member load_and_allocate functions!" );
-      static T * load_andor_allocate( A & ar )
+      static T * load_andor_allocate( A & /*ar*/ )
       { return nullptr; }
     };
 
@@ -508,7 +508,7 @@ namespace cereal
                      "  ar & a\n"
                      "  return new T(a);\n"
                      "}\n\n" );
-      static T * load_andor_allocate( A & )
+      static T * load_andor_allocate( A & /*ar*/ )
       { return new T(); }
     };
 
