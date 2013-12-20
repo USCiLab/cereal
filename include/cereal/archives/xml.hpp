@@ -38,8 +38,10 @@
 #include <sstream>
 #include <stack>
 #include <vector>
+#include <limits>
 #include <string>
 #include <cstring>
+#include <cmath>
 
 namespace cereal
 {
@@ -481,19 +483,52 @@ namespace cereal
       //! Loads a type best represented as a float from the current top node
       void loadValue( float & value )
       {
-        value = std::stof( itsNodes.top().node->value() );
+        try
+        {
+          value = std::stof( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
       }
 
       //! Loads a type best represented as a double from the current top node
       void loadValue( double & value )
       {
-        value = std::stod( itsNodes.top().node->value() );
+        try
+        {
+          value = std::stod( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
       }
 
       //! Loads a type best represented as a long double from the current top node
       void loadValue( long double & value )
       {
-        value = std::stold( itsNodes.top().node->value() );
+        try
+        {
+          value = std::stold( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
       }
 
       //! Loads a string from the current node from the current top node
