@@ -194,8 +194,9 @@ namespace cereal
       }
       @endcode
 
-      Interfaces for other forms of serialization functions is similar.
-      */
+      Interfaces for other forms of serialization functions is similar.  This
+      macro should be placed at global scope.
+      @ingroup Utility */
   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
   namespace cereal { namespace detail {                                          \
     template <> struct Version<TYPE>                                             \
