@@ -148,7 +148,14 @@ void test( std::string const & name,
             DataTCereal const & dataC,
             DataTBoost const & dataB,
             size_t numAverages = 100,
-            bool validateData = false )
+            bool validateData = false );
+
+template <class SerializationT, class DataTCereal, class DataTBoost>
+void test( std::string const & name,
+            DataTCereal const & dataC,
+            DataTBoost const & dataB,
+            size_t numAverages,
+            bool /*validateData*/ )
 {
   std::cout << "-----------------------------------" << std::endl;
   std::cout << "Running test: " << name << std::endl;
@@ -293,7 +300,7 @@ struct PoDStructBoost
   double d;
 
   template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
+  void serialize( Archive & ar, const unsigned int /*version*/ )
   {
     ar & a & b & c & d;
   };
@@ -321,7 +328,7 @@ struct PoDChildBoost : virtual PoDStructBoost
   std::vector<float> v;
 
   template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
+  void serialize( Archive & ar, const unsigned int /*version*/ )
   {
     ar & boost::serialization::base_object<PoDStructBoost>(*this);
     ar & v;

@@ -193,7 +193,7 @@ protected:
 #else
   template<class Ch>
   typename std::enable_if < std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk( Ch c )
+    characterOk( Ch )
   {
     return true;
   }

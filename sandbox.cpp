@@ -394,7 +394,7 @@ class BoostTransitionMS
     int x;
 
     template <class Archive>
-    void serialize( Archive & ar, const std::uint32_t version )
+    void serialize( Archive & ar, const std::uint32_t /*version*/ )
     { ar( x ); }
 };
 
@@ -412,11 +412,11 @@ class BoostTransitionSplit
     int x;
 
     template <class Archive>
-    void save( Archive & ar, const std::uint32_t version ) const
+    void save( Archive & ar, const std::uint32_t /*version*/ ) const
     { ar( x ); }
 
     template <class Archive>
-    void load( Archive & ar, const std::uint32_t version )
+    void load( Archive & ar, const std::uint32_t /*version*/ )
     { ar( x ); }
 };
 

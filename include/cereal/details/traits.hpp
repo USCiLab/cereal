@@ -508,7 +508,7 @@ namespace cereal
                      "  ar & a\n"
                      "  return new T(a);\n"
                      "}\n\n" );
-      static T * load_andor_allocate( A & ar )
+      static T * load_andor_allocate( A & )
       { return new T(); }
     };
 
