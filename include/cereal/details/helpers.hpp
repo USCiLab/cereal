@@ -316,9 +316,6 @@ namespace cereal
       std::unordered_map<std::size_t, std::uint32_t> mapping;
     }; // struct Versions
 
-    ////! Initialize the mapping
-    //std::unordered_map<std::size_t, std::uint32_t> Versions::mapping = {{}};
-
     //! Version information class - used in Boost Transition Layer
     /*! This is the base case for classes that have not been explicitly
         registered */
@@ -342,20 +339,20 @@ namespace cereal
       The recommended way of performing versioning in cereal is to implement it yourself
       on a class by class basis as required, creating a thin wrapper if you do not have
       access to the internals of a class. */
-  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                        \
-  namespace cereal { namespace detail {                                     \
-    template <> struct Version<TYPE>                                        \
-    {                                                                       \
-      static const std::uint32_t version = VERSION_NUMBER;                  \
-      static Version<TYPE> registerVersion()                                \
-      {                                                                     \
-        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace(    \
-             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );   \
-        return {};                                                          \
-      }                                                                     \
-    }; /* end Version */                                                    \
-    static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER = \
-      Version<TYPE>::registerVersion();                                     \
+  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
+  namespace cereal { namespace detail {                                          \
+    template <> struct Version<TYPE>                                             \
+    {                                                                            \
+      static const std::uint32_t version = VERSION_NUMBER;                       \
+      static Version<TYPE> registerVersion()                                     \
+      {                                                                          \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
+             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        return {};                                                               \
+      }                                                                          \
+    }; /* end Version */                                                         \
+    static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \
+      Version<TYPE>::registerVersion();                                          \
   } } // end namespaces
 } // namespace cereal
 
