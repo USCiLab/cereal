@@ -329,7 +329,7 @@ private:
 
   // Parses for null or NaN
 	template<unsigned parseFlags, typename Stream, typename Handler>
-	void ParseNull(Stream& stream, Handler& handler) {
+	void ParseNaNNull(Stream& stream, Handler& handler) {
 		RAPIDJSON_ASSERT(stream.Peek() == 'n');
 		stream.Take();
 
@@ -337,6 +337,18 @@ private:
       handler.Double( std::numeric_limits<double>::quiet_NaN() );
     else if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
 			handler.Null();
+    else
+			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
+	}
+
+  // Parses for infinity
+	template<unsigned parseFlags, typename Stream, typename Handler>
+	void ParseInfinity(Stream& stream, Handler& handler) {
+		RAPIDJSON_ASSERT(stream.Peek() == 'i');
+		stream.Take();
+
+    if (stream.Take() == 'n' && stream.Take() == 'f')
+      handler.Double( std::numeric_limits<double>::infinity() );
     else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
@@ -688,13 +700,14 @@ private:
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseValue(Stream& stream, Handler& handler) {
 		switch (stream.Peek()) {
-			case 'n': ParseNull  <parseFlags>(stream, handler); break;
-			case 't': ParseTrue  <parseFlags>(stream, handler); break;
-			case 'f': ParseFalse <parseFlags>(stream, handler); break;
-			case '"': ParseString<parseFlags>(stream, handler); break;
-			case '{': ParseObject<parseFlags>(stream, handler); break;
-			case '[': ParseArray <parseFlags>(stream, handler); break;
-			default : ParseNumber<parseFlags>(stream, handler);
+			case 'n': ParseNaNNull  <parseFlags>(stream, handler); break;
+			case 'i': ParseInfinity <parseFlags>(stream, handler); break;
+			case 't': ParseTrue     <parseFlags>(stream, handler); break;
+			case 'f': ParseFalse    <parseFlags>(stream, handler); break;
+			case '"': ParseString   <parseFlags>(stream, handler); break;
+			case '{': ParseObject   <parseFlags>(stream, handler); break;
+			case '[': ParseArray    <parseFlags>(stream, handler); break;
+			default : ParseNumber   <parseFlags>(stream, handler);
 		}
 	}
 
