@@ -31,6 +31,7 @@
 
 #include <type_traits>
 #include <iostream>
+#include <cstdint>
 
 namespace cereal
 {
