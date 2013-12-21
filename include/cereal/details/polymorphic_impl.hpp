@@ -340,7 +340,7 @@ namespace cereal
 
         See the documentation for the other functions to try and understand this */
     template <class T>
-    void instantiate_polymorphic_binding( T*, int, adl_tag ) {};
+    void instantiate_polymorphic_binding( T*, int, adl_tag ) {}
   } // namespace detail
 } // namespace cereal
 

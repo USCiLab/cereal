@@ -73,7 +73,7 @@ struct MyType : public Base
       ar( cereal::base_class<Base>( this ) );
     }
 };
-CEREAL_REGISTER_TYPE(MyType);
+CEREAL_REGISTER_TYPE(MyType)
 
 struct YourType : public Base
 {
@@ -97,7 +97,7 @@ struct YourType : public Base
       ar( x );
     }
 };
-CEREAL_REGISTER_TYPE(YourType);
+CEREAL_REGISTER_TYPE(YourType)
 
 struct OurBase
 {
@@ -159,7 +159,7 @@ struct TestType
   void serialize( Archive & ar )
   {
     ar( x );
-  };
+  }
 };
 
 namespace cereal
@@ -180,7 +180,7 @@ struct BBB : AAA
   void serialize( Archive & ) {}
 };
 
-CEREAL_REGISTER_TYPE(BBB);
+CEREAL_REGISTER_TYPE(BBB)
 
 template <class T> void nop(T&&) {}
 
@@ -202,7 +202,7 @@ int main()
     //oarchive(ptr3);
     //oarchive(ptr4);
     //oarchive(ptr5);
-    
+
 
     //std::shared_ptr<AAA> a = std::make_shared<BBB>();
     //oarchive(a);

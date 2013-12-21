@@ -765,7 +765,7 @@ namespace cereal
 } // namespace cereal
 
 // register archives for polymorphic support
-CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive);
-CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
 
 #endif // CEREAL_ARCHIVES_JSON_HPP_

@@ -60,7 +60,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};
+    struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {}
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -79,7 +79,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
+    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {}
 
     //! Creates a test for whether a non const member function exists with a version parameter
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -98,7 +98,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_versioned_##name : std::integral_constant<bool, detail::has_member_versioned_##name##_impl<T, A>::value> {};
+    struct has_member_versioned_##name : std::integral_constant<bool, detail::has_member_versioned_##name##_impl<T, A>::value> {}
 
     //! Creates a test for whether a non const non-member function exists with a version parameter
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -117,7 +117,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {};
+    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {}
 
     // ######################################################################
     // Member load_and_allocate

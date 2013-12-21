@@ -289,7 +289,7 @@ struct PoDStructCereal
   void serialize( Archive & ar )
   {
     ar(a, b, c, d);
-  };
+  }
 };
 
 struct PoDStructBoost
@@ -303,7 +303,7 @@ struct PoDStructBoost
   void serialize( Archive & ar, const unsigned int /*version*/ )
   {
     ar & a & b & c & d;
-  };
+  }
 };
 
 struct PoDChildCereal : virtual PoDStructCereal
@@ -317,7 +317,7 @@ struct PoDChildCereal : virtual PoDStructCereal
   void serialize( Archive & ar )
   {
     ar( cereal::virtual_base_class<PoDStructCereal>(this), v );
-  };
+  }
 };
 
 struct PoDChildBoost : virtual PoDStructBoost
@@ -332,7 +332,7 @@ struct PoDChildBoost : virtual PoDStructBoost
   {
     ar & boost::serialization::base_object<PoDStructBoost>(*this);
     ar & v;
-  };
+  }
 };
 
 int main()

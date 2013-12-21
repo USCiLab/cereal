@@ -2816,7 +2816,7 @@ std::ostream& operator<<(std::ostream& os, PolyDerived const & s)
     return os;
 }
 
-CEREAL_REGISTER_TYPE(PolyDerived);
+CEREAL_REGISTER_TYPE(PolyDerived)
 
 template <class IArchive, class OArchive>
 void test_polymorphic()
