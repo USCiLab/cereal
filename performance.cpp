@@ -344,13 +344,13 @@ int main()
   const bool randomize = false;
 
   //########################################
-  auto vectorDoubleTest = [&](size_t s, bool randomize)
+  auto vectorDoubleTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(double) size " << s;
 
     std::vector<double> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngD();
 
@@ -363,13 +363,13 @@ int main()
   vectorDoubleTest(1024*1024, randomize); // 8MB
 
   //########################################
-  auto vectorCharTest = [&](size_t s, bool randomize)
+  auto vectorCharTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(uint8_t) size " << s;
 
     std::vector<uint8_t> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngC();
 

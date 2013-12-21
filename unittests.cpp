@@ -316,7 +316,7 @@ void test_structs()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     StructInternalSerialize o_iser = { random_value<int>(gen), random_value<int>(gen) };
     StructInternalSplit     o_ispl = { random_value<int>(gen), random_value<int>(gen) };
@@ -374,7 +374,7 @@ void test_array()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::array<int, 100> o_podarray;
     for(auto & elem : o_podarray)
@@ -459,7 +459,7 @@ void test_deque()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::deque<int> o_poddeque(100);
     for(auto & elem : o_poddeque)
@@ -550,7 +550,7 @@ void test_forward_list()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::forward_list<int> o_podforward_list(100);
     for(auto & elem : o_podforward_list)
@@ -635,7 +635,7 @@ void test_list()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::list<int> o_podlist(100);
     for(auto & elem : o_podlist)
@@ -720,7 +720,7 @@ void test_map()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::map<size_t, std::vector<StructInternalSerialize>> o_vectormap;
     for(int j=0; j<10; ++j)
@@ -804,7 +804,7 @@ void test_map_memory()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::map<int, std::unique_ptr<int>> o_uniqueptrMap;
     std::map<int, std::shared_ptr<int>> o_sharedptrMap;
@@ -894,7 +894,7 @@ void test_multimap()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::multimap<std::string, int> o_podmultimap;
     for(int j=0; j<100; ++j)
@@ -1013,7 +1013,7 @@ void test_memory()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_xptr2 = o_xptr1;
@@ -1086,7 +1086,7 @@ void test_queue()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::queue<int> o_podqueue;
     for(int j=0; j<100; ++j)
@@ -1183,7 +1183,7 @@ void test_priority_queue()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::priority_queue<int> o_podpriority_queue;
     for(int j=0; j<100; ++j)
@@ -1280,7 +1280,7 @@ void test_set()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::set<int> o_podset;
     for(int j=0; j<100; ++j)
@@ -1365,7 +1365,7 @@ void test_multiset()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::multiset<int> o_podmultiset;
     for(int j=0; j<100; ++j)
@@ -1489,7 +1489,7 @@ void test_stack()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::stack<int> o_podstack;
     for(int j=0; j<100; ++j)
@@ -1680,7 +1680,7 @@ void test_unordered_map()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_map<std::string, int> o_podunordered_map;
     for(int j=0; j<100; ++j)
@@ -1794,7 +1794,7 @@ void test_unordered_multimap()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_multimap<std::string, int> o_podunordered_multimap;
     for(int j=0; j<100; ++j)
@@ -1939,7 +1939,7 @@ void test_unordered_set()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_set<int> o_podunordered_set;
     for(int j=0; j<100; ++j)
@@ -2043,7 +2043,7 @@ void test_unordered_multiset()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_multiset<int> o_podunordered_multiset;
     for(int j=0; j<100; ++j)
@@ -2167,7 +2167,7 @@ void test_vector()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::vector<int> o_podvector(100);
     for(auto & elem : o_podvector)
@@ -2269,7 +2269,7 @@ void test_pair()
 
   auto rng = [&](){ return random_value<int>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::pair<int, int> o_podpair = {rng(), rng()};
     std::pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = {{rng(), rng()}, {rng(), rng()}};
@@ -2350,7 +2350,7 @@ void test_tuple()
 
   auto rng = [&](){ return random_value<int>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto o_podtuple = std::make_tuple( rng(), rng(), rng(), rng() );
     auto o_isertuple = std::make_tuple( StructInternalSerialize( rng(), rng() ),
@@ -2437,7 +2437,7 @@ void test_complex()
   auto rngD = [&](){ return random_value<double>(gen); };
   auto rngLD = [&](){ return random_value<long double>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::complex<float> o_float( rngF(), rngF() );
     std::complex<double> o_double( rngD(), rngD() );
@@ -2504,7 +2504,7 @@ void test_bitset()
   auto rng65  = [&](){ return random_binary_string<65>( gen ); };
   auto rng256 = [&](){ return random_binary_string<256>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::bitset<32> o_bit32( rng32() );
     std::bitset<65> o_bit65( rng65() );
@@ -2562,7 +2562,7 @@ BOOST_AUTO_TEST_CASE( json_bitset )
 template <class IArchive, class OArchive>
 void test_chrono()
 {
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto o_timePoint1 = std::chrono::system_clock::now();
     auto o_timePoint2 = std::chrono::steady_clock::now();
@@ -2711,7 +2711,7 @@ void test_structs_specialized()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     SpecializedMSerialize  o_iser = { random_value<int>(gen) };
     SpecializedMSplit      o_ispl = { random_value<int>(gen) };
@@ -2829,7 +2829,7 @@ void test_polymorphic()
   auto rngF = [&](){ return random_value<float>( gen ); };
   auto rngD = [&](){ return random_value<double>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
     std::weak_ptr<PolyBase>   o_weak = o_shared;
@@ -3057,7 +3057,7 @@ void test_unordered_loads()
   auto rngD = [&](){ return random_value<double>( gen ); };
   auto rngS = [&](){ return random_basic_string<char>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto const name1 = rngS();
     auto const name2 = rngS();

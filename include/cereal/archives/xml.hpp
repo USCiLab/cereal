@@ -587,18 +587,18 @@ namespace cereal
         }
 
         //! Searches for a child with the given name in this node
-        /*! @param name The name to search for (must be null terminated)
+        /*! @param searchName The name to search for (must be null terminated)
             @return The node if found, nullptr otherwise */
-        rapidxml::xml_node<> * search( const char * name )
+        rapidxml::xml_node<> * search( const char * searchName )
         {
-          if( name )
+          if( searchName )
           {
             size_t new_size = XMLInputArchive::getNumChildren( node );
-            size_t name_size = rapidxml::internal::measure( name );
+            size_t name_size = rapidxml::internal::measure( searchName );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
             {
-              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), name, name_size, true ) )
+              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), searchName, name_size, true ) )
               {
                 size = new_size;
                 child = new_child;

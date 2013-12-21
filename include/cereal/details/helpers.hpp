@@ -285,7 +285,7 @@ namespace cereal
 
     //! Construct a MapItem from a key and a value
     /*! @internal */
-    MapItem( Key && key, Value && value ) : key(const_cast<KeyType>(key)), value(const_cast<ValueType>(value)) {}
+    MapItem( Key && key_, Value && value_ ) : key(const_cast<KeyType>(key_)), value(const_cast<ValueType>(value_)) {}
 
     KeyType key;
     ValueType value;
