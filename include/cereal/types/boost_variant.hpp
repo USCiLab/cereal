@@ -42,7 +42,7 @@ namespace cereal
     template <class Archive>
     struct variant_save_visitor : boost::static_visitor<>
     {
-      variant_save_visitor(Archive & ar) : ar(ar) {}
+      variant_save_visitor(Archive & ar_) : ar(ar_) {}
 
       template<class T>
         void operator()(T const & value) const
