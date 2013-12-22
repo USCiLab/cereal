@@ -30,6 +30,10 @@
 #ifndef CEREAL_DETAILS_TRAITS_HPP_
 #define CEREAL_DETAILS_TRAITS_HPP_
 
+#if (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
+#define CEREAL_OLDER_GCC
+#endif
+
 #include <type_traits>
 #include <typeindex>
 #include <memory>
@@ -43,9 +47,21 @@ namespace cereal
     typedef std::true_type yes;
     typedef std::false_type no;
 
+    #ifdef CEREAL_OLDER_GCC // when VS supports better SFINAE, we can use this as the default
+    template<typename> struct Void { typedef void type; };
+    #endif // CEREAL_OLDER_GCC
+
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
+    #ifdef CEREAL_OLDER_GCC
+    #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                  \
+    template <class T, class A, class SFINAE = void>                                                                           \
+    struct has_member_##name : no;                                                                                             \
+    template <class T, class A>                                                                                                \
+    struct has_member_##name<T, A,                                                                                             \
+      typename Void< decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>() ) ) >::type> : yes {};
+    #else // NOT CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
     namespace detail                                                                                                               \
     {                                                                                                                              \
@@ -61,6 +77,7 @@ namespace cereal
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
     struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {}
+    #endif // NOT CEREAL_OLDER_GCC
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if

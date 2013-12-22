@@ -174,47 +174,7 @@ int main()
   std::cout << typeid(A).name() << std::endl;
   std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
 
-  //Archive a;
-  //T t;
+  // extra testing
 
-  //cereal::access::member_save( a, t );
-  //cereal::access::member_load( a, t );
-  //cereal::access::member_serialize( a, t );
-
-  //std::stringstream ss;
-  //{
-  //  cereal::JSONOutputArchive ar( ss );
-  //  ar( 5 );
-  //  ar( cereal::make_nvp("hello", 2.4f ) );
-  //  std::string s = "hey yo";
-  //  ar( CEREAL_NVP( s ) );
-  //  int darp [] = { 1, 2, 3 };
-  //  ar.saveBinaryValue( darp, sizeof(int) * 3, "darp" );
-  //  std::unique_ptr<A> ptr( new B() );
-  //  ar( CEREAL_NVP( ptr ) );
-  //}
-  //{
-  //  cereal::JSONInputArchive ar( ss );
-  //  int x;
-  //  ar( x );
-  //  assert( x == 5 );
-  //  float f;
-  //  ar( f );
-  //  assert( f == 2.4f );
-  //  std::string s;
-  //  ar( s );
-  //  assert( s == "hey yo" );
-  //  int darp[3];
-  //  ar.loadBinaryValue( darp, sizeof(int) * 3 );
-  //  assert( darp[0] == 1 );
-  //  assert( darp[1] == 2 );
-  //  assert( darp[2] == 3 );
-  //  std::unique_ptr<A> ptr;
-  //  std::cout << "----------" << std::endl;
-  //  std::cout << std::is_default_constructible<A>::value << std::endl;
-  //  std::cout << cereal::traits::has_load_and_allocate<A, cereal::JSONInputArchive>::value << std::endl;
-  //  ar( ptr );
-  //}
-  
   return 0;
 }
