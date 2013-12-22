@@ -1,8 +1,8 @@
 CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g -Wextra -Wshadow -pedantic
-CXX=g++-4.7
+CXX=g++
 COVERAGE_OUTPUT=out
 
-all: unittests sandbox performance sandbox_rtti sandbox_json
+all: unittests sandbox sandbox_vs performance sandbox_rtti sandbox_json
 
 sandbox: sandbox.cpp
 	${CXX} sandbox.cpp -o sandbox ${CPPFLAGS}

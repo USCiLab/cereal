@@ -811,8 +811,13 @@ void test_map_memory()
 
     for(int j=0; j<100; ++j)
     {
+      #ifdef CEREAL_OLDER_GCC
+      o_uniqueptrMap.insert( std::make_pair(random_value<int>(gen), std::unique_ptr<int>( new int( random_value<int>(gen) ) )) );
+      o_sharedptrMap.insert( std::make_pair(random_value<int>(gen), std::make_shared<int>( random_value<int>(gen) )) );
+      #else // NOT CEREAL_OLDER_GCC
       o_uniqueptrMap.emplace( random_value<int>(gen), std::unique_ptr<int>( new int( random_value<int>(gen) ) ) );
       o_sharedptrMap.emplace( random_value<int>(gen), std::make_shared<int>( random_value<int>(gen) ) );
+      #endif // NOT CEREAL_OLDER_GCC
     }
 
     std::ostringstream os;

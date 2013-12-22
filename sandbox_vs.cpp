@@ -45,40 +45,40 @@ struct Archive {};
 struct Test
 {
   template <class Archive>
-  void serialzize( Archive & ar )
+  void serialzize( Archive & )
   {
     std::cout << "hey there" << std::endl;
   }
 
   template <class Archive>
-  void save( Archive & ar ) const
+  void save( Archive & ) const
   {
     std::cout << "saved by the bell" << std::endl;
   }
 
   template <class Archive>
-  void load( Archive & ar )
+  void load( Archive & )
   {
     std::cout << "locked and loaded" << std::endl;
   }
 
   template <class Archive>
-  static Test * load_and_allocate( Archive & ar )
+  static Test * load_and_allocate( Archive & )
   {
     return new Test();
   }
 };
 
 template <class Archive>
-void serialize( Archive & ar, Test & t )
+void serialize( Archive &, Test & )
 { }
 
 template <class Archive>
-void load( Archive & ar, Test & t )
+void load( Archive &, Test & )
 { }
 
 template <class Archive>
-void save( Archive & ar, Test const & t )
+void save( Archive &, Test const & )
 { }
 
 namespace cereal
@@ -87,7 +87,7 @@ namespace cereal
   struct LoadAndAllocate<Test>
   {
     template <class Archive>
-    static Test * load_and_allocate( Archive & ar )
+    static Test * load_and_allocate( Archive & )
     {
       return new Test();
     }
@@ -104,7 +104,7 @@ struct B : A
   void foo() {}
 
   template <class Archive>
-  void serialize( Archive & ar )
+  void serialize( Archive & )
   {
     std::cout << "i'm in your b" << std::endl;
   }

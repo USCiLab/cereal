@@ -56,7 +56,7 @@ namespace cereal
     //! @internal
     template<int N, class Variant, class ... Args, class Archive>
     typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(Archive & ar, int target, Variant & variant)
+    load_variant(Archive & /*ar*/, int /*target*/, Variant & /*variant*/)
     {
       throw ::cereal::Exception("Error traversing variant during load");
     }

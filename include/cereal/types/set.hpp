@@ -62,7 +62,11 @@ namespace cereal
         typename SetT::key_type key;
 
         ar( key );
+        #ifdef CEREAL_OLDER_GCC
+        hint = set.insert( hint, std::move( key ) );
+        #else // NOT CEREAL_OLDER_GCC
         hint = set.emplace_hint( hint, std::move( key ) );
+        #endif // NOT CEREAL_OLDER_GCC
       }
     }
   }
