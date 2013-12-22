@@ -37,4 +37,4 @@ doc:
 
 .PHONY: clean
 clean:
-	-@rm *.o sandbox unittests performance sandbox_rtti sandbox_json 2>/dev/null || true
+	-@rm *.o sandbox sandbox_vs unittests performance sandbox_rtti sandbox_json 2>/dev/null || true

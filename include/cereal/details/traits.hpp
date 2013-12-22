@@ -57,10 +57,10 @@ namespace cereal
     #ifdef CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                  \
     template <class T, class A, class SFINAE = void>                                                                           \
-    struct has_member_##name : no;                                                                                             \
+    struct has_member_##name : no {};                                                                                          \
     template <class T, class A>                                                                                                \
     struct has_member_##name<T, A,                                                                                             \
-      typename Void< decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>() ) ) >::type> : yes {};
+      typename Void< decltype( cereal::access::member_##name( std::declval<A&>(), std::declval<T&>() ) ) >::type> : yes {}
     #else // NOT CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
     namespace detail                                                                                                               \
