@@ -782,7 +782,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        static const auto version = loadClassVersion<T>();
+        const auto version = loadClassVersion<T>();
         access::member_serialize(*self, t, version);
         return *self;
       }
@@ -794,7 +794,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        static const auto version = loadClassVersion<T>();
+        const auto version = loadClassVersion<T>();
         serialize(*self, t, version);
         return *self;
       }
@@ -806,7 +806,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        static const auto version = loadClassVersion<T>();
+        const auto version = loadClassVersion<T>();
         access::member_load(*self, t, version);
         return *self;
       }
@@ -818,7 +818,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        static const auto version = loadClassVersion<T>();
+        const auto version = loadClassVersion<T>();
         load(*self, t, version);
         return *self;
       }
