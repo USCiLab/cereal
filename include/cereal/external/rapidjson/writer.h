@@ -191,15 +191,19 @@ protected:
   }
 
 #else
+  // As part of a fix for GCC 4.7
+  template <class T>
+  static constexpr int to_int( T t ){ return t; }
+
   template<class Ch>
-  typename std::enable_if < std::numeric_limits<Ch>::max() < 256, bool>::type
+  typename std::enable_if < to_int(std::numeric_limits<Ch>::max()) < to_int(256), bool>::type
     characterOk( Ch )
   {
     return true;
   }
 
   template<class Ch>
-  typename std::enable_if<std::numeric_limits<Ch>::max() >= 256, bool>::type
+  typename std::enable_if< to_int(std::numeric_limits<Ch>::max()) >= to_int(256), bool>::type
     characterOk(Ch c)
   { return c < 256; }
 #endif
