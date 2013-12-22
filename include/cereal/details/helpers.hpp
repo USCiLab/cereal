@@ -43,7 +43,7 @@ namespace cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
    * a fixed size type instead of size_t, which may vary from machine to
    * machine. */
-  typedef uint64_t size_type;
+  using size_type = uint64_t;
 
   // forward decls
   class BinaryOutputArchive;
@@ -126,12 +126,12 @@ namespace cereal
       // otherwise, we store a reference.  If we were passed an array, don't
       // decay the type - keep it as an array, and then proceed as normal
       // with the RValue business
-      typedef typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
-                                        typename std::remove_cv<T>::type,
-                                        typename std::decay<T>::type>::type DT;
-      typedef typename std::conditional<std::is_rvalue_reference<T>::value,
-                                        DT,
-                                        typename std::add_lvalue_reference<DT>::type>::type Type;
+      using DT = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
+                                           typename std::remove_cv<T>::type,
+                                           typename std::decay<T>::type>::type;
+      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
+                                             DT,
+                                             typename std::add_lvalue_reference<DT>::type>::type;
       // prevent nested nvps
       static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
                      "Cannot pair a name to a NameValuePair" );
@@ -195,9 +195,9 @@ namespace cereal
   {
     //! Internally store the pointer as a void *, keeping const if created with
     //! a const pointer
-    typedef typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
-                                      const void *,
-                                      void *>::type PT;
+    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
+                                         const void *,
+                                         void *>::type;
 
     BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
 
@@ -236,10 +236,10 @@ namespace cereal
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
       // otherwise, we store a reference
-      typedef typename std::decay<T>::type DT;
-      typedef typename std::conditional<std::is_rvalue_reference<T>::value,
-                                        DT,
-                                        typename std::add_lvalue_reference<DT>::type>::type Type;
+      using DT = typename std::decay<T>::type;
+      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
+                                             DT,
+                                             typename std::add_lvalue_reference<DT>::type>::type;
 
     public:
       SizeTag( T && sz ) : size(const_cast<Type>(sz)) {}
@@ -271,17 +271,17 @@ namespace cereal
   template <class Key, class Value>
   struct MapItem
   {
-    typedef typename std::decay<Key>::type DecayKey;
-    typedef typename std::conditional<
+    using DecayKey = typename std::decay<Key>::type;
+    using KeyType = typename std::conditional<
       std::is_rvalue_reference<Key>::value,
       DecayKey,
-      typename std::add_lvalue_reference<DecayKey>::type>::type KeyType;
+      typename std::add_lvalue_reference<DecayKey>::type>::type;
 
-    typedef typename std::decay<Value>::type DecayValue;
-    typedef typename std::conditional<
+    using DecayValue = typename std::decay<Value>::type;
+    using ValueType =  typename std::conditional<
       std::is_rvalue_reference<Value>::value,
       DecayValue,
-      typename std::add_lvalue_reference<DecayValue>::type>::type ValueType;
+      typename std::add_lvalue_reference<DecayValue>::type>::type;
 
     //! Construct a MapItem from a key and a value
     /*! @internal */

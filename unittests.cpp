@@ -3134,3 +3134,97 @@ BOOST_AUTO_TEST_CASE( json_unordered_loads )
 {
   test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+// ######################################################################
+struct VersionStructMS
+{
+  bool x;
+  std::uint32_t v;
+  template <class Archive>
+  void serialize( Archive & ar, std::uint32_t const version )
+  { 
+    ar( x );
+    std::cerr << "VersionStructMS " << version << std::endl;
+    v = version;
+  }
+};
+
+struct VersionStructMSP
+{
+  uint8_t x;
+  std::uint32_t v;
+  template <class Archive>
+  void save( Archive & ar, std::uint32_t const version ) const
+  { 
+    ar( x );
+    std::cerr << "VersionStructMSP Save " << version << std::endl;
+  }
+
+  template <class Archive>
+  void load( Archive & ar, std::uint32_t const version )
+  { 
+    ar( x );
+    v = version;
+    std::cerr << "VersionStructMSP Load " << version << std::endl;
+  }
+};
+
+CEREAL_CLASS_VERSION( VersionStructMSP, 33 )
+
+template <class IArchive, class OArchive>
+void test_versioning()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(size_t i=0; i<100; ++i)
+  {
+    VersionStructMS o_MS   = {random_value<uint8_t>(gen) % 2 ? true : false, -1};
+    VersionStructMSP o_MSP = {random_value<uint8_t>(gen), -1};
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      OArchive oar2(std::cout);
+      oar( o_MS );
+      oar( o_MSP );
+      oar2( o_MS );
+      oar2( o_MSP );
+    }
+
+    decltype(o_MS) i_MS;
+    decltype(o_MSP) i_MSP;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+      iar( i_MS );
+      iar( i_MSP );
+    }
+
+    BOOST_CHECK_EQUAL(o_MS.x, i_MS.x);
+    BOOST_CHECK_EQUAL(i_MS.v, 0);
+    BOOST_CHECK_EQUAL(o_MSP.x, i_MSP.x);
+    BOOST_CHECK_EQUAL(i_MSP.v, 33);
+    }
+}
+
+BOOST_AUTO_TEST_CASE( binary_versioning )
+{
+  test_versioning<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_versioning )
+{
+  test_versioning<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_versioning )
+{
+  test_versioning<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_versioning )
+{
+  test_versioning<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
