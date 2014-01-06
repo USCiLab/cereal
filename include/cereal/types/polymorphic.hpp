@@ -85,6 +85,10 @@
   } } /* end namespaces */                                    \
   CEREAL_BIND_TO_ARCHIVES(T)
 
+#ifdef _MSC_VER
+#undef CONSTEXPR
+#endif
+
 namespace cereal
 {
   namespace polymorphic_detail
