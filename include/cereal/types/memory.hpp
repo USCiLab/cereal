@@ -54,6 +54,23 @@ namespace cereal
     {
       return {std::forward<T>(t)};
     }
+
+    //! A struct that acts as a wrapper around calling load_andor_allocate
+    /*! The purpose of this is to allow a load_and_allocate call to properly enter into the
+        'data' NVP of the ptr_wrapper
+        @internal */
+    template <class Archive, class T>
+    struct LoadAndAllocateLoadWrapper
+    {
+      LoadAndAllocateLoadWrapper() = default;
+
+      inline void serialize( Archive & ar )
+      {
+        ptr = ::cereal::detail::Load<T, Archive>::load_andor_allocate( ar );
+      }
+
+      T * ptr;
+    };
   }
 
   //! Saving std::shared_ptr for non polymorphic types
@@ -140,8 +157,10 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
-      ar.registerSharedPointer(id, ptr);
+      // Use wrapper to enter into "data" nvp
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
+      ar( loadWrapper );
+      ptr.reset( loadWrapper.ptr );
     }
     else
     {
@@ -205,7 +224,12 @@ namespace cereal
     auto & ptr = wrapper.ptr;
 
     if( isValid )
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
+    {
+      // Use wrapper to enter into "data" nvp
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
+      ar( loadWrapper );
+      ptr.reset( loadWrapper.ptr );
+    }
     else
       ptr.reset( nullptr );
   }
