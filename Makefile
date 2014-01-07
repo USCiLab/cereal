@@ -1,8 +1,8 @@
-CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g -Wextra
+CPPFLAGS=-std=c++11 -I./include -Wall -Werror -g -Wextra -Wshadow -pedantic
 CXX=g++
 COVERAGE_OUTPUT=out
 
-all: unittests sandbox performance sandbox_rtti sandbox_json
+all: unittests sandbox sandbox_vs performance sandbox_rtti sandbox_json
 
 sandbox: sandbox.cpp
 	${CXX} sandbox.cpp -o sandbox ${CPPFLAGS}
@@ -37,4 +37,4 @@ doc:
 
 .PHONY: clean
 clean:
-	-@rm *.o sandbox unittests performance sandbox_rtti sandbox_json 2>/dev/null || true
+	-@rm *.o sandbox sandbox_vs unittests performance sandbox_rtti sandbox_json 2>/dev/null || true

@@ -407,11 +407,11 @@ namespace cereal
 
           //! Adjust our position such that we are at the node with the given name
           /*! @throws Exception if no such named node exists */
-          inline void search( const char * name )//, GenericValue const & parent )
+          inline void search( const char * searchName )//, GenericValue const & parent )
           {
             size_t index = 0;
             for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
-              if( std::strcmp( name, it->name.GetString() ) == 0 )
+              if( std::strcmp( searchName, it->name.GetString() ) == 0 )
               {
                 itsIndex = index;
                 return;
@@ -765,7 +765,7 @@ namespace cereal
 } // namespace cereal
 
 // register archives for polymorphic support
-CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive);
-CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
 
 #endif // CEREAL_ARCHIVES_JSON_HPP_

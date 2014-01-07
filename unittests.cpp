@@ -316,7 +316,7 @@ void test_structs()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     StructInternalSerialize o_iser = { random_value<int>(gen), random_value<int>(gen) };
     StructInternalSplit     o_ispl = { random_value<int>(gen), random_value<int>(gen) };
@@ -374,7 +374,7 @@ void test_array()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::array<int, 100> o_podarray;
     for(auto & elem : o_podarray)
@@ -459,7 +459,7 @@ void test_deque()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::deque<int> o_poddeque(100);
     for(auto & elem : o_poddeque)
@@ -550,7 +550,7 @@ void test_forward_list()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::forward_list<int> o_podforward_list(100);
     for(auto & elem : o_podforward_list)
@@ -635,7 +635,7 @@ void test_list()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::list<int> o_podlist(100);
     for(auto & elem : o_podlist)
@@ -720,7 +720,7 @@ void test_map()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::map<size_t, std::vector<StructInternalSerialize>> o_vectormap;
     for(int j=0; j<10; ++j)
@@ -804,15 +804,20 @@ void test_map_memory()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::map<int, std::unique_ptr<int>> o_uniqueptrMap;
     std::map<int, std::shared_ptr<int>> o_sharedptrMap;
 
     for(int j=0; j<100; ++j)
     {
+      #ifdef CEREAL_OLDER_GCC
+      o_uniqueptrMap.insert( std::make_pair(random_value<int>(gen), std::unique_ptr<int>( new int( random_value<int>(gen) ) )) );
+      o_sharedptrMap.insert( std::make_pair(random_value<int>(gen), std::make_shared<int>( random_value<int>(gen) )) );
+      #else // NOT CEREAL_OLDER_GCC
       o_uniqueptrMap.emplace( random_value<int>(gen), std::unique_ptr<int>( new int( random_value<int>(gen) ) ) );
       o_sharedptrMap.emplace( random_value<int>(gen), std::make_shared<int>( random_value<int>(gen) ) );
+      #endif // NOT CEREAL_OLDER_GCC
     }
 
     std::ostringstream os;
@@ -894,7 +899,7 @@ void test_multimap()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::multimap<std::string, int> o_podmultimap;
     for(int j=0; j<100; ++j)
@@ -1013,7 +1018,7 @@ void test_memory()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<int> o_xptr1 = std::make_shared<int>(random_value<int>(gen));
     std::shared_ptr<int> o_xptr2 = o_xptr1;
@@ -1086,7 +1091,7 @@ void test_queue()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::queue<int> o_podqueue;
     for(int j=0; j<100; ++j)
@@ -1183,7 +1188,7 @@ void test_priority_queue()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::priority_queue<int> o_podpriority_queue;
     for(int j=0; j<100; ++j)
@@ -1280,7 +1285,7 @@ void test_set()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::set<int> o_podset;
     for(int j=0; j<100; ++j)
@@ -1365,7 +1370,7 @@ void test_multiset()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::multiset<int> o_podmultiset;
     for(int j=0; j<100; ++j)
@@ -1489,7 +1494,7 @@ void test_stack()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::stack<int> o_podstack;
     for(int j=0; j<100; ++j)
@@ -1680,7 +1685,7 @@ void test_unordered_map()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_map<std::string, int> o_podunordered_map;
     for(int j=0; j<100; ++j)
@@ -1794,7 +1799,7 @@ void test_unordered_multimap()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_multimap<std::string, int> o_podunordered_multimap;
     for(int j=0; j<100; ++j)
@@ -1939,7 +1944,7 @@ void test_unordered_set()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_set<int> o_podunordered_set;
     for(int j=0; j<100; ++j)
@@ -2043,7 +2048,7 @@ void test_unordered_multiset()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::unordered_multiset<int> o_podunordered_multiset;
     for(int j=0; j<100; ++j)
@@ -2167,7 +2172,7 @@ void test_vector()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::vector<int> o_podvector(100);
     for(auto & elem : o_podvector)
@@ -2269,7 +2274,7 @@ void test_pair()
 
   auto rng = [&](){ return random_value<int>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::pair<int, int> o_podpair = {rng(), rng()};
     std::pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = {{rng(), rng()}, {rng(), rng()}};
@@ -2350,7 +2355,7 @@ void test_tuple()
 
   auto rng = [&](){ return random_value<int>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto o_podtuple = std::make_tuple( rng(), rng(), rng(), rng() );
     auto o_isertuple = std::make_tuple( StructInternalSerialize( rng(), rng() ),
@@ -2437,7 +2442,7 @@ void test_complex()
   auto rngD = [&](){ return random_value<double>(gen); };
   auto rngLD = [&](){ return random_value<long double>(gen); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::complex<float> o_float( rngF(), rngF() );
     std::complex<double> o_double( rngD(), rngD() );
@@ -2504,7 +2509,7 @@ void test_bitset()
   auto rng65  = [&](){ return random_binary_string<65>( gen ); };
   auto rng256 = [&](){ return random_binary_string<256>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::bitset<32> o_bit32( rng32() );
     std::bitset<65> o_bit65( rng65() );
@@ -2562,7 +2567,7 @@ BOOST_AUTO_TEST_CASE( json_bitset )
 template <class IArchive, class OArchive>
 void test_chrono()
 {
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto o_timePoint1 = std::chrono::system_clock::now();
     auto o_timePoint2 = std::chrono::steady_clock::now();
@@ -2711,7 +2716,7 @@ void test_structs_specialized()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     SpecializedMSerialize  o_iser = { random_value<int>(gen) };
     SpecializedMSplit      o_ispl = { random_value<int>(gen) };
@@ -2816,7 +2821,7 @@ std::ostream& operator<<(std::ostream& os, PolyDerived const & s)
     return os;
 }
 
-CEREAL_REGISTER_TYPE(PolyDerived);
+CEREAL_REGISTER_TYPE(PolyDerived)
 
 template <class IArchive, class OArchive>
 void test_polymorphic()
@@ -2829,7 +2834,7 @@ void test_polymorphic()
   auto rngF = [&](){ return random_value<float>( gen ); };
   auto rngD = [&](){ return random_value<double>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
     std::weak_ptr<PolyBase>   o_weak = o_shared;
@@ -3057,7 +3062,7 @@ void test_unordered_loads()
   auto rngD = [&](){ return random_value<double>( gen ); };
   auto rngS = [&](){ return random_basic_string<char>( gen ); };
 
-  for(int i=0; i<100; ++i)
+  for(int ii=0; ii<100; ++ii)
   {
     auto const name1 = rngS();
     auto const name2 = rngS();
@@ -3133,4 +3138,167 @@ BOOST_AUTO_TEST_CASE( xml_unordered_loads )
 BOOST_AUTO_TEST_CASE( json_unordered_loads )
 {
   test_unordered_loads<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
+// ######################################################################
+class VersionStructMS
+{
+  public:
+    bool x;
+    std::uint32_t v;
+
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void serialize( Archive & ar, std::uint32_t const version )
+    {
+      ar( x );
+      v = version;
+    }
+};
+
+struct VersionStructMSP
+{
+  uint8_t x;
+  std::uint32_t v;
+  template <class Archive>
+  void save( Archive & ar, std::uint32_t const /*version*/ ) const
+  {
+    ar( x );
+  }
+
+  template <class Archive>
+  void load( Archive & ar, std::uint32_t const version )
+  {
+    ar( x );
+    v = version;
+  }
+};
+
+struct VersionStructNMS
+{
+  std::int32_t x;
+  std::uint32_t v;
+};
+
+template <class Archive>
+void serialize( Archive & ar, VersionStructNMS & vnms, const std::uint32_t version )
+{
+  ar( vnms.x );
+  vnms.v = version;
+}
+
+struct VersionStructNMSP
+{
+  double x;
+  std::uint32_t v;
+};
+
+template <class Archive>
+void save( Archive & ar, VersionStructNMSP const & vnms, const std::uint32_t /*version*/ )
+{
+  ar( vnms.x );
+}
+
+template <class Archive>
+void load( Archive & ar, VersionStructNMSP & vnms, const std::uint32_t version )
+{
+  ar( vnms.x );
+  vnms.v = version;
+}
+
+CEREAL_CLASS_VERSION( VersionStructMSP, 33 )
+CEREAL_CLASS_VERSION( VersionStructNMS, 66 )
+CEREAL_CLASS_VERSION( VersionStructNMSP, 99 )
+
+template <class IArchive, class OArchive>
+void test_versioning()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(size_t i=0; i<100; ++i)
+  {
+    VersionStructMS o_MS      = {random_value<uint8_t>(gen) % 2 ? true : false, 1};
+    VersionStructMSP o_MSP    = {random_value<uint8_t>(gen), 1};
+    VersionStructNMS o_NMS    = {random_value<int32_t>(gen), 1};
+    VersionStructNMSP o_NMSP  = {random_value<double>(gen), 1};
+    VersionStructMS o_MS2     = {random_value<uint8_t>(gen) % 2 ? true : false, 1};
+    VersionStructMSP o_MSP2   = {random_value<uint8_t>(gen), 1};
+    VersionStructNMS o_NMS2   = {random_value<int32_t>(gen), 1};
+    VersionStructNMSP o_NMSP2 = {random_value<double>(gen), 1};
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar( o_MS );
+      oar( o_MSP );
+      oar( o_NMS );
+      oar( o_NMSP );
+      oar( o_MS2 );
+      oar( o_MSP2 );
+      oar( o_NMS2 );
+      oar( o_NMSP2 );
+    }
+
+    decltype(o_MS) i_MS;
+    decltype(o_MSP) i_MSP;
+    decltype(o_NMS) i_NMS;
+    decltype(o_NMSP) i_NMSP;
+    decltype(o_MS2) i_MS2;
+    decltype(o_MSP2) i_MSP2;
+    decltype(o_NMS2) i_NMS2;
+    decltype(o_NMSP2) i_NMSP2;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+      iar( i_MS );
+      iar( i_MSP );
+      iar( i_NMS );
+      iar( i_NMSP );
+      iar( i_MS2 );
+      iar( i_MSP2 );
+      iar( i_NMS2 );
+      iar( i_NMSP2 );
+    }
+
+    BOOST_CHECK_EQUAL(o_MS.x, i_MS.x);
+    BOOST_CHECK_EQUAL(i_MS.v, 0);
+    BOOST_CHECK_EQUAL(o_MSP.x, i_MSP.x);
+    BOOST_CHECK_EQUAL(i_MSP.v, 33);
+    BOOST_CHECK_EQUAL(o_NMS.x, i_NMS.x);
+    BOOST_CHECK_EQUAL(i_NMS.v, 66);
+    BOOST_CHECK_CLOSE(o_NMSP.x, i_NMSP.x, 1e-5);
+    BOOST_CHECK_EQUAL(i_NMSP.v, 99);
+
+    BOOST_CHECK_EQUAL(o_MS2.x, i_MS2.x);
+    BOOST_CHECK_EQUAL(i_MS2.v, 0);
+    BOOST_CHECK_EQUAL(o_MSP2.x, i_MSP2.x);
+    BOOST_CHECK_EQUAL(i_MSP2.v, 33);
+    BOOST_CHECK_EQUAL(o_NMS2.x, i_NMS2.x);
+    BOOST_CHECK_EQUAL(i_NMS2.v, 66);
+    BOOST_CHECK_CLOSE(o_NMSP2.x, i_NMSP2.x, 1e-5);
+    BOOST_CHECK_EQUAL(i_NMSP2.v, 99);
+    }
+}
+
+BOOST_AUTO_TEST_CASE( binary_versioning )
+{
+  test_versioning<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_versioning )
+{
+  test_versioning<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_versioning )
+{
+  test_versioning<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_versioning )
+{
+  test_versioning<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }

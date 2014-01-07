@@ -30,6 +30,10 @@
 #ifndef CEREAL_DETAILS_TRAITS_HPP_
 #define CEREAL_DETAILS_TRAITS_HPP_
 
+#if (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
+#define CEREAL_OLDER_GCC
+#endif
+
 #include <type_traits>
 #include <typeindex>
 #include <memory>
@@ -43,9 +47,21 @@ namespace cereal
     typedef std::true_type yes;
     typedef std::false_type no;
 
+    #ifdef CEREAL_OLDER_GCC // when VS supports better SFINAE, we can use this as the default
+    template<typename> struct Void { typedef void type; };
+    #endif // CEREAL_OLDER_GCC
+
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
+    #ifdef CEREAL_OLDER_GCC
+    #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                  \
+    template <class T, class A, class SFINAE = void>                                                                           \
+    struct has_member_##name : no {};                                                                                          \
+    template <class T, class A>                                                                                                \
+    struct has_member_##name<T, A,                                                                                             \
+      typename Void< decltype( cereal::access::member_##name( std::declval<A&>(), std::declval<T&>() ) ) >::type> : yes {}
+    #else // NOT CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
     namespace detail                                                                                                               \
     {                                                                                                                              \
@@ -60,7 +76,8 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {};
+    struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {}
+    #endif // NOT CEREAL_OLDER_GCC
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -79,11 +96,19 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {};
+    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {}
 
     //! Creates a test for whether a non const member function exists with a version parameter
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
+    #ifdef CEREAL_OLDER_GCC
+    #define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(name)                                                                        \
+    template <class T, class A, class SFINAE = void>                                                                           \
+    struct has_member_versioned_##name : no {};                                                                                \
+    template <class T, class A>                                                                                                \
+    struct has_member_versioned_##name<T, A,                                                                                   \
+      typename Void< decltype( cereal::access::member_##name( std::declval<A&>(), std::declval<T&>(), 0 ) ) >::type> : yes {}
+    #else // NOT CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(name)                                                                            \
     namespace detail                                                                                                               \
     {                                                                                                                              \
@@ -98,7 +123,8 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_member_versioned_##name : std::integral_constant<bool, detail::has_member_versioned_##name##_impl<T, A>::value> {};
+    struct has_member_versioned_##name : std::integral_constant<bool, detail::has_member_versioned_##name##_impl<T, A>::value> {}
+    #endif // NOT CEREAL_OLDER_GCC
 
     //! Creates a test for whether a non const non-member function exists with a version parameter
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -117,7 +143,7 @@ namespace cereal
       };                                                                                                                           \
     } /* end namespace detail */                                                                                                   \
     template <class T, class A>                                                                                                    \
-    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {};
+    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {}
 
     // ######################################################################
     // Member load_and_allocate
@@ -177,6 +203,21 @@ namespace cereal
       template <class T, class A>
       struct has_member_save_impl
       {
+        #ifdef CEREAL_OLDER_GCC
+        template <class TT, class AA, class SFINAE = void>
+        struct test : no {};
+        template <class TT, class AA>
+        struct test<TT, AA,
+          typename Void< decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>() ) ) >::type> : yes {};
+        static const bool value = test<T, A>();
+
+        template <class TT, class AA, class SFINAE = void>
+        struct test2 : no {};
+        template <class TT, class AA>
+        struct test2<TT, AA,
+          typename Void< decltype( cereal::access::member_save_non_const( std::declval<AA&>(), std::declval<typename std::remove_const<TT>::type&>() ) ) >::type> : yes {};
+        static const bool not_const_type = test2<T, A>();
+        #else // NOT CEREAL_OLDER_GCC =========================================
         template <class TT, class AA>
         static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>() ), yes());
         template <class, class>
@@ -188,6 +229,7 @@ namespace cereal
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+        #endif // NOT CEREAL_OLDER_GCC
       };
     } // end namespace detail
 
@@ -207,6 +249,21 @@ namespace cereal
       template <class T, class A>
       struct has_member_versioned_save_impl
       {
+        #ifdef CEREAL_OLDER_GCC
+        template <class TT, class AA, class SFINAE = void>
+        struct test : no {};
+        template <class TT, class AA>
+        struct test<TT, AA,
+          typename Void< decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>(), 0 ) ) >::type> : yes {};
+        static const bool value = test<T, A>();
+
+        template <class TT, class AA, class SFINAE = void>
+        struct test2 : no {};
+        template <class TT, class AA>
+        struct test2<TT, AA,
+          typename Void< decltype( cereal::access::member_save_non_const( std::declval<AA&>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ) ) >::type> : yes {};
+        static const bool not_const_type = test2<T, A>();
+        #else // NOT CEREAL_OLDER_GCC =========================================
         template <class TT, class AA>
         static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
         template <class, class>
@@ -218,6 +275,7 @@ namespace cereal
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+        #endif // NOT_CEREAL_OLDER_GCC
       };
     } // end namespace detail
 

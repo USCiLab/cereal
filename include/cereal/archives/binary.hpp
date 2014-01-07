@@ -148,7 +148,7 @@ namespace cereal
 } // namespace cereal
 
 // register archives for polymorphic support
-CEREAL_REGISTER_ARCHIVE(cereal::BinaryOutputArchive);
-CEREAL_REGISTER_ARCHIVE(cereal::BinaryInputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::BinaryOutputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::BinaryInputArchive)
 
 #endif // CEREAL_ARCHIVES_BINARY_HPP_

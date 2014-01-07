@@ -104,7 +104,7 @@ namespace cereal
   template <class Archive> struct specialize<Archive, Derived, cereal::specialization::member_load_save> {};
 }
 
-CEREAL_REGISTER_TYPE(Derived);
+CEREAL_REGISTER_TYPE(Derived)
 
 // ###################################
 struct Test1
@@ -235,7 +235,7 @@ struct EmptyStruct
   void serialize(Archive &)
   {
     std::cout << "Side effects!" << std::endl;
-  };
+  }
 };
 
 struct NonEmptyStruct
@@ -776,7 +776,7 @@ int main()
   return 0;
 }
 
-CEREAL_CLASS_VERSION(BoostTransitionMS, 1);
-CEREAL_CLASS_VERSION(BoostTransitionSplit, 2);
-CEREAL_CLASS_VERSION(BoostTransitionNMS, 3);
+CEREAL_CLASS_VERSION(BoostTransitionMS, 1)
+CEREAL_CLASS_VERSION(BoostTransitionSplit, 2)
+CEREAL_CLASS_VERSION(BoostTransitionNMS, 3)
 // keep the other at default version (0)

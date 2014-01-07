@@ -77,7 +77,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   save( Archive & ar, std::weak_ptr<T> const & ptr )
   {
-    auto sptr = ptr.lock();
+    auto const sptr = ptr.lock();
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
   }
 

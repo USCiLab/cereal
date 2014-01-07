@@ -289,7 +289,7 @@ struct PoDStructCereal
   void serialize( Archive & ar )
   {
     ar(a, b, c, d);
-  };
+  }
 };
 
 struct PoDStructBoost
@@ -303,7 +303,7 @@ struct PoDStructBoost
   void serialize( Archive & ar, const unsigned int /*version*/ )
   {
     ar & a & b & c & d;
-  };
+  }
 };
 
 struct PoDChildCereal : virtual PoDStructCereal
@@ -317,7 +317,7 @@ struct PoDChildCereal : virtual PoDStructCereal
   void serialize( Archive & ar )
   {
     ar( cereal::virtual_base_class<PoDStructCereal>(this), v );
-  };
+  }
 };
 
 struct PoDChildBoost : virtual PoDStructBoost
@@ -332,7 +332,7 @@ struct PoDChildBoost : virtual PoDStructBoost
   {
     ar & boost::serialization::base_object<PoDStructBoost>(*this);
     ar & v;
-  };
+  }
 };
 
 int main()
@@ -344,13 +344,13 @@ int main()
   const bool randomize = false;
 
   //########################################
-  auto vectorDoubleTest = [&](size_t s, bool randomize)
+  auto vectorDoubleTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(double) size " << s;
 
     std::vector<double> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngD();
 
@@ -363,13 +363,13 @@ int main()
   vectorDoubleTest(1024*1024, randomize); // 8MB
 
   //########################################
-  auto vectorCharTest = [&](size_t s, bool randomize)
+  auto vectorCharTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(uint8_t) size " << s;
 
     std::vector<uint8_t> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngC();
 

@@ -31,6 +31,7 @@
 
 #include <type_traits>
 #include <iostream>
+#include <cstdint>
 
 namespace cereal
 {
@@ -125,24 +126,25 @@ namespace cereal
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
 
-      /*! @name Boost Transition Layer */
-      //! @{
+      // versioned member serialize
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
       { t.serialize(ar, version); }
 
+      // versioned member save
       template<class Archive, class T> inline
       static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
       { t.save(ar, version); }
 
+      // versioned member save (non const)
       template<class Archive, class T> inline
       static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
       { t.save(ar, version); }
 
+      // versioned member load
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
       { t.load(ar, version); }
-      //! @}
 
       template <class T>
         static void load_and_allocate(...)

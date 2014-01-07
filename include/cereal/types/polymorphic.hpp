@@ -68,7 +68,7 @@
     static CONSTEXPR char const * name() { return #T; }; \
   };                                                     \
   } } /* end namespaces */                               \
-  CEREAL_BIND_TO_ARCHIVES(T);
+  CEREAL_BIND_TO_ARCHIVES(T)
 
 //! Registers a polymorphic type with cereal, giving it a
 //! user defined name
@@ -83,7 +83,11 @@
   struct binding_name<T>                                      \
   { static CONSTEXPR char const * name() { return Name; }; }; \
   } } /* end namespaces */                                    \
-  CEREAL_BIND_TO_ARCHIVES(T);
+  CEREAL_BIND_TO_ARCHIVES(T)
+
+#ifdef _MSC_VER
+#undef CONSTEXPR
+#endif
 
 namespace cereal
 {
