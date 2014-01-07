@@ -48,8 +48,8 @@ namespace cereal
   /*! @ingroup Utility */
   struct Exception : public std::runtime_error
   {
-    Exception( const std::string& what ) : std::runtime_error(what) {}
-    Exception( const char* what ) : std::runtime_error(what) {}
+    Exception( const std::string & msg ) : std::runtime_error(msg) {}
+    Exception( const char * msg ) : std::runtime_error(msg) {}
   };
 
   // ######################################################################
@@ -234,8 +234,8 @@ namespace cereal
   {
     public:
       //! Construct the output archive
-      /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
-      OutputArchive(ArchiveType * const self) : self(self), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
+      /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
+      OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
       //! Serializes all passed in data
@@ -540,8 +540,8 @@ namespace cereal
   {
     public:
       //! Construct the output archive
-      /*! @param self A pointer to the derived ArchiveType (pass this from the derived archive) */
-      InputArchive(ArchiveType * const self) : self(self) { }
+      /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
+      InputArchive(ArchiveType * const derived) : self(derived) { }
 
       //! Serializes all passed in data
       template <class ... Types> inline
