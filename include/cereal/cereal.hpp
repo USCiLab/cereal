@@ -34,8 +34,10 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
@@ -541,7 +543,13 @@ namespace cereal
     public:
       //! Construct the output archive
       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
-      InputArchive(ArchiveType * const derived) : self(derived) { }
+      InputArchive(ArchiveType * const derived) :
+        self(derived),
+        itsBaseClassSet(),
+        itsSharedPointerMap(),
+        itsPolymorphicTypeMap(),
+        itsVersionedTypes()
+      { }
 
       //! Serializes all passed in data
       template <class ... Types> inline
@@ -590,23 +598,57 @@ namespace cereal
       {
         if(id == 0) return std::shared_ptr<void>(nullptr);
 
-        auto ptr = itsSharedPointerMap.find( id );
-        if(ptr == itsSharedPointerMap.end())
+        auto iter = itsSharedPointerMap.find( id );
+        if(iter == itsSharedPointerMap.end())
           throw Exception("Error while trying to deserialize a smart pointer. Could not find id " + std::to_string(id));
 
-        return ptr->second;
+        return iter->second.ptr;
       }
 
-      //! Registers a shared pointer to its unique identifier
+      //! Completes registration of a shared pointer to its unique identifier
       /*! After a shared pointer has been loaded for the first time, it should
           be registered with its loaded id for future references to it.
 
+          This call will mark the shared pointer as being valid, allowing circular references
+          to it to properly be loaded.
+
           @param id The unique identifier for the shared pointer
           @param ptr The actual shared pointer */
-      inline void registerSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
+      inline void postRegisterSharedPointer(std::uint32_t const id, std::shared_ptr<void> ptr)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
-        itsSharedPointerMap.insert( {stripped_id, ptr} );
+        itsSharedPointerMap[stripped_id].setValid( ptr );
+      }
+
+      //! Begins the registration process for a shared pointer to its unique identifier
+      /*! When a shared pointer is loaded for the first time, we initially mark its id
+          as being invalid (dirty) but not associated with any actual pointer.  We will associate
+          it with a pointer after it has been fully loaded, which happens after
+          this pre-registration.  This allows us to properly handle nested circular
+          references.
+
+          If the pointer has already been fully registered, we will not adjust its valid state
+
+          @param id The unique identifier for the shared pointer */
+      inline void preRegisterSharedPointer( std::uint32_t const id )
+      {
+        std::uint32_t const stripped_id = id & ~detail::msb_32bit;
+        itsSharedPointerMap[stripped_id].valid |= false;
+      }
+
+      //! Checks whether an already pre or post registered shared pointer is valid
+      /*! @param id The unique identifier for the shared pointer
+          @return true if the pointer associated with the id is valid, false otherwise */
+      inline bool isSharedPointerValid( std::uint32_t const id )
+      {
+        std::uint32_t const stripped_id = id & ~detail::msb_32bit;
+        return itsSharedPointerMap[stripped_id].valid;
+      }
+
+      inline void pushDeferredSharedPointerLoad( std::uint32_t const id, std::function<void()> && func )
+      {
+        std::uint32_t const stripped_id = id & ~detail::msb_32bit;
+        itsSharedPointerMap[stripped_id].deferredLoads.emplace_back( std::move( func ) );
       }
 
       //! Retrieves the string for a polymorphic type given a unique key for it
@@ -829,8 +871,26 @@ namespace cereal
       //! A set of all base classes that have been serialized
       std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
-      //! Maps from pointer ids to addresses
-      std::unordered_map<std::uint32_t, std::shared_ptr<void>> itsSharedPointerMap;
+      struct SharedPointerMetaData
+      {
+        inline void setValid( std::shared_ptr<void> sptr )
+        {
+          valid = true;
+          ptr = sptr;
+
+          for( auto & func : deferredLoads )
+            func();
+
+          deferredLoads.clear();
+        }
+
+        bool valid;
+        std::shared_ptr<void> ptr;
+        std::vector<std::function<void()>> deferredLoads;
+      };
+
+      //! Maps from pointer ids to metadata
+      std::unordered_map<std::uint32_t, SharedPointerMetaData> itsSharedPointerMap;
 
       //! Maps from name ids to names
       std::unordered_map<std::uint32_t, std::string> itsPolymorphicTypeMap;

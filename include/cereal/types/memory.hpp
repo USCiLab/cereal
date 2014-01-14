@@ -157,14 +157,23 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
+      ar.preRegisterSharedPointer( id );
+
       // Use wrapper to enter into "data" nvp
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
       ar( loadWrapper );
       ptr.reset( loadWrapper.ptr );
+
+      ar.postRegisterSharedPointer( id, ptr );
     }
     else
     {
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      if( ar.isSharedPointerValid )
+        ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      else
+        ar.pushDeferredSharedPointerLoad(
+            id,
+            [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
     }
   }
 
@@ -182,13 +191,21 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
+      ar.preRegisterSharedPointer( id );
+
       ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
       ar( *ptr );
-      ar.registerSharedPointer(id, ptr);
+
+      ar.postRegisterSharedPointer( id, ptr );
     }
     else
     {
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      if( ar.isSharedPointerValid( id ) )
+        ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      else
+        ar.pushDeferredSharedPointerLoad(
+            id,
+            [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
     }
   }
 
