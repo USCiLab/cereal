@@ -172,8 +172,7 @@ namespace cereal
         ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
       else
         ar.pushDeferredSharedPointerLoad(
-            id,
-            [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
+            id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
     }
   }
 
@@ -204,8 +203,7 @@ namespace cereal
         ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
       else
         ar.pushDeferredSharedPointerLoad(
-            id,
-            [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
+            id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
     }
   }
 

@@ -593,7 +593,8 @@ namespace cereal
           which has already been loaded.
 
           @param id The unique id that was serialized for the pointer
-          @return A shared pointer to the data */
+          @return A shared pointer to the data
+          @throw Exception if the id does not exist */
       inline std::shared_ptr<void> getSharedPointer(std::uint32_t const id)
       {
         if(id == 0) return std::shared_ptr<void>(nullptr);
@@ -645,6 +646,9 @@ namespace cereal
         return itsSharedPointerMap[stripped_id].valid;
       }
 
+      //! Associates an already registered shared pointer with a deferred load that needs to happen
+      /*! @param id The id of the already registered pointer
+          @param func The function that performs the load */
       inline void pushDeferredSharedPointerLoad( std::uint32_t const id, std::function<void()> && func )
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;
@@ -871,8 +875,26 @@ namespace cereal
       //! A set of all base classes that have been serialized
       std::unordered_set<traits::detail::base_class_id, traits::detail::base_class_id_hash> itsBaseClassSet;
 
+      //! A struct for holding shared pointer metadata
+      /*! Shared pointers are associated with a uniquely generated id as well as
+          a valid flag, the actual shared_ptr, and some number of deferred loads.
+
+          Registering a shared pointer happens in two phases: first the id is
+          inserted into the table and the valid flag is marked as false.  The
+          data is then loaded, and then after being loaded into the pointer
+          the id is associated with this loaded data and the valid flag is set
+          to true.
+
+          If we ever attempt to load an id that already exists in the table before
+          it is set as valid, we defer the load as this is a nested load to the
+          same data and must be performed after the data is fully initialized
+          and loaded.
+
+          If we ever attempt to load an id that already exists in the table
+          after the data is valid, we can immediately perform that load */
       struct SharedPointerMetaData
       {
+        //! Marks this entry as valid and performs all deferred loads
         inline void setValid( std::shared_ptr<void> sptr )
         {
           valid = true;
@@ -884,9 +906,9 @@ namespace cereal
           deferredLoads.clear();
         }
 
-        bool valid;
-        std::shared_ptr<void> ptr;
-        std::vector<std::function<void()>> deferredLoads;
+        bool valid; //!< Is this shared_ptr fully loaded?
+        std::shared_ptr<void> ptr; //!< The actual data
+        std::vector<std::function<void()>> deferredLoads; //!< Deferred loads that must happen after valid
       };
 
       //! Maps from pointer ids to metadata
