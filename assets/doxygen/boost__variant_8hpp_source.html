@@ -131,7 +131,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno"><a class="code" href="structcereal_1_1variant__detail_1_1variant__save__visitor.html">   43</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcereal_1_1variant__detail_1_1variant__save__visitor.html">variant_save_visitor</a> : boost::static_visitor&lt;&gt;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      <a class="code" href="structcereal_1_1variant__detail_1_1variant__save__visitor.html">variant_save_visitor</a>(Archive &amp; ar) : ar(ar) {}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      <a class="code" href="structcereal_1_1variant__detail_1_1variant__save__visitor.html">variant_save_visitor</a>(Archive &amp; ar_) : ar(ar_) {}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> operator()(T <span class="keyword">const</span> &amp; value)<span class="keyword"> const</span></div>
@@ -144,7 +144,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N, <span class="keyword">class </span>Variant, <span class="keyword">class </span>... Args, <span class="keyword">class </span>Archive&gt;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">typename</span> std::enable_if&lt;N == boost::mpl::size&lt;typename Variant::types&gt;::value, <span class="keywordtype">void</span>&gt;::type</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    load_variant(Archive &amp; ar, <span class="keywordtype">int</span> target, Variant &amp; variant)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    load_variant(Archive &amp; <span class="comment">/*ar*/</span>, <span class="keywordtype">int</span> <span class="comment">/*target*/</span>, Variant &amp; <span class="comment">/*variant*/</span>)</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      throw ::cereal::Exception(<span class="stringliteral">&quot;Error traversing variant during load&quot;</span>);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
@@ -193,11 +193,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

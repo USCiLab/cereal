@@ -90,7 +90,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcereal_1_1XMLOutputArchive-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cereal::XMLOutputArchive Class Reference<div class="ingroups"><a class="el" href="group__Archives.html">Input and Output Archive Types</a></div></div>  </div>
@@ -120,13 +119,22 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af377152ee201e8d949affd31379c65f7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#af377152ee201e8d949affd31379c65f7">XMLOutputArchive</a> (std::ostream &amp;stream, size_t precision=20, bool outputType=false)</td></tr>
-<tr class="memdesc:af377152ee201e8d949affd31379c65f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct, outputting to the provided stream upon destruction.  <a href="#af377152ee201e8d949affd31379c65f7">More...</a><br/></td></tr>
-<tr class="separator:af377152ee201e8d949affd31379c65f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Common Functionality</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Common use cases for directly interacting with an <a class="el" href="classcereal_1_1XMLOutputArchive.html" title="An output archive designed to save data to XML.">XMLOutputArchive</a> </p>
+</div></td></tr>
+<tr class="memitem:a2de49483c26e035c115d027f17f67007"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2de49483c26e035c115d027f17f67007">XMLOutputArchive</a> (std::ostream &amp;stream, size_t precision=std::numeric_limits&lt; double &gt;::max_digits10, bool outputType=false)</td></tr>
+<tr class="memdesc:a2de49483c26e035c115d027f17f67007"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct, outputting to the provided stream upon destruction.  <a href="#a2de49483c26e035c115d027f17f67007">More...</a><br/></td></tr>
+<tr class="separator:a2de49483c26e035c115d027f17f67007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07643f72cc76630f68593f6673044c82"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a07643f72cc76630f68593f6673044c82"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a07643f72cc76630f68593f6673044c82">~XMLOutputArchive</a> ()</td></tr>
 <tr class="memdesc:a07643f72cc76630f68593f6673044c82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, flushes the XML. <br/></td></tr>
 <tr class="separator:a07643f72cc76630f68593f6673044c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2aa0db0f3e102d463b0cdb20e3caed10">saveBinaryValue</a> (const void *data, size_t size, const char *name=nullptr)</td></tr>
+<tr class="memdesc:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some binary data, encoded as a base64 string, with an optional name.  <a href="#a2aa0db0f3e102d463b0cdb20e3caed10">More...</a><br/></td></tr>
+<tr class="separator:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Internal Functionality</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Functionality designed for use by those requiring control over the inner mechanisms of the <a class="el" href="classcereal_1_1XMLOutputArchive.html" title="An output archive designed to save data to XML.">XMLOutputArchive</a> </p>
+</div></td></tr>
 <tr class="memitem:a3a5f5505fa97e7544ae4f027ccba27d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a3a5f5505fa97e7544ae4f027ccba27d5">startNode</a> ()</td></tr>
 <tr class="memdesc:a3a5f5505fa97e7544ae4f027ccba27d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new node that is a child of the node at the top of the stack.  <a href="#a3a5f5505fa97e7544ae4f027ccba27d5">More...</a><br/></td></tr>
 <tr class="separator:a3a5f5505fa97e7544ae4f027ccba27d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,7 +148,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:aa301c06076e60466516f7d69198c2185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9024955d0fd8cf818bf068d3814b9e09"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a9024955d0fd8cf818bf068d3814b9e09"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a9024955d0fd8cf818bf068d3814b9e09">saveValue</a> (T const &amp;value)</td></tr>
-<tr class="memdesc:a9024955d0fd8cf818bf068d3814b9e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some data, encoded as a string.  <a href="#a9024955d0fd8cf818bf068d3814b9e09">More...</a><br/></td></tr>
+<tr class="memdesc:a9024955d0fd8cf818bf068d3814b9e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some data, encoded as a string, into the current top level node.  <a href="#a9024955d0fd8cf818bf068d3814b9e09">More...</a><br/></td></tr>
 <tr class="separator:a9024955d0fd8cf818bf068d3814b9e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d85b7350ab575fedeebcc0c31a56777"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2d85b7350ab575fedeebcc0c31a56777"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2d85b7350ab575fedeebcc0c31a56777">saveValue</a> (uint8_t const &amp;value)</td></tr>
@@ -150,22 +158,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a05f3803cec394e287d1088bc78f2381b">saveValue</a> (int8_t const &amp;value)</td></tr>
 <tr class="memdesc:a05f3803cec394e287d1088bc78f2381b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload for int8_t prevents them from being serialized as characters. <br/></td></tr>
 <tr class="separator:a05f3803cec394e287d1088bc78f2381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a2aa0db0f3e102d463b0cdb20e3caed10">saveBinaryValue</a> (const void *data, size_t size, const char *name=nullptr)</td></tr>
-<tr class="memdesc:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some binary data, encoded as a base64 string, with an optional name.  <a href="#a2aa0db0f3e102d463b0cdb20e3caed10">More...</a><br/></td></tr>
-<tr class="separator:a2aa0db0f3e102d463b0cdb20e3caed10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4af064c2dc6a9451ef9a4dd93bdd304e"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4af064c2dc6a9451ef9a4dd93bdd304e"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a4af064c2dc6a9451ef9a4dd93bdd304e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#a4af064c2dc6a9451ef9a4dd93bdd304e">insertType</a> ()</td></tr>
-<tr class="memdesc:a4af064c2dc6a9451ef9a4dd93bdd304e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Causes the type to be appended to the most recently made node if output type is set to true. <br/></td></tr>
+<tr class="memdesc:a4af064c2dc6a9451ef9a4dd93bdd304e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Causes the type to be appended as an attribute to the most recently made node if output type is set to true. <br/></td></tr>
 <tr class="separator:a4af064c2dc6a9451ef9a4dd93bdd304e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbc756983609a1600576faff3c558c57"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afbc756983609a1600576faff3c558c57"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1XMLOutputArchive.html#afbc756983609a1600576faff3c558c57">appendAttribute</a> (const char *name, const char *value)</td></tr>
 <tr class="memdesc:afbc756983609a1600576faff3c558c57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends an attribute to the current top level node. <br/></td></tr>
 <tr class="separator:afbc756983609a1600576faff3c558c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcereal_1_1OutputArchive"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcereal_1_1OutputArchive')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcereal_1_1OutputArchive.html">cereal::OutputArchive&lt; XMLOutputArchive &gt;</a></td></tr>
-<tr class="memitem:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ad68d8620b5fb99619f6ef37be29356eb">OutputArchive</a> (<a class="el" href="classcereal_1_1XMLOutputArchive.html">XMLOutputArchive</a> *const self)</td></tr>
-<tr class="memdesc:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the output archive.  <a href="#ad68d8620b5fb99619f6ef37be29356eb">More...</a><br/></td></tr>
-<tr class="separator:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a98fbde73bf6d41f4e717e91011e3be7f">OutputArchive</a> (<a class="el" href="classcereal_1_1XMLOutputArchive.html">XMLOutputArchive</a> *const derived)</td></tr>
+<tr class="memdesc:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the output archive.  <a href="#a98fbde73bf6d41f4e717e91011e3be7f">More...</a><br/></td></tr>
+<tr class="separator:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48a65660f32a2b90f7ab26ebba25707c inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48a65660f32a2b90f7ab26ebba25707c"></a>
 <a class="el" href="classcereal_1_1XMLOutputArchive.html">XMLOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a48a65660f32a2b90f7ab26ebba25707c">operator()</a> (Types &amp;&amp;...args)</td></tr>
 <tr class="memdesc:a48a65660f32a2b90f7ab26ebba25707c inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes all passed in data. <br/></td></tr>
@@ -176,6 +181,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#abf97e7c48f6d307d6fa87d4b3fd3ad0e">registerPolymorphicType</a> (char const *name)</td></tr>
 <tr class="memdesc:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a polymorphic type name with the archive.  <a href="#abf97e7c48f6d307d6fa87d4b3fd3ad0e">More...</a><br/></td></tr>
 <tr class="separator:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1XMLOutputArchive.html">XMLOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a4788dde3f0691f0dbbfc14fe6e2997cd">operator&amp;</a> (T &amp;&amp;arg)</td></tr>
+<tr class="memdesc:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes passed in data.  <a href="#a4788dde3f0691f0dbbfc14fe6e2997cd">More...</a><br/></td></tr>
+<tr class="separator:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1XMLOutputArchive.html">XMLOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a0316f5791b140979aea2c915e4618236">operator&lt;&lt;</a> (T &amp;&amp;arg)</td></tr>
+<tr class="memdesc:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes passed in data.  <a href="#a0316f5791b140979aea2c915e4618236">More...</a><br/></td></tr>
+<tr class="separator:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An output archive designed to save data to XML. </p>
@@ -186,7 +197,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>XML archives can optionally print the type of everything they serialize, which adds an attribute to each node.</p>
 <p>XML archives do not output the size information for any dynamically sized structure and instead infer it from the number of children for a node. This means that data can be hand edited for dynamic sized structures and will still be readable. This is accomplished through the <a class="el" href="classcereal_1_1SizeTag.html" title="A wrapper around size metadata.">cereal::SizeTag</a> object, which will also add an attribute to its parent field. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="af377152ee201e8d949affd31379c65f7"></a>
+<a class="anchor" id="a2de49483c26e035c115d027f17f67007"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -203,7 +214,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>precision</em> = <code>20</code>, </td>
+          <td class="paramname"><em>precision</em> = <code>std::numeric_limits&lt;double&gt;::max_digits10</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -228,7 +239,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">stream</td><td>The stream to output to. Can be a stringstream, a file stream, or even cout! Note that since this archive builds a tree in memory, it will not output to the stream until its destructor is called. </td></tr>
-    <tr><td class="paramname">precision</td><td>The precision for floating point output. For input and output floating point to test equal, this should be at least 20 </td></tr>
+    <tr><td class="paramname">precision</td><td>The precision for floating point output. </td></tr>
     <tr><td class="paramname">outputType</td><td>Controls whether type information will be printed in attributes </td></tr>
   </table>
   </dd>
@@ -276,7 +287,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Saves some binary data, encoded as a base64 string, with an optional name. </p>
-<p>This will create a new node, optionally named, and insert a value that consists of the data encoded as a base64 string </p>
+<p>This can be called directly by users and it will automatically create a child node for the current XML node, populate it with a base64 encoded string, and optionally name it. The node will be finished after it has been populated. </p>
 
 </div>
 </div>
@@ -304,7 +315,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Saves some data, encoded as a string. </p>
+<p>Saves some data, encoded as a string, into the current top level node. </p>
 <p>The data will be be named with the most recent name if one exists, otherwise it will be given some default delimited value that depends upon the parent node </p>
 
 </div>
@@ -331,7 +342,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Creates a new node that is a child of the node at the top of the stack. </p>
-<p>Nodes will be given a name that has either been pre-set by a name value pair, or generated based upon a counter unique to the parent node.</p>
+<p>Nodes will be given a name that has either been pre-set by a name value pair, or generated based upon a counter unique to the parent node. If you want to give a node a specific name, use setNextName prior to calling startNode.</p>
 <p>The node will then be pushed onto the node stack. </p>
 
 </div>
@@ -343,11 +354,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:54 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:58 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:07 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

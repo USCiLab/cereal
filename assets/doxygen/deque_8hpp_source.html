@@ -128,7 +128,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T, <span class="keyword">class</span> A&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keywordtype">void</span> save( Archive &amp; ar, std::deque&lt;T, A&gt; <span class="keyword">const</span> &amp; deque )</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    ar( make_size_tag( deque.size() ) );</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    ar( make_size_tag( static_cast&lt;size_type&gt;(deque.size()) ) );</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">for</span>( <span class="keyword">auto</span> <span class="keyword">const</span> &amp; i : deque )</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      ar( i );</div>
@@ -137,10 +137,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T, <span class="keyword">class</span> A&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keywordtype">void</span> load( Archive &amp; ar, std::deque&lt;T, A&gt; &amp; deque )</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">size_t</span> size;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    size_type size;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    ar( make_size_tag( size ) );</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    deque.resize( size );</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    deque.resize( static_cast&lt;size_t&gt;( size ) );</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">for</span>( <span class="keyword">auto</span> &amp; i : deque )</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      ar( i );</div>
@@ -152,11 +152,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

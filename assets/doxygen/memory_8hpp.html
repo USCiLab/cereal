@@ -106,6 +106,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1memory__detail_1_1PtrWrapper.html">cereal::memory_detail::PtrWrapper&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper class to notify cereal that it is ok to serialize the contained pointer.  <a href="structcereal_1_1memory__detail_1_1PtrWrapper.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1memory__detail_1_1LoadAndAllocateLoadWrapper.html">cereal::memory_detail::LoadAndAllocateLoadWrapper&lt; Archive, T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct that acts as a wrapper around calling load_andor_allocate.  <a href="structcereal_1_1memory__detail_1_1LoadAndAllocateLoadWrapper.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -161,39 +164,43 @@ template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:a40c9f5c4fce6e764f766d97934f311e5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::shared_ptr&lt; T &gt; const &amp; &gt; const &amp;wrapper)</td></tr>
 <tr class="memdesc:a40c9f5c4fce6e764f766d97934f311e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr (wrapper implementation) <br/></td></tr>
 <tr class="separator:a40c9f5c4fce6e764f766d97934f311e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00c02021a70f8333df11bc5a795a4763"><td class="memTemplParams" colspan="2"><a class="anchor" id="a00c02021a70f8333df11bc5a795a4763"></a>
+<tr class="memitem:a3678fc4ac706cf2401539f559b9e69f7"><td class="memTemplParams" colspan="2"><a class="anchor" id="a3678fc4ac706cf2401539f559b9e69f7"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a00c02021a70f8333df11bc5a795a4763"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a3678fc4ac706cf2401539f559b9e69f7"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::shared_ptr&lt; T &gt; &amp; &gt; &amp;wrapper)</td></tr>
-<tr class="memdesc:a00c02021a70f8333df11bc5a795a4763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr, case when user load and allocate (wrapper implementation) <br/></td></tr>
-<tr class="separator:a00c02021a70f8333df11bc5a795a4763"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7711dadf0baeae10209498069dafa9f2"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7711dadf0baeae10209498069dafa9f2"></a>
+&lt; T, Archive &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::shared_ptr&lt; T &gt; &amp; &gt; &amp;wrapper)</td></tr>
+<tr class="memdesc:a3678fc4ac706cf2401539f559b9e69f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr, case when user load and allocate (wrapper implementation) <br/></td></tr>
+<tr class="separator:a3678fc4ac706cf2401539f559b9e69f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3de5a0d801a9d781cfaf729c95a5519"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac3de5a0d801a9d781cfaf729c95a5519"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a7711dadf0baeae10209498069dafa9f2"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:ac3de5a0d801a9d781cfaf729c95a5519"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::shared_ptr&lt; T &gt; &amp; &gt; &amp;wrapper)</td></tr>
-<tr class="memdesc:a7711dadf0baeae10209498069dafa9f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr, case when no user load and allocate (wrapper implementation) <br/></td></tr>
-<tr class="separator:a7711dadf0baeae10209498069dafa9f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+&lt; T, Archive &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::shared_ptr&lt; T &gt; &amp; &gt; &amp;wrapper)</td></tr>
+<tr class="memdesc:ac3de5a0d801a9d781cfaf729c95a5519"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr, case when no user load and allocate (wrapper implementation) <br/></td></tr>
+<tr class="separator:ac3de5a0d801a9d781cfaf729c95a5519"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae477f5e0a763d6c4f3a5308d0defd3e4"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae477f5e0a763d6c4f3a5308d0defd3e4"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
 <tr class="memitem:ae477f5e0a763d6c4f3a5308d0defd3e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::unique_ptr&lt; T, D &gt; const &amp; &gt; const &amp;wrapper)</td></tr>
 <tr class="memdesc:ae477f5e0a763d6c4f3a5308d0defd3e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr (wrapper implementation) <br/></td></tr>
 <tr class="separator:ae477f5e0a763d6c4f3a5308d0defd3e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad82bff8471f8e409d2145d1d0fe5c66c"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad82bff8471f8e409d2145d1d0fe5c66c"></a>
+<tr class="memitem:a803dd292388ab410e8ae920d7d65141a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a803dd292388ab410e8ae920d7d65141a"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:ad82bff8471f8e409d2145d1d0fe5c66c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a803dd292388ab410e8ae920d7d65141a"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::unique_ptr&lt; T, D &gt; &amp; &gt; &amp;wrapper)</td></tr>
-<tr class="memdesc:ad82bff8471f8e409d2145d1d0fe5c66c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation) <br/></td></tr>
-<tr class="separator:ad82bff8471f8e409d2145d1d0fe5c66c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00bbcbe27bdcc85641a6c41f43f2a674"><td class="memTemplParams" colspan="2"><a class="anchor" id="a00bbcbe27bdcc85641a6c41f43f2a674"></a>
+&lt; T, Archive &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::unique_ptr&lt; T, D &gt; &amp; &gt; &amp;wrapper)</td></tr>
+<tr class="memdesc:a803dd292388ab410e8ae920d7d65141a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation) <br/></td></tr>
+<tr class="separator:a803dd292388ab410e8ae920d7d65141a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8defab69de51f980699112eb455aa02"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab8defab69de51f980699112eb455aa02"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a00bbcbe27bdcc85641a6c41f43f2a674"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:ab8defab69de51f980699112eb455aa02"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::unique_ptr&lt; T, D &gt; &amp; &gt; &amp;wrapper)</td></tr>
-<tr class="memdesc:a00bbcbe27bdcc85641a6c41f43f2a674"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation) <br/></td></tr>
-<tr class="separator:a00bbcbe27bdcc85641a6c41f43f2a674"><td class="memSeparator" colspan="2">&#160;</td></tr>
+&lt; T, Archive &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, memory_detail::PtrWrapper&lt; std::unique_ptr&lt; T, D &gt; &amp; &gt; &amp;wrapper)</td></tr>
+<tr class="memdesc:ab8defab69de51f980699112eb455aa02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation) <br/></td></tr>
+<tr class="separator:ab8defab69de51f980699112eb455aa02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;memory&gt; </p>
@@ -201,11 +208,7 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

@@ -89,7 +89,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcereal_1_1JSONOutputArchive-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -114,41 +113,69 @@ Inheritance diagram for cereal::JSONOutputArchive:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a05eb305f80d9261a37b8a6b8cce35e1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a05eb305f80d9261a37b8a6b8cce35e1b">JSONOutputArchive</a> (std::ostream &amp;stream, int precision=20)</td></tr>
-<tr class="memdesc:a05eb305f80d9261a37b8a6b8cce35e1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct, outputting to the provided stream.  <a href="#a05eb305f80d9261a37b8a6b8cce35e1b">More...</a><br/></td></tr>
-<tr class="separator:a05eb305f80d9261a37b8a6b8cce35e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Common Functionality</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Common use cases for directly interacting with an <a class="el" href="classcereal_1_1JSONOutputArchive.html" title="An output archive designed to save data to JSON.">JSONOutputArchive</a> </p>
+</div></td></tr>
+<tr class="memitem:a868aad545584f610cb819eb8e817267e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a868aad545584f610cb819eb8e817267e">JSONOutputArchive</a> (std::ostream &amp;stream, int precision=std::numeric_limits&lt; double &gt;::max_digits10)</td></tr>
+<tr class="memdesc:a868aad545584f610cb819eb8e817267e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct, outputting to the provided stream.  <a href="#a868aad545584f610cb819eb8e817267e">More...</a><br/></td></tr>
+<tr class="separator:a868aad545584f610cb819eb8e817267e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6bb0bfab388041618bd702554450fe6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6bb0bfab388041618bd702554450fe6"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#ad6bb0bfab388041618bd702554450fe6">~JSONOutputArchive</a> ()</td></tr>
 <tr class="memdesc:ad6bb0bfab388041618bd702554450fe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, flushes the JSON. <br/></td></tr>
 <tr class="separator:ad6bb0bfab388041618bd702554450fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1833e8351413e686130e7794c712639b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a1833e8351413e686130e7794c712639b">saveBinaryValue</a> (const void *data, size_t size, const char *name=nullptr)</td></tr>
+<tr class="memdesc:a1833e8351413e686130e7794c712639b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves some binary data, encoded as a base64 string, with an optional name.  <a href="#a1833e8351413e686130e7794c712639b">More...</a><br/></td></tr>
+<tr class="separator:a1833e8351413e686130e7794c712639b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Internal Functionality</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Functionality designed for use by those requiring control over the inner mechanisms of the <a class="el" href="classcereal_1_1JSONOutputArchive.html" title="An output archive designed to save data to JSON.">JSONOutputArchive</a> </p>
+</div></td></tr>
+<tr class="memitem:acae7982ee23cacf07cb6c4326818e6b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#acae7982ee23cacf07cb6c4326818e6b8">startNode</a> ()</td></tr>
+<tr class="memdesc:acae7982ee23cacf07cb6c4326818e6b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts a new node in the JSON output.  <a href="#acae7982ee23cacf07cb6c4326818e6b8">More...</a><br/></td></tr>
+<tr class="separator:acae7982ee23cacf07cb6c4326818e6b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32e7d7fe0a75d7e3cc990362c41edf81"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32e7d7fe0a75d7e3cc990362c41edf81"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a32e7d7fe0a75d7e3cc990362c41edf81">finishNode</a> ()</td></tr>
+<tr class="memdesc:a32e7d7fe0a75d7e3cc990362c41edf81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Designates the most recently added node as finished. <br/></td></tr>
+<tr class="separator:a32e7d7fe0a75d7e3cc990362c41edf81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a399c034dd0be17597b4cf9fe2e9bf050"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a399c034dd0be17597b4cf9fe2e9bf050"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a399c034dd0be17597b4cf9fe2e9bf050">setNextName</a> (const char *name)</td></tr>
+<tr class="memdesc:a399c034dd0be17597b4cf9fe2e9bf050"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the name for the next node created with startNode. <br/></td></tr>
+<tr class="separator:a399c034dd0be17597b4cf9fe2e9bf050"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3279cbcf2b5cd73c4f8299aa4e8702b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3279cbcf2b5cd73c4f8299aa4e8702b4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (bool b)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a3279cbcf2b5cd73c4f8299aa4e8702b4">saveValue</a> (bool b)</td></tr>
+<tr class="memdesc:a3279cbcf2b5cd73c4f8299aa4e8702b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a bool to the current node. <br/></td></tr>
 <tr class="separator:a3279cbcf2b5cd73c4f8299aa4e8702b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62917f155424234bc29cfb0b8280be3a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62917f155424234bc29cfb0b8280be3a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (int i)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a62917f155424234bc29cfb0b8280be3a">saveValue</a> (int i)</td></tr>
+<tr class="memdesc:a62917f155424234bc29cfb0b8280be3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an int to the current node. <br/></td></tr>
 <tr class="separator:a62917f155424234bc29cfb0b8280be3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad0636d0a75fdd4187d572479ce14ae1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad0636d0a75fdd4187d572479ce14ae1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (unsigned u)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#aad0636d0a75fdd4187d572479ce14ae1">saveValue</a> (unsigned u)</td></tr>
+<tr class="memdesc:aad0636d0a75fdd4187d572479ce14ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a uint to the current node. <br/></td></tr>
 <tr class="separator:aad0636d0a75fdd4187d572479ce14ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a579aa488b2a27e1afd37516962993876"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a579aa488b2a27e1afd37516962993876"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (int64_t i64)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a579aa488b2a27e1afd37516962993876">saveValue</a> (int64_t i64)</td></tr>
+<tr class="memdesc:a579aa488b2a27e1afd37516962993876"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an int64 to the current node. <br/></td></tr>
 <tr class="separator:a579aa488b2a27e1afd37516962993876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb683b1f868478d1797b1c19bb5d6375"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb683b1f868478d1797b1c19bb5d6375"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (uint64_t u64)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#afb683b1f868478d1797b1c19bb5d6375">saveValue</a> (uint64_t u64)</td></tr>
+<tr class="memdesc:afb683b1f868478d1797b1c19bb5d6375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a uint64 to the current node. <br/></td></tr>
 <tr class="separator:afb683b1f868478d1797b1c19bb5d6375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac03a57ce63373432a8b8ef9f0c187b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aac03a57ce63373432a8b8ef9f0c187b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (double d)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#aac03a57ce63373432a8b8ef9f0c187b7">saveValue</a> (double d)</td></tr>
+<tr class="memdesc:aac03a57ce63373432a8b8ef9f0c187b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a double to the current node. <br/></td></tr>
 <tr class="separator:aac03a57ce63373432a8b8ef9f0c187b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebe0984ef09998ee687217d74e4d6bcd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebe0984ef09998ee687217d74e4d6bcd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (std::string const &amp;s)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#aebe0984ef09998ee687217d74e4d6bcd">saveValue</a> (std::string const &amp;s)</td></tr>
+<tr class="memdesc:aebe0984ef09998ee687217d74e4d6bcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a string to the current node. <br/></td></tr>
 <tr class="separator:aebe0984ef09998ee687217d74e4d6bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad08dc226626239c6e22bf2747a7cf275"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad08dc226626239c6e22bf2747a7cf275"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (char const *s)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#ad08dc226626239c6e22bf2747a7cf275">saveValue</a> (char const *s)</td></tr>
+<tr class="memdesc:ad08dc226626239c6e22bf2747a7cf275"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a const char * to the current node. <br/></td></tr>
 <tr class="separator:ad08dc226626239c6e22bf2747a7cf275"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcereal_1_1OutputArchive"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcereal_1_1OutputArchive')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcereal_1_1OutputArchive.html">cereal::OutputArchive&lt; JSONOutputArchive &gt;</a></td></tr>
-<tr class="memitem:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ad68d8620b5fb99619f6ef37be29356eb">OutputArchive</a> (<a class="el" href="classcereal_1_1JSONOutputArchive.html">JSONOutputArchive</a> *const self)</td></tr>
-<tr class="memdesc:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the output archive.  <a href="#ad68d8620b5fb99619f6ef37be29356eb">More...</a><br/></td></tr>
-<tr class="separator:ad68d8620b5fb99619f6ef37be29356eb inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a98fbde73bf6d41f4e717e91011e3be7f">OutputArchive</a> (<a class="el" href="classcereal_1_1JSONOutputArchive.html">JSONOutputArchive</a> *const derived)</td></tr>
+<tr class="memdesc:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the output archive.  <a href="#a98fbde73bf6d41f4e717e91011e3be7f">More...</a><br/></td></tr>
+<tr class="separator:a98fbde73bf6d41f4e717e91011e3be7f inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48a65660f32a2b90f7ab26ebba25707c inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48a65660f32a2b90f7ab26ebba25707c"></a>
 <a class="el" href="classcereal_1_1JSONOutputArchive.html">JSONOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a48a65660f32a2b90f7ab26ebba25707c">operator()</a> (Types &amp;&amp;...args)</td></tr>
 <tr class="memdesc:a48a65660f32a2b90f7ab26ebba25707c inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes all passed in data. <br/></td></tr>
@@ -159,16 +186,36 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>saveValue</b> (char c
 <tr class="memitem:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#abf97e7c48f6d307d6fa87d4b3fd3ad0e">registerPolymorphicType</a> (char const *name)</td></tr>
 <tr class="memdesc:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a polymorphic type name with the archive.  <a href="#abf97e7c48f6d307d6fa87d4b3fd3ad0e">More...</a><br/></td></tr>
 <tr class="separator:abf97e7c48f6d307d6fa87d4b3fd3ad0e inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1JSONOutputArchive.html">JSONOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a4788dde3f0691f0dbbfc14fe6e2997cd">operator&amp;</a> (T &amp;&amp;arg)</td></tr>
+<tr class="memdesc:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes passed in data.  <a href="#a4788dde3f0691f0dbbfc14fe6e2997cd">More...</a><br/></td></tr>
+<tr class="separator:a4788dde3f0691f0dbbfc14fe6e2997cd inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1JSONOutputArchive.html">JSONOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#a0316f5791b140979aea2c915e4618236">operator&lt;&lt;</a> (T &amp;&amp;arg)</td></tr>
+<tr class="memdesc:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes passed in data.  <a href="#a0316f5791b140979aea2c915e4618236">More...</a><br/></td></tr>
+<tr class="separator:a0316f5791b140979aea2c915e4618236 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a8a01f3c61dd1d0a955f2f63055205212"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8a01f3c61dd1d0a955f2f63055205212"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a8a01f3c61dd1d0a955f2f63055205212"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a91f32de571be1367f755ee80c8f32dad"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a91f32de571be1367f755ee80c8f32dad"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
 ::value &amp;&amp;(sizeof(T) &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a8a01f3c61dd1d0a955f2f63055205212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save exotic arithmetic types as binary. <br/></td></tr>
-<tr class="separator:a8a01f3c61dd1d0a955f2f63055205212"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a91f32de571be1367f755ee80c8f32dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save exotic arithmetic types as binary to current node.  <a href="#a91f32de571be1367f755ee80c8f32dad">More...</a><br/></td></tr>
+<tr class="separator:a91f32de571be1367f755ee80c8f32dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa65afebe41f5089a71aa2a7b27566fd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa65afebe41f5089a71aa2a7b27566fd"></a>
+JSONWriter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#afa65afebe41f5089a71aa2a7b27566fd">itsWriter</a></td></tr>
+<tr class="memdesc:afa65afebe41f5089a71aa2a7b27566fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rapidjson writer. <br/></td></tr>
+<tr class="separator:afa65afebe41f5089a71aa2a7b27566fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9dc6cd7cabb84aea802c01c4d27afc7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9dc6cd7cabb84aea802c01c4d27afc7"></a>
+char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#ab9dc6cd7cabb84aea802c01c4d27afc7">itsNextName</a></td></tr>
+<tr class="memdesc:ab9dc6cd7cabb84aea802c01c4d27afc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The next name. <br/></td></tr>
+<tr class="separator:ab9dc6cd7cabb84aea802c01c4d27afc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5146f987b83dab2c43f495fc943c224c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5146f987b83dab2c43f495fc943c224c"></a>
+std::stack&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a5146f987b83dab2c43f495fc943c224c">itsNameCounter</a></td></tr>
+<tr class="memdesc:a5146f987b83dab2c43f495fc943c224c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counter for creating unique names for unnamed nodes. <br/></td></tr>
+<tr class="separator:a5146f987b83dab2c43f495fc943c224c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b65683a07638b25e67f41bfc7757d28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b65683a07638b25e67f41bfc7757d28"></a>
+std::stack&lt; NodeType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>itsNodeStack</b></td></tr>
+<tr class="separator:a4b65683a07638b25e67f41bfc7757d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An output archive designed to save data to JSON. </p>
@@ -192,7 +239,7 @@ template&lt;class T &gt; </td></tr>
  is accomplished through the cereal::SizeTag object, which will cause the archive
  to output the data as a JSON array (e.g. marked by [] instead of {}), which indicates
  that the container is variable sized and may be edited.</pre> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a05eb305f80d9261a37b8a6b8cce35e1b"></a>
+<a class="anchor" id="a868aad545584f610cb819eb8e817267e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -209,7 +256,7 @@ template&lt;class T &gt; </td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>precision</em> = <code>20</code>&#160;</td>
+          <td class="paramname"><em>precision</em> = <code>std::numeric_limits&lt;double&gt;::max_digits10</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -235,6 +282,103 @@ template&lt;class T &gt; </td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a1833e8351413e686130e7794c712639b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cereal::JSONOutputArchive::saveBinaryValue </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Saves some binary data, encoded as a base64 string, with an optional name. </p>
+<p>This will create a new node, optionally named, and insert a value that consists of the data encoded as a base64 string </p>
+
+</div>
+</div>
+<a class="anchor" id="acae7982ee23cacf07cb6c4326818e6b8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cereal::JSONOutputArchive::startNode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Starts a new node in the JSON output. </p>
+<p>The node can optionally be given a name by calling setNextName prior to creating the node</p>
+<p>Nodes only need to be started for types that are themselves objects or arrays </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a91f32de571be1367f755ee80c8f32dad"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value &amp;&amp;                              (sizeof(T) &gt; cereal::JSONOutputArchive::</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Save exotic arithmetic types as binary to current node. </p>
+<p>Rapidjson write stream </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/cereal/archives/<a class="el" href="json_8hpp_source.html">json.hpp</a></li>
 </ul>
@@ -242,11 +386,7 @@ template&lt;class T &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:54 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:57 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

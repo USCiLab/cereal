@@ -10,6 +10,19 @@ var searchData=
   ['inputbindingcreator',['InputBindingCreator',['../structcereal_1_1detail_1_1InputBindingCreator.html',1,'cereal::detail']]],
   ['inputbindingmap',['InputBindingMap',['../structcereal_1_1detail_1_1InputBindingMap.html',1,'cereal::detail']]],
   ['instantiate_5ffunction',['instantiate_function',['../structcereal_1_1detail_1_1instantiate__function.html',1,'cereal::detail']]],
-  ['is_5fempty_5fclass_5fimpl',['is_empty_class_impl',['../structcereal_1_1traits_1_1detail_1_1is__empty__class__impl.html',1,'cereal::traits::detail']]],
-  ['is_5fempty_5fclass_5fimpl_3c_20t_2c_20typename_20std_3a_3aenable_5fif_3c_20std_3a_3ais_5fclass_3c_20t_20_3e_3a_3avalue_20_3e_3a_3atype_20_3e',['is_empty_class_impl&lt; T, typename std::enable_if&lt; std::is_class&lt; T &gt;::value &gt;::type &gt;',['../structcereal_1_1traits_1_1detail_1_1is__empty__class__impl_3_01T_00_01typename_01std_1_1enable__56074ddda07dfffee0ebd58303fce48f.html',1,'cereal::traits::detail']]]
+  ['is_5finput_5fserializable',['is_input_serializable',['../structcereal_1_1traits_1_1is__input__serializable.html',1,'cereal::traits']]],
+  ['is_5finput_5fversioned',['is_input_versioned',['../structcereal_1_1traits_1_1is__input__versioned.html',1,'cereal::traits']]],
+  ['is_5foutput_5fserializable',['is_output_serializable',['../structcereal_1_1traits_1_1is__output__serializable.html',1,'cereal::traits']]],
+  ['is_5foutput_5fversioned',['is_output_versioned',['../structcereal_1_1traits_1_1is__output__versioned.html',1,'cereal::traits']]],
+  ['is_5fspecialized',['is_specialized',['../structcereal_1_1traits_1_1is__specialized.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fmember_5fload',['is_specialized_member_load',['../structcereal_1_1traits_1_1is__specialized__member__load.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fmember_5fload_5fsave',['is_specialized_member_load_save',['../structcereal_1_1traits_1_1detail_1_1is__specialized__member__load__save.html',1,'cereal::traits::detail']]],
+  ['is_5fspecialized_5fmember_5fsave',['is_specialized_member_save',['../structcereal_1_1traits_1_1is__specialized__member__save.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fmember_5fserialize',['is_specialized_member_serialize',['../structcereal_1_1traits_1_1is__specialized__member__serialize.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fmember_5fserialize',['is_specialized_member_serialize',['../structcereal_1_1traits_1_1detail_1_1is__specialized__member__serialize.html',1,'cereal::traits::detail']]],
+  ['is_5fspecialized_5fnon_5fmember_5fload',['is_specialized_non_member_load',['../structcereal_1_1traits_1_1is__specialized__non__member__load.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fnon_5fmember_5fload_5fsave',['is_specialized_non_member_load_save',['../structcereal_1_1traits_1_1detail_1_1is__specialized__non__member__load__save.html',1,'cereal::traits::detail']]],
+  ['is_5fspecialized_5fnon_5fmember_5fsave',['is_specialized_non_member_save',['../structcereal_1_1traits_1_1is__specialized__non__member__save.html',1,'cereal::traits']]],
+  ['is_5fspecialized_5fnon_5fmember_5fserialize',['is_specialized_non_member_serialize',['../structcereal_1_1traits_1_1detail_1_1is__specialized__non__member__serialize.html',1,'cereal::traits::detail']]],
+  ['is_5fspecialized_5fnon_5fmember_5fserialize',['is_specialized_non_member_serialize',['../structcereal_1_1traits_1_1is__specialized__non__member__serialize.html',1,'cereal::traits']]]
 ];

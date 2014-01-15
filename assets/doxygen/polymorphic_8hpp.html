@@ -107,6 +107,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:acaa06fbc27c59926a41e7575667e5280"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acaa06fbc27c59926a41e7575667e5280"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CONSTEXPR</b>&#160;&#160;&#160;constexpr</td></tr>
+<tr class="separator:acaa06fbc27c59926a41e7575667e5280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#ae2d7d9fc98f7a55a6f0031ea5eaea4e6">CEREAL_REGISTER_TYPE</a>(T)</td></tr>
 <tr class="memdesc:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a polymorphic type with cereal.  <a href="#ae2d7d9fc98f7a55a6f0031ea5eaea4e6">More...</a><br/></td></tr>
 <tr class="separator:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,36 +124,40 @@ template&lt;class Archive &gt; </td></tr>
 &lt; Archive &gt;::Serializers&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::getInputBinding</b> (Archive &amp;ar, std::uint32_t const nameid)</td></tr>
 <tr class="memdesc:a1ba6164125996cf35136a4309f966453"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an input binding from the given archive by deserializing the type meta data. <br/></td></tr>
 <tr class="separator:a1ba6164125996cf35136a4309f966453"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3db541e3cd67366d9aadaddcdb938e1"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:ac3db541e3cd67366d9aadaddcdb938e1"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_default_constructible<br class="typebreak"/>
+<tr class="memitem:a4322092b422a9f4ad4bfffe84fa0d0d4"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a4322092b422a9f4ad4bfffe84fa0d0d4"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(std::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value||traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:ac3db541e3cd67366d9aadaddcdb938e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#ac3db541e3cd67366d9aadaddcdb938e1">More...</a><br/></td></tr>
-<tr class="separator:ac3db541e3cd67366d9aadaddcdb938e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54c2c677cd7c5c13effca53930a2c5cb"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a54c2c677cd7c5c13effca53930a2c5cb"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_default_constructible<br class="typebreak"/>
+&lt; T, Archive &gt;::value)&amp;&amp;!std::is_abstract<br class="typebreak"/>
+&lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
+<tr class="memdesc:a4322092b422a9f4ad4bfffe84fa0d0d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a4322092b422a9f4ad4bfffe84fa0d0d4">More...</a><br/></td></tr>
+<tr class="separator:a4322092b422a9f4ad4bfffe84fa0d0d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4a588502fc9c84282a9970e9a1941f1"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
+<tr class="memitem:ab4a588502fc9c84282a9970e9a1941f1"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(std::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value||traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:a54c2c677cd7c5c13effca53930a2c5cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a54c2c677cd7c5c13effca53930a2c5cb">More...</a><br/></td></tr>
-<tr class="separator:a54c2c677cd7c5c13effca53930a2c5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad865cc5a5d11544323df99938dc7fcad"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:ad865cc5a5d11544323df99938dc7fcad"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!std::is_default_constructible<br class="typebreak"/>
+&lt; T, Archive &gt;::value)&amp;&amp;!std::is_abstract<br class="typebreak"/>
+&lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
+<tr class="memdesc:ab4a588502fc9c84282a9970e9a1941f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#ab4a588502fc9c84282a9970e9a1941f1">More...</a><br/></td></tr>
+<tr class="separator:ab4a588502fc9c84282a9970e9a1941f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbf38374f65ea611fb77e44e7023ed81"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:acbf38374f65ea611fb77e44e7023ed81"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(!std::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value <br class="typebreak"/>
 &amp;&amp;!traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::shared_ptr&lt; T &gt; &amp;, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:ad865cc5a5d11544323df99938dc7fcad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#ad865cc5a5d11544323df99938dc7fcad">More...</a><br/></td></tr>
-<tr class="separator:ad865cc5a5d11544323df99938dc7fcad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbc9b6d0ac30ffce3d4bdb90a7ae2897"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:adbc9b6d0ac30ffce3d4bdb90a7ae2897"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!std::is_default_constructible<br class="typebreak"/>
+&lt; T, Archive &gt;::value)||std::is_abstract<br class="typebreak"/>
+&lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::shared_ptr&lt; T &gt; &amp;, std::uint32_t const nameid)</td></tr>
+<tr class="memdesc:acbf38374f65ea611fb77e44e7023ed81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#acbf38374f65ea611fb77e44e7023ed81">More...</a><br/></td></tr>
+<tr class="separator:acbf38374f65ea611fb77e44e7023ed81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a709b12b81ff74102dbaf7be7647eeec8"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
+<tr class="memitem:a709b12b81ff74102dbaf7be7647eeec8"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(!std::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value <br class="typebreak"/>
 &amp;&amp;!traits::has_load_and_allocate<br class="typebreak"/>
-&lt; T, Archive &gt;), bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::unique_ptr&lt; T, D &gt; &amp;, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:adbc9b6d0ac30ffce3d4bdb90a7ae2897"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#adbc9b6d0ac30ffce3d4bdb90a7ae2897">More...</a><br/></td></tr>
-<tr class="separator:adbc9b6d0ac30ffce3d4bdb90a7ae2897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+&lt; T, Archive &gt;::value)||std::is_abstract<br class="typebreak"/>
+&lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::unique_ptr&lt; T, D &gt; &amp;, std::uint32_t const nameid)</td></tr>
+<tr class="memdesc:a709b12b81ff74102dbaf7be7647eeec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a709b12b81ff74102dbaf7be7647eeec8">More...</a><br/></td></tr>
+<tr class="separator:a709b12b81ff74102dbaf7be7647eeec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad375eb8b14ca04e568eefee2f915ce58"></a>
 template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
@@ -233,10 +240,10 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <div class="line">  template &lt;&gt;                                            \</div>
 <div class="line">  struct binding_name&lt;T&gt;                                 \</div>
 <div class="line">  {                                                      \</div>
-<div class="line">    static constexpr <span class="keywordtype">char</span> <span class="keyword">const</span> * name() { <span class="keywordflow">return</span> #T; }; \</div>
+<div class="line">    static CONSTEXPR <span class="keywordtype">char</span> <span class="keyword">const</span> * name() { <span class="keywordflow">return</span> #T; }; \</div>
 <div class="line">  };                                                     \</div>
 <div class="line">  } } <span class="comment">/* end namespaces */</span>                               \</div>
-<div class="line">  CEREAL_BIND_TO_ARCHIVES(T);</div>
+<div class="line">  CEREAL_BIND_TO_ARCHIVES(T)</div>
 </div><!-- fragment -->
 <p>Registers a polymorphic type with cereal. </p>
 <p>Polymorphic types must be registered before pointers to them can be serialized. This also assumes that all relevent archives have also previously been registered. Registration for archives is usually done in the header file in which they are defined. This means that type registration needs to happen after specific archives to be used are included.</p>
@@ -272,9 +279,9 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <div class="line">  namespace detail {                                          \</div>
 <div class="line">  template &lt;&gt;                                                 \</div>
 <div class="line">  struct binding_name&lt;T&gt;                                      \</div>
-<div class="line">  { <span class="keyword">static</span> constexpr <span class="keywordtype">char</span> <span class="keyword">const</span> * name() { <span class="keywordflow">return</span> Name; }; }; \</div>
+<div class="line">  { <span class="keyword">static</span> CONSTEXPR <span class="keywordtype">char</span> <span class="keyword">const</span> * name() { <span class="keywordflow">return</span> Name; }; }; \</div>
 <div class="line">  } } <span class="comment">/* end namespaces */</span>                                    \</div>
-<div class="line">  CEREAL_BIND_TO_ARCHIVES(T);</div>
+<div class="line">  CEREAL_BIND_TO_ARCHIVES(T)</div>
 </div><!-- fragment --><p>Registers a polymorphic type with cereal, giving it a user defined name</p>
 <p>In some cases the default name used with CEREAL_REGISTER_TYPE (the name of the type) may not be suitable. This macro allows any name to be associated with the type. The name should be unique </p>
 
@@ -284,11 +291,7 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

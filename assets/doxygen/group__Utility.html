@@ -97,6 +97,9 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Utility.html#ga78892c2ccfac7a5454639ca121e84439">CEREAL_NVP</a>(T)&#160;&#160;&#160;::cereal::make_nvp(#T, T)</td></tr>
 <tr class="memdesc:ga78892c2ccfac7a5454639ca121e84439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a name value pair for the variable T with the same name as the variable. <br/></td></tr>
 <tr class="separator:ga78892c2ccfac7a5454639ca121e84439"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabea833652252591a51f75cb9ce31f44a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Utility.html#gabea833652252591a51f75cb9ce31f44a">CEREAL_CLASS_VERSION</a>(TYPE, VERSION_NUMBER)</td></tr>
+<tr class="memdesc:gabea833652252591a51f75cb9ce31f44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a class version for some type.  <a href="#gabea833652252591a51f75cb9ce31f44a">More...</a><br/></td></tr>
+<tr class="separator:gabea833652252591a51f75cb9ce31f44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -121,6 +124,71 @@ template&lt;class T &gt; </td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Name-value pairs, binary data wrappers, exceptions, and other utility functions </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="gabea833652252591a51f75cb9ce31f44a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_CLASS_VERSION</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">TYPE, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">VERSION_NUMBER&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>detail {                                          \</div>
+<div class="line">    template &lt;&gt; <span class="keyword">struct </span>Version&lt;TYPE&gt;                                             \</div>
+<div class="line">    {                                                                            \</div>
+<div class="line">      static <span class="keyword">const</span> std::uint32_t version = VERSION_NUMBER;                       \</div>
+<div class="line">      static Version&lt;TYPE&gt; registerVersion()                                     \</div>
+<div class="line">      {                                                                          <a class="code" href="classcereal_1_1detail_1_1StaticObject.html" title="A static, pre-execution object.">\</a></div>
+<div class="line"><a class="code" href="classcereal_1_1detail_1_1StaticObject.html" title="A static, pre-execution object.">        ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance</a>().mapping.emplace( \</div>
+<div class="line">             std::type_index(<span class="keyword">typeid</span>(TYPE)).hash_code(), VERSION_NUMBER );        \</div>
+<div class="line">        return {};                                                               \</div>
+<div class="line">      }                                                                          \</div>
+<div class="line">    }; <span class="comment">/* end Version */</span>                                                         \</div>
+<div class="line">    static <span class="keyword">const</span> <span class="keyword">auto</span> CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \</div>
+<div class="line">      Version&lt;TYPE&gt;::registerVersion();                                          \</div>
+<div class="line">  } }</div>
+</div><!-- fragment -->
+<p>Defines a class version for some type. </p>
+<p>Versioning information is optional and adds some small amount of overhead to serialization. This overhead will occur both in terms of space in the archive (the version information for each class will be stored exactly once) as well as runtime (versioned serialization functions must check to see if they need to load or store version information).</p>
+<p>Versioning is useful if you plan on fundamentally changing the way some type is serialized in the future. Versioned serialization functions cannot be used to load non-versioned data.</p>
+<p>By default, all types have an assumed version value of zero. By using this macro, you may change the version number associated with some type. cereal will then use this value as a second parameter to your serialization functions.</p>
+<p>The interface for the serialization functions is nearly identical to non-versioned serialization with the addition of a second parameter, const std::uint32_t version, which will be supplied with the correct version number. Serializing the version number on a save happens automatically.</p>
+<p>Versioning cannot be mixed with non-versioned serialization functions.</p>
+<p>Example interface for versioning on a non-member serialize function:</p>
+<div class="fragment"><div class="line"><a class="code" href="group__Utility.html#gabea833652252591a51f75cb9ce31f44a" title="Defines a class version for some type.">CEREAL_CLASS_VERSION</a>( Mytype, 77 ); <span class="comment">// register class version</span></div>
+<div class="line"></div>
+<div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><span class="keywordtype">void</span> serialize( Archive &amp; ar, Mytype &amp; t, <span class="keyword">const</span> std::uint32_t version )</div>
+<div class="line">{</div>
+<div class="line">  <span class="comment">// When performing a load, the version associated with the class</span></div>
+<div class="line">  <span class="comment">// is whatever it was when that data was originally serialized</span></div>
+<div class="line">  <span class="comment">//</span></div>
+<div class="line">  <span class="comment">// When we save, we&#39;ll use the version that is defined in the macro</span></div>
+<div class="line"></div>
+<div class="line">  <span class="keywordflow">if</span>( version &gt;= some_number )</div>
+<div class="line">    <span class="comment">// do this</span></div>
+<div class="line">  <span class="keywordflow">else</span></div>
+<div class="line">    <span class="comment">// do that</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Interfaces for other forms of serialization functions is similar. This macro should be placed at global scope. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="ga593d161603775672f91ab448ef65083e"></a>
 <div class="memitem">
@@ -200,11 +268,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

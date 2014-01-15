@@ -102,46 +102,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9f9fc7674904f1e658a8fed917b629e4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9f9fc7674904f1e658a8fed917b629e4"></a>
+<tr class="memitem:a8032d96fcba828b64b7a3edc98e19ba4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8032d96fcba828b64b7a3edc98e19ba4"></a>
 template&lt;class Archive , class T , class A &gt; </td></tr>
-<tr class="memitem:a9f9fc7674904f1e658a8fed917b629e4"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a8032d96fcba828b64b7a3edc98e19ba4"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::is_output_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
-)&amp;&amp;std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value &amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-bool &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::vector&lt; T, A &gt; const &amp;vector)</td></tr>
-<tr class="memdesc:a9f9fc7674904f1e658a8fed917b629e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported. <br/></td></tr>
-<tr class="separator:a9f9fc7674904f1e658a8fed917b629e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca6fcd45a167139c69796ef6b2c93069"><td class="memTemplParams" colspan="2"><a class="anchor" id="aca6fcd45a167139c69796ef6b2c93069"></a>
+::value &amp;&amp;std::is_arithmetic<br class="typebreak"/>
+&lt; T &gt;::value &amp;&amp;!std::is_same<br class="typebreak"/>
+&lt; T, bool &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::vector&lt; T, A &gt; const &amp;vector)</td></tr>
+<tr class="memdesc:a8032d96fcba828b64b7a3edc98e19ba4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported. <br/></td></tr>
+<tr class="separator:a8032d96fcba828b64b7a3edc98e19ba4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9153752c700c0d5444a1462a7e934f85"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9153752c700c0d5444a1462a7e934f85"></a>
 template&lt;class Archive , class T , class A &gt; </td></tr>
-<tr class="memitem:aca6fcd45a167139c69796ef6b2c93069"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a9153752c700c0d5444a1462a7e934f85"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::is_input_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
-)&amp;&amp;std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value &amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-bool &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::vector&lt; T, A &gt; &amp;vector)</td></tr>
-<tr class="memdesc:aca6fcd45a167139c69796ef6b2c93069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported. <br/></td></tr>
-<tr class="separator:aca6fcd45a167139c69796ef6b2c93069"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae10726b58926df7212a6fbfd5e4d9881"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae10726b58926df7212a6fbfd5e4d9881"></a>
+::value &amp;&amp;std::is_arithmetic<br class="typebreak"/>
+&lt; T &gt;::value &amp;&amp;!std::is_same<br class="typebreak"/>
+&lt; T, bool &gt;::value, void &gt;<br class="typebreak"/>
+::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::vector&lt; T, A &gt; &amp;vector)</td></tr>
+<tr class="memdesc:a9153752c700c0d5444a1462a7e934f85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for std::vectors of arithmetic (but not bool) using binary serialization, if supported. <br/></td></tr>
+<tr class="separator:a9153752c700c0d5444a1462a7e934f85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe5ae52ef35c68487da9d50237a95693"><td class="memTemplParams" colspan="2"><a class="anchor" id="abe5ae52ef35c68487da9d50237a95693"></a>
 template&lt;class Archive , class T , class A &gt; </td></tr>
-<tr class="memitem:ae10726b58926df7212a6fbfd5e4d9881"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:abe5ae52ef35c68487da9d50237a95693"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::is_output_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
-)||!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value||std::is_same&lt; T, bool &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::vector&lt; T, A &gt; const &amp;vector)</td></tr>
-<tr class="memdesc:ae10726b58926df7212a6fbfd5e4d9881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for non-arithmetic (and bool) vector types. <br/></td></tr>
-<tr class="separator:ae10726b58926df7212a6fbfd5e4d9881"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c7792cb85e09885b06286efcd4ba755"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7c7792cb85e09885b06286efcd4ba755"></a>
+::value||!std::is_arithmetic<br class="typebreak"/>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::vector&lt; T, A &gt; const &amp;vector)</td></tr>
+<tr class="memdesc:abe5ae52ef35c68487da9d50237a95693"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for non-arithmetic vector types. <br/></td></tr>
+<tr class="separator:abe5ae52ef35c68487da9d50237a95693"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea07d316f3f701433a821a0c7fe0fa68"><td class="memTemplParams" colspan="2"><a class="anchor" id="aea07d316f3f701433a821a0c7fe0fa68"></a>
 template&lt;class Archive , class T , class A &gt; </td></tr>
-<tr class="memitem:a7c7792cb85e09885b06286efcd4ba755"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aea07d316f3f701433a821a0c7fe0fa68"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::is_input_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
-)||!std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value||std::is_same&lt; T, bool &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::vector&lt; T, A &gt; &amp;vector)</td></tr>
-<tr class="memdesc:a7c7792cb85e09885b06286efcd4ba755"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for non-arithmetic (and bool) vector types. <br/></td></tr>
-<tr class="separator:a7c7792cb85e09885b06286efcd4ba755"><td class="memSeparator" colspan="2">&#160;</td></tr>
+::value||!std::is_arithmetic<br class="typebreak"/>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::vector&lt; T, A &gt; &amp;vector)</td></tr>
+<tr class="memdesc:aea07d316f3f701433a821a0c7fe0fa68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for non-arithmetic vector types. <br/></td></tr>
+<tr class="separator:aea07d316f3f701433a821a0c7fe0fa68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d187b8d957dbd79e71de0ab189e6546"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8d187b8d957dbd79e71de0ab189e6546"></a>
+template&lt;class Archive , class A &gt; </td></tr>
+<tr class="memitem:a8d187b8d957dbd79e71de0ab189e6546"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::vector&lt; bool, A &gt; const &amp;vector)</td></tr>
+<tr class="memdesc:a8d187b8d957dbd79e71de0ab189e6546"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for bool vector types. <br/></td></tr>
+<tr class="separator:a8d187b8d957dbd79e71de0ab189e6546"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5260bd894c6ad2fbf93aa8b71327a03"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac5260bd894c6ad2fbf93aa8b71327a03"></a>
+template&lt;class Archive , class A &gt; </td></tr>
+<tr class="memitem:ac5260bd894c6ad2fbf93aa8b71327a03"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::vector&lt; bool, A &gt; &amp;vector)</td></tr>
+<tr class="memdesc:ac5260bd894c6ad2fbf93aa8b71327a03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for non-arithmetic (not bool) vector types. <br/></td></tr>
+<tr class="separator:ac5260bd894c6ad2fbf93aa8b71327a03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;vector&gt; </p>
@@ -149,11 +159,7 @@ template&lt;class Archive , class T , class A &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-<<<<<<< HEAD
-Generated on Fri Jul 12 2013 15:21:53 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
-=======
-Generated on Sat Jul 13 2013 13:30:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
->>>>>>> 3a7d5d47f432d669115bede3291f7c0d7f6b030b
+Generated on Wed Jan 15 2014 14:16:06 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
