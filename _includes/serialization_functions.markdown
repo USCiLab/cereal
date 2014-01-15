@@ -159,6 +159,7 @@ class MyCoolClass
 
 This also works with split save/load functions.
 
+<a name="versioning"></a>
 ### Explicit Versioning
 
 cereal supports adding explicit versioning information for types, much like boost class versioning.
@@ -166,7 +167,7 @@ This is optional in cereal and by default is not used for any type.  You can cho
 an additional parameter to your serialization functions (regardless of which serialization style you are using), a `const std::uint32_t`, typically named `version`.
 
 This parameter will always be given the appropriate version number by cereal.  When saving data, cereal looks for an
-explicit version which you can specify with the `CEREAL_CLASS_VERSION` macro.  This macro takes a type and a version
+explicit version which you can specify with the `CEREAL_CLASS_VERSION` macro (see the [doxygen docs]({{ site.baseurl }}/assets/doxygen/group__Utility.html) for detailed information).  This macro takes a type and a version
 number, and causes cereal to serialize this version information when it saves that type using a versioned serialization
 function.  If you use this macro but do not use a versioned serialization function, no version information will be
 saved.  If you use a versioned serialization function and do not specify the version number using the macro, cereal will

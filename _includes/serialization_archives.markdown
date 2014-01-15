@@ -15,7 +15,7 @@ cereal comes with binary, XML, and JSON archives that allow loading and saving t
 
 Archives decide how to output or interpret data that is being serialized.  For the most part, you do not need to know the inner workings of an archive and can write serialization functions agnostic of the archive type, though cereal does support specializing serialization functions for specific types of archives (e.g. a serialization function for a JSON archive could include more human readable metadata than its binary variant).
 
-Most cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
+cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
 
 The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  Archives are only guaranteed to have flushed their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
 
@@ -37,7 +37,8 @@ cereal was not designed to be a robust long term storage solution - it is your r
 between saved and loaded cereal archives.  It is recommended that you use the same version of cereal for both loading
 and saving data.  
 
-REPLACE_ME If you wish to have behavior such as boost's [class versioning](http://www.boost.org/doc/libs/1_54_0/libs/serialization/doc/tutorial.html#versioning), you will need to implement it yourself.
+cereal does support including version information along with the data it serializes in a fashion similar to that found
+in boost.  For more information on this see the [versioning](serialization_functions.html#versioning) section of the serialization types documentation.
 
 ### Advanced Topic: Polymorphism
 
@@ -51,7 +52,7 @@ Although detailed at length [elsewhere](polymorphism.html), if you will be seria
 
 The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The binary archive is designed to produce compact bit level representations of data and is not human readable.  It is a good choice when computers will be looking at the data on both ends of the serialization.  The binary archive is also the fastest archive that comes with cereal.  Binary archives will ignore name-value pairs and only serialize the values.  
 
-The base binary archive makes no attempt to ensure that endianness is preserved across different architectures.  If your data will be read on both little and big-endian machines, you should use `<cereal/archives/portable_binary.hpp>`, which tracks the endianness of the saving and loading machines and transforms data appropriately.  It has slightly more overhead than the regular binary archive.
+The binary archive makes no attempt to ensure that endianness is preserved across different architectures.  If your data will be read on both little and big-endian machines, you should use `<cereal/archives/portable_binary.hpp>`, which tracks the endianness of the saving and loading machines and transforms data appropriately.  It has slightly more overhead than the regular binary archive.
 
 ---
 
@@ -101,15 +102,17 @@ This causes the output XML:
 
 Note that if you choose to edit the generated XML by hand, you still need to make sure that the inserted data is valid.  Inserting data where there shouldn't be data will cause errors when the XML is loaded.  You can only insert data into dynamically sized containers.  
 
-XML can optionally output complete demangled type information as an attribute and offers control over the output precision of floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
-
+XML can optionally output complete demangled type information as an attribute and offers control over the output precision of floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).  cereal will use the largest number of digits appropriate for serializing a double by default.
 
 The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
 
 ### Out of Order Loading
 
-XML archives support out of order loading, meaning that you can utilize name-value pairs to load data in an order
-different to that in which it appears in the XML file.  When cereal detects that you are using an NVP to load data from
+The default behavior for all archives is to sequentially load data in the order in which it appears.
+XML (and JSON) archives support out of order loading, meaning that you can utilize name-value pairs to load data in an order
+different to that in which it appears in the XML file. 
+
+When cereal detects that you are using an NVP to load data from
 an XML archive, it
 
 <span class="label label-warning">Important!</span>
