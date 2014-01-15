@@ -14,7 +14,9 @@ their internals.
 
 cereal supports single serializaton functions (`serialize`) or split load/save pairs (`load` and `save`) either inside
 or outside of classes.  Internal serialization functions can be kept private so long as cereal is given access by
-befriending `cereal::access`.  cereal will tell you if you've made a mistake at compile time, if possible.
+befriending `cereal::access`.  You can optionally choose to store versioning information by adding an additional
+parameter to your serialization functions (`std::uint32_t const version`) and using the `CEREAL_CLASS_VERSION` macro.
+cereal will tell you if you've made a mistake at compile time, if possible.
 
 ---
 
@@ -156,6 +158,68 @@ class MyCoolClass
 ```
 
 This also works with split save/load functions.
+
+### Explicit Versioning
+
+cereal supports adding explicit versioning information for types, much like boost class versioning.
+This is optional in cereal and by default is not used for any type.  You can choose to use versioning by adding
+an additional parameter to your serialization functions (regardless of which serialization style you are using), a `const std::uint32_t`, typically named `version`.
+
+This parameter will always be given the appropriate version number by cereal.  When saving data, cereal looks for an
+explicit version which you can specify with the `CEREAL_CLASS_VERSION` macro.  This macro takes a type and a version
+number, and causes cereal to serialize this version information when it saves that type using a versioned serialization
+function.  If you use this macro but do not use a versioned serialization function, no version information will be
+saved.  If you use a versioned serialization function and do not specify the version number using the macro, cereal will
+default to giving a version number of zero.
+
+When performing loads, cereal will load versioning information if your serialization function is versioned.  If you did
+not use a versioned serialization function to create the archive you are loading from, your data will be corrupted and your program will likely crash.  This
+loaded version number will be supplied via the version parameter you add to your serialization functions.
+
+<span class="label label-warning">Important!</span> If you choose to use versioning, you must ensure that all serialization functions for a type support the versioning
+parameter (both your load and save must have it in the case of split serialization).
+
+Here is a small example of adding versioning to both an internal serialize function as well as an externally split
+load/save pair:
+
+```{cpp}
+#include <cereal/cereal.hpp>
+
+struct MyCoolClass
+{
+  // xCEREAL will supply the version automatically when loading or saving
+  // The version number comes from the CEREAL_CLASS_VERSION macro
+  template <class Archive>
+  void serialize( Archive & ar, std::uint32_t const version )
+  {
+    // You can choose different behaviors depending on the version
+    // This is useful if you need to support older variants of your codebase
+    // interacting with newer ones
+    if( version > some_number )
+      // do something
+    else
+      // do something else
+  }
+};
+
+struct AnotherType { };
+
+// Versioning can be applied to any type of serialization function, but
+// if used for a load it must also be used for a save
+template <class Archive>
+void save( Archive & ar, AnotherType const & at, std::uint32_t const version )
+{ }
+
+template <class Archive>
+void load( Archive & ar, AnotherType & at, std::uint32_t const version )
+{ }
+
+// Associate some type with a version number
+CEREAL_CLASS_VERSION( MyCoolClass, 32 );
+
+// If we don't associate a class with a version number and use a versioned
+// serialize function, its version number will default to 0
+```
 
 ### Inheritance
 

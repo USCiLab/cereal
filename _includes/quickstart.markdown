@@ -2,7 +2,7 @@ Quick Start
 ===========
 
 This is a quick guide to get cereal up and running in a matter of minutes.  The only prerequisite for running cereal is
-a modern C++11 compliant compiler, such as GCC 4.7.3 or clang 3.3.  Older versions might work, but we can't guarantee
+a modern C++11 compliant compiler, such as GCC 4.7.3, clang 3.3, or MSVC 2013.  Older versions might work, but we can't guarantee
 it.
 
 ---
@@ -35,8 +35,8 @@ struct MyClass
 
 cereal also offers more flexible ways of writing serialization functions such as moving them outside of class
 definitions or splitting them into separate load and save functions.  You can read all about that in the [serialization
-functions](serialization_functions.html) section of the documentation.  cereal can also support private serialization
-methods and even classes that don't support default construction.
+functions](serialization_functions.html) section of the documentation.  cereal can also support class versioning, private serialization
+methods, and even classes that don't support default construction.
 
 You can serialize primitive data types and nearly every type in the [standard library](stl_support.html) without needing
 to write anything yourself.
@@ -45,8 +45,9 @@ to write anything yourself.
 
 ## Choose an archive
 
-cereal currently supports three archive types: 
-[binary] (serialization_archives.html#binary_archive), 
+cereal currently supports three basic archive types: 
+[binary] (serialization_archives.html#binary_archive) (also available in a [portable]
+(serialization_archives.html#portable_binary_archive) version), 
 [XML] (serialization_archives.html#xml_archive), and 
 [JSON] (serialization_archives.html#json_archive).  These archives are the middlemen between your code and your
 serialized data - they handle the reading and writing for you.  XML and JSON archives are human readable but lack the
@@ -57,6 +58,7 @@ of the documentation.
 Include your preferred archive with one of:
 
 * `#include <cereal/archives/binary.hpp>`
+* `#include <cereal/archives/portable_binary.hpp>`
 * `#include <cereal/archives/xml.hpp>`
 * `#include <cereal/archives/json.hpp>`
 

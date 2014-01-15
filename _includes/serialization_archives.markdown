@@ -35,7 +35,9 @@ The preferred way for working with archives is in an [RAII](http://en.wikipedia.
 
 cereal was not designed to be a robust long term storage solution - it is your responsibility to ensure compatability
 between saved and loaded cereal archives.  It is recommended that you use the same version of cereal for both loading
-and saving data.  If you wish to have behavior such as boost's [class versioning](http://www.boost.org/doc/libs/1_54_0/libs/serialization/doc/tutorial.html#versioning), you will need to implement it yourself.
+and saving data.  
+
+REPLACE_ME If you wish to have behavior such as boost's [class versioning](http://www.boost.org/doc/libs/1_54_0/libs/serialization/doc/tutorial.html#versioning), you will need to implement it yourself.
 
 ### Advanced Topic: Polymorphism
 
@@ -47,7 +49,9 @@ Although detailed at length [elsewhere](polymorphism.html), if you will be seria
 
 ## Binary Data
 
-The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The binary archive is designed to produce compact bit level representations of data and is not human readable.  It is a good choice when computers will be looking at the data on both ends of the serialization.  The binary archive is also the fastest archive that comes with cereal.  Binary archives will ignore name-value pairs and only serialize the values.
+The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The binary archive is designed to produce compact bit level representations of data and is not human readable.  It is a good choice when computers will be looking at the data on both ends of the serialization.  The binary archive is also the fastest archive that comes with cereal.  Binary archives will ignore name-value pairs and only serialize the values.  
+
+The base binary archive makes no attempt to ensure that endianness is preserved across different architectures.  If your data will be read on both little and big-endian machines, you should use `<cereal/archives/portable_binary.hpp>`, which tracks the endianness of the saving and loading machines and transforms data appropriately.  It has slightly more overhead than the regular binary archive.
 
 ---
 
@@ -99,11 +103,20 @@ Note that if you choose to edit the generated XML by hand, you still need to mak
 
 XML can optionally output complete demangled type information as an attribute and offers control over the output precision of floating point numbers.  If you need to have binary equality between floating point numbers, you will need a significant precision for the output (on the order of 10 for floats, 20 for doubles, 40 for long doubles).
 
-<span class="label label-warning">Important!</span>
-At this time cereal requires that the ordering of information in the XML archive match what is
-expected in the serialization functions.  You may add data to dynamically sized containers, but you cannot change the order of nodes.
 
 The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
+
+### Out of Order Loading
+
+XML archives support out of order loading, meaning that you can utilize name-value pairs to load data in an order
+different to that in which it appears in the XML file.  When cereal detects that you are using an NVP to load data from
+an XML archive, it
+
+<span class="label label-warning">Important!</span>
+Some data types are serialized with ex
+Although cereal supports out of order loading
+At this time cereal requires that the ordering of information in the XML archive match what is
+expected in the serialization functions.  You may add data to dynamically sized containers, but you cannot change the order of nodes.
 
 ### Binary output
 
