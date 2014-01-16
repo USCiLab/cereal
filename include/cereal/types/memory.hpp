@@ -168,7 +168,7 @@ namespace cereal
     }
     else
     {
-      if( ar.isSharedPointerValid )
+      if( ar.isSharedPointerValid( id ) )
         ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
       else
         ar.pushDeferredSharedPointerLoad(
