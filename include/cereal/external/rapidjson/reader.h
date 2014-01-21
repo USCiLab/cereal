@@ -53,8 +53,8 @@ enum ParseFlag {
 concept Handler {
 	typename Ch;
 
-	void Null();
-	void Bool(bool b);
+	void Null_();
+	void Bool_(bool b);
 	void Int(int i);
 	void Uint(unsigned i);
 	void Int64(int64_t i);
@@ -80,8 +80,8 @@ struct BaseReaderHandler {
 	typedef typename Encoding::Ch Ch;
 
 	void Default() {}
-	void Null() { Default(); }
-	void Bool(bool) { Default(); }
+	void Null_() { Default(); }
+	void Bool_(bool) { Default(); }
 	void Int(int) { Default(); }
 	void Uint(unsigned) { Default(); }
 	void Int64(int64_t) { Default(); }
@@ -333,14 +333,14 @@ private:
 
   // Parses for null or NaN
 	template<unsigned parseFlags, typename Stream, typename Handler>
-	void ParseNaNNull(Stream& stream, Handler& handler) {
+	void ParseNaNNull_(Stream& stream, Handler& handler) {
 		RAPIDJSON_ASSERT(stream.Peek() == 'n');
 		stream.Take();
 
     if( stream.Peek() == 'a' && stream.Take() == 'a' && stream.Take() == 'n' )
       handler.Double( std::numeric_limits<double>::quiet_NaN() );
     else if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
-			handler.Null();
+			handler.Null_();
     else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
@@ -363,7 +363,7 @@ private:
 		stream.Take();
 
 		if (stream.Take() == 'r' && stream.Take() == 'u' && stream.Take() == 'e')
-			handler.Bool(true);
+			handler.Bool_(true);
 		else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell());
 	}
@@ -374,7 +374,7 @@ private:
 		stream.Take();
 
 		if (stream.Take() == 'a' && stream.Take() == 'l' && stream.Take() == 's' && stream.Take() == 'e')
-			handler.Bool(false);
+			handler.Bool_(false);
 		else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
@@ -718,7 +718,7 @@ private:
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseValue(Stream& stream, Handler& handler) {
 		switch (stream.Peek()) {
-			case 'n': ParseNaNNull  <parseFlags>(stream, handler); break;
+			case 'n': ParseNaNNull_  <parseFlags>(stream, handler); break;
 			case 'i': ParseInfinity <parseFlags>(stream, handler); break;
 			case 't': ParseTrue     <parseFlags>(stream, handler); break;
 			case 'f': ParseFalse    <parseFlags>(stream, handler); break;

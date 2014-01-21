@@ -55,8 +55,8 @@ public:
 	//@name Implementation of Handler
 	//@{
 
-	Writer& Null()                          { Prefix(kNullType);   WriteNull();			return *this;             }
-	Writer& Bool(bool b)                    { Prefix(b ? kTrueType : kFalseType); WriteBool(b); return *this; }
+	Writer& Null_()                          { Prefix(kNull_Type);   WriteNull_();			return *this;             }
+	Writer& Bool_(bool b)                    { Prefix(b ? kTrueType : kFalseType); WriteBool_(b); return *this; }
 	Writer& Int(int i)                      { Prefix(kNumberType); WriteInt(i);			return *this;             }
 	Writer& Uint(unsigned u)                { Prefix(kNumberType); WriteUint(u);		return *this;             }
 	Writer& Int64(int64_t i64)              { Prefix(kNumberType); WriteInt64(i64);		return *this;           }
@@ -119,11 +119,11 @@ protected:
 
 	static const size_t kDefaultLevelDepth = 32;
 
-	void WriteNull()  {
+	void WriteNull_()  {
 		stream_.Put('n'); stream_.Put('u'); stream_.Put('l'); stream_.Put('l');
 	}
 
-	void WriteBool(bool b)  {
+	void WriteBool_(bool b)  {
 		if (b) {
 			stream_.Put('t'); stream_.Put('r'); stream_.Put('u'); stream_.Put('e');
 		}

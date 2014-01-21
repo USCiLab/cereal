@@ -40,8 +40,8 @@ public:
 	//@name Implementation of Handler.
 	//@{
 
-	PrettyWriter& Null()				{ PrettyPrefix(kNullType);   Base::WriteNull();			return *this; }
-	PrettyWriter& Bool(bool b)			{ PrettyPrefix(b ? kTrueType : kFalseType); Base::WriteBool(b); return *this; }
+	PrettyWriter& Null_()				{ PrettyPrefix(kNull_Type);   Base::WriteNull_();			return *this; }
+	PrettyWriter& Bool_(bool b)			{ PrettyPrefix(b ? kTrueType : kFalseType); Base::WriteBool_(b); return *this; }
 	PrettyWriter& Int(int i)			{ PrettyPrefix(kNumberType); Base::WriteInt(i);			return *this; }
 	PrettyWriter& Uint(unsigned u)		{ PrettyPrefix(kNumberType); Base::WriteUint(u);		return *this; }
 	PrettyWriter& Int64(int64_t i64)	{ PrettyPrefix(kNumberType); Base::WriteInt64(i64);		return *this; }

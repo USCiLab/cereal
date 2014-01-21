@@ -110,13 +110,13 @@ concept Allocator {
 	void* Malloc(size_t size);
 
 	// Resize a memory block.
-	// \param originalPtr The pointer to current memory block. Null pointer is permitted.
+	// \param originalPtr The pointer to current memory block. Null_ pointer is permitted.
 	// \param originalSize The current size in bytes. (Design issue: since some allocator may not book-keep this, explicitly pass to it can save memory.)
 	// \param newSize the new size in bytes.
 	void* Realloc(void* originalPtr, size_t originalSize, size_t newSize);
 
 	// Free a memory block.
-	// \param pointer to the memory block. Null pointer is permitted.
+	// \param pointer to the memory block. Null_ pointer is permitted.
 	static void Free(void *ptr);
 };
 \endcode
@@ -511,7 +511,7 @@ typedef GenericInsituStringStream<UTF8<> > InsituStringStream;
 
 //! Type of JSON value
 enum Type {
-	kNullType = 0,		//!< null
+	kNull_Type = 0,		//!< null
 	kFalseType = 1,		//!< false
 	kTrueType = 2,		//!< true
 	kObjectType = 3,	//!< object

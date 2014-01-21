@@ -47,7 +47,7 @@ public:
 	//@{
 
 	//! Default constructor creates a null value.
-	GenericValue() : flags_(kNullFlag) {}
+	GenericValue() : flags_(kNull_Flag) {}
 
 	//! Copy constructor is not permitted.
 private:
@@ -62,7 +62,7 @@ public:
 	*/
 	GenericValue(Type type) {
 		static const unsigned defaultFlags[7] = {
-			kNullFlag, kFalseFlag, kTrueFlag, kObjectFlag, kArrayFlag, kConstStringFlag,
+			kNull_Flag, kFalseFlag, kTrueFlag, kObjectFlag, kArrayFlag, kConstStringFlag,
 			kNumberFlag | kIntFlag | kUintFlag | kInt64Flag | kUint64Flag | kDoubleFlag
 		};
 		RAPIDJSON_ASSERT(type <= kNumberType);
@@ -171,7 +171,7 @@ public:
 		RAPIDJSON_ASSERT(this != &rhs);
 		this->~GenericValue();
 		memcpy(this, &rhs, sizeof(GenericValue));
-		rhs.flags_ = kNullFlag;
+		rhs.flags_ = kNull_Flag;
 		return *this;
 	}
 
@@ -191,10 +191,10 @@ public:
 	//@{
 
 	Type GetType()	const { return static_cast<Type>(flags_ & kTypeMask); }
-	bool IsNull()	const { return flags_ == kNullFlag; }
+	bool IsNull_()	const { return flags_ == kNull_Flag; }
 	bool IsFalse()	const { return flags_ == kFalseFlag; }
 	bool IsTrue()	const { return flags_ == kTrueFlag; }
-	bool IsBool()	const { return (flags_ & kBoolFlag) != 0; }
+	bool IsBool_()	const { return (flags_ & kBool_Flag) != 0; }
 	bool IsObject()	const { return flags_ == kObjectFlag; }
 	bool IsArray()	const { return flags_ == kArrayFlag; }
 	bool IsNumber() const { return (flags_ & kNumberFlag) != 0; }
@@ -207,18 +207,18 @@ public:
 
 	//@}
 
-	//!@name Null
+	//!@name Null_
 	//@{
 
-	GenericValue& SetNull() { this->~GenericValue(); new (this) GenericValue(); return *this; }
+	GenericValue& SetNull_() { this->~GenericValue(); new (this) GenericValue(); return *this; }
 
 	//@}
 
-	//!@name Bool
+	//!@name Bool_
 	//@{
 
-	bool GetBool() const { RAPIDJSON_ASSERT(IsBool()); return flags_ == kTrueFlag; }
-	GenericValue& SetBool(bool b) { this->~GenericValue(); new (this) GenericValue(b); return *this; }
+	bool GetBool_() const { RAPIDJSON_ASSERT(IsBool_()); return flags_ == kTrueFlag; }
+	GenericValue& SetBool_(bool b) { this->~GenericValue(); new (this) GenericValue(b); return *this; }
 
 	//@}
 
@@ -233,8 +233,8 @@ public:
 		if (Member* member = FindMember(name))
 			return member->value;
 		else {
-			static GenericValue NullValue;
-			return NullValue;
+			static GenericValue Null_Value;
+			return Null_Value;
 		}
 	}
 	const GenericValue& operator[](const Ch* name) const { return const_cast<GenericValue&>(*this)[name]; }
@@ -493,9 +493,9 @@ int z = a[0u].GetInt();				// This works too.
 	template <typename Handler>
 	const GenericValue& Accept(Handler& handler) const {
 		switch(GetType()) {
-		case kNullType:		handler.Null(); break;
-		case kFalseType:	handler.Bool(false); break;
-		case kTrueType:		handler.Bool(true); break;
+		case kNull_Type:		handler.Null_(); break;
+		case kFalseType:	handler.Bool_(false); break;
+		case kTrueType:		handler.Bool_(true); break;
 
 		case kObjectType:
 			handler.StartObject();
@@ -533,7 +533,7 @@ private:
 	friend class GenericDocument;
 
 	enum {
-		kBoolFlag = 0x100,
+		kBool_Flag = 0x100,
 		kNumberFlag = 0x200,
 		kIntFlag = 0x400,
 		kUintFlag = 0x800,
@@ -544,9 +544,9 @@ private:
 		kCopyFlag = 0x200000,
 
 		// Initial flags of different types.
-		kNullFlag = kNullType,
-		kTrueFlag = kTrueType | kBoolFlag,
-		kFalseFlag = kFalseType | kBoolFlag,
+		kNull_Flag = kNull_Type,
+		kTrueFlag = kTrueType | kBool_Flag,
+		kFalseFlag = kFalseType | kBool_Flag,
 		kNumberIntFlag = kNumberType | kNumberFlag | kIntFlag | kInt64Flag,
 		kNumberUintFlag = kNumberType | kNumberFlag | kUintFlag | kUint64Flag | kInt64Flag,
 		kNumberInt64Flag = kNumberType | kNumberFlag | kInt64Flag,
@@ -667,7 +667,7 @@ private:
 	//! Assignment without calling destructor
 	void RawAssign(GenericValue& rhs) {
 		memcpy(this, &rhs, sizeof(GenericValue));
-		rhs.flags_ = kNullFlag;
+		rhs.flags_ = kNull_Flag;
 	}
 
 	Data data_;
@@ -707,7 +707,7 @@ public:
 	*/
 	template <unsigned parseFlags, typename Stream>
 	GenericDocument& ParseStream(Stream& stream) {
-		ValueType::SetNull(); // Remove existing root if exist
+		ValueType::SetNull_(); // Remove existing root if exist
 		GenericReader<Encoding, Allocator> reader;
 		if (reader.template Parse<parseFlags>(stream, *this)) {
 			RAPIDJSON_ASSERT(stack_.GetSize() == sizeof(ValueType)); // Got one and only one root object
@@ -767,8 +767,8 @@ private:
 	friend class GenericReader<Encoding, Allocator>;	// for Reader to call the following private handler functions
 
 	// Implementation of Handler
-	void Null()	{ new (stack_.template Push<ValueType>()) ValueType(); }
-	void Bool(bool b) { new (stack_.template Push<ValueType>()) ValueType(b); }
+	void Null_()	{ new (stack_.template Push<ValueType>()) ValueType(); }
+	void Bool_(bool b) { new (stack_.template Push<ValueType>()) ValueType(b); }
 	void Int(int i) { new (stack_.template Push<ValueType>()) ValueType(i); }
 	void Uint(unsigned i) { new (stack_.template Push<ValueType>()) ValueType(i); }
 	void Int64(int64_t i) { new (stack_.template Push<ValueType>()) ValueType(i); }
