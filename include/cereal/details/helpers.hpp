@@ -339,15 +339,17 @@ namespace cereal
   class allocate
   {
     public:
-      allocate( T * p ) : ptr( p ) {}
-
+      //! Allocate the type T with the given arguments
       template <class ... Args>
       void operator()( Args && ... args )
       {
-        ::operator new (ptr) T( std::forward<Args>( args )... );
+        new (ptr) T( std::forward<Args>( args )... );
       }
 
     private:
+      template <class A, class B> friend struct memory_detail::LoadAndAllocateLoadWrapper;
+
+      allocate( T * p ) : ptr( p ) {}
       allocate( allocate const & ) = delete;
       allocate & operator=( allocate const & ) = delete;
 

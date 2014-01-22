@@ -1067,13 +1067,13 @@ class MemoryCycleLoadAndAllocate
     }
 
     template <class Archive>
-    static MemoryCycleLoadAndAllocate * load_and_allocate( Archive & ar )
+    static void load_and_allocate( Archive & ar, cereal::allocate<MemoryCycleLoadAndAllocate> & allocate )
     {
       int value;
       std::shared_ptr<MemoryCycleLoadAndAllocate> ptr;
 
       ar( value, ptr );
-      return new MemoryCycleLoadAndAllocate( value, ptr );
+      allocate( value, ptr );
     }
 
     int value;

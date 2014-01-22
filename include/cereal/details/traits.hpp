@@ -149,13 +149,13 @@ namespace cereal
     // Member load_and_allocate
     template<typename T, typename A>
     struct has_member_load_and_allocate :
-      std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>() ) ), T*>::value> {};
+      std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval<::cereal::allocate<T>&>() ) ), void>::value> {};
 
     // ######################################################################
     // Non Member load_and_allocate
     template<typename T, typename A>
     struct has_non_member_load_and_allocate : std::integral_constant<bool,
-      std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>() ) ), T*>::value> {};
+      std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>(), std::declval<::cereal::allocate<T>&>() ) ), T*>::value> {};
 
     // ######################################################################
     // Has either a member or non member allocate
@@ -548,7 +548,7 @@ namespace cereal
     struct Load
     {
       static_assert( !sizeof(T), "Cereal detected both member and non member load_and_allocate functions!" );
-      static T * load_andor_allocate( A & /*ar*/ )
+      static T * load_andor_allocate( A & /*ar*/, allocate<T> & /*allocate*/ )
       { return nullptr; }
     };
 
@@ -560,31 +560,31 @@ namespace cereal
                      "Types must either be default constructible or define either a member or non member Construct function.\n"
                      "Construct functions generally have the signature:\n\n"
                      "template <class Archive>\n"
-                     "static T * load_and_allocate(Archive & ar)\n"
+                     "static void load_and_allocate(Archive & ar, cereal::allocate<T> & allocate)\n"
                      "{\n"
                      "  var a;\n"
-                     "  ar & a\n"
-                     "  return new T(a);\n"
+                     "  ar( a )\n"
+                     "  allocate( a );\n"
                      "}\n\n" );
-      static T * load_andor_allocate( A & /*ar*/ )
+      static T * load_andor_allocate()
       { return new T(); }
     };
 
     template <class T, class A>
     struct Load<T, A, true, false>
     {
-      static T * load_andor_allocate( A & ar )
+      static void load_andor_allocate( A & ar, allocate<T> & allocate )
       {
-        return access::load_and_allocate<T>( ar );
+        access::load_and_allocate<T>( ar, allocate );
       }
     };
 
     template <class T, class A>
     struct Load<T, A, false, true>
     {
-      static T * load_andor_allocate( A & ar )
+      static void load_andor_allocate( A & ar, allocate<T> & allocate )
       {
-        return LoadAndAllocate<T>::load_and_allocate( ar );
+        LoadAndAllocate<T>::load_and_allocate( ar, allocate );
       }
     };
   } // namespace detail

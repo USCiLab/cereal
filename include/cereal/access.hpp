@@ -33,12 +33,15 @@
 #include <iostream>
 #include <cstdint>
 
+#include <cereal/details/helpers.hpp>
+
 namespace cereal
 {
   //! A class that allows cereal to load smart pointers to types that have no default constructor
   /*! If your class does not have a default constructor, cereal will not be able
       to load any smart pointers to it unless you overload LoadAndAllocate
-      for your class, and provide an appropriate load_and_allocate method.
+      for your class, and provide an appropriate load_and_allocate method.  You can also
+      choose to define a member static function instead of specializing this class.
 
       The specialization of LoadAndAllocate must be placed within the cereal namespace:
 
@@ -62,17 +65,14 @@ namespace cereal
         template <> struct LoadAndAllocate<MyType>
         {
           // load_and_allocate will be passed the archive that you will be loading
-          // from and should return a raw pointer to a dynamically allocated instance
-          // of your type.
-          //
-          // This will be captured by a smart pointer of some type and you need not
-          // worry about managing the memory
+          // from as well as an allocate object which you can use as if it were the
+          // constructor for your type.  cereal will handle all memory management for you.
           template <class Archive>
-          static MyType * load_and_allocate( Archive & ar )
+          static void load_and_allocate( Archive & ar, cereal::allocate<MyType> & allocate )
           {
             int x;
             ar( x );
-            return new MyType( x );
+            allocate( x );
           }
         };
       } // end namespace cereal
@@ -85,8 +85,8 @@ namespace cereal
   {
     //! Called by cereal if no default constructor exists to load and allocate data simultaneously
     /*! Overloads of this should return a pointer to T and expect an archive as a parameter */
-    static void load_and_allocate(...)
-    { }
+    static std::false_type load_and_allocate(...)
+    { return std::false_type(); }
   };
 
   //! A class that can be made a friend to give cereal access to non public functions
@@ -147,13 +147,13 @@ namespace cereal
       { t.load(ar, version); }
 
       template <class T>
-        static void load_and_allocate(...)
-        { }
+        static std::false_type load_and_allocate(...)
+        { return std::false_type(); }
 
       template<class T, class Archive> inline
-        static auto load_and_allocate(Archive & ar) -> decltype(T::load_and_allocate(ar))
+        static auto load_and_allocate(Archive & ar, ::cereal::allocate<T> & allocate) -> decltype(T::load_and_allocate(ar, allocate))
         {
-          return T::load_and_allocate( ar );
+          T::load_and_allocate( ar, allocate );
         }
   };
 

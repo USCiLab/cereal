@@ -62,14 +62,16 @@ namespace cereal
     template <class Archive, class T>
     struct LoadAndAllocateLoadWrapper
     {
-      LoadAndAllocateLoadWrapper() = default;
+      LoadAndAllocateLoadWrapper( T * ptr ) :
+        allocate( ptr )
+      { }
 
       inline void serialize( Archive & ar )
       {
-        ptr = ::cereal::detail::Load<T, Archive>::load_andor_allocate( ar );
+        ::cereal::detail::Load<T, Archive>::load_andor_allocate( ar, allocate );
       }
 
-      T * ptr;
+      ::cereal::allocate<T> allocate;
     };
   }
 
@@ -149,10 +151,6 @@ namespace cereal
   typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
-    // Storage type for the pointer - since we can't default construct this type,
-    // we'll allocate it using std::aligned_storage and use a custom deleter
-    using ST = typename std::aligned_storage<T>::type;
-
     auto & ptr = wrapper.ptr;
 
     uint32_t id;
@@ -161,7 +159,9 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      ar.preRegisterSharedPointer( id );
+      // Storage type for the pointer - since we can't default construct this type,
+      // we'll allocate it using std::aligned_storage and use a custom deleter
+      using ST = typename std::aligned_storage<sizeof(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -170,20 +170,20 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      ptr.reset( reinterpret_cast<Test *>( new TT() ),
+      ptr.reset( reinterpret_cast<T *>( new ST() ),
           [=]( T * t )
           {
             if( valid )
-              t->~Test();
+              t->~T();
 
             delete reinterpret_cast<ST *>( t );
           } );
 
       // Register the pointer
-      ar.postRegisterSharedPointer( id, ptr );
+      ar.registerSharedPointer( id, ptr );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr.get() );
 
       // Call load and allocate
       ar( loadWrapper );
@@ -192,13 +192,7 @@ namespace cereal
       *valid = true;
     }
     else
-    {
-      if( ar.isSharedPointerValid( id ) )
-        ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
-      else
-        ar.pushDeferredSharedPointerLoad(
-            id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
-    }
+      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Loading std::shared_ptr, case when no user load and allocate (wrapper implementation)
@@ -215,20 +209,12 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      //ar.preRegisterSharedPointer( id );
-
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
-      ar.postRegisterSharedPointer( id, ptr );
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate() );
+      ar.registerSharedPointer( id, ptr );
       ar( *ptr );
     }
     else
-    {
-      //if( ar.isSharedPointerValid( id ) )
-        ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
-      //else
-      //  ar.pushDeferredSharedPointerLoad(
-      //      id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
-    }
+      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Saving std::unique_ptr (wrapper implementation)
@@ -264,10 +250,22 @@ namespace cereal
 
     if( isValid )
     {
-      // Use wrapper to enter into "data" nvp
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
+      // allocate into unique ptr to handle exceptions
+      // pretend this is the real deal
+      // after we get it back, transfer to proper shared ptr
+
+      // Storage type for the pointer - since we can't default construct this type,
+      // we'll allocate it using std::aligned_storage and use a custom deleter
+      using ST = typename std::aligned_storage<sizeof(T)>::type;
+
+      std::unique_ptr<ST> stPtr( new ST() );
+
+      // Use wrapper to enter into "data" nvp of ptr_wrapper
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
+
       ar( loadWrapper );
-      ptr.reset( loadWrapper.ptr );
+
+      ptr.reset( stPtr.release() );
     }
     else
       ptr.reset( nullptr );
@@ -286,7 +284,7 @@ namespace cereal
 
     if( isValid )
     {
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
+      ptr.reset( detail::Load<T, Archive>::load_andor_allocate() );
       ar( *ptr );
     }
     else

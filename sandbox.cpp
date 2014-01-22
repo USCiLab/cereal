@@ -258,11 +258,12 @@ public:
   {
   }
 
-  //template <class Archive>
-  //static NoDefaultCtor * load_and_allocate( Archive & ar )
-  //{
-  //  return new NoDefaultCtor(5);
-  //}
+  template <class Archive>
+  static void load_and_allocate( Archive &, cereal::allocate<NoDefaultCtor> & allocate )
+  {
+    allocate( 5 );
+    //return new NoDefaultCtor(5);
+  }
 };
 
 namespace cereal
@@ -271,9 +272,10 @@ namespace cereal
   struct LoadAndAllocate<NoDefaultCtor>
   {
     template <class Archive>
-    static NoDefaultCtor * load_and_allocate( Archive & )
+    static void load_and_allocate( Archive &, cereal::allocate<NoDefaultCtor> & allocate )
     {
-      return new NoDefaultCtor(5);
+      allocate( 5 );
+      //return new NoDefaultCtor(5);
     }
   };
 }
