@@ -149,6 +149,10 @@ namespace cereal
   typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
+    // Storage type for the pointer - since we can't default construct this type,
+    // we'll allocate it using std::aligned_storage and use a custom deleter
+    using ST = typename std::aligned_storage<T>::type;
+
     auto & ptr = wrapper.ptr;
 
     uint32_t id;
@@ -159,12 +163,33 @@ namespace cereal
     {
       ar.preRegisterSharedPointer( id );
 
-      // Use wrapper to enter into "data" nvp
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
-      ar( loadWrapper );
-      ptr.reset( loadWrapper.ptr );
+      // Valid flag - set to true once construction finishes
+      //  This prevents us from calling the destructor on
+      //  uninitialized data.
+      auto valid = std::make_shared<bool>( false );
 
+      // Allocate our storage, which we will treat as
+      //  uninitialized until initialized with placement new
+      ptr.reset( reinterpret_cast<Test *>( new TT() ),
+          [=]( T * t )
+          {
+            if( valid )
+              t->~Test();
+
+            delete reinterpret_cast<ST *>( t );
+          } );
+
+      // Register the pointer
       ar.postRegisterSharedPointer( id, ptr );
+
+      // Use wrapper to enter into "data" nvp of ptr_wrapper
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper;
+
+      // Call load and allocate
+      ar( loadWrapper );
+
+      // Mark pointer as valid (initialized)
+      *valid = true;
     }
     else
     {
@@ -190,20 +215,19 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      ar.preRegisterSharedPointer( id );
+      //ar.preRegisterSharedPointer( id );
 
       ptr.reset( detail::Load<T, Archive>::load_andor_allocate( ar ) );
-      ar( *ptr );
-
       ar.postRegisterSharedPointer( id, ptr );
+      ar( *ptr );
     }
     else
     {
-      if( ar.isSharedPointerValid( id ) )
+      //if( ar.isSharedPointerValid( id ) )
         ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
-      else
-        ar.pushDeferredSharedPointerLoad(
-            id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
+      //else
+      //  ar.pushDeferredSharedPointerLoad(
+      //      id, [&, id]() { ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id)); } );
     }
   }
 

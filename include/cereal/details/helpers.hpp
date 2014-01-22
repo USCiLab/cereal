@@ -326,6 +326,34 @@ namespace cereal
       // always get a version number of 0
     };
   } // namespace detail
+
+
+  //! Used to allocate types with no default constructor
+  /*! When serializing a type that has no default constructor, cereal
+      will attempt to call either the class static function load_and_allocate
+      or the appropriate template specialization of LoadAndAllocate.  cereal
+      will pass that function a reference to the archive as well as a reference
+      to an allocate object which should be used to perform the allocation once
+      data has been appropriately loaded. */
+  template <class T>
+  class allocate
+  {
+    public:
+      allocate( T * p ) : ptr( p ) {}
+
+      template <class ... Args>
+      void operator()( Args && ... args )
+      {
+        ::operator new (ptr) T( std::forward<Args>( args )... );
+      }
+
+    private:
+      allocate( allocate const & ) = delete;
+      allocate & operator=( allocate const & ) = delete;
+
+      T * ptr;
+  };
+
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_
