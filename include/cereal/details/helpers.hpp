@@ -327,6 +327,8 @@ namespace cereal
     };
   } // namespace detail
 
+  // forward decl
+  namespace memory_detail{ template <class Ar, class T> struct LoadAndAllocateLoadWrapper; }
 
   //! Used to allocate types with no default constructor
   /*! When serializing a type that has no default constructor, cereal
@@ -347,7 +349,7 @@ namespace cereal
       }
 
     private:
-      template <class A, class B> friend struct memory_detail::LoadAndAllocateLoadWrapper;
+      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndAllocateLoadWrapper;
 
       allocate( T * p ) : ptr( p ) {}
       allocate( allocate const & ) = delete;
@@ -355,7 +357,6 @@ namespace cereal
 
       T * ptr;
   };
-
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_

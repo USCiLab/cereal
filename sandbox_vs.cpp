@@ -87,9 +87,9 @@ namespace cereal
   struct LoadAndAllocate<Test>
   {
     template <class Archive>
-    static Test * load_and_allocate( Archive & )
+    static void load_and_allocate( Archive &, cereal::allocate<Test> & allocate )
     {
-      return new Test();
+      allocate();
     }
   };
 }
