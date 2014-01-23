@@ -247,6 +247,7 @@ struct NoDefaultCtor
 {
 private:
   NoDefaultCtor() {};
+  int z;
 public:
   NoDefaultCtor(int x) : y(x)
   { }
@@ -254,31 +255,35 @@ public:
   int y;
 
   template <class Archive>
-  void serialize( Archive & )
+  void serialize( Archive & ar )
   {
+    ar( y );
   }
 
   template <class Archive>
-  static void load_and_allocate( Archive &, cereal::allocate<NoDefaultCtor> & allocate )
+  static void load_and_allocate( Archive & ar, cereal::allocate<NoDefaultCtor> & allocate )
   {
-    allocate( 5 );
-    //return new NoDefaultCtor(5);
+    int y;
+    ar( y );
+    allocate( y );
+    allocate->z = 33;
   }
 };
 
-namespace cereal
-{
-  template <>
-  struct LoadAndAllocate<NoDefaultCtor>
-  {
-    template <class Archive>
-    static void load_and_allocate( Archive &, cereal::allocate<NoDefaultCtor> & allocate )
-    {
-      allocate( 5 );
-      //return new NoDefaultCtor(5);
-    }
-  };
-}
+//namespace cereal
+//{
+//  template <>
+//  struct LoadAndAllocate<NoDefaultCtor>
+//  {
+//    template <class Archive>
+//    static void load_and_allocate( Archive & ar, cereal::allocate<NoDefaultCtor> & allocate )
+//    {
+//      int y;
+//      ar( y );
+//      allocate( y );
+//    }
+//  };
+//}
 
 struct unordered_naming
 {
@@ -465,6 +470,7 @@ int main()
   e_out.t3 = {3};
   e_out.t4 = {4};
   e_out.s = "Hello, World!";
+  std::unique_ptr<NoDefaultCtor> nodefault( new NoDefaultCtor( 3 ) );
 
   Test2 t2 = {22};
 
@@ -473,19 +479,24 @@ int main()
     cereal::BinaryOutputArchive archive(os);
     archive(CEREAL_NVP(e_out));
     archive(t2);
+    archive(nodefault);
   }
 
   Everything e_in;
+
+  std::unique_ptr<NoDefaultCtor> nodefaultin( new NoDefaultCtor( 1 ) );
 
   {
     std::ifstream is("out.txt");
     cereal::BinaryInputArchive archive(is);
     archive(CEREAL_NVP(e_in));
     archive(t2);
+    archive(nodefaultin);
     std::remove("out.txt");
   }
 
   assert(e_in == e_out);
+  assert(nodefault->y == nodefaultin->y);
 
   {
     cereal::BinaryOutputArchive archive(std::cout);

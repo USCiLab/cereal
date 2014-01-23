@@ -46,15 +46,6 @@
 namespace cereal
 {
   // ######################################################################
-  //! An exception class thrown when things go wrong at runtime
-  /*! @ingroup Utility */
-  struct Exception : public std::runtime_error
-  {
-    Exception( const std::string & what_ ) : std::runtime_error(what_) {}
-    Exception( const char * what_ ) : std::runtime_error(what_) {}
-  };
-
-  // ######################################################################
   //! Creates a name value pair
   /*! @relates NameValuePair
       @ingroup Utility */

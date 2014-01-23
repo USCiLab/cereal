@@ -78,6 +78,11 @@ namespace cereal
       } // end namespace cereal
       @endcode
 
+      Please note that just as in using external serialization functions, you cannot get
+      access to non-public members of your class by befriending cereal::access.  If you
+      have the ability to modify the class you wish to serialize, it is recommended that you
+      use member serialize functions and a static member load_and_allocate function.
+
       @tparam T The type to specialize for
       @ingroup Access */
   template <class T>
@@ -87,6 +92,104 @@ namespace cereal
     /*! Overloads of this should return a pointer to T and expect an archive as a parameter */
     static std::false_type load_and_allocate(...)
     { return std::false_type(); }
+  };
+
+  // forward decl for allocate
+  //! @cond PRIVATE_NEVERDEFINED
+  namespace memory_detail{ template <class Ar, class T> struct LoadAndAllocateLoadWrapper; }
+  //! @endcond
+
+  //! Used to allocate types with no default constructor
+  /*! When serializing a type that has no default constructor, cereal
+      will attempt to call either the class static function load_and_allocate
+      or the appropriate template specialization of LoadAndAllocate.  cereal
+      will pass that function a reference to the archive as well as a reference
+      to an allocate object which should be used to perform the allocation once
+      data has been appropriately loaded.
+
+      @code{.cpp}
+      struct MyType
+      {
+        // note the lack of default constructor
+        MyType( int xx, int yy );
+
+        int x, y;
+        double notInConstructor;
+
+        template <class Archive>
+        void serialize( Archive & ar )
+        {
+          ar( x, y );
+          ar( notInConstructor );
+        }
+
+        template <class Archive>
+        static void load_and_allocate( Archive & ar, cereal::allocate<MyType> & allocate )
+        {
+          int x, y;
+          ar( x, y );
+
+          // use allocate object to initialize with loaded data
+          allocate( x, y );
+
+          // access to member variables and functions via -> operator
+          ar( allocate->notInConstructor );
+
+          // could also do the above section by:
+          double z;
+          ar( z );
+          allocate->notInConstructor = z;
+        }
+      };
+      @endcode
+
+      @tparam T The class type being serialized
+      */
+  template <class T>
+  class allocate
+  {
+    public:
+      //! Allocate and initialize the type T with the given arguments
+      /*! This will forward all arguments to the underlying type T,
+          calling an appropriate constructor.
+
+          Calling this function more than once will result in an exception
+          being thrown.
+
+          @param args The arguments to the constructor for T
+          @throw Exception If called more than once */
+      template <class ... Args>
+      void operator()( Args && ... args )
+      {
+        if( valid )
+          throw Exception("Attempting to allocate an already initialized object");
+
+        new (ptr) T( std::forward<Args>( args )... );
+        valid = true;
+      }
+
+      //! Get a reference to the initialized underlying object
+      /*! This must be called after the object has been initialized.
+
+          @return A reference to the initialized object
+          @throw Exception If called before initialization */
+      T * operator->()
+      {
+        if( !valid )
+          throw Exception("Object must be initialized prior to accessing members");
+
+        return ptr;
+      }
+
+    private:
+      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndAllocateLoadWrapper;
+
+      allocate( T * p ) : ptr( p ), valid( false ) {}
+      allocate( allocate const & ) = delete;
+      allocate & operator=( allocate const & ) = delete;
+
+      T * ptr;
+      bool valid;
   };
 
   //! A class that can be made a friend to give cereal access to non public functions

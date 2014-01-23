@@ -39,6 +39,16 @@
 
 namespace cereal
 {
+  // ######################################################################
+  //! An exception class thrown when things go wrong at runtime
+  /*! @ingroup Utility */
+  struct Exception : public std::runtime_error
+  {
+    Exception( const std::string & what_ ) : std::runtime_error(what_) {}
+    Exception( const char * what_ ) : std::runtime_error(what_) {}
+  };
+
+  // ######################################################################
   //! The size type used by cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
    * a fixed size type instead of size_t, which may vary from machine to
@@ -308,6 +318,7 @@ namespace cereal
     return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
   }
 
+  // ######################################################################
   namespace detail
   {
     //! Holds all registered version information
@@ -326,37 +337,6 @@ namespace cereal
       // always get a version number of 0
     };
   } // namespace detail
-
-  // forward decl
-  namespace memory_detail{ template <class Ar, class T> struct LoadAndAllocateLoadWrapper; }
-
-  //! Used to allocate types with no default constructor
-  /*! When serializing a type that has no default constructor, cereal
-      will attempt to call either the class static function load_and_allocate
-      or the appropriate template specialization of LoadAndAllocate.  cereal
-      will pass that function a reference to the archive as well as a reference
-      to an allocate object which should be used to perform the allocation once
-      data has been appropriately loaded. */
-  template <class T>
-  class allocate
-  {
-    public:
-      //! Allocate the type T with the given arguments
-      template <class ... Args>
-      void operator()( Args && ... args )
-      {
-        new (ptr) T( std::forward<Args>( args )... );
-      }
-
-    private:
-      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndAllocateLoadWrapper;
-
-      allocate( T * p ) : ptr( p ) {}
-      allocate( allocate const & ) = delete;
-      allocate & operator=( allocate const & ) = delete;
-
-      T * ptr;
-  };
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_
