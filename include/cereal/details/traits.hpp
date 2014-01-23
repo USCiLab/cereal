@@ -149,13 +149,13 @@ namespace cereal
     // Member load_and_allocate
     template<typename T, typename A>
     struct has_member_load_and_allocate :
-      std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval<::cereal::allocate<T>&>() ) ), void>::value> {};
+      std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
 
     // ######################################################################
     // Non Member load_and_allocate
     template<typename T, typename A>
     struct has_non_member_load_and_allocate : std::integral_constant<bool,
-      std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>(), std::declval<::cereal::allocate<T>&>() ) ), void>::value> {};
+      std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
 
     // ######################################################################
     // Has either a member or non member allocate

@@ -1022,11 +1022,11 @@ struct MemoryCycle
   { }
 
   int value;
-  std::shared_ptr<MemoryCycle> ptr;
+  std::weak_ptr<MemoryCycle> ptr;
 
   bool operator==( MemoryCycle const & other ) const
   {
-    return value == other.value && ptr == other.ptr;
+    return value == other.value && ptr.lock() == other.ptr.lock();
   }
 
   template <class Archive>
@@ -1038,7 +1038,7 @@ struct MemoryCycle
 
 std::ostream& operator<<(std::ostream& os, MemoryCycle const & s)
 {
-  os << "[value: " << s.value << " ptr: " << s.ptr << "]";
+  os << "[value: " << s.value << " ptr: " << s.ptr.lock() << "]";
   return os;
 }
 
@@ -1050,14 +1050,14 @@ class MemoryCycleLoadAndAllocate
     { }
 
     MemoryCycleLoadAndAllocate( int v,
-        std::shared_ptr<MemoryCycleLoadAndAllocate> p ) :
+        std::weak_ptr<MemoryCycleLoadAndAllocate> p ) :
       value( v ),
       ptr( p )
     { }
 
     bool operator==( MemoryCycleLoadAndAllocate const & other ) const
     {
-      return value == other.value && ptr == other.ptr;
+      return value == other.value && ptr.lock() == other.ptr.lock();
     }
 
     template <class Archive>
@@ -1070,19 +1070,19 @@ class MemoryCycleLoadAndAllocate
     static void load_and_allocate( Archive & ar, cereal::allocate<MemoryCycleLoadAndAllocate> & allocate )
     {
       int value;
-      std::shared_ptr<MemoryCycleLoadAndAllocate> ptr;
+      std::weak_ptr<MemoryCycleLoadAndAllocate> ptr;
 
       ar( value, ptr );
       allocate( value, ptr );
     }
 
     int value;
-    std::shared_ptr<MemoryCycleLoadAndAllocate> ptr;
+    std::weak_ptr<MemoryCycleLoadAndAllocate> ptr;
 };
 
 std::ostream& operator<<(std::ostream& os, MemoryCycleLoadAndAllocate const & s)
 {
-  os << "[value: " << s.value << " ptr: " << s.ptr << "]";
+  os << "[value: " << s.value << " ptr: " << s.ptr.lock() << "]";
   return os;
 }
 
@@ -1119,9 +1119,9 @@ void test_memory_cycles()
     }
 
     BOOST_CHECK_EQUAL( o_ptr1->value, i_ptr1->value );
-    BOOST_CHECK_EQUAL( i_ptr1.get(), i_ptr1->ptr.get() );
+    BOOST_CHECK_EQUAL( i_ptr1.get(), i_ptr1->ptr.lock().get() );
     BOOST_CHECK_EQUAL( o_ptr2->value, i_ptr2->value );
-    BOOST_CHECK_EQUAL( i_ptr2.get(), i_ptr2->ptr.get() );
+    BOOST_CHECK_EQUAL( i_ptr2.get(), i_ptr2->ptr.lock().get() );
   }
 }
 
