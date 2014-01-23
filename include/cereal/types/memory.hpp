@@ -250,22 +250,22 @@ namespace cereal
 
     if( isValid )
     {
-      // allocate into unique ptr to handle exceptions
-      // pretend this is the real deal
-      // after we get it back, transfer to proper shared ptr
-
       // Storage type for the pointer - since we can't default construct this type,
-      // we'll allocate it using std::aligned_storage and use a custom deleter
+      // we'll allocate it using std::aligned_storage
       using ST = typename std::aligned_storage<sizeof(T)>::type;
 
+      // Allocate storage - note the ST type so that deleter is correct if
+      //                    an exception is thrown before we are initialized
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
 
+      // Initialize storage
       ar( loadWrapper );
 
-      ptr.reset( stPtr.release() );
+      // Transfer ownership to correct unique_ptr type
+      ptr.reset( reinterpret_cast<T *>( stPtr.release() ) );
     }
     else
       ptr.reset( nullptr );
