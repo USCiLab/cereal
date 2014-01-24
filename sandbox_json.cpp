@@ -313,6 +313,33 @@ struct OOJson
   }
 };
 
+enum Bla
+{
+  x,
+  y
+};
+
+template <class Archive>
+void save( Archive & ar, Bla const & b )
+{
+  std::cerr << "save" << std::endl;
+  ar( (const int &)b );
+}
+
+template <class Archive>
+void load( Archive & ar, Bla & b )
+{
+  std::cerr << "load" << std::endl;
+  ar( (int&)b );
+}
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( Bla, cereal::specialization::non_member_load_save )
+
+//namespace cereal
+//{
+//  //template <class Archive> struct specialize<Archive, Bla, cereal::specialization::non_member_load_save> {};
+//}
+
 // ######################################################################
 int main()
 {
@@ -347,12 +374,6 @@ int main()
     auto f2 = f;
     archive( f );
     archive( f2 );
-
-    enum Bla
-    {
-      x,
-      y
-    };
 
     archive( Bla::x );
   }

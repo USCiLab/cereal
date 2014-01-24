@@ -320,11 +320,42 @@ namespace cereal
       }
       @endcode
 
+      You can also choose to use the macros CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES or
+      CEREAL_SPECIALIZE_FOR_ARCHIVE if you want to type a little bit less.
+
       @tparam T The type to specialize the serialization for
       @tparam S The specialization type to use for T
       @ingroup Access */
   template <class Archive, class T, specialization S>
   struct specialize : public std::false_type {};
+
+  //! Convenienct macro for performing specialization for all archive types
+  /*! This performs specialization for the specific type for all types of archives.
+      This macro should be placed at the global namespace.
+
+      @begincode{cpp}
+      struct MyType {};
+      CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( MyType, cereal::specialization::member_load_save );
+      @endcode
+
+      @relates specialize
+      @ingroup Access */
+  #define CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( Type, Specialization )                                \
+  namespace cereal { template <class Archive> struct specialize<Archive, Type, Specialization> {}; }
+
+  //! Convenienct macro for performing specialization for a single archive type
+  /*! This performs specialization for the specific type for a single type of archive.
+      This macro should be placed at the global namespace.
+
+      @begincode{cpp}
+      struct MyType {};
+      CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
+      @endcode
+
+      @relates specialize
+      @ingroup Access */
+  #define CEREAL_SPECIALIZE_FOR_ARCHIVE( Archive, Type, Specialization )               \
+  namespace cereal { template <> struct specialize<Archive, Type, Specialization> {}; }
 } // namespace cereal
 
 #endif // CEREAL_ACCESS_HPP_
