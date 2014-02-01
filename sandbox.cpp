@@ -267,6 +267,7 @@ public:
     ar( y );
     allocate( y );
     allocate->z = 33;
+    allocate.ptr()->z = 33;
   }
 };
 

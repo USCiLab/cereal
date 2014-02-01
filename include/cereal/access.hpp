@@ -161,11 +161,11 @@ namespace cereal
       template <class ... Args>
       void operator()( Args && ... args )
       {
-        if( valid )
+        if( itsValid )
           throw Exception("Attempting to allocate an already initialized object");
 
-        new (ptr) T( std::forward<Args>( args )... );
-        valid = true;
+        new (itsPtr) T( std::forward<Args>( args )... );
+        itsValid = true;
       }
 
       //! Get a reference to the initialized underlying object
@@ -175,21 +175,34 @@ namespace cereal
           @throw Exception If called before initialization */
       T * operator->()
       {
-        if( !valid )
+        if( !itsValid )
           throw Exception("Object must be initialized prior to accessing members");
 
-        return ptr;
+        return itsPtr;
+      }
+
+      //! Returns a raw pointer to the initialized underlying object
+      /*! This is mainly intended for use with passing an instance of
+          an allocated object to cereal::base_class.
+
+          It is strongly recommended to avoid using this function in
+          any other circumstance.
+
+          @return A raw pointer to the initialized type */
+      T * ptr()
+      {
+        return operator->();
       }
 
     private:
       template <class A, class B> friend struct ::cereal::memory_detail::LoadAndAllocateLoadWrapper;
 
-      allocate( T * p ) : ptr( p ), valid( false ) {}
+      allocate( T * p ) : itsPtr( p ), itsValid( false ) {}
       allocate( allocate const & ) = delete;
       allocate & operator=( allocate const & ) = delete;
 
-      T * ptr;
-      bool valid;
+      T * itsPtr;
+      bool itsValid;
   };
 
   //! A class that can be made a friend to give cereal access to non public functions
