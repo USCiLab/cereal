@@ -33,6 +33,7 @@
 #include <type_traits>
 #include <cstdint>
 #include <utility>
+#include <memory>
 #include <unordered_map>
 
 #include <cereal/details/static_object.hpp>
@@ -318,9 +319,9 @@ namespace cereal
     return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
   }
 
-  // ######################################################################
   namespace detail
   {
+    // ######################################################################
     //! Holds all registered version information
     struct Versions
     {
@@ -336,6 +337,108 @@ namespace cereal
       // we don't need to explicitly register these types since they
       // always get a version number of 0
     };
+
+    // ######################################################################
+    //! A class that can store any type
+    /*! This is inspired by boost::any and is intended to be a very light-weight
+        replacement for internal use only.  This is intended for use with the
+        */
+    class Any
+    {
+      private:
+        //! Convenience alias for decay
+        template <class T>
+        using ST = typename std::decay<T>::type;
+
+        struct Base
+        {
+          virtual ~Base() {}
+          virtual std::unique_ptr<Base> clone() const = 0;
+        };
+
+        template <class T>
+        struct Derived : Base
+        {
+          template <class U>
+          Derived( U && data ) : value( std::forward<U>( data ) ) {}
+
+          std::unique_ptr<Base> clone() const
+          {
+            return std::unique_ptr<Base>( new Derived<T>( value ) );
+          }
+
+          T value;
+        };
+
+      public:
+        //! Construct from any type
+        template <class T> inline
+        Any( T && data ) :
+          itsPtr( new Derived<ST<T>>( std::forward<T>( data ) ) )
+        { }
+
+        //! Convert to any type, if possible
+        /*! Attempts to perform the conversion if possible,
+            otherwise throws an exception.
+
+            @throw Exception if conversion is not possible (see get() for more info)
+            @tparam The requested type to convert to */
+        template <class T> inline
+        operator T()
+        {
+          return get<ST<T>>();
+        }
+
+        Any() : itsPtr() {}
+
+        Any( Any const & other ) : itsPtr( other.clone() ) {}
+
+        Any( Any && other ) : itsPtr( std::move( other.itsPtr ) ) {}
+
+        Any & operator=( Any const & other )
+        {
+          if( itsPtr == other.itsPtr ) return *this;
+
+          auto cloned = other.clone();
+          itsPtr = std::move( cloned );
+
+          return *this;
+        }
+
+        Any & operator=( Any && other )
+        {
+          if( itsPtr == other.itsPtr ) return *this;
+
+          itsPtr = std::move( other.itsPtr );
+
+          return *this;
+        }
+
+      protected:
+        //! Get the contained type as type T
+        /*! @tparam T The requested type to convert to
+            @return The type converted to T
+            @throw Exception if conversion is impossible */
+        template <class T>
+        ST<T> & get()
+        {
+          auto * derived = dynamic_cast<Derived<ST<T>> *>( itsPtr.get() );
+
+          if( !derived )
+            throw ::cereal::Exception( "Invalid conversion requested on ASDFA" );
+
+          return derived->value;
+        }
+
+        std::unique_ptr<Base> clone() const
+        {
+          if( itsPtr ) return itsPtr->clone();
+          else return {};
+        }
+
+      private:
+        std::unique_ptr<Base> itsPtr;
+    }; // struct Any
   } // namespace detail
 } // namespace cereal
 

@@ -787,6 +787,21 @@ int main()
     assert( e.x == 32 );
   }
 
+  {
+    int x = 32;
+    int * xx = &x;
+    //std::string y("hello");
+    cereal::detail::Any a(xx);
+    auto b = a;
+
+    std::cout << *((int *)a) << std::endl;
+    *((int*)a) = 44;
+    std::cout << *((int *)b) << std::endl;
+    std::cout << *((int *)a) << std::endl;
+
+
+  }
+
   return 0;
 }
 

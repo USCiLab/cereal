@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <string>
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>

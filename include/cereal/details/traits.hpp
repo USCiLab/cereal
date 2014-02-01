@@ -36,7 +36,6 @@
 
 #include <type_traits>
 #include <typeindex>
-#include <memory>
 
 #include <cereal/access.hpp>
 
