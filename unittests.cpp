@@ -1209,6 +1209,34 @@ namespace cereal
   };
 }
 
+struct ThreeLA : std::enable_shared_from_this<ThreeLA>
+{
+  ThreeLA( int xx ) : x( xx ) {}
+
+  int x;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  { ar( x ); }
+
+  bool operator==( ThreeLA const & other ) const
+  { return x == other.x; }
+
+  template <class Archive>
+  static void load_and_allocate( Archive & ar, cereal::allocate<ThreeLA> & allocate )
+  {
+    int xx;
+    ar( xx );
+    allocate( xx );
+  }
+};
+
+std::ostream& operator<<(std::ostream& os, ThreeLA const & s)
+{
+  os << "[" << s.x << "]";
+  return os;
+}
+
 template <class IArchive, class OArchive>
 void test_memory_load_allocate()
 {
@@ -1221,6 +1249,7 @@ void test_memory_load_allocate()
     auto o_shared2 = std::make_shared<TwoLA>( random_value<int>(gen) );
     std::unique_ptr<OneLA> o_unique1( new OneLA( random_value<int>(gen) ) );
     std::unique_ptr<TwoLA> o_unique2( new TwoLA( random_value<int>(gen) ) );
+    auto o_shared3 = std::make_shared<ThreeLA>( random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -1230,12 +1259,14 @@ void test_memory_load_allocate()
       oar( o_shared2 );
       oar( o_unique1 );
       oar( o_unique2 );
+      oar( o_shared3 );
     }
 
     decltype(o_shared1) i_shared1;
     decltype(o_shared2) i_shared2;
     decltype(o_unique1) i_unique1;
     decltype(o_unique2) i_unique2;
+    decltype(o_shared3) i_shared3;
 
     std::istringstream is(os.str());
     {
@@ -1245,12 +1276,17 @@ void test_memory_load_allocate()
       iar( i_shared2 );
       iar( i_unique1 );
       iar( i_unique2 );
+      iar( i_shared3 );
     }
 
     BOOST_CHECK_EQUAL( *o_shared1, *i_shared1 );
     BOOST_CHECK_EQUAL( *o_shared2, *i_shared2 );
     BOOST_CHECK_EQUAL( *o_unique1, *i_unique1 );
     BOOST_CHECK_EQUAL( *o_unique2, *i_unique2 );
+    BOOST_CHECK_EQUAL( *o_shared3, *i_shared3 );
+
+    auto i_shared3_2 = i_shared3->shared_from_this();
+    BOOST_CHECK_EQUAL( *o_shared3, *i_shared3_2 );
   }
 }
 

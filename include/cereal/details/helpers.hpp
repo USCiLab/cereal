@@ -35,6 +35,7 @@
 #include <utility>
 #include <memory>
 #include <unordered_map>
+#include <stdexcept>
 
 #include <cereal/details/static_object.hpp>
 

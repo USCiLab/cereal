@@ -32,6 +32,7 @@
 
 #include <cereal/cereal.hpp>
 #include <memory>
+#include <cstring>
 
 namespace cereal
 {
@@ -73,6 +74,64 @@ namespace cereal
 
       ::cereal::allocate<T> allocate;
     };
+
+    //! Performs loading and allocation for a shared pointer that is NOT derived from
+    //! std::enable_shared_from_this
+    /*! This is the typical case, where we simply pass the load wrapper to the
+        archive
+
+        @param ar The archive
+        @param ptr Raw pointer held by the shared_ptr
+        @internal */
+    template <class Archive, class T> inline
+    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::false_type /* is_base_of<enable_shared...> */ )
+    {
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
+      ar( loadWrapper );
+    }
+
+    //! Performs loading and allocation for a shared pointer that is derived from
+    //! std::enable_shared_from_this
+    /*! This special case is necessary because when a user uses load_and_allocate,
+        the weak_ptr (or whatever implementation defined variant) that allows
+        enable_shared_from_this to function correctly will not be initialized properly.
+
+        This happens because it is the allocation of shared_ptr that perform this
+        initialization, which we let happen on a buffer of memory (aligned_storage).
+        This buffer is then used for placement new later on, effectively overwriting
+        any initialized weak_ptr with a default initialized one, eventually leading
+        to issues when the user calls shared_from_this.
+
+        To get around these issues, we will store the memory for the enable_shared_from_this
+        portion of the class and replace it after the user performs initialization
+        (placement new).
+
+        @param ar The archive
+        @param ptr Raw pointer held by the shared_ptr
+        @internal */
+    template <class Archive, class T> inline
+    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::true_type /* is_base_of<enable_shared...> */ )
+    {
+      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
+
+      // typedefs for parent type and storage type
+      using PT = std::enable_shared_from_this<T>;
+      using ST = typename std::aligned_storage<sizeof(PT)>::type;
+
+      // Buffer to store the current enable_shared_from_this data
+      ST temp;
+
+      // For some reason GCC can't seem to handle the static_cast directly
+      // in the call to memcpy, thus the need for ptrAsPT
+      auto const ptrAsPT = static_cast<PT *>( ptr );
+      std::memcpy( &temp, ptrAsPT, sizeof(PT) );
+
+      // let the user perform their initialization
+      ar( loadWrapper );
+
+      // restore the state of enable_shared_from_this
+      std::memcpy( ptrAsPT, &temp, sizeof(PT) );
+    }
   }
 
   //! Saving std::shared_ptr for non polymorphic types
@@ -182,11 +241,9 @@ namespace cereal
       // Register the pointer
       ar.registerSharedPointer( id, ptr );
 
-      // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr.get() );
-
-      // Call load and allocate
-      ar( loadWrapper );
+      // Perform the actual loading and allocation
+      memory_detail::loadAndAllocateSharedPtr( ar, ptr.get(),
+          typename std::is_base_of<std::enable_shared_from_this<T>, T>::type() );
 
       // Mark pointer as valid (initialized)
       *valid = true;

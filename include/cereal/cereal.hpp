@@ -29,7 +29,6 @@
 #ifndef CEREAL_CEREAL_HPP_
 #define CEREAL_CEREAL_HPP_
 
-#include <stdexcept>
 #include <type_traits>
 #include <string>
 #include <memory>

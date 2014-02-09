@@ -322,14 +322,12 @@ enum Bla
 template <class Archive>
 void save( Archive & ar, Bla const & b )
 {
-  std::cerr << "save" << std::endl;
   ar( (const int &)b );
 }
 
 template <class Archive>
 void load( Archive & ar, Bla & b )
 {
-  std::cerr << "load" << std::endl;
   ar( (int&)b );
 }
 
