@@ -341,7 +341,10 @@ namespace cereal
     // ######################################################################
     //! A class that can store any type
     /*! This is inspired by boost::any and is intended to be a very light-weight
-        replacement for internal use only.  This is intended for use with the
+        replacement for internal use only.
+
+        This class is only here as a candidate for issue #46 (see github) and
+        should be considered unsupported until a future version of cereal.
         */
     class Any
     {
