@@ -788,9 +788,10 @@ int main()
   }
 
   {
+    // Any testing
     int x = 32;
     int * xx = &x;
-    //std::string y("hello");
+    std::string y("hello");
     cereal::detail::Any a(xx);
     auto b = a;
 
@@ -799,7 +800,9 @@ int main()
     std::cout << *((int *)b) << std::endl;
     std::cout << *((int *)a) << std::endl;
 
-
+    a = cereal::detail::Any(y);
+    std::string a_out = a;
+    std::cout << a_out << std::endl;
   }
 
   return 0;

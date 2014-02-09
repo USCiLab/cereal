@@ -390,9 +390,8 @@ namespace cereal
         }
 
         Any() : itsPtr() {}
-
+        Any( Any & other ) : itsPtr( other.clone() ) {}
         Any( Any const & other ) : itsPtr( other.clone() ) {}
-
         Any( Any && other ) : itsPtr( std::move( other.itsPtr ) ) {}
 
         Any & operator=( Any const & other )
@@ -430,6 +429,7 @@ namespace cereal
           return derived->value;
         }
 
+        //! Clones the held data if it exists
         std::unique_ptr<Base> clone() const
         {
           if( itsPtr ) return itsPtr->clone();
