@@ -558,10 +558,12 @@ namespace cereal
       };
     }
 
+    //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
     template<class T>
     struct has_shared_from_this : decltype(detail::shared_from_this_wrapper<T>::check(std::declval<detail::shared_from_this_wrapper<T>>()))
     { };
 
+    //! Get the type of the base class of T which inherited from std::enable_shared_from_this
     template <class T>
     struct get_shared_from_this_base
     {
@@ -569,6 +571,7 @@ namespace cereal
         using sftw = detail::shared_from_this_wrapper<T>;
         using PtrType = decltype(sftw::get(std::declval<sftw>()));
       public:
+        //! The type of the base of T that inherited from std::enable_shared_from_this
         using type = typename std::decay<typename PtrType::element_type>::type;
     };
 
@@ -621,8 +624,6 @@ namespace cereal
       }
     };
   } // namespace detail
-
-
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_TRAITS_HPP_
