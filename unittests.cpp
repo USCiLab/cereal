@@ -3134,6 +3134,45 @@ struct PolyDerived : PolyBase
   void foo() {}
 };
 
+struct PolyLA : std::enable_shared_from_this<PolyLA>
+{
+  virtual void foo() = 0;
+};
+
+struct PolyDerivedLA : public PolyLA
+{
+  PolyDerivedLA( int xx ) : x( xx ) { }
+
+  int x;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( x );
+  }
+
+  template <class Archive>
+  static void load_and_allocate( Archive & ar, cereal::allocate<PolyDerivedLA> & allocate )
+  {
+    int xx;
+    ar( xx );
+    allocate( xx );
+  }
+
+  void foo() {}
+
+  bool operator==( PolyDerivedLA const & other ) const
+  {
+    return x == other.x;
+  }
+};
+
+std::ostream& operator<<(std::ostream& os, PolyDerivedLA const & s)
+{
+    os << "[x: " << s.x << "]";
+    return os;
+}
+
 std::ostream& operator<<(std::ostream& os, PolyDerived const & s)
 {
     os << "[x: " << s.x << " y: " << s.y << " a: " << s.a << " b: " << s.b << "]";
@@ -3141,6 +3180,7 @@ std::ostream& operator<<(std::ostream& os, PolyDerived const & s)
 }
 
 CEREAL_REGISTER_TYPE(PolyDerived)
+CEREAL_REGISTER_TYPE(PolyDerivedLA)
 
 template <class IArchive, class OArchive>
 void test_polymorphic()
@@ -3158,33 +3198,41 @@ void test_polymorphic()
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
     std::weak_ptr<PolyBase>   o_weak = o_shared;
     std::unique_ptr<PolyBase> o_unique( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
+    std::shared_ptr<PolyLA>   o_sharedLA = std::make_shared<PolyDerivedLA>( rngI() );
 
     std::ostringstream os;
     {
       OArchive oar(os);
 
       oar( o_shared, o_weak, o_unique );
+      oar( o_sharedLA );
     }
 
     decltype(o_shared) i_shared;
     decltype(o_weak) i_weak;
     decltype(o_unique) i_unique;
+    decltype(o_sharedLA) i_sharedLA;
 
     std::istringstream is(os.str());
     {
       IArchive iar(is);
 
       iar( i_shared, i_weak, i_unique );
+      iar( i_sharedLA );
     }
 
     auto i_locked = i_weak.lock();
     auto o_locked = o_weak.lock();
+
+    auto i_sharedLA2 = i_sharedLA->shared_from_this();
 
     BOOST_CHECK_EQUAL(i_shared.get(), i_locked.get());
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)o_shared.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)i_locked.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_locked.get()), *((PolyDerived*)o_locked.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_unique.get()), *((PolyDerived*)o_unique.get()));
+    BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA.get()), *((PolyDerivedLA*)o_sharedLA.get()));
+    BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA2.get()), *((PolyDerivedLA*)o_sharedLA.get()));
   }
 }
 
