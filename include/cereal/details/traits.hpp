@@ -148,7 +148,7 @@ namespace cereal
     // Member load_and_allocate
     template<typename T, typename A>
     struct has_member_load_and_allocate :
-      std::integral_constant<bool,  std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
+      std::integral_constant<bool, std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
 
     // ######################################################################
     // Non Member load_and_allocate
@@ -194,6 +194,10 @@ namespace cereal
     // ######################################################################
     // Non Member Load (versioned)
     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
+
+    // ######################################################################
+    // member shared_from_this
+    //CEREAL_MAKE_HAS_MEMBER_TEST(shared_from_this);
 
     // ######################################################################
     // Member Save
@@ -538,6 +542,40 @@ namespace cereal
      */
     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
     typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
+
+    // ######################################################################
+    namespace detail
+    {
+      template <class T>
+      struct shared_from_this_wrapper : public T
+      {
+        template <class U>
+        static auto check( U const & t ) -> decltype( t.shared_from_this(), std::true_type() )
+        { return {}; }
+
+        static auto check( ... ) -> decltype( std::false_type() )
+        { return {}; }
+
+        template <class U>
+        static auto get( U const & t ) -> decltype( t.shared_from_this() )
+        { return {}; }
+      };
+    }
+
+    template<class T>
+    struct has_shared_from_this : decltype(detail::shared_from_this_wrapper<T>::check(std::declval<detail::shared_from_this_wrapper<T>>()))
+    { };
+
+    template <class T>
+    struct get_shared_from_this_base
+    {
+      private:
+        using sftw = detail::shared_from_this_wrapper<T>;
+        using PtrType = decltype(sftw::get(std::declval<sftw>()));
+      public:
+        using type = typename std::decay<typename PtrType::element_type>::type;
+    };
+
   } // namespace traits
 
   // ######################################################################
@@ -587,6 +625,8 @@ namespace cereal
       }
     };
   } // namespace detail
+
+
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_TRAITS_HPP_

@@ -84,7 +84,7 @@ namespace cereal
         @param ptr Raw pointer held by the shared_ptr
         @internal */
     template <class Archive, class T> inline
-    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::false_type /* is_base_of<enable_shared...> */ )
+    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::false_type /* has_shared_from_this */ )
     {
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
       ar( loadWrapper );
@@ -110,27 +110,28 @@ namespace cereal
         @param ptr Raw pointer held by the shared_ptr
         @internal */
     template <class Archive, class T> inline
-    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::true_type /* is_base_of<enable_shared...> */ )
+    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
     {
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
 
       // typedefs for parent type and storage type
-      using PT = std::enable_shared_from_this<T>;
-      using ST = typename std::aligned_storage<sizeof(PT)>::type;
+      using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
+      using ParentType = std::enable_shared_from_this<BaseType>;
+      using StorageType = typename std::aligned_storage<sizeof(ParentType)>::type;
 
       // Buffer to store the current enable_shared_from_this data
-      ST temp;
+      StorageType temp;
 
       // For some reason GCC can't seem to handle the static_cast directly
       // in the call to memcpy, thus the need for ptrAsPT
-      auto const ptrAsPT = static_cast<PT *>( ptr );
-      std::memcpy( &temp, ptrAsPT, sizeof(PT) );
+      auto const ptrAsPT = static_cast<ParentType *>( ptr );
+      std::memcpy( &temp, ptrAsPT, sizeof(ParentType) );
 
       // let the user perform their initialization
       ar( loadWrapper );
 
       // restore the state of enable_shared_from_this
-      std::memcpy( ptrAsPT, &temp, sizeof(PT) );
+      std::memcpy( ptrAsPT, &temp, sizeof(ParentType) );
     }
   }
 
@@ -242,8 +243,7 @@ namespace cereal
       ar.registerSharedPointer( id, ptr );
 
       // Perform the actual loading and allocation
-      memory_detail::loadAndAllocateSharedPtr( ar, ptr.get(),
-          typename std::is_base_of<std::enable_shared_from_this<T>, T>::type() );
+      memory_detail::loadAndAllocateSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<T>::type() );
 
       // Mark pointer as valid (initialized)
       *valid = true;
