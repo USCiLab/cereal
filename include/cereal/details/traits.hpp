@@ -196,10 +196,6 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
 
     // ######################################################################
-    // member shared_from_this
-    //CEREAL_MAKE_HAS_MEMBER_TEST(shared_from_this);
-
-    // ######################################################################
     // Member Save
     namespace detail
     {

@@ -271,31 +271,6 @@ namespace cereal
         {
           T::load_and_allocate( ar, allocate );
         }
-
-      template <class T>
-      struct shared_from_this_wrapper : public T
-      {
-        template <class U>
-        static auto check( U const & t ) -> decltype( t.shared_from_this(), std::true_type() )
-        { return {}; }
-
-        template <class U>
-        static auto get( U const & t ) -> decltype( t.shared_from_this() )
-        { return {}; }
-
-        static auto check( ... ) -> decltype( std::false_type() )
-        { return {}; }
-      };
-
-      template<class T>
-      struct has_shared_from_this : std::integral_constant<bool, std::is_same<std::true_type, decltype(shared_from_this_wrapper<T>::check(std::declval<shared_from_this_wrapper<T>>()) )>::value>
-      { };
-
-      //template<class Archive, class T> inline
-      //static auto member_shared_from_this(Archive &, T & t) -> decltype( shared_from_this_wrapper<T>::get( t ) )
-      //{
-      //  return shared_from_this_wrapper<T>::get( t );
-      //}
   };
 
   //! A specifier used in conjunction with cereal::specialize to disambiguate
