@@ -378,7 +378,7 @@ namespace cereal
     if( isValid )
     {
       ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
-      ar( *ptr );
+      ar( _CEREAL_NVP( "data", *ptr ) );
     }
     else
     {

@@ -811,6 +811,7 @@ namespace cereal
   template <class T> inline
   void load( JSONInputArchive & ar, NameValuePair<T> & t )
   {
+    std::cout << "Loading nvp : " << t.name << "\n";
     ar.setNextName( t.name );
     ar( t.value );
   }
