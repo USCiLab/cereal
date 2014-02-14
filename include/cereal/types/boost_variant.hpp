@@ -69,7 +69,7 @@ namespace cereal
       if(N == target)
       {
         H value;
-        ar( value );
+        ar( _CEREAL_NVP("data", value) );
         variant = value;
       }
       else
@@ -95,7 +95,7 @@ namespace cereal
     typedef typename boost::variant<VariantTypes...>::types types;
 
     int32_t which;
-    ar( which );
+    ar( _CEREAL_NVP("which", which) );
     if(which >= boost::mpl::size<types>::value)
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 

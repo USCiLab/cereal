@@ -47,7 +47,8 @@ namespace cereal
   void load( Archive & ar, std::complex<T> & bits )
   {
     T real, imag;
-    ar( real, imag );
+    ar( _CEREAL_NVP("real", real),
+        _CEREAL_NVP("imag", imag) );
     bits = {real, imag};
   }
 } // namespace cereal

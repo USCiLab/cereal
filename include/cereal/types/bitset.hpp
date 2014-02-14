@@ -78,28 +78,28 @@ namespace cereal
   void load( Archive & ar, std::bitset<N> & bits )
   {
     bitset_detail::type t;
-    ar( t );
+    ar( _CEREAL_NVP("type", t) );
 
     switch( t )
     {
       case bitset_detail::type::ulong:
       {
         unsigned long b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::ullong:
       {
         unsigned long long b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::string:
       {
         std::string b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }

@@ -87,7 +87,7 @@ namespace cereal
     void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::false_type /* has_shared_from_this */ )
     {
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
-      ar( loadWrapper );
+      ar( _CEREAL_NVP("data", loadWrapper) );
     }
 
     //! Performs loading and allocation for a shared pointer that is derived from
@@ -128,7 +128,7 @@ namespace cereal
       std::memcpy( &temp, ptrAsPT, sizeof(ParentType) );
 
       // let the user perform their initialization
-      ar( loadWrapper );
+      ar( _CEREAL_NVP("data", loadWrapper) );
 
       // restore the state of enable_shared_from_this
       std::memcpy( ptrAsPT, &temp, sizeof(ParentType) );
@@ -148,7 +148,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
-    ar( memory_detail::make_ptr_wrapper( ptr ) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
   //! Saving std::weak_ptr for non polymorphic types
@@ -166,7 +166,7 @@ namespace cereal
   load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar( memory_detail::make_ptr_wrapper( sptr ) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
     ptr = sptr;
   }
 
@@ -183,7 +183,7 @@ namespace cereal
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
-    ar( memory_detail::make_ptr_wrapper( ptr ) );
+    ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
   // ######################################################################
@@ -215,7 +215,7 @@ namespace cereal
 
     uint32_t id;
 
-    ar( id );
+    ar( _CEREAL_NVP("id", id) );
 
     if( id & detail::msb_32bit )
     {
@@ -262,13 +262,13 @@ namespace cereal
 
     uint32_t id;
 
-    ar( id );
+    ar( _CEREAL_NVP("id", id) );
 
     if( id & detail::msb_32bit )
     {
       ptr.reset( detail::Load<T, Archive>::load_andor_allocate() );
       ar.registerSharedPointer( id, ptr );
-      ar( *ptr );
+      ar( _CEREAL_NVP("data", *ptr) );
     }
     else
       ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
@@ -301,7 +301,7 @@ namespace cereal
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
-    ar( isValid );
+    ar( _CEREAL_NVP("valid", isValid) );
 
     auto & ptr = wrapper.ptr;
 
@@ -319,7 +319,7 @@ namespace cereal
       memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
 
       // Initialize storage
-      ar( loadWrapper );
+      ar( _CEREAL_NVP("data", loadWrapper) );
 
       // Transfer ownership to correct unique_ptr type
       ptr.reset( reinterpret_cast<T *>( stPtr.release() ) );
@@ -335,7 +335,7 @@ namespace cereal
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
-    ar( isValid );
+    ar( _CEREAL_NVP("valid", isValid) );
 
     auto & ptr = wrapper.ptr;
 
