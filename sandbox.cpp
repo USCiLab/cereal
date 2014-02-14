@@ -787,6 +787,7 @@ int main()
     assert( e.x == 32 );
   }
 
+#ifdef CEREAL_FUTURE_EXPERIMENTAL
   {
     // Any testing
     int x = 32;
@@ -804,6 +805,7 @@ int main()
     std::string a_out = a;
     std::cout << a_out << std::endl;
   }
+#endif // CEREAL_FUTURE_EXPERIMENTAL
 
   return 0;
 }

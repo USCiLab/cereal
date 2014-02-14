@@ -39,9 +39,9 @@
 #include <cereal/details/polymorphic_impl.hpp>
 
 #ifdef _MSC_VER
-#define CONSTEXPR
+#define STATIC_CONSTEXPR static
 #else
-#define CONSTEXPR constexpr
+#define STATIC_CONSTEXPR static constexpr
 #endif
 
 //! Registers a polymorphic type with cereal
@@ -59,15 +59,15 @@
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
-#define CEREAL_REGISTER_TYPE(T)                          \
-  namespace cereal {                                     \
-  namespace detail {                                     \
-  template <>                                            \
-  struct binding_name<T>                                 \
-  {                                                      \
-    static CONSTEXPR char const * name() { return #T; }; \
-  };                                                     \
-  } } /* end namespaces */                               \
+#define CEREAL_REGISTER_TYPE(T)                         \
+  namespace cereal {                                    \
+  namespace detail {                                    \
+  template <>                                           \
+  struct binding_name<T>                                \
+  {                                                     \
+    STATIC_CONSTEXPR char const * name() { return #T; } \
+  };                                                    \
+  } } /* end namespaces */                              \
   CEREAL_BIND_TO_ARCHIVES(T)
 
 //! Registers a polymorphic type with cereal, giving it a
@@ -76,13 +76,13 @@
     CEREAL_REGISTER_TYPE (the name of the type) may not be
     suitable.  This macro allows any name to be associated
     with the type.  The name should be unique */
-#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)               \
-  namespace cereal {                                          \
-  namespace detail {                                          \
-  template <>                                                 \
-  struct binding_name<T>                                      \
-  { static CONSTEXPR char const * name() { return Name; }; }; \
-  } } /* end namespaces */                                    \
+#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)              \
+  namespace cereal {                                         \
+  namespace detail {                                         \
+  template <>                                                \
+  struct binding_name<T>                                     \
+  { STATIC_CONSTEXPR char const * name() { return Name; } }; \
+  } } /* end namespaces */                                   \
   CEREAL_BIND_TO_ARCHIVES(T)
 
 #ifdef _MSC_VER

@@ -400,7 +400,7 @@ int main()
          cereal::make_nvp( "5", 5 ) );
     ar2.saveBinaryValue( &x, sizeof(int), "bla" );
 
-    OOJson oo( 1, 2, 3, 4 );
+    OOJson oo( 1, 2, true, 4.2 );
     ar( CEREAL_NVP(oo) );
     ar2( CEREAL_NVP(oo) );
 

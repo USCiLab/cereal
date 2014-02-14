@@ -339,6 +339,7 @@ namespace cereal
       // always get a version number of 0
     };
 
+    #ifdef CEREAL_FUTURE_EXPERIMENTAL
     // ######################################################################
     //! A class that can store any type
     /*! This is inspired by boost::any and is intended to be a very light-weight
@@ -443,6 +444,7 @@ namespace cereal
       private:
         std::unique_ptr<Base> itsPtr;
     }; // struct Any
+    #endif // CEREAL_FUTURE_EXPERIMENTAL
   } // namespace detail
 } // namespace cereal
 
