@@ -250,7 +250,7 @@ public:
 			}
 			SkipWhitespace(stream);
 
-			if (stream.Peek() != '\0')
+			if (stream.Peek() != '\0' && stream.Peek() != static_cast<Ch>(std::char_traits<Ch>::eof()))
 				RAPIDJSON_PARSE_ERROR("Nothing should follow the root object or array.", stream.Tell());
 		}
 
