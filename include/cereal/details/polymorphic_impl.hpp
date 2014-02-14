@@ -214,7 +214,14 @@ namespace cereal
 
             writeMetadata(ar);
 
+            #ifdef _LIBCPP_VERSION
+            // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
+            std::shared_ptr<T const> const ptr(
+                std::const_pointer_cast<T const>(
+                  std::shared_ptr<T>(static_cast<T *>(const_cast<void *>(dptr)), EmptyDeleter<T>())));
+            #else // NOT _LIBCPP_VERSION
             std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
+            #endif // _LIBCPP_VERSION
 
             ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
