@@ -110,7 +110,7 @@ namespace cereal
       std::string name;
       if(nameid & detail::msb_32bit)
       {
-        ar( name );
+        ar( _CEREAL_NVP("polymorphic_name", name) );
         ar.registerPolymorphicName(nameid, name);
       }
       else
@@ -139,7 +139,7 @@ namespace cereal
     {
       if(nameid & detail::msb2_32bit)
       {
-        ar( memory_detail::make_ptr_wrapper(ptr) );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
         return true;
       }
       return false;
@@ -157,7 +157,7 @@ namespace cereal
     {
       if(nameid & detail::msb2_32bit)
       {
-        ar( memory_detail::make_ptr_wrapper(ptr) );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
         return true;
       }
       return false;
@@ -209,7 +209,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -235,7 +235,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -246,7 +246,7 @@ namespace cereal
     {
       // The 2nd msb signals that the following pointer does not need to be
       // cast with our polymorphic machinery
-      ar( _CEREAL_NVP("id", detail::msb2_32bit) );
+      ar( _CEREAL_NVP("polymorphic_id", detail::msb2_32bit) );
 
       ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
 
@@ -268,7 +268,7 @@ namespace cereal
   load( Archive & ar, std::shared_ptr<T> & ptr )
   {
     std::uint32_t nameid;
-    ar( nameid );
+    ar( _CEREAL_NVP("polymorphic_id", nameid) );
 
     // Check to see if we can skip all of this polymorphism business
     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))
@@ -295,7 +295,7 @@ namespace cereal
   load( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar( sptr );
+    ar( _CEREAL_NVP("locked_ptr", sptr) );
     ptr = sptr;
   }
 
@@ -307,7 +307,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -333,7 +333,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("id", std::uint32_t(0)) );
+      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -344,7 +344,7 @@ namespace cereal
     {
       // The 2nd msb signals that the following pointer does not need to be
       // cast with our polymorphic machinery
-      ar( _CEREAL_NVP("id", detail::msb2_32bit) );
+      ar( _CEREAL_NVP("polymorphic_id", detail::msb2_32bit) );
 
       ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
 
@@ -366,7 +366,7 @@ namespace cereal
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     std::uint32_t nameid;
-    ar( nameid );
+    ar( _CEREAL_NVP("polymorphic_id", nameid) );
 
     // Check to see if we can skip all of this polymorphism business
     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))

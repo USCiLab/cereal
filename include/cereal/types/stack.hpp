@@ -68,7 +68,7 @@ namespace cereal
   void load( Archive & ar, std::stack<T, C> & stack )
   {
     C container;
-    ar( container );
+    ar( _CEREAL_NVP("container", container) );
     stack = std::stack<T, C>( std::move( container ) );
   }
 } // namespace cereal

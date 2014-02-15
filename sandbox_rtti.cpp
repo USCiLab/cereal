@@ -188,7 +188,8 @@ int main()
 {
   {
     std::ofstream ostream("rtti.txt");
-    cereal::BinaryOutputArchive oarchive(ostream);
+    //cereal::BinaryOutputArchive oarchive(ostream);
+    cereal::XMLOutputArchive oarchive(ostream);
 
     std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
     std::shared_ptr<Base> ptr2 = std::make_shared<YourType>(33);
@@ -197,12 +198,11 @@ int main()
 
     std::shared_ptr<OurType> ptr5 = std::make_shared<OurType>(99);
 
-    //oarchive(ptr1);
-    //oarchive(ptr2);
-    //oarchive(ptr3);
-    //oarchive(ptr4);
-    //oarchive(ptr5);
-
+    oarchive(ptr1);
+    oarchive(ptr2);
+    oarchive(ptr3);
+    oarchive(ptr4);
+    oarchive(ptr5);
 
     //std::shared_ptr<AAA> a = std::make_shared<BBB>();
     //oarchive(a);
@@ -210,7 +210,8 @@ int main()
 
   {
     std::ifstream istream("rtti.txt");
-    cereal::BinaryInputArchive iarchive(istream);
+    //cereal::BinaryInputArchive iarchive(istream);
+    cereal::XMLInputArchive iarchive(istream);
 
     std::shared_ptr<Base> ptr1;
     std::shared_ptr<Base> ptr2;
@@ -219,10 +220,10 @@ int main()
 
     std::shared_ptr<OurType> ptr5;
 
-    //iarchive(ptr1);
-    //iarchive(ptr2);
-    //iarchive(ptr3);
-    //iarchive(ptr4);
-    //iarchive(ptr5);
+    iarchive(ptr1);
+    iarchive(ptr2);
+    iarchive(ptr3);
+    iarchive(ptr4);
+    iarchive(ptr5);
   }
 }

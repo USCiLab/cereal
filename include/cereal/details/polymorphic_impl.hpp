@@ -157,7 +157,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::shared_ptr<T> ptr;
 
-            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr = ptr;
           };
@@ -168,7 +168,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::unique_ptr<T> ptr;
 
-            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr.reset(ptr.release());
           };
