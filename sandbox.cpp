@@ -476,7 +476,7 @@ int main()
   Test2 t2 = {22};
 
   {
-    std::ofstream os("out.txt");
+    std::ofstream os("out.txt", std::ios::binary);
     cereal::BinaryOutputArchive archive(os);
     archive(CEREAL_NVP(e_out));
     archive(t2);
@@ -488,7 +488,7 @@ int main()
   std::unique_ptr<NoDefaultCtor> nodefaultin( new NoDefaultCtor( 1 ) );
 
   {
-    std::ifstream is("out.txt");
+    std::ifstream is("out.txt", std::ios::binary);
     cereal::BinaryInputArchive archive(is);
     archive(CEREAL_NVP(e_in));
     archive(t2);
@@ -654,7 +654,7 @@ int main()
   }
 
   {
-    std::ofstream b("endian.out");
+    std::ofstream b("endian.out", std::ios::binary);
     cereal::PortableBinaryOutputArchive oar(b);
 
     bool bb = true;
@@ -671,7 +671,7 @@ int main()
     // long long allocations (this padding just exists on the stack and is never used anywhere)
   }
   {
-    std::ifstream b("endian.out");
+    std::ifstream b("endian.out", std::ios::binary);
     cereal::PortableBinaryInputArchive iar(b);
 
     bool bb;
