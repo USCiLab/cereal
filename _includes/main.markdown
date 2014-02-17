@@ -18,7 +18,7 @@ Serialization support for pretty much every type in the [standard library](http:
 
 ### xCEREAL requires a compliant C++11 compiler
 
-cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3, clang++ 3.3, and MSVC 2013 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  
+cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3, clang++ 3.3, and MSVC 2013 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  cereal works under both libstdc++ and libc++ when using gcc or clang.
 
 ---
 
@@ -61,6 +61,7 @@ struct MyRecord
   void serialize( Archive & ar )
   {
     ar( x, y, z );
+    // ar & x & y & z; // xCEREAL supports boost style serialization syntax to ease the transition
   }
 };
     
@@ -91,6 +92,7 @@ int main()
 
   SomeData myData;
   archive( myData );
+  // archive << myData // xCEREAL supports boost style syntax to ease the transition
 
   return 0;
 }
