@@ -14,7 +14,7 @@ easily bundled with other code or used standalone.
 
 ## xCEREAL comes with full support for C++11
 
-Serialization support for pretty much every type in the [standard library](http://en.cppreference.com/w/) comes out of the box with cereal.  cereal also fully supports inheritance and polymorphism.  Since cereal was written to be a minimal, fast library, it does not perform the same level of object tracking as other serialization libraries such as Boost.  As a consequence of this raw pointers are not supported, however smart pointers (things like `std::shared_ptr` and `std::unique_ptr`) are no problem.
+Serialization support for pretty much every type in the [standard library](http://en.cppreference.com/w/) comes out of the box with cereal.  cereal also fully supports inheritance and polymorphism.  Since cereal was written to be a minimal, fast library, it does not perform the same level of object tracking as other serialization libraries such as Boost.  As a consequence of this raw pointers and references are not supported, however smart pointers (things like `std::shared_ptr` and `std::unique_ptr`) are no problem.
 
 ### xCEREAL requires a compliant C++11 compiler
 
@@ -24,7 +24,7 @@ cereal uses features new to C++11 and requires a fairly compliant C++ compiler t
 
 ## xCEREAL is fast and compact
 
-In simple performance tests, cereal is usually faster than Boost's serialization library and produces binary representations that take up less space, especially for smaller objects.  The source code for cereal is considerably easier to understand and extend than that of Boost.
+In simple performance tests, cereal is usually faster than Boost's serialization library and produces binary representations that take up less space, especially for smaller objects.  cereal uses some of the fastest [XML](http://rapidxml.sourceforge.net/) and [JSON](https://code.google.com/p/rapidjson/) parsers and generators available in C++.  The source code for cereal is considerably easier to understand and extend than that of Boost.
 
 ### xCEREAL is extensible
 
