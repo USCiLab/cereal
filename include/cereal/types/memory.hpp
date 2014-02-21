@@ -56,26 +56,26 @@ namespace cereal
       return {std::forward<T>(t)};
     }
 
-    //! A struct that acts as a wrapper around calling load_andor_allocate
-    /*! The purpose of this is to allow a load_and_allocate call to properly enter into the
+    //! A struct that acts as a wrapper around calling load_andor_construct
+    /*! The purpose of this is to allow a load_and_construct call to properly enter into the
         'data' NVP of the ptr_wrapper
         @internal */
     template <class Archive, class T>
-    struct LoadAndAllocateLoadWrapper
+    struct LoadAndConstructLoadWrapper
     {
-      LoadAndAllocateLoadWrapper( T * ptr ) :
-        allocate( ptr )
+      LoadAndConstructLoadWrapper( T * ptr ) :
+        construct( ptr )
       { }
 
       inline void serialize( Archive & ar )
       {
-        ::cereal::detail::Load<T, Archive>::load_andor_allocate( ar, allocate );
+        ::cereal::detail::Construct<T, Archive>::load_andor_construct( ar, construct );
       }
 
-      ::cereal::allocate<T> allocate;
+      ::cereal::construct<T> construct;
     };
 
-    //! Performs loading and allocation for a shared pointer that is NOT derived from
+    //! Performs loading and construction for a shared pointer that is NOT derived from
     //! std::enable_shared_from_this
     /*! This is the typical case, where we simply pass the load wrapper to the
         archive
@@ -84,15 +84,15 @@ namespace cereal
         @param ptr Raw pointer held by the shared_ptr
         @internal */
     template <class Archive, class T> inline
-    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::false_type /* has_shared_from_this */ )
+    void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::false_type /* has_shared_from_this */ )
     {
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
       ar( _CEREAL_NVP("data", loadWrapper) );
     }
 
-    //! Performs loading and allocation for a shared pointer that is derived from
+    //! Performs loading and construction for a shared pointer that is derived from
     //! std::enable_shared_from_this
-    /*! This special case is necessary because when a user uses load_and_allocate,
+    /*! This special case is necessary because when a user uses load_and_construct,
         the weak_ptr (or whatever implementation defined variant) that allows
         enable_shared_from_this to function correctly will not be initialized properly.
 
@@ -110,9 +110,9 @@ namespace cereal
         @param ptr Raw pointer held by the shared_ptr
         @internal */
     template <class Archive, class T> inline
-    void loadAndAllocateSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
+    void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
     {
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( ptr );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
 
       // typedefs for parent type and storage type
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
@@ -143,7 +143,7 @@ namespace cereal
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
-  //! Loading std::shared_ptr, case when no user load and allocate for non polymorphic types
+  //! Loading std::shared_ptr, case when no user load and construct for non polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::shared_ptr<T> & ptr )
@@ -178,7 +178,7 @@ namespace cereal
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
 
-  //! Loading std::unique_ptr, case when user provides load_and_allocate for non polymorphic types
+  //! Loading std::unique_ptr, case when user provides load_and_construct for non polymorphic types
   template <class Archive, class T, class D> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )
@@ -205,10 +205,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::shared_ptr, case when user load and allocate (wrapper implementation)
+  //! Loading std::shared_ptr, case when user load and construct (wrapper implementation)
   /*! @internal */
   template <class Archive, class T> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
+  typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -243,7 +243,7 @@ namespace cereal
       ar.registerSharedPointer( id, ptr );
 
       // Perform the actual loading and allocation
-      memory_detail::loadAndAllocateSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<T>::type() );
+      memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<T>::type() );
 
       // Mark pointer as valid (initialized)
       *valid = true;
@@ -252,10 +252,10 @@ namespace cereal
       ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
-  //! Loading std::shared_ptr, case when no user load and allocate (wrapper implementation)
+  //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
   /*! @internal */
   template <class Archive, class T> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>::value, void>::type
+  typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
@@ -266,7 +266,7 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate() );
+      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
       ar.registerSharedPointer( id, ptr );
       ar( _CEREAL_NVP("data", *ptr) );
     }
@@ -294,10 +294,10 @@ namespace cereal
     }
   }
 
-  //! Loading std::unique_ptr, case when user provides load_and_allocate (wrapper implementation)
+  //! Loading std::unique_ptr, case when user provides load_and_construct (wrapper implementation)
   /*! @internal */
   template <class Archive, class T, class D> inline
-  typename std::enable_if<traits::has_load_and_allocate<T, Archive>::value, void>::type
+  typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
@@ -316,7 +316,7 @@ namespace cereal
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndAllocateLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
 
       // Initialize storage
       ar( _CEREAL_NVP("data", loadWrapper) );
@@ -328,10 +328,10 @@ namespace cereal
       ptr.reset( nullptr );
   }
 
-  //! Loading std::unique_ptr, case when no load_and_allocate (wrapper implementation)
+  //! Loading std::unique_ptr, case when no load_and_construct (wrapper implementation)
   /*! @internal */
   template <class Archive, class T, class D> inline
-  typename std::enable_if<!traits::has_load_and_allocate<T, Archive>::value, void>::type
+  typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
   load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
@@ -341,7 +341,7 @@ namespace cereal
 
     if( isValid )
     {
-      ptr.reset( detail::Load<T, Archive>::load_andor_allocate() );
+      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
       ar( *ptr );
     }
     else

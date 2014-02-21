@@ -39,11 +39,11 @@ namespace cereal
 {
   //! A class that allows cereal to load smart pointers to types that have no default constructor
   /*! If your class does not have a default constructor, cereal will not be able
-      to load any smart pointers to it unless you overload LoadAndAllocate
-      for your class, and provide an appropriate load_and_allocate method.  You can also
+      to load any smart pointers to it unless you overload LoadAndConstruct
+      for your class, and provide an appropriate load_and_construct method.  You can also
       choose to define a member static function instead of specializing this class.
 
-      The specialization of LoadAndAllocate must be placed within the cereal namespace:
+      The specialization of LoadAndConstruct must be placed within the cereal namespace:
 
       @code{.cpp}
       struct MyType
@@ -59,20 +59,20 @@ namespace cereal
         }
       };
 
-      // Provide a specialization for LoadAndAllocate for your type
+      // Provide a specialization for LoadAndConstruct for your type
       namespace cereal
       {
-        template <> struct LoadAndAllocate<MyType>
+        template <> struct LoadAndConstruct<MyType>
         {
-          // load_and_allocate will be passed the archive that you will be loading
-          // from as well as an allocate object which you can use as if it were the
+          // load_and_construct will be passed the archive that you will be loading
+          // from as well as a construct object which you can use as if it were the
           // constructor for your type.  cereal will handle all memory management for you.
           template <class Archive>
-          static void load_and_allocate( Archive & ar, cereal::allocate<MyType> & allocate )
+          static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
           {
             int x;
             ar( x );
-            allocate( x );
+            construct( x );
           }
         };
       } // end namespace cereal
@@ -81,30 +81,30 @@ namespace cereal
       Please note that just as in using external serialization functions, you cannot get
       access to non-public members of your class by befriending cereal::access.  If you
       have the ability to modify the class you wish to serialize, it is recommended that you
-      use member serialize functions and a static member load_and_allocate function.
+      use member serialize functions and a static member load_and_construct function.
 
       @tparam T The type to specialize for
       @ingroup Access */
   template <class T>
-  struct LoadAndAllocate
+  struct LoadAndConstruct
   {
-    //! Called by cereal if no default constructor exists to load and allocate data simultaneously
+    //! Called by cereal if no default constructor exists to load and construct data simultaneously
     /*! Overloads of this should return a pointer to T and expect an archive as a parameter */
-    static std::false_type load_and_allocate(...)
+    static std::false_type load_and_construct(...)
     { return std::false_type(); }
   };
 
-  // forward decl for allocate
+  // forward decl for construct
   //! @cond PRIVATE_NEVERDEFINED
-  namespace memory_detail{ template <class Ar, class T> struct LoadAndAllocateLoadWrapper; }
+  namespace memory_detail{ template <class Ar, class T> struct LoadAndConstructLoadWrapper; }
   //! @endcond
 
-  //! Used to allocate types with no default constructor
+  //! Used to construct types with no default constructor
   /*! When serializing a type that has no default constructor, cereal
-      will attempt to call either the class static function load_and_allocate
-      or the appropriate template specialization of LoadAndAllocate.  cereal
+      will attempt to call either the class static function load_and_construct
+      or the appropriate template specialization of LoadAndConstruct.  cereal
       will pass that function a reference to the archive as well as a reference
-      to an allocate object which should be used to perform the allocation once
+      to a construct object which should be used to perform the allocation once
       data has been appropriately loaded.
 
       @code{.cpp}
@@ -124,21 +124,21 @@ namespace cereal
         }
 
         template <class Archive>
-        static void load_and_allocate( Archive & ar, cereal::allocate<MyType> & allocate )
+        static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
         {
           int x, y;
           ar( x, y );
 
-          // use allocate object to initialize with loaded data
-          allocate( x, y );
+          // use construct object to initialize with loaded data
+          construct( x, y );
 
           // access to member variables and functions via -> operator
-          ar( allocate->notInConstructor );
+          ar( construct->notInConstructor );
 
           // could also do the above section by:
           double z;
           ar( z );
-          allocate->notInConstructor = z;
+          construct->notInConstructor = z;
         }
       };
       @endcode
@@ -146,10 +146,10 @@ namespace cereal
       @tparam T The class type being serialized
       */
   template <class T>
-  class allocate
+  class construct
   {
     public:
-      //! Allocate and initialize the type T with the given arguments
+      //! Construct and initialize the type T with the given arguments
       /*! This will forward all arguments to the underlying type T,
           calling an appropriate constructor.
 
@@ -162,7 +162,7 @@ namespace cereal
       void operator()( Args && ... args )
       {
         if( itsValid )
-          throw Exception("Attempting to allocate an already initialized object");
+          throw Exception("Attempting to construct an already initialized object");
 
         new (itsPtr) T( std::forward<Args>( args )... );
         itsValid = true;
@@ -183,7 +183,7 @@ namespace cereal
 
       //! Returns a raw pointer to the initialized underlying object
       /*! This is mainly intended for use with passing an instance of
-          an allocated object to cereal::base_class.
+          a constructed object to cereal::base_class.
 
           It is strongly recommended to avoid using this function in
           any other circumstance.
@@ -195,11 +195,11 @@ namespace cereal
       }
 
     private:
-      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndAllocateLoadWrapper;
+      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;
 
-      allocate( T * p ) : itsPtr( p ), itsValid( false ) {}
-      allocate( allocate const & ) = delete;
-      allocate & operator=( allocate const & ) = delete;
+      construct( T * p ) : itsPtr( p ), itsValid( false ) {}
+      construct( construct const & ) = delete;
+      construct & operator=( construct const & ) = delete;
 
       T * itsPtr;
       bool itsValid;
@@ -263,13 +263,13 @@ namespace cereal
       { t.load(ar, version); }
 
       template <class T>
-        static std::false_type load_and_allocate(...)
+        static std::false_type load_and_construct(...)
         { return std::false_type(); }
 
       template<class T, class Archive> inline
-        static auto load_and_allocate(Archive & ar, ::cereal::allocate<T> & allocate) -> decltype(T::load_and_allocate(ar, allocate))
+        static auto load_and_construct(Archive & ar, ::cereal::construct<T> & construct) -> decltype(T::load_and_construct(ar, construct))
         {
-          T::load_and_allocate( ar, allocate );
+          T::load_and_construct( ar, construct );
         }
   };
 

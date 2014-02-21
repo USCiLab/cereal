@@ -261,27 +261,27 @@ public:
   }
 
   template <class Archive>
-  static void load_and_allocate( Archive & ar, cereal::allocate<NoDefaultCtor> & allocate )
+  static void load_and_construct( Archive & ar, cereal::construct<NoDefaultCtor> & construct )
   {
     int y;
     ar( y );
-    allocate( y );
-    allocate->z = 33;
-    allocate.ptr()->z = 33;
+    construct( y );
+    construct->z = 33;
+    construct.ptr()->z = 33;
   }
 };
 
 //namespace cereal
 //{
 //  template <>
-//  struct LoadAndAllocate<NoDefaultCtor>
+//  struct LoadAndConstruct<NoDefaultCtor>
 //  {
 //    template <class Archive>
-//    static void load_and_allocate( Archive & ar, cereal::allocate<NoDefaultCtor> & allocate )
+//    static void load_and_construct( Archive & ar, cereal::construct<NoDefaultCtor> & construct )
 //    {
 //      int y;
 //      ar( y );
-//      allocate( y );
+//      construct( y );
 //    }
 //  };
 //}

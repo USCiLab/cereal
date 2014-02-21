@@ -1042,20 +1042,20 @@ std::ostream& operator<<(std::ostream& os, MemoryCycle const & s)
   return os;
 }
 
-class MemoryCycleLoadAndAllocate
+class MemoryCycleLoadAndConstruct
 {
   public:
-    MemoryCycleLoadAndAllocate( int v ) :
+    MemoryCycleLoadAndConstruct( int v ) :
       value( v )
     { }
 
-    MemoryCycleLoadAndAllocate( int v,
-        std::weak_ptr<MemoryCycleLoadAndAllocate> p ) :
+    MemoryCycleLoadAndConstruct( int v,
+        std::weak_ptr<MemoryCycleLoadAndConstruct> p ) :
       value( v ),
       ptr( p )
     { }
 
-    bool operator==( MemoryCycleLoadAndAllocate const & other ) const
+    bool operator==( MemoryCycleLoadAndConstruct const & other ) const
     {
       return value == other.value && ptr.lock() == other.ptr.lock();
     }
@@ -1067,20 +1067,20 @@ class MemoryCycleLoadAndAllocate
     }
 
     template <class Archive>
-    static void load_and_allocate( Archive & ar, cereal::allocate<MemoryCycleLoadAndAllocate> & allocate )
+    static void load_and_construct( Archive & ar, cereal::construct<MemoryCycleLoadAndConstruct> & construct )
     {
       int value;
-      std::weak_ptr<MemoryCycleLoadAndAllocate> ptr;
+      std::weak_ptr<MemoryCycleLoadAndConstruct> ptr;
 
       ar( value, ptr );
-      allocate( value, ptr );
+      construct( value, ptr );
     }
 
     int value;
-    std::weak_ptr<MemoryCycleLoadAndAllocate> ptr;
+    std::weak_ptr<MemoryCycleLoadAndConstruct> ptr;
 };
 
-std::ostream& operator<<(std::ostream& os, MemoryCycleLoadAndAllocate const & s)
+std::ostream& operator<<(std::ostream& os, MemoryCycleLoadAndConstruct const & s)
 {
   os << "[value: " << s.value << " ptr: " << s.ptr.lock() << "]";
   return os;
@@ -1096,7 +1096,7 @@ void test_memory_cycles()
   {
     auto o_ptr1 = std::make_shared<MemoryCycle>( random_value<int>(gen) );
     o_ptr1->ptr = o_ptr1;
-    auto o_ptr2 = std::make_shared<MemoryCycleLoadAndAllocate>( random_value<int>(gen) );
+    auto o_ptr2 = std::make_shared<MemoryCycleLoadAndConstruct>( random_value<int>(gen) );
     o_ptr2->ptr = o_ptr2;
 
     std::ostringstream os;
@@ -1157,11 +1157,11 @@ struct OneLA
   { ar( x ); }
 
   template <class Archive>
-  static void load_and_allocate( Archive & ar, cereal::allocate<OneLA> & allocate )
+  static void load_and_construct( Archive & ar, cereal::construct<OneLA> & construct )
   {
     int xx;
     ar( xx );
-    allocate( xx );
+    construct( xx );
   }
 
   bool operator==( OneLA const & other ) const
@@ -1197,14 +1197,14 @@ std::ostream& operator<<(std::ostream& os, TwoLA const & s)
 namespace cereal
 {
   template <>
-  struct LoadAndAllocate<TwoLA>
+  struct LoadAndConstruct<TwoLA>
   {
     template <class Archive>
-    static void load_and_allocate( Archive & ar, cereal::allocate<TwoLA> & allocate )
+    static void load_and_construct( Archive & ar, cereal::construct<TwoLA> & construct )
     {
       int xx;
       ar( xx );
-      allocate( xx );
+      construct( xx );
     }
   };
 }
@@ -1223,11 +1223,11 @@ struct ThreeLA : std::enable_shared_from_this<ThreeLA>
   { return x == other.x; }
 
   template <class Archive>
-  static void load_and_allocate( Archive & ar, cereal::allocate<ThreeLA> & allocate )
+  static void load_and_construct( Archive & ar, cereal::construct<ThreeLA> & construct )
   {
     int xx;
     ar( xx );
-    allocate( xx );
+    construct( xx );
   }
 };
 
@@ -1238,7 +1238,7 @@ std::ostream& operator<<(std::ostream& os, ThreeLA const & s)
 }
 
 template <class IArchive, class OArchive>
-void test_memory_load_allocate()
+void test_memory_load_construct()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -1290,24 +1290,24 @@ void test_memory_load_allocate()
   }
 }
 
-BOOST_AUTO_TEST_CASE( binary_memory_load_allocate )
+BOOST_AUTO_TEST_CASE( binary_memory_load_construct )
 {
-  test_memory_load_allocate<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_memory_load_construct<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( portable_binary_memory_load_allocate )
+BOOST_AUTO_TEST_CASE( portable_binary_memory_load_construct )
 {
-  test_memory_load_allocate<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+  test_memory_load_construct<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( xml_memory_load_allocate )
+BOOST_AUTO_TEST_CASE( xml_memory_load_construct )
 {
-  test_memory_load_allocate<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  test_memory_load_construct<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( json_memory_load_allocate )
+BOOST_AUTO_TEST_CASE( json_memory_load_construct )
 {
-  test_memory_load_allocate<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_memory_load_construct<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 // ######################################################################
@@ -3152,11 +3152,11 @@ struct PolyDerivedLA : public PolyLA
   }
 
   template <class Archive>
-  static void load_and_allocate( Archive & ar, cereal::allocate<PolyDerivedLA> & allocate )
+  static void load_and_construct( Archive & ar, cereal::construct<PolyDerivedLA> & construct )
   {
     int xx;
     ar( xx );
-    allocate( xx );
+    construct( xx );
   }
 
   void foo() {}

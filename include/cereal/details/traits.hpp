@@ -145,22 +145,22 @@ namespace cereal
     struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {}
 
     // ######################################################################
-    // Member load_and_allocate
+    // Member load_and_construct
     template<typename T, typename A>
-    struct has_member_load_and_allocate :
-      std::integral_constant<bool, std::is_same<decltype( access::load_and_allocate<T>( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
+    struct has_member_load_and_construct :
+      std::integral_constant<bool, std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value> {};
 
     // ######################################################################
-    // Non Member load_and_allocate
+    // Non Member load_and_construct
     template<typename T, typename A>
-    struct has_non_member_load_and_allocate : std::integral_constant<bool,
-      std::is_same<decltype( LoadAndAllocate<T>::load_and_allocate( std::declval<A&>(), std::declval< ::cereal::allocate<T>&>() ) ), void>::value> {};
+    struct has_non_member_load_and_construct : std::integral_constant<bool,
+      std::is_same<decltype( LoadAndConstruct<T>::load_and_construct( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value> {};
 
     // ######################################################################
     // Has either a member or non member allocate
     template<typename T, typename A>
-    struct has_load_and_allocate : std::integral_constant<bool,
-      has_member_load_and_allocate<T, A>::value || has_non_member_load_and_allocate<T, A>::value>
+    struct has_load_and_construct : std::integral_constant<bool,
+      has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
     { };
 
     // ######################################################################
@@ -580,47 +580,47 @@ namespace cereal
   // ######################################################################
   namespace detail
   {
-    template <class T, class A, bool Member = traits::has_member_load_and_allocate<T, A>::value, bool NonMember = traits::has_non_member_load_and_allocate<T, A>::value>
-    struct Load
+    template <class T, class A, bool Member = traits::has_member_load_and_construct<T, A>::value, bool NonMember = traits::has_non_member_load_and_construct<T, A>::value>
+    struct Construct
     {
-      static_assert( !sizeof(T), "Cereal detected both member and non member load_and_allocate functions!" );
-      static T * load_andor_allocate( A & /*ar*/, allocate<T> & /*allocate*/ )
+      static_assert( !sizeof(T), "Cereal detected both member and non member load_and_construct functions!" );
+      static T * load_andor_construct( A & /*ar*/, construct<T> & /*construct*/ )
       { return nullptr; }
     };
 
     template <class T, class A>
-    struct Load<T, A, false, false>
+    struct Construct<T, A, false, false>
     {
       static_assert( std::is_default_constructible<T>::value,
                      "Trying to serialize a an object with no default constructor.\n\n"
                      "Types must either be default constructible or define either a member or non member Construct function.\n"
                      "Construct functions generally have the signature:\n\n"
                      "template <class Archive>\n"
-                     "static void load_and_allocate(Archive & ar, cereal::allocate<T> & allocate)\n"
+                     "static void load_and_construct(Archive & ar, cereal::construct<T> & construct)\n"
                      "{\n"
                      "  var a;\n"
                      "  ar( a )\n"
-                     "  allocate( a );\n"
+                     "  construct( a );\n"
                      "}\n\n" );
-      static T * load_andor_allocate()
+      static T * load_andor_construct()
       { return new T(); }
     };
 
     template <class T, class A>
-    struct Load<T, A, true, false>
+    struct Construct<T, A, true, false>
     {
-      static void load_andor_allocate( A & ar, allocate<T> & allocate )
+      static void load_andor_construct( A & ar, construct<T> & construct )
       {
-        access::load_and_allocate<T>( ar, allocate );
+        access::load_and_construct<T>( ar, construct );
       }
     };
 
     template <class T, class A>
-    struct Load<T, A, false, true>
+    struct Construct<T, A, false, true>
     {
-      static void load_andor_allocate( A & ar, allocate<T> & allocate )
+      static void load_andor_construct( A & ar, construct<T> & construct )
       {
-        LoadAndAllocate<T>::load_and_allocate( ar, allocate );
+        LoadAndConstruct<T>::load_and_construct( ar, construct );
       }
     };
   } // namespace detail

@@ -133,7 +133,7 @@ namespace cereal
         @internal */
     template<class Archive, class T> inline
     typename std::enable_if<(std::is_default_constructible<T>::value
-                             || traits::has_load_and_allocate<T, Archive>::value)
+                             || traits::has_load_and_construct<T, Archive>::value)
                              && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::shared_ptr<T> & ptr, std::uint32_t const nameid)
     {
@@ -151,7 +151,7 @@ namespace cereal
         @internal */
     template<class Archive, class T, class D> inline
     typename std::enable_if<(std::is_default_constructible<T>::value
-                             || traits::has_load_and_allocate<T, Archive>::value)
+                             || traits::has_load_and_construct<T, Archive>::value)
                              && !std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive & ar, std::unique_ptr<T, D> & ptr, std::uint32_t const nameid)
     {
@@ -171,12 +171,12 @@ namespace cereal
         @internal */
     template<class Archive, class T> inline
     typename std::enable_if<(!std::is_default_constructible<T>::value
-                             && !traits::has_load_and_allocate<T, Archive>::value)
+                             && !traits::has_load_and_construct<T, Archive>::value)
                              || std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive &, std::shared_ptr<T> &, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)
-        throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
+        throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function");
       return false;
     }
 
@@ -188,12 +188,12 @@ namespace cereal
         @internal */
     template<class Archive, class T, class D> inline
      typename std::enable_if<(!std::is_default_constructible<T>::value
-                               && !traits::has_load_and_allocate<T, Archive>::value)
+                               && !traits::has_load_and_construct<T, Archive>::value)
                                || std::is_abstract<T>::value, bool>::type
     serialize_wrapper(Archive &, std::unique_ptr<T, D> &, std::uint32_t const nameid)
     {
       if(nameid & detail::msb2_32bit)
-        throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_allocate function");
+        throw cereal::Exception("Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function");
       return false;
     }
   } // polymorphic_detail
@@ -360,7 +360,7 @@ namespace cereal
     binding->second.unique_ptr(&ar, ptr.get());
   }
 
-  //! Loading std::unique_ptr, case when user provides load_and_allocate for polymorphic types
+  //! Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types
   template <class Archive, class T, class D> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
   load( Archive & ar, std::unique_ptr<T, D> & ptr )

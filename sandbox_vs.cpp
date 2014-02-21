@@ -63,7 +63,7 @@ struct Test
   }
 
   template <class Archive>
-  static Test * load_and_allocate( Archive & )
+  static Test * load_and_construct( Archive & )
   {
     return new Test();
   }
@@ -84,12 +84,12 @@ void save( Archive &, Test const & )
 namespace cereal
 {
   template <>
-  struct LoadAndAllocate<Test>
+  struct LoadAndConstruct<Test>
   {
     template <class Archive>
-    static void load_and_allocate( Archive &, cereal::allocate<Test> & allocate )
+    static void load_and_construct( Archive &, cereal::construct<Test> & construct )
     {
-      allocate();
+      construct();
     }
   };
 }
@@ -130,10 +130,10 @@ int main()
   typedef Test T;
   std::cout << std::boolalpha;
 
-  // Test Load and Allocate internal/external
-  std::cout << "\tload_and_allocate" << std::endl;
-  std::cout << cereal::traits::has_member_load_and_allocate<T, Archive>::value << std::endl;
-  std::cout << cereal::traits::has_non_member_load_and_allocate<T, Archive>::value << std::endl;
+  // Test Load and Construct internal/external
+  std::cout << "\tload_and_construct" << std::endl;
+  std::cout << cereal::traits::has_member_load_and_construct<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_load_and_construct<T, Archive>::value << std::endl;
 
   // serialize
   std::cout << "\tserialize" << std::endl;
@@ -172,7 +172,7 @@ int main()
 
   // array size
   std::cout << typeid(A).name() << std::endl;
-  std::cout << typeid(cereal::traits::has_load_and_allocate<int, bool>).name() << std::endl;
+  std::cout << typeid(cereal::traits::has_load_and_construct<int, bool>).name() << std::endl;
 
   // extra testing
 
