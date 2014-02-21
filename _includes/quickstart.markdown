@@ -127,6 +127,7 @@ int main()
     double d;
 
     archive( m1, someInt, d ); // NVPs not strictly necessary when loading
+                               // but could be used (even out of order)
   }
 }
 ```

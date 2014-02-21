@@ -13,7 +13,7 @@ cereal works with modern smart pointers found in `<memory>` by including `<cerea
 
 ## Smart Pointers
 
-All smart pointer types in C++11, `std::shared_ptr`, `std::unique_ptr`, and `std::weak_ptr` can be serialized by cereal.  `std::auto_ptr` is not supported (and is deprecated anyway - don't use it!).
+All smart pointer types in C++11, `std::shared_ptr`, `std::unique_ptr`, and `std::weak_ptr` can be serialized by cereal.  In addition, cereal also supports `std::enable_shared_from_this`, as well as needlessly convoluted circular references of `std::weak_ptr`.  `std::auto_ptr` is not supported (and is deprecated anyway - don't use it!).
 
 cereal will make sure that the data pointed to by an `std::shared_ptr` is serialized only once, even if several `std::shared_ptr` (or `std::weak_ptr`) that point to the same data are serialized in the same archive.  This means that when saving to an archive cereal will avoid duplication, and when loading from an archive, cereal will not allocate extraneous data.
 

@@ -26,7 +26,7 @@ Serialization functions can either be internal or external. Functionality can
 either be in a single `serialize` function, or a split `load` and `save`
 functions.  When possible, it is preferred to use a single internal `serialize`
 method, though split methods can be used when it is necessary (e.g. to
-dynamically allocate memory upon loading a class).  Unlike boost, there is no need to explicitly tell cereal that it
+dynamically allocate memory upon loading a class).  Unlike Boost, there is no need to explicitly tell cereal that it
 needs to use the split load-save pair; cereal will pick whichever is present and give a compile time error if it cannot
 disambiguate a single serialization method.
 <br/>
@@ -162,7 +162,7 @@ This also works with split save/load functions.
 <a name="versioning"></a>
 ### Explicit Versioning
 
-cereal supports adding explicit versioning information for types, much like boost class versioning.
+cereal supports adding explicit versioning information for types, much like Boost class versioning.
 This is optional in cereal and by default is not used for any type.  You can choose to use versioning by adding
 an additional parameter to your serialization functions (regardless of which serialization style you are using), a `const std::uint32_t`, typically named `version`.
 
@@ -273,6 +273,10 @@ namespace cereal
   template <class Archive> struct specialize<Archive, MyDerived, cereal::specialization::member_load_save> {};
   // xCEREAL no longer has any ambiguity when serializing MyDerived
 }
+
+// alternatively, you can use a macro at global scope to do the above disambiguation:
+// CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( MyDerived, cereal::specialization::member_load_save )
+
 ```
 
 More information can be found by reading the doxygen documentation for `<cereal/access.hpp>` [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1specialize.html).

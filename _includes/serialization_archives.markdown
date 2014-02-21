@@ -54,6 +54,10 @@ The binary archive can be used by including `<cereal/archives/binary.hpp>`.  The
 
 The binary archive makes no attempt to ensure that endianness is preserved across different architectures.  If your data will be read on both little and big-endian machines, you should use `<cereal/archives/portable_binary.hpp>`, which tracks the endianness of the saving and loading machines and transforms data appropriately.  It has slightly more overhead than the regular binary archive.
 
+When using a binary archive and a file stream (`std::fstream`), remember to specify the binary flag (`std::ios::binary`)
+when constructing the stream.  This prevents the stream from interpreting your data as ASCII characters and altering
+them.
+
 ---
 
 
@@ -106,21 +110,82 @@ XML can optionally output complete demangled type information as an attribute an
 
 The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
 
+<a name="outoforder"></a>
 ### Out of Order Loading
 
 The default behavior for all archives is to sequentially load data in the order in which it appears.
 XML (and JSON) archives support out of order loading, meaning that you can utilize name-value pairs to load data in an order
 different to that in which it appears in the XML file. 
 
-When cereal detects that you are using an NVP to load data from
-an XML archive, it
+When cereal detects that you are using an NVP to load data from an XML archive, it checks to see if the name matches the
+next expected (in order) name.  If they don't match, cereal will search for the provided name within the current level
+of nodes.  If the name isn't found an exception will be thrown.  Once cereal finds and loads the name, it will proceed
+sequentially from that location until forced to search for another name via an NVP.
+
+Consider the following XML:
+
+```{xml}
+<?xml version="1.0"?>
+<cereal>
+  <var1>4</var1>
+  <value0>32</value0>
+  <value1>64</value1>
+  <myData>
+    <value0>true</value0>
+    <another>3.24</another>
+  </myData>
+  <value2>128</value2>
+</cereal>
+```
+
+The following code shows how it could be loaded in an out of order fashion:
+
+```{cpp}
+#include <cereal/archives/xml.hpp>
+#include <iostream>
+
+struct MyData
+{
+  bool   b;
+  double d;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( b, d );
+  }
+};
+
+int main()
+{
+  int i1, i2, i3, i4;
+  MyData md;
+
+  {
+    std::ifstream is("data.xml");
+    cereal::XMLInputArchive ar(is);
+
+    // NVP doesn't match expected value, perform a search
+    ar( cereal::make_nvp("myData", md) );
+
+    ar( i4 );                           // xCEREAL continues from node it found using search
+    ar( cereal::make_nvp("var1", i1) ); // new search re-positions at node var1
+    ar( i2, i3 );                       // continue from location of last search
+
+                                                // next value read would be 'myData'
+    ar( cereal::make_nvp("doesNotExist", i1) ); // throws an exception: NVP not found
+  }
+
+  return 0;
+}
+
+```
 
 <span class="label label-warning">Important!</span>
-Some data types are serialized with ex
-Although cereal supports out of order loading
-At this time cereal requires that the ordering of information in the XML archive match what is
-expected in the serialization functions.  You may add data to dynamically sized containers, but you cannot change the order of nodes.
+cereal's default behavior is to load in the order data is presented in an archive.  If you use an NVP to load something
+out of order, cereal will immediately revert to this behavior starting at the node you caused it to jump to.
 
+<a name="binaryoutput"></a>
 ### Binary output
 
 XML archives also support explicit binary input/output, which will encode the data as a [base64](http://en.wikipedia.org/wiki/Base64) string:
@@ -202,16 +267,17 @@ into variable sized containers in a JSON file by inserting elements into an arra
 into objects.  You can still hand edit values in objects, but you cannot append or
 deduct data from them.
 
-<span class="label label-warning">Important!</span>
-At this time cereal requires that the ordering of information in the XML archive match what is
-expected in the serialization functions.  You may add data to dynamically sized containers (JSON arrays), but you cannot change the order of objects.
-
 The JSON serialization is powered by [rapidjson](http://code.google.com/p/rapidjson/).
+
+### Out of Order Loading
+
+The JSON archive, like the XML archive, supports out of order loading.  For details on how this work, please see the
+discussion [above](#outoforder) for the XML archive.
 
 ### Binary output
 
 Just like XML, JSON archives support explicit binary output by encoding data in base64 strings.  The syntax is identical
-to the above XML example using the functions `saveBinaryValue` and `loadBinaryValue`.
+to the [above](#binaryoutput) XML example using the functions `saveBinaryValue` and `loadBinaryValue`.
 
 ---
 
