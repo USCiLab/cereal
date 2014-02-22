@@ -8,148 +8,121 @@ familiar with its basic syntax by checkout out the [quickstart](quickstart) firs
 
 ---
 
+### TLDR Version
+
+cereal has a very similar interface to Boost serialization and in some cases can immediately be dropped in by simply
+replacing the Boost archives with cereal archives.  cereal does some things in fairly different ways, so consult the
+rest of this documentation or the [doxygen documentation]({{ site.baseurl }}/assets/doxygen/index.html) for more details.
+
+---
+
 ## Key differences from Boost
 
-cereal attempts to store as little metadata as possible when saving data.  Boost, by default, stores various metadata
+* cereal attempts to store as little metadata as possible when saving data.  Boost, by default, stores various metadata
 about the library version as well as the types themselves.  cereal will not perform any checks to ensure that
 serialization was done with the same version of cereal.
 
-cereal is header only, meaning that there is nothing to link against.  One of the most frustrating issues when using
+* cereal is header only, meaning that there is nothing to link against.  One of the most frustrating issues when using
 Boost serialization is keeping Boost versions consistent across different machines - cereal can easily be installed
 standalone or embedded in your project to keep versions consistent.
 
-cereal supports almost everything in the standard library out of the box.  Some of the things cereal supports by default
+* cereal supports almost everything in the standard library out of the box.  Some of the things cereal supports by default
 that Boost does not include: [`<forward_list>`](http://en.cppreference.com/w/cpp/container/forward_list), [`<memory>`](http://en.cppreference.com/w/cpp/header/memory), [`<queue>`](http://en.cppreference.com/w/cpp/header/queue), [`<stack>`](http://en.cppreference.com/w/cpp/header/stack), [`<tuple>`](http://en.cppreference.com/w/cpp/header/tuple), [`<unordered_set>`](http://en.cppreference.com/w/cpp/header/unordered_set), and [`<unordered_map>`](http://en.cppreference.com/w/cpp/header/unordered_map).
 
-cereal cannot handle raw pointers and requires a fairly complete c++11 implementation to run.  From a development
+* cereal cannot handle raw pointers and requires a fairly complete c++11 implementation to run.  From a development
 standpoint, the code of cereal should be significantly easier to comprehend and extend.
 
-cereal can be less verbose than Boost, e.g. automatically inferring the use of a split load/save pair instead of a
+* cereal can be less verbose than Boost, e.g. automatically inferring the use of a split load/save pair instead of a
 single serialize function without the need to use a macro.  cereal uses `static_assert` to give meaningful errors when
 you make mistakes.
 
+* cereal has a different preferred syntax for serialization.  While Boost uses `&`, `<<`, and `>>` to send things to
+archives, the preferred style in cereal is to use the `()` operator upon an archive, e.g. `archive( myData1, myData2 )`.  To ease
+the transition, cereal also supports all of the aforementioned Boost syntax.  Many other features of cereal bear strong
+resemblence to Boost but may have different names or operate in a slightly different manner - it is suggested to
+carefully read the doxygen before using any foreign cereal features.
+
 ---
 
-## Add serialization methods for your classes
+## An example transition
 
-cereal needs to know which data members to serialize in your classes.  Let it know by implementing a `serialize` method
-in your class:
+To start using cereal, you may not even need to change any of your serialization code.  The same interface for
+serialization is used in cereal as is used in Boost:
 
-```{cpp}
-struct MyClass
+```cpp
+#include <boost/archive/binary_oarchive.hpp>
+#include <cereal/archives/binary.hpp>
+
+struct MyType
 {
-  int x, y, z;
+  int x;
+  double y;
 
-  // This method lets xCEREAL know which data members to serialize
-  template<class Archive>
-  void serialize(Archive & archive)
+  // xCEREAL supports class versioning although it is considered
+  // optional in xCEREAL
+  template <class Archive>
+  void serialize( Archive & ar, const unsigned int version )
   {
-    archive( x, y, z ); // serialize things by passing them to the archive
+    ar & x & y; // the & operator is valid in xCEREAL but not the preferred interface
   }
 };
-```
-
-cereal also offers more flexible ways of writing serialization functions such as moving them outside of class
-definitions or splitting them into separate load and save functions.  You can read all about that in the [serialization
-functions](serialization_functions.html) section of the documentation.  cereal can also support class versioning, private serialization
-methods, and even classes that don't support default construction.
-
-You can serialize primitive data types and nearly every type in the [standard library](stl_support.html) without needing
-to write anything yourself.
-
----
-
-## Choose an archive
-
-cereal currently supports three basic archive types: 
-[binary] (serialization_archives.html#binary_archive) (also available in a [portable]
-(serialization_archives.html#portable_binary_archive) version), 
-[XML] (serialization_archives.html#xml_archive), and 
-[JSON] (serialization_archives.html#json_archive).  These archives are the middlemen between your code and your
-serialized data - they handle the reading and writing for you.  XML and JSON archives are human readable but lack the
-performance (both space and time) of the binary archive.  You can read all about these archives in the [archives
-section](serialization_archives.html)
-of the documentation.
-
-Include your preferred archive with one of:
-
-* `#include <cereal/archives/binary.hpp>`
-* `#include <cereal/archives/portable_binary.hpp>`
-* `#include <cereal/archives/xml.hpp>`
-* `#include <cereal/archives/json.hpp>`
-
----
-
-## Serialize your data
-
-Create a cereal archive and send the data you want to serialize to it.  Archives are designed to be used in an [RAII](http://en.wikipedia.org/wiki/RAII)
-manner and are guaranteed to flush their contents only on destruction (though it may happen earlier).  Archives
-generally take either an [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) or an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) object in their constructor:
-
-```{cpp}
-#include <cereal/archives/binary.hpp>
-#include <sstream>
 
 int main()
 {
-  std::stringstream ss; // any stream can be used
+  std::ofstream os("out.bin", std::ios::binary);
 
   {
-    cereal::BinaryOutputArchive oarchive(ss); // Create an output archive
-
-    MyData m1, m2, m3;
-    oarchive(m1, m2, m3); // Write the data to the archive
+    // boost::archive::binary_oarchive ar(os);
+    cereal::BinaryOutputArchive ar(os);
+    MyType m;
+    ar << m; // xCEREAL supports Boost style serialization syntax until you can fully transition
   }
-
-  {
-    cereal::BinaryInputArchive iarchive(ss); // Create an input archive
-
-    MyData m1, m2, m3;
-    iarchive(m1, m2, m3); // Read the data from the archive
-  }
+  
+  return 0;
 }
 ```
 
-### Naming values
+The only necessary change to the above code was using a cereal archive instead of a Boost archive.  If you are using
+other Boost features, there will be more changes to make to your code.  In Boost, if you use a split load/save pairing,
+you must use the `BOOST_MEMBER_SPLIT` macro, whereas cereal has no equivalent - simply create your split load/save pair.
 
-cereal also supports name-value pairs, which lets you attach names to the objects it serializes.  This is only truly
-useful if you choose to use a human readable archive format such as XML or JSON:
+If you befriend `boost::serialization::access`, that must change to `cereal::access`, defined in `<cereal/access.hpp>`.
 
-```{cpp}
-#include <cereal/archives/xml.hpp>
-#include <fstream>
+In cereal, class versioning is an exception and not the rule, so most serialization functions will ommit the `const
+unsigned int` secondary parameter.  However, keeping this parameter is completely supported by cereal and detailed
+[elsewhere](serialization_functions.html#versioning).  The macro `BOOST_CLASS_VERSION` has an equivalent called `CEREAL_CLASS_VERSION`.  Many other features have very similar
+names or similar functionality, but will not always be the same.  It is highly recommended you consult the detailed
+doxygen documentation on any feature that is unknown to you.
+
+Below is the above code re-written in the preferred cereal style:
+
+```cpp
+#include <boost/archive/binary_oarchive.hpp>
+
+struct MyType
+{
+  int x;
+  double y;
+
+  // versioning is optional.  please note that serialized types with
+  // no versioning are not compatible with serialized types with some
+  // versioning
+  template <class Archive>
+  void serialize( Archive & ar, const std::uint32_t int version )
+  {
+    ar( x,y );
+  }
+};
 
 int main()
 {
-  {
-    std::ofstream os("data.xml");
-    cereal::XMLOutputArchive archive(os);
-
-    MyData m1;
-    int someInt;
-    double d;
-
-    archive( CEREAL_NVP(m1), // Names the output the same as the variable name
-             someInt,        // No NVP - xCEREAL will automatically generate an enumerated name
-             cereal::make_nvp("this name is way better", d) ); // specify a name of your choosing
-  }
+  std::ofstream os("out.bin", std::ios::binary);
 
   {
-    std::ifstream is("data.xml");
-    cereal::XMLInputArchive archive(is);
-    
-    MyData m1;
-    int someInt;
-    double d;
-
-    archive( m1, someInt, d ); // NVPs not strictly necessary when loading
+    cereal::BinaryOutputArchive ar(os);
+    MyType m;
+    ar( m );
   }
+  
+  return 0;
 }
-```
----
-
-## Learn more
-
-cereal can do much more than these simple examples demonstrate.  cereal can handle smart pointers, polymorphism,
-inheritance, and more.  Take a tour of its features by following the [documentation](index.html) or diving into the
-[doxygen documentation]({{ site.baseurl }}/assets/doxygen/index.html).

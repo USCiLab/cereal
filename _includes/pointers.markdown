@@ -7,7 +7,7 @@ cereal supports serializing smart pointers but not dumb pointers (that is to say
 
 ### TLDR Version
 
-cereal works with modern smart pointers found in `<memory>` by including `<cereal/types/memory.hpp>` but does not support raw pointers.  Pointers to polymorphic types are also supported but detailed [elsewhere](polymorphism.html).  cereal needs access to either a default constructor or a a specialization of `cereal::LoadAndAllocate` for loading smart pointers.
+cereal works with modern smart pointers found in `<memory>` by including `<cereal/types/memory.hpp>` but does not support raw pointers.  Pointers to polymorphic types are also supported but detailed [elsewhere](polymorphism.html).  cereal needs access to either a default constructor or a a specialization of `cereal::LoadAndConstruct` for loading smart pointers.
 
 ---
 
@@ -21,12 +21,14 @@ cereal will also properly handle pointers to polymorphic objects (e.g. `std::uni
 
 ### Types with no default constructor
 
-If you want to serialize a pointer to a type that does not have a default constructor, or a type that does not allow cereal access to its default constructor, you will either need to provide a member static function `load_and_allocate` or provide a specialization of `cereal::LoadAndAllocate` for the type.  
+If you want to serialize a pointer to a type that does not have a default constructor, or a type that does not allow cereal access to its default constructor, you will either need to provide a member static function `load_and_construct` or provide a specialization of `cereal::LoadAndConstruct` for the type.  If you choose to use the external version, specializing `cereal::LoadAndConstruct`, cereal will call the static method of this struct, `load_and_construct`.
 
-If you choose to use the external version, specializing `cereal::LoadAndAllocate`, cereal will call the static method of this struct, `load_and_allocate`, which will be called instead of its normal serialization functionality to dynamically allocate a new instance of the type and load all of its contents.  Don't worry about returning the raw pointer here - cereal will contain it within a smart pointer.
+These functions give you a way to load up any pertinent data and call a non default constructor.  cereal will handle
+allocating the memory and pass a `cereal::construct` object to your `load_and_construct` function that you can use to
+perform the actual construction.
 
 ```cpp
-#include <cereal/access.hpp> // For LoadAndAllocate
+#include <cereal/access.hpp> // For LoadAndConstruct
 
 struct MyType
 {
@@ -40,33 +42,33 @@ struct MyType
     ar( myX );
   }
 
-  // We could define load_and_allocate internally
-  //static MyType * load_and_allocate( Archive & ar )
+  // We could define load_and_construct internally
+  //static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
   //{
   //  int x;
   //  ar( x );
-  //  return new MyType( x );
+  //  construct( x );
   //}
 };
 
-// Provide a specialization for LoadAndAllocate for your type
+// Provide a specialization for LoadAndConstruct for your type
 // if you want to do it externally.
 namespace cereal
 {
-  template <> struct LoadAndAllocate<MyType>
+  template <> struct LoadAndConstruct<MyType>
   {
-    // load_and_allocate will be passed the archive that you will be loading
-    // from and should return a raw pointer to a dynamically allocated instance
-    // of your type.
+    // load_and_construct will be passed the archive that you will be loading
+    // from as well as a special construct object that can be used to invoke
+    // the constructor for your class.
     //
-    // This will be captured by a smart pointer of some type and you need not
-    // worry about managing the memory
+    // More advanced functionality is available using construct, such as accessing
+    // class members, which is detailed in the doxygen.
     template <class Archive>
-    static MyType * load_and_allocate( Archive & ar )
+    static MyType * load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
     {
       int x;
       ar( x );
-      return new MyType( x );
+      construct( x ); // calls MyType( x )
     }
   };
 ```

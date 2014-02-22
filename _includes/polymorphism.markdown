@@ -88,6 +88,8 @@ CEREAL_REGISTER_TYPE(DerivedClassOne);
 // Register EmbarassingDerivedClass with a less embarrasing name
 CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
 
+// Note that there is no need to register the base class, only derived classes
+
 ```
 
 #### main.cpp
@@ -134,7 +136,7 @@ int main()
 ---
 
 ### Registering Archives
-In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.
+In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.
 
 ```cpp
 namespace mynamespace
