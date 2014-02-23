@@ -23,6 +23,15 @@ unittests: unittests.cpp
 performance: performance.cpp
 	${CXX} performance.cpp -o performance -lboost_serialization ${CPPFLAGS} -O3
 
+portability: portability_test.cpp
+	${CXX} portability_test.cpp -o portability64 ${CPPFLAGS}
+	${CXX} portability_test.cpp -o portability32 ${CPPFLAGS} -m32
+	./portability64 save 64
+	./portability32 load 32
+	./portability32 save 32
+	./portability64 load 64
+	./portability64 remove 64
+
 .PHONY: coverage
 coverage:
 	g++ -std=c++11 -I./include -Wall -Werror -g -O0 -coverage  unittests.cpp -o unittests_coverage -lboost_unit_test_framework
