@@ -66,6 +66,10 @@ namespace cereal
       the user takes care of ensuring serialized types are the same size
       across machines, is portable over different architectures.
 
+      When using a binary archive and a file stream, you must use the
+      std::ios::binary format flag to avoid having your data altered 
+      inadvertently.
+
       \warning This archive has not been thoroughly tested across different architectures.
                Please report any issues, optimizations, or feature requests at
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
@@ -113,6 +117,10 @@ namespace cereal
 
       The archive will do nothing to ensure types are the same size - that is
       the responsibility of the user.
+
+      When using a binary archive and a file stream, you must use the
+      std::ios::binary format flag to avoid having your data altered 
+      inadvertently.
 
       \warning This archive has not been thoroughly tested across different architectures.
                Please report any issues, optimizations, or feature requests at
