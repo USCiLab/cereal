@@ -16,7 +16,7 @@ rest of this documentation or the [doxygen documentation]({{ site.baseurl }}/ass
 
 ---
 
-## Key differences from Boost
+## Key Differences From Boost
 
 * cereal attempts to store as little metadata as possible when saving data.  Boost, by default, stores various metadata
 about the library version as well as the types themselves.  cereal will not perform any checks to ensure that
@@ -44,26 +44,59 @@ carefully read the doxygen before using any foreign cereal features.
 
 ---
 
-## An example transition
+## An Example Transition
 
 To start using cereal, you may not even need to change any of your serialization code.  The same interface for
-serialization is used in cereal as is used in Boost:
+serialization is used in cereal as is used in Boost.  Consider this example with the minimal changes necessary to
+support using cereal:
 
 ```cpp
 #include <boost/archive/binary_oarchive.hpp>
 #include <cereal/archives/binary.hpp>
 
+class SomeData
+{
+  public:
+    SomeData() = default;
+
+  private:
+    friend class cereal::access; // befriend the xCEREAL version of access
+    friend class boost::serialization::access;
+
+    // xCEREAL supports class versioning although it is considered
+    // optional in xCEREAL
+    template <class Archive>
+    void save( Archive & ar, const unsigned int version ) const
+    {
+      // xCEREAL supports Boost style syntax until you can change it
+      ar << a << b;
+    }
+
+    template <class Archive>
+    void load( Archive & ar, const unsigned int version )
+    {
+      ar >> a;
+      ar >> b;
+    }
+
+  // xCEREAL will figure out you've used split member load/save automatically
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+};
+
+BOOST_CLASS_VERSION(SomeData, 1);
+CEREAL_CLASS_VERSION(SomeData, 1); // many things have the same or similar names in xCEREAL
+
 struct MyType
 {
   int x;
   double y;
+  SomeData s;
 
-  // xCEREAL supports class versioning although it is considered
-  // optional in xCEREAL
   template <class Archive>
   void serialize( Archive & ar, const unsigned int version )
   {
     ar & x & y; // the & operator is valid in xCEREAL but not the preferred interface
+    ar & s;
   }
 };
 
@@ -71,20 +104,27 @@ int main()
 {
   std::ofstream os("out.bin", std::ios::binary);
 
+  // using boost
   {
-    // boost::archive::binary_oarchive ar(os);
-    cereal::BinaryOutputArchive ar(os);
+    boost::archive::binary_oarchive ar(os);
     MyType m;
     ar << m; // xCEREAL supports Boost style serialization syntax until you can fully transition
+  }
+
+  // using cereal
+  {
+    cereal::BinaryOutputArchive ar(os);
+    MyType m;
+    ar << m;
   }
   
   return 0;
 }
 ```
 
-The only necessary change to the above code was using a cereal archive instead of a Boost archive.  If you are using
-other Boost features, there will be more changes to make to your code.  In Boost, if you use a split load/save pairing,
-you must use the `BOOST_MEMBER_SPLIT` macro, whereas cereal has no equivalent - simply create your split load/save pair.
+The only necessary change to the above code was using a cereal archive instead of a Boost archive and adding the cereal named friend and class versioning.  If you are using other Boost features, there will be more changes to make to your code.  
+
+In Boost, if you use a split load/save pairing, you must use the `BOOST_MEMBER_SPLIT` macro, whereas cereal has no equivalent - simply create your split load/save pair.
 
 If you befriend `boost::serialization::access`, that must change to `cereal::access`, defined in `<cereal/access.hpp>`.
 
@@ -96,21 +136,48 @@ doxygen documentation on any feature that is unknown to you.
 
 Below is the above code re-written in the preferred cereal style:
 
+
 ```cpp
-#include <boost/archive/binary_oarchive.hpp>
+#include <cereal/archives/binary.hpp>
+
+class SomeData
+{
+  public:
+    SomeData() = default;
+
+  private:
+    friend class cereal::access;
+
+    // xCEREAL supports class versioning although it is considered
+    // optional in xCEREAL
+    template <class Archive>
+    void save( Archive & ar, const unsigned int version ) const
+    {
+      ar( a, b ); // operator() is the preferred way of interfacing the archive
+    }
+
+    template <class Archive>
+    void load( Archive & ar, const unsigned int version )
+    {
+      ar( a, b );
+    }
+
+    // note the lack of explicitly informing cereal to use a split member load/save
+};
+
+CEREAL_CLASS_VERSION(SomeData, 1);
 
 struct MyType
 {
   int x;
   double y;
+  SomeData s;
 
-  // versioning is optional.  please note that serialized types with
-  // no versioning are not compatible with serialized types with some
-  // versioning
   template <class Archive>
-  void serialize( Archive & ar, const std::uint32_t int version )
+  void serialize( Archive & ar, const unsigned int version )
   {
-    ar( x,y );
+    ar( x, y );
+    ar( s );
   }
 };
 
@@ -126,3 +193,4 @@ int main()
   
   return 0;
 }
+```

@@ -160,7 +160,7 @@ class MyCoolClass
 This also works with split save/load functions.
 
 <a name="versioning"></a>
-### Explicit Versioning
+### Explicit versioning
 
 cereal supports adding explicit versioning information for types, much like Boost class versioning.
 This is optional in cereal and by default is not used for any type.  You can choose to use versioning by adding
@@ -222,6 +222,7 @@ CEREAL_CLASS_VERSION( MyCoolClass, 32 );
 // serialize function, its version number will default to 0
 ```
 
+<a name="inheritance"></a>
 ### Inheritance
 
 Serialization functions, like any other function, will be inherited by derived classes.  Depending on the serialization

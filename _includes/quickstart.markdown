@@ -130,7 +130,10 @@ int main()
                                // but could be used (even out of order)
   }
 }
-```
+``` 
+
+More information about name-value pairs can be found by reading the relevent entries in the [doxygen documentation on utility functions]({{ site.baseurl }}/assets/doxygen/group__Utility.html).
+
 ---
 
 ## Learn more

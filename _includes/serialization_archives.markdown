@@ -40,7 +40,7 @@ and saving data.
 cereal does support including version information along with the data it serializes in a fashion similar to that found
 in boost.  For more information on this see the [versioning](serialization_functions.html#versioning) section of the serialization types documentation.
 
-### Advanced Topic: Polymorphism
+### Advanced topic: polymorphism
 
 Although detailed at length [elsewhere](polymorphism.html), if you will be serializing polymorphic data types through pointers to base objects, you must register the types.  This registration must happen **after** any archives are included.
 
@@ -59,7 +59,6 @@ when constructing the stream.  This prevents the stream from interpreting your d
 them.
 
 ---
-
 
 <a name="xml_archive"></a>
 
@@ -111,7 +110,7 @@ XML can optionally output complete demangled type information as an attribute an
 The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
 
 <a name="outoforder"></a>
-### Out of Order Loading
+### Out of order loading
 
 The default behavior for all archives is to sequentially load data in the order in which it appears.
 XML (and JSON) archives support out of order loading, meaning that you can utilize name-value pairs to load data in an order
@@ -269,7 +268,7 @@ deduct data from them.
 
 The JSON serialization is powered by [rapidjson](http://code.google.com/p/rapidjson/).
 
-### Out of Order Loading
+### Out of order loading
 
 The JSON archive, like the XML archive, supports out of order loading.  For details on how this work, please see the
 discussion [above](#outoforder) for the XML archive.
@@ -285,7 +284,7 @@ to the [above](#binaryoutput) XML example using the functions `saveBinaryValue` 
 
 Adding more archives to cereal is a fairly simple process that requires understanding a few key functions and some base types.
 
-### Prologues, Epilogues, and Serialization Functions
+### Prologues, epilogues, and serialization functions
 
  Special functions are called immediately before and immediately after every type is serialized, called `prologue` and `epilogue`.  The default cases for these functions looks like (found in `<cereal/cereal.hpp>`):
 
@@ -314,14 +313,14 @@ Note that the generic implementation for `std::string` is to serialize its data 
 internals in `cereal::BinaryData<T>`.  If your archive does not support this, or you wish to have different behavior for
 strings, such as outputting readable characters, you will need to specialize string serialization functions for your archive.
 
-### The Base Archives
+### The base archives
 
 All archives need to derive from `cereal::InputArchive` or `cereal::OutputArchive`, defined in `<cereal/cereal.hpp>`.
 
-### Registering Your Archive
+### Registering your archive
 
 To enable polymorphic support, your archive must be registered with the `CEREAL_REGISTER_ARCHIVE` macro, defined in `<cereal/cereal.hpp>`.  This is best done immediately following the definition of your archive.
 
-### Learn More
+### Learn more
 
 The best way to learn how to write archives is by digging into the [doxygen documentation]({{ site.baseurl }}/assets/doxygen/index.html) and looking at the various archives in `<cereal/archives>`.

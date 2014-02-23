@@ -1,13 +1,13 @@
 Pointers
 ========
 
-cereal supports serializing smart pointers but not dumb pointers (that is to say raw pointers, such as `int *`).  Pointer support can be found by including `<cereal/types/memory.hpp>`
+cereal supports serializing smart pointers but not dumb pointers (that is to say raw pointers, such as `int *`) or references.  Pointer support can be found by including `<cereal/types/memory.hpp>`
 
 ---
 
 ### TLDR Version
 
-cereal works with modern smart pointers found in `<memory>` by including `<cereal/types/memory.hpp>` but does not support raw pointers.  Pointers to polymorphic types are also supported but detailed [elsewhere](polymorphism.html).  cereal needs access to either a default constructor or a a specialization of `cereal::LoadAndConstruct` for loading smart pointers.
+cereal works with modern smart pointers found in `<memory>` by including `<cereal/types/memory.hpp>` but does not support raw pointers or references.  Pointers to polymorphic types are also supported but detailed [elsewhere](polymorphism.html).  cereal needs access to either a default constructor or a a specialization of `cereal::LoadAndConstruct` for loading smart pointers.
 
 ---
 
@@ -62,7 +62,7 @@ namespace cereal
     // the constructor for your class.
     //
     // More advanced functionality is available using construct, such as accessing
-    // class members, which is detailed in the doxygen.
+    // class members, which is detailed in the doxygen docs.
     template <class Archive>
     static MyType * load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
     {
@@ -75,6 +75,9 @@ namespace cereal
 
 ### Implementation notes
 
+If you are a casual user of cereal, there's no need to worry about the details of loading and saving smart pointers.  If you are curious or want a
+better understanding, here's a brief overview:
+
 When saving an `std::shared_ptr`, we first check to make sure we haven't serialized it before.  This is done by keeping a map from addresses to pointer ids (an `std::uint32_t`), which are unique.  Pointers that are newly serialized are given a new id with the most significant bit set to `1`.  When saved, an `std::shared_ptr` will first output its id, which will either have its MSB set to `1` if it is the first instance of that id, or will be an id already in the archive.  This is immediately followed by the data found by dereferencing the pointer.  If the pointer was equal to `nullptr`, its id is set to `0` and nothing else is saved.
 
 When loading an `std::shared_ptr`, we first load its id to determine whether we need to allocate data or not.  If the MSB of a loaded id is equal to `1`, we need to actually allocate it and keep track of this allocation in a map from ids to `std::shared_ptr<void>`.  If the MSB is not equal to `1`, we retrieve the already loaded data from the map.  In the case of null pointers (id equal to `0`), nothing needs to be done.
@@ -83,11 +86,18 @@ When serializing an `std::weak_ptr`, it is promoted to an `std::shared_ptr` by l
 
 `std::unique_ptr` is a bit easier since it contains a unique reference to the data it points to.  This means we can serialize it without doing any tracking.  The only extra metadata that we serialize is a single `std::uint8_t` containing a `1` if the pointer is valid and a `0` if the pointer is equal to `nullptr`.  When loading, we first look at the id before attempting to load its contents.
 
+Handling of types that do not have default constructors works the same way on the surface but is more complicated under
+the hood.  cereal allocates memory for the type before it can be constructed and gives the user an object which
+transparently performs a placement new into this block of memory, while staying exception safe.
+
+The most complicated portion of the memory implementation is handling non-default constructors when an `std::shared_ptr`
+to a type that inherits from `std::enable_shared_from_this` is utilized (excluding the complications that arise from polymorphism!).  In this situation, we need to pre-allocate a buffer for the user to later perform a placement new in, while keeping a stable, type agnostic `std::shared_ptr` to the buffer (so we can properly assign circular references).  The internal state of the `std::enable_shared_from_this` is set upon insertion into a `std::shared_ptr`, which means that if we were to simply let user perform their placement new blindly, the original state of the `std::enable_shared_from_this` would be overwritten.  To get around this, we save its state before letting the user peform the construction, and then restore it afterwards.
+
 ---
 
-## Raw/Dumb Pointers
+## Raw/Dumb Pointers and References
 
-cereal does not support serializing raw (e.g. `int *`) pointers.
+cereal does not support serializing raw (e.g. `int *`) pointers or references (e.g. `int &`).
 
 ### Pointer serialization rationale
 

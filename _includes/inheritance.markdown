@@ -104,3 +104,14 @@ struct Derived : virtual Left, virtual Right
 // resulting in duplicate x entries.
 ```
 
+---
+
+## Inheriting Serialization Functions
+
+In cases where serialization functions are inherited, it is possible to get into situations where you may have more than
+one type of serialization function (e.g. serialize and a load/save pair) for a type.  Since cereal does not like this, a
+static assertion will cause compilation to fail.
+
+In situations like this, you can tell cereal to explicitly use certain serialization types for your class.  This is
+detailed in the [serialization functions](serialization_functions.html#inheritance) section of the documentation.
+
