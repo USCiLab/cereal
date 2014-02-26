@@ -77,7 +77,7 @@ namespace cereal
     char & serialize(...);
     template<typename T, typename A>
       bool constexpr has_non_member_serialize()
-      { return std::is_void<decltype(serialize(std::declval<A&>(), std::declval<T&>()))>::value; };
+      { return std::is_void<decltype(serialize(std::declval<A&>(), std::declval<T&>()))>::value; }
 
     // ######################################################################
     // Member Load
@@ -96,7 +96,7 @@ namespace cereal
     char & load(...);
     template<typename T, typename A>
       bool constexpr has_non_member_load()
-      { return std::is_void<decltype(load(std::declval<A&>(), std::declval<T&>()))>::value; };
+      { return std::is_void<decltype(load(std::declval<A&>(), std::declval<T&>()))>::value; }
 
     // ######################################################################
     // Member Save
