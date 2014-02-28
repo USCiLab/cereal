@@ -553,15 +553,12 @@ namespace cereal
       struct shared_from_this_wrapper : public T
       {
         template <class U>
-        static auto check( U const & t ) -> decltype( t.shared_from_this(), std::true_type() )
-        { return {}; }
+        static auto check( U const & t ) -> decltype( t.shared_from_this(), std::true_type() );
 
-        static auto check( ... ) -> decltype( std::false_type() )
-        { return {}; }
+        static auto check( ... ) -> decltype( std::false_type() );
 
         template <class U>
-        static auto get( U const & t ) -> decltype( t.shared_from_this() )
-        { return {}; }
+        static auto get( U const & t ) -> decltype( t.shared_from_this() );
       };
     }
 
