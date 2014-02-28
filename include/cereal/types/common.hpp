@@ -47,7 +47,8 @@ namespace cereal
   template <class Archive, class T> inline
   void serialize( Archive &, T * & )
   {
-    static_assert(!sizeof(T), "Cereal does not support serializing raw pointers - please use a smart pointer");
+    static_assert(cereal::traits::detail::delay_static_assert<T>::value,
+      "Cereal does not support serializing raw pointers - please use a smart pointer");
   }
 
   namespace common_detail

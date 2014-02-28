@@ -46,6 +46,13 @@ namespace cereal
     typedef std::true_type yes;
     typedef std::false_type no;
 
+    namespace detail
+    {
+      //! Used to delay a static_assert until template instantiation
+      template <class T>
+      struct delay_static_assert : std::false_type {};
+    } // namespace detail
+
     #ifdef CEREAL_OLDER_GCC // when VS supports better SFINAE, we can use this as the default
     template<typename> struct Void { typedef void type; };
     #endif // CEREAL_OLDER_GCC
@@ -583,7 +590,8 @@ namespace cereal
     template <class T, class A, bool Member = traits::has_member_load_and_construct<T, A>::value, bool NonMember = traits::has_non_member_load_and_construct<T, A>::value>
     struct Construct
     {
-      static_assert( !sizeof(T), "Cereal detected both member and non member load_and_construct functions!" );
+      static_assert( cereal::traits::detail::delay_static_assert<T>::value, 
+        "Cereal detected both member and non member load_and_construct functions!" );
       static T * load_andor_construct( A & /*ar*/, construct<T> & /*construct*/ )
       { return nullptr; }
     };
