@@ -47,7 +47,15 @@ namespace cereal
 {
   namespace xml_detail
   {
-    static const char * CEREAL_XML_STRING = "cereal";
+    #ifndef CEREAL_XML_STRING_VALUE
+    //! The default name for the root node in a cereal xml archive.
+    /*! You can define CEREAL_XML_STRING_VALUE to be different assuming you do so
+        before this file is included. */
+    #define CEREAL_XML_STRING_VALUE "cereal"
+    #endif // CEREAL_XML_STRING_VALUE
+
+    //! The name given to the root node in a cereal xml archive
+    static const char * CEREAL_XML_STRING = CEREAL_XML_STRING_VALUE;
   }
 
   // ######################################################################
@@ -594,7 +602,7 @@ namespace cereal
           if( searchName )
           {
             size_t new_size = XMLInputArchive::getNumChildren( node );
-            size_t name_size = rapidxml::internal::measure( searchName );
+            const size_t name_size = rapidxml::internal::measure( searchName );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
             {

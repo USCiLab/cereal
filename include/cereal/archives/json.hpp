@@ -339,7 +339,6 @@ namespace cereal
 
           Note that this follows the same ordering rules specified in the class description in regards
           to loading in/out of order */
-
       void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
       {
         itsNextName = name;
@@ -407,11 +406,12 @@ namespace cereal
 
           //! Adjust our position such that we are at the node with the given name
           /*! @throws Exception if no such named node exists */
-          inline void search( const char * searchName )//, GenericValue const & parent )
+          inline void search( const char * searchName )
           {
+            const auto len = std::strlen( searchName );
             size_t index = 0;
             for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
-              if( std::strcmp( searchName, it->name.GetString() ) == 0 )
+              if( std::strncmp( searchName, it->name.GetString(), len ) == 0 )
               {
                 itsIndex = index;
                 return;
