@@ -401,6 +401,7 @@ namespace cereal
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
+          !traits::is_specialized<T, ArchiveType>::value &&
           !traits::is_output_serializable<T, ArchiveType>::value && std::is_empty<T>::value, ArchiveType &>::type
       processImpl(T const &)
       {
@@ -726,6 +727,7 @@ namespace cereal
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
+          !traits::is_specialized<T, ArchiveType>::value &&
           !traits::is_input_serializable<T, ArchiveType>::value && std::is_empty<T>::value, ArchiveType &>::type
       processImpl(T const &)
       {
