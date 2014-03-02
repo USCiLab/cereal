@@ -32,6 +32,20 @@
 #include <cereal/cereal.hpp>
 #include <cereal/details/util.hpp>
 
+namespace cereal
+{
+  //! An exception thrown when rapidjson fails an internal assertion
+  /*! @ingroup Utility */
+  struct RapidJSONException : Exception
+  { RapidJSONException( const char * what_ ) : Exception( what_ ) {} };
+}
+
+// Override rapidjson assertions to throw exceptions by default
+#ifndef RAPIDJSON_ASSERT
+#define RAPIDJSON_ASSERT(x) if(!(x)){ \
+  throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
+#endif // RAPIDJSON_ASSERT
+
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/genericstream.h>
 #include <cereal/external/rapidjson/reader.h>
