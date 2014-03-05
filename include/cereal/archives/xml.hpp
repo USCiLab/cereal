@@ -86,6 +86,63 @@ namespace cereal
           Common use cases for directly interacting with an XMLOutputArchive */
       //! @{
 
+      //! A class containing various advanced options for the XML archive
+      class Options
+      {
+        public:
+          //! Specify specific options for the XMLOutputArchive
+          /*! @param precision The precision used for floating point numbers
+              @param indent Whether to indent each line of XML
+              @param outputType Whether to output the type of each serialized object as an attribute */
+          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+                            bool indent = true,
+                            bool outputType = false ) :
+            itsPrecision( precision ),
+            itsIndent( indent ),
+            itsOutputType( outputType ) { }
+
+          //! Default options
+          static Options Default(){ return {}; }
+
+          //! Default options with no indentation
+          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
+
+        private:
+          friend class XMLOutputArchive;
+          int itsPrecision;
+          bool itsIndent;
+          bool itsOutputType;
+      };
+
+      //! Construct, outputting to the provided stream upon destruction
+      /*! @param stream The stream to output to.  Note that XML is only guaranteed to flush
+                        its output to the stream upon destruction.
+          @param options The XML specific options to use.  See the Options struct
+                         for the values of default parameters */
+      XMLOutputArchive( std::ostream & stream, Options const & options ) :
+        OutputArchive<XMLOutputArchive>(this),
+        itsStream(stream),
+        itsOutputType( options.itsOutputType ),
+        itsIndent( options.itsIndent )
+      {
+        // rapidxml will delete all allocations when xml_document is cleared
+        auto node = itsXML.allocate_node( rapidxml::node_declaration );
+        node->append_attribute( itsXML.allocate_attribute( "version", "1.0" ) );
+        node->append_attribute( itsXML.allocate_attribute( "encoding", "utf-8" ) );
+        itsXML.append_node( node );
+
+        // allocate root node
+        auto root = itsXML.allocate_node( rapidxml::node_element, xml_detail::CEREAL_XML_STRING );
+        itsXML.append_node( root );
+        itsNodes.emplace( root );
+
+        // set attributes on the streams
+        itsStream << std::boolalpha;
+        itsStream.precision( options.itsPrecision );
+        itsOS << std::boolalpha;
+        itsOS.precision( options.itsPrecision );
+      }
+
       //! Construct, outputting to the provided stream upon destruction
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout!  Note that since this archive builds a tree in memory,
@@ -95,7 +152,8 @@ namespace cereal
       XMLOutputArchive(std::ostream & stream, size_t precision = std::numeric_limits<double>::max_digits10, bool outputType = false ) :
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
-        itsOutputType( outputType )
+        itsOutputType( outputType ),
+        itsIndent( true )
       {
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
@@ -118,7 +176,8 @@ namespace cereal
       //! Destructor, flushes the XML
       ~XMLOutputArchive()
       {
-        itsStream << itsXML;
+        const int flags = itsIndent ? rapidxml::print_no_indenting : 0x0;
+        rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
       }
 
@@ -272,6 +331,7 @@ namespace cereal
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
+      bool itsIndent;                  //!< Controls whether indenting is used
   }; // XMLOutputArchive
 
   // ######################################################################
