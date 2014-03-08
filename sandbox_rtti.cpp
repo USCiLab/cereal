@@ -193,7 +193,7 @@ int main()
 
     std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
     std::shared_ptr<Base> ptr2 = std::make_shared<YourType>(33);
-    std::unique_ptr<Base> ptr3(new MyType);
+    std::unique_ptr<Base> ptr3(new MyType());
     std::weak_ptr<Base>   ptr4 = ptr2;
 
     std::shared_ptr<OurType> ptr5 = std::make_shared<OurType>(99);
