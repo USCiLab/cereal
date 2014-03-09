@@ -320,17 +320,17 @@ namespace cereal
     template <class Archive, class T>
     struct polymorphic_serialization_support
     {
-#ifdef _MSC_VER
+      #ifdef _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       virtual void instantiate();
-#else // NOT _MSC_VER
+      #else // NOT _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       static void instantiate();
       //! This typedef causes the compiler to instantiate this static function
       typedef instantiate_function<instantiate> unused;
-#endif // _MSC_VER
+      #endif // _MSC_VER
     };
 
     // instantiate implementation
