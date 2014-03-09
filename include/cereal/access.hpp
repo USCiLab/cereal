@@ -262,6 +262,10 @@ namespace cereal
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
       { t.load(ar, version); }
 
+      // for detecting inheritance from enable_shared_from_this
+      template <class T> inline
+      static auto shared_from_this(T & t) -> decltype(t.shared_from_this());
+
       template <class T>
         static std::false_type load_and_construct(...)
         { return std::false_type(); }

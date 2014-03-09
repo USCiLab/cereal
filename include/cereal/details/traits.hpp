@@ -549,11 +549,10 @@ namespace cereal
     // ######################################################################
     namespace detail
     {
-      template <class T>
-      struct shared_from_this_wrapper : public T
+      struct shared_from_this_wrapper
       {
         template <class U>
-        static auto check( U const & t ) -> decltype( t.shared_from_this(), std::true_type() );
+        static auto check( U const & t ) -> decltype( ::cereal::access::shared_from_this(t), std::true_type() );
 
         static auto check( ... ) -> decltype( std::false_type() );
 
@@ -564,7 +563,7 @@ namespace cereal
 
     //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
     template<class T>
-    struct has_shared_from_this : decltype(detail::shared_from_this_wrapper<T>::check(std::declval<detail::shared_from_this_wrapper<T>>()))
+    struct has_shared_from_this : decltype(detail::shared_from_this_wrapper::check(std::declval<T>()))
     { };
 
     //! Get the type of the base class of T which inherited from std::enable_shared_from_this
@@ -572,8 +571,7 @@ namespace cereal
     struct get_shared_from_this_base
     {
       private:
-        using sftw = detail::shared_from_this_wrapper<T>;
-        using PtrType = decltype(sftw::get(std::declval<sftw>()));
+        using PtrType = decltype(detail::shared_from_this_wrapper::get(std::declval<T>()));
       public:
         //! The type of the base of T that inherited from std::enable_shared_from_this
         using type = typename std::decay<typename PtrType::element_type>::type;
@@ -587,7 +585,7 @@ namespace cereal
     template <class T, class A, bool Member = traits::has_member_load_and_construct<T, A>::value, bool NonMember = traits::has_non_member_load_and_construct<T, A>::value>
     struct Construct
     {
-      static_assert( cereal::traits::detail::delay_static_assert<T>::value, 
+      static_assert( cereal::traits::detail::delay_static_assert<T>::value,
         "Cereal detected both member and non member load_and_construct functions!" );
       static T * load_andor_construct( A & /*ar*/, construct<T> & /*construct*/ )
       { return nullptr; }
