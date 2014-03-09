@@ -75,10 +75,88 @@ namespace cereal
       ::cereal::construct<T> construct;
     };
 
+    //! A helper struct for saving and restoring the state of types that derive from
+    //! std::enable_shared_from_this
+    /*! This special struct is necessary because when a user uses load_and_construct,
+        the weak_ptr (or whatever implementation defined variant) that allows
+        enable_shared_from_this to function correctly will not be initialized properly.
+
+        This internal weak_ptr can also be modified by the shared_ptr that is created
+        during the serialization of a polymorphic pointer, where cereal creates a
+        wrapper shared_ptr out of a void pointer to the real data.
+
+        In the case of load_and_construct, this happens because it is the allocation
+        of shared_ptr that perform this initialization, which we let happen on a buffer
+        of memory (aligned_storage).  This buffer is then used for placement new
+        later on, effectively overwriting any initialized weak_ptr with a default
+        initialized one, eventually leading to issues when the user calls shared_from_this.
+
+        To get around these issues, we will store the memory for the enable_shared_from_this
+        portion of the class and replace it after whatever happens to modify it (e.g. the
+        user performing construction or the wrapper shared_ptr in saving).
+
+        Example usage:
+
+        @code{.cpp}
+        T * myActualPointer;
+        EnableSharedHelper<T> helper( myActualPointer ); // save the state
+        std::shared_ptr<T> myPtr( myActualPointer ); // modifies the internal weak_ptr
+        helper.restore(); // good as new!
+        @endcode
+
+        @tparam T Type pointed to by shared_ptr
+        @internal */
+    template <class T>
+    class EnableSharedHelper
+    {
+      // typedefs for parent type and storage type
+      using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
+      using ParentType = std::enable_shared_from_this<BaseType>;
+      using StorageType = typename std::aligned_storage<sizeof(ParentType)>::type;
+
+      public:
+        //! Saves the state of some type inheriting from enable_shared_from_this
+        /*! @param T The raw pointer held by the shared_ptr */
+        inline EnableSharedHelper( T * ptr ) :
+          itsPtr( static_cast<ParentType *>( ptr ) ),
+          itsState()
+        {
+          std::memcpy( &itsState, itsPtr, sizeof(ParentType) );
+        }
+
+        //! Restores the state of the held pointer
+        inline void restore()
+        {
+          std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+        }
+
+      private:
+        ParentType * itsPtr;
+        StorageType itsState;
+    }; // end EnableSharedHelper
+
+    //! Performs loading and construction for a shared pointer that is derived from
+    //! std::enable_shared_from_this
+    /*! @param ar The archive
+        @param ptr Raw pointer held by the shared_ptr
+        @internal */
+    template <class Archive, class T> inline
+    void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
+    {
+      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
+      memory_detail::EnableSharedHelper<T> helper( ptr );
+
+      // let the user perform their initialization
+      ar( _CEREAL_NVP("data", loadWrapper) );
+
+      // restore the state of enable_shared_from_this
+      helper.restore();
+    }
+
     //! Performs loading and construction for a shared pointer that is NOT derived from
     //! std::enable_shared_from_this
     /*! This is the typical case, where we simply pass the load wrapper to the
-        archive
+        archive.
 
         @param ar The archive
         @param ptr Raw pointer held by the shared_ptr
@@ -89,51 +167,7 @@ namespace cereal
       memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
       ar( _CEREAL_NVP("data", loadWrapper) );
     }
-
-    //! Performs loading and construction for a shared pointer that is derived from
-    //! std::enable_shared_from_this
-    /*! This special case is necessary because when a user uses load_and_construct,
-        the weak_ptr (or whatever implementation defined variant) that allows
-        enable_shared_from_this to function correctly will not be initialized properly.
-
-        This happens because it is the allocation of shared_ptr that perform this
-        initialization, which we let happen on a buffer of memory (aligned_storage).
-        This buffer is then used for placement new later on, effectively overwriting
-        any initialized weak_ptr with a default initialized one, eventually leading
-        to issues when the user calls shared_from_this.
-
-        To get around these issues, we will store the memory for the enable_shared_from_this
-        portion of the class and replace it after the user performs initialization
-        (placement new).
-
-        @param ar The archive
-        @param ptr Raw pointer held by the shared_ptr
-        @internal */
-    template <class Archive, class T> inline
-    void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
-    {
-      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
-
-      // typedefs for parent type and storage type
-      using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
-      using ParentType = std::enable_shared_from_this<BaseType>;
-      using StorageType = typename std::aligned_storage<sizeof(ParentType)>::type;
-
-      // Buffer to store the current enable_shared_from_this data
-      StorageType temp;
-
-      // For some reason GCC can't seem to handle the static_cast directly
-      // in the call to memcpy, thus the need for ptrAsPT
-      auto const ptrAsPT = static_cast<ParentType *>( ptr );
-      std::memcpy( &temp, ptrAsPT, sizeof(ParentType) );
-
-      // let the user perform their initialization
-      ar( _CEREAL_NVP("data", loadWrapper) );
-
-      // restore the state of enable_shared_from_this
-      std::memcpy( ptrAsPT, &temp, sizeof(ParentType) );
-    }
-  }
+  } // end namespace memory_detail
 
   //! Saving std::shared_ptr for non polymorphic types
   template <class Archive, class T> inline

@@ -202,6 +202,53 @@ namespace cereal
         }
       }
 
+      //! Constructs the appropriate shared_ptr for the polymorphic type
+      /*! @param dptr A void pointer to the contents of the shared_ptr to serialize
+          @return A shared_ptr pointing to dptr with an empty deleter */
+      static inline std::shared_ptr<T const> createSharedPtr( void const * dptr )
+      {
+        #ifdef _LIBCPP_VERSION
+        // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
+        return std::shared_ptr<T const>(
+            std::const_pointer_cast<T const>(
+              std::shared_ptr<T>(static_cast<T *>(const_cast<void *>(dptr)), EmptyDeleter<T>())));
+        #else // NOT _LIBCPP_VERSION
+        return std::shared_ptr<T const>(static_cast<T const *>(dptr), EmptyDeleter<T const>());
+        #endif // _LIBCPP_VERSION
+      }
+
+      //! Does the actual work of saving a polymorphic shared_ptr
+      /*! This function will properly create a shared_ptr from the void * that is passed in
+          before passing it to the archive for serialization.
+
+          In addition, this will also preserve the state of any internal enable_shared_from_this mechanisms
+
+          @param ar The archive to serialize to
+          @param dptr Pointer to the actual data held by the shared_ptr */
+      static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::true_type /* has_shared_from_this */ )
+      {
+        ::cereal::memory_detail::EnableSharedHelper<T> helper( static_cast<T *>(const_cast<void *>(dptr)) );
+
+        auto const ptr = createSharedPtr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+
+        helper.restore();
+      }
+
+      //! Does the actual work of saving a polymorphic shared_ptr
+      /*! This function will properly create a shared_ptr from the void * that is passed in
+          before passing it to the archive for serialization.
+
+          This version is for types that do not inherit from std::enable_shared_from_this.
+
+          @param ar The archive to serialize to
+          @param dptr Pointer to the actual data held by the shared_ptr */
+      static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::false_type /* has_shared_from_this */ )
+      {
+        auto const ptr = createSharedPtr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+      }
+
       //! Initialize the binding
       OutputBindingCreator()
       {
@@ -214,16 +261,7 @@ namespace cereal
 
             writeMetadata(ar);
 
-            #ifdef _LIBCPP_VERSION
-            // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
-            std::shared_ptr<T const> const ptr(
-                std::const_pointer_cast<T const>(
-                  std::shared_ptr<T>(static_cast<T *>(const_cast<void *>(dptr)), EmptyDeleter<T>())));
-            #else // NOT _LIBCPP_VERSION
-            std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
-            #endif // _LIBCPP_VERSION
-
-            ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+            savePolymorphicSharedPtr( ar, dptr, typename ::cereal::traits::has_shared_from_this<T>::type() );
           };
 
         serializers.unique_ptr =

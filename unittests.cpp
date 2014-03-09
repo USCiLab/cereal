@@ -1262,6 +1262,8 @@ void test_memory_load_construct()
       oar( o_shared3 );
     }
 
+    o_shared3->shared_from_this(); // tests github issue #68
+
     decltype(o_shared1) i_shared1;
     decltype(o_shared2) i_shared2;
     decltype(o_unique1) i_unique1;
