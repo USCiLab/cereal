@@ -1894,24 +1894,29 @@ void test_string_basic()
 
   for(size_t i=0; i<100; ++i)
   {
-    std::basic_string<char> o_string        = random_basic_string<char>(gen);
+    std::basic_string<char> o_string  = random_basic_string<char>(gen);
+    std::basic_string<char> o_string2 = "";
 
     std::ostringstream os;
     {
       OArchive oar(os);
       oar(o_string);
+      oar(o_string2);
     }
 
     std::basic_string<char> i_string;
+    std::basic_string<char> i_string2;
 
     std::istringstream is(os.str());
     {
       IArchive iar(is);
 
       iar(i_string);
+      iar(i_string2);
     }
 
     BOOST_CHECK_EQUAL(i_string, o_string);
+    BOOST_CHECK_EQUAL(i_string2, o_string2);
   }
 }
 
