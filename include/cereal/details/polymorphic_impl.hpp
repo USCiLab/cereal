@@ -261,7 +261,7 @@ namespace cereal
 
             writeMetadata(ar);
 
-            savePolymorphicSharedPtr( ar, dptr, typename ::cereal::traits::has_shared_from_this<T>::type() );
+            savePolymorphicSharedPtr( ar, dptr, ::cereal::traits::has_shared_from_this<T>::type() );
           };
 
         serializers.unique_ptr =
