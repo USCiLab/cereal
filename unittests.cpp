@@ -300,7 +300,7 @@ void test_pod()
     BOOST_CHECK_EQUAL(i_ulonglong , o_ulonglong);
     BOOST_CHECK_CLOSE(i_float     , o_float,  (float)1e-5);
     BOOST_CHECK_CLOSE(i_double    , o_double, 1e-5);
-    BOOST_CHECK_CLOSE(i_ldouble   , o_ldouble, 1e-5);
+    BOOST_CHECK_CLOSE(i_ldouble   , o_ldouble, 1e-10);
   }
 }
 
