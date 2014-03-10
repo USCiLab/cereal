@@ -219,17 +219,20 @@ void test_pod()
 
   for(size_t i=0; i<100; ++i)
   {
-    bool     const o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
-    uint8_t  const o_uint8  = random_value<uint8_t>(gen);
-    int8_t   const o_int8   = random_value<int8_t>(gen);
-    uint16_t const o_uint16 = random_value<uint16_t>(gen);
-    int16_t  const o_int16  = random_value<int16_t>(gen);
-    uint32_t const o_uint32 = random_value<uint32_t>(gen);
-    int32_t  const o_int32  = random_value<int32_t>(gen);
-    uint64_t const o_uint64 = random_value<uint64_t>(gen);
-    int64_t  const o_int64  = random_value<int64_t>(gen);
-    float    const o_float  = random_value<float>(gen);
-    double   const o_double = random_value<double>(gen);
+    bool               const o_bool      = random_value<uint8_t>(gen) % 2 ? true : false;
+    uint8_t            const o_uint8     = random_value<uint8_t>(gen);
+    int8_t             const o_int8      = random_value<int8_t>(gen);
+    uint16_t           const o_uint16    = random_value<uint16_t>(gen);
+    int16_t            const o_int16     = random_value<int16_t>(gen);
+    uint32_t           const o_uint32    = random_value<uint32_t>(gen);
+    int32_t            const o_int32     = random_value<int32_t>(gen);
+    uint64_t           const o_uint64    = random_value<uint64_t>(gen);
+    int64_t            const o_int64     = random_value<int64_t>(gen);
+    long long          const o_longlong  = random_value<long long>(gen);
+    unsigned long long const o_ulonglong = random_value<unsigned long long>(gen);
+    float              const o_float     = random_value<float>(gen);
+    double             const o_double    = random_value<double>(gen);
+    long double        const o_ldouble   = random_value<long double>(gen);
 
     std::ostringstream os;
     {
@@ -243,21 +246,27 @@ void test_pod()
       oar(o_int32);
       oar(o_uint64);
       oar(o_int64);
+      oar(o_longlong);
+      oar(o_ulonglong);
       oar(o_float);
       oar(o_double);
+      oar(o_ldouble);
     }
 
-    bool     i_bool   = false;
-    uint8_t  i_uint8  = 0;
-    int8_t   i_int8   = 0;
-    uint16_t i_uint16 = 0;
-    int16_t  i_int16  = 0;
-    uint32_t i_uint32 = 0;
-    int32_t  i_int32  = 0;
-    uint64_t i_uint64 = 0;
-    int64_t  i_int64  = 0;
-    float    i_float  = 0;
-    double   i_double = 0;
+    bool     i_bool                 = false;
+    uint8_t  i_uint8                = 0;
+    int8_t   i_int8                 = 0;
+    uint16_t i_uint16               = 0;
+    int16_t  i_int16                = 0;
+    uint32_t i_uint32               = 0;
+    int32_t  i_int32                = 0;
+    uint64_t i_uint64               = 0;
+    int64_t  i_int64                = 0;
+    long long  i_longlong           = 0;
+    unsigned long long  i_ulonglong = 0;
+    float    i_float                = 0;
+    double   i_double               = 0;
+    long double   i_ldouble         = 0;
 
     std::istringstream is(os.str());
     {
@@ -271,21 +280,27 @@ void test_pod()
       iar(i_int32);
       iar(i_uint64);
       iar(i_int64);
+      iar(i_longlong);
+      iar(i_ulonglong);
       iar(i_float);
       iar(i_double);
+      iar(i_ldouble);
     }
 
-    BOOST_CHECK_EQUAL(i_bool   , o_bool);
-    BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
-    BOOST_CHECK_EQUAL(i_int8   , o_int8);
-    BOOST_CHECK_EQUAL(i_uint16 , o_uint16);
-    BOOST_CHECK_EQUAL(i_int16  , o_int16);
-    BOOST_CHECK_EQUAL(i_uint32 , o_uint32);
-    BOOST_CHECK_EQUAL(i_int32  , o_int32);
-    BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
-    BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5);
-    BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
+    BOOST_CHECK_EQUAL(i_bool      , o_bool);
+    BOOST_CHECK_EQUAL(i_uint8     , o_uint8);
+    BOOST_CHECK_EQUAL(i_int8      , o_int8);
+    BOOST_CHECK_EQUAL(i_uint16    , o_uint16);
+    BOOST_CHECK_EQUAL(i_int16     , o_int16);
+    BOOST_CHECK_EQUAL(i_uint32    , o_uint32);
+    BOOST_CHECK_EQUAL(i_int32     , o_int32);
+    BOOST_CHECK_EQUAL(i_uint64    , o_uint64);
+    BOOST_CHECK_EQUAL(i_int64     , o_int64);
+    BOOST_CHECK_EQUAL(i_longlong  , o_longlong);
+    BOOST_CHECK_EQUAL(i_ulonglong , o_ulonglong);
+    BOOST_CHECK_CLOSE(i_float     , o_float,  (float)1e-5);
+    BOOST_CHECK_CLOSE(i_double    , o_double, 1e-5);
+    BOOST_CHECK_CLOSE(i_ldouble   , o_ldouble, 1e-5);
   }
 }
 
