@@ -5,11 +5,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -g -Wextra -Wshadow -pedantic ${CM
 
 include_directories(./include)
 
-add_executable(sandbox sandbox.cpp)
-add_executable(sandbox_json sandbox_json.cpp)
-add_executable(sandbox_rtti sandbox_rtti.cpp)
-add_executable(sandbox_vs sandbox_vs.cpp)
-add_executable(portability_test portability_test.cpp)
+add_subdirectory(sandbox)
 
 find_package(Boost COMPONENTS serialization unit_test_framework)
 if(Boost_FOUND)
@@ -18,5 +14,4 @@ if(Boost_FOUND)
 
   enable_testing()
   add_subdirectory(unittests)
-
 endif(Boost_FOUND)

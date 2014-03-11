@@ -164,16 +164,25 @@ int main( int, char ** argv )
     ar( int_i );
 
     if( int_i != int_o )
+    {
       std::cerr << "in " << int_i << ", out: " << int_o << std::endl;
+      return -1;
+    }
 
     ar( vec_i );
     ar( data_i );
 
     if( vec_i != vec_o )
+    {
       std::cerr << "Input vector did not equal output vector" << std::endl;
+      return -1;
+    }
 
     if( !(*data_i == *data_o) )
+    {
       std::cerr << "Data did not match" << std::endl;
+      return -1;
+    }
   }
   else if( std::string(argv[1]) == "save" )
   {

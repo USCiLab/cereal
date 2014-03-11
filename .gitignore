@@ -30,9 +30,6 @@ test.txt
 boost_serialize
 arr.txt
 performance
-sandbox
-sandbox_json
-sandbox_rtti
 include_renamed
 .ycm_extra_conf.py*
 doc/html

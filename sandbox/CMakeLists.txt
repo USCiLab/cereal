@@ -1,0 +1,5 @@
+add_executable(sandbox sandbox.cpp)
+add_executable(sandbox_json sandbox_json.cpp)
+add_executable(sandbox_rtti sandbox_rtti.cpp)
+add_executable(sandbox_vs sandbox_vs.cpp)
+#add_executable(portability_test portability_test.cpp)
