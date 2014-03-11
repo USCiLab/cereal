@@ -16,9 +16,10 @@ sandbox_rtti: sandbox_rtti.cpp
 sandbox_vs: sandbox_vs.cpp
 	${CXX} sandbox_vs.cpp -o sandbox_vs ${CPPFLAGS}
 
-unittests: unittests.cpp
-	${CXX} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
-	./unittests --show_progress
+unittests: unittests/*.cpp
+	#${CXX} unittests/pod.cpp -o unittests_bin/pod -lboost_unit_test_framework ${CPPFLAGS}
+	#${CXX} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
+	#./unittests --show_progress
 
 performance: performance.cpp
 	${CXX} performance.cpp -o performance -lboost_serialization ${CPPFLAGS} -O3

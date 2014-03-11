@@ -27,7 +27,6 @@
 out.txt
 ptr.txt
 test.txt
-unittests
 boost_serialize
 arr.txt
 performance
@@ -45,3 +44,4 @@ file.json
 out.xml
 cereal_version.out
 xml_ordering.out
+build
