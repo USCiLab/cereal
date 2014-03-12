@@ -5,8 +5,8 @@ compiler:
   - gcc
 
 before_install:
-  # g++4.8.1
-  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  # Always install g++4.8.1
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 
   # clang 3.4
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
@@ -17,8 +17,10 @@ install:
   - sudo apt-get install cmake
   - sudo apt-get install libboost-all-dev
 
- # g++4.8.1
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+ # Always install g++4.8.1
+  - sudo apt-get install -qq g++-4.8
+  - sudo apt-get install -qq g++-4.8-multilib
+  - sudo apt-get install -qq ia32-libs
   - if [ "$CXX" = "g++" ]; then export CMAKE_CXX_COMPILER="g++-4.8"; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
