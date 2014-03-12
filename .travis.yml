@@ -1,7 +1,8 @@
 language: cpp
 
 compiler:
-  - clang
+  # TODO: Clang is currently giving issues
+  #- clang
   - gcc
 
 before_install:
