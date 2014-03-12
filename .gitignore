@@ -27,13 +27,9 @@
 out.txt
 ptr.txt
 test.txt
-unittests
 boost_serialize
 arr.txt
 performance
-sandbox
-sandbox_json
-sandbox_rtti
 include_renamed
 .ycm_extra_conf.py*
 doc/html
@@ -45,3 +41,4 @@ file.json
 out.xml
 cereal_version.out
 xml_ordering.out
+build

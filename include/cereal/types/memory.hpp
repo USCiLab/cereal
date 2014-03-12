@@ -116,7 +116,7 @@ namespace cereal
 
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
-        /*! @param T The raw pointer held by the shared_ptr */
+        /*! @param ptr The raw pointer held by the shared_ptr */
         inline EnableSharedHelper( T * ptr ) :
           itsPtr( static_cast<ParentType *>( ptr ) ),
           itsState()

@@ -203,6 +203,7 @@ namespace cereal
       // When loading we don't need to do this specialization since we catch the types with
       // templates according to their size
 
+    private:
       //! 32 bit long saving to current node
       template <class T> inline
       typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
@@ -213,9 +214,19 @@ namespace cereal
       typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
       saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
 
+    public:
       //! MSVC only long overload to current node
       void saveValue( unsigned long lu ){ saveLong( lu ); };
-#endif
+#else // _MSC_VER
+      //! Saves a long on a 32 bit system
+      template <class T> inline
+      typename std::enable_if<std::is_same<T, long>::value && sizeof(T) == 4, void>::type
+      saveValue(T t){ saveValue( static_cast<std::int32_t>( t ) ); }
+      //! Saves an unsigned long on a 32 bit system
+      template <class T> inline
+      typename std::enable_if<std::is_same<T, unsigned long>::value && sizeof(T) == 4, void>::type
+      saveValue(T t){ saveValue( static_cast<std::uint32_t>( t ) ); }
+#endif // _MSC_VER
 
       //! Save exotic arithmetic types as binary to current node
       template<class T> inline

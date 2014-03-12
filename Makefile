@@ -16,16 +16,17 @@ sandbox_rtti: sandbox_rtti.cpp
 sandbox_vs: sandbox_vs.cpp
 	${CXX} sandbox_vs.cpp -o sandbox_vs ${CPPFLAGS}
 
-unittests: unittests.cpp
-	${CXX} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
-	./unittests --show_progress
+unittests: unittests/*.cpp
+	#${CXX} unittests/pod.cpp -o unittests_bin/pod -lboost_unit_test_framework ${CPPFLAGS}
+	#${CXX} unittests.cpp -o unittests -lboost_unit_test_framework ${CPPFLAGS}
+	#./unittests --show_progress
 
 performance: performance.cpp
 	${CXX} performance.cpp -o performance -lboost_serialization ${CPPFLAGS} -O3
 
-portability: portability_test.cpp
-	${CXX} portability_test.cpp -o portability64 ${CPPFLAGS}
-	${CXX} portability_test.cpp -o portability32 ${CPPFLAGS} -m32
+portability: unittests/portability_test.cpp
+	${CXX} unittests/portability_test.cpp -o portability64 ${CPPFLAGS}
+	${CXX} unittests/portability_test.cpp -o portability32 ${CPPFLAGS} -m32
 	./portability64 save 64
 	./portability32 load 32
 	./portability32 save 32
