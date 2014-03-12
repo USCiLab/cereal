@@ -51,8 +51,6 @@
 #include <limits>
 #include <random>
 
-#include <boost/test/unit_test.hpp>
-
 namespace boost
 {
   template<class F, class S>
