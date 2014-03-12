@@ -350,7 +350,7 @@ namespace cereal
   /*! This performs specialization for the specific type for all types of archives.
       This macro should be placed at the global namespace.
 
-      @begincode{cpp}
+      @code{cpp}
       struct MyType {};
       CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( MyType, cereal::specialization::member_load_save );
       @endcode
@@ -364,7 +364,7 @@ namespace cereal
   /*! This performs specialization for the specific type for a single type of archive.
       This macro should be placed at the global namespace.
 
-      @begincode{cpp}
+      @code{cpp}
       struct MyType {};
       CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
       @endcode
