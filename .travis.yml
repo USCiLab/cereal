@@ -20,7 +20,6 @@ install:
  # Always install g++4.8.1
   - sudo apt-get install -qq g++-4.8
   - sudo apt-get install -qq g++-4.8-multilib
-  - sudo apt-get install -qq ia32-libs
   - if [ "$CXX" = "g++" ]; then export CMAKE_CXX_COMPILER="g++-4.8"; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
