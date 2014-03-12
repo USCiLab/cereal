@@ -1,0 +1,21 @@
+language: cpp
+
+install: 
+  - sudo apt-get install cmake
+  - sudo apt-get install libboost-all-dev
+
+compiler:
+  - clang
+
+script:
+  - mkdir build 
+  - cd build 
+  - cmake .. 
+  - make
+
+after_script:
+  - ctest .
+
+branches:
+  only:
+    - develop
