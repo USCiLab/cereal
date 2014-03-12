@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sandbox_rtti.cpp">
+    <ClCompile Include="..\..\sandbox\sandbox_rtti.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

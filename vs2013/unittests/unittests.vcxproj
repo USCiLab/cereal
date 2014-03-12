@@ -18,6 +18,41 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\unittests\array.cpp" />
+    <ClCompile Include="..\..\unittests\basic_string.cpp" />
+    <ClCompile Include="..\..\unittests\bitset.cpp" />
+    <ClCompile Include="..\..\unittests\chrono.cpp" />
+    <ClCompile Include="..\..\unittests\complex.cpp" />
+    <ClCompile Include="..\..\unittests\deque.cpp" />
+    <ClCompile Include="..\..\unittests\forward_list.cpp" />
+    <ClCompile Include="..\..\unittests\list.cpp" />
+    <ClCompile Include="..\..\unittests\load_construct.cpp" />
+    <ClCompile Include="..\..\unittests\map.cpp" />
+    <ClCompile Include="..\..\unittests\memory.cpp" />
+    <ClCompile Include="..\..\unittests\memory_cycles.cpp" />
+    <ClCompile Include="..\..\unittests\multimap.cpp" />
+    <ClCompile Include="..\..\unittests\multiset.cpp" />
+    <ClCompile Include="..\..\unittests\pair.cpp" />
+    <ClCompile Include="..\..\unittests\pod.cpp" />
+    <ClCompile Include="..\..\unittests\polymorphic.cpp" />
+    <ClCompile Include="..\..\unittests\portable_binary_archive.cpp" />
+    <ClCompile Include="..\..\unittests\priority_queue.cpp" />
+    <ClCompile Include="..\..\unittests\queue.cpp" />
+    <ClCompile Include="..\..\unittests\set.cpp" />
+    <ClCompile Include="..\..\unittests\stack.cpp" />
+    <ClCompile Include="..\..\unittests\structs.cpp" />
+    <ClCompile Include="..\..\unittests\structs_specialized.cpp" />
+    <ClCompile Include="..\..\unittests\tuple.cpp" />
+    <ClCompile Include="..\..\unittests\unordered_loads.cpp" />
+    <ClCompile Include="..\..\unittests\unordered_map.cpp" />
+    <ClCompile Include="..\..\unittests\unordered_multimap.cpp" />
+    <ClCompile Include="..\..\unittests\unordered_multiset.cpp" />
+    <ClCompile Include="..\..\unittests\unordered_set.cpp" />
+    <ClCompile Include="..\..\unittests\vector.cpp" />
+    <ClCompile Include="..\..\unittests\versioning.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D447E13A-97A4-4907-9F61-A9BCCDB91EF7}</ProjectGuid>
     <RootNamespace>unittests</RootNamespace>
@@ -66,19 +101,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\include;$(SolutionDir)\..\unittests;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\include;$(SolutionDir)\..\unittests;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Boost\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\include;$(SolutionDir)\..\unittests;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\include;$(SolutionDir)\..\unittests;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Boost\lib\x64;$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
@@ -106,6 +141,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,6 +158,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,11 +175,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\unittests.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

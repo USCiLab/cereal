@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sandbox_json.cpp">
+    <ClCompile Include="..\..\sandbox\sandbox_json.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
