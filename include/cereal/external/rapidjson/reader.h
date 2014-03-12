@@ -719,13 +719,13 @@ private:
 	void ParseValue(Stream& stream, Handler& handler) {
 		switch (stream.Peek()) {
 			case 'n': ParseNaNNull_  <parseFlags>(stream, handler); break;
-			case 'i': ParseInfinity <parseFlags>(stream, handler); break;
-			case 't': ParseTrue     <parseFlags>(stream, handler); break;
-			case 'f': ParseFalse    <parseFlags>(stream, handler); break;
-			case '"': ParseString   <parseFlags>(stream, handler); break;
-			case '{': ParseObject   <parseFlags>(stream, handler); break;
-			case '[': ParseArray    <parseFlags>(stream, handler); break;
-			default : ParseNumber   <parseFlags>(stream, handler);
+			case 'i': ParseInfinity  <parseFlags>(stream, handler); break;
+			case 't': ParseTrue      <parseFlags>(stream, handler); break;
+			case 'f': ParseFalse     <parseFlags>(stream, handler); break;
+			case '"': ParseString    <parseFlags>(stream, handler); break;
+			case '{': ParseObject    <parseFlags>(stream, handler); break;
+			case '[': ParseArray     <parseFlags>(stream, handler); break;
+			default : ParseNumber    <parseFlags>(stream, handler);
 		}
 	}
 

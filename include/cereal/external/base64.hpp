@@ -34,7 +34,6 @@ namespace base64
     "abcdefghijklmnopqrstuvwxyz"
     "0123456789+/";
 
-
   static inline bool is_base64(unsigned char c) {
     return (isalnum(c) || (c == '+') || (c == '/'));
   }
