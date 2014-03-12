@@ -82,11 +82,13 @@ struct PolyDerivedLA : public PolyLA
   PolyDerivedLA( int xx ) : x( xx ) { }
 
   int x;
+  std::vector<std::shared_ptr<PolyLA>> vec;
 
   template <class Archive>
   void serialize( Archive & ar )
   {
     ar( x );
+    ar( vec );
   }
 
   template <class Archive>
@@ -95,19 +97,30 @@ struct PolyDerivedLA : public PolyLA
     int xx;
     ar( xx );
     construct( xx );
+    ar( construct->vec );
   }
 
   void foo() {}
 
   bool operator==( PolyDerivedLA const & other ) const
   {
-    return x == other.x;
+    if( x != other.x )
+      return false;
+    if( vec.size() != other.vec.size() )
+      return false;
+    for( size_t i = 0; i < vec.size(); ++i )
+      if( !(*std::dynamic_pointer_cast<PolyDerivedLA>(vec[i]) == *std::dynamic_pointer_cast<PolyDerivedLA>(other.vec[i])) )
+        return false;
+
+    return true;
   }
 };
 
 std::ostream& operator<<(std::ostream& os, PolyDerivedLA const & s)
 {
-    os << "[x: " << s.x << "]";
+    os << "[x: " << s.x << "] ";
+    for( auto const & v : s.vec )
+      os << " child: " << (*std::dynamic_pointer_cast<PolyDerivedLA>(v));
     return os;
 }
 
@@ -136,7 +149,10 @@ void test_polymorphic()
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
     std::weak_ptr<PolyBase>   o_weak = o_shared;
     std::unique_ptr<PolyBase> o_unique( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
-    std::shared_ptr<PolyLA>   o_sharedLA = std::make_shared<PolyDerivedLA>( rngI() );
+
+    auto pda = std::make_shared<PolyDerivedLA>( rngI() );
+    pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
+    std::shared_ptr<PolyLA>   o_sharedLA = pda;
 
     std::ostringstream os;
     {
