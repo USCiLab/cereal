@@ -26,7 +26,7 @@ if(DOXYGEN_FOUND)
   set(DOC_DEST ${CMAKE_CURRENT_SOURCE_DIR}/assets/doxygen)
   set(DOC_SRC ${CMAKE_CURRENT_BINARY_DIR}/doc/html)
   add_custom_target(update-doc 
-    COMMAND git checkout gh-pages && rm -rf ${DOC_DEST} && mkdir ${DOC_DEST} && cp -r ${DOC_SRC}/* ${DOC_DEST}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/updatedoc.sh
     DEPENDS doc
     COMMENT "Copying documentation to gh-pages branch" VERBATIM
     )
