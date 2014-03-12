@@ -70,6 +70,10 @@ int main()
 
 cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-Clause).
 
+## cereal build status
+
+* develop : [![Build Status](https://travis-ci.org/USCiLab/cereal.png?branch=develop)](https://travis-ci.org/USCiLab/cereal)
+
 ---
 
 Were you looking for the Haskell cereal?  Go <a href="https://github.com/GaloisInc/cereal">here</a>.
