@@ -13,7 +13,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 
   add_test(NAME portability_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_portability_test.sh)
 
-endif(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+endif()
 
 # Build all of the non-special tests and link against the boost unit test framework
 foreach(TEST_SOURCE ${TESTS})
@@ -31,7 +31,18 @@ foreach(TEST_SOURCE ${TESTS})
     target_link_libraries(${TEST_TARGET} ${Boost_LIBRARIES})
     add_test("${TEST_TARGET}" "${TEST_TARGET}")
 
-  endif(IS_SPECIAL_TEST EQUAL -1)
+    # TODO: This won't work right now, because we would need a 32-bit boost
+    ## If we are on a 64-bit machine, create an extra 32-bit version of the test
+    #if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+    #  add_executable(${TEST_TARGET}_32 ${TEST_SOURCE})
+    #  set_target_properties(${TEST_TARGET}_32 PROPERTIES 
+    #    COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${TEST_TARGET}"
+    #    COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+    #  target_link_libraries(${TEST_TARGET}_32 ${Boost_LIBRARIES})
+    #  add_test("${TEST_TARGET}_32" "${TEST_TARGET}_32")
+    #endif()
+
+  endif()
 
 endforeach()
 
