@@ -248,9 +248,12 @@ struct NoDefaultCtor
 private:
   NoDefaultCtor() {};
   int z;
+  NoDefaultCtor( int x, bool ) :y(x) {}
 public:
   NoDefaultCtor(int x) : y(x)
   { }
+
+  friend class cereal::access;
 
   int y;
 
@@ -265,7 +268,7 @@ public:
   {
     int y;
     ar( y );
-    construct( y );
+    construct( y, true );
     construct->z = 33;
     construct.ptr()->z = 33;
   }

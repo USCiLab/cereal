@@ -37,6 +37,7 @@
 
 namespace cereal
 {
+  // ######################################################################
   //! A class that allows cereal to load smart pointers to types that have no default constructor
   /*! If your class does not have a default constructor, cereal will not be able
       to load any smart pointers to it unless you overload LoadAndConstruct
@@ -159,14 +160,8 @@ namespace cereal
           @param args The arguments to the constructor for T
           @throw Exception If called more than once */
       template <class ... Args>
-      void operator()( Args && ... args )
-      {
-        if( itsValid )
-          throw Exception("Attempting to construct an already initialized object");
-
-        new (itsPtr) T( std::forward<Args>( args )... );
-        itsValid = true;
-      }
+      void operator()( Args && ... args );
+      // implementation deferred due to reliance on cereal::access
 
       //! Get a reference to the initialized underlying object
       /*! This must be called after the object has been initialized.
@@ -205,6 +200,7 @@ namespace cereal
       bool itsValid;
   };
 
+  // ######################################################################
   //! A class that can be made a friend to give cereal access to non public functions
   /*! If you desire non-public serialization functions within a class, cereal can only
       access these if you declare cereal::access a friend.
@@ -266,6 +262,13 @@ namespace cereal
       template <class T> inline
       static auto shared_from_this(T & t) -> decltype(t.shared_from_this());
 
+      // for placement new
+      template <class T, class ... Args> inline
+      static void construct( T *& ptr, Args && ... args )
+      {
+        new (ptr) T( std::forward<Args>( args )... );
+      }
+
       template <class T>
         static std::false_type load_and_construct(...)
         { return std::false_type(); }
@@ -277,6 +280,7 @@ namespace cereal
         }
   };
 
+  // ######################################################################
   //! A specifier used in conjunction with cereal::specialize to disambiguate
   //! serialization in special cases
   /*! @relates specialize
@@ -373,6 +377,18 @@ namespace cereal
       @ingroup Access */
   #define CEREAL_SPECIALIZE_FOR_ARCHIVE( Archive, Type, Specialization )               \
   namespace cereal { template <> struct specialize<Archive, Type, Specialization> {}; }
+
+  // ######################################################################
+  // Deferred Implementation, see construct for more information
+  template <class T> template <class ... Args> inline
+  void construct<T>::operator()( Args && ... args )
+  {
+    if( itsValid )
+      throw Exception("Attempting to construct an already initialized object");
+
+    ::cereal::access::construct( itsPtr, std::forward<Args>( args )... );
+    itsValid = true;
+  }
 } // namespace cereal
 
 #endif // CEREAL_ACCESS_HPP_
