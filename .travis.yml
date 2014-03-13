@@ -18,7 +18,10 @@ install:
   - sudo apt-get install cmake
   - sudo apt-get install libboost-all-dev
 
- # Always install g++4.8.1
+  # Always install valgrind
+  - sudo apt-get install valgrind
+
+  # Always install g++4.8.1
   - sudo apt-get install -qq g++-4.8
   - sudo apt-get install -qq g++-4.8-multilib
   - if [ "$CXX" = "g++" ]; then export CMAKE_CXX_COMPILER="g++-4.8"; fi

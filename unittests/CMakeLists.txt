@@ -46,3 +46,6 @@ foreach(TEST_SOURCE ${TESTS})
 
 endforeach()
 
+# Add the valgrind target
+add_custom_target(valgrind
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_valgrind.sh)
