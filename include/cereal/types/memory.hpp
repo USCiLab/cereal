@@ -99,15 +99,20 @@ namespace cereal
 
         @code{.cpp}
         T * myActualPointer;
-        EnableSharedHelper<T> helper( myActualPointer ); // save the state
-        std::shared_ptr<T> myPtr( myActualPointer ); // modifies the internal weak_ptr
-        helper.restore(); // good as new!
+        {
+          EnableSharedStateHelper<T> helper( myActualPointer ); // save the state
+          std::shared_ptr<T> myPtr( myActualPointer ); // modifies the internal weak_ptr
+          // helper restores state when it goes out of scope
+        }
         @endcode
+
+        This is designed to be used in an RAII fashion - it will save state on construction
+        and restore it on destruction.
 
         @tparam T Type pointed to by shared_ptr
         @internal */
     template <class T>
-    class EnableSharedHelper
+    class EnableSharedStateHelper
     {
       // typedefs for parent type and storage type
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
@@ -117,7 +122,7 @@ namespace cereal
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
         /*! @param ptr The raw pointer held by the shared_ptr */
-        inline EnableSharedHelper( T * ptr ) :
+        inline EnableSharedStateHelper( T * ptr ) :
           itsPtr( static_cast<ParentType *>( ptr ) ),
           itsState()
         {
@@ -125,7 +130,7 @@ namespace cereal
         }
 
         //! Restores the state of the held pointer
-        inline void restore()
+        inline ~EnableSharedStateHelper()
         {
           std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
         }
@@ -133,7 +138,7 @@ namespace cereal
       private:
         ParentType * itsPtr;
         StorageType itsState;
-    }; // end EnableSharedHelper
+    }; // end EnableSharedStateHelper
 
     //! Performs loading and construction for a shared pointer that is derived from
     //! std::enable_shared_from_this
@@ -144,13 +149,10 @@ namespace cereal
     void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
     {
       memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
-      memory_detail::EnableSharedHelper<T> helper( ptr );
+      memory_detail::EnableSharedStateHelper<T> state( ptr );
 
       // let the user perform their initialization
       ar( _CEREAL_NVP("data", loadWrapper) );
-
-      // restore the state of enable_shared_from_this
-      helper.restore();
     }
 
     //! Performs loading and construction for a shared pointer that is NOT derived from

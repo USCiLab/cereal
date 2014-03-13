@@ -202,20 +202,44 @@ namespace cereal
         }
       }
 
-      //! Constructs the appropriate shared_ptr for the polymorphic type
-      /*! @param dptr A void pointer to the contents of the shared_ptr to serialize
-          @return A shared_ptr pointing to dptr with an empty deleter */
-      static inline std::shared_ptr<T const> createSharedPtr( void const * dptr )
+      //! Holds a properly typed shared_ptr to the polymorphic type
+      class PolymorphicSharedPointerWrapper
       {
-        #ifdef _LIBCPP_VERSION
-        // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
-        return std::shared_ptr<T const>(
-            std::const_pointer_cast<T const>(
-              std::shared_ptr<T>(static_cast<T *>(const_cast<void *>(dptr)), EmptyDeleter<T>())));
-        #else // NOT _LIBCPP_VERSION
-        return std::shared_ptr<T const>(static_cast<T const *>(dptr), EmptyDeleter<T const>());
-        #endif // _LIBCPP_VERSION
-      }
+        public:
+          /*! Wrap a raw polymorphic pointer in a shared_ptr to its true type
+
+              The wrapped pointer will not be responsible for ownership of the held pointer
+              so it will not attempt to destroy it; instead the refcount of the wrapped
+              pointer will be tied to a fake 'ownership pointer' that will do nothing
+              when it ultimately goes out of scope.
+
+              The main reason for doing this, other than not to destroy the true object
+              with our wrapper pointer, is to avoid meddling with the internal reference
+              count in a polymorphic type that inherits from std::enable_shared_from_this.
+
+              @param dptr A void pointer to the contents of the shared_ptr to serialize */
+          PolymorphicSharedPointerWrapper( void const * dptr ) : refCount()
+          {
+            #ifdef _LIBCPP_VERSION
+            // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
+            wrappedPtr = std::shared_ptr<T const>(
+                std::const_pointer_cast<T const>(
+                  std::shared_ptr<T>( refCount, static_cast<T *>(const_cast<void *>(dptr) ))));
+            #else // NOT _LIBCPP_VERSION
+            wrappedPtr = std::shared_ptr<T const>( refCount, static_cast<T const *>(dptr) );
+            #endif // _LIBCPP_VERSION
+          }
+
+          //! Get the wrapped shared_ptr */
+          inline std::shared_ptr<T const> const & operator()() const
+          {
+            return wrappedPtr;
+          }
+
+        private:
+          std::shared_ptr<void> refCount;      //!< The ownership pointer
+          std::shared_ptr<T const> wrappedPtr; //!< The wrapped pointer
+      };
 
       //! Does the actual work of saving a polymorphic shared_ptr
       /*! This function will properly create a shared_ptr from the void * that is passed in
@@ -227,12 +251,9 @@ namespace cereal
           @param dptr Pointer to the actual data held by the shared_ptr */
       static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::true_type /* has_shared_from_this */ )
       {
-        ::cereal::memory_detail::EnableSharedHelper<T> helper( static_cast<T *>(const_cast<void *>(dptr)) );
-
-        auto const ptr = createSharedPtr( dptr );
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
-
-        helper.restore();
+        ::cereal::memory_detail::EnableSharedStateHelper<T> state( static_cast<T *>(const_cast<void *>(dptr)) );
+        PolymorphicSharedPointerWrapper psptr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
       }
 
       //! Does the actual work of saving a polymorphic shared_ptr
@@ -245,8 +266,8 @@ namespace cereal
           @param dptr Pointer to the actual data held by the shared_ptr */
       static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::false_type /* has_shared_from_this */ )
       {
-        auto const ptr = createSharedPtr( dptr );
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+        PolymorphicSharedPointerWrapper psptr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
       }
 
       //! Initialize the binding
