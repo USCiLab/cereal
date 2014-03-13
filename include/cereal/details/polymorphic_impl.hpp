@@ -231,10 +231,7 @@ namespace cereal
           }
 
           //! Get the wrapped shared_ptr */
-          inline std::shared_ptr<T const> const & operator()() const
-          {
-            return wrappedPtr;
-          }
+          inline std::shared_ptr<T const> const & operator()() const { return wrappedPtr; }
 
         private:
           std::shared_ptr<void> refCount;      //!< The ownership pointer
