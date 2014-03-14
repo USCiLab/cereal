@@ -345,7 +345,7 @@ int main()
 
   {
     std::ofstream os("file.json");
-    cereal::JSONOutputArchive oar( os, 5 );
+    cereal::JSONOutputArchive oar( os );
 
     //auto f = std::make_shared<Fixture>();
     //auto f2 = f;
