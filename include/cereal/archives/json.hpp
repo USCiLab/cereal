@@ -97,16 +97,55 @@ namespace cereal
           Common use cases for directly interacting with an JSONOutputArchive */
       //! @{
 
+      //! A class containing various advanced options for the JSON archive
+      class Options
+      {
+        public:
+          //! Default options
+          static Options Default(){ return {}; }
+
+          //! Default options with no indentation
+          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
+
+          //! The character to use for indenting
+          enum class IndentChar : char
+          {
+            space = ' ',
+            tab = '\t',
+            newline = '\n',
+            carriage_return = '\r'
+          };
+
+          //! Specify specific options for the JSONOutputArchive
+          /*! @param precision The precision used for floating point numbers
+              @param indentChar The type of character to indent with
+              @param indentLength The number of indentChar to use for indentation
+                             (0 corresponds to no indentation) */
+          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+                            IndentChar indentChar = IndentChar::space,
+                            unsigned int indentLength = 4 ) :
+            itsPrecision( precision ),
+            itsIndentChar( static_cast<char>(indentChar) ),
+            itsIndentLength( indentLength ) { }
+
+        private:
+          friend class JSONOutputArchive;
+          int itsPrecision;
+          char itsIndentChar;
+          unsigned int itsIndentLength;
+      };
+
       //! Construct, outputting to the provided stream
-      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout!
-          @param precision The precision for floating point output */
-      JSONOutputArchive(std::ostream & stream, int precision = std::numeric_limits<double>::max_digits10) :
+      /*! @param stream The stream to output to.
+          @param options The JSON specific options to use.  See the Options struct
+                         for the values of default parameters */
+      JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream, precision),
+        itsWriter(itsWriteStream, options.itsPrecision),
         itsNextName(nullptr)
       {
+        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }

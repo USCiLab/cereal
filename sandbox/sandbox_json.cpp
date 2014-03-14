@@ -380,7 +380,8 @@ int main()
   std::stringstream oos;
   {
     cereal::JSONOutputArchive ar(oos);
-    cereal::JSONOutputArchive ar2(std::cout);
+    cereal::JSONOutputArchive ar2(std::cout,
+        cereal::JSONOutputArchive::Options(2, cereal::JSONOutputArchive::Options::IndentChar::tab, 4) );
 
     ar( cereal::make_nvp( "1", 1 ),
         cereal::make_nvp( "2", 2 ),

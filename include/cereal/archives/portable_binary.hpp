@@ -67,7 +67,7 @@ namespace cereal
       across machines, is portable over different architectures.
 
       When using a binary archive and a file stream, you must use the
-      std::ios::binary format flag to avoid having your data altered 
+      std::ios::binary format flag to avoid having your data altered
       inadvertently.
 
       \warning This archive has not been thoroughly tested across different architectures.
@@ -84,9 +84,9 @@ namespace cereal
       PortableBinaryOutputArchive(std::ostream & stream) :
         OutputArchive<PortableBinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
-    {
-      this->operator()( portable_binary_detail::is_little_endian() );
-    }
+      {
+        this->operator()( portable_binary_detail::is_little_endian() );
+      }
 
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, std::size_t size )
@@ -119,7 +119,7 @@ namespace cereal
       the responsibility of the user.
 
       When using a binary archive and a file stream, you must use the
-      std::ios::binary format flag to avoid having your data altered 
+      std::ios::binary format flag to avoid having your data altered
       inadvertently.
 
       \warning This archive has not been thoroughly tested across different architectures.

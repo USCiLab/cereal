@@ -94,16 +94,44 @@ namespace cereal
           Common use cases for directly interacting with an XMLOutputArchive */
       //! @{
 
+      //! A class containing various advanced options for the XML archive
+      class Options
+      {
+        public:
+          //! Default options
+          static Options Default(){ return {}; }
+
+          //! Default options with no indentation
+          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
+
+          //! Specify specific options for the XMLOutputArchive
+          /*! @param precision The precision used for floating point numbers
+              @param indent Whether to indent each line of XML
+              @param outputType Whether to output the type of each serialized object as an attribute */
+          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+                            bool indent = true,
+                            bool outputType = false ) :
+            itsPrecision( precision ),
+            itsIndent( indent ),
+            itsOutputType( outputType ) { }
+
+        private:
+          friend class XMLOutputArchive;
+          int itsPrecision;
+          bool itsIndent;
+          bool itsOutputType;
+      };
+
       //! Construct, outputting to the provided stream upon destruction
-      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout!  Note that since this archive builds a tree in memory,
-                        it will not output to the stream until its destructor is called.
-          @param precision The precision for floating point output.
-          @param outputType Controls whether type information will be printed in attributes */
-      XMLOutputArchive(std::ostream & stream, size_t precision = std::numeric_limits<double>::max_digits10, bool outputType = false ) :
+      /*! @param stream  The stream to output to.  Note that XML is only guaranteed to flush
+                         its output to the stream upon destruction.
+          @param options The XML specific options to use.  See the Options struct
+                         for the values of default parameters */
+      XMLOutputArchive( std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
-        itsOutputType( outputType )
+        itsOutputType( options.itsOutputType ),
+        itsIndent( options.itsIndent )
       {
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
@@ -118,15 +146,16 @@ namespace cereal
 
         // set attributes on the streams
         itsStream << std::boolalpha;
-        itsStream.precision( precision );
+        itsStream.precision( options.itsPrecision );
         itsOS << std::boolalpha;
-        itsOS.precision( precision );
+        itsOS.precision( options.itsPrecision );
       }
 
       //! Destructor, flushes the XML
       ~XMLOutputArchive()
       {
-        itsStream << itsXML;
+        const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
+        rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
       }
 
@@ -280,6 +309,7 @@ namespace cereal
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
+      bool itsIndent;                  //!< Controls whether indenting is used
   }; // XMLOutputArchive
 
   // ######################################################################
