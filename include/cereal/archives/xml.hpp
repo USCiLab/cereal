@@ -99,7 +99,7 @@ namespace cereal
       {
         public:
           //! Default options
-          static Options Default(){ return {}; }
+          static Options Default(){ return Options(); }
 
           //! Default options with no indentation
           static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
