@@ -39,7 +39,7 @@ void test_vector()
     for(auto & elem : o_podvector)
       elem = random_value<int>(gen);
 
-    std::vector<bool> o_boolvector; o_boolvector.reserve(100);
+    std::vector<bool> o_boolvector; o_boolvector.resize(100);
     for( size_t i = 0; i < 100; ++i )
       o_boolvector[i] = (random_value<int>(gen) % 2) == 0;
 

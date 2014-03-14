@@ -92,7 +92,7 @@ namespace cereal
       ar( static_cast<bool>( *it ) );
   }
 
-  //! Serialization for non-arithmetic (not bool) vector types
+  //! Serialization for bool vector types
   template <class Archive, class A> inline
   void load( Archive & ar, std::vector<bool, A> & vector )
   {
