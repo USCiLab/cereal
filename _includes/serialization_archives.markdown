@@ -266,6 +266,9 @@ into variable sized containers in a JSON file by inserting elements into an arra
 into objects.  You can still hand edit values in objects, but you cannot append or
 deduct data from them.
 
+<span class="label label-info">Serializing numeric types with JSON:</span>
+All numeric types are serialized as numbers except for large types such as long long, unsigned long long, and long double, which are serialized as strings.  In JSON, numbers will not have surrounding quotes, while the string representations of the larger types will be surrounded with double quotes.
+
 The JSON serialization is powered by [rapidjson](http://code.google.com/p/rapidjson/).
 
 ### Out of order loading
