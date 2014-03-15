@@ -222,6 +222,7 @@ namespace cereal
   class access
   {
     public:
+      // ####### Standard Serialization ########################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
       { t.serialize(ar); }
@@ -238,26 +239,24 @@ namespace cereal
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
 
-      // versioned member serialize
+      // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
       { t.serialize(ar, version); }
 
-      // versioned member save
       template<class Archive, class T> inline
       static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
       { t.save(ar, version); }
 
-      // versioned member save (non const)
       template<class Archive, class T> inline
       static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
       { t.save(ar, version); }
 
-      // versioned member load
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
       { t.load(ar, version); }
 
+      // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
       template <class T> inline
       static auto shared_from_this(T & t) -> decltype(t.shared_from_this());
@@ -269,16 +268,16 @@ namespace cereal
         new (ptr) T( std::forward<Args>( args )... );
       }
 
-      template <class T>
-        static std::false_type load_and_construct(...)
-        { return std::false_type(); }
+      template <class T> inline
+      static std::false_type load_and_construct(...)
+      { return std::false_type(); }
 
       template<class T, class Archive> inline
-        static auto load_and_construct(Archive & ar, ::cereal::construct<T> & construct) -> decltype(T::load_and_construct(ar, construct))
-        {
-          T::load_and_construct( ar, construct );
-        }
-  };
+      static auto load_and_construct(Archive & ar, ::cereal::construct<T> & construct) -> decltype(T::load_and_construct(ar, construct))
+      {
+        T::load_and_construct( ar, construct );
+      }
+  }; // end class access
 
   // ######################################################################
   //! A specifier used in conjunction with cereal::specialize to disambiguate
