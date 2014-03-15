@@ -381,7 +381,7 @@ int main()
   {
     cereal::JSONOutputArchive ar(oos);
     cereal::JSONOutputArchive ar2(std::cout,
-        cereal::JSONOutputArchive::Options(2, cereal::JSONOutputArchive::Options::IndentChar::tab, 4) );
+        cereal::JSONOutputArchive::Options(2, cereal::JSONOutputArchive::Options::IndentChar::space, 2) );
 
     ar( cereal::make_nvp( "1", 1 ),
         cereal::make_nvp( "2", 2 ),
@@ -411,6 +411,18 @@ int main()
 
     ar2 & cereal::make_nvp("usingop&", oo ) & 6;
     ar2 << 5 << 4 << 3;
+
+    long double ld = std::numeric_limits<long double>::max();
+    long long ll = std::numeric_limits<long long>::max();
+    unsigned long long ull = std::numeric_limits<unsigned long long>::max();
+
+    ar( CEREAL_NVP(ld),
+        CEREAL_NVP(ll),
+        CEREAL_NVP(ull) );
+
+    ar2( CEREAL_NVP(ld),
+         CEREAL_NVP(ll),
+         CEREAL_NVP(ull) );
   }
 
   {
@@ -445,6 +457,18 @@ int main()
     int aa, a, b, c;
     ar & aa & a & b & c;
     std::cout << aa << " " << a << " " << b << " " << c << std::endl;
+
+    long double ld;
+    long long ll;
+    unsigned long long ull;
+
+    ar( CEREAL_NVP(ld),
+        CEREAL_NVP(ll),
+        CEREAL_NVP(ull) );
+
+    std::cout << (ld  == std::numeric_limits<long double>::max()) << std::endl;
+    std::cout << (ll  == std::numeric_limits<long long>::max()) << std::endl;
+    std::cout << (ull == std::numeric_limits<unsigned long long>::max()) << std::endl;
   }
 
   return 0;

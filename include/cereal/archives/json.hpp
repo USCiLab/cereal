@@ -235,46 +235,60 @@ namespace cereal
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
 
-#ifdef _MSC_VER
-      // Visual Studio has problems disambiguating the above for unsigned long, so we provide an explicit
-      // overload for long and serialize it as its size necessitates
-      //
-      // When loading we don't need to do this specialization since we catch the types with
-      // templates according to their size
-
     private:
-      //! 32 bit long saving to current node
+      // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
+      // special overloads to handle these cases.
+
+      //! 32 bit signed long saving to current node
       template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t), void>::type
+      typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
+      saveLong(T l){ saveValue( static_cast<std::int32_t>( l ) ); }
+
+      //! non 32 bit signed long saving to current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) != sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
+      saveLong(T l){ saveValue( static_cast<std::int64_t>( l ) ); }
+
+      //! 32 bit unsigned long saving to current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
       saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
 
-      //! non 32 bit long saving to current node
+      //! non 32 bit unsigned long saving to current node
       template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t), void>::type
+      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
       saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
 
     public:
+#ifdef _MSC_VER
       //! MSVC only long overload to current node
       void saveValue( unsigned long lu ){ saveLong( lu ); };
 #else // _MSC_VER
-      //! Saves a long on a 32 bit system
+      //! Serialize a long if it would not be caught otherwise
       template <class T> inline
-      typename std::enable_if<std::is_same<T, long>::value && sizeof(T) == 4, void>::type
-      saveValue(T t){ saveValue( static_cast<std::int32_t>( t ) ); }
-      //! Saves an unsigned long on a 32 bit system
+      typename std::enable_if<std::is_same<T, long>::value &&
+                              !std::is_same<T, std::int32_t>::value &&
+                              !std::is_same<T, std::int64_t>::value, void>::type
+      saveValue( T t ){ saveLong( t ); }
+
+      //! Serialize an unsigned long if it would not be caught otherwise
       template <class T> inline
-      typename std::enable_if<std::is_same<T, unsigned long>::value && sizeof(T) == 4, void>::type
-      saveValue(T t){ saveValue( static_cast<std::uint32_t>( t ) ); }
+      typename std::enable_if<std::is_same<T, unsigned long>::value &&
+                              !std::is_same<T, std::uint32_t>::value &&
+                              !std::is_same<T, std::uint64_t>::value, void>::type
+      saveValue( T t ){ saveLong( t ); }
 #endif // _MSC_VER
 
-      //! Save exotic arithmetic types as binary to current node
+      //! Save exotic arithmetic as strings to current node
+      /*! Handles long long (if distinct from other types), unsigned long (if distinct), and long double */
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       saveValue(T const & t)
       {
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( &t ), sizeof(T) );
-        saveValue( base64string );
+        std::stringstream ss; ss.precision( std::numeric_limits<long double>::max_digits10 );
+        ss << t;
+        saveValue( ss.str() );
       }
 
       //! Write the name of the upcoming node and prepare object/array state
@@ -586,8 +600,16 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
+    private:
+      //! Convert a string to a long long
+      void stringToNumber( std::string const & str, long long & val ) { val = std::stoll( str ); }
+      //! Convert a string to an unsigned long long
+      void stringToNumber( std::string const & str, unsigned long long & val ) { val = std::stoull( str ); }
+      //! Convert a string to a long double
+      void stringToNumber( std::string const & str, long double & val ) { val = std::stold( str ); }
+
+    public:
       //! Loads a value from the current node - long double and long long overloads
-      /*! These data types will automatically be encoded as base64 strings */
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
@@ -595,12 +617,7 @@ namespace cereal
       {
         std::string encoded;
         loadValue( encoded );
-        auto decoded = base64::decode( encoded );
-
-        if( sizeof(T) != decoded.size() )
-          throw Exception("Decoded binary data size does not match specified size");
-
-        std::memcpy( &val, decoded.data(), decoded.size() );
+        stringToNumber( encoded, val );
       }
 
       //! Loads the size for a SizeTag
