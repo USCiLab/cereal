@@ -63,9 +63,20 @@ struct Test
   }
 
   template <class Archive>
-  static Test * load_and_construct( Archive & )
+  static void load_and_construct( Archive &, cereal::construct<Test> & )
   {
-    return new Test();
+  }
+
+  template <class Archive>
+  int save_minimal() const
+  {
+    return 0;
+  }
+
+  template <class Archive>
+  int save_minimal(const std::uint32_t) const
+  {
+    return 1;
   }
 };
 
@@ -80,6 +91,14 @@ void load( Archive &, Test & )
 template <class Archive>
 void save( Archive &, Test const & )
 { }
+
+template <class Archive>
+int save_minimal( Test const & )
+{ return 0; }
+
+template <class Archive>
+int save_minimal( Test const &, const std::uint32_t )
+{ return 0; }
 
 namespace cereal
 {
@@ -150,6 +169,16 @@ int main()
   std::cout << "\tsave" << std::endl;
   std::cout << cereal::traits::has_member_save<T, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_save<T, Archive>::value << std::endl;
+
+  // save_minimal
+  std::cout << "\tsave_minimal" << std::endl;
+  std::cout << cereal::traits::has_member_save_minimal<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_save_minimal<T, Archive>::value << std::endl;
+
+  // save_minimal_versioned
+  std::cout << "\tsave_minimal versioned" << std::endl;
+  std::cout << cereal::traits::has_member_versioned_save_minimal<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_non_member_versioned_save_minimal<T, Archive>::value << std::endl;
 
   // splittable
   std::cout << "\t splittable" << std::endl;

@@ -239,6 +239,18 @@ namespace cereal
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
 
+      template<class Archive, class T> inline
+      static auto member_save_minimal(T const & t) -> decltype(t.template save_minimal<Archive>())
+      { t.template save_minimal<Archive>(); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal_non_const(T & t) -> decltype(t.template save_minimal<Archive>())
+      { t.template save_minimal<Archive>(); }
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal(T & t, U const & u) -> decltype(t.template load<Archive>(u))
+      { t.template load<Archive>(u); }
+
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
@@ -255,6 +267,18 @@ namespace cereal
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
       { t.load(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal(T const & t, const std::uint32_t version) -> decltype(t.template save_minimal<Archive>(version))
+      { t.template save_minimal<Archive>(version); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal_non_const(T & t, const std::uint32_t version) -> decltype(t.template save_minimal<Archive>(version))
+      { t.template save_minimal<Archive>(version); }
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal(T & t, U const & u, const std::uint32_t version) -> decltype(t.template load<Archive>(u, version))
+      { t.template load<Archive>(u, version); }
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
@@ -286,10 +310,12 @@ namespace cereal
       @ingroup Access */
   enum class specialization
   {
-    member_serialize,          //!< Force the use of a member serialize function
-    member_load_save,          //!< Force the use of a member load/save pair
-    non_member_serialize,      //!< Force the use of a non-member serialize function
-    non_member_load_save       //!< Force the use of a non-member load/save pair
+    member_serialize,            //!< Force the use of a member serialize function
+    member_load_save,            //!< Force the use of a member load/save pair
+    member_load_save_minimal,    //!< Force the use of a member minimal load/save pair
+    non_member_serialize,        //!< Force the use of a non-member serialize function
+    non_member_load_save,        //!< Force the use of a non-member load/save pair
+    non_member_load_save_minimal //!< Force the use of a non-member minimal load/save pair
   };
 
   //! A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class
