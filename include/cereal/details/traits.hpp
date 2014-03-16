@@ -602,11 +602,15 @@ namespace cereal
       has_non_member_save<T, OutputArchive>::value ^
       has_member_serialize<T, OutputArchive>::value ^
       has_non_member_serialize<T, OutputArchive>::value ^
+      has_member_save_minimal<T, OutputArchive>::value ^
+      has_non_member_save_minimal<T, OutputArchive>::value ^
       /*-versioned---------------------------------------------------------*/
       has_member_versioned_save<T, OutputArchive>::value ^
       has_non_member_versioned_save<T, OutputArchive>::value ^
       has_member_versioned_serialize<T, OutputArchive>::value ^
-      has_non_member_versioned_serialize<T, OutputArchive>::value> {};
+      has_non_member_versioned_serialize<T, OutputArchive>::value ^
+      has_member_versioned_save_minimal<T, OutputArchive>::value ^
+      has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
 
     // ######################################################################
     template <class T, class InputArchive>
@@ -627,7 +631,9 @@ namespace cereal
       has_member_versioned_save<T, OutputArchive>::value ||
       has_non_member_versioned_save<T, OutputArchive>::value ||
       has_member_versioned_serialize<T, OutputArchive>::value ||
-      has_non_member_versioned_serialize<T, OutputArchive>::value> {};
+      has_non_member_versioned_serialize<T, OutputArchive>::value ||
+      has_member_versioned_save_minimal<T, OutputArchive>::value ||
+      has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
 
     // ######################################################################
     template <class T, class InputArchive>
@@ -649,6 +655,10 @@ namespace cereal
         !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save>>::value> {};
 
       template <class T, class A>
+      struct is_specialized_member_load_save_minimal : std::integral_constant<bool,
+        !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save_minimal>>::value> {};
+
+      template <class T, class A>
       struct is_specialized_non_member_serialize : std::integral_constant<bool,
         !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_serialize>>::value> {};
 
@@ -656,21 +666,29 @@ namespace cereal
       struct is_specialized_non_member_load_save : std::integral_constant<bool,
         !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_load_save>>::value> {};
 
+      template <class T, class A>
+      struct is_specialized_non_member_load_save_minimal : std::integral_constant<bool,
+        !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_load_save_minimal>>::value> {};
+
       // Considered an error if specialization exists for more than one type
       template <class T, class A>
       struct is_specialized_error : std::integral_constant<bool,
         (is_specialized_member_serialize<T, A>::value +
          is_specialized_member_load_save<T, A>::value +
+         is_specialized_member_load_save_minimal<T, A>::value +
          is_specialized_non_member_serialize<T, A>::value +
-         is_specialized_non_member_load_save<T, A>::value) <= 1> {};
+         is_specialized_non_member_load_save<T, A>::value +
+         is_specialized_non_member_load_save_minimal<T, A>::value) <= 1> {};
     } // namespace detail
 
     template <class T, class A>
     struct is_specialized : std::integral_constant<bool,
       detail::is_specialized_member_serialize<T, A>::value ||
       detail::is_specialized_member_load_save<T, A>::value ||
+      detail::is_specialized_member_load_save_minimal<T, A>::value ||
       detail::is_specialized_non_member_serialize<T, A>::value ||
-      detail::is_specialized_non_member_load_save<T, A>::value>
+      detail::is_specialized_non_member_load_save<T, A>::value ||
+      detail::is_specialized_non_member_load_save_minimal<T, A>::value>
     {
       static_assert(detail::is_specialized_error<T, A>::value, "More than one explicit specialization detected for type.");
     };
@@ -703,6 +721,15 @@ namespace cereal
     };
 
     template <class T, class A>
+    struct is_specialized_member_save_minimal : std::integral_constant<bool,
+      is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value>
+    {
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value && has_member_save_minimal<T, A>::value)
+                     || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value),
+                     "cereal detected member save_minimal specialization but no member save_minimal function" );
+    };
+
+    template <class T, class A>
     struct is_specialized_non_member_serialize : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value>
     {
@@ -726,6 +753,15 @@ namespace cereal
     {
       static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value && has_non_member_save<T, A>::value)
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
+                     "cereal detected non-member save specialization but no non-member save function" );
+    };
+
+    template <class T, class A>
+    struct is_specialized_non_member_save_minimal : std::integral_constant<bool,
+      is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value>
+    {
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value && has_non_member_save_minimal<T, A>::value)
+                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value),
                      "cereal detected non-member save specialization but no non-member save function" );
     };
 
