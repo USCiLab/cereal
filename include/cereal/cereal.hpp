@@ -415,16 +415,16 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n"
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
-            "Serialize functions generally have the following signature: \n\n"
-            "template<class Archive> \n"
-            "  void serialize(Archive & ar)\n"
-            "  {\n"
-            "    ar( member1, member2, member3 );\n"
-            "  }\n\n" );
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+            "Types must either have a serialize function, or separate save/load functions (but not both). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
+            "Serialize functions generally have the following signature: \n\n "
+            "template<class Archive> \n "
+            "  void serialize(Archive & ar) \n "
+            "  { \n "
+            "    ar( member1, member2, member3 ); \n "
+            "  } \n\n " );
         return *self;
       }
 
@@ -745,16 +745,16 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n"
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
-            "Serialize functions generally have the following signature: \n\n"
-            "template<class Archive> \n"
-            "  void serialize(Archive & ar)\n"
-            "  {\n"
-            "    ar( member1, member2, member3 );\n"
-            "  }\n\n" );
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+            "Types must either have a serialize function, or separate save/load functions (but not both). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
+            "Serialize functions generally have the following signature: \n\n "
+            "template<class Archive> \n "
+            "  void serialize(Archive & ar) \n "
+            "  { \n "
+            "    ar( member1, member2, member3 ); \n "
+            "  } \n\n " );
         return *self;
       }
 

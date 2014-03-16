@@ -165,13 +165,13 @@ class SpecializedNMSplitVersioned
 };
 
 template <class Archive>
-void load( Archive & ar, SpecializedNMSplit & s, const std::uint32_t )
+void load( Archive & ar, SpecializedNMSplitVersioned & s, const std::uint32_t )
 {
   ar( s.x );
 }
 
 template <class Archive>
-void save( Archive & ar, SpecializedNMSplit const & s, const std::uint32_t )
+void save( Archive & ar, SpecializedNMSplitVersioned const & s, const std::uint32_t )
 {
   ar( s.x );
 }

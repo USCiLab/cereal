@@ -245,7 +245,7 @@ namespace cereal
     {
       typedef typename detail::has_member_save_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const save.\n"
+        "cereal detected a non-const save. \n "
         "save member functions must always be const" );
     };
 
@@ -291,7 +291,7 @@ namespace cereal
     {
       typedef typename detail::has_member_versioned_save_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a versioned non-const save.\n"
+        "cereal detected a versioned non-const save. \n "
         "save member functions must always be const" );
     };
 
@@ -321,7 +321,7 @@ namespace cereal
     {
       typedef typename detail::has_non_member_save_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in non-member save.\n"
+        "cereal detected a non-const type parameter in non-member save. \n "
         "save non-member functions must always pass their types as const" );
     };
 
@@ -351,7 +351,7 @@ namespace cereal
     {
       typedef typename detail::has_non_member_versioned_save_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in versioned non-member save.\n"
+        "cereal detected a non-const type parameter in versioned non-member save. \n "
         "save non-member functions must always pass their types as const" );
     };
 
@@ -422,12 +422,12 @@ namespace cereal
     {
       typedef typename detail::has_member_save_minimal_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const member save_minimal.\n"
+        "cereal detected a non-const member save_minimal. \n "
         "save_minimal member functions must always be const" );
 
       using type = typename detail::get_member_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a member save_minimal with an invalid return type. \n"
+        "cereal detected a member save_minimal with an invalid return type. \n "
         "return type must be arithmetic or string" );
     };
 
@@ -482,12 +482,12 @@ namespace cereal
     {
       typedef typename detail::has_member_versioned_save_minimal_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a versioned non-const member save_minimal.\n"
+        "cereal detected a versioned non-const member save_minimal. \n "
         "save_minimal member functions must always be const" );
 
       using type = typename detail::get_member_versioned_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a versioned member save_minimal with an invalid return type. \n"
+        "cereal detected a versioned member save_minimal with an invalid return type. \n "
         "return type must be arithmetic or string" );
     };
 
@@ -528,12 +528,12 @@ namespace cereal
     {
       typedef typename detail::has_non_member_save_minimal_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in non-member save_minimal.\n"
+        "cereal detected a non-const type parameter in non-member save_minimal. \n "
         "save_minimal non-member functions must always pass their types as const" );
 
       using type = typename detail::get_non_member_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a non-member save_minimal with an invalid return type. \n"
+        "cereal detected a non-member save_minimal with an invalid return type. \n "
         "return type must be arithmetic or string" );
     };
 
@@ -574,12 +574,12 @@ namespace cereal
     {
       typedef typename detail::has_non_member_versioned_save_minimal_impl<T, A> check;
       static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in versioned non-member save_minimal.\n"
+        "cereal detected a non-const type parameter in versioned non-member save_minimal. \n "
         "save_minimal non-member functions must always pass their types as const" );
 
       using type = typename detail::get_non_member_versioned_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a non-member versioned save_minimal with an invalid return type. \n"
+        "cereal detected a non-member versioned save_minimal with an invalid return type. \n "
         "return type must be arithmetic or string" );
     };
 
@@ -861,16 +861,16 @@ namespace cereal
     struct Construct<T, A, false, false>
     {
       static_assert( std::is_default_constructible<T>::value,
-                     "Trying to serialize a an object with no default constructor.\n\n"
-                     "Types must either be default constructible or define either a member or non member Construct function.\n"
-                     "Construct functions generally have the signature:\n\n"
-                     "template <class Archive>\n"
-                     "static void load_and_construct(Archive & ar, cereal::construct<T> & construct)\n"
-                     "{\n"
-                     "  var a;\n"
-                     "  ar( a )\n"
-                     "  construct( a );\n"
-                     "}\n\n" );
+                     "Trying to serialize a an object with no default constructor. \n\n "
+                     "Types must either be default constructible or define either a member or non member Construct function. \n "
+                     "Construct functions generally have the signature: \n\n "
+                     "template <class Archive> \n "
+                     "static void load_and_construct(Archive & ar, cereal::construct<T> & construct) \n "
+                     "{ \n "
+                     "  var a; \n "
+                     "  ar( a ) \n "
+                     "  construct( a ); \n "
+                     "} \n\n" );
       static T * load_andor_construct()
       { return new T(); }
     };
