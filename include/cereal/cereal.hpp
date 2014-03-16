@@ -120,7 +120,7 @@ namespace cereal
         This allows for empty classes to be serialized even if they do not provide
         a serialization function.  Classes with no data members are considered to be
         empty.  Be warned that if this is enabled and you attempt to serialize an
-        empty class with improperly formed serialize or save/load functions, no
+        empty class with improperly formed serialize or load/save functions, no
         static error will occur - the error will propogate silently and your
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
@@ -417,8 +417,8 @@ namespace cereal
       processImpl(T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
             "In addition, you may not mix versioned with non-versioned serialization functions. \n "
             "Serialize functions generally have the following signature: \n\n "
             "template<class Archive> \n "
@@ -747,8 +747,8 @@ namespace cereal
       processImpl(T const &)
       {
         static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
             "In addition, you may not mix versioned with non-versioned serialization functions. \n "
             "Serialize functions generally have the following signature: \n\n "
             "template<class Archive> \n "
