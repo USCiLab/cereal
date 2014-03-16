@@ -697,7 +697,8 @@ namespace cereal
     struct is_specialized_member_serialize : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value && has_member_serialize<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value &&
+                     (has_member_serialize<T, A>::value || has_member_versioned_serialize<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value),
                      "cereal detected member serialization specialization but no member serialize function" );
     };

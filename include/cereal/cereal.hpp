@@ -356,8 +356,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -446,7 +446,8 @@ namespace cereal
       //! Member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -682,8 +683,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -782,7 +783,8 @@ namespace cereal
       //! Member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {

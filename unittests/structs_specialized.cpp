@@ -41,6 +41,20 @@ class SpecializedMSerialize
     }
 };
 
+class SpecializedMSerializeVersioned
+{
+  public:
+    int x;
+
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void serialize( Archive & ar, const std::uint32_t )
+    {
+      ar( x );
+    }
+};
+
 class SpecializedMSplit
 {
   public:
@@ -94,6 +108,7 @@ void save( Archive & ar, SpecializedNMSplit const & s )
 namespace cereal
 {
   template <class Archive> struct specialize<Archive, SpecializedMSerialize, cereal::specialization::member_serialize> {};
+  template <class Archive> struct specialize<Archive, SpecializedMSerializeVersioned, cereal::specialization::member_serialize> {};
   template <class Archive> struct specialize<Archive, SpecializedMSplit, cereal::specialization::member_load_save> {};
   template <class Archive> struct specialize<Archive, SpecializedNMSerialize, cereal::specialization::non_member_serialize> {};
   template <class Archive> struct specialize<Archive, SpecializedNMSplit, cereal::specialization::non_member_load_save> {};
@@ -108,6 +123,7 @@ void test_structs_specialized()
   for(int ii=0; ii<100; ++ii)
   {
     SpecializedMSerialize  o_iser = { random_value<int>(gen) };
+    SpecializedMSerializeVersioned  o_iserv = { random_value<int>(gen) };
     SpecializedMSplit      o_ispl = { random_value<int>(gen) };
     SpecializedNMSerialize o_eser = { random_value<int>(gen) };
     SpecializedNMSplit     o_espl = { random_value<int>(gen) };
@@ -116,10 +132,11 @@ void test_structs_specialized()
     {
       OArchive oar(os);
 
-      oar( o_iser, o_ispl, o_eser, o_espl);
+      oar( o_iser, o_iserv, o_ispl, o_eser, o_espl);
     }
 
     decltype(o_iser) i_iser;
+    decltype(o_iserv) i_iserv;
     decltype(o_ispl) i_ispl;
     decltype(o_eser) i_eser;
     decltype(o_espl) i_espl;
@@ -128,10 +145,11 @@ void test_structs_specialized()
     {
       IArchive iar(is);
 
-      iar( i_iser, i_ispl, i_eser, i_espl);
+      iar( i_iser, i_iserv, i_ispl, i_eser, i_espl);
     }
 
     BOOST_CHECK(i_iser.x == o_iser.x);
+    BOOST_CHECK(i_iserv.x == o_iserv.x);
     BOOST_CHECK(i_ispl.x == o_ispl.x);
     BOOST_CHECK(i_eser.x == o_eser.x);
     BOOST_CHECK(i_espl.x == o_espl.x);
