@@ -627,13 +627,13 @@ namespace cereal
 
     // ######################################################################
     template <class T, class OutputArchive>
-    struct is_output_versioned : std::integral_constant<bool,
-      has_member_versioned_save<T, OutputArchive>::value ||
-      has_non_member_versioned_save<T, OutputArchive>::value ||
-      has_member_versioned_serialize<T, OutputArchive>::value ||
-      has_non_member_versioned_serialize<T, OutputArchive>::value ||
-      has_member_versioned_save_minimal<T, OutputArchive>::value ||
-      has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
+    struct has_invalid_versioning : std::integral_constant<bool,
+      (has_member_versioned_save<T, OutputArchive>::value && has_member_save<T, OutputArchive>::value) ||
+      (has_non_member_versioned_save<T, OutputArchive>::value && has_non_member_save<T, OutputArchive>::value) ||
+      (has_member_versioned_serialize<T, OutputArchive>::value && has_member_serialize<T, OutputArchive>::value) ||
+      (has_non_member_versioned_serialize<T, OutputArchive>::value && has_non_member_serialize<T, OutputArchive>::value) ||
+      (has_member_versioned_save_minimal<T, OutputArchive>::value && has_member_save_minimal<T, OutputArchive>::value) ||
+      (has_non_member_versioned_save_minimal<T, OutputArchive>::value &&  has_non_member_save_minimal<T, OutputArchive>::value) > {};
 
     // ######################################################################
     template <class T, class InputArchive>
