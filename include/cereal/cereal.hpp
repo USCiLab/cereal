@@ -367,8 +367,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -378,8 +378,8 @@ namespace cereal
 
       //! Member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_save<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_save<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_save<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -389,8 +389,8 @@ namespace cereal
 
       //! Non member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_save<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_save<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_save<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -459,7 +459,8 @@ namespace cereal
       //! Non member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -471,7 +472,8 @@ namespace cereal
       //! Member split (save)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_save<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_save<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -483,7 +485,8 @@ namespace cereal
       //! Non member split (save)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_save<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_save<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -694,8 +697,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -705,8 +708,8 @@ namespace cereal
 
       //! Member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_load<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_load<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -716,8 +719,8 @@ namespace cereal
 
       //! Non member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_load<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_load<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -796,7 +799,8 @@ namespace cereal
       //! Non member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -808,7 +812,8 @@ namespace cereal
       //! Member split (load)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_load<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -820,7 +825,8 @@ namespace cereal
       //! Non member split (load)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_load<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {

@@ -27,6 +27,27 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
+struct BogusBase
+{
+  template <class Archive>
+  void serialize( Archive & ) {}
+
+  template <class Archive>
+  void serialize( Archive &, const std::uint32_t ) {}
+
+  template <class Archive>
+  void save( Archive & ) const {}
+
+  template <class Archive>
+  void save( Archive &, const std::uint32_t ) const {}
+
+  template <class Archive>
+  void load( Archive & ) {}
+
+  template <class Archive>
+  void load( Archive &, const std::uint32_t ) {}
+};
+
 class SpecializedMSerialize
 {
   public:
@@ -75,6 +96,26 @@ class SpecializedMSplit
     }
 };
 
+class SpecializedMSplitVersioned
+{
+  public:
+    int x;
+
+  private:
+    friend class cereal::access;
+    template <class Archive>
+    void save( Archive & ar, const std::uint32_t ) const
+    {
+      ar( x );
+    }
+
+    template <class Archive>
+    void load( Archive & ar, const std::uint32_t )
+    {
+      ar( x );
+    }
+};
+
 class SpecializedNMSerialize
 {
   public:
@@ -83,6 +124,18 @@ class SpecializedNMSerialize
 
 template <class Archive>
 void serialize( Archive & ar, SpecializedNMSerialize & s )
+{
+  ar( s.x );
+}
+
+class SpecializedNMSerializeVersioned
+{
+  public:
+    int x;
+};
+
+template <class Archive>
+void serialize( Archive & ar, SpecializedNMSerializeVersioned & s )
 {
   ar( s.x );
 }
@@ -105,13 +158,37 @@ void save( Archive & ar, SpecializedNMSplit const & s )
   ar( s.x );
 }
 
+class SpecializedNMSplitVersioned
+{
+  public:
+    int x;
+};
+
+template <class Archive>
+void load( Archive & ar, SpecializedNMSplit & s, const std::uint32_t )
+{
+  ar( s.x );
+}
+
+template <class Archive>
+void save( Archive & ar, SpecializedNMSplit const & s, const std::uint32_t )
+{
+  ar( s.x );
+}
+
 namespace cereal
 {
   template <class Archive> struct specialize<Archive, SpecializedMSerialize, cereal::specialization::member_serialize> {};
   template <class Archive> struct specialize<Archive, SpecializedMSerializeVersioned, cereal::specialization::member_serialize> {};
+
   template <class Archive> struct specialize<Archive, SpecializedMSplit, cereal::specialization::member_load_save> {};
+  //template <class Archive> struct specialize<Archive, SpecializedMSplitVersioned, cereal::specialization::member_load_save> {};
+
   template <class Archive> struct specialize<Archive, SpecializedNMSerialize, cereal::specialization::non_member_serialize> {};
+  //template <class Archive> struct specialize<Archive, SpecializedNMSerializeVersioned, cereal::specialization::non_member_serialize> {};
+
   template <class Archive> struct specialize<Archive, SpecializedNMSplit, cereal::specialization::non_member_load_save> {};
+  //template <class Archive> struct specialize<Archive, SpecializedNMSplitVersioned, cereal::specialization::non_member_load_save> {};
 }
 
 template <class IArchive, class OArchive>
