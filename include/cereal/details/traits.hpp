@@ -609,6 +609,13 @@ namespace cereal
         explicit NoConvert( FType );
       };
 
+      template <class T, class U>
+      struct NoConvertVersioned
+      {
+        using FType = void (T::*)(U const &, std::uint32_t const);
+        explicit NoConvertVersioned( FType );
+      };
+
       #ifdef CEREAL_OLDER_GCC
       template <class T, class A, class U, class SFINAE = void>
       struct has_member_load_minimal_impl : no {};
@@ -635,8 +642,10 @@ namespace cereal
       template <class T, class A, class U>
       struct has_member_load_minimal_type_impl
       {
+        //template <class TT, class AA, class UU>
+        //static auto test(int) -> decltype( NoConvert<TT, UU>( cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()) ), yes() );
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( NoConvert<TT, UU>( cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()) ), yes() );
+        static auto test(int) -> decltype( cereal::access::member_load_minimal_type<AA, TT, UU>(), yes() );
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
@@ -652,12 +661,12 @@ namespace cereal
       };
 
       template <class T, class A>
-      struct has_member_load_minimal_wrapper<T, A, true> : std::integral_constant<bool,
-        has_member_load_minimal_impl<T, A, typename detail::get_member_save_minimal_type<T, A, true>::type>::value>
+      struct has_member_load_minimal_wrapper<T, A, true>
       {
         using SaveType = typename detail::get_member_save_minimal_type<T, A, true>::type;
+        const static bool value = has_member_load_minimal_impl<T, A, SaveType>::value;
         const static bool valid = has_member_load_minimal_type_impl<T, A, SaveType>::value;
-        static_assert( valid, "cereal detected different types in corresponding member load_minimal and save_minimal functions. \n "
+        static_assert( valid || !value, "cereal detected different types in corresponding member load_minimal and save_minimal functions. \n "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
       };
     }

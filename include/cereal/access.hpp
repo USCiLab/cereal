@@ -251,7 +251,7 @@ namespace cereal
       static auto member_load_minimal(T & t, U const & u) -> decltype(t.template load_minimal<Archive>(u))
       { t.template load_minimal<Archive>(u); }
 
-      // gets the retu
+      // needed to get a function pointer to load_minimal
       template<class Archive, class T> inline
       static auto member_load_minimal_type(T &) -> decltype(&T::template load_minimal<Archive>);
 
@@ -281,8 +281,32 @@ namespace cereal
       { return t.template save_minimal<Archive>(version); }
 
       template<class Archive, class T, class U> inline
-      static auto member_load_minimal(T & t, U const & u, const std::uint32_t version) -> decltype(t.template load<Archive>(u, version))
-      { t.template load<Archive>(u, version); }
+      static auto member_load_minimal(T & t, U const & u, const std::uint32_t version) -> decltype(t.template load_minimal<Archive>(u, version))
+      { t.template load_minimal<Archive>(u, version); }
+
+
+
+
+
+      template <class T, class U>
+      struct NoConvert
+      {
+        using FType = void (T::*)(U const &);
+        explicit NoConvert( FType );
+      };
+
+      template <class T, class U>
+      struct NoConvertVersioned
+      {
+        using FType = void (T::*)(U const &, std::uint32_t const);
+        explicit NoConvertVersioned( FType );
+      };
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal_type() -> decltype(NoConvert<T, U>(&T::template load_minimal<Archive>));
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal_type(const std::uint32_t) -> decltype(NoConvertVersioned<T, U>(&T::template load_minimal<Archive>));
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
