@@ -67,7 +67,7 @@ namespace cereal
         construct( ptr )
       { }
 
-      inline void serialize( Archive & ar )
+      inline void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar )
       {
         ::cereal::detail::Construct<T, Archive>::load_andor_construct( ar, construct );
       }
@@ -174,7 +174,7 @@ namespace cereal
   //! Saving std::shared_ptr for non polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, std::shared_ptr<T> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
@@ -182,7 +182,7 @@ namespace cereal
   //! Loading std::shared_ptr, case when no user load and construct for non polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::shared_ptr<T> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> & ptr )
   {
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
@@ -190,7 +190,7 @@ namespace cereal
   //! Saving std::weak_ptr for non polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, std::weak_ptr<T> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto const sptr = ptr.lock();
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
@@ -199,7 +199,7 @@ namespace cereal
   //! Loading std::weak_ptr for non polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::weak_ptr<T> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( sptr )) );
@@ -209,7 +209,7 @@ namespace cereal
   //! Saving std::unique_ptr for non polymorphic types
   template <class Archive, class T, class D> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
@@ -217,7 +217,7 @@ namespace cereal
   //! Loading std::unique_ptr, case when user provides load_and_construct for non polymorphic types
   template <class Archive, class T, class D> inline
   typename std::enable_if<!std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::unique_ptr<T, D> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( ptr )) );
   }
@@ -228,7 +228,7 @@ namespace cereal
   //! Saving std::shared_ptr (wrapper implementation)
   /*! @internal */
   template <class Archive, class T> inline
-  void save( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> const &> const & wrapper )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> const &> const & wrapper )
   {
     auto & ptr = wrapper.ptr;
 
@@ -245,7 +245,7 @@ namespace cereal
   /*! @internal */
   template <class Archive, class T> inline
   typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
-  load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
 
@@ -292,7 +292,7 @@ namespace cereal
   /*! @internal */
   template <class Archive, class T> inline
   typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
-  load( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
     auto & ptr = wrapper.ptr;
 
@@ -313,7 +313,7 @@ namespace cereal
   //! Saving std::unique_ptr (wrapper implementation)
   /*! @internal */
   template <class Archive, class T, class D> inline
-  void save( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> const &> const & wrapper )
   {
     auto & ptr = wrapper.ptr;
 
@@ -334,7 +334,7 @@ namespace cereal
   /*! @internal */
   template <class Archive, class T, class D> inline
   typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
-  load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
     ar( _CEREAL_NVP("valid", isValid) );
@@ -368,7 +368,7 @@ namespace cereal
   /*! @internal */
   template <class Archive, class T, class D> inline
   typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
-  load( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::unique_ptr<T, D> &> & wrapper )
   {
     uint8_t isValid;
     ar( _CEREAL_NVP("valid", isValid) );

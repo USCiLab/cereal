@@ -786,14 +786,14 @@ namespace cereal
 
   //! Serializing NVP types to JSON
   template <class T> inline
-  void save( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
   }
 
   template <class T> inline
-  void load( JSONInputArchive & ar, NameValuePair<T> & t )
+  void CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
@@ -802,7 +802,7 @@ namespace cereal
   //! Saving for arithmetic to JSON
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(JSONOutputArchive & ar, T const & t)
+  CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, T const & t)
   {
     ar.saveValue( t );
   }
@@ -810,21 +810,21 @@ namespace cereal
   //! Loading arithmetic from JSON
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(JSONInputArchive & ar, T & t)
+  CEREAL_LOAD_FUNCTION_NAME(JSONInputArchive & ar, T & t)
   {
     ar.loadValue( t );
   }
 
   //! saving string to JSON
   template<class CharT, class Traits, class Alloc> inline
-  void save(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     ar.saveValue( str );
   }
 
   //! loading string from JSON
   template<class CharT, class Traits, class Alloc> inline
-  void load(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  void CEREAL_LOAD_FUNCTION_NAME(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     ar.loadValue( str );
   }
@@ -832,14 +832,14 @@ namespace cereal
   // ######################################################################
   //! Saving SizeTags to JSON
   template <class T> inline
-  void save( JSONOutputArchive &, SizeTag<T> const & )
+  void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive &, SizeTag<T> const & )
   {
     // nothing to do here, we don't explicitly save the size
   }
 
   //! Loading SizeTags from JSON
   template <class T> inline
-  void load( JSONInputArchive & ar, SizeTag<T> & st )
+  void CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, SizeTag<T> & st )
   {
     ar.loadSize( st.size );
   }

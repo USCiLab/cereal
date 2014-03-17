@@ -49,7 +49,7 @@ namespace cereal
 
   //! Serializing (save) for std::bitset
   template <class Archive, size_t N> inline
-  void save( Archive & ar, std::bitset<N> const & bits )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::bitset<N> const & bits )
   {
     try
     {
@@ -75,7 +75,7 @@ namespace cereal
 
   //! Serializing (load) for std::bitset
   template <class Archive, size_t N> inline
-  void load( Archive & ar, std::bitset<N> & bits )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::bitset<N> & bits )
   {
     bitset_detail::type t;
     ar( _CEREAL_NVP("type", t) );
