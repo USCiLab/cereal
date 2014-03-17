@@ -78,6 +78,10 @@ struct Test
   {
     return 1;
   }
+
+  template <class Archive>
+  void load_minimal( int & )
+  { }
 };
 
 template <class Archive>
@@ -164,6 +168,10 @@ int main()
   std::cout << "\tload" << std::endl;
   std::cout << cereal::traits::has_member_load<T, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_load<T, Archive>::value << std::endl;
+
+  // load minimal
+  std::cout << "\tload minimal" << std::endl;
+  std::cout << cereal::traits::has_member_load<T, Archive>::value << std::endl;
 
   // save
   std::cout << "\tsave" << std::endl;

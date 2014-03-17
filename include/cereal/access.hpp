@@ -52,7 +52,7 @@ namespace cereal
         MyType( int x ); // note: no default ctor
         int myX;
 
-        // Define a serialize or save/load pair as you normally would
+        // Define a serialize or load/save pair as you normally would
         template <class Archive>
         void serialize( Archive & ar )
         {
@@ -241,15 +241,19 @@ namespace cereal
 
       template<class Archive, class T> inline
       static auto member_save_minimal(T const & t) -> decltype(t.template save_minimal<Archive>())
-      { t.template save_minimal<Archive>(); }
+      { return t.template save_minimal<Archive>(); }
 
       template<class Archive, class T> inline
       static auto member_save_minimal_non_const(T & t) -> decltype(t.template save_minimal<Archive>())
-      { t.template save_minimal<Archive>(); }
+      { return t.template save_minimal<Archive>(); }
 
       template<class Archive, class T, class U> inline
-      static auto member_load_minimal(T & t, U const & u) -> decltype(t.template load<Archive>(u))
-      { t.template load<Archive>(u); }
+      static auto member_load_minimal(T & t, U const & u) -> decltype(t.template load_minimal<Archive>(u))
+      { t.template load_minimal<Archive>(u); }
+
+      // gets the retu
+      template<class Archive, class T> inline
+      static auto member_load_minimal_type(T &) -> decltype(&T::template load_minimal<Archive>);
 
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
@@ -270,11 +274,11 @@ namespace cereal
 
       template<class Archive, class T> inline
       static auto member_save_minimal(T const & t, const std::uint32_t version) -> decltype(t.template save_minimal<Archive>(version))
-      { t.template save_minimal<Archive>(version); }
+      { return t.template save_minimal<Archive>(version); }
 
       template<class Archive, class T> inline
       static auto member_save_minimal_non_const(T & t, const std::uint32_t version) -> decltype(t.template save_minimal<Archive>(version))
-      { t.template save_minimal<Archive>(version); }
+      { return t.template save_minimal<Archive>(version); }
 
       template<class Archive, class T, class U> inline
       static auto member_load_minimal(T & t, U const & u, const std::uint32_t version) -> decltype(t.template load<Archive>(u, version))
@@ -351,7 +355,7 @@ namespace cereal
           void save( Archive & ar ) {}
       };
 
-      // The save/load pair in MyDerived is ambiguous because serialize in MyParent can
+      // The load/save pair in MyDerived is ambiguous because serialize in MyParent can
       // be accessed from cereal::access.  This looks the same as making serialize public
       // in MyParent, making it seem as though MyDerived has both a serialize and a load/save pair.
       // cereal will complain about this at compile time unless we disambiguate:

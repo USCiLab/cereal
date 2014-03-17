@@ -30,9 +30,11 @@
 #ifndef CEREAL_DETAILS_TRAITS_HPP_
 #define CEREAL_DETAILS_TRAITS_HPP_
 
+#ifndef __clang__
 #if (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 #define CEREAL_OLDER_GCC
 #endif
+#endif // __clang__
 
 #include <type_traits>
 #include <typeindex>
@@ -56,7 +58,6 @@ namespace cereal
       template<typename> struct Void { typedef void type; };
       #endif // CEREAL_OLDER_GCC
     } // namespace detail
-
 
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -405,6 +406,8 @@ namespace cereal
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
         #endif // NOT CEREAL_OLDER_GCC
+
+        static const bool valid = value || !not_const_type;
       };
 
       template <class T, class A, bool Valid>
@@ -421,7 +424,7 @@ namespace cereal
     struct has_member_save_minimal : std::integral_constant<bool, detail::has_member_save_minimal_impl<T, A>::value>
     {
       typedef typename detail::has_member_save_minimal_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
+      static_assert( check::valid,
         "cereal detected a non-const member save_minimal. \n "
         "save_minimal member functions must always be const" );
 
@@ -465,6 +468,8 @@ namespace cereal
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
         #endif // NOT_CEREAL_OLDER_GCC
+
+        static const bool valid = value || !not_const_type;
       };
 
       template <class T, class A, bool Valid>
@@ -481,7 +486,7 @@ namespace cereal
     struct has_member_versioned_save_minimal : std::integral_constant<bool, detail::has_member_versioned_save_minimal_impl<T, A>::value>
     {
       typedef typename detail::has_member_versioned_save_minimal_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
+      static_assert( check::valid,
         "cereal detected a versioned non-const member save_minimal. \n "
         "save_minimal member functions must always be const" );
 
@@ -511,6 +516,8 @@ namespace cereal
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+
+        static const bool valid = value || !not_const_type;
       };
 
       template <class T, class A, bool Valid>
@@ -527,7 +534,7 @@ namespace cereal
     struct has_non_member_save_minimal : std::integral_constant<bool, detail::has_non_member_save_minimal_impl<T, A>::value>
     {
       typedef typename detail::has_non_member_save_minimal_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
+      static_assert( check::valid,
         "cereal detected a non-const type parameter in non-member save_minimal. \n "
         "save_minimal non-member functions must always pass their types as const" );
 
@@ -557,6 +564,8 @@ namespace cereal
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
+
+        static const bool valid = value || !not_const_type;
       };
 
       template <class T, class A, bool Valid>
@@ -573,7 +582,7 @@ namespace cereal
     struct has_non_member_versioned_save_minimal : std::integral_constant<bool, detail::has_non_member_versioned_save_minimal_impl<T, A>::value>
     {
       typedef typename detail::has_non_member_versioned_save_minimal_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
+      static_assert( check::valid,
         "cereal detected a non-const type parameter in versioned non-member save_minimal. \n "
         "save_minimal non-member functions must always pass their types as const" );
 
@@ -582,6 +591,146 @@ namespace cereal
         "cereal detected a non-member versioned save_minimal with an invalid return type. \n "
         "return type must be arithmetic or string" );
     };
+
+    // ######################################################################
+    // Member Load Minimal
+
+    namespace detail
+    {
+      // For getting the return type or argument type of an std::function
+      template<typename T>
+      struct function_traits;
+
+      template<typename R, typename ...Args>
+      struct function_traits<std::function<R(Args...)>>
+      {
+          static const size_t nargs = sizeof...(Args);
+
+          typedef R result_type;
+
+          template <size_t i>
+          struct arg
+          {
+              typedef typename std::tuple_element<i, std::tuple<Args...>>::type type;
+              typedef typename std::decay<type>::type decayed_type;
+          };
+      };
+    }
+
+    namespace detail
+    {
+      // For detecting a load_minimal we need to make sure that we can call load_minimal
+      // with the return type of the corresponding save_minimal.  Since load_minimal accepts
+      // this parameter by const reference, it will allow types to be implicitly converted,
+      // which is not behavior we want to allow.
+      //
+      // Because of this, we need to perform an explicit check that the parameter type of
+      // the load_minimal matches the return type of save_minimal exactly.
+      #ifdef CEREAL_OLDER_GCC
+      template <class T, class A, class U, class SFINAE = void>
+      struct has_member_load_minimal_impl : no {};
+      template <class T, class A, class U>
+      struct has_member_load_minimal_impl<T, A, U,
+        typename detail::Void< decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), std::declval<U const &>() ) ) >::type> : yes {};
+      #else // NOT CEREAL_OLDER_GCC
+      template <class T, class A, class U>
+      struct has_member_load_minimal_impl
+      {
+        template <class TT, class AA, class UU>
+        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), std::declval<UU const&>() ), yes());
+        template <class, class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
+      };
+
+      template <class T, class A, class U>
+      struct has_member_load_minimal_type_impl
+      {
+        //static const decltype( typename function_traits<decltype(std::function<void(T*, U const &)>( decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>()))()))>::template arg<1>::decayed_type() )
+        //  aaa = "sdf";
+
+        //void (Test::*func5)(float const&) = &Test::load_minimal<A>;
+        //
+          using FType = void (T::*)(U const &);
+
+        struct LL
+        {
+          explicit LL( FType f );
+        };
+
+        //static const FType asdf = "fff";
+        //static const decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>())) gofuck = "sdf";
+        //static const FType zzz = decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>()))();
+        //static const decltype( FType( cereal::access::member_load_minimal_type<A>(std::declval<T&>()) ) ) zzz = "sdf";
+        //static const decltype( FType( &T::template load_minimal<A> ) ) zzz;
+        //static const decltype( FType( &T::template load_minimal<A>(0, 0, 0) ) ) zzz2;
+        //static const LL asdf = &T::template load_minimal<A>;
+
+        template <class TT, class AA, class UU>
+        static auto test(int) -> decltype( LL( cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()) ), yes() );
+        //static auto test(int) -> decltype(
+            //typename function_traits<decltype(std::function<void(TT*, UU const &)>( decltype(cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()))()))>::template arg<1>::decayed_type(), yes() );
+        template <class, class, class>
+        static no test(...);
+        static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
+      };
+      #endif // NOT CEREAL_OLDER_GCC
+
+      template <class T, class A, bool Valid>
+      struct has_member_load_minimal_wrapper : std::false_type
+      {
+        static_assert( Valid,
+          "cereal detected member load_minimal but no valid member save_minimal. \n "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+      };
+
+      template <class T, class A>
+      struct has_member_load_minimal_wrapper<T, A, true> : std::integral_constant<bool,
+        has_member_load_minimal_impl<T, A, typename detail::get_member_save_minimal_type<T, A, true>::type>::value>
+      {
+        using SaveType = typename detail::get_member_save_minimal_type<T, A, true>::type;
+        const static bool valid = has_member_load_minimal_type_impl<T, A, SaveType>::value;
+        static_assert( valid, "cereal detected different types in corresponding member load_minimal and save_minimal functions. \n "
+            "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
+      };
+    }
+
+    template <class T, class A>
+    struct has_member_load_minimal : std::integral_constant<bool,
+      detail::has_member_load_minimal_wrapper<T, A, detail::has_member_save_minimal_impl<T, A>::valid>::value> {};
+
+    // ######################################################################
+    // Non-Member Load Minimal
+    namespace detail
+    {
+      namespace { template <class> void load_minimal(); } // so SFINAE can operate properly for test
+
+      template <class T, class A, class U>
+      struct has_non_member_load_minimal_impl
+      {
+        template <class TT, class AA, class UU>
+        static auto test(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), std::declval<UU const&>() ), yes());
+        template <class, class>
+        static no test( ... );
+        static const bool value = std::is_same<decltype( test<T, A, U>( 0 ) ), yes>::value;
+      };
+
+      template <class T, class A, bool Valid>
+      struct has_non_member_load_minimal_wrapper : std::false_type
+      {
+        static_assert( Valid,
+          "cereal detected non-member load_minimal but no valid non-member save_minimal. \n "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+      };
+
+      template <class T, class A>
+      struct has_non_member_load_minimal_wrapper<T, A, true> : std::integral_constant<bool,
+        has_non_member_load_minimal_impl<T, A, typename detail::get_non_member_save_minimal_type<T, A, true>::type>::value> {};
+    }
+
+    template <class T, class A>
+    struct has_non_member_load_minimal : std::integral_constant<bool,
+      detail::has_non_member_load_minimal_wrapper<T, A, detail::has_non_member_save_minimal_impl<T, A>::valid>::value> {};
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
