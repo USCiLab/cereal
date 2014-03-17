@@ -594,44 +594,33 @@ namespace cereal
 
     // ######################################################################
     // Member Load Minimal
-
     namespace detail
     {
-      // For getting the return type or argument type of an std::function
-      template<typename T>
-      struct function_traits;
-
-      template<typename R, typename ...Args>
-      struct function_traits<std::function<R(Args...)>>
+      // We want to check if the load_minimal signature exactly matches the return type of
+      // save_minimal (template parameter U).  To do this, we'll try and instantiate the
+      // NoConvert struct that has an explicit function pointer constructor defined by
+      // the return type of save_minimal.  When we instantiate it with the function
+      // pointer to the current type's (T) load_minimal, if there is any mismatch,
+      // compilation will fail
+      template <class T, class U>
+      struct NoConvert
       {
-          static const size_t nargs = sizeof...(Args);
-
-          typedef R result_type;
-
-          template <size_t i>
-          struct arg
-          {
-              typedef typename std::tuple_element<i, std::tuple<Args...>>::type type;
-              typedef typename std::decay<type>::type decayed_type;
-          };
+        using FType = void (T::*)(U const &);
+        explicit NoConvert( FType );
       };
-    }
 
-    namespace detail
-    {
-      // For detecting a load_minimal we need to make sure that we can call load_minimal
-      // with the return type of the corresponding save_minimal.  Since load_minimal accepts
-      // this parameter by const reference, it will allow types to be implicitly converted,
-      // which is not behavior we want to allow.
-      //
-      // Because of this, we need to perform an explicit check that the parameter type of
-      // the load_minimal matches the return type of save_minimal exactly.
       #ifdef CEREAL_OLDER_GCC
       template <class T, class A, class U, class SFINAE = void>
       struct has_member_load_minimal_impl : no {};
       template <class T, class A, class U>
       struct has_member_load_minimal_impl<T, A, U,
-        typename detail::Void< decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), std::declval<U const &>() ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), std::declval<U const &>() ) ) >::type> : yes {};
+
+      template <class T, class A, class U, class SFINAE = void>
+      struct has_member_load_minimal_type_impl : no {};
+      template <class T, class A, class U>
+      struct has_member_load_minimal_type_impl<T, A, U,
+        typename detail::Void<decltype( NoConvert<T, U>( cereal::access::member_load_minimal_type<A>(std::declval<T&>()) ) )>::type> : yes {};
       #else // NOT CEREAL_OLDER_GCC
       template <class T, class A, class U>
       struct has_member_load_minimal_impl
@@ -646,30 +635,8 @@ namespace cereal
       template <class T, class A, class U>
       struct has_member_load_minimal_type_impl
       {
-        //static const decltype( typename function_traits<decltype(std::function<void(T*, U const &)>( decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>()))()))>::template arg<1>::decayed_type() )
-        //  aaa = "sdf";
-
-        //void (Test::*func5)(float const&) = &Test::load_minimal<A>;
-        //
-          using FType = void (T::*)(U const &);
-
-        struct LL
-        {
-          explicit LL( FType f );
-        };
-
-        //static const FType asdf = "fff";
-        //static const decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>())) gofuck = "sdf";
-        //static const FType zzz = decltype(cereal::access::member_load_minimal_type<A>(std::declval<T&>()))();
-        //static const decltype( FType( cereal::access::member_load_minimal_type<A>(std::declval<T&>()) ) ) zzz = "sdf";
-        //static const decltype( FType( &T::template load_minimal<A> ) ) zzz;
-        //static const decltype( FType( &T::template load_minimal<A>(0, 0, 0) ) ) zzz2;
-        //static const LL asdf = &T::template load_minimal<A>;
-
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( LL( cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()) ), yes() );
-        //static auto test(int) -> decltype(
-            //typename function_traits<decltype(std::function<void(TT*, UU const &)>( decltype(cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()))()))>::template arg<1>::decayed_type(), yes() );
+        static auto test(int) -> decltype( NoConvert<TT, UU>( cereal::access::member_load_minimal_type<AA>(std::declval<TT&>()) ), yes() );
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
