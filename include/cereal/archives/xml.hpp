@@ -461,6 +461,12 @@ namespace cereal
         itsNodes.top().name = nullptr;
       }
 
+      //! Retrieves the current node name
+      //! will return @c nullptr if the node does not have a name
+      const char * getNodeName() const {
+        return itsNodes.top().node->name();
+      }
+
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
