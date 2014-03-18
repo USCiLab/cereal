@@ -283,6 +283,10 @@ namespace cereal
       /*! Handles long long (if distinct from other types), unsigned long (if distinct), and long double */
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
+                              !std::is_same<T, long>::value &&
+                              !std::is_same<T, unsigned long>::value &&
+                              !std::is_same<T, std::int64_t>::value &&
+                              !std::is_same<T, std::uint64_t>::value &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       saveValue(T const & t)
       {
@@ -612,6 +616,10 @@ namespace cereal
       //! Loads a value from the current node - long double and long long overloads
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
+                              !std::is_same<T, long>::value &&
+                              !std::is_same<T, unsigned long>::value &&
+                              !std::is_same<T, std::int64_t>::value &&
+                              !std::is_same<T, std::uint64_t>::value &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       loadValue(T & val)
       {
