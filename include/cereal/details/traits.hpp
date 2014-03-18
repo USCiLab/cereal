@@ -425,12 +425,12 @@ namespace cereal
     {
       typedef typename detail::has_member_save_minimal_impl<T, A> check;
       static_assert( check::valid,
-        "cereal detected a non-const member save_minimal. \n "
+        "cereal detected a non-const member save_minimal.  "
         "save_minimal member functions must always be const" );
 
       using type = typename detail::get_member_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a member save_minimal with an invalid return type. \n "
+        "cereal detected a member save_minimal with an invalid return type.  "
         "return type must be arithmetic or string" );
     };
 
@@ -487,12 +487,12 @@ namespace cereal
     {
       typedef typename detail::has_member_versioned_save_minimal_impl<T, A> check;
       static_assert( check::valid,
-        "cereal detected a versioned non-const member save_minimal. \n "
+        "cereal detected a versioned non-const member save_minimal.  "
         "save_minimal member functions must always be const" );
 
       using type = typename detail::get_member_versioned_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a versioned member save_minimal with an invalid return type. \n "
+        "cereal detected a versioned member save_minimal with an invalid return type.  "
         "return type must be arithmetic or string" );
     };
 
@@ -535,12 +535,12 @@ namespace cereal
     {
       typedef typename detail::has_non_member_save_minimal_impl<T, A> check;
       static_assert( check::valid,
-        "cereal detected a non-const type parameter in non-member save_minimal. \n "
+        "cereal detected a non-const type parameter in non-member save_minimal.  "
         "save_minimal non-member functions must always pass their types as const" );
 
       using type = typename detail::get_non_member_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a non-member save_minimal with an invalid return type. \n "
+        "cereal detected a non-member save_minimal with an invalid return type.  "
         "return type must be arithmetic or string" );
     };
 
@@ -583,12 +583,12 @@ namespace cereal
     {
       typedef typename detail::has_non_member_versioned_save_minimal_impl<T, A> check;
       static_assert( check::valid,
-        "cereal detected a non-const type parameter in versioned non-member save_minimal. \n "
+        "cereal detected a non-const type parameter in versioned non-member save_minimal.  "
         "save_minimal non-member functions must always pass their types as const" );
 
       using type = typename detail::get_non_member_versioned_save_minimal_type<T, A, check::value>::type;
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,
-        "cereal detected a non-member versioned save_minimal with an invalid return type. \n "
+        "cereal detected a non-member versioned save_minimal with an invalid return type.  "
         "return type must be arithmetic or string" );
     };
 
@@ -596,25 +596,37 @@ namespace cereal
     // Member Load Minimal
     namespace detail
     {
+      //! A struct that prevents implicit conversion
+      /*! Any type instantiated with this struct will be unable to implicitly convert
+          to another type.  Is designed to only allow conversion to Source const &.
+
+          @tparam Source the type of the original source */
       template <class Source>
       struct NoConvert
       {
         #ifdef __clang__
         // clang needs this, see http://stackoverflow.com/questions/22464225/c-detecting-free-function-existence-with-explicit-parameters
+        // In clang, we will force failure by having two ambiguous overloads if we try to convert to
+        // a value type
         template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
         operator Dest () const;
         #endif // __clang__
 
+        // only allow conversion if the types are the same and we are converting into a const reference
         template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
         operator Dest const & () const;
       };
 
+      //! A type that can implicitly convert to anything else
       struct AnyConvert
       {
         template <class Dest>
         operator Dest () const;
       };
 
+      // Our strategy here is to first check if a function matching the signature more or less exists
+      // (allow anything like load_minimal(xxx) using AnyConvert, and then secondly enforce
+      // that it has the correct signature using NoConvert
       #ifdef CEREAL_OLDER_GCC
       template <class T, class A, class SFINAE = void>
       struct has_member_load_minimal_impl : no {};
@@ -653,7 +665,7 @@ namespace cereal
       struct has_member_load_minimal_wrapper : std::false_type
       {
         static_assert( Valid,
-          "cereal detected member load_minimal but no valid member save_minimal. \n "
+          "cereal detected member load_minimal but no valid member save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
       };
 
@@ -663,7 +675,7 @@ namespace cereal
         using SaveType = typename detail::get_member_save_minimal_type<T, A, true>::type;
         const static bool value = has_member_load_minimal_impl<T, A>::value;
         const static bool valid = has_member_load_minimal_type_impl<T, A, SaveType>::value;
-        static_assert( valid || !value, "cereal detected different or invalid types in corresponding member load_minimal and save_minimal functions. \n "
+        static_assert( valid || !value, "cereal detected different or invalid types in corresponding member load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
       };
     }
@@ -676,6 +688,7 @@ namespace cereal
     // Non-Member Load Minimal
     namespace detail
     {
+      // See notes from member load_minimal
       namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
 
       template <class T, class A, class U>
@@ -698,7 +711,7 @@ namespace cereal
       struct has_non_member_load_minimal_wrapper : std::false_type
       {
         static_assert( Valid,
-          "cereal detected non-member load_minimal but no valid non-member save_minimal. \n "
+          "cereal detected non-member load_minimal but no valid non-member save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
       };
 
