@@ -288,25 +288,11 @@ namespace cereal
 
 
 
-      template <class T, class U>
-      struct NoConvert
-      {
-        using FType = void (T::*)(U const &);
-        explicit NoConvert( FType );
-      };
+      template<class Archive, class T, class NoConvert> inline
+      static auto member_load_minimal_type() -> decltype(NoConvert(&T::template load_minimal<Archive>));
 
-      template <class T, class U>
-      struct NoConvertVersioned
-      {
-        using FType = void (T::*)(U const &, std::uint32_t const);
-        explicit NoConvertVersioned( FType );
-      };
-
-      template<class Archive, class T, class U> inline
-      static auto member_load_minimal_type() -> decltype(NoConvert<T, U>(&T::template load_minimal<Archive>));
-
-      template<class Archive, class T, class U> inline
-      static auto member_load_minimal_type(const std::uint32_t) -> decltype(NoConvertVersioned<T, U>(&T::template load_minimal<Archive>));
+      template<class Archive, class T, class NoConvert> inline
+      static auto member_load_minimal_type(const std::uint32_t) -> decltype(NoConvert(&T::template load_minimal<Archive>));
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
