@@ -602,31 +602,54 @@ namespace cereal
 
           @tparam Source the type of the original source */
       template <class Source>
-      struct NoConvert
+      class NoConvertConstRef
       {
-        #ifdef __clang__
-        // clang needs this, see http://stackoverflow.com/questions/22464225/c-detecting-free-function-existence-with-explicit-parameters
-        // In clang, we will force failure by having two ambiguous overloads if we try to convert to
-        // a value type
-        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-        operator Dest () const;
-        #endif // __clang__
+        private:
+          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+          operator Dest ();
 
-        // only allow conversion if the types are the same and we are converting into a const reference
-        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-        operator Dest const & () const;
+        public:
+          // only allow conversion if the types are the same and we are converting into a const reference
+          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+          operator Dest const & () const;
+      };
+
+      //! A struct that prevents implicit conversion
+      /*! Any type instantiated with this struct will be unable to implicitly convert
+          to another type.  Is designed to only allow conversion to Source &.
+
+          @tparam Source the type of the original source */
+      template <class Source>
+      class NoConvertRef
+      {
+        protected:
+          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+          operator Dest ();
+
+          #ifdef __clang__
+          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+          operator Dest const & ();
+          #endif // __clang__
+
+        public:
+          // only allow conversion if the types are the same and we are converting into a const reference
+          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+          operator Dest & ();
       };
 
       //! A type that can implicitly convert to anything else
       struct AnyConvert
       {
         template <class Dest>
-        operator Dest & () const;
+        operator Dest & ();
+
+        template <class Dest>
+        operator Dest const & () const;
       };
 
       // Our strategy here is to first check if a function matching the signature more or less exists
       // (allow anything like load_minimal(xxx) using AnyConvert, and then secondly enforce
-      // that it has the correct signature using NoConvert
+      // that it has the correct signature using NoConvertConstRef
       #ifdef CEREAL_OLDER_GCC
       template <class T, class A, class SFINAE = void>
       struct has_member_load_minimal_impl : no {};
@@ -638,7 +661,7 @@ namespace cereal
       struct has_member_load_minimal_type_impl : no {};
       template <class T, class A, class U>
       struct has_member_load_minimal_type_impl<T, A, U,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvert<U>() ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvertConstRef<U>() ) ) >::type> : yes {};
       #else // NOT CEREAL_OLDER_GCC
       template <class T, class A>
       struct has_member_load_minimal_impl
@@ -654,7 +677,7 @@ namespace cereal
       struct has_member_load_minimal_type_impl
       {
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvert<U>() ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<U>() ), yes());
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
@@ -699,7 +722,7 @@ namespace cereal
       struct has_member_versioned_load_minimal_type_impl : no {};
       template <class T, class A, class U>
       struct has_member_versioned_load_minimal_type_impl<T, A, U,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvert<U>(), 0 ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvertConstRef<U>(), 0 ) ) >::type> : yes {};
       #else // NOT CEREAL_OLDER_GCC
       template <class T, class A>
       struct has_member_versioned_load_minimal_impl
@@ -715,7 +738,7 @@ namespace cereal
       struct has_member_versioned_load_minimal_type_impl
       {
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvert<U>(), 0 ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<U>(), 0 ), yes());
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
@@ -762,10 +785,16 @@ namespace cereal
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvert<UU>() ), yes() );
+        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
+
+        template <class TT, class AA>
+        static auto test3(int) -> decltype( load_minimal<AA>( NoConvertRef<TT>(), AnyConvert() ), yes() );
+        template <class, class>
+        static no test3( ... );
+        static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
       };
 
       template <class T, class A, bool Valid>
@@ -784,6 +813,8 @@ namespace cereal
         static const bool value = check::exists;
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
+        static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member load_minimal.  "
+            "load_minimal non-member functions must accept their serialization type by non-const reference" );
       };
     }
 
@@ -808,7 +839,7 @@ namespace cereal
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvert<UU>(), 0 ), yes() );
+        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
