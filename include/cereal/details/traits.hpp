@@ -621,7 +621,7 @@ namespace cereal
       struct AnyConvert
       {
         template <class Dest>
-        operator Dest () const;
+        operator Dest & () const;
       };
 
       // Our strategy here is to first check if a function matching the signature more or less exists
@@ -721,7 +721,7 @@ namespace cereal
         using SaveType = typename detail::get_non_member_save_minimal_type<T, A, true>::type;
         using check = has_non_member_load_minimal_impl<T, A, SaveType>;
         static const bool value = check::exists;
-        static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member load_minimal and save_minimal functions. \n "
+        static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
       };
     }
