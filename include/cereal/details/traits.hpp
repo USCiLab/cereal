@@ -843,6 +843,12 @@ namespace cereal
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
+
+        template <class TT, class AA>
+        static auto test3(int) -> decltype( load_minimal<AA>( NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
+        template <class, class>
+        static no test3( ... );
+        static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
       };
 
       template <class T, class A, bool Valid>
@@ -861,6 +867,8 @@ namespace cereal
         static const bool value = check::exists;
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member versioned load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
+        static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member versioned load_minimal.  "
+            "load_minimal non-member versioned functions must accept their serialization type by non-const reference" );
       };
     }
 
