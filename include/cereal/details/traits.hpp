@@ -685,19 +685,19 @@ namespace cereal
       #endif // NOT CEREAL_OLDER_GCC
 
       template <class T, class A, bool Valid>
-      struct has_member_load_minimal_wrapper : std::false_type
-      {
-        static_assert( Valid,
-          "cereal detected member load_minimal but no valid member save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-      };
+      struct has_member_load_minimal_wrapper : std::false_type {};
 
       template <class T, class A>
       struct has_member_load_minimal_wrapper<T, A, true>
       {
+        static_assert( has_member_save_minimal<T, A>::value,
+          "cereal detected member load_minimal but no valid member save_minimal.  "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+
         using SaveType = typename detail::get_member_save_minimal_type<T, A, true>::type;
         const static bool value = has_member_load_minimal_impl<T, A>::value;
         const static bool valid = has_member_load_minimal_type_impl<T, A, SaveType>::value;
+
         static_assert( valid || !value, "cereal detected different or invalid types in corresponding member load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
       };
@@ -705,7 +705,7 @@ namespace cereal
 
     template <class T, class A>
     struct has_member_load_minimal : std::integral_constant<bool,
-      detail::has_member_load_minimal_wrapper<T, A, has_member_save_minimal<T, A>::value>::value> {};
+      detail::has_member_load_minimal_wrapper<T, A, detail::has_member_load_minimal_impl<T, A>::value>::value> {};
 
     // ######################################################################
     // Member Load Minimal (versioned)
@@ -746,19 +746,19 @@ namespace cereal
       #endif // NOT CEREAL_OLDER_GCC
 
       template <class T, class A, bool Valid>
-      struct has_member_versioned_load_minimal_wrapper : std::false_type
-      {
-        static_assert( Valid,
-          "cereal detected member versioned load_minimal but no valid member versioned save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-      };
+      struct has_member_versioned_load_minimal_wrapper : std::false_type {};
 
       template <class T, class A>
       struct has_member_versioned_load_minimal_wrapper<T, A, true>
       {
+        static_assert( has_member_versioned_save_minimal<T, A>::value,
+          "cereal detected member versioned load_minimal but no valid member versioned save_minimal.  "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+
         using SaveType = typename detail::get_member_versioned_save_minimal_type<T, A, true>::type;
         const static bool value = has_member_versioned_load_minimal_impl<T, A>::value;
         const static bool valid = has_member_versioned_load_minimal_type_impl<T, A, SaveType>::value;
+
         static_assert( valid || !value, "cereal detected different or invalid types in corresponding member versioned load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
       };
@@ -766,7 +766,7 @@ namespace cereal
 
     template <class T, class A>
     struct has_member_versioned_load_minimal : std::integral_constant<bool,
-      detail::has_member_versioned_load_minimal_wrapper<T, A, has_member_versioned_save_minimal<T, A>::value>::value> {};
+      detail::has_member_versioned_load_minimal_wrapper<T, A, detail::has_member_versioned_load_minimal_impl<T, A>::value>::value> {};
 
     // ######################################################################
     // Non-Member Load Minimal
@@ -775,7 +775,7 @@ namespace cereal
       // See notes from member load_minimal
       namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
 
-      template <class T, class A, class U>
+      template <class T, class A, class U = void>
       struct has_non_member_load_minimal_impl
       {
         template <class TT, class AA>
@@ -798,19 +798,19 @@ namespace cereal
       };
 
       template <class T, class A, bool Valid>
-      struct has_non_member_load_minimal_wrapper : std::false_type
-      {
-        static_assert( Valid,
-          "cereal detected non-member load_minimal but no valid non-member save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-      };
+      struct has_non_member_load_minimal_wrapper : std::false_type {};
 
       template <class T, class A>
       struct has_non_member_load_minimal_wrapper<T, A, true>
       {
+        static_assert( detail::has_non_member_save_minimal_impl<T, A>::valid,
+          "cereal detected non-member load_minimal but no valid non-member save_minimal.  "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+
         using SaveType = typename detail::get_non_member_save_minimal_type<T, A, true>::type;
         using check = has_non_member_load_minimal_impl<T, A, SaveType>;
         static const bool value = check::exists;
+
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
         static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member load_minimal.  "
@@ -820,7 +820,7 @@ namespace cereal
 
     template <class T, class A>
     struct has_non_member_load_minimal : std::integral_constant<bool,
-      detail::has_non_member_load_minimal_wrapper<T, A, detail::has_non_member_save_minimal_impl<T, A>::valid>::value> {};
+      detail::has_non_member_load_minimal_wrapper<T, A, detail::has_non_member_load_minimal_impl<T, A>::exists>::value> {};
 
     // ######################################################################
     // Non-Member Load Minimal (versioned)
@@ -829,7 +829,7 @@ namespace cereal
       // See notes from member load_minimal
       namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
 
-      template <class T, class A, class U>
+      template <class T, class A, class U = void>
       struct has_non_member_versioned_load_minimal_impl
       {
         template <class TT, class AA>
@@ -852,19 +852,19 @@ namespace cereal
       };
 
       template <class T, class A, bool Valid>
-      struct has_non_member_versioned_load_minimal_wrapper : std::false_type
-      {
-        static_assert( Valid,
-          "cereal detected non-member versioned load_minimal but no valid non-member versioned save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-      };
+      struct has_non_member_versioned_load_minimal_wrapper : std::false_type {};
 
       template <class T, class A>
       struct has_non_member_versioned_load_minimal_wrapper<T, A, true>
       {
+        static_assert( detail::has_non_member_versioned_save_minimal_impl<T, A>::valid,
+          "cereal detected non-member versioned load_minimal but no valid non-member versioned save_minimal.  "
+          "cannot evaluate correctness of load_minimal without valid save_minimal." );
+
         using SaveType = typename detail::get_non_member_versioned_save_minimal_type<T, A, true>::type;
         using check = has_non_member_versioned_load_minimal_impl<T, A, SaveType>;
         static const bool value = check::exists;
+
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member versioned load_minimal and save_minimal functions.  "
             "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
         static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member versioned load_minimal.  "
@@ -874,7 +874,7 @@ namespace cereal
 
     template <class T, class A>
     struct has_non_member_versioned_load_minimal : std::integral_constant<bool,
-      detail::has_non_member_versioned_load_minimal_wrapper<T, A, detail::has_non_member_versioned_save_minimal_impl<T, A>::valid>::value> {};
+      detail::has_non_member_versioned_load_minimal_wrapper<T, A, detail::has_non_member_versioned_load_minimal_impl<T, A>::exists>::value> {};
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
