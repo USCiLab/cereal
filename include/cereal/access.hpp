@@ -251,10 +251,6 @@ namespace cereal
       static auto member_load_minimal(T & t, U const & u) -> decltype(t.template load_minimal<Archive>(u))
       { t.template load_minimal<Archive>(u); }
 
-      // needed to get a function pointer to load_minimal
-      template<class Archive, class T> inline
-      static auto member_load_minimal_type(T &) -> decltype(&T::template load_minimal<Archive>);
-
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
@@ -283,16 +279,6 @@ namespace cereal
       template<class Archive, class T, class U> inline
       static auto member_load_minimal(T & t, U const & u, const std::uint32_t version) -> decltype(t.template load_minimal<Archive>(u, version))
       { t.template load_minimal<Archive>(u, version); }
-
-
-
-
-
-      template<class Archive, class T, class NoConvert> inline
-      static auto member_load_minimal_type() -> decltype(NoConvert(&T::template load_minimal<Archive>));
-
-      template<class Archive, class T, class NoConvert> inline
-      static auto member_load_minimal_type(const std::uint32_t) -> decltype(NoConvert(&T::template load_minimal<Archive>));
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this

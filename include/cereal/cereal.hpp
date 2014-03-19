@@ -401,6 +401,30 @@ namespace cereal
         return *self;
       }
 
+      //! Member split (save_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_member_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        std::cerr << "I WOULD SAVE MINIMAL... IF I COULD!" << std::endl;
+        //access::member_save(*self, t);
+        return *self;
+      }
+
+      //! Non member split (save_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        std::cerr << "I WOULD SAVE MINIMAL (non member)... IF I COULD!" << std::endl;
+        //save(*self, t);
+        return *self;
+      }
+
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
@@ -496,6 +520,34 @@ namespace cereal
       {
         registerClassVersion<T>( detail::Version<T>::version );
         save(*self, t, detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Member split (save_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_member_versioned_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        std::cerr << "I WOULD SAVE MINIMAL (versioned)... IF I COULD!" << std::endl;
+        registerClassVersion<T>( detail::Version<T>::version );
+        //access::member_save(*self, t, detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Non member split (save_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_versioned_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        std::cerr << "I WOULD SAVE MINIMAL (versioned)... IF I COULD!" << std::endl;
+        registerClassVersion<T>( detail::Version<T>::version );
+        //save(*self, t, detail::Version<T>::version);
         return *self;
       }
 
