@@ -134,7 +134,8 @@ namespace cereal
   /*! This registration should be done once per archive.  A good place to
       put this is immediately following the definition of your archive.
       Archive registration is only strictly necessary if you wish to
-      support pointers to polymorphic data types
+      support pointers to polymorphic data types.  All archives that
+      come with cereal are already registered.
       @ingroup Internal */
   #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
   namespace cereal { namespace detail {                               \
@@ -166,6 +167,7 @@ namespace cereal
       automatically.
 
       Versioning cannot be mixed with non-versioned serialization functions.
+      Having both types will result result in a compile time error.
 
       Example interface for versioning on a non-member serialize function:
 
@@ -232,6 +234,7 @@ namespace cereal
       { }
 
       //! Serializes all passed in data
+      /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
@@ -550,6 +553,7 @@ namespace cereal
       { }
 
       //! Serializes all passed in data
+      /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
