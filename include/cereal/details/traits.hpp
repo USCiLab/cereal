@@ -33,7 +33,7 @@
 #ifndef __clang__
 #if (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 #define CEREAL_OLDER_GCC
-#endif
+#endif // gcc 4.7 or earlier
 #endif // __clang__
 
 #include <type_traits>
@@ -1193,6 +1193,7 @@ namespace cereal
         using type = typename std::decay<typename PtrType::element_type>::type;
     };
 
+    // ######################################################################
     //! Extracts the true type from something possibly wrapped in a cereal NoConvert
     /*! Internally cereal uses some wrapper classes to test the validity of non-member
         minimal load and save functions.  This can interfere with user type traits on
