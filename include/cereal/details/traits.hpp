@@ -1014,7 +1014,8 @@ namespace cereal
     struct is_specialized_member_load : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value && has_member_load<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value &&
+                     (has_member_load<T, A>::value || has_member_versioned_load<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value),
                      "cereal detected member load specialization but no member load function" );
     };
@@ -1023,7 +1024,8 @@ namespace cereal
     struct is_specialized_member_save : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value && has_member_save<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value &&
+                     (has_member_save<T, A>::value || has_member_versioned_save<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value),
                      "cereal detected member save specialization but no member save function" );
     };
@@ -1032,7 +1034,8 @@ namespace cereal
     struct is_specialized_member_load_minimal : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value && has_member_load_minimal<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value &&
+                     (has_member_load_minimal<T, A>::value || has_member_versioned_load_minimal<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value),
                      "cereal detected member load_minimal specialization but no member load_minimal function" );
     };
@@ -1041,7 +1044,8 @@ namespace cereal
     struct is_specialized_member_save_minimal : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value && has_member_save_minimal<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value &&
+                     (has_member_save_minimal<T, A>::value || has_member_versioned_save_minimal<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value),
                      "cereal detected member save_minimal specialization but no member save_minimal function" );
     };
@@ -1050,7 +1054,8 @@ namespace cereal
     struct is_specialized_non_member_serialize : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value && has_non_member_serialize<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value &&
+                     (has_non_member_serialize<T, A>::value || has_non_member_versioned_serialize<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value),
                      "cereal detected non-member serialization specialization but no non-member serialize function" );
     };
@@ -1059,7 +1064,8 @@ namespace cereal
     struct is_specialized_non_member_load : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value && has_non_member_load<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value &&
+                     (has_non_member_load<T, A>::value || has_non_member_versioned_load<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
                      "cereal detected non-member load specialization but no non-member load function" );
     };
@@ -1068,7 +1074,8 @@ namespace cereal
     struct is_specialized_non_member_save : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value && has_non_member_save<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value &&
+                     (has_non_member_save<T, A>::value || has_non_member_versioned_save<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
                      "cereal detected non-member save specialization but no non-member save function" );
     };
@@ -1077,7 +1084,8 @@ namespace cereal
     struct is_specialized_non_member_load_minimal : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value && has_non_member_load_minimal<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value &&
+                     (has_non_member_load_minimal<T, A>::value || has_non_member_versioned_load_minimal<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value),
                      "cereal detected non-member load specialization but no non-member load function" );
     };
@@ -1086,7 +1094,8 @@ namespace cereal
     struct is_specialized_non_member_save_minimal : std::integral_constant<bool,
       is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value>
     {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value && has_non_member_save_minimal<T, A>::value)
+      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value &&
+                     (has_non_member_save_minimal<T, A>::value || has_non_member_versioned_save_minimal<T, A>::value))
                      || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value),
                      "cereal detected non-member save specialization but no non-member save function" );
     };
