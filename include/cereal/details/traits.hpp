@@ -500,8 +500,6 @@ namespace cereal
     // Non-Member Save Minimal
     namespace detail
     {
-      //namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
-
       template <class T, class A>
       struct has_non_member_save_minimal_impl
       {
@@ -548,8 +546,6 @@ namespace cereal
     // Non-Member Save Minimal (versioned)
     namespace detail
     {
-      //namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
-
       template <class T, class A>
       struct has_non_member_versioned_save_minimal_impl
       {
@@ -781,8 +777,6 @@ namespace cereal
     namespace detail
     {
       // See notes from member load_minimal
-      //namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
-
       template <class T, class A, class U = void>
       struct has_non_member_load_minimal_impl
       {
@@ -835,8 +829,6 @@ namespace cereal
     namespace detail
     {
       // See notes from member load_minimal
-      //namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
-
       template <class T, class A, class U = void>
       struct has_non_member_versioned_load_minimal_impl
       {
