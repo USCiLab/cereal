@@ -596,22 +596,30 @@ namespace cereal
     // Member Load Minimal
     namespace detail
     {
+      //! Used to help strip away conversion wrappers
+      /*! If someone writes a non-member load/save minimal function that accepts its
+          parameter as some generic template type and needs to perform trait checks
+          on that type, our NoConvert wrappers will interfere with this.  Using
+          the struct strip_minmal, users can strip away our wrappers to get to
+          the underlying type, allowing traits to work properly */
+      struct NoConvertBase {};
+
       //! A struct that prevents implicit conversion
       /*! Any type instantiated with this struct will be unable to implicitly convert
           to another type.  Is designed to only allow conversion to Source const &.
 
           @tparam Source the type of the original source */
       template <class Source>
-      struct NoConvertConstRef
+      struct NoConvertConstRef : NoConvertBase
       {
-        //private:
-          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest () = delete;
+        using type = Source; //!< Used to get underlying type easily
 
-        //public:
-          // only allow conversion if the types are the same and we are converting into a const reference
-          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest const & () const;
+        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+        operator Dest () = delete;
+
+        //! only allow conversion if the types are the same and we are converting into a const reference
+        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+        operator Dest const & () const;
       };
 
       //! A struct that prevents implicit conversion
@@ -620,21 +628,21 @@ namespace cereal
 
           @tparam Source the type of the original source */
       template <class Source>
-      struct NoConvertRef
+      struct NoConvertRef : NoConvertBase
       {
-        //protected:
-          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest () = delete;
+        using type = Source; //!< Used to get underlying type easily
 
-          #ifdef __clang__
-          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest const & () = delete;
-          #endif // __clang__
+        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+        operator Dest () = delete;
 
-        //public:
-          // only allow conversion if the types are the same and we are converting into a const reference
-          template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest & ();
+        #ifdef __clang__
+        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+        operator Dest const & () = delete;
+        #endif // __clang__
+
+        //! only allow conversion if the types are the same and we are converting into a const reference
+        template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
+        operator Dest & ();
       };
 
       //! A type that can implicitly convert to anything else
@@ -1084,6 +1092,30 @@ namespace cereal
     };
 
     // ######################################################################
+    // detects if a type has any active minimal output serialization
+    template <class T, class OutputArchive>
+    struct has_minimal_output_serialization : std::integral_constant<bool,
+      is_specialized_member_save_minimal<T, OutputArchive>::value ||
+      ((has_member_save_minimal<T, OutputArchive>::value ||
+        has_non_member_save_minimal<T, OutputArchive>::value ||
+        has_member_versioned_save_minimal<T, OutputArchive>::value ||
+        has_non_member_versioned_save_minimal<T, OutputArchive>::value) &&
+       (!is_specialized_member_serialize<T, OutputArchive>::value ||
+        !is_specialized_member_save<T, OutputArchive>::value))> {};
+
+    // ######################################################################
+    // detects if a type has any active minimal input serialization
+    template <class T, class InputArchive>
+    struct has_minimal_input_serialization : std::integral_constant<bool,
+      is_specialized_member_load_minimal<T, InputArchive>::value ||
+      ((has_member_load_minimal<T, InputArchive>::value ||
+        has_non_member_load_minimal<T, InputArchive>::value ||
+        has_member_versioned_load_minimal<T, InputArchive>::value ||
+        has_non_member_versioned_load_minimal<T, InputArchive>::value) &&
+       (!is_specialized_member_serialize<T, InputArchive>::value ||
+        !is_specialized_member_load<T, InputArchive>::value))> {};
+
+    // ######################################################################
     namespace detail
     {
       struct base_class_id
@@ -1160,6 +1192,25 @@ namespace cereal
         using type = typename std::decay<typename PtrType::element_type>::type;
     };
 
+    //! Extracts the true type from something possibly wrapped in a cereal NoConvert
+    /*! Internally cereal uses some wrapper classes to test the validity of non-member
+        minimal load and save functions.  This can interfere with user type traits on
+        templated load and save minimal functions.  To get to the correct underlying type,
+        users should use strip_minimal when performing any enable_if type type trait checks.
+
+        See the enum serialization in types/common.hpp for an example of using this */
+    template <class T, bool IsCerealMinimalTrait = std::is_base_of<detail::NoConvertBase, T>::value>
+    struct strip_minimal
+    {
+      using type = T;
+    };
+
+    //! Specialization for types wrapped in a NoConvert
+    template <class T>
+    struct strip_minimal<T, true>
+    {
+      using type = typename T::type;
+    };
   } // namespace traits
 
   // ######################################################################

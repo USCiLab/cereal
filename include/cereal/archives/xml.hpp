@@ -716,11 +716,14 @@ namespace cereal
   { }
 
   // ######################################################################
-  //! Prologue for all other types for XML output archives
+  //! Prologue for all other types for XML output archives (except minimal types)
   /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived */
+      that may be given data by the type about to be archived
+
+      Minimal types do not start or end nodes */
   template <class T> inline
-  void prologue( XMLOutputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  prologue( XMLOutputArchive & ar, T const & )
   {
     ar.startNode();
     ar.insertType<T>();
@@ -734,10 +737,13 @@ namespace cereal
   }
 
   // ######################################################################
-  //! Epilogue for all other types other for XML output archives
-  /*! Finishes the node created in the prologue */
+  //! Epilogue for all other types other for XML output archives (except minimal types)
+  /*! Finishes the node created in the prologue
+
+      Minimal types do not start or end nodes */
   template <class T> inline
-  void epilogue( XMLOutputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  epilogue( XMLOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }

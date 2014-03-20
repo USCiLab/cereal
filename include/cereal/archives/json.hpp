@@ -692,11 +692,14 @@ namespace cereal
   { }
 
   // ######################################################################
-  //! Prologue for all other types for JSON archives
+  //! Prologue for all other types for JSON archives (except minimal types)
   /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived */
+      that may be given data by the type about to be archived
+
+      Minimal types do not start or finish nodes */
   template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & )
   {
     ar.startNode();
@@ -704,17 +707,21 @@ namespace cereal
 
   //! Prologue for all other types for JSON archives
   template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
   prologue( JSONInputArchive & ar, T const & )
   {
     ar.startNode();
   }
 
   // ######################################################################
-  //! Epilogue for all other types other for JSON archives
-  /*! Finishes the node created in the prologue */
+  //! Epilogue for all other types other for JSON archives (except minimal types
+  /*! Finishes the node created in the prologue
+
+      Minimal types do not start or finish nodes */
   template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value, void>::type
   epilogue( JSONOutputArchive & ar, T const & )
   {
     ar.finishNode();
@@ -722,7 +729,8 @@ namespace cereal
 
   //! Epilogue for all other types other for JSON archives
   template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
   epilogue( JSONInputArchive & ar, T const & )
   {
     ar.finishNode();

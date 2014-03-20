@@ -408,8 +408,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        std::cerr << "I WOULD SAVE MINIMAL... IF I COULD!" << std::endl;
-        //access::member_save(*self, t);
+        self->process( access::member_save_minimal(*self, t) );
         return *self;
       }
 
@@ -420,8 +419,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        std::cerr << "I WOULD SAVE MINIMAL (non member)... IF I COULD!" << std::endl;
-        //save(*self, t);
+        self->process( save_minimal(*self, t) );
         return *self;
       }
 
@@ -531,9 +529,8 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        std::cerr << "I WOULD SAVE MINIMAL (versioned)... IF I COULD!" << std::endl;
         registerClassVersion<T>( detail::Version<T>::version );
-        //access::member_save(*self, t, detail::Version<T>::version);
+        self->process( access::member_save_minimal(*self, t, detail::Version<T>::version) );
         return *self;
       }
 
@@ -545,9 +542,8 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        std::cerr << "I WOULD SAVE MINIMAL (versioned)... IF I COULD!" << std::endl;
         registerClassVersion<T>( detail::Version<T>::version );
-        //save(*self, t, detail::Version<T>::version);
+        self->process( save_minimal(*self, t, detail::Version<T>::version) );
         return *self;
       }
 
@@ -785,6 +781,32 @@ namespace cereal
         return *self;
       }
 
+      //! Member split (load_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_member_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        typename traits::has_member_save_minimal<T, ArchiveType>::type value;
+        self->process( value );
+        access::member_load_minimal(*self, t, value);
+        return *self;
+      }
+
+      //! Non member split (load_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        typename traits::has_non_member_save_minimal<T, ArchiveType>::type value;
+        self->process( value );
+        load_minimal(*self, t, value);
+        return *self;
+      }
+
       //! Empty class specialization
       template <class T> inline
       typename std::enable_if<(Flags & AllowEmptyClassElision) &&
@@ -889,6 +911,36 @@ namespace cereal
       {
         const auto version = loadClassVersion<T>();
         load(*self, t, version);
+        return *self;
+      }
+
+      //! Member split (load_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_member_versioned_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        const auto version = loadClassVersion<T>();
+        typename traits::has_member_versioned_save_minimal<T, ArchiveType>::type value;
+        self->process(value);
+        access::member_load_minimal(*self, t, value, version);
+        return *self;
+      }
+
+      //! Non member split (load_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_versioned_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        const auto version = loadClassVersion<T>();
+        typename traits::has_non_member_versioned_save_minimal<T, ArchiveType>::type value;
+        self->process(value);
+        load_minimal(*self, t, value, version);
         return *self;
       }
 

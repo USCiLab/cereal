@@ -34,23 +34,6 @@
 
 namespace cereal
 {
-  //! Serialization for enum types
-  template<class Archive, class T> inline
-  typename std::enable_if<std::is_enum<T>::value, void>::type
-  serialize(Archive & ar, T & t)
-  {
-    ar( reinterpret_cast<typename std::underlying_type<T>::type &>(t) );
-  }
-
-  //! Serialization for raw pointers
-  /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */
-  template <class Archive, class T> inline
-  void serialize( Archive &, T * & )
-  {
-    static_assert(cereal::traits::detail::delay_static_assert<T>::value,
-      "Cereal does not support serializing raw pointers - please use a smart pointer");
-  }
-
   namespace common_detail
   {
     //! Serialization for arrays if BinaryData is supported and we are arithmetic
@@ -69,6 +52,51 @@ namespace cereal
       for( auto & i : array )
         ar( i );
     }
+
+    /*! @internal */
+    template <class T, bool IsEnum>
+    struct enum_underlying_type_impl : std::false_type {};
+
+    /*! @internal */
+    template <class T>
+    struct enum_underlying_type_impl<T, true> { using type = typename std::underlying_type<T>::type; };
+
+    //! Helper for getting the type of an enum
+    /* This will work even if T is not an enum - in that case the type will be something
+       irrelevent
+       @internal */
+    template <class T>
+    struct enum_underlying_type
+    {
+      using type = typename enum_underlying_type_impl<T, std::is_enum<T>::value>::type;
+    };
+  }
+
+  //! Saving for enum types
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_enum<typename traits::strip_minimal<T>::type>::value,
+           typename common_detail::enum_underlying_type<typename traits::strip_minimal<T>::type>::type>::type
+  save_minimal( Archive const &, T const & t )
+  {
+    return static_cast<typename std::underlying_type<T>::type>(t);
+  }
+
+  //! Loading for enum types
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_enum<typename traits::strip_minimal<T>::type>::value, void>::type
+  load_minimal( Archive const &, T & t,
+                typename common_detail::enum_underlying_type<typename traits::strip_minimal<T>::type>::type const & value )
+  {
+    t = static_cast<T>(value);
+  }
+
+  //! Serialization for raw pointers
+  /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */
+  template <class Archive, class T> inline
+  void serialize( Archive &, T * & )
+  {
+    static_assert(cereal::traits::detail::delay_static_assert<T>::value,
+      "Cereal does not support serializing raw pointers - please use a smart pointer");
   }
 
   //! Serialization for C style arrays
