@@ -384,24 +384,24 @@ namespace cereal
         struct test : no {};
         template <class TT, class AA>
         struct test<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_minimal<AA>( std::declval<TT const &>() ) ) >::type> : yes {};
+          typename detail::Void< decltype( cereal::access::member_save_minimal( std::declval<AA const &>(), std::declval<TT const &>() ) ) >::type> : yes {};
         static const bool value = test<T, A>();
 
         template <class TT, class AA, class SFINAE = void>
         struct test2 : no {};
         template <class TT, class AA>
         struct test2<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_minimal_non_const<AA>( std::declval<typename std::remove_const<TT>::type&>() ) ) >::type> : yes {};
+          typename detail::Void< decltype( cereal::access::member_save_minimal_non_const( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>() ) ) >::type> : yes {};
         static const bool not_const_type = test2<T, A>();
         #else // NOT CEREAL_OLDER_GCC =========================================
         template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_save_minimal<AA>( std::declval<TT const &>() ), yes());
+        static auto test(int) -> decltype( cereal::access::member_save_minimal( std::declval<AA const &>(), std::declval<TT const &>() ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( cereal::access::member_save_minimal_non_const<AA>( std::declval<typename std::remove_const<TT>::type&>() ), yes());
+        static auto test2(int) -> decltype( cereal::access::member_save_minimal_non_const( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -416,7 +416,7 @@ namespace cereal
       template <class T, class A>
       struct get_member_save_minimal_type<T, A, true>
       {
-        using type = decltype( cereal::access::member_save_minimal<A>( std::declval<T const &>() ) );
+        using type = decltype( cereal::access::member_save_minimal( std::declval<A const &>(), std::declval<T const &>() ) );
       };
     } // end namespace detail
 
@@ -446,24 +446,24 @@ namespace cereal
         struct test : no {};
         template <class TT, class AA>
         struct test<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_minimal<AA>( std::declval<TT const &>(), 0 ) ) >::type> : yes {};
+          typename detail::Void< decltype( cereal::access::member_save_minimal( std::declval<AA const &>(), std::declval<TT const &>(), 0 ) ) >::type> : yes {};
         static const bool value = test<T, A>();
 
         template <class TT, class AA, class SFINAE = void>
         struct test2 : no {};
         template <class TT, class AA>
         struct test2<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_minimal_non_const<AA>( std::declval<typename std::remove_const<TT>::type&>(), 0 ) ) >::type> : yes {};
+          typename detail::Void< decltype( cereal::access::member_save_minimal_non_const( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ) ) >::type> : yes {};
         static const bool not_const_type = test2<T, A>();
         #else // NOT CEREAL_OLDER_GCC =========================================
         template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_save_minimal<AA>( std::declval<TT const &>(), 0 ), yes());
+        static auto test(int) -> decltype( cereal::access::member_save_minimal( std::declval<AA const &>(), std::declval<TT const &>(), 0 ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( cereal::access::member_save_minimal_non_const<AA>( std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        static auto test2(int) -> decltype( cereal::access::member_save_minimal_non_const( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -478,7 +478,7 @@ namespace cereal
       template <class T, class A>
       struct get_member_versioned_save_minimal_type<T, A, true>
       {
-        using type = decltype( cereal::access::member_save_minimal<A>( std::declval<T const &>(), 0 ) );
+        using type = decltype( cereal::access::member_save_minimal( std::declval<A const &>(), std::declval<T const &>(), 0 ) );
       };
     } // end namespace detail
 
@@ -500,19 +500,19 @@ namespace cereal
     // Non-Member Save Minimal
     namespace detail
     {
-      namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
+      //namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
 
       template <class T, class A>
       struct has_non_member_save_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save_minimal<AA>( std::declval<TT const &>() ), yes());
+        static auto test(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<TT const &>() ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save_minimal<AA>( std::declval<typename std::remove_const<TT>::type&>() ), yes());
+        static auto test2(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -526,7 +526,7 @@ namespace cereal
       template <class T, class A>
       struct get_non_member_save_minimal_type <T, A, true>
       {
-        using type = decltype( save_minimal<A>( std::declval<T const &>() ) );
+        using type = decltype( save_minimal( std::declval<A const &>(), std::declval<T const &>() ) );
       };
     } // end namespace detail
 
@@ -548,19 +548,19 @@ namespace cereal
     // Non-Member Save Minimal (versioned)
     namespace detail
     {
-      namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
+      //namespace { template <class> void save_minimal(); } // so SFINAE can operate properly for test
 
       template <class T, class A>
       struct has_non_member_versioned_save_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save_minimal<AA>( std::declval<TT const &>(), 0 ), yes());
+        static auto test(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<TT const &>(), 0 ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save_minimal<AA>( std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        static auto test2(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -574,7 +574,7 @@ namespace cereal
       template <class T, class A>
       struct get_non_member_versioned_save_minimal_type <T, A, true>
       {
-        using type = decltype( save_minimal<A>( std::declval<T const &>(), 0 ) );
+        using type = decltype( save_minimal( std::declval<A const &>(), std::declval<T const &>(), 0 ) );
       };
     } // end namespace detail
 
@@ -602,13 +602,13 @@ namespace cereal
 
           @tparam Source the type of the original source */
       template <class Source>
-      class NoConvertConstRef
+      struct NoConvertConstRef
       {
-        private:
+        //private:
           template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest ();
+          operator Dest () = delete;
 
-        public:
+        //public:
           // only allow conversion if the types are the same and we are converting into a const reference
           template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
           operator Dest const & () const;
@@ -620,18 +620,18 @@ namespace cereal
 
           @tparam Source the type of the original source */
       template <class Source>
-      class NoConvertRef
+      struct NoConvertRef
       {
-        protected:
+        //protected:
           template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest ();
+          operator Dest () = delete;
 
           #ifdef __clang__
           template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-          operator Dest const & ();
+          operator Dest const & () = delete;
           #endif // __clang__
 
-        public:
+        //public:
           // only allow conversion if the types are the same and we are converting into a const reference
           template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
           operator Dest & ();
@@ -655,19 +655,19 @@ namespace cereal
       struct has_member_load_minimal_impl : no {};
       template <class T, class A>
       struct has_member_load_minimal_impl<T, A,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), AnyConvert() ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal( std::declval<A const &>(), std::declval<T&>(), AnyConvert() ) ) >::type> : yes {};
 
       template <class T, class A, class U, class SFINAE = void>
       struct has_member_load_minimal_type_impl : no {};
       template <class T, class A, class U>
       struct has_member_load_minimal_type_impl<T, A, U,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvertConstRef<U>() ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal( std::declval<A const &>(), std::declval<T&>(), NoConvertConstRef<U>() ) ) >::type> : yes {};
       #else // NOT CEREAL_OLDER_GCC
       template <class T, class A>
       struct has_member_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), AnyConvert() ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
@@ -677,7 +677,7 @@ namespace cereal
       struct has_member_load_minimal_type_impl
       {
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<U>() ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<U>() ), yes());
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
@@ -716,19 +716,19 @@ namespace cereal
       struct has_member_versioned_load_minimal_impl : no {};
       template <class T, class A>
       struct has_member_versioned_load_minimal_impl<T, A,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), AnyConvert(), 0 ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal( std::declval<A const &>(), std::declval<T&>(), AnyConvert(), 0 ) ) >::type> : yes {};
 
       template <class T, class A, class U, class SFINAE = void>
       struct has_member_versioned_load_minimal_type_impl : no {};
       template <class T, class A, class U>
       struct has_member_versioned_load_minimal_type_impl<T, A, U,
-        typename detail::Void<decltype( cereal::access::member_load_minimal<A>( std::declval<T&>(), NoConvertConstRef<U>(), 0 ) ) >::type> : yes {};
+        typename detail::Void<decltype( cereal::access::member_load_minimal( std::declval<A const &>(), std::declval<T&>(), NoConvertConstRef<U>(), 0 ) ) >::type> : yes {};
       #else // NOT CEREAL_OLDER_GCC
       template <class T, class A>
       struct has_member_versioned_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), AnyConvert(), 0 ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert(), 0 ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
@@ -738,7 +738,7 @@ namespace cereal
       struct has_member_versioned_load_minimal_type_impl
       {
         template <class TT, class AA, class UU>
-        static auto test(int) -> decltype( cereal::access::member_load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<U>(), 0 ), yes());
+        static auto test(int) -> decltype( cereal::access::member_load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<U>(), 0 ), yes());
         template <class, class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A, U>(0)), yes>::value;
@@ -773,25 +773,25 @@ namespace cereal
     namespace detail
     {
       // See notes from member load_minimal
-      namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
+      //namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
 
       template <class T, class A, class U = void>
       struct has_non_member_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), AnyConvert() ), yes() );
+        static auto test(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() ), yes() );
         template <class, class>
         static no test( ... );
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
+        static auto test2(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
 
         template <class TT, class AA>
-        static auto test3(int) -> decltype( load_minimal<AA>( NoConvertRef<TT>(), AnyConvert() ), yes() );
+        static auto test3(int) -> decltype( load_minimal( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert() ), yes() );
         template <class, class>
         static no test3( ... );
         static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
@@ -827,25 +827,25 @@ namespace cereal
     namespace detail
     {
       // See notes from member load_minimal
-      namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
+      //namespace { template <class> int load_minimal(); } // so SFINAE can operate properly for test
 
       template <class T, class A, class U = void>
       struct has_non_member_versioned_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), AnyConvert(), 0 ), yes() );
+        static auto test(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert(), 0 ), yes() );
         template <class, class>
         static no test( ... );
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal<AA>( std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
+        static auto test2(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
 
         template <class TT, class AA>
-        static auto test3(int) -> decltype( load_minimal<AA>( NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
+        static auto test3(int) -> decltype( load_minimal( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
         template <class, class>
         static no test3( ... );
         static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
