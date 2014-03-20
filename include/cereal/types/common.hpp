@@ -53,41 +53,55 @@ namespace cereal
         ar( i );
     }
 
-    /*! @internal */
-    template <class T, bool IsEnum>
-    struct enum_underlying_type_impl : std::false_type {};
-
-    /*! @internal */
-    template <class T>
-    struct enum_underlying_type_impl<T, true> { using type = typename std::underlying_type<T>::type; };
-
-    //! Helper for getting the type of an enum
-    /* This will work even if T is not an enum - in that case the type will be something
-       irrelevent
-       @internal */
-    template <class T>
-    struct enum_underlying_type
+    namespace
     {
-      using type = typename enum_underlying_type_impl<T, std::is_enum<T>::value>::type;
+      //! Gets the underlying type of an enum
+      /*! @internal */
+      template <class T, bool IsEnum>
+      struct enum_underlying_type : std::false_type {};
+
+      //! Gets the underlying type of an enum
+      /*! Specialization for when we actually have an enum
+          @internal */
+      template <class T>
+      struct enum_underlying_type<T, true> { using type = typename std::underlying_type<T>::type; };
+    } // anon namespace
+
+    //! Checks if a type is an enum
+    /*! This is needed over simply calling std::is_enum because the type
+        traits checking at compile time will attempt to call something like
+        load_minimal with a special NoConvertRef struct that wraps up the true type.
+
+        This will strip away any of that and also expose the true underlying type.
+        @internal */
+    template <class T>
+    class is_enum
+    {
+      private:
+        using DecayedT  = typename std::decay<T>::type;
+        using StrippedT = typename ::cereal::traits::strip_minimal<DecayedT>::type;
+
+      public:
+        static const bool value = std::is_enum<StrippedT>::value;
+        using type = StrippedT;
+        using base_type = typename enum_underlying_type<StrippedT, value>::type;
     };
   }
 
   //! Saving for enum types
   template <class Archive, class T> inline
-  typename std::enable_if<std::is_enum<typename traits::strip_minimal<T>::type>::value,
-           typename common_detail::enum_underlying_type<typename traits::strip_minimal<T>::type>::type>::type
+  typename std::enable_if<common_detail::is_enum<T>::value, typename common_detail::is_enum<T>::base_type>::type
   save_minimal( Archive const &, T const & t )
   {
-    return static_cast<typename std::underlying_type<T>::type>(t);
+    return static_cast<typename common_detail::is_enum<T>::base_type>(t);
   }
 
   //! Loading for enum types
   template <class Archive, class T> inline
-  typename std::enable_if<std::is_enum<typename traits::strip_minimal<T>::type>::value, void>::type
-  load_minimal( Archive const &, T & t,
-                typename common_detail::enum_underlying_type<typename traits::strip_minimal<T>::type>::type const & value )
+  typename std::enable_if<common_detail::is_enum<T>::value, void>::type
+  load_minimal( Archive const &, T && t, typename common_detail::is_enum<T>::base_type const & value )
   {
-    t = static_cast<T>(value);
+    t = reinterpret_cast<typename common_detail::is_enum<T>::type const &>( value );
   }
 
   //! Serialization for raw pointers

@@ -729,9 +729,10 @@ namespace cereal
     ar.insertType<T>();
   }
 
-  //! Prologue for all other types for XML input archives
+  //! Prologue for all other types for XML input archives (except minimal types)
   template <class T> inline
-  void prologue( XMLInputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  prologue( XMLInputArchive & ar, T const & )
   {
     ar.startNode();
   }
@@ -748,9 +749,10 @@ namespace cereal
     ar.finishNode();
   }
 
-  //! Epilogue for all other types other for XML output archives
+  //! Epilogue for all other types other for XML output archives (except minimal types)
   template <class T> inline
-  void epilogue( XMLInputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  epilogue( XMLInputArchive & ar, T const & )
   {
     ar.finishNode();
   }
