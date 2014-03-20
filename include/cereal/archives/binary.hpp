@@ -111,7 +111,7 @@ namespace cereal
   //! Saving for POD types to binary
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(BinaryOutputArchive & ar, T const & t)
+  CEREAL_SAVE_FUNCTION_NAME(BinaryOutputArchive & ar, T const & t)
   {
     ar.saveBinary(std::addressof(t), sizeof(t));
   }
@@ -119,7 +119,7 @@ namespace cereal
   //! Loading for POD types from binary
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(BinaryInputArchive & ar, T & t)
+  CEREAL_LOAD_FUNCTION_NAME(BinaryInputArchive & ar, T & t)
   {
     ar.loadBinary(std::addressof(t), sizeof(t));
   }
@@ -127,7 +127,7 @@ namespace cereal
   //! Serializing NVP types to binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, NameValuePair<T> & t )
+  CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, NameValuePair<T> & t )
   {
     ar( t.value );
   }
@@ -135,21 +135,21 @@ namespace cereal
   //! Serializing SizeTags to binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, SizeTag<T> & t )
+  CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, SizeTag<T> & t )
   {
     ar( t.size );
   }
 
   //! Saving binary data
   template <class T> inline
-  void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)
+  void CEREAL_SAVE_FUNCTION_NAME(BinaryOutputArchive & ar, BinaryData<T> const & bd)
   {
     ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 
   //! Loading binary data
   template <class T> inline
-  void load(BinaryInputArchive & ar, BinaryData<T> & bd)
+  void CEREAL_LOAD_FUNCTION_NAME(BinaryInputArchive & ar, BinaryData<T> & bd)
   {
     ar.loadBinary(bd.data, static_cast<std::size_t>(bd.size));
   }

@@ -80,7 +80,7 @@ namespace cereal
 
   //! Saving for boost::variant
   template <class Archive, typename... VariantTypes> inline
-  void save( Archive & ar, boost::variant<VariantTypes...> const & variant )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> const & variant )
   {
     int32_t which = variant.which();
     ar( _CEREAL_NVP("which", which) );
@@ -90,7 +90,7 @@ namespace cereal
 
   //! Loading for boost::variant
   template <class Archive, typename... VariantTypes> inline
-  void load( Archive & ar, boost::variant<VariantTypes...> & variant )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> & variant )
   {
     typedef typename boost::variant<VariantTypes...>::types types;
 

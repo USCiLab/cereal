@@ -91,14 +91,14 @@ namespace cereal
 
   //! Saving for std::queue
   template <class Archive, class T, class C> inline
-  void save( Archive & ar, std::queue<T, C> const & queue )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::queue<T, C> const & queue )
   {
     ar( _CEREAL_NVP("container", queue_detail::container( queue )) );
   }
 
   //! Loading for std::queue
   template <class Archive, class T, class C> inline
-  void load( Archive & ar, std::queue<T, C> & queue )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::queue<T, C> & queue )
   {
     C container;
     ar( _CEREAL_NVP("container", container) );
@@ -107,7 +107,7 @@ namespace cereal
 
   //! Saving for std::priority_queue
   template <class Archive, class T, class C, class Comp> inline
-  void save( Archive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::priority_queue<T, C, Comp> const & priority_queue )
   {
     ar( _CEREAL_NVP("comparator", queue_detail::comparator( priority_queue )) );
     ar( _CEREAL_NVP("container", queue_detail::container( priority_queue )) );
@@ -115,7 +115,7 @@ namespace cereal
 
   //! Loading for std::priority_queue
   template <class Archive, class T, class C, class Comp> inline
-  void load( Archive & ar, std::priority_queue<T, C, Comp> & priority_queue )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
     Comp comparator;
     ar( _CEREAL_NVP("comparator", comparator) );

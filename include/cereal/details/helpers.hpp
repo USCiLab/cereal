@@ -37,6 +37,7 @@
 #include <unordered_map>
 #include <stdexcept>
 
+#include <cereal/macros.hpp>
 #include <cereal/details/static_object.hpp>
 
 namespace cereal
@@ -304,7 +305,7 @@ namespace cereal
 
     //! Serialize the MapItem with the NVPs "key" and "value"
     template <class Archive> inline
-    void serialize(Archive & archive)
+    void CEREAL_SERIALIZE_FUNCTION_NAME(Archive & archive)
     {
       archive( make_nvp<Archive>("key",   key),
                make_nvp<Archive>("value", value) );

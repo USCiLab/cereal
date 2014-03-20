@@ -33,6 +33,7 @@
 #include <iostream>
 #include <cstdint>
 
+#include <cereal/macros.hpp>
 #include <cereal/details/helpers.hpp>
 
 namespace cereal
@@ -224,37 +225,37 @@ namespace cereal
     public:
       // ####### Standard Serialization ########################################
       template<class Archive, class T> inline
-      static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
-      { t.serialize(ar); }
+      static auto member_serialize(Archive & ar, T & t) -> decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar))
+      { t.CEREAL_SERIALIZE_FUNCTION_NAME(ar); }
 
       template<class Archive, class T> inline
-      static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
-      { t.save(ar); }
+      static auto member_save(Archive & ar, T const & t) -> decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))
+      { t.CEREAL_SAVE_FUNCTION_NAME(ar); }
 
       template<class Archive, class T> inline
-      static auto member_save_non_const(Archive & ar, T & t) -> decltype(t.save(ar))
-      { t.save(ar); }
+      static auto member_save_non_const(Archive & ar, T & t) -> decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))
+      { t.CEREAL_SAVE_FUNCTION_NAME(ar); }
 
       template<class Archive, class T> inline
-      static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
-      { t.load(ar); }
+      static auto member_load(Archive & ar, T & t) -> decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar))
+      { t.CEREAL_LOAD_FUNCTION_NAME(ar); }
 
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
-      static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
-      { t.serialize(ar, version); }
+      static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version))
+      { t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version); }
 
       template<class Archive, class T> inline
-      static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
-      { t.save(ar, version); }
+      static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))
+      { t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }
 
       template<class Archive, class T> inline
-      static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
-      { t.save(ar, version); }
+      static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))
+      { t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }
 
       template<class Archive, class T> inline
-      static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
-      { t.load(ar, version); }
+      static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar, version))
+      { t.CEREAL_LOAD_FUNCTION_NAME(ar, version); }
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
