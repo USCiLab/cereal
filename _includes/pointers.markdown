@@ -64,7 +64,7 @@ namespace cereal
     // More advanced functionality is available using construct, such as accessing
     // class members, which is detailed in the doxygen docs.
     template <class Archive>
-    static MyType * load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
+    static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
     {
       int x;
       ar( x );

@@ -309,12 +309,17 @@ Optionally, an archive can also choose to support:
 
 * Binary data output, detected with `cereal::BinaryData<T>`
 * `std::string`, which by default will try to use `cereal::BinaryData<T>` encodings.
+* Minimal representation output, detected with `cereal::traits::has_minimal_output_serialization<T>` (or `cereal::traits::has_minimal_input_serialization<T>` for input)
 
 Adding support for `cereal::BinaryData<T>` means that your archive can support optimized serialization of raw binary data.  If your archive accepts `cereal::BinaryData<T>`, cereal will attempt to package up any type (e.g. arrays of arithmetic data, strings, etc) that can be represented in this way as binary data.  If you are working with human readable output, this may not be the behavior you desire - in such cases it is best to **not** specialize for `cereal::BinaryData<T>` and instead provide users with explicit binary save/load functions that can be invoked directly on the archive, if they desire.  See `<cereal/archives/xml.hpp>` for an example of this.
 
 Note that the generic implementation for `std::string` is to serialize its data in a binary fashion by wrapping the
 internals in `cereal::BinaryData<T>`.  If your archive does not support this, or you wish to have different behavior for
 strings, such as outputting readable characters, you will need to specialize string serialization functions for your archive.
+
+Minimal representation serialization, detailed ELSEWHERE, is usually only utilized by human readable archives.  This
+allows you to specialize for cases when outputting extra information or extra nodes is unnecessary.  For an example of
+this in action, look at how enum serialization (`<cereal/types/common.hpp>`) is performed in the JSON and XML archives.
 
 ### The base archives
 

@@ -162,7 +162,7 @@ class SomeData
       ar( a, b );
     }
 
-    // note the lack of explicitly informing cereal to use a split member load/save
+    // note the lack of explicitly informing xCEREAL to use a split member load/save
 };
 
 CEREAL_CLASS_VERSION(SomeData, 1);
