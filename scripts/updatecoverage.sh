@@ -28,7 +28,6 @@ genhtml --demangle-cpp coverage.info --output-directory ${tempdir}
 git checkout gh-pages-1.0
 
 rm -rf $1/assets/coverage
-
+mkdir $1/assets/coverage
 cp -r ${tempdir}/* $1/assets/coverage/
-
 rm -rf ${tempdir}
