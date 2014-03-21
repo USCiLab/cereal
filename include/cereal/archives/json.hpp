@@ -1,7 +1,7 @@
 /*! \file json.hpp
     \brief JSON input and output archives */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
