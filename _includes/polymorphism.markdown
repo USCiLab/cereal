@@ -136,7 +136,7 @@ int main()
 ---
 
 ### Registering Archives
-In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.  THis is already done for all archives that come with cereal.
+In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.  This is already done for all archives that come with cereal.
 
 ```cpp
 namespace mynamespace
