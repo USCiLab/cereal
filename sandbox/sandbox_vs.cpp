@@ -140,13 +140,25 @@ struct C
 
 //CEREAL_REGISTER_TYPE(B);
 
-template <class T, class A>
-static auto test(int) -> decltype( cereal::access::member_serialize( std::declval<A&>(), std::declval<T&>() ), std::true_type())
-{ return {}; }
+class MemberMinimal
+{
+  public:
+    MemberMinimal() = default;
+    template <class Archive>
+    int save_minimal( Archive const & ) const
+    {
+      return x;
+    }
 
-template <class T, class A>
-static auto test(...) -> std::false_type
-{ return {}; }
+    template <class Archive>
+    void load_minimal( Archive const &, int const & str )
+    {
+      x = str;
+    }
+
+  public:
+    int x;
+};
 
 int main()
 {
@@ -162,7 +174,6 @@ int main()
   std::cout << "\tserialize" << std::endl;
   std::cout << cereal::traits::has_member_serialize<T, Archive>::value << std::endl;
   std::cout << cereal::traits::has_non_member_serialize<T, Archive>::value << std::endl;
-  std::cout << test<T, Archive>(0) << std::endl;
 
   // load
   std::cout << "\tload" << std::endl;
@@ -212,6 +223,9 @@ int main()
   std::cout << typeid(cereal::traits::has_load_and_construct<int, bool>).name() << std::endl;
 
   // extra testing
-
-  return 0;
+  std::cout << "\textra" << std::endl;
+  std::cout << cereal::traits::has_member_save_minimal<MemberMinimal, Archive>::value << std::endl;
+  std::cout << cereal::traits::has_member_load_minimal<MemberMinimal, Archive>::value << std::endl;
+       
+  return 0; 
 }
