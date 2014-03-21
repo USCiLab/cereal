@@ -31,6 +31,6 @@ git checkout gh-pages-1.0
 
 rm -rf assets/coverage
 
-cp -r ${tempdir}/coverage* assets/coverage/
+cp -r ${tempdir}/* assets/coverage/
 
 rm -rf ${tempdir}
