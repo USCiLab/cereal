@@ -1,0 +1,1349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - cereal/details/traits.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/details</a> - traits.hpp<span style="font-size: 80%;"> (source / <a href="traits.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-03-20</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*! \file traits.hpp</a>
+<span class="lineNum">       2 </span>            :     \brief Internal type trait support
+<span class="lineNum">       3 </span>            :     \ingroup Internal */
+<span class="lineNum">       4 </span>            : /*
+<span class="lineNum">       5 </span>            :   Copyright (c) 2014, Randolph Voorhies, Shane Grant
+<span class="lineNum">       6 </span>            :   All rights reserved.
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            :   Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       9 </span>            :   modification, are permitted provided that the following conditions are met:
+<span class="lineNum">      10 </span>            :       * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :         notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            :       * Redistributions in binary form must reproduce the above copyright
+<span class="lineNum">      13 </span>            :         notice, this list of conditions and the following disclaimer in the
+<span class="lineNum">      14 </span>            :         documentation and/or other materials provided with the distribution.
+<span class="lineNum">      15 </span>            :       * Neither the name of cereal nor the
+<span class="lineNum">      16 </span>            :         names of its contributors may be used to endorse or promote products
+<span class="lineNum">      17 </span>            :         derived from this software without specific prior written permission.
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+<span class="lineNum">      20 </span>            :   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+<span class="lineNum">      21 </span>            :   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+<span class="lineNum">      22 </span>            :   DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+<span class="lineNum">      23 </span>            :   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+<span class="lineNum">      24 </span>            :   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+<span class="lineNum">      25 </span>            :   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+<span class="lineNum">      26 </span>            :   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      27 </span>            :   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+<span class="lineNum">      28 </span>            :   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      29 </span>            : */
+<span class="lineNum">      30 </span>            : #ifndef CEREAL_DETAILS_TRAITS_HPP_
+<span class="lineNum">      31 </span>            : #define CEREAL_DETAILS_TRAITS_HPP_
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #ifndef __clang__
+<span class="lineNum">      34 </span>            : #if (__GNUC__ == 4 &amp;&amp; __GNUC_MINOR__ &lt;= 7)
+<span class="lineNum">      35 </span>            : #define CEREAL_OLDER_GCC
+<span class="lineNum">      36 </span>            : #endif // gcc 4.7 or earlier
+<span class="lineNum">      37 </span>            : #endif // __clang__
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      40 </span>            : #include &lt;typeindex&gt;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #include &lt;cereal/access.hpp&gt;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : namespace cereal
+<span class="lineNum">      45 </span>            : {
+<span class="lineNum">      46 </span>            :   namespace traits
+<span class="lineNum">      47 </span>            :   {
+<span class="lineNum">      48 </span>            :     typedef std::true_type yes;
+<span class="lineNum">      49 </span>            :     typedef std::false_type no;
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :     namespace detail
+<span class="lineNum">      52 </span>            :     {
+<span class="lineNum">      53 </span>            :       //! Used to delay a static_assert until template instantiation
+<span class="lineNum">      54 </span>            :       template &lt;class T&gt;
+<span class="lineNum">      55 </span>            :       struct delay_static_assert : std::false_type {};
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :       #ifdef CEREAL_OLDER_GCC // when VS supports better SFINAE, we can use this as the default
+<span class="lineNum">      58 </span>            :       template&lt;typename&gt; struct Void { typedef void type; };
+<span class="lineNum">      59 </span>            :       #endif // CEREAL_OLDER_GCC
+<span class="lineNum">      60 </span>            :     } // namespace detail
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :     //! Creates a test for whether a non const member function exists
+<span class="lineNum">      63 </span>            :     /*! This creates a class derived from std::integral_constant that will be true if
+<span class="lineNum">      64 </span>            :         the type has the proper member function for the given archive. */
+<span class="lineNum">      65 </span>            :     #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">      66 </span>            :     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
+<span class="lineNum">      67 </span>            :     template &lt;class T, class A, class SFINAE = void&gt;                                                                               \
+<span class="lineNum">      68 </span>            :     struct has_member_##name : no {};                                                                                              \
+<span class="lineNum">      69 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">      70 </span>            :     struct has_member_##name&lt;T, A,                                                                                                 \
+<span class="lineNum">      71 </span>            :       typename detail::Void&lt; decltype( cereal::access::member_##name( std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;() ) ) &gt;::type&gt; : yes {}
+<span class="lineNum">      72 </span>            :     #else // NOT CEREAL_OLDER_GCC
+<span class="lineNum">      73 </span>            :     #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
+<span class="lineNum">      74 </span>            :     namespace detail                                                                                                               \
+<span class="lineNum">      75 </span>            :     {                                                                                                                              \
+<span class="lineNum">      76 </span>            :       template &lt;class T, class A&gt;                                                                                                  \
+<span class="lineNum">      77 </span>            :       struct has_member_##name##_impl                                                                                              \
+<span class="lineNum">      78 </span>            :       {                                                                                                                            \
+<span class="lineNum">      79 </span>            :         template &lt;class TT, class AA&gt;                                                                                              \
+<span class="lineNum">      80 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_##name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() ), yes());      \
+<span class="lineNum">      81 </span>            :         template &lt;class, class&gt;                                                                                                    \
+<span class="lineNum">      82 </span>            :         static no test(...);                                                                                                       \
+<span class="lineNum">      83 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                               \
+<span class="lineNum">      84 </span>            :       };                                                                                                                           \
+<span class="lineNum">      85 </span>            :     } /* end namespace detail */                                                                                                   \
+<span class="lineNum">      86 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">      87 </span>            :     struct has_member_##name : std::integral_constant&lt;bool, detail::has_member_##name##_impl&lt;T, A&gt;::value&gt; {}
+<span class="lineNum">      88 </span>            :     #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            :     //! Creates a test for whether a non const non-member function exists
+<span class="lineNum">      91 </span>            :     /*! This creates a class derived from std::integral_constant that will be true if
+<span class="lineNum">      92 </span>            :         the type has the proper non-member function for the given archive. */
+<span class="lineNum">      93 </span>            :     #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(name)                                                                                  \
+<span class="lineNum">      94 </span>            :     namespace detail                                                                                                               \
+<span class="lineNum">      95 </span>            :     {                                                                                                                              \
+<span class="lineNum">      96 </span>            :       template &lt;class T, class A&gt;                                                                                                  \
+<span class="lineNum">      97 </span>            :       struct has_non_member_##name##_impl                                                                                          \
+<span class="lineNum">      98 </span>            :       {                                                                                                                            \
+<span class="lineNum">      99 </span>            :         template &lt;class TT, class AA&gt;                                                                                              \
+<span class="lineNum">     100 </span>            :         static auto test(int) -&gt; decltype( name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() ), yes());                               \
+<span class="lineNum">     101 </span>            :         template &lt;class, class&gt;                                                                                                    \
+<span class="lineNum">     102 </span>            :         static no test( ... );                                                                                                     \
+<span class="lineNum">     103 </span>            :         static const bool value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                           \
+<span class="lineNum">     104 </span>            :       };                                                                                                                           \
+<span class="lineNum">     105 </span>            :     } /* end namespace detail */                                                                                                   \
+<span class="lineNum">     106 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">     107 </span>            :     struct has_non_member_##name : std::integral_constant&lt;bool, detail::has_non_member_##name##_impl&lt;T, A&gt;::value&gt; {}
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :     //! Creates a test for whether a non const member function exists with a version parameter
+<span class="lineNum">     110 </span>            :     /*! This creates a class derived from std::integral_constant that will be true if
+<span class="lineNum">     111 </span>            :         the type has the proper member function for the given archive. */
+<span class="lineNum">     112 </span>            :     #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     113 </span>            :     #define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(name)                                                                            \
+<span class="lineNum">     114 </span>            :     template &lt;class T, class A, class SFINAE = void&gt;                                                                               \
+<span class="lineNum">     115 </span>            :     struct has_member_versioned_##name : no {};                                                                                    \
+<span class="lineNum">     116 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">     117 </span>            :     struct has_member_versioned_##name&lt;T, A,                                                                                       \
+<span class="lineNum">     118 </span>            :       typename detail::Void&lt; decltype( cereal::access::member_##name( std::declval&lt;A&amp;&gt;(), std::declval&lt;T&amp;&gt;(), 0 ) ) &gt;::type&gt; : yes {}
+<span class="lineNum">     119 </span>            :     #else // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     120 </span>            :     #define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(name)                                                                            \
+<span class="lineNum">     121 </span>            :     namespace detail                                                                                                               \
+<span class="lineNum">     122 </span>            :     {                                                                                                                              \
+<span class="lineNum">     123 </span>            :       template &lt;class T, class A&gt;                                                                                                  \
+<span class="lineNum">     124 </span>            :       struct has_member_versioned_##name##_impl                                                                                    \
+<span class="lineNum">     125 </span>            :       {                                                                                                                            \
+<span class="lineNum">     126 </span>            :         template &lt;class TT, class AA&gt;                                                                                              \
+<span class="lineNum">     127 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_##name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;(), 0 ), yes());   \
+<span class="lineNum">     128 </span>            :         template &lt;class, class&gt;                                                                                                    \
+<span class="lineNum">     129 </span>            :         static no test(...);                                                                                                       \
+<span class="lineNum">     130 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                               \
+<span class="lineNum">     131 </span>            :       };                                                                                                                           \
+<span class="lineNum">     132 </span>            :     } /* end namespace detail */                                                                                                   \
+<span class="lineNum">     133 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">     134 </span>            :     struct has_member_versioned_##name : std::integral_constant&lt;bool, detail::has_member_versioned_##name##_impl&lt;T, A&gt;::value&gt; {}
+<span class="lineNum">     135 </span>            :     #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :     //! Creates a test for whether a non const non-member function exists with a version parameter
+<span class="lineNum">     138 </span>            :     /*! This creates a class derived from std::integral_constant that will be true if
+<span class="lineNum">     139 </span>            :         the type has the proper non-member function for the given archive. */
+<span class="lineNum">     140 </span>            :     #define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(name)                                                                        \
+<span class="lineNum">     141 </span>            :     namespace detail                                                                                                               \
+<span class="lineNum">     142 </span>            :     {                                                                                                                              \
+<span class="lineNum">     143 </span>            :       template &lt;class T, class A&gt;                                                                                                  \
+<span class="lineNum">     144 </span>            :       struct has_non_member_versioned_##name##_impl                                                                                \
+<span class="lineNum">     145 </span>            :       {                                                                                                                            \
+<span class="lineNum">     146 </span>            :         template &lt;class TT, class AA&gt;                                                                                              \
+<span class="lineNum">     147 </span>            :         static auto test(int) -&gt; decltype( name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;(), 0 ), yes());                            \
+<span class="lineNum">     148 </span>            :         template &lt;class, class&gt;                                                                                                    \
+<span class="lineNum">     149 </span>            :         static no test( ... );                                                                                                     \
+<span class="lineNum">     150 </span>            :         static const bool value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                           \
+<span class="lineNum">     151 </span>            :       };                                                                                                                           \
+<span class="lineNum">     152 </span>            :     } /* end namespace detail */                                                                                                   \
+<span class="lineNum">     153 </span>            :     template &lt;class T, class A&gt;                                                                                                    \
+<span class="lineNum">     154 </span>            :     struct has_non_member_versioned_##name : std::integral_constant&lt;bool, detail::has_non_member_versioned_##name##_impl&lt;T, A&gt;::value&gt; {}
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span>            :     // ######################################################################
+<span class="lineNum">     157 </span>            :     // Member load_and_construct
+<span class="lineNum">     158 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     159 </span>            :     struct has_member_load_and_construct :
+<span class="lineNum">     160 </span>            :       std::integral_constant&lt;bool, std::is_same&lt;decltype( access::load_and_construct&lt;T&gt;( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;() ) ), void&gt;::value&gt; {};
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :     // ######################################################################
+<span class="lineNum">     163 </span>            :     // Non Member load_and_construct
+<span class="lineNum">     164 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     165 </span>            :     struct has_non_member_load_and_construct : std::integral_constant&lt;bool,
+<span class="lineNum">     166 </span>            :       std::is_same&lt;decltype( LoadAndConstruct&lt;T&gt;::load_and_construct( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;() ) ), void&gt;::value&gt; {};
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :     // ######################################################################
+<span class="lineNum">     169 </span>            :     // Has either a member or non member allocate
+<span class="lineNum">     170 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     171 </span>            :     struct has_load_and_construct : std::integral_constant&lt;bool,
+<span class="lineNum">     172 </span>            :       has_member_load_and_construct&lt;T, A&gt;::value || has_non_member_load_and_construct&lt;T, A&gt;::value&gt;
+<span class="lineNum">     173 </span>            :     { };
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            :     // ######################################################################
+<span class="lineNum">     176 </span>            :     // Member Serialize
+<span class="lineNum">     177 </span>            :     CEREAL_MAKE_HAS_MEMBER_TEST(serialize);
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :     // ######################################################################
+<span class="lineNum">     180 </span>            :     // Member Serialize (versioned)
+<span class="lineNum">     181 </span>            :     CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(serialize);
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :     // ######################################################################
+<span class="lineNum">     184 </span>            :     // Non Member Serialize
+<span class="lineNum">     185 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize);
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :     // ######################################################################
+<span class="lineNum">     188 </span>            :     // Non Member Serialize (versioned)
+<span class="lineNum">     189 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize);
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :     // ######################################################################
+<span class="lineNum">     192 </span>            :     // Member Load
+<span class="lineNum">     193 </span>            :     CEREAL_MAKE_HAS_MEMBER_TEST(load);
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :     // ######################################################################
+<span class="lineNum">     196 </span>            :     // Member Load (versioned)
+<span class="lineNum">     197 </span>            :     CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST(load);
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :     // ######################################################################
+<span class="lineNum">     200 </span>            :     // Non Member Load
+<span class="lineNum">     201 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_TEST(load);
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :     // ######################################################################
+<span class="lineNum">     204 </span>            :     // Non Member Load (versioned)
+<span class="lineNum">     205 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            :     // ######################################################################
+<span class="lineNum">     208 </span>            :     // Member Save
+<span class="lineNum">     209 </span>            :     namespace detail
+<span class="lineNum">     210 </span>            :     {
+<span class="lineNum">     211 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     212 </span>            :       struct has_member_save_impl
+<span class="lineNum">     213 </span>            :       {
+<span class="lineNum">     214 </span>            :         #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     215 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     216 </span>            :         struct test : no {};
+<span class="lineNum">     217 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     218 </span>            :         struct test&lt;TT, AA,
+<span class="lineNum">     219 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     220 </span>            :         static const bool value = test&lt;T, A&gt;();
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     223 </span>            :         struct test2 : no {};
+<span class="lineNum">     224 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     225 </span>            :         struct test2&lt;TT, AA,
+<span class="lineNum">     226 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_non_const( std::declval&lt;AA&amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     227 </span>            :         static const bool not_const_type = test2&lt;T, A&gt;();
+<span class="lineNum">     228 </span>            :         #else // NOT CEREAL_OLDER_GCC =========================================
+<span class="lineNum">     229 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     230 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ), yes());
+<span class="lineNum">     231 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     232 </span>            :         static no test(...);
+<span class="lineNum">     233 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     236 </span>            :         static auto test2(int) -&gt; decltype( cereal::access::member_save_non_const( std::declval&lt;AA &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ), yes());
+<span class="lineNum">     237 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     238 </span>            :         static no test2(...);
+<span class="lineNum">     239 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     240 </span>            :         #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     241 </span>            :       };
+<span class="lineNum">     242 </span>            :     } // end namespace detail
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     245 </span>            :     struct has_member_save : std::integral_constant&lt;bool, detail::has_member_save_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     246 </span>            :     {
+<span class="lineNum">     247 </span>            :       typedef typename detail::has_member_save_impl&lt;T, A&gt; check;
+<span class="lineNum">     248 </span>            :       static_assert( check::value || !check::not_const_type,
+<span class="lineNum">     249 </span>            :         &quot;cereal detected a non-const save. \n &quot;
+<span class="lineNum">     250 </span>            :         &quot;save member functions must always be const&quot; );
+<span class="lineNum">     251 </span>            :     };
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span>            :     // ######################################################################
+<span class="lineNum">     254 </span>            :     // Member Save (versioned)
+<span class="lineNum">     255 </span>            :     namespace detail
+<span class="lineNum">     256 </span>            :     {
+<span class="lineNum">     257 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     258 </span>            :       struct has_member_versioned_save_impl
+<span class="lineNum">     259 </span>            :       {
+<span class="lineNum">     260 </span>            :         #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     261 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     262 </span>            :         struct test : no {};
+<span class="lineNum">     263 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     264 </span>            :         struct test&lt;TT, AA,
+<span class="lineNum">     265 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     266 </span>            :         static const bool value = test&lt;T, A&gt;();
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     269 </span>            :         struct test2 : no {};
+<span class="lineNum">     270 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     271 </span>            :         struct test2&lt;TT, AA,
+<span class="lineNum">     272 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_non_const( std::declval&lt;AA&amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     273 </span>            :         static const bool not_const_type = test2&lt;T, A&gt;();
+<span class="lineNum">     274 </span>            :         #else // NOT CEREAL_OLDER_GCC =========================================
+<span class="lineNum">     275 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     276 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ), yes());
+<span class="lineNum">     277 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     278 </span>            :         static no test(...);
+<span class="lineNum">     279 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     282 </span>            :         static auto test2(int) -&gt; decltype( cereal::access::member_save_non_const( std::declval&lt;AA &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ), yes());
+<span class="lineNum">     283 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     284 </span>            :         static no test2(...);
+<span class="lineNum">     285 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     286 </span>            :         #endif // NOT_CEREAL_OLDER_GCC
+<span class="lineNum">     287 </span>            :       };
+<span class="lineNum">     288 </span>            :     } // end namespace detail
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     291 </span>            :     struct has_member_versioned_save : std::integral_constant&lt;bool, detail::has_member_versioned_save_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     292 </span>            :     {
+<span class="lineNum">     293 </span>            :       typedef typename detail::has_member_versioned_save_impl&lt;T, A&gt; check;
+<span class="lineNum">     294 </span>            :       static_assert( check::value || !check::not_const_type,
+<span class="lineNum">     295 </span>            :         &quot;cereal detected a versioned non-const save. \n &quot;
+<span class="lineNum">     296 </span>            :         &quot;save member functions must always be const&quot; );
+<span class="lineNum">     297 </span>            :     };
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span>            :     // ######################################################################
+<span class="lineNum">     300 </span>            :     // Non-Member Save
+<span class="lineNum">     301 </span>            :     namespace detail
+<span class="lineNum">     302 </span>            :     {
+<span class="lineNum">     303 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     304 </span>            :       struct has_non_member_save_impl
+<span class="lineNum">     305 </span>            :       {
+<span class="lineNum">     306 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     307 </span>            :         static auto test(int) -&gt; decltype( save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ), yes());
+<span class="lineNum">     308 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     309 </span>            :         static no test(...);
+<span class="lineNum">     310 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     313 </span>            :         static auto test2(int) -&gt; decltype( save( std::declval&lt;AA &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ), yes());
+<span class="lineNum">     314 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     315 </span>            :         static no test2(...);
+<span class="lineNum">     316 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     317 </span>            :       };
+<span class="lineNum">     318 </span>            :     } // end namespace detail
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     321 </span>            :     struct has_non_member_save : std::integral_constant&lt;bool, detail::has_non_member_save_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     322 </span>            :     {
+<span class="lineNum">     323 </span>            :       typedef typename detail::has_non_member_save_impl&lt;T, A&gt; check;
+<span class="lineNum">     324 </span>            :       static_assert( check::value || !check::not_const_type,
+<span class="lineNum">     325 </span>            :         &quot;cereal detected a non-const type parameter in non-member save. \n &quot;
+<span class="lineNum">     326 </span>            :         &quot;save non-member functions must always pass their types as const&quot; );
+<span class="lineNum">     327 </span>            :     };
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span>            :     // ######################################################################
+<span class="lineNum">     330 </span>            :     // Non-Member Save (versioned)
+<span class="lineNum">     331 </span>            :     namespace detail
+<span class="lineNum">     332 </span>            :     {
+<span class="lineNum">     333 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     334 </span>            :       struct has_non_member_versioned_save_impl
+<span class="lineNum">     335 </span>            :       {
+<span class="lineNum">     336 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     337 </span>            :         static auto test(int) -&gt; decltype( save( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ), yes());
+<span class="lineNum">     338 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     339 </span>            :         static no test(...);
+<span class="lineNum">     340 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     343 </span>            :         static auto test2(int) -&gt; decltype( save( std::declval&lt;AA &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ), yes());
+<span class="lineNum">     344 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     345 </span>            :         static no test2(...);
+<span class="lineNum">     346 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     347 </span>            :       };
+<span class="lineNum">     348 </span>            :     } // end namespace detail
+<span class="lineNum">     349 </span>            : 
+<span class="lineNum">     350 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     351 </span>            :     struct has_non_member_versioned_save : std::integral_constant&lt;bool, detail::has_non_member_versioned_save_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     352 </span>            :     {
+<span class="lineNum">     353 </span>            :       typedef typename detail::has_non_member_versioned_save_impl&lt;T, A&gt; check;
+<span class="lineNum">     354 </span>            :       static_assert( check::value || !check::not_const_type,
+<span class="lineNum">     355 </span>            :         &quot;cereal detected a non-const type parameter in versioned non-member save. \n &quot;
+<span class="lineNum">     356 </span>            :         &quot;save non-member functions must always pass their types as const&quot; );
+<span class="lineNum">     357 </span>            :     };
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :     // ######################################################################
+<span class="lineNum">     360 </span>            :     // Minimal Utilities
+<span class="lineNum">     361 </span>            :     namespace detail
+<span class="lineNum">     362 </span>            :     {
+<span class="lineNum">     363 </span>            :       // Determines if the provided type is an std::string
+<span class="lineNum">     364 </span>            :       template &lt;class&gt; struct is_string : std::false_type {};
+<span class="lineNum">     365 </span>            : 
+<span class="lineNum">     366 </span>            :       template &lt;class CharT, class Traits, class Alloc&gt;
+<span class="lineNum">     367 </span>            :       struct is_string&lt;std::basic_string&lt;CharT, Traits, Alloc&gt;&gt; : std::true_type {};
+<span class="lineNum">     368 </span>            :     }
+<span class="lineNum">     369 </span>            : 
+<span class="lineNum">     370 </span>            :     // Determines if the type is valid for use with a minimal serialize function
+<span class="lineNum">     371 </span>            :     template &lt;class T&gt;
+<span class="lineNum">     372 </span>            :     struct is_minimal_type : std::integral_constant&lt;bool, detail::is_string&lt;T&gt;::value ||
+<span class="lineNum">     373 </span>            :       std::is_arithmetic&lt;T&gt;::value&gt; {};
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span>            :     // ######################################################################
+<span class="lineNum">     376 </span>            :     // Member Save Minimal
+<span class="lineNum">     377 </span>            :     namespace detail
+<span class="lineNum">     378 </span>            :     {
+<span class="lineNum">     379 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     380 </span>            :       struct has_member_save_minimal_impl
+<span class="lineNum">     381 </span>            :       {
+<span class="lineNum">     382 </span>            :         #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     383 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     384 </span>            :         struct test : no {};
+<span class="lineNum">     385 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     386 </span>            :         struct test&lt;TT, AA,
+<span class="lineNum">     387 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     388 </span>            :         static const bool value = test&lt;T, A&gt;();
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     391 </span>            :         struct test2 : no {};
+<span class="lineNum">     392 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     393 </span>            :         struct test2&lt;TT, AA,
+<span class="lineNum">     394 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_minimal_non_const( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     395 </span>            :         static const bool not_const_type = test2&lt;T, A&gt;();
+<span class="lineNum">     396 </span>            :         #else // NOT CEREAL_OLDER_GCC =========================================
+<span class="lineNum">     397 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     398 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ), yes());
+<span class="lineNum">     399 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     400 </span>            :         static no test(...);
+<span class="lineNum">     401 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     404 </span>            :         static auto test2(int) -&gt; decltype( cereal::access::member_save_minimal_non_const( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ), yes());
+<span class="lineNum">     405 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     406 </span>            :         static no test2(...);
+<span class="lineNum">     407 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     408 </span>            :         #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     409 </span>            : 
+<span class="lineNum">     410 </span>            :         static const bool valid = value || !not_const_type;
+<span class="lineNum">     411 </span>            :       };
+<span class="lineNum">     412 </span>            : 
+<span class="lineNum">     413 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     414 </span>            :       struct get_member_save_minimal_type { using type = void; };
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     417 </span>            :       struct get_member_save_minimal_type&lt;T, A, true&gt;
+<span class="lineNum">     418 </span>            :       {
+<span class="lineNum">     419 </span>            :         using type = decltype( cereal::access::member_save_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T const &amp;&gt;() ) );
+<span class="lineNum">     420 </span>            :       };
+<span class="lineNum">     421 </span>            :     } // end namespace detail
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     424 </span>            :     struct has_member_save_minimal : std::integral_constant&lt;bool, detail::has_member_save_minimal_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     425 </span>            :     {
+<span class="lineNum">     426 </span>            :       typedef typename detail::has_member_save_minimal_impl&lt;T, A&gt; check;
+<span class="lineNum">     427 </span>            :       static_assert( check::valid,
+<span class="lineNum">     428 </span>            :         &quot;cereal detected a non-const member save_minimal.  &quot;
+<span class="lineNum">     429 </span>            :         &quot;save_minimal member functions must always be const&quot; );
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span>            :       using type = typename detail::get_member_save_minimal_type&lt;T, A, check::value&gt;::type;
+<span class="lineNum">     432 </span>            :       static_assert( (check::value &amp;&amp; is_minimal_type&lt;type&gt;::value) || !check::value,
+<span class="lineNum">     433 </span>            :         &quot;cereal detected a member save_minimal with an invalid return type.  &quot;
+<span class="lineNum">     434 </span>            :         &quot;return type must be arithmetic or string&quot; );
+<span class="lineNum">     435 </span>            :     };
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span>            :     // ######################################################################
+<span class="lineNum">     438 </span>            :     // Member Save Minimal (versioned)
+<span class="lineNum">     439 </span>            :     namespace detail
+<span class="lineNum">     440 </span>            :     {
+<span class="lineNum">     441 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     442 </span>            :       struct has_member_versioned_save_minimal_impl
+<span class="lineNum">     443 </span>            :       {
+<span class="lineNum">     444 </span>            :         #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     445 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     446 </span>            :         struct test : no {};
+<span class="lineNum">     447 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     448 </span>            :         struct test&lt;TT, AA,
+<span class="lineNum">     449 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     450 </span>            :         static const bool value = test&lt;T, A&gt;();
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span>            :         template &lt;class TT, class AA, class SFINAE = void&gt;
+<span class="lineNum">     453 </span>            :         struct test2 : no {};
+<span class="lineNum">     454 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     455 </span>            :         struct test2&lt;TT, AA,
+<span class="lineNum">     456 </span>            :           typename detail::Void&lt; decltype( cereal::access::member_save_minimal_non_const( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     457 </span>            :         static const bool not_const_type = test2&lt;T, A&gt;();
+<span class="lineNum">     458 </span>            :         #else // NOT CEREAL_OLDER_GCC =========================================
+<span class="lineNum">     459 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     460 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ), yes());
+<span class="lineNum">     461 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     462 </span>            :         static no test(...);
+<span class="lineNum">     463 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     466 </span>            :         static auto test2(int) -&gt; decltype( cereal::access::member_save_minimal_non_const( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ), yes());
+<span class="lineNum">     467 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     468 </span>            :         static no test2(...);
+<span class="lineNum">     469 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     470 </span>            :         #endif // NOT_CEREAL_OLDER_GCC
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span>            :         static const bool valid = value || !not_const_type;
+<span class="lineNum">     473 </span>            :       };
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     476 </span>            :       struct get_member_versioned_save_minimal_type { using type = void; };
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     479 </span>            :       struct get_member_versioned_save_minimal_type&lt;T, A, true&gt;
+<span class="lineNum">     480 </span>            :       {
+<span class="lineNum">     481 </span>            :         using type = decltype( cereal::access::member_save_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T const &amp;&gt;(), 0 ) );
+<span class="lineNum">     482 </span>            :       };
+<span class="lineNum">     483 </span>            :     } // end namespace detail
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     486 </span>            :     struct has_member_versioned_save_minimal : std::integral_constant&lt;bool, detail::has_member_versioned_save_minimal_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     487 </span>            :     {
+<span class="lineNum">     488 </span>            :       typedef typename detail::has_member_versioned_save_minimal_impl&lt;T, A&gt; check;
+<span class="lineNum">     489 </span>            :       static_assert( check::valid,
+<span class="lineNum">     490 </span>            :         &quot;cereal detected a versioned non-const member save_minimal.  &quot;
+<span class="lineNum">     491 </span>            :         &quot;save_minimal member functions must always be const&quot; );
+<span class="lineNum">     492 </span>            : 
+<span class="lineNum">     493 </span>            :       using type = typename detail::get_member_versioned_save_minimal_type&lt;T, A, check::value&gt;::type;
+<span class="lineNum">     494 </span>            :       static_assert( (check::value &amp;&amp; is_minimal_type&lt;type&gt;::value) || !check::value,
+<span class="lineNum">     495 </span>            :         &quot;cereal detected a versioned member save_minimal with an invalid return type.  &quot;
+<span class="lineNum">     496 </span>            :         &quot;return type must be arithmetic or string&quot; );
+<span class="lineNum">     497 </span>            :     };
+<span class="lineNum">     498 </span>            : 
+<span class="lineNum">     499 </span>            :     // ######################################################################
+<span class="lineNum">     500 </span>            :     // Non-Member Save Minimal
+<span class="lineNum">     501 </span>            :     namespace detail
+<span class="lineNum">     502 </span>            :     {
+<span class="lineNum">     503 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     504 </span>            :       struct has_non_member_save_minimal_impl
+<span class="lineNum">     505 </span>            :       {
+<span class="lineNum">     506 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     507 </span>            :         static auto test(int) -&gt; decltype( save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;() ), yes());
+<span class="lineNum">     508 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     509 </span>            :         static no test(...);
+<span class="lineNum">     510 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     511 </span>            : 
+<span class="lineNum">     512 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     513 </span>            :         static auto test2(int) -&gt; decltype( save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;() ), yes());
+<span class="lineNum">     514 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     515 </span>            :         static no test2(...);
+<span class="lineNum">     516 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span>            :         static const bool valid = value || !not_const_type;
+<span class="lineNum">     519 </span>            :       };
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     522 </span>            :       struct get_non_member_save_minimal_type { using type = void; };
+<span class="lineNum">     523 </span>            : 
+<span class="lineNum">     524 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     525 </span>            :       struct get_non_member_save_minimal_type &lt;T, A, true&gt;
+<span class="lineNum">     526 </span>            :       {
+<span class="lineNum">     527 </span>            :         using type = decltype( save_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T const &amp;&gt;() ) );
+<span class="lineNum">     528 </span>            :       };
+<span class="lineNum">     529 </span>            :     } // end namespace detail
+<span class="lineNum">     530 </span>            : 
+<span class="lineNum">     531 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     532 </span>            :     struct has_non_member_save_minimal : std::integral_constant&lt;bool, detail::has_non_member_save_minimal_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     533 </span>            :     {
+<span class="lineNum">     534 </span>            :       typedef typename detail::has_non_member_save_minimal_impl&lt;T, A&gt; check;
+<span class="lineNum">     535 </span>            :       static_assert( check::valid,
+<span class="lineNum">     536 </span>            :         &quot;cereal detected a non-const type parameter in non-member save_minimal.  &quot;
+<span class="lineNum">     537 </span>            :         &quot;save_minimal non-member functions must always pass their types as const&quot; );
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span>            :       using type = typename detail::get_non_member_save_minimal_type&lt;T, A, check::value&gt;::type;
+<span class="lineNum">     540 </span>            :       static_assert( (check::value &amp;&amp; is_minimal_type&lt;type&gt;::value) || !check::value,
+<span class="lineNum">     541 </span>            :         &quot;cereal detected a non-member save_minimal with an invalid return type.  &quot;
+<span class="lineNum">     542 </span>            :         &quot;return type must be arithmetic or string&quot; );
+<span class="lineNum">     543 </span>            :     };
+<span class="lineNum">     544 </span>            : 
+<span class="lineNum">     545 </span>            :     // ######################################################################
+<span class="lineNum">     546 </span>            :     // Non-Member Save Minimal (versioned)
+<span class="lineNum">     547 </span>            :     namespace detail
+<span class="lineNum">     548 </span>            :     {
+<span class="lineNum">     549 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     550 </span>            :       struct has_non_member_versioned_save_minimal_impl
+<span class="lineNum">     551 </span>            :       {
+<span class="lineNum">     552 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     553 </span>            :         static auto test(int) -&gt; decltype( save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT const &amp;&gt;(), 0 ), yes());
+<span class="lineNum">     554 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     555 </span>            :         static no test(...);
+<span class="lineNum">     556 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     557 </span>            : 
+<span class="lineNum">     558 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     559 </span>            :         static auto test2(int) -&gt; decltype( save_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;typename std::remove_const&lt;TT&gt;::type&amp;&gt;(), 0 ), yes());
+<span class="lineNum">     560 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     561 </span>            :         static no test2(...);
+<span class="lineNum">     562 </span>            :         static const bool not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     563 </span>            : 
+<span class="lineNum">     564 </span>            :         static const bool valid = value || !not_const_type;
+<span class="lineNum">     565 </span>            :       };
+<span class="lineNum">     566 </span>            : 
+<span class="lineNum">     567 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     568 </span>            :       struct get_non_member_versioned_save_minimal_type { using type = void; };
+<span class="lineNum">     569 </span>            : 
+<span class="lineNum">     570 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     571 </span>            :       struct get_non_member_versioned_save_minimal_type &lt;T, A, true&gt;
+<span class="lineNum">     572 </span>            :       {
+<span class="lineNum">     573 </span>            :         using type = decltype( save_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T const &amp;&gt;(), 0 ) );
+<span class="lineNum">     574 </span>            :       };
+<span class="lineNum">     575 </span>            :     } // end namespace detail
+<span class="lineNum">     576 </span>            : 
+<span class="lineNum">     577 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     578 </span>            :     struct has_non_member_versioned_save_minimal : std::integral_constant&lt;bool, detail::has_non_member_versioned_save_minimal_impl&lt;T, A&gt;::value&gt;
+<span class="lineNum">     579 </span>            :     {
+<span class="lineNum">     580 </span>            :       typedef typename detail::has_non_member_versioned_save_minimal_impl&lt;T, A&gt; check;
+<span class="lineNum">     581 </span>            :       static_assert( check::valid,
+<span class="lineNum">     582 </span>            :         &quot;cereal detected a non-const type parameter in versioned non-member save_minimal.  &quot;
+<span class="lineNum">     583 </span>            :         &quot;save_minimal non-member functions must always pass their types as const&quot; );
+<span class="lineNum">     584 </span>            : 
+<span class="lineNum">     585 </span>            :       using type = typename detail::get_non_member_versioned_save_minimal_type&lt;T, A, check::value&gt;::type;
+<span class="lineNum">     586 </span>            :       static_assert( (check::value &amp;&amp; is_minimal_type&lt;type&gt;::value) || !check::value,
+<span class="lineNum">     587 </span>            :         &quot;cereal detected a non-member versioned save_minimal with an invalid return type.  &quot;
+<span class="lineNum">     588 </span>            :         &quot;return type must be arithmetic or string&quot; );
+<span class="lineNum">     589 </span>            :     };
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span>            :     // ######################################################################
+<span class="lineNum">     592 </span>            :     // Member Load Minimal
+<span class="lineNum">     593 </span>            :     namespace detail
+<span class="lineNum">     594 </span>            :     {
+<span class="lineNum">     595 </span>            :       //! Used to help strip away conversion wrappers
+<span class="lineNum">     596 </span>            :       /*! If someone writes a non-member load/save minimal function that accepts its
+<span class="lineNum">     597 </span>            :           parameter as some generic template type and needs to perform trait checks
+<span class="lineNum">     598 </span>            :           on that type, our NoConvert wrappers will interfere with this.  Using
+<span class="lineNum">     599 </span>            :           the struct strip_minmal, users can strip away our wrappers to get to
+<span class="lineNum">     600 </span>            :           the underlying type, allowing traits to work properly */
+<span class="lineNum">     601 </span>            :       struct NoConvertBase {};
+<span class="lineNum">     602 </span>            : 
+<span class="lineNum">     603 </span>            :       //! A struct that prevents implicit conversion
+<span class="lineNum">     604 </span>            :       /*! Any type instantiated with this struct will be unable to implicitly convert
+<span class="lineNum">     605 </span>            :           to another type.  Is designed to only allow conversion to Source const &amp;.
+<span class="lineNum">     606 </span>            : 
+<span class="lineNum">     607 </span>            :           @tparam Source the type of the original source */
+<span class="lineNum">     608 </span>            :       template &lt;class Source&gt;
+<span class="lineNum">     609 </span>            :       struct NoConvertConstRef : NoConvertBase
+<span class="lineNum">     610 </span>            :       {
+<span class="lineNum">     611 </span>            :         using type = Source; //!&lt; Used to get underlying type easily
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span>            :         template &lt;class Dest, class = typename std::enable_if&lt;std::is_same&lt;Source, Dest&gt;::value&gt;::type&gt;
+<span class="lineNum">     614 </span>            :         operator Dest () = delete;
+<span class="lineNum">     615 </span>            : 
+<span class="lineNum">     616 </span>            :         //! only allow conversion if the types are the same and we are converting into a const reference
+<span class="lineNum">     617 </span>            :         template &lt;class Dest, class = typename std::enable_if&lt;std::is_same&lt;Source, Dest&gt;::value&gt;::type&gt;
+<span class="lineNum">     618 </span>            :         operator Dest const &amp; ();
+<span class="lineNum">     619 </span>            :       };
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span>            :       //! A struct that prevents implicit conversion
+<span class="lineNum">     622 </span>            :       /*! Any type instantiated with this struct will be unable to implicitly convert
+<span class="lineNum">     623 </span>            :           to another type.  Is designed to only allow conversion to Source &amp;.
+<span class="lineNum">     624 </span>            : 
+<span class="lineNum">     625 </span>            :           @tparam Source the type of the original source */
+<span class="lineNum">     626 </span>            :       template &lt;class Source&gt;
+<span class="lineNum">     627 </span>            :       struct NoConvertRef : NoConvertBase
+<span class="lineNum">     628 </span>            :       {
+<span class="lineNum">     629 </span>            :         using type = Source; //!&lt; Used to get underlying type easily
+<span class="lineNum">     630 </span>            : 
+<span class="lineNum">     631 </span>            :         template &lt;class Dest, class = typename std::enable_if&lt;std::is_same&lt;Source, Dest&gt;::value&gt;::type&gt;
+<span class="lineNum">     632 </span>            :         operator Dest () = delete;
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span>            :         #ifdef __clang__
+<span class="lineNum">     635 </span>            :         template &lt;class Dest, class = typename std::enable_if&lt;std::is_same&lt;Source, Dest&gt;::value&gt;::type&gt;
+<span class="lineNum">     636 </span>            :         operator Dest const &amp; () = delete;
+<span class="lineNum">     637 </span>            :         #endif // __clang__
+<span class="lineNum">     638 </span>            : 
+<span class="lineNum">     639 </span>            :         //! only allow conversion if the types are the same and we are converting into a const reference
+<span class="lineNum">     640 </span>            :         template &lt;class Dest, class = typename std::enable_if&lt;std::is_same&lt;Source, Dest&gt;::value&gt;::type&gt;
+<span class="lineNum">     641 </span>            :         operator Dest &amp; ();
+<span class="lineNum">     642 </span>            :       };
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span>            :       //! A type that can implicitly convert to anything else
+<span class="lineNum">     645 </span>            :       struct AnyConvert
+<span class="lineNum">     646 </span>            :       {
+<span class="lineNum">     647 </span>            :         template &lt;class Dest&gt;
+<span class="lineNum">     648 </span>            :         operator Dest &amp; ();
+<span class="lineNum">     649 </span>            : 
+<span class="lineNum">     650 </span>            :         template &lt;class Dest&gt;
+<span class="lineNum">     651 </span>            :         operator Dest const &amp; () const;
+<span class="lineNum">     652 </span>            :       };
+<span class="lineNum">     653 </span>            : 
+<span class="lineNum">     654 </span>            :       // Our strategy here is to first check if a function matching the signature more or less exists
+<span class="lineNum">     655 </span>            :       // (allow anything like load_minimal(xxx) using AnyConvert, and then secondly enforce
+<span class="lineNum">     656 </span>            :       // that it has the correct signature using NoConvertConstRef
+<span class="lineNum">     657 </span>            :       #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     658 </span>            :       template &lt;class T, class A, class SFINAE = void&gt;
+<span class="lineNum">     659 </span>            :       struct has_member_load_minimal_impl : no {};
+<span class="lineNum">     660 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     661 </span>            :       struct has_member_load_minimal_impl&lt;T, A,
+<span class="lineNum">     662 </span>            :         typename detail::Void&lt;decltype( cereal::access::member_load_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T&amp;&gt;(), AnyConvert() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span>            :       template &lt;class T, class A, class U, class SFINAE = void&gt;
+<span class="lineNum">     665 </span>            :       struct has_member_load_minimal_type_impl : no {};
+<span class="lineNum">     666 </span>            :       template &lt;class T, class A, class U&gt;
+<span class="lineNum">     667 </span>            :       struct has_member_load_minimal_type_impl&lt;T, A, U,
+<span class="lineNum">     668 </span>            :         typename detail::Void&lt;decltype( cereal::access::member_load_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T&amp;&gt;(), NoConvertConstRef&lt;U&gt;() ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     669 </span>            :       #else // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     670 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     671 </span>            :       struct has_member_load_minimal_impl
+<span class="lineNum">     672 </span>            :       {
+<span class="lineNum">     673 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     674 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), AnyConvert() ), yes());
+<span class="lineNum">     675 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     676 </span>            :         static no test(...);
+<span class="lineNum">     677 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     678 </span>            :       };
+<span class="lineNum">     679 </span>            : 
+<span class="lineNum">     680 </span>            :       template &lt;class T, class A, class U&gt;
+<span class="lineNum">     681 </span>            :       struct has_member_load_minimal_type_impl
+<span class="lineNum">     682 </span>            :       {
+<span class="lineNum">     683 </span>            :         template &lt;class TT, class AA, class UU&gt;
+<span class="lineNum">     684 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), NoConvertConstRef&lt;U&gt;() ), yes());
+<span class="lineNum">     685 </span>            :         template &lt;class, class, class&gt;
+<span class="lineNum">     686 </span>            :         static no test(...);
+<span class="lineNum">     687 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A, U&gt;(0)), yes&gt;::value;
+<span class="lineNum">     688 </span>            :       };
+<span class="lineNum">     689 </span>            :       #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     690 </span>            : 
+<span class="lineNum">     691 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     692 </span>            :       struct has_member_load_minimal_wrapper : std::false_type {};
+<span class="lineNum">     693 </span>            : 
+<span class="lineNum">     694 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     695 </span>            :       struct has_member_load_minimal_wrapper&lt;T, A, true&gt;
+<span class="lineNum">     696 </span>            :       {
+<span class="lineNum">     697 </span>            :         static_assert( has_member_save_minimal&lt;T, A&gt;::value,
+<span class="lineNum">     698 </span>            :           &quot;cereal detected member load_minimal but no valid member save_minimal.  &quot;
+<span class="lineNum">     699 </span>            :           &quot;cannot evaluate correctness of load_minimal without valid save_minimal.&quot; );
+<span class="lineNum">     700 </span>            : 
+<span class="lineNum">     701 </span>            :         using SaveType = typename detail::get_member_save_minimal_type&lt;T, A, true&gt;::type;
+<span class="lineNum">     702 </span>            :         const static bool value = has_member_load_minimal_impl&lt;T, A&gt;::value;
+<span class="lineNum">     703 </span>            :         const static bool valid = has_member_load_minimal_type_impl&lt;T, A, SaveType&gt;::value;
+<span class="lineNum">     704 </span>            : 
+<span class="lineNum">     705 </span>            :         static_assert( valid || !value, &quot;cereal detected different or invalid types in corresponding member load_minimal and save_minimal functions.  &quot;
+<span class="lineNum">     706 </span>            :             &quot;the paramater to load_minimal must be a constant reference to the type that save_minimal returns.&quot; );
+<span class="lineNum">     707 </span>            :       };
+<span class="lineNum">     708 </span>            :     }
+<span class="lineNum">     709 </span>            : 
+<span class="lineNum">     710 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     711 </span>            :     struct has_member_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     712 </span>            :       detail::has_member_load_minimal_wrapper&lt;T, A, detail::has_member_load_minimal_impl&lt;T, A&gt;::value&gt;::value&gt; {};
+<span class="lineNum">     713 </span>            : 
+<span class="lineNum">     714 </span>            :     // ######################################################################
+<span class="lineNum">     715 </span>            :     // Member Load Minimal (versioned)
+<span class="lineNum">     716 </span>            :     namespace detail
+<span class="lineNum">     717 </span>            :     {
+<span class="lineNum">     718 </span>            :       #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     719 </span>            :       template &lt;class T, class A, class SFINAE = void&gt;
+<span class="lineNum">     720 </span>            :       struct has_member_versioned_load_minimal_impl : no {};
+<span class="lineNum">     721 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     722 </span>            :       struct has_member_versioned_load_minimal_impl&lt;T, A,
+<span class="lineNum">     723 </span>            :         typename detail::Void&lt;decltype( cereal::access::member_load_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T&amp;&gt;(), AnyConvert(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     724 </span>            : 
+<span class="lineNum">     725 </span>            :       template &lt;class T, class A, class U, class SFINAE = void&gt;
+<span class="lineNum">     726 </span>            :       struct has_member_versioned_load_minimal_type_impl : no {};
+<span class="lineNum">     727 </span>            :       template &lt;class T, class A, class U&gt;
+<span class="lineNum">     728 </span>            :       struct has_member_versioned_load_minimal_type_impl&lt;T, A, U,
+<span class="lineNum">     729 </span>            :         typename detail::Void&lt;decltype( cereal::access::member_load_minimal( std::declval&lt;A const &amp;&gt;(), std::declval&lt;T&amp;&gt;(), NoConvertConstRef&lt;U&gt;(), 0 ) ) &gt;::type&gt; : yes {};
+<span class="lineNum">     730 </span>            :       #else // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     731 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     732 </span>            :       struct has_member_versioned_load_minimal_impl
+<span class="lineNum">     733 </span>            :       {
+<span class="lineNum">     734 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     735 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), AnyConvert(), 0 ), yes());
+<span class="lineNum">     736 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     737 </span>            :         static no test(...);
+<span class="lineNum">     738 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;
+<span class="lineNum">     739 </span>            :       };
+<span class="lineNum">     740 </span>            : 
+<span class="lineNum">     741 </span>            :       template &lt;class T, class A, class U&gt;
+<span class="lineNum">     742 </span>            :       struct has_member_versioned_load_minimal_type_impl
+<span class="lineNum">     743 </span>            :       {
+<span class="lineNum">     744 </span>            :         template &lt;class TT, class AA, class UU&gt;
+<span class="lineNum">     745 </span>            :         static auto test(int) -&gt; decltype( cereal::access::member_load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), NoConvertConstRef&lt;U&gt;(), 0 ), yes());
+<span class="lineNum">     746 </span>            :         template &lt;class, class, class&gt;
+<span class="lineNum">     747 </span>            :         static no test(...);
+<span class="lineNum">     748 </span>            :         static const bool value = std::is_same&lt;decltype(test&lt;T, A, U&gt;(0)), yes&gt;::value;
+<span class="lineNum">     749 </span>            :       };
+<span class="lineNum">     750 </span>            :       #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     751 </span>            : 
+<span class="lineNum">     752 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     753 </span>            :       struct has_member_versioned_load_minimal_wrapper : std::false_type {};
+<span class="lineNum">     754 </span>            : 
+<span class="lineNum">     755 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     756 </span>            :       struct has_member_versioned_load_minimal_wrapper&lt;T, A, true&gt;
+<span class="lineNum">     757 </span>            :       {
+<span class="lineNum">     758 </span>            :         static_assert( has_member_versioned_save_minimal&lt;T, A&gt;::value,
+<span class="lineNum">     759 </span>            :           &quot;cereal detected member versioned load_minimal but no valid member versioned save_minimal.  &quot;
+<span class="lineNum">     760 </span>            :           &quot;cannot evaluate correctness of load_minimal without valid save_minimal.&quot; );
+<span class="lineNum">     761 </span>            : 
+<span class="lineNum">     762 </span>            :         using SaveType = typename detail::get_member_versioned_save_minimal_type&lt;T, A, true&gt;::type;
+<span class="lineNum">     763 </span>            :         const static bool value = has_member_versioned_load_minimal_impl&lt;T, A&gt;::value;
+<span class="lineNum">     764 </span>            :         const static bool valid = has_member_versioned_load_minimal_type_impl&lt;T, A, SaveType&gt;::value;
+<span class="lineNum">     765 </span>            : 
+<span class="lineNum">     766 </span>            :         static_assert( valid || !value, &quot;cereal detected different or invalid types in corresponding member versioned load_minimal and save_minimal functions.  &quot;
+<span class="lineNum">     767 </span>            :             &quot;the paramater to load_minimal must be a constant reference to the type that save_minimal returns.&quot; );
+<span class="lineNum">     768 </span>            :       };
+<span class="lineNum">     769 </span>            :     }
+<span class="lineNum">     770 </span>            : 
+<span class="lineNum">     771 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     772 </span>            :     struct has_member_versioned_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     773 </span>            :       detail::has_member_versioned_load_minimal_wrapper&lt;T, A, detail::has_member_versioned_load_minimal_impl&lt;T, A&gt;::value&gt;::value&gt; {};
+<span class="lineNum">     774 </span>            : 
+<span class="lineNum">     775 </span>            :     // ######################################################################
+<span class="lineNum">     776 </span>            :     // Non-Member Load Minimal
+<span class="lineNum">     777 </span>            :     namespace detail
+<span class="lineNum">     778 </span>            :     {
+<span class="lineNum">     779 </span>            :       #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">     780 </span>            :       void load_minimal(); // prevents nonsense complaining about not finding this
+<span class="lineNum">     781 </span>            :       void save_minimal();
+<span class="lineNum">     782 </span>            :       #endif // CEREAL_OLDER_GCC
+<span class="lineNum">     783 </span>            : 
+<span class="lineNum">     784 </span>            :       // See notes from member load_minimal
+<span class="lineNum">     785 </span>            :       template &lt;class T, class A, class U = void&gt;
+<span class="lineNum">     786 </span>            :       struct has_non_member_load_minimal_impl
+<span class="lineNum">     787 </span>            :       {
+<span class="lineNum">     788 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     789 </span>            :         static auto test(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), AnyConvert() ), yes() );
+<span class="lineNum">     790 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     791 </span>            :         static no test( ... );
+<span class="lineNum">     792 </span>            :         static const bool exists = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     793 </span>            : 
+<span class="lineNum">     794 </span>            :         template &lt;class TT, class AA, class UU&gt;
+<span class="lineNum">     795 </span>            :         static auto test2(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), NoConvertConstRef&lt;UU&gt;() ), yes() );
+<span class="lineNum">     796 </span>            :         template &lt;class, class, class&gt;
+<span class="lineNum">     797 </span>            :         static no test2( ... );
+<span class="lineNum">     798 </span>            :         static const bool valid = std::is_same&lt;decltype( test2&lt;T, A, U&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     799 </span>            : 
+<span class="lineNum">     800 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     801 </span>            :         static auto test3(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), NoConvertRef&lt;TT&gt;(), AnyConvert() ), yes() );
+<span class="lineNum">     802 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     803 </span>            :         static no test3( ... );
+<span class="lineNum">     804 </span>            :         static const bool const_valid = std::is_same&lt;decltype( test3&lt;T, A&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     805 </span>            :       };
+<span class="lineNum">     806 </span>            : 
+<span class="lineNum">     807 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     808 </span>            :       struct has_non_member_load_minimal_wrapper : std::false_type {};
+<span class="lineNum">     809 </span>            : 
+<span class="lineNum">     810 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     811 </span>            :       struct has_non_member_load_minimal_wrapper&lt;T, A, true&gt;
+<span class="lineNum">     812 </span>            :       {
+<span class="lineNum">     813 </span>            :         static_assert( detail::has_non_member_save_minimal_impl&lt;T, A&gt;::valid,
+<span class="lineNum">     814 </span>            :           &quot;cereal detected non-member load_minimal but no valid non-member save_minimal.  &quot;
+<span class="lineNum">     815 </span>            :           &quot;cannot evaluate correctness of load_minimal without valid save_minimal.&quot; );
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span>            :         using SaveType = typename detail::get_non_member_save_minimal_type&lt;T, A, true&gt;::type;
+<span class="lineNum">     818 </span>            :         using check = has_non_member_load_minimal_impl&lt;T, A, SaveType&gt;;
+<span class="lineNum">     819 </span>            :         static const bool value = check::exists;
+<span class="lineNum">     820 </span>            : 
+<span class="lineNum">     821 </span>            :         static_assert( check::valid || !check::exists, &quot;cereal detected different types in corresponding non-member load_minimal and save_minimal functions.  &quot;
+<span class="lineNum">     822 </span>            :             &quot;the paramater to load_minimal must be a constant reference to the type that save_minimal returns.&quot; );
+<span class="lineNum">     823 </span>            :         static_assert( check::const_valid || !check::exists, &quot;cereal detected an invalid serialization type parameter in non-member load_minimal.  &quot;
+<span class="lineNum">     824 </span>            :             &quot;load_minimal non-member functions must accept their serialization type by non-const reference&quot; );
+<span class="lineNum">     825 </span>            :       };
+<span class="lineNum">     826 </span>            :     }
+<span class="lineNum">     827 </span>            : 
+<span class="lineNum">     828 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     829 </span>            :     struct has_non_member_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     830 </span>            :       detail::has_non_member_load_minimal_wrapper&lt;T, A, detail::has_non_member_load_minimal_impl&lt;T, A&gt;::exists&gt;::value&gt; {};
+<span class="lineNum">     831 </span>            : 
+<span class="lineNum">     832 </span>            :     // ######################################################################
+<span class="lineNum">     833 </span>            :     // Non-Member Load Minimal (versioned)
+<span class="lineNum">     834 </span>            :     namespace detail
+<span class="lineNum">     835 </span>            :     {
+<span class="lineNum">     836 </span>            :       // See notes from member load_minimal
+<span class="lineNum">     837 </span>            :       template &lt;class T, class A, class U = void&gt;
+<span class="lineNum">     838 </span>            :       struct has_non_member_versioned_load_minimal_impl
+<span class="lineNum">     839 </span>            :       {
+<span class="lineNum">     840 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     841 </span>            :         static auto test(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), AnyConvert(), 0 ), yes() );
+<span class="lineNum">     842 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     843 </span>            :         static no test( ... );
+<span class="lineNum">     844 </span>            :         static const bool exists = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     845 </span>            : 
+<span class="lineNum">     846 </span>            :         template &lt;class TT, class AA, class UU&gt;
+<span class="lineNum">     847 </span>            :         static auto test2(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), std::declval&lt;TT&amp;&gt;(), NoConvertConstRef&lt;UU&gt;(), 0 ), yes() );
+<span class="lineNum">     848 </span>            :         template &lt;class, class, class&gt;
+<span class="lineNum">     849 </span>            :         static no test2( ... );
+<span class="lineNum">     850 </span>            :         static const bool valid = std::is_same&lt;decltype( test2&lt;T, A, U&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     851 </span>            : 
+<span class="lineNum">     852 </span>            :         template &lt;class TT, class AA&gt;
+<span class="lineNum">     853 </span>            :         static auto test3(int) -&gt; decltype( load_minimal( std::declval&lt;AA const &amp;&gt;(), NoConvertRef&lt;TT&gt;(), AnyConvert(), 0 ), yes() );
+<span class="lineNum">     854 </span>            :         template &lt;class, class&gt;
+<span class="lineNum">     855 </span>            :         static no test3( ... );
+<span class="lineNum">     856 </span>            :         static const bool const_valid = std::is_same&lt;decltype( test3&lt;T, A&gt;( 0 ) ), yes&gt;::value;
+<span class="lineNum">     857 </span>            :       };
+<span class="lineNum">     858 </span>            : 
+<span class="lineNum">     859 </span>            :       template &lt;class T, class A, bool Valid&gt;
+<span class="lineNum">     860 </span>            :       struct has_non_member_versioned_load_minimal_wrapper : std::false_type {};
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     863 </span>            :       struct has_non_member_versioned_load_minimal_wrapper&lt;T, A, true&gt;
+<span class="lineNum">     864 </span>            :       {
+<span class="lineNum">     865 </span>            :         static_assert( detail::has_non_member_versioned_save_minimal_impl&lt;T, A&gt;::valid,
+<span class="lineNum">     866 </span>            :           &quot;cereal detected non-member versioned load_minimal but no valid non-member versioned save_minimal.  &quot;
+<span class="lineNum">     867 </span>            :           &quot;cannot evaluate correctness of load_minimal without valid save_minimal.&quot; );
+<span class="lineNum">     868 </span>            : 
+<span class="lineNum">     869 </span>            :         using SaveType = typename detail::get_non_member_versioned_save_minimal_type&lt;T, A, true&gt;::type;
+<span class="lineNum">     870 </span>            :         using check = has_non_member_versioned_load_minimal_impl&lt;T, A, SaveType&gt;;
+<span class="lineNum">     871 </span>            :         static const bool value = check::exists;
+<span class="lineNum">     872 </span>            : 
+<span class="lineNum">     873 </span>            :         static_assert( check::valid || !check::exists, &quot;cereal detected different types in corresponding non-member versioned load_minimal and save_minimal functions.  &quot;
+<span class="lineNum">     874 </span>            :             &quot;the paramater to load_minimal must be a constant reference to the type that save_minimal returns.&quot; );
+<span class="lineNum">     875 </span>            :         static_assert( check::const_valid || !check::exists, &quot;cereal detected an invalid serialization type parameter in non-member versioned load_minimal.  &quot;
+<span class="lineNum">     876 </span>            :             &quot;load_minimal non-member versioned functions must accept their serialization type by non-const reference&quot; );
+<span class="lineNum">     877 </span>            :       };
+<span class="lineNum">     878 </span>            :     }
+<span class="lineNum">     879 </span>            : 
+<span class="lineNum">     880 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     881 </span>            :     struct has_non_member_versioned_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     882 </span>            :       detail::has_non_member_versioned_load_minimal_wrapper&lt;T, A, detail::has_non_member_versioned_load_minimal_impl&lt;T, A&gt;::exists&gt;::value&gt; {};
+<span class="lineNum">     883 </span>            : 
+<span class="lineNum">     884 </span>            :     // ######################################################################
+<span class="lineNum">     885 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     886 </span>            :     struct has_member_split : std::integral_constant&lt;bool,
+<span class="lineNum">     887 </span>            :       (has_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     888 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     889 </span>            : 
+<span class="lineNum">     890 </span>            :     // ######################################################################
+<span class="lineNum">     891 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     892 </span>            :     struct has_non_member_split : std::integral_constant&lt;bool,
+<span class="lineNum">     893 </span>            :       (has_non_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     894 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     895 </span>            : 
+<span class="lineNum">     896 </span>            :     // ######################################################################
+<span class="lineNum">     897 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">     898 </span>            :     struct is_output_serializable : std::integral_constant&lt;bool,
+<span class="lineNum">     899 </span>            :       has_member_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     900 </span>            :       has_non_member_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     901 </span>            :       has_member_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     902 </span>            :       has_non_member_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     903 </span>            :       has_member_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     904 </span>            :       has_non_member_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     905 </span>            :       /*-versioned---------------------------------------------------------*/
+<span class="lineNum">     906 </span>            :       has_member_versioned_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     907 </span>            :       has_non_member_versioned_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     908 </span>            :       has_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     909 </span>            :       has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     910 </span>            :       has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">     911 </span>            :       has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">     912 </span>            : 
+<span class="lineNum">     913 </span>            :     // ######################################################################
+<span class="lineNum">     914 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">     915 </span>            :     struct is_input_serializable : std::integral_constant&lt;bool,
+<span class="lineNum">     916 </span>            :       has_member_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     917 </span>            :       has_non_member_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     918 </span>            :       has_member_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     919 </span>            :       has_non_member_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     920 </span>            :       has_member_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     921 </span>            :       has_non_member_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     922 </span>            :       /*-versioned---------------------------------------------------------*/
+<span class="lineNum">     923 </span>            :       has_member_versioned_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     924 </span>            :       has_non_member_versioned_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     925 </span>            :       has_member_versioned_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     926 </span>            :       has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     927 </span>            :       has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">     928 </span>            :       has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">     929 </span>            : 
+<span class="lineNum">     930 </span>            :     // ######################################################################
+<span class="lineNum">     931 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">     932 </span>            :     struct has_invalid_output_versioning : std::integral_constant&lt;bool,
+<span class="lineNum">     933 </span>            :       (has_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     934 </span>            :       (has_non_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     935 </span>            :       (has_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     936 </span>            :       (has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     937 </span>            :       (has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save_minimal&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     938 </span>            :       (has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp;  has_non_member_save_minimal&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     939 </span>            : 
+<span class="lineNum">     940 </span>            :     // ######################################################################
+<span class="lineNum">     941 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">     942 </span>            :     struct has_invalid_input_versioning : std::integral_constant&lt;bool,
+<span class="lineNum">     943 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     944 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_load&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     945 </span>            :       (has_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     946 </span>            :       (has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     947 </span>            :       (has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load_minimal&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     948 </span>            :       (has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp;  has_non_member_load_minimal&lt;T, InputArchive&gt;::value)&gt; {};
+<span class="lineNum">     949 </span>            : 
+<span class="lineNum">     950 </span>            :     // ######################################################################
+<span class="lineNum">     951 </span>            :     namespace detail
+<span class="lineNum">     952 </span>            :     {
+<span class="lineNum">     953 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     954 </span>            :       struct is_specialized_member_serialize : std::integral_constant&lt;bool,
+<span class="lineNum">     955 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::member_serialize&gt;&gt;::value&gt; {};
+<span class="lineNum">     956 </span>            : 
+<span class="lineNum">     957 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     958 </span>            :       struct is_specialized_member_load_save : std::integral_constant&lt;bool,
+<span class="lineNum">     959 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::member_load_save&gt;&gt;::value&gt; {};
+<span class="lineNum">     960 </span>            : 
+<span class="lineNum">     961 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     962 </span>            :       struct is_specialized_member_load_save_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     963 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::member_load_save_minimal&gt;&gt;::value&gt; {};
+<span class="lineNum">     964 </span>            : 
+<span class="lineNum">     965 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     966 </span>            :       struct is_specialized_non_member_serialize : std::integral_constant&lt;bool,
+<span class="lineNum">     967 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::non_member_serialize&gt;&gt;::value&gt; {};
+<span class="lineNum">     968 </span>            : 
+<span class="lineNum">     969 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     970 </span>            :       struct is_specialized_non_member_load_save : std::integral_constant&lt;bool,
+<span class="lineNum">     971 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::non_member_load_save&gt;&gt;::value&gt; {};
+<span class="lineNum">     972 </span>            : 
+<span class="lineNum">     973 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     974 </span>            :       struct is_specialized_non_member_load_save_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">     975 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::non_member_load_save_minimal&gt;&gt;::value&gt; {};
+<span class="lineNum">     976 </span>            : 
+<span class="lineNum">     977 </span>            :       // Considered an error if specialization exists for more than one type
+<span class="lineNum">     978 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     979 </span>            :       struct is_specialized_error : std::integral_constant&lt;bool,
+<span class="lineNum">     980 </span>            :         (is_specialized_member_serialize&lt;T, A&gt;::value +
+<span class="lineNum">     981 </span>            :          is_specialized_member_load_save&lt;T, A&gt;::value +
+<span class="lineNum">     982 </span>            :          is_specialized_member_load_save_minimal&lt;T, A&gt;::value +
+<span class="lineNum">     983 </span>            :          is_specialized_non_member_serialize&lt;T, A&gt;::value +
+<span class="lineNum">     984 </span>            :          is_specialized_non_member_load_save&lt;T, A&gt;::value +
+<span class="lineNum">     985 </span>            :          is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value) &lt;= 1&gt; {};
+<span class="lineNum">     986 </span>            :     } // namespace detail
+<span class="lineNum">     987 </span>            : 
+<span class="lineNum">     988 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     989 </span>            :     struct is_specialized : std::integral_constant&lt;bool,
+<span class="lineNum">     990 </span>            :       detail::is_specialized_member_serialize&lt;T, A&gt;::value ||
+<span class="lineNum">     991 </span>            :       detail::is_specialized_member_load_save&lt;T, A&gt;::value ||
+<span class="lineNum">     992 </span>            :       detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value ||
+<span class="lineNum">     993 </span>            :       detail::is_specialized_non_member_serialize&lt;T, A&gt;::value ||
+<span class="lineNum">     994 </span>            :       detail::is_specialized_non_member_load_save&lt;T, A&gt;::value ||
+<span class="lineNum">     995 </span>            :       detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">     996 </span>            :     {
+<span class="lineNum">     997 </span>            :       static_assert(detail::is_specialized_error&lt;T, A&gt;::value, &quot;More than one explicit specialization detected for type.&quot;);
+<span class="lineNum">     998 </span>            :     };
+<span class="lineNum">     999 </span>            : 
+<span class="lineNum">    1000 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1001 </span>            :     struct is_specialized_member_serialize : std::integral_constant&lt;bool,
+<span class="lineNum">    1002 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1003 </span>            :     {
+<span class="lineNum">    1004 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1005 </span>            :                      (has_member_serialize&lt;T, A&gt;::value || has_member_versioned_serialize&lt;T, A&gt;::value))
+<span class="lineNum">    1006 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_serialize&lt;T, A&gt;::value),
+<span class="lineNum">    1007 </span>            :                      &quot;cereal detected member serialization specialization but no member serialize function&quot; );
+<span class="lineNum">    1008 </span>            :     };
+<span class="lineNum">    1009 </span>            : 
+<span class="lineNum">    1010 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1011 </span>            :     struct is_specialized_member_load : std::integral_constant&lt;bool,
+<span class="lineNum">    1012 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1013 </span>            :     {
+<span class="lineNum">    1014 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1015 </span>            :                      (has_member_load&lt;T, A&gt;::value || has_member_versioned_load&lt;T, A&gt;::value))
+<span class="lineNum">    1016 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value),
+<span class="lineNum">    1017 </span>            :                      &quot;cereal detected member load specialization but no member load function&quot; );
+<span class="lineNum">    1018 </span>            :     };
+<span class="lineNum">    1019 </span>            : 
+<span class="lineNum">    1020 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1021 </span>            :     struct is_specialized_member_save : std::integral_constant&lt;bool,
+<span class="lineNum">    1022 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1023 </span>            :     {
+<span class="lineNum">    1024 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1025 </span>            :                      (has_member_save&lt;T, A&gt;::value || has_member_versioned_save&lt;T, A&gt;::value))
+<span class="lineNum">    1026 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save&lt;T, A&gt;::value),
+<span class="lineNum">    1027 </span>            :                      &quot;cereal detected member save specialization but no member save function&quot; );
+<span class="lineNum">    1028 </span>            :     };
+<span class="lineNum">    1029 </span>            : 
+<span class="lineNum">    1030 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1031 </span>            :     struct is_specialized_member_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">    1032 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1033 </span>            :     {
+<span class="lineNum">    1034 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1035 </span>            :                      (has_member_load_minimal&lt;T, A&gt;::value || has_member_versioned_load_minimal&lt;T, A&gt;::value))
+<span class="lineNum">    1036 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value),
+<span class="lineNum">    1037 </span>            :                      &quot;cereal detected member load_minimal specialization but no member load_minimal function&quot; );
+<span class="lineNum">    1038 </span>            :     };
+<span class="lineNum">    1039 </span>            : 
+<span class="lineNum">    1040 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1041 </span>            :     struct is_specialized_member_save_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">    1042 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1043 </span>            :     {
+<span class="lineNum">    1044 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1045 </span>            :                      (has_member_save_minimal&lt;T, A&gt;::value || has_member_versioned_save_minimal&lt;T, A&gt;::value))
+<span class="lineNum">    1046 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value),
+<span class="lineNum">    1047 </span>            :                      &quot;cereal detected member save_minimal specialization but no member save_minimal function&quot; );
+<span class="lineNum">    1048 </span>            :     };
+<span class="lineNum">    1049 </span>            : 
+<span class="lineNum">    1050 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1051 </span>            :     struct is_specialized_non_member_serialize : std::integral_constant&lt;bool,
+<span class="lineNum">    1052 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1053 </span>            :     {
+<span class="lineNum">    1054 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1055 </span>            :                      (has_non_member_serialize&lt;T, A&gt;::value || has_non_member_versioned_serialize&lt;T, A&gt;::value))
+<span class="lineNum">    1056 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_serialize&lt;T, A&gt;::value),
+<span class="lineNum">    1057 </span>            :                      &quot;cereal detected non-member serialization specialization but no non-member serialize function&quot; );
+<span class="lineNum">    1058 </span>            :     };
+<span class="lineNum">    1059 </span>            : 
+<span class="lineNum">    1060 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1061 </span>            :     struct is_specialized_non_member_load : std::integral_constant&lt;bool,
+<span class="lineNum">    1062 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1063 </span>            :     {
+<span class="lineNum">    1064 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1065 </span>            :                      (has_non_member_load&lt;T, A&gt;::value || has_non_member_versioned_load&lt;T, A&gt;::value))
+<span class="lineNum">    1066 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value),
+<span class="lineNum">    1067 </span>            :                      &quot;cereal detected non-member load specialization but no non-member load function&quot; );
+<span class="lineNum">    1068 </span>            :     };
+<span class="lineNum">    1069 </span>            : 
+<span class="lineNum">    1070 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1071 </span>            :     struct is_specialized_non_member_save : std::integral_constant&lt;bool,
+<span class="lineNum">    1072 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1073 </span>            :     {
+<span class="lineNum">    1074 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1075 </span>            :                      (has_non_member_save&lt;T, A&gt;::value || has_non_member_versioned_save&lt;T, A&gt;::value))
+<span class="lineNum">    1076 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save&lt;T, A&gt;::value),
+<span class="lineNum">    1077 </span>            :                      &quot;cereal detected non-member save specialization but no non-member save function&quot; );
+<span class="lineNum">    1078 </span>            :     };
+<span class="lineNum">    1079 </span>            : 
+<span class="lineNum">    1080 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1081 </span>            :     struct is_specialized_non_member_load_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">    1082 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1083 </span>            :     {
+<span class="lineNum">    1084 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1085 </span>            :                      (has_non_member_load_minimal&lt;T, A&gt;::value || has_non_member_versioned_load_minimal&lt;T, A&gt;::value))
+<span class="lineNum">    1086 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value),
+<span class="lineNum">    1087 </span>            :                      &quot;cereal detected non-member load specialization but no non-member load function&quot; );
+<span class="lineNum">    1088 </span>            :     };
+<span class="lineNum">    1089 </span>            : 
+<span class="lineNum">    1090 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1091 </span>            :     struct is_specialized_non_member_save_minimal : std::integral_constant&lt;bool,
+<span class="lineNum">    1092 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1093 </span>            :     {
+<span class="lineNum">    1094 </span>            :       static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value &amp;&amp;
+<span class="lineNum">    1095 </span>            :                      (has_non_member_save_minimal&lt;T, A&gt;::value || has_non_member_versioned_save_minimal&lt;T, A&gt;::value))
+<span class="lineNum">    1096 </span>            :                      || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value),
+<span class="lineNum">    1097 </span>            :                      &quot;cereal detected non-member save specialization but no non-member save function&quot; );
+<span class="lineNum">    1098 </span>            :     };
+<span class="lineNum">    1099 </span>            : 
+<span class="lineNum">    1100 </span>            :     // ######################################################################
+<span class="lineNum">    1101 </span>            :     // detects if a type has any active minimal output serialization
+<span class="lineNum">    1102 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">    1103 </span>            :     struct has_minimal_output_serialization : std::integral_constant&lt;bool,
+<span class="lineNum">    1104 </span>            :       is_specialized_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1105 </span>            :       ((has_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1106 </span>            :         has_non_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1107 </span>            :         has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1108 </span>            :         has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value) &amp;&amp;
+<span class="lineNum">    1109 </span>            :        (!is_specialized_member_serialize&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1110 </span>            :         !is_specialized_member_save&lt;T, OutputArchive&gt;::value))&gt; {};
+<span class="lineNum">    1111 </span>            : 
+<span class="lineNum">    1112 </span>            :     // ######################################################################
+<span class="lineNum">    1113 </span>            :     // detects if a type has any active minimal input serialization
+<span class="lineNum">    1114 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">    1115 </span>            :     struct has_minimal_input_serialization : std::integral_constant&lt;bool,
+<span class="lineNum">    1116 </span>            :       is_specialized_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1117 </span>            :       ((has_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1118 </span>            :         has_non_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1119 </span>            :         has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1120 </span>            :         has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value) &amp;&amp;
+<span class="lineNum">    1121 </span>            :        (!is_specialized_member_serialize&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1122 </span>            :         !is_specialized_member_load&lt;T, InputArchive&gt;::value))&gt; {};
+<span class="lineNum">    1123 </span>            : 
+<span class="lineNum">    1124 </span>            :     // ######################################################################
+<span class="lineNum">    1125 </span>            :     namespace detail
+<span class="lineNum">    1126 </span>            :     {
+<span class="lineNum">    1127 </span>            :       struct base_class_id
+<span class="lineNum">    1128 </span>            :       {
+<span class="lineNum">    1129 </span>            :         template&lt;class T&gt;
+<span class="lineNum">    1130 </span>            :           base_class_id(T const * const t) :
+<span class="lineNum">    1131 </span>            :           type(typeid(T)),
+<span class="lineNum">    1132 </span>            :           ptr(t),
+<span class="lineNum">    1133 </span>            :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))
+<span class="lineNum">    1134 </span>            :           { }
+<span class="lineNum">    1135 </span>            : 
+<span class="lineNum">    1136 </span>            :           bool operator==(base_class_id const &amp; other) const
+<span class="lineNum">    1137 </span>            :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }
+<span class="lineNum">    1138 </span>            : 
+<span class="lineNum">    1139 </span>            :           std::type_index type;
+<span class="lineNum">    1140 </span>            :           void const * ptr;
+<span class="lineNum">    1141 </span>            :           size_t hash;
+<span class="lineNum">    1142 </span>            :       };
+<span class="lineNum">    1143 </span>            :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };
+<span class="lineNum">    1144 </span>            :     } // namespace detail
+<span class="lineNum">    1145 </span>            : 
+<span class="lineNum">    1146 </span>            :     // ######################################################################
+<span class="lineNum">    1147 </span>            :     //! A macro to use to restrict which types of archives your function will work for.
+<span class="lineNum">    1148 </span>            :     /*! This requires you to have a template class parameter named Archive and replaces the void return
+<span class="lineNum">    1149 </span>            :         type for your function.
+<span class="lineNum">    1150 </span>            : 
+<span class="lineNum">    1151 </span>            :         INTYPE refers to the input archive type you wish to restrict on.
+<span class="lineNum">    1152 </span>            :         OUTTYPE refers to the output archive type you wish to restrict on.
+<span class="lineNum">    1153 </span>            : 
+<span class="lineNum">    1154 </span>            :         For example, if we want to limit a serialize to only work with binary serialization:
+<span class="lineNum">    1155 </span>            : 
+<span class="lineNum">    1156 </span>            :         @code{.cpp}
+<span class="lineNum">    1157 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">    1158 </span>            :         CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
+<span class="lineNum">    1159 </span>            :         serialize( Archive &amp; ar, MyCoolType &amp; m )
+<span class="lineNum">    1160 </span>            :         {
+<span class="lineNum">    1161 </span>            :           ar &amp; m;
+<span class="lineNum">    1162 </span>            :         }
+<span class="lineNum">    1163 </span>            :         @endcode
+<span class="lineNum">    1164 </span>            : 
+<span class="lineNum">    1165 </span>            :         If you need to do more restrictions in your enable_if, you will need to do this by hand.
+<span class="lineNum">    1166 </span>            :      */
+<span class="lineNum">    1167 </span>            :     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
+<span class="lineNum">    1168 </span>            :     typename std::enable_if&lt;std::is_same&lt;Archive, INTYPE&gt;::value || std::is_same&lt;Archive, OUTTYPE&gt;::value, void&gt;::type
+<span class="lineNum">    1169 </span>            : 
+<span class="lineNum">    1170 </span>            :     // ######################################################################
+<span class="lineNum">    1171 </span>            :     namespace detail
+<span class="lineNum">    1172 </span>            :     {
+<span class="lineNum">    1173 </span>            :       struct shared_from_this_wrapper
+<span class="lineNum">    1174 </span>            :       {
+<span class="lineNum">    1175 </span>            :         template &lt;class U&gt;
+<span class="lineNum">    1176 </span>            :         static auto check( U const &amp; t ) -&gt; decltype( ::cereal::access::shared_from_this(t), std::true_type() );
+<span class="lineNum">    1177 </span>            : 
+<span class="lineNum">    1178 </span>            :         static auto check( ... ) -&gt; decltype( std::false_type() );
+<span class="lineNum">    1179 </span>            : 
+<span class="lineNum">    1180 </span>            :         template &lt;class U&gt;
+<span class="lineNum">    1181 </span>            :         static auto get( U const &amp; t ) -&gt; decltype( t.shared_from_this() );
+<span class="lineNum">    1182 </span>            :       };
+<span class="lineNum">    1183 </span>            :     }
+<span class="lineNum">    1184 </span>            : 
+<span class="lineNum">    1185 </span>            :     //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
+<span class="lineNum">    1186 </span>            :     template&lt;class T&gt;
+<span class="lineNum">    1187 </span>            :     struct has_shared_from_this : decltype(detail::shared_from_this_wrapper::check(std::declval&lt;T&gt;()))
+<span class="lineNum">    1188 </span>            :     { };
+<span class="lineNum">    1189 </span>            : 
+<span class="lineNum">    1190 </span>            :     //! Get the type of the base class of T which inherited from std::enable_shared_from_this
+<span class="lineNum">    1191 </span>            :     template &lt;class T&gt;
+<span class="lineNum">    1192 </span>            :     struct get_shared_from_this_base
+<span class="lineNum">    1193 </span>            :     {
+<span class="lineNum">    1194 </span>            :       private:
+<span class="lineNum">    1195 </span>            :         using PtrType = decltype(detail::shared_from_this_wrapper::get(std::declval&lt;T&gt;()));
+<span class="lineNum">    1196 </span>            :       public:
+<span class="lineNum">    1197 </span>            :         //! The type of the base of T that inherited from std::enable_shared_from_this
+<span class="lineNum">    1198 </span>            :         using type = typename std::decay&lt;typename PtrType::element_type&gt;::type;
+<span class="lineNum">    1199 </span>            :     };
+<span class="lineNum">    1200 </span>            : 
+<span class="lineNum">    1201 </span>            :     // ######################################################################
+<span class="lineNum">    1202 </span>            :     //! Extracts the true type from something possibly wrapped in a cereal NoConvert
+<span class="lineNum">    1203 </span>            :     /*! Internally cereal uses some wrapper classes to test the validity of non-member
+<span class="lineNum">    1204 </span>            :         minimal load and save functions.  This can interfere with user type traits on
+<span class="lineNum">    1205 </span>            :         templated load and save minimal functions.  To get to the correct underlying type,
+<span class="lineNum">    1206 </span>            :         users should use strip_minimal when performing any enable_if type type trait checks.
+<span class="lineNum">    1207 </span>            : 
+<span class="lineNum">    1208 </span>            :         See the enum serialization in types/common.hpp for an example of using this */
+<span class="lineNum">    1209 </span>            :     template &lt;class T, bool IsCerealMinimalTrait = std::is_base_of&lt;detail::NoConvertBase, T&gt;::value&gt;
+<span class="lineNum">    1210 </span>            :     struct strip_minimal
+<span class="lineNum">    1211 </span>            :     {
+<span class="lineNum">    1212 </span>            :       using type = T;
+<span class="lineNum">    1213 </span>            :     };
+<span class="lineNum">    1214 </span>            : 
+<span class="lineNum">    1215 </span>            :     //! Specialization for types wrapped in a NoConvert
+<span class="lineNum">    1216 </span>            :     template &lt;class T&gt;
+<span class="lineNum">    1217 </span>            :     struct strip_minimal&lt;T, true&gt;
+<span class="lineNum">    1218 </span>            :     {
+<span class="lineNum">    1219 </span>            :       using type = typename T::type;
+<span class="lineNum">    1220 </span>            :     };
+<span class="lineNum">    1221 </span>            :   } // namespace traits
+<span class="lineNum">    1222 </span>            : 
+<span class="lineNum">    1223 </span>            :   // ######################################################################
+<span class="lineNum">    1224 </span>            :   namespace detail
+<span class="lineNum">    1225 </span>            :   {
+<span class="lineNum">    1226 </span>            :     template &lt;class T, class A, bool Member = traits::has_member_load_and_construct&lt;T, A&gt;::value, bool NonMember = traits::has_non_member_load_and_construct&lt;T, A&gt;::value&gt;
+<span class="lineNum">    1227 </span>            :     struct Construct
+<span class="lineNum">    1228 </span>            :     {
+<span class="lineNum">    1229 </span>            :       static_assert( cereal::traits::detail::delay_static_assert&lt;T&gt;::value,
+<span class="lineNum">    1230 </span>            :         &quot;Cereal detected both member and non member load_and_construct functions!&quot; );
+<span class="lineNum">    1231 </span>            :       static T * load_andor_construct( A &amp; /*ar*/, construct&lt;T&gt; &amp; /*construct*/ )
+<span class="lineNum">    1232 </span>            :       { return nullptr; }
+<span class="lineNum">    1233 </span>            :     };
+<span class="lineNum">    1234 </span>            : 
+<span class="lineNum">    1235 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1236 </span>            :     struct Construct&lt;T, A, false, false&gt;
+<span class="lineNum">    1237 </span>            :     {
+<span class="lineNum">    1238 </span>            :       static_assert( std::is_default_constructible&lt;T&gt;::value,
+<span class="lineNum">    1239 </span>            :                      &quot;Trying to serialize a an object with no default constructor. \n\n &quot;
+<span class="lineNum">    1240 </span>            :                      &quot;Types must either be default constructible or define either a member or non member Construct function. \n &quot;
+<span class="lineNum">    1241 </span>            :                      &quot;Construct functions generally have the signature: \n\n &quot;
+<span class="lineNum">    1242 </span>            :                      &quot;template &lt;class Archive&gt; \n &quot;
+<span class="lineNum">    1243 </span>            :                      &quot;static void load_and_construct(Archive &amp; ar, cereal::construct&lt;T&gt; &amp; construct) \n &quot;
+<span class="lineNum">    1244 </span>            :                      &quot;{ \n &quot;
+<span class="lineNum">    1245 </span>            :                      &quot;  var a; \n &quot;
+<span class="lineNum">    1246 </span>            :                      &quot;  ar( a ) \n &quot;
+<a name="1247"><span class="lineNum">    1247 </span>            :                      &quot;  construct( a ); \n &quot;</a>
+<span class="lineNum">    1248 </span>            :                      &quot;} \n\n&quot; );
+<span class="lineNum">    1249 </span><span class="lineCov">     164000 :       static T * load_andor_construct()</span>
+<span class="lineNum">    1250 </span><span class="lineCov">     164000 :       { return new T(); }</span>
+<span class="lineNum">    1251 </span>            :     };
+<span class="lineNum">    1252 </span>            : 
+<span class="lineNum">    1253 </span>            :     template &lt;class T, class A&gt;
+<a name="1254"><span class="lineNum">    1254 </span>            :     struct Construct&lt;T, A, true, false&gt;</a>
+<span class="lineNum">    1255 </span>            :     {
+<span class="lineNum">    1256 </span><span class="lineCov">       4800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1257 </span>            :       {
+<span class="lineNum">    1258 </span><span class="lineCov">       4800 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
+<span class="lineNum">    1259 </span><span class="lineCov">       4800 :       }</span>
+<span class="lineNum">    1260 </span>            :     };
+<span class="lineNum">    1261 </span>            : 
+<span class="lineNum">    1262 </span>            :     template &lt;class T, class A&gt;
+<a name="1263"><span class="lineNum">    1263 </span>            :     struct Construct&lt;T, A, false, true&gt;</a>
+<span class="lineNum">    1264 </span>            :     {
+<span class="lineNum">    1265 </span><span class="lineCov">       1600 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1266 </span>            :       {
+<span class="lineNum">    1267 </span><span class="lineCov">       1600 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
+<span class="lineNum">    1268 </span><span class="lineCov">       1600 :       }</span>
+<span class="lineNum">    1269 </span>            :     };
+<span class="lineNum">    1270 </span>            :   } // namespace detail
+<span class="lineNum">    1271 </span>            : } // namespace cereal
+<span class="lineNum">    1272 </span>            : 
+<span class="lineNum">    1273 </span>            : #endif // CEREAL_DETAILS_TRAITS_HPP_
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
