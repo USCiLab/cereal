@@ -2,7 +2,7 @@
     \brief Support for types found in \<list\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
 
-    list.resize( size );
+    list.resize( static_cast<size_t>( size ) );
 
     for( auto & i : list )
       ar( i );

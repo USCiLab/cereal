@@ -21,7 +21,7 @@ namespace rapidjson {
 
 	User may programmatically calls the functions of a writer to generate JSON text.
 
-	On the other side, a writer can also be passed to objects that generates events, 
+	On the other side, a writer can also be passed to objects that generates events,
 
 	for example Reader::Parse() and Document::Accept().
 
@@ -34,11 +34,17 @@ class Writer {
 public:
 	typedef typename Encoding::Ch Ch;
 
-	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) : 
+	Writer(Stream& stream, int precision = 20, Allocator* allocator = 0, size_t levelDepth = kDefaultLevelDepth) :
 		stream_(stream), level_stack_(allocator, levelDepth * sizeof(Level))
   {
-		(void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
-		(void) snprintf(long_double_format, sizeof(long_double_format), "%%0.%dLg", precision);
+#if _MSC_VER
+    (void) sprintf_s(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) sprintf_s( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#else
+    (void) snprintf(double_format, sizeof(double_format), "%%0.%dg", precision);
+    (void) snprintf( long_double_format, sizeof( long_double_format ), "%%0.%dLg", precision );
+#endif
+
   }
 
 protected:
@@ -49,8 +55,8 @@ public:
 	//@name Implementation of Handler
 	//@{
 
-	Writer& Null()                          { Prefix(kNullType);   WriteNull();			return *this;             }
-	Writer& Bool(bool b)                    { Prefix(b ? kTrueType : kFalseType); WriteBool(b); return *this; }
+	Writer& Null_()                          { Prefix(kNull_Type);   WriteNull_();			return *this;             }
+	Writer& Bool_(bool b)                    { Prefix(b ? kTrueType : kFalseType); WriteBool_(b); return *this; }
 	Writer& Int(int i)                      { Prefix(kNumberType); WriteInt(i);			return *this;             }
 	Writer& Uint(unsigned u)                { Prefix(kNumberType); WriteUint(u);		return *this;             }
 	Writer& Int64(int64_t i64)              { Prefix(kNumberType); WriteInt64(i64);		return *this;           }
@@ -113,11 +119,11 @@ protected:
 
 	static const size_t kDefaultLevelDepth = 32;
 
-	void WriteNull()  {
+	void WriteNull_()  {
 		stream_.Put('n'); stream_.Put('u'); stream_.Put('l'); stream_.Put('l');
 	}
 
-	void WriteBool(bool b)  {
+	void WriteBool_(bool b)  {
 		if (b) {
 			stream_.Put('t'); stream_.Put('r'); stream_.Put('u'); stream_.Put('e');
 		}
@@ -170,15 +176,37 @@ protected:
 		} while (p != buffer);
 	}
 
-  template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk(Ch c)
-    { return true; }
+  // cereal Temporary until constexpr support is added in RTM
+#ifdef _MSC_VER
+  template <class Ch>
+  bool characterOk( Ch c )
+  {
+    return c < 256;
+  }
+
+  template <>
+  bool characterOk<char>( Ch )
+  {
+    return true;
+  }
+
+#else
+  // As part of a fix for GCC 4.7
+  template <class T>
+  static constexpr int to_int( T t ){ return t; }
 
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+  typename std::enable_if < to_int(std::numeric_limits<Ch>::max()) < to_int(256), bool>::type
+    characterOk( Ch )
+  {
+    return true;
+  }
+
+  template<class Ch>
+  typename std::enable_if< to_int(std::numeric_limits<Ch>::max()) >= to_int(256), bool>::type
     characterOk(Ch c)
-    { return c < 256; }
+  { return c < 256; }
+#endif
 
 	//! \todo Optimization with custom double-to-string converter.
 	void WriteDouble(double d) {
@@ -272,7 +300,7 @@ protected:
 		if (level_stack_.GetSize() != 0) { // this value is not at root
 			Level* level = level_stack_.template Top<Level>();
 			if (level->valueCount > 0) {
-				if (level->inArray) 
+				if (level->inArray)
 					stream_.Put(','); // add comma if it is not the first element in array
 				else  // in object
 					stream_.Put((level->valueCount % 2 == 0) ? ',' : ':');

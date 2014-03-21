@@ -35,7 +35,7 @@ namespace rapidjson {
       }
 
       // Not implemented
-      void Put(Ch c)     { RAPIDJSON_ASSERT(false); }
+      void Put(Ch)       { RAPIDJSON_ASSERT(false); }
       void Flush()       { RAPIDJSON_ASSERT(false); }
       Ch* PutBegin()     { RAPIDJSON_ASSERT(false); return 0; }
       size_t PutEnd(Ch*) { RAPIDJSON_ASSERT(false); return 0; }

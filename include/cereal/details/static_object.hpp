@@ -2,7 +2,7 @@
     \brief Internal polymorphism static object support
     \ingroup Internal */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@
 #ifndef CEREAL_DETAILS_STATIC_OBJECT_HPP_
 #define CEREAL_DETAILS_STATIC_OBJECT_HPP_
 
+#include <cereal/details/util.hpp>
+
 namespace cereal
 {
   namespace detail
@@ -47,7 +49,7 @@ namespace cereal
     {
       private:
         //! Forces instantiation at pre-execution time
-        static void instantiate(T const &) {}
+        static void instantiate( T const & ) {}
 
         static T & create()
         {
@@ -56,7 +58,7 @@ namespace cereal
           return t;
         }
 
-        StaticObject( StaticObject const & other ) = delete;
+        StaticObject( StaticObject const & /*other*/ ) {}
 
       public:
         static T & getInstance()

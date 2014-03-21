@@ -2,7 +2,7 @@
     \brief Support for types found in \<set\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,11 @@ namespace cereal
         typename SetT::key_type key;
 
         ar( key );
-        hint = set.insert(hint, key );
+        #ifdef CEREAL_OLDER_GCC
+        hint = set.insert( hint, std::move( key ) );
+        #else // NOT CEREAL_OLDER_GCC
+        hint = set.emplace_hint( hint, std::move( key ) );
+        #endif // NOT CEREAL_OLDER_GCC
       }
     }
   }

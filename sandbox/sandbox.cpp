@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,13 @@
 #include <cereal/types/bitset.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-#include <cxxabi.h>
+//#include <cxxabi.h>
 #include <sstream>
 #include <fstream>
 #include <cassert>
 #include <complex>
 #include <iostream>
+#include <random>
 
 class Base
 {
@@ -70,7 +71,7 @@ class Derived : public Base
 {
   public:
     using Base::x;
-    Derived() = default;
+    Derived() : Base(), y() {}
     Derived( int d, int b )
     {
       y = d;
@@ -103,7 +104,7 @@ namespace cereal
   template <class Archive> struct specialize<Archive, Derived, cereal::specialization::member_load_save> {};
 }
 
-CEREAL_REGISTER_TYPE(Derived);
+CEREAL_REGISTER_TYPE(Derived)
 
 // ###################################
 struct Test1
@@ -234,7 +235,7 @@ struct EmptyStruct
   void serialize(Archive &)
   {
     std::cout << "Side effects!" << std::endl;
-  };
+  }
 };
 
 struct NonEmptyStruct
@@ -244,36 +245,221 @@ struct NonEmptyStruct
 
 struct NoDefaultCtor
 {
-  NoDefaultCtor() = delete;
+private:
+  NoDefaultCtor() {};
+  int z;
+  NoDefaultCtor( int x, bool ) :y(x) {}
+public:
   NoDefaultCtor(int x) : y(x)
   { }
+
+  friend class cereal::access;
 
   int y;
 
   template <class Archive>
-  void serialize( Archive & )
+  void serialize( Archive & ar )
   {
+    ar( y );
   }
 
-  //template <class Archive>
-  //static NoDefaultCtor * load_and_allocate( Archive & ar )
-  //{
-  //  return new NoDefaultCtor(5);
-  //}
+  template <class Archive>
+  static void load_and_construct( Archive & ar, cereal::construct<NoDefaultCtor> & construct )
+  {
+    int y;
+    ar( y );
+    construct( y, true );
+    construct->z = 33;
+    construct.ptr()->z = 33;
+  }
 };
 
-namespace cereal
+//namespace cereal
+//{
+//  template <>
+//  struct LoadAndConstruct<NoDefaultCtor>
+//  {
+//    template <class Archive>
+//    static void load_and_construct( Archive & ar, cereal::construct<NoDefaultCtor> & construct )
+//    {
+//      int y;
+//      ar( y );
+//      construct( y );
+//    }
+//  };
+//}
+
+struct unordered_naming
 {
-  template <>
-  struct LoadAndAllocate<NoDefaultCtor>
+  int x;
+  int y;
+  int z;
+
+  template <class Archive>
+  void save( Archive & ar ) const
   {
-    template <class Archive>
-    static NoDefaultCtor * load_and_allocate( Archive & )
-    {
-      return new NoDefaultCtor(5);
-    }
-  };
+    ar( CEREAL_NVP(x),
+        CEREAL_NVP(z),
+        CEREAL_NVP(y) );
+  }
+
+  template <class Archive>
+  void load( Archive & ar )
+  {
+    ar( x,
+        CEREAL_NVP(y),
+        CEREAL_NVP(z) );
+  }
+
+  bool operator==( unordered_naming const & other ) const
+  {
+    return x == other.x && y == other.y && z == other.z;
+  }
+};
+
+std::ostream& operator<<(std::ostream& os, unordered_naming const & s)
+{
+  os << "[x: " << s.x << " y: " << s.y << " z: " << s.z << "]";
+  return os;
 }
+
+template <class IArchive, class OArchive>
+void test_unordered_loads()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rngI = [](){ return 1; };
+  auto rngF = [](){ return 2.0f; };
+  auto rngD = [](){ return 3.2; };
+
+  for(int i=0; i<100; ++i)
+  {
+    auto const name1 = "1";
+    auto const name2 = "2";
+    auto const name3 = "3";
+    auto const name4 = "4";
+    auto const name5 = "5";
+    auto const name6 = "6";
+    auto const name7 = "7";
+
+    int o_int1 = rngI();
+    double o_double2 = rngD();
+    std::vector<bool> o_vecbool3 = { true, false, true, false, true };
+    int o_int4 = rngI();
+    int o_int5 = rngI();
+    int o_int6 = rngI();
+    std::pair<float, unordered_naming> o_un7;
+    o_un7.first = rngF();
+    o_un7.second.x = rngI();
+    o_un7.second.y = rngI();
+    o_un7.second.z = rngI();
+
+    {
+      std::ofstream os("test.xml");
+      OArchive oar(os);
+
+      oar( cereal::make_nvp( name1, o_int1 ),
+           cereal::make_nvp( name2, o_double2 ),
+           cereal::make_nvp( name3, o_vecbool3 ),
+           cereal::make_nvp( name4, o_int4 ),
+           cereal::make_nvp( name5, o_int5 ),
+           cereal::make_nvp( name6, o_int6 ),
+           cereal::make_nvp( name7, o_un7 ) );
+    }
+
+    decltype(o_int1) i_int1;
+    decltype(o_double2) i_double2;
+    decltype(o_vecbool3) i_vecbool3;
+    decltype(o_int4) i_int4;
+    decltype(o_int5) i_int5;
+    decltype(o_int6) i_int6;
+    decltype(o_un7) i_un7;
+
+    std::ifstream is("test.xml");
+    {
+      IArchive iar(is);
+
+      iar( cereal::make_nvp( name7, o_un7 ),
+           cereal::make_nvp( name2, i_double2 ),
+           cereal::make_nvp( name4, i_int4 ),
+           cereal::make_nvp( name3, i_vecbool3 ),
+           cereal::make_nvp( name1, i_int1 ),
+           cereal::make_nvp( name5, i_int5 ),
+           i_int6 );
+    }
+  }
+}
+
+class BoostTransitionMS
+{
+  public:
+    BoostTransitionMS() {}
+    BoostTransitionMS( int xx ) : x(xx) {}
+
+    int getX(){ return x; }
+    void setX( int xx ){ x = xx; }
+
+  private:
+    friend class cereal::access;
+    int x;
+
+    template <class Archive>
+    void serialize( Archive & ar, const std::uint32_t /*version*/ )
+    { ar( x ); }
+};
+
+class BoostTransitionSplit
+{
+  public:
+    BoostTransitionSplit() {}
+    BoostTransitionSplit( int xx ) : x(xx) {}
+
+    int getX(){ return x; }
+    void setX( int xx ){ x = xx; }
+
+  private:
+    friend class cereal::access;
+    int x;
+
+    template <class Archive>
+    void save( Archive & ar, const std::uint32_t /*version*/ ) const
+    { ar( x ); }
+
+    template <class Archive>
+    void load( Archive & ar, const std::uint32_t /*version*/ )
+    { ar( x ); }
+};
+
+class BoostTransitionNMS
+{
+  public:
+    BoostTransitionNMS() {}
+    BoostTransitionNMS( int xx ) : x(xx) {}
+
+    int x;
+};
+
+template <class Archive>
+void serialize( Archive & ar, BoostTransitionNMS & bnms, const std::uint32_t version )
+{ ar( bnms.x ); std::cout << "NMS version: " << version << std::endl; }
+
+struct BoostTransitionNMSplit
+{
+  public:
+    BoostTransitionNMSplit() {}
+    BoostTransitionNMSplit( int xx ) : x(xx) {}
+
+    int x;
+};
+
+template <class Archive>
+void save( Archive & ar, BoostTransitionNMSplit const & bnsplit, const std::uint32_t version )
+{ ar( bnsplit.x ); std::cout << "NMsave version: " << version << std::endl; }
+
+template <class Archive>
+void load( Archive & ar, BoostTransitionNMSplit & bnsplit, const std::uint32_t version )
+{ ar( bnsplit.x ); std::cout << "NMload version: " << version << std::endl; }
 
 // ######################################################################
 int main()
@@ -288,34 +474,40 @@ int main()
   e_out.t3 = {3};
   e_out.t4 = {4};
   e_out.s = "Hello, World!";
+  std::unique_ptr<NoDefaultCtor> nodefault( new NoDefaultCtor( 3 ) );
 
   Test2 t2 = {22};
 
   {
-    std::ofstream os("out.txt");
+    std::ofstream os("out.txt", std::ios::binary);
     cereal::BinaryOutputArchive archive(os);
     archive(CEREAL_NVP(e_out));
     archive(t2);
+    archive(nodefault);
   }
 
   Everything e_in;
 
+  std::unique_ptr<NoDefaultCtor> nodefaultin( new NoDefaultCtor( 1 ) );
+
   {
-    std::ifstream is("out.txt");
+    std::ifstream is("out.txt", std::ios::binary);
     cereal::BinaryInputArchive archive(is);
     archive(CEREAL_NVP(e_in));
     archive(t2);
+    archive(nodefaultin);
     std::remove("out.txt");
   }
 
   assert(e_in == e_out);
+  assert(nodefault->y == nodefaultin->y);
 
   {
     cereal::BinaryOutputArchive archive(std::cout);
     int xxx[] = {-1, 95, 3};
     archive( xxx );
 
-    cereal::XMLOutputArchive archive2(std::cout, 10);
+    cereal::XMLOutputArchive archive2(std::cout);
     archive2( xxx );
 
     std::vector<int> yyy = {1, 2, 3};
@@ -465,7 +657,7 @@ int main()
   }
 
   {
-    std::ofstream b("endian.out");
+    std::ofstream b("endian.out", std::ios::binary);
     cereal::PortableBinaryOutputArchive oar(b);
 
     bool bb = true;
@@ -478,9 +670,12 @@ int main()
 
     oar( bb, a, x, y, z, d, j );
     std::cout << bb << " " << a << " " << x << " " << y << " " << z << " " << d << " " << j << std::endl;
+    // valgrind will complain about uninitialized bytes here - seems to be the padding caused by the long double and
+    // long long allocations (this padding just exists on the stack and is never used anywhere)
+    // see https://bugs.kde.org/show_bug.cgi?id=197915
   }
   {
-    std::ifstream b("endian.out");
+    std::ifstream b("endian.out", std::ios::binary);
     cereal::PortableBinaryInputArchive iar(b);
 
     bool bb;
@@ -498,7 +693,128 @@ int main()
     std::remove("endian.out");
   }
 
+  {
+    std::ofstream ss("xml_ordering.out");
+    cereal::XMLOutputArchive ar(ss);
 
+    double one = 1;
+    double two = 2;
+    double three = 3;
+    std::vector<int> four = {1, 2, 3, 4};
+
+    // Output is ordered 3 2 1 4
+    ar( three, CEREAL_NVP(two), one, cereal::make_nvp("five", four) );
+  }
+
+  {
+    std::ifstream ss("xml_ordering.out");
+    cereal::XMLInputArchive ar(ss);
+
+    // Output prodered out of order, try to load in order 1 2 3 4
+    double one;
+    double two;
+    double three;
+    std::vector<int> four;
+
+    ar( one ); // cereal can only give warnings if you used an NVP!
+    ar( CEREAL_NVP( two ) );
+    ar( three );
+
+    try
+    {
+      ar( CEREAL_NVP( three ) );
+    }
+    catch( cereal::Exception const & e )
+    {
+      std::cout << e.what() << std::endl;
+      std::cout << "Looked for three but we didn't use an NVP when saving" << std::endl;
+    }
+    ar( cereal::make_nvp("five", four) );
+    ar( cereal::make_nvp("five", four) ); // do it a second time since it shouldn't matter as we provide the name
+
+    std::cout << one << std::endl;
+    std::cout << two << std::endl;
+    std::cout << three << std::endl;
+    for( auto i : four ) std::cout << i << " ";
+    std::cout << std::endl;
+  }
+
+  {
+    // Boost transition layer stuff
+    std::ofstream ss("cereal_version.out");
+    cereal::XMLOutputArchive ar(ss);
+
+    BoostTransitionMS b(3);
+    ar( b, b );
+
+    BoostTransitionSplit c(4);
+    ar( c, c );
+
+    BoostTransitionNMS d(5);
+    ar( d, d );
+
+    BoostTransitionNMSplit e(32);
+    ar( e, e );
+  }
+
+  {
+    // Boost transition layer stuff
+    std::ifstream ss("cereal_version.out");
+    cereal::XMLInputArchive ar(ss);
+
+    BoostTransitionMS b;
+    ar( b );
+    assert( b.getX() == 3 );
+    b.setX( 0 );
+    ar( b );
+    assert( b.getX() == 3 );
+
+    BoostTransitionSplit c;
+    ar( c );
+    assert( c.getX() == 4 );
+    c.setX( 0 );
+    ar( c );
+    assert( c.getX() == 4 );
+
+    BoostTransitionNMS d;
+    ar( d );
+    assert( d.x == 5 );
+    d.x = 0;
+    ar( d );
+    assert( d.x == 5 );
+
+    BoostTransitionNMSplit e;
+    ar( e );
+    assert( e.x == 32 );
+    e.x = 0;
+    ar( e );
+    assert( e.x == 32 );
+  }
+
+#ifdef CEREAL_FUTURE_EXPERIMENTAL
+  {
+    // Any testing
+    int x = 32;
+    int * xx = &x;
+    std::string y("hello");
+    cereal::detail::Any a(xx);
+    auto b = a;
+
+    std::cout << *((int *)a) << std::endl;
+    *((int*)a) = 44;
+    std::cout << *((int *)b) << std::endl;
+    std::cout << *((int *)a) << std::endl;
+
+    a = cereal::detail::Any(y);
+    std::string a_out = a;
+    std::cout << a_out << std::endl;
+  }
+#endif // CEREAL_FUTURE_EXPERIMENTAL
 
   return 0;
 }
+
+CEREAL_CLASS_VERSION(BoostTransitionMS, 1)
+CEREAL_CLASS_VERSION(BoostTransitionSplit, 2)
+CEREAL_CLASS_VERSION(BoostTransitionNMS, 3)
+// keep the other at default version (0)

@@ -1,7 +1,7 @@
 /*! \file xml.hpp
     \brief XML input and output archives */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -38,14 +38,24 @@
 #include <sstream>
 #include <stack>
 #include <vector>
+#include <limits>
 #include <string>
 #include <cstring>
+#include <cmath>
 
 namespace cereal
 {
   namespace xml_detail
   {
-    static const char * CEREAL_XML_STRING = "cereal";
+    #ifndef CEREAL_XML_STRING_VALUE
+    //! The default name for the root node in a cereal xml archive.
+    /*! You can define CEREAL_XML_STRING_VALUE to be different assuming you do so
+        before this file is included. */
+    #define CEREAL_XML_STRING_VALUE "cereal"
+    #endif // CEREAL_XML_STRING_VALUE
+
+    //! The name given to the root node in a cereal xml archive
+    static const char * CEREAL_XML_STRING = CEREAL_XML_STRING_VALUE;
   }
 
   // ######################################################################
@@ -80,17 +90,48 @@ namespace cereal
   class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
   {
     public:
+      /*! @name Common Functionality
+          Common use cases for directly interacting with an XMLOutputArchive */
+      //! @{
+
+      //! A class containing various advanced options for the XML archive
+      class Options
+      {
+        public:
+          //! Default options
+          static Options Default(){ return Options(); }
+
+          //! Default options with no indentation
+          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
+
+          //! Specify specific options for the XMLOutputArchive
+          /*! @param precision The precision used for floating point numbers
+              @param indent Whether to indent each line of XML
+              @param outputType Whether to output the type of each serialized object as an attribute */
+          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+                            bool indent = true,
+                            bool outputType = false ) :
+            itsPrecision( precision ),
+            itsIndent( indent ),
+            itsOutputType( outputType ) { }
+
+        private:
+          friend class XMLOutputArchive;
+          int itsPrecision;
+          bool itsIndent;
+          bool itsOutputType;
+      };
+
       //! Construct, outputting to the provided stream upon destruction
-      /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
-                        even cout!  Note that since this archive builds a tree in memory,
-                        it will not output to the stream until its destructor is called.
-          @param precision The precision for floating point output.  For input and output
-                           floating point to test equal, this should be at least 20
-          @param outputType Controls whether type information will be printed in attributes */
-      XMLOutputArchive(std::ostream & stream, size_t precision = 20, bool outputType = false ) :
+      /*! @param stream  The stream to output to.  Note that XML is only guaranteed to flush
+                         its output to the stream upon destruction.
+          @param options The XML specific options to use.  See the Options struct
+                         for the values of default parameters */
+      XMLOutputArchive( std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
-        itsOutputType( outputType )
+        itsOutputType( options.itsOutputType ),
+        itsIndent( options.itsIndent )
       {
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
@@ -105,21 +146,48 @@ namespace cereal
 
         // set attributes on the streams
         itsStream << std::boolalpha;
-        itsStream.precision( precision );
+        itsStream.precision( options.itsPrecision );
         itsOS << std::boolalpha;
-        itsOS.precision( precision );
+        itsOS.precision( options.itsPrecision );
       }
 
       //! Destructor, flushes the XML
       ~XMLOutputArchive()
       {
-        itsStream << itsXML;
+        const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
+        rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
       }
 
+      //! Saves some binary data, encoded as a base64 string, with an optional name
+      /*! This can be called directly by users and it will automatically create a child node for
+          the current XML node, populate it with a base64 encoded string, and optionally name
+          it.  The node will be finished after it has been populated.  */
+      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
+      {
+        itsNodes.top().name = name;
+
+        startNode();
+
+        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
+        saveValue( base64string );
+
+        if( itsOutputType )
+          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
+
+        finishNode();
+      };
+
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the XMLOutputArchive */
+      //! @{
+
       //! Creates a new node that is a child of the node at the top of the stack
       /*! Nodes will be given a name that has either been pre-set by a name value pair,
-          or generated based upon a counter unique to the parent node.
+          or generated based upon a counter unique to the parent node.  If you want to
+          give a node a specific name, use setNextName prior to calling startNode.
 
           The node will then be pushed onto the node stack. */
       void startNode()
@@ -148,14 +216,14 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
-      //! Saves some data, encoded as a string
+      //! Saves some data, encoded as a string, into the current top level node
       /*! The data will be be named with the most recent name if one exists,
           otherwise it will be given some default delimited value that depends upon
           the parent node */
       template <class T> inline
       void saveValue( T const & value )
       {
-        itsOS.clear(); itsOS.seekp(0);
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
         // allocate strings for all of the data in the XML object
@@ -177,25 +245,7 @@ namespace cereal
         saveValue( static_cast<int32_t>( value ) );
       }
 
-      //! Saves some binary data, encoded as a base64 string, with an optional name
-      /*! This will create a new node, optionally named, and insert a value that consists of
-          the data encoded as a base64 string */
-      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
-      {
-        itsNodes.top().name = name;
-
-        startNode();
-
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
-        saveValue( base64string );
-
-        if( itsOutputType )
-          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
-
-        finishNode();
-      };
-
-      //! Causes the type to be appended to the most recently made node if output type is set to true
+      //! Causes the type to be appended as an attribute to the most recently made node if output type is set to true
       template <class T> inline
       void insertType()
       {
@@ -251,12 +301,15 @@ namespace cereal
         }
       }; // NodeInfo
 
+      //! @}
+
     private:
       std::ostream & itsStream;        //!< The output stream
       rapidxml::xml_document<> itsXML; //!< The XML document
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes added to the document
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
+      bool itsIndent;                  //!< Controls whether indenting is used
   }; // XMLOutputArchive
 
   // ######################################################################
@@ -266,12 +319,42 @@ namespace cereal
 
       Input XML should have been produced by the XMLOutputArchive.  Data can
       only be added to dynamically sized containers - the input archive will
-      determine their size by looking at the number of child nodes.
+      determine their size by looking at the number of child nodes.  Data that
+      did not originate from an XMLOutputArchive is not officially supported,
+      but may be possible to use if properly formatted.
+
+      The XMLInputArchive does not require that nodes are loaded in the same
+      order they were saved by XMLOutputArchive.  Using name value pairs (NVPs),
+      it is possible to load in an out of order fashion or otherwise skip/select
+      specific nodes to load.
+
+      The default behavior of the input archive is to read sequentially starting
+      with the first node and exploring its children.  When a given NVP does
+      not match the read in name for a node, the archive will search for that
+      node at the current level and load it if it exists.  After loading an out of
+      order node, the archive will then proceed back to loading sequentially from
+      its new position.
+
+      Consider this simple example where loading of some data is skipped:
+
+      @code{cpp}
+      // imagine the input file has someData(1-9) saved in order at the top level node
+      ar( someData1, someData2, someData3 );        // XML loads in the order it sees in the file
+      ar( cereal::make_nvp( "hello", someData6 ) ); // NVP given does not
+                                                    // match expected NVP name, so we search
+                                                    // for the given NVP and load that value
+      ar( someData7, someData8, someData9 );        // with no NVP given, loading resumes at its
+                                                    // current location, proceeding sequentially
+      @endcode
 
       \ingroup Archives */
   class XMLInputArchive : public InputArchive<XMLInputArchive>
   {
     public:
+      /*! @name Common Functionality
+          Common use cases for directly interacting with an XMLInputArchive */
+      //! @{
+
       //! Construct, reading in from the provided stream
       /*! Reads in an entire XML document from some stream and parses it as soon
           as serialization starts
@@ -286,7 +369,7 @@ namespace cereal
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
           itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
-        catch( rapidxml::parse_error const & e )
+        catch( rapidxml::parse_error const & )
         {
           //std::cerr << "-----Original-----" << std::endl;
           //stream.seekg(0);
@@ -306,104 +389,15 @@ namespace cereal
           itsNodes.emplace( root );
       }
 
-      //! Prepares to start reading the next node
-      void startNode()
+      //! Loads some binary data, encoded as a base64 string, optionally specified by some name
+      /*! This will automatically start and finish a node to load the data, and can be called directly by
+          users.
+
+          Note that this follows the same ordering rules specified in the class description in regards
+          to loading in/out of order */
+      void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
       {
-        itsNodes.emplace( itsNodes.top().child );
-      }
-
-      //! Finishes reading the current node
-      void finishNode()
-      {
-        // remove current
-        itsNodes.pop();
-
-        // advance parent
-        itsNodes.top().advance();
-      }
-
-      //! Loads a bool
-      template <class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && std::is_same<T, bool>::value, void>::type
-      loadValue( T & value )
-      {
-        std::istringstream is( itsNodes.top().node->value() );
-        is.setf( std::ios::boolalpha );
-        is >> value;
-      }
-
-      //! Loads a type best represented as an unsigned long
-      template <class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
-      loadValue( T & value )
-      {
-        value = std::stoul( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as an unsigned long long
-      template <class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
-      loadValue( T & value )
-      {
-        value = std::stoull( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as an int
-      template <class T> inline
-      typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
-      loadValue( T & value )
-      {
-        value = std::stoi( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as a long
-      template <class T> inline
-      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
-      loadValue( T & value )
-      {
-        value = std::stol( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as a long long
-      template <class T> inline
-      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
-      loadValue( T & value )
-      {
-        value = std::stoll( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as a float
-      void loadValue( float & value )
-      {
-        value = std::stof( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as a double
-      void loadValue( double & value )
-      {
-        value = std::stod( itsNodes.top().node->value() );
-      }
-
-      //! Loads a type best represented as a long double
-      void loadValue( long double & value )
-      {
-        value = std::stold( itsNodes.top().node->value() );
-      }
-
-      //! Loads a string from the current node
-      template<class CharT, class Traits, class Alloc> inline
-      void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
-      {
-        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
-
-        str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
-                    std::istreambuf_iterator<CharT, Traits>() );
-      }
-
-      //! Loads some binary data, encoded as a base64 string
-      /*! This will automatically start and finish a node to load the data */
-      void loadBinaryValue( void * data, size_t size )
-      {
+        setNextName( name );
         startNode();
 
         std::string encoded;
@@ -419,13 +413,179 @@ namespace cereal
         finishNode();
       };
 
-      //! Loads the size of the current node
+      //! @}
+      /*! @name Internal Functionality
+          Functionality designed for use by those requiring control over the inner mechanisms of
+          the XMLInputArchive */
+      //! @{
+
+      //! Prepares to start reading the next node
+      /*! This places the next node to be parsed onto the nodes stack.
+
+          By default our strategy is to start with the document root node and then
+          recursively iterate through all children in the order they show up in the document.
+          We don't need to know NVPs do to this; we'll just blindly load in the order things appear in.
+
+          We check to see if the specified NVP matches what the next automatically loaded node is.  If they
+          match, we just continue as normal, going in order.  If they don't match, we attempt to find a node
+          named after the NVP that is being loaded.  If that NVP does not exist, we throw an exception. */
+      void startNode()
+      {
+        auto next = itsNodes.top().child; // By default we would move to the next child node
+        auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
+
+        // If we were given an NVP name, look for it in the current level of the document.
+        //    We only need to do this if either we have exhausted the siblings of the current level or
+        //    the NVP name does not match the name of the node we would normally read next
+        if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
+        {
+          next = itsNodes.top().search( expectedName );
+
+          if( next == nullptr )
+            throw Exception("XML Parsing failed - provided NVP not found");
+        }
+
+        itsNodes.emplace( next );
+      }
+
+      //! Finishes reading the current node
+      void finishNode()
+      {
+        // remove current
+        itsNodes.pop();
+
+        // advance parent
+        itsNodes.top().advance();
+
+        // Reset name
+        itsNodes.top().name = nullptr;
+      }
+
+      //! Sets the name for the next node created with startNode
+      void setNextName( const char * name )
+      {
+        itsNodes.top().name = name;
+      }
+
+      //! Loads a bool from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && std::is_same<T, bool>::value, void>::type
+      loadValue( T & value )
+      {
+        std::istringstream is( itsNodes.top().node->value() );
+        is.setf( std::ios::boolalpha );
+        is >> value;
+      }
+
+      //! Loads a type best represented as an unsigned long from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) < sizeof(long long), void>::type
+      loadValue( T & value )
+      {
+        value = static_cast<T>( std::stoul( itsNodes.top().node->value() ) );
+      }
+
+      //! Loads a type best represented as an unsigned long long from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && !std::is_same<T, bool>::value && sizeof(T) >= sizeof(long long), void>::type
+      loadValue( T & value )
+      {
+        value = static_cast<T>( std::stoull( itsNodes.top().node->value() ) );
+      }
+
+      //! Loads a type best represented as an int from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) <= sizeof(int), void>::type
+      loadValue( T & value )
+      {
+        value = static_cast<T>( std::stoi( itsNodes.top().node->value() ) );
+      }
+
+      //! Loads a type best represented as a long from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(int)) && (sizeof(T) <= sizeof(long)), void>::type
+      loadValue( T & value )
+      {
+        value = static_cast<T>( std::stol( itsNodes.top().node->value() ) );
+      }
+
+      //! Loads a type best represented as a long long from the current top node
+      template <class T> inline
+      typename std::enable_if<std::is_signed<T>::value && (sizeof(T) > sizeof(long)) && (sizeof(T) <= sizeof(long long)), void>::type
+      loadValue( T & value )
+      {
+        value = static_cast<T>( std::stoll( itsNodes.top().node->value() ) );
+      }
+
+      //! Loads a type best represented as a float from the current top node
+      void loadValue( float & value )
+      {
+        try
+        {
+          value = std::stof( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
+      }
+
+      //! Loads a type best represented as a double from the current top node
+      void loadValue( double & value )
+      {
+        try
+        {
+          value = std::stod( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
+      }
+
+      //! Loads a type best represented as a long double from the current top node
+      void loadValue( long double & value )
+      {
+        try
+        {
+          value = std::stold( itsNodes.top().node->value() );
+        }
+        catch( std::out_of_range const & )
+        {
+          // special case for denormalized values
+          std::istringstream is( itsNodes.top().node->value() );
+          is >> value;
+          if( std::fpclassify( value ) != FP_SUBNORMAL )
+            throw;
+        }
+      }
+
+      //! Loads a string from the current node from the current top node
+      template<class CharT, class Traits, class Alloc> inline
+      void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
+      {
+        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
+
+        str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
+                    std::istreambuf_iterator<CharT, Traits>() );
+      }
+
+      //! Loads the size of the current top node
       template <class T> inline
       void loadSize( T & value )
       {
         value = getNumChildren( itsNodes.top().node );
       }
 
+    protected:
       //! Gets the number of children (usually interpreted as size) for the specified node
       static size_t getNumChildren( rapidxml::xml_node<> * node )
       {
@@ -441,7 +601,6 @@ namespace cereal
         return size;
       }
 
-    protected:
       //! A struct that contains metadata about a node
       /*! Keeps track of some top level node, its number of
           remaining children, and the current active child node */
@@ -449,23 +608,55 @@ namespace cereal
       {
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
-          child( n ? n->first_node() : nullptr ),
-          size( XMLInputArchive::getNumChildren( n ) )
+          child( n->first_node() ),
+          size( XMLInputArchive::getNumChildren( n ) ),
+          name( nullptr )
         { }
 
+        //! Advances to the next sibling node of the child
+        /*! If this is the last sibling child will be null after calling */
         void advance()
         {
-          if( size )
+          if( size > 0 )
           {
             --size;
             child = child->next_sibling();
           }
         }
 
+        //! Searches for a child with the given name in this node
+        /*! @param searchName The name to search for (must be null terminated)
+            @return The node if found, nullptr otherwise */
+        rapidxml::xml_node<> * search( const char * searchName )
+        {
+          if( searchName )
+          {
+            size_t new_size = XMLInputArchive::getNumChildren( node );
+            const size_t name_size = rapidxml::internal::measure( searchName );
+
+            for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
+            {
+              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), searchName, name_size, true ) )
+              {
+                size = new_size;
+                child = new_child;
+
+                return new_child;
+              }
+              --new_size;
+            }
+          }
+
+          return nullptr;
+        }
+
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
-        size_t size;
+        size_t size;                  //!< The remaining number of children for this node
+        const char * name;            //!< The NVP name for next next child node
       }; // NodeInfo
+
+      //! @}
 
     private:
       std::vector<char> itsData;       //!< The raw data loaded
@@ -480,80 +671,88 @@ namespace cereal
   // ######################################################################
   //! Prologue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void prologue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Prologue for NVPs for XML input archives
-  template <class T>
+  template <class T> inline
   void prologue( XMLInputArchive &, NameValuePair<T> const & )
   { }
 
   // ######################################################################
   //! Epilogue for NVPs for XML output archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T>
+  template <class T> inline
   void epilogue( XMLOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Epilogue for NVPs for XML input archives
-  template <class T>
+  template <class T> inline
   void epilogue( XMLInputArchive &, NameValuePair<T> const & )
   { }
 
   // ######################################################################
   //! Prologue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
-  template <class T>
+  template <class T> inline
   void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
   {
     ar.appendAttribute( "size", "dynamic" );
   }
 
-  template <class T>
+  template <class T> inline
   void prologue( XMLInputArchive &, SizeTag<T> const & )
   { }
 
   //! Epilogue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
-  template <class T>
+  template <class T> inline
   void epilogue( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
-  template <class T>
+  template <class T> inline
   void epilogue( XMLInputArchive &, SizeTag<T> const & )
   { }
 
   // ######################################################################
-  //! Prologue for all other types for XML output archives
+  //! Prologue for all other types for XML output archives (except minimal types)
   /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived */
-  template <class T>
-  void prologue( XMLOutputArchive & ar, T const & )
+      that may be given data by the type about to be archived
+
+      Minimal types do not start or end nodes */
+  template <class T> inline
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  prologue( XMLOutputArchive & ar, T const & )
   {
     ar.startNode();
     ar.insertType<T>();
   }
 
-  //! Prologue for all other types for XML input archives
-  template <class T>
-  void prologue( XMLInputArchive & ar, T const & )
+  //! Prologue for all other types for XML input archives (except minimal types)
+  template <class T> inline
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  prologue( XMLInputArchive & ar, T const & )
   {
     ar.startNode();
   }
 
   // ######################################################################
-  //! Epilogue for all other types other for XML output archives
-  /*! Finishes the node created in the prologue */
-  template <class T>
-  void epilogue( XMLOutputArchive & ar, T const & )
+  //! Epilogue for all other types other for XML output archives (except minimal types)
+  /*! Finishes the node created in the prologue
+
+      Minimal types do not start or end nodes */
+  template <class T> inline
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  epilogue( XMLOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }
 
-  //! Epilogue for all other types other for XML output archives
-  template <class T>
-  void epilogue( XMLInputArchive & ar, T const & )
+  //! Epilogue for all other types other for XML output archives (except minimal types)
+  template <class T> inline
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  epilogue( XMLInputArchive & ar, T const & )
   {
     ar.finishNode();
   }
@@ -574,6 +773,7 @@ namespace cereal
   template <class T> inline
   void load( XMLInputArchive & ar, NameValuePair<T> & t )
   {
+    ar.setNextName( t.name );
     ar( t.value );
   }
 
@@ -624,7 +824,7 @@ namespace cereal
 } // namespace cereal
 
 // register archives for polymorphic support
-CEREAL_REGISTER_ARCHIVE(cereal::XMLOutputArchive);
-CEREAL_REGISTER_ARCHIVE(cereal::XMLInputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::XMLOutputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::XMLInputArchive)
 
 #endif // CEREAL_ARCHIVES_XML_HPP_

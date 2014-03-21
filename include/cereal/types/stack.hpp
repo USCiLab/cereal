@@ -2,7 +2,7 @@
     \brief Support for types found in \<stack\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ namespace cereal
   void load( Archive & ar, std::stack<T, C> & stack )
   {
     C container;
-    ar( container );
+    ar( _CEREAL_NVP("container", container) );
     stack = std::stack<T, C>( std::move( container ) );
   }
 } // namespace cereal

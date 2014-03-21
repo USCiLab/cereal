@@ -2,7 +2,7 @@
     \brief Support for types found in \<complex\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,8 @@ namespace cereal
   void load( Archive & ar, std::complex<T> & bits )
   {
     T real, imag;
-    ar( real, imag );
+    ar( _CEREAL_NVP("real", real),
+        _CEREAL_NVP("imag", imag) );
     bits = {real, imag};
   }
 } // namespace cereal

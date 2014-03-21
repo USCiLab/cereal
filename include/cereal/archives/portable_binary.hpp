@@ -1,7 +1,7 @@
 /*! \file binary.hpp
     \brief Binary input and output archives */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -42,17 +42,17 @@ namespace cereal
     inline bool is_little_endian()
     {
       static std::int32_t test = 1;
-      return *reinterpret_cast<std::int8_t*>( &test );
+      return *reinterpret_cast<std::int8_t*>( &test ) == 1;
     }
 
     //! Swaps the order of bytes for some chunk of memory
     /*! @param data The data as a uint8_t pointer
         @tparam DataSize The true size of the data
         @ingroup Internal */
-    template <size_t DataSize>
+    template <std::size_t DataSize>
     inline void swap_bytes( std::uint8_t * data )
     {
-      for( size_t i = 0, end = DataSize / 2; i < end; ++i )
+      for( std::size_t i = 0, end = DataSize / 2; i < end; ++i )
         std::swap( data[i], data[DataSize - i - 1] );
     }
   } // end namespace portable_binary_detail
@@ -65,6 +65,10 @@ namespace cereal
       This archive will record the endianness of the data and assuming that
       the user takes care of ensuring serialized types are the same size
       across machines, is portable over different architectures.
+
+      When using a binary archive and a file stream, you must use the
+      std::ios::binary format flag to avoid having your data altered
+      inadvertently.
 
       \warning This archive has not been thoroughly tested across different architectures.
                Please report any issues, optimizations, or feature requests at
@@ -80,14 +84,14 @@ namespace cereal
       PortableBinaryOutputArchive(std::ostream & stream) :
         OutputArchive<PortableBinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
-    {
-      this->operator()( portable_binary_detail::is_little_endian() );
-    }
+      {
+        this->operator()( portable_binary_detail::is_little_endian() );
+      }
 
       //! Writes size bytes of data to the output stream
-      void saveBinary( const void * data, size_t size )
+      void saveBinary( const void * data, std::size_t size )
       {
-        size_t const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
+        auto const writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
@@ -114,6 +118,10 @@ namespace cereal
       The archive will do nothing to ensure types are the same size - that is
       the responsibility of the user.
 
+      When using a binary archive and a file stream, you must use the
+      std::ios::binary format flag to avoid having your data altered
+      inadvertently.
+
       \warning This archive has not been thoroughly tested across different architectures.
                Please report any issues, optimizations, or feature requests at
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
@@ -138,11 +146,11 @@ namespace cereal
       /*! @param data The data to save
           @param size The number of bytes in the data
           @tparam DataSize T The size of the actual type of the data elements being loaded */
-      template <size_t DataSize>
-      void loadBinary( void * const data, size_t size )
+      template <std::size_t DataSize>
+      void loadBinary( void * const data, std::size_t size )
       {
         // load data
-        size_t const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
+        auto const readSize = static_cast<std::size_t>( itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size ) );
 
         if(readSize != size)
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
@@ -151,7 +159,7 @@ namespace cereal
         if( itsConvertEndianness )
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
-          for( size_t i = 0; i < size; i += DataSize )
+          for( std::size_t i = 0; i < size; i += DataSize )
             portable_binary_detail::swap_bytes<DataSize>( ptr );
         }
       }
@@ -211,7 +219,7 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.saveBinary(bd.data, bd.size);
+    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 
   //! Loading binary data from portable binary
@@ -223,12 +231,12 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.template loadBinary<sizeof(TT)>(bd.data, bd.size);
+    ar.template loadBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
   }
 } // namespace cereal
 
 // register archives for polymorphic support
-CEREAL_REGISTER_ARCHIVE(cereal::PortableBinaryOutputArchive);
-CEREAL_REGISTER_ARCHIVE(cereal::PortableBinaryInputArchive);
+CEREAL_REGISTER_ARCHIVE(cereal::PortableBinaryOutputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::PortableBinaryInputArchive)
 
 #endif // CEREAL_ARCHIVES_PORTABLE_BINARY_HPP_

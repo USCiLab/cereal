@@ -2,7 +2,7 @@
     \brief Internal polymorphism support
     \ingroup Internal */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,7 @@
 #include <cereal/details/static_object.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
+#include <functional>
 #include <typeindex>
 #include <map>
 
@@ -64,7 +65,7 @@
     };                                                       \
     bind_to_archives<T> const & init_binding<T>::b =         \
         ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T >                             \
+            bind_to_archives<T>                              \
         >::getInstance().bind();                             \
     }} // end namespaces
 
@@ -156,7 +157,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::shared_ptr<T> ptr;
 
-            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr = ptr;
           };
@@ -167,7 +168,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::unique_ptr<T> ptr;
 
-            ar( ::cereal::memory_detail::make_ptr_wrapper(ptr) );
+            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr.reset(ptr.release());
           };
@@ -201,6 +202,71 @@ namespace cereal
         }
       }
 
+      //! Holds a properly typed shared_ptr to the polymorphic type
+      class PolymorphicSharedPointerWrapper
+      {
+        public:
+          /*! Wrap a raw polymorphic pointer in a shared_ptr to its true type
+
+              The wrapped pointer will not be responsible for ownership of the held pointer
+              so it will not attempt to destroy it; instead the refcount of the wrapped
+              pointer will be tied to a fake 'ownership pointer' that will do nothing
+              when it ultimately goes out of scope.
+
+              The main reason for doing this, other than not to destroy the true object
+              with our wrapper pointer, is to avoid meddling with the internal reference
+              count in a polymorphic type that inherits from std::enable_shared_from_this.
+
+              @param dptr A void pointer to the contents of the shared_ptr to serialize */
+          PolymorphicSharedPointerWrapper( void const * dptr ) : refCount()
+          {
+            #ifdef _LIBCPP_VERSION
+            // libc++ needs this hacky workaround, see http://llvm.org/bugs/show_bug.cgi?id=18843
+            wrappedPtr = std::shared_ptr<T const>(
+                std::const_pointer_cast<T const>(
+                  std::shared_ptr<T>( refCount, static_cast<T *>(const_cast<void *>(dptr) ))));
+            #else // NOT _LIBCPP_VERSION
+            wrappedPtr = std::shared_ptr<T const>( refCount, static_cast<T const *>(dptr) );
+            #endif // _LIBCPP_VERSION
+          }
+
+          //! Get the wrapped shared_ptr */
+          inline std::shared_ptr<T const> const & operator()() const { return wrappedPtr; }
+
+        private:
+          std::shared_ptr<void> refCount;      //!< The ownership pointer
+          std::shared_ptr<T const> wrappedPtr; //!< The wrapped pointer
+      };
+
+      //! Does the actual work of saving a polymorphic shared_ptr
+      /*! This function will properly create a shared_ptr from the void * that is passed in
+          before passing it to the archive for serialization.
+
+          In addition, this will also preserve the state of any internal enable_shared_from_this mechanisms
+
+          @param ar The archive to serialize to
+          @param dptr Pointer to the actual data held by the shared_ptr */
+      static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::true_type /* has_shared_from_this */ )
+      {
+        ::cereal::memory_detail::EnableSharedStateHelper<T> state( static_cast<T *>(const_cast<void *>(dptr)) );
+        PolymorphicSharedPointerWrapper psptr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
+      }
+
+      //! Does the actual work of saving a polymorphic shared_ptr
+      /*! This function will properly create a shared_ptr from the void * that is passed in
+          before passing it to the archive for serialization.
+
+          This version is for types that do not inherit from std::enable_shared_from_this.
+
+          @param ar The archive to serialize to
+          @param dptr Pointer to the actual data held by the shared_ptr */
+      static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::false_type /* has_shared_from_this */ )
+      {
+        PolymorphicSharedPointerWrapper psptr( dptr );
+        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
+      }
+
       //! Initialize the binding
       OutputBindingCreator()
       {
@@ -213,9 +279,11 @@ namespace cereal
 
             writeMetadata(ar);
 
-            std::shared_ptr<T const> const ptr(static_cast<T const *>(dptr), EmptyDeleter<T const>());
-
-            ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+            #ifdef _MSC_VER
+            savePolymorphicSharedPtr( ar, dptr, ::cereal::traits::has_shared_from_this<T>::type() ); // MSVC doesn't like typename here
+            #else // not _MSC_VER
+            savePolymorphicSharedPtr( ar, dptr, typename ::cereal::traits::has_shared_from_this<T>::type() );
+            #endif // _MSC_VER
           };
 
         serializers.unique_ptr =
@@ -242,20 +310,20 @@ namespace cereal
     template <class Archive, class T>
     struct create_bindings
     {
-        static const InputBindingCreator<Archive, T> &
-        load(std::true_type)
-        {
-          return cereal::detail::StaticObject<InputBindingCreator<Archive, T>>::getInstance();
-        }
+      static const InputBindingCreator<Archive, T> &
+      load(std::true_type)
+      {
+        return cereal::detail::StaticObject<InputBindingCreator<Archive, T>>::getInstance();
+      }
 
-        static const OutputBindingCreator<Archive, T> &
-        save(std::true_type)
-        {
-          return cereal::detail::StaticObject<OutputBindingCreator<Archive, T>>::getInstance();
-        }
+      static const OutputBindingCreator<Archive, T> &
+      save(std::true_type)
+      {
+        return cereal::detail::StaticObject<OutputBindingCreator<Archive, T>>::getInstance();
+      }
 
-        inline static void load(std::false_type) {}
-        inline static void save(std::false_type) {}
+      inline static void load(std::false_type) {}
+      inline static void save(std::false_type) {}
     };
 
     //! When specialized, causes the compiler to instantiate its parameter
@@ -270,20 +338,26 @@ namespace cereal
     template <class Archive, class T>
     struct polymorphic_serialization_support
     {
+      #ifdef _MSC_VER
+      //! Creates the appropriate bindings depending on whether the archive supports
+      //! saving or loading
+      virtual void instantiate();
+      #else // NOT _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       static void instantiate();
       //! This typedef causes the compiler to instantiate this static function
       typedef instantiate_function<instantiate> unused;
+      #endif // _MSC_VER
     };
 
     // instantiate implementation
     template <class Archive, class T>
     void polymorphic_serialization_support<Archive,T>::instantiate()
     {
-        create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
 
-        create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
     }
 
     //! Begins the binding process of a type to all registered archives
@@ -296,8 +370,8 @@ namespace cereal
     {
       //! Binding for non abstract types
       void bind(std::false_type) const
-      {
-        instantiate_polymorphic_binding( (T*)0, 0, adl_tag{} );
+	    {
+		    instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
       }
 
       //! Binding for abstract types
@@ -309,6 +383,8 @@ namespace cereal
           do not need to make a binding */
       bind_to_archives const & bind() const
       {
+        static_assert( std::is_polymorphic<T>::value,
+                       "Attempting to register non polymorphic type" );
         bind( std::is_abstract<T>() );
         return *this;
       }
@@ -331,7 +407,7 @@ namespace cereal
 
         See the documentation for the other functions to try and understand this */
     template <class T>
-    void instantiate_polymorphic_binding( T*, int, adl_tag ) {};
+    void instantiate_polymorphic_binding( T*, int, adl_tag ) {}
   } // namespace detail
 } // namespace cereal
 

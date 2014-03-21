@@ -2,7 +2,7 @@
     \brief Support for types found in \<unordered_map\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ namespace cereal
       ar( make_size_tag( size ) );
 
       map.clear();
-      map.reserve( size );
+      map.reserve( static_cast<std::size_t>( size ) );
 
       for( size_type i = 0; i < size; ++i )
       {
@@ -63,7 +63,7 @@ namespace cereal
         typename MapT::mapped_type value;
 
         ar( make_map_item(key, value) );
-        map.insert( {key, value} );
+        map.emplace( std::move( key ), std::move( value ) );
       }
     }
   }

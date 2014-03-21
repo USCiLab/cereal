@@ -2,7 +2,7 @@
     \brief Support for boost::variant
     \ingroup OtherTypes */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace cereal
     template <class Archive>
     struct variant_save_visitor : boost::static_visitor<>
     {
-      variant_save_visitor(Archive & ar) : ar(ar) {}
+      variant_save_visitor(Archive & ar_) : ar(ar_) {}
 
       template<class T>
         void operator()(T const & value) const
@@ -56,7 +56,7 @@ namespace cereal
     //! @internal
     template<int N, class Variant, class ... Args, class Archive>
     typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(Archive & ar, int target, Variant & variant)
+    load_variant(Archive & /*ar*/, int /*target*/, Variant & /*variant*/)
     {
       throw ::cereal::Exception("Error traversing variant during load");
     }
@@ -69,7 +69,7 @@ namespace cereal
       if(N == target)
       {
         H value;
-        ar( value );
+        ar( _CEREAL_NVP("data", value) );
         variant = value;
       }
       else
@@ -95,7 +95,7 @@ namespace cereal
     typedef typename boost::variant<VariantTypes...>::types types;
 
     int32_t which;
-    ar( which );
+    ar( _CEREAL_NVP("which", which) );
     if(which >= boost::mpl::size<types>::value)
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 

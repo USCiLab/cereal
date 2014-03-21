@@ -2,7 +2,7 @@
     \brief Support for types found in \<unordered_set\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -55,14 +55,14 @@ namespace cereal
       ar( make_size_tag( size ) );
 
       set.clear();
-      set.reserve( size );
+      set.reserve( static_cast<std::size_t>( size ) );
 
       for( size_type i = 0; i < size; ++i )
       {
         typename SetT::key_type key;
 
         ar( key );
-        set.insert( key );
+        set.emplace( std::move( key ) );
       }
     }
   }

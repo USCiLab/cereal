@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,11 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable : 4244 4267)
+#endif
+
 #include <sstream>
 #include <iostream>
 #include <chrono>
@@ -131,16 +136,26 @@ struct binary
     some data.  Result is output to standard out.
 
     @tparam SerializationT The serialization struct that has all save and load functions
-    @tparam DataT The type of data to test
+    @tparam DataTCereal The type of data to test for cereal
+    @tparam DataTBoost The type of data to test for boost
     @param name The name for this test
-    @param data The data to serialize
+    @param data The data to serialize for cereal
+    @param data The data to serialize for boost
     @param numAverages The number of times to average
     @param validateData Whether data should be validated (input == output) */
-template <class SerializationT, class DataT>
+template <class SerializationT, class DataTCereal, class DataTBoost>
 void test( std::string const & name,
-            DataT const & data,
+            DataTCereal const & dataC,
+            DataTBoost const & dataB,
             size_t numAverages = 100,
-            bool validateData = false )
+            bool validateData = false );
+
+template <class SerializationT, class DataTCereal, class DataTBoost>
+void test( std::string const & name,
+            DataTCereal const & dataC,
+            DataTBoost const & dataB,
+            size_t numAverages,
+            bool /*validateData*/ )
 {
   std::cout << "-----------------------------------" << std::endl;
   std::cout << "Running test: " << name << std::endl;
@@ -159,31 +174,25 @@ void test( std::string const & name,
     // Boost
     {
       std::ostringstream os;
-      auto saveResult = saveData<DataT>( data, {SerializationT::boost::template save<DataT>}, os );
+      auto saveResult = saveData<DataTBoost>( dataB, {SerializationT::boost::template save<DataTBoost>}, os );
       totalBoostSave += saveResult;
       if(!boostSize)
         boostSize = os.tellp();
 
-      auto loadResult = loadData<DataT>( os, {SerializationT::boost::template load<DataT>} );
+      auto loadResult = loadData<DataTBoost>( os, {SerializationT::boost::template load<DataTBoost>} );
       totalBoostLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
 
     // Cereal
     {
       std::ostringstream os;
-      auto saveResult = saveData<DataT>( data, {SerializationT::cereal::template save<DataT>}, os );
+      auto saveResult = saveData<DataTCereal>( dataC, {SerializationT::cereal::template save<DataTCereal>}, os );
       totalCerealSave += saveResult;
       if(!cerealSize)
         cerealSize = os.tellp();
 
-      auto loadResult = loadData<DataT>( os, {SerializationT::cereal::template load<DataT>} );
+      auto loadResult = loadData<DataTCereal>( os, {SerializationT::cereal::template load<DataTCereal>} );
       totalCerealLoad += loadResult.second;
-
-      if( validateData )
-        ; // TODO
     }
   }
 
@@ -216,15 +225,29 @@ void test( std::string const & name,
   std::cout << std::endl;
 }
 
+template <class SerializationT, class DataT>
+void test( std::string const & name,
+            DataT const & data,
+            size_t numAverages = 100,
+            bool validateData = false )
+{
+  return test<SerializationT, DataT, DataT>( name, data, data, numAverages, validateData );
+}
+
 template<class T>
 typename std::enable_if<std::is_floating_point<T>::value, T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_real_distribution<T>(-10000.0, 10000.0)(gen); }
 
 template<class T>
-typename std::enable_if<std::is_integral<T>::value, T>::type
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) != sizeof(char), T>::type
 random_value(std::mt19937 & gen)
 { return std::uniform_int_distribution<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen); }
+
+template<class T>
+typename std::enable_if<std::is_integral<T>::value && sizeof(T) == sizeof(char), T>::type
+random_value(std::mt19937 & gen)
+{ return static_cast<T>( std::uniform_int_distribution<int64_t>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max())(gen) ); }
 
 template<class T>
 typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type
@@ -241,7 +264,8 @@ std::basic_string<C> random_basic_string(std::mt19937 & gen, size_t maxSize = 30
 {
   std::basic_string<C> s(std::uniform_int_distribution<int>(3, maxSize)(gen), ' ');
   for(C & c : s)
-    c = std::uniform_int_distribution<C>(' ', '~')(gen);
+    c = static_cast<C>( std::uniform_int_distribution<int>( '~', '~' )(gen) );
+  return s;
   return s;
 }
 
@@ -254,7 +278,7 @@ std::string random_binary_string(std::mt19937 & gen)
   return s;
 }
 
-struct PoDStruct
+struct PoDStructCereal
 {
   int32_t a;
   int64_t b;
@@ -265,18 +289,26 @@ struct PoDStruct
   void serialize( Archive & ar )
   {
     ar(a, b, c, d);
-  };
-
-  template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
-  {
-    ar & a & b & c & d;
-  };
+  }
 };
 
-struct PoDChild : virtual PoDStruct
+struct PoDStructBoost
 {
-  PoDChild() : v(1024)
+  int32_t a;
+  int64_t b;
+  float c;
+  double d;
+
+  template <class Archive>
+  void serialize( Archive & ar, const unsigned int /*version*/ )
+  {
+    ar & a & b & c & d;
+  }
+};
+
+struct PoDChildCereal : virtual PoDStructCereal
+{
+  PoDChildCereal() : v(1024)
   { }
 
   std::vector<float> v;
@@ -284,15 +316,23 @@ struct PoDChild : virtual PoDStruct
   template <class Archive>
   void serialize( Archive & ar )
   {
-    ar( cereal::virtual_base_class<PoDStruct>(this), v );
-  };
+    ar( cereal::virtual_base_class<PoDStructCereal>(this), v );
+  }
+};
+
+struct PoDChildBoost : virtual PoDStructBoost
+{
+  PoDChildBoost() : v(1024)
+  { }
+
+  std::vector<float> v;
 
   template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
+  void serialize( Archive & ar, const unsigned int /*version*/ )
   {
-    ar & boost::serialization::base_object<PoDStruct>(*this);
+    ar & boost::serialization::base_object<PoDStructBoost>(*this);
     ar & v;
-  };
+  }
 };
 
 int main()
@@ -304,13 +344,13 @@ int main()
   const bool randomize = false;
 
   //########################################
-  auto vectorDoubleTest = [&](size_t s, bool randomize)
+  auto vectorDoubleTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(double) size " << s;
 
     std::vector<double> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngD();
 
@@ -323,13 +363,13 @@ int main()
   vectorDoubleTest(1024*1024, randomize); // 8MB
 
   //########################################
-  auto vectorCharTest = [&](size_t s, bool randomize)
+  auto vectorCharTest = [&](size_t s, bool randomize_)
   {
     std::ostringstream name;
     name << "Vector(uint8_t) size " << s;
 
     std::vector<uint8_t> data(s);
-    if(randomize)
+    if(randomize_)
       for( auto & d : data )
         d = rngC();
 
@@ -344,8 +384,9 @@ int main()
     std::ostringstream name;
     name << "Vector(PoDStruct) size " << s;
 
-    std::vector<PoDStruct> data(s);
-    test<binary>( name.str(), data );
+    std::vector<PoDStructCereal> dataC(s);
+    std::vector<PoDStructBoost> dataB(s);
+    test<binary>( name.str(), dataC, dataB );
   };
 
   vectorPoDStructTest(1);
@@ -360,8 +401,9 @@ int main()
     std::ostringstream name;
     name << "Vector(PoDChild) size " << s;
 
-    std::vector<PoDChild> data(s);
-    test<binary>( name.str(), data );
+    std::vector<PoDChildCereal> dataC(s);
+    std::vector<PoDChildBoost> dataB(s);
+    test<binary>( name.str(), dataC, dataB );
   };
 
   vectorPoDChildTest(1024);
@@ -406,10 +448,14 @@ int main()
     std::ostringstream name;
     name << "Map(PoDStruct) size " <<s;
 
-    std::map<std::string, PoDStruct> m;
+    std::map<std::string, PoDStructCereal> mC;
+    std::map<std::string, PoDStructBoost> mB;
     for(size_t i=0; i<s; ++i)
-      m[std::to_string(i)] = {};
-    test<binary>(name.str(), m);
+    {
+      mC[std::to_string( i )] = PoDStructCereal();
+      mB[std::to_string( i )] = PoDStructBoost();
+    }
+    test<binary>(name.str(), mC, mB);
   };
 
   mapPoDStructTest(1024);
@@ -417,3 +463,7 @@ int main()
 
   return 0;
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

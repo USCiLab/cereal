@@ -2,7 +2,7 @@
     \brief Support for types found in \<bitset\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ namespace cereal
       ar( _CEREAL_NVP("type", bitset_detail::type::ulong) );
       ar( _CEREAL_NVP("data", b) );
     }
-    catch( std::overflow_error const & e )
+    catch( std::overflow_error const & )
     {
       try
       {
@@ -65,7 +65,7 @@ namespace cereal
         ar( _CEREAL_NVP("type", bitset_detail::type::ullong) );
         ar( _CEREAL_NVP("data", b) );
       }
-      catch( std::overflow_error const & e )
+      catch( std::overflow_error const & )
       {
         ar( _CEREAL_NVP("type", bitset_detail::type::string) );
         ar( _CEREAL_NVP("data", bits.to_string()) );
@@ -78,28 +78,28 @@ namespace cereal
   void load( Archive & ar, std::bitset<N> & bits )
   {
     bitset_detail::type t;
-    ar( t );
+    ar( _CEREAL_NVP("type", t) );
 
     switch( t )
     {
       case bitset_detail::type::ulong:
       {
         unsigned long b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::ullong:
       {
         unsigned long long b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }
       case bitset_detail::type::string:
       {
         std::string b;
-        ar( b );
+        ar( _CEREAL_NVP("data", b) );
         bits = std::bitset<N>( b );
         break;
       }

@@ -2,7 +2,7 @@
     \brief Support for base classes (virtual and non-virtual)
     \ingroup OtherTypes */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -34,10 +34,10 @@ namespace cereal
 {
   //! Casts a derived class to its non-virtual base class in a way that safely supports abstract classes
   /*! This should be used in cases when a derived type needs to serialize its base type. This is better than directly
-      using static_cast, as it allows for serialization of pure virtual (abstract) base classes. 
+      using static_cast, as it allows for serialization of pure virtual (abstract) base classes.
 
       \sa virtual_base_class
-      
+
       @code{.cpp}
       struct MyBase
       {
@@ -90,7 +90,7 @@ namespace cereal
 
       @code{.cpp}
       struct MyBase
-      { 
+      {
         int x;
 
         template <class Archive>
@@ -137,13 +137,13 @@ namespace cereal
           ar( a );
 
           // Because we used virtual_base_class, cereal will ensure that only one instance of MyBase is
-          // serialized as we traverse the inheritance heirarchy. This means that there will be one copy 
+          // serialized as we traverse the inheritance heirarchy. This means that there will be one copy
           // each of the variables x, y, z, and a
 
           // If we had chosen to use static_cast<> instead, cereal would perform no tracking and
           // assume that every base class should be serialized (in this case leading to a duplicate
           // serialization of MyBase due to diamond inheritance
-      }; 
+      };
      }
      @endcode */
   template<class Base>
@@ -158,4 +158,5 @@ namespace cereal
     };
 
 } // namespace cereal
+
 #endif // CEREAL_TYPES_BASE_CLASS_HPP_

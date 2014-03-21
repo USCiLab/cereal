@@ -2,7 +2,7 @@
     \brief Internal helper functionality
     \ingroup Internal */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,29 @@
 #include <type_traits>
 #include <cstdint>
 #include <utility>
+#include <memory>
+#include <unordered_map>
+#include <stdexcept>
+
+#include <cereal/details/static_object.hpp>
 
 namespace cereal
 {
+  // ######################################################################
+  //! An exception class thrown when things go wrong at runtime
+  /*! @ingroup Utility */
+  struct Exception : public std::runtime_error
+  {
+    Exception( const std::string & what_ ) : std::runtime_error(what_) {}
+    Exception( const char * what_ ) : std::runtime_error(what_) {}
+  };
 
+  // ######################################################################
   //! The size type used by cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
    * a fixed size type instead of size_t, which may vary from machine to
    * machine. */
-  typedef uint64_t size_type;
+  using size_type = uint64_t;
 
   // forward decls
   class BinaryOutputArchive;
@@ -121,11 +135,15 @@ namespace cereal
   {
     private:
       // If we get passed an RValue, we'll just make a local copy if it here
-      // otherwise, we store a reference
-      using DT = typename std::decay<T>::type;
+      // otherwise, we store a reference.  If we were passed an array, don't
+      // decay the type - keep it as an array, and then proceed as normal
+      // with the RValue business
+      using DT = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
+                                           typename std::remove_cv<T>::type,
+                                           typename std::decay<T>::type>::type;
       using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
                                              DT,
-                                            typename std::add_lvalue_reference<DT>::type>::type;
+                                             typename std::add_lvalue_reference<DT>::type>::type;
       // prevent nested nvps
       static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
                      "Cannot pair a name to a NameValuePair" );
@@ -272,14 +290,14 @@ namespace cereal
       typename std::add_lvalue_reference<DecayKey>::type>::type;
 
     using DecayValue = typename std::decay<Value>::type;
-    using ValueType = typename std::conditional<
+    using ValueType =  typename std::conditional<
       std::is_rvalue_reference<Value>::value,
       DecayValue,
       typename std::add_lvalue_reference<DecayValue>::type>::type;
 
     //! Construct a MapItem from a key and a value
     /*! @internal */
-    MapItem( Key && key, Value && value ) : key(const_cast<KeyType>(key)), value(const_cast<ValueType>(value)) {}
+    MapItem( Key && key_, Value && value_ ) : key(const_cast<KeyType>(key_)), value(const_cast<ValueType>(value_)) {}
 
     KeyType key;
     ValueType value;
@@ -301,6 +319,133 @@ namespace cereal
   {
     return {std::forward<KeyType>(key), std::forward<ValueType>(value)};
   }
+
+  namespace detail
+  {
+    // ######################################################################
+    //! Holds all registered version information
+    struct Versions
+    {
+      std::unordered_map<std::size_t, std::uint32_t> mapping;
+    }; // struct Versions
+
+    //! Version information class
+    /*! This is the base case for classes that have not been explicitly
+        registered */
+    template <class T> struct Version
+    {
+      static const std::uint32_t version = 0;
+      // we don't need to explicitly register these types since they
+      // always get a version number of 0
+    };
+
+    #ifdef CEREAL_FUTURE_EXPERIMENTAL
+    // ######################################################################
+    //! A class that can store any type
+    /*! This is inspired by boost::any and is intended to be a very light-weight
+        replacement for internal use only.
+
+        This class is only here as a candidate for issue #46 (see github) and
+        should be considered unsupported until a future version of cereal.
+        */
+    class Any
+    {
+      private:
+        //! Convenience alias for decay
+        template <class T>
+        using ST = typename std::decay<T>::type;
+
+        struct Base
+        {
+          virtual ~Base() {}
+          virtual std::unique_ptr<Base> clone() const = 0;
+        };
+
+        template <class T>
+        struct Derived : Base
+        {
+          template <class U>
+          Derived( U && data ) : value( std::forward<U>( data ) ) {}
+
+          std::unique_ptr<Base> clone() const
+          {
+            return std::unique_ptr<Base>( new Derived<T>( value ) );
+          }
+
+          T value;
+        };
+
+      public:
+        //! Construct from any type
+        template <class T> inline
+        Any( T && data ) :
+          itsPtr( new Derived<ST<T>>( std::forward<T>( data ) ) )
+        { }
+
+        //! Convert to any type, if possible
+        /*! Attempts to perform the conversion if possible,
+            otherwise throws an exception.
+
+            @throw Exception if conversion is not possible (see get() for more info)
+            @tparam The requested type to convert to */
+        template <class T> inline
+        operator T()
+        {
+          return get<ST<T>>();
+        }
+
+        Any() : itsPtr() {}
+        Any( Any & other ) : itsPtr( other.clone() ) {}
+        Any( Any const & other ) : itsPtr( other.clone() ) {}
+        Any( Any && other ) : itsPtr( std::move( other.itsPtr ) ) {}
+
+        Any & operator=( Any const & other )
+        {
+          if( itsPtr == other.itsPtr ) return *this;
+
+          auto cloned = other.clone();
+          itsPtr = std::move( cloned );
+
+          return *this;
+        }
+
+        Any & operator=( Any && other )
+        {
+          if( itsPtr == other.itsPtr ) return *this;
+
+          itsPtr = std::move( other.itsPtr );
+
+          return *this;
+        }
+
+      protected:
+        //! Get the contained type as type T
+        /*! @tparam T The requested type to convert to
+            @return The type converted to T
+            @throw Exception if conversion is impossible */
+        template <class T>
+        ST<T> & get()
+        {
+          auto * derived = dynamic_cast<Derived<ST<T>> *>( itsPtr.get() );
+
+          if( !derived )
+            throw ::cereal::Exception( "Invalid conversion requested on ASDFA" );
+
+          return derived->value;
+        }
+
+        //! Clones the held data if it exists
+        std::unique_ptr<Base> clone() const
+        {
+          if( itsPtr ) return itsPtr->clone();
+          else return {};
+        }
+
+      private:
+        std::unique_ptr<Base> itsPtr;
+    }; // struct Any
+    #endif // CEREAL_FUTURE_EXPERIMENTAL
+  } // namespace detail
 } // namespace cereal
 
 #endif // CEREAL_DETAILS_HELPERS_HPP_

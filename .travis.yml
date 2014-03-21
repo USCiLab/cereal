@@ -1,14 +1,15 @@
 language: cpp
 
 compiler:
-  - clang
+  # TODO: Clang is currently giving issues
+  #- clang
   - gcc
 
 before_install:
-  # g++4.8.1
-  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  # Always install g++4.8.1
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 
-  # clang 3.4
+  # clang 3.3
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
 
   - sudo apt-get update -qq
@@ -17,13 +18,19 @@ install:
   - sudo apt-get install cmake
   - sudo apt-get install libboost-all-dev
 
-    # g++4.8.1
-  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  # Always install valgrind
+  - sudo apt-get install valgrind
 
-    # clang 3.4
-  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+  # Always install g++4.8.1
+  - sudo apt-get install -qq g++-4.8
+  - sudo apt-get install -qq g++-4.8-multilib
+  - if [ "$CXX" = "g++" ]; then export CMAKE_CXX_COMPILER="g++-4.8"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
-  - sudo apt-get update -qq
+  # clang 3.3
+  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.3; fi
+  - if [ "$CXX" == "clang++" ]; then export CMAKE_CXX_COMPILER="clang++-3.3"; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.3"; fi
 
 script:
   - mkdir build 
@@ -33,6 +40,7 @@ script:
 
 after_script:
   - ctest .
+  # - make valgrind
 
 branches:
   only:

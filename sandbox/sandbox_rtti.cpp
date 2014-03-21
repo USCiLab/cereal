@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ struct MyType : public Base
       ar( cereal::base_class<Base>( this ) );
     }
 };
-CEREAL_REGISTER_TYPE(MyType);
+CEREAL_REGISTER_TYPE(MyType)
 
 struct YourType : public Base
 {
@@ -97,7 +97,7 @@ struct YourType : public Base
       ar( x );
     }
 };
-CEREAL_REGISTER_TYPE(YourType);
+CEREAL_REGISTER_TYPE(YourType)
 
 struct OurBase
 {
@@ -110,7 +110,7 @@ struct OurBase
 
 struct OurType : public OurBase
 {
-  OurType() = default;
+  OurType() : OurBase(), x() {}
   OurType(int x_) : x(x_) {}
   void foo() {}
 
@@ -159,7 +159,7 @@ struct TestType
   void serialize( Archive & ar )
   {
     ar( x );
-  };
+  }
 };
 
 namespace cereal
@@ -180,7 +180,7 @@ struct BBB : AAA
   void serialize( Archive & ) {}
 };
 
-CEREAL_REGISTER_TYPE(BBB);
+CEREAL_REGISTER_TYPE(BBB)
 
 template <class T> void nop(T&&) {}
 
@@ -188,29 +188,30 @@ int main()
 {
   {
     std::ofstream ostream("rtti.txt");
-    cereal::BinaryOutputArchive oarchive(ostream);
+    //cereal::BinaryOutputArchive oarchive(ostream);
+    cereal::XMLOutputArchive oarchive(ostream);
 
     std::shared_ptr<Base> ptr1 = std::make_shared<MyType>();
     std::shared_ptr<Base> ptr2 = std::make_shared<YourType>(33);
-    std::unique_ptr<Base> ptr3(new MyType);
+    std::unique_ptr<Base> ptr3(new MyType());
     std::weak_ptr<Base>   ptr4 = ptr2;
 
     std::shared_ptr<OurType> ptr5 = std::make_shared<OurType>(99);
 
-    //oarchive(ptr1);
-    //oarchive(ptr2);
-    //oarchive(ptr3);
-    //oarchive(ptr4);
+    oarchive(ptr1);
+    oarchive(ptr2);
+    oarchive(ptr3);
+    oarchive(ptr4);
     oarchive(ptr5);
 
-
-    std::shared_ptr<AAA> a = std::make_shared<BBB>();
-    oarchive(a);
+    //std::shared_ptr<AAA> a = std::make_shared<BBB>();
+    //oarchive(a);
   }
 
   {
     std::ifstream istream("rtti.txt");
-    cereal::BinaryInputArchive iarchive(istream);
+    //cereal::BinaryInputArchive iarchive(istream);
+    cereal::XMLInputArchive iarchive(istream);
 
     std::shared_ptr<Base> ptr1;
     std::shared_ptr<Base> ptr2;
@@ -219,10 +220,10 @@ int main()
 
     std::shared_ptr<OurType> ptr5;
 
-    //iarchive(ptr1);
-    //iarchive(ptr2);
-    //iarchive(ptr3);
-    //iarchive(ptr4);
+    iarchive(ptr1);
+    iarchive(ptr2);
+    iarchive(ptr3);
+    iarchive(ptr4);
     iarchive(ptr5);
   }
 }

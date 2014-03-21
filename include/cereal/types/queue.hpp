@@ -2,7 +2,7 @@
     \brief Support for types found in \<queue\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@ namespace cereal
   void load( Archive & ar, std::queue<T, C> & queue )
   {
     C container;
-    ar( container );
+    ar( _CEREAL_NVP("container", container) );
     queue = std::queue<T, C>( std::move( container ) );
   }
 
@@ -118,10 +118,10 @@ namespace cereal
   void load( Archive & ar, std::priority_queue<T, C, Comp> & priority_queue )
   {
     Comp comparator;
-    ar( comparator );
+    ar( _CEREAL_NVP("comparator", comparator) );
 
     C container;
-    ar( container );
+    ar( _CEREAL_NVP("container", container) );
 
     priority_queue = std::priority_queue<T, C, Comp>( comparator, std::move( container ) );
   }

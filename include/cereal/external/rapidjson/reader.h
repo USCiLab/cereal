@@ -9,6 +9,11 @@
 #include "internal/stack.h"
 #include <csetjmp>
 
+// All part of denormalized parsing
+#include <limits> // for numeric_limits
+#include <cmath> // for fpclassify
+#include <sstream>
+
 #ifdef RAPIDJSON_SSE42
 #include <nmmintrin.h>
 #elif defined(RAPIDJSON_SSE2)
@@ -28,7 +33,6 @@
 	longjmp(jmpbuf_, 1); \
 	RAPIDJSON_MULTILINEMACRO_END
 #endif
-
 namespace rapidjson {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,8 +53,8 @@ enum ParseFlag {
 concept Handler {
 	typename Ch;
 
-	void Null();
-	void Bool(bool b);
+	void Null_();
+	void Bool_(bool b);
 	void Int(int i);
 	void Uint(unsigned i);
 	void Int64(int64_t i);
@@ -76,8 +80,8 @@ struct BaseReaderHandler {
 	typedef typename Encoding::Ch Ch;
 
 	void Default() {}
-	void Null() { Default(); }
-	void Bool(bool) { Default(); }
+	void Null_() { Default(); }
+	void Bool_(bool) { Default(); }
 	void Int(int) { Default(); }
 	void Uint(unsigned) { Default(); }
 	void Int64(int64_t) { Default(); }
@@ -246,7 +250,7 @@ public:
 			}
 			SkipWhitespace(stream);
 
-			if (stream.Peek() != '\0')
+			if (stream.Peek() != '\0' && stream.Peek() != static_cast<Ch>(std::char_traits<Ch>::eof()))
 				RAPIDJSON_PARSE_ERROR("Nothing should follow the root object or array.", stream.Tell());
 		}
 
@@ -327,14 +331,29 @@ private:
 		}
 	}
 
+  // Parses for null or NaN
 	template<unsigned parseFlags, typename Stream, typename Handler>
-	void ParseNull(Stream& stream, Handler& handler) {
+	void ParseNaNNull_(Stream& stream, Handler& handler) {
 		RAPIDJSON_ASSERT(stream.Peek() == 'n');
 		stream.Take();
 
-		if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
-			handler.Null();
-		else
+    if( stream.Peek() == 'a' && stream.Take() == 'a' && stream.Take() == 'n' )
+      handler.Double( std::numeric_limits<double>::quiet_NaN() );
+    else if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
+			handler.Null_();
+    else
+			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
+	}
+
+  // Parses for infinity
+	template<unsigned parseFlags, typename Stream, typename Handler>
+	void ParseInfinity(Stream& stream, Handler& handler) {
+		RAPIDJSON_ASSERT(stream.Peek() == 'i');
+		stream.Take();
+
+    if (stream.Take() == 'n' && stream.Take() == 'f')
+      handler.Double( std::numeric_limits<double>::infinity() );
+    else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
 
@@ -344,7 +363,7 @@ private:
 		stream.Take();
 
 		if (stream.Take() == 'r' && stream.Take() == 'u' && stream.Take() == 'e')
-			handler.Bool(true);
+			handler.Bool_(true);
 		else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell());
 	}
@@ -355,7 +374,7 @@ private:
 		stream.Take();
 
 		if (stream.Take() == 'a' && stream.Take() == 'l' && stream.Take() == 's' && stream.Take() == 'e')
-			handler.Bool(false);
+			handler.Bool_(false);
 		else
 			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
@@ -382,15 +401,37 @@ private:
 		return codepoint;
 	}
 
-  template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() < 265, bool>::type
-    characterOk(Ch c)
-    { return true; }
+  // cereal Temporary until constexpr support is added in RTM
+#ifdef _MSC_VER
+  template <class Ch>
+  bool characterOk( Ch c )
+  {
+    return c < 256;
+  }
+
+  template <>
+  bool characterOk<char>( Ch )
+  {
+    return true;
+  }
+
+#else
+  // As part of a fix for GCC 4.7
+  template <class T>
+  static constexpr int to_int( T t ){ return t; }
 
   template<class Ch>
-    typename std::enable_if<std::numeric_limits<Ch>::max() >= 265, bool>::type
+  typename std::enable_if < to_int(std::numeric_limits<Ch>::max()) < to_int(256), bool>::type
+    characterOk( Ch )
+  {
+    return true;
+  }
+
+  template<class Ch>
+  typename std::enable_if< to_int(std::numeric_limits<Ch>::max()) >= to_int(256), bool>::type
     characterOk(Ch c)
-    { return c < 256; }
+  { return c < 256; }
+#endif
 
 	// Parse string, handling the prefix and suffix double quotes and escaping.
 	template<unsigned parseFlags, typename Stream, typename Handler>
@@ -493,6 +534,7 @@ private:
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseNumber(Stream& stream, Handler& handler) {
 		Stream s = stream; // Local copy for optimization
+
 		// Parse minus
 		bool minus = false;
 		if (s.Peek() == '-') {
@@ -593,7 +635,7 @@ private:
 			}
 
 			while (s.Peek() >= '0' && s.Peek() <= '9') {
-				if (expFrac > -16) {
+				if (expFrac > -20) {
 					d = d * 10 + (s.Peek() - '0');
 					--expFrac;
 				}
@@ -623,7 +665,19 @@ private:
 				while (s.Peek() >= '0' && s.Peek() <= '9') {
 					exp = exp * 10 + (s.Take() - '0');
 					if (exp > 308) {
-						RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+            // Attempt denormalized construction
+            std::stringstream ss;
+            ss.precision( std::numeric_limits<double>::max_digits10 );
+            ss << d * internal::Pow10(expFrac) << 'e' << (expMinus ? '-' : '+') << exp;
+
+            double dd;
+            ss >> dd;
+
+            if( std::fpclassify( dd ) == FP_SUBNORMAL )
+              handler.Double( dd );
+            else
+						  RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+
 						return;
 					}
 				}
@@ -664,13 +718,14 @@ private:
 	template<unsigned parseFlags, typename Stream, typename Handler>
 	void ParseValue(Stream& stream, Handler& handler) {
 		switch (stream.Peek()) {
-			case 'n': ParseNull  <parseFlags>(stream, handler); break;
-			case 't': ParseTrue  <parseFlags>(stream, handler); break;
-			case 'f': ParseFalse <parseFlags>(stream, handler); break;
-			case '"': ParseString<parseFlags>(stream, handler); break;
-			case '{': ParseObject<parseFlags>(stream, handler); break;
-			case '[': ParseArray <parseFlags>(stream, handler); break;
-			default : ParseNumber<parseFlags>(stream, handler);
+			case 'n': ParseNaNNull_  <parseFlags>(stream, handler); break;
+			case 'i': ParseInfinity  <parseFlags>(stream, handler); break;
+			case 't': ParseTrue      <parseFlags>(stream, handler); break;
+			case 'f': ParseFalse     <parseFlags>(stream, handler); break;
+			case '"': ParseString    <parseFlags>(stream, handler); break;
+			case '{': ParseObject    <parseFlags>(stream, handler); break;
+			case '[': ParseArray     <parseFlags>(stream, handler); break;
+			default : ParseNumber    <parseFlags>(stream, handler);
 		}
 	}
 

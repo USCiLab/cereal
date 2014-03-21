@@ -2,7 +2,7 @@
     \brief Support for types found in \<chrono\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ namespace cereal
   void load( Archive & ar, std::chrono::duration<R, P> & dur )
   {
     R count;
-    ar( count );
+    ar( _CEREAL_NVP("count", count) );
 
     dur = std::chrono::duration<R, P>{count};
   }
@@ -63,11 +63,10 @@ namespace cereal
   void load( Archive & ar, std::chrono::time_point<C, D> & dur )
   {
     D elapsed;
-    ar( elapsed );
+    ar( _CEREAL_NVP("time_since_epoch", elapsed) );
 
     dur = std::chrono::time_point<C, D>{elapsed};
   }
 } // namespace cereal
 
 #endif // CEREAL_TYPES_CHRONO_HPP_
-

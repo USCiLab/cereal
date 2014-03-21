@@ -12,17 +12,33 @@
 *.la
 *.a
 
+# Visual studio cruft
+*.opensdf
+*.sdf
+*.suo
+*.user
+*/x64
+*/Debug*
+*/Release*
+*.log
+*.tlog*
+
+# misc files mostly used for testing
 out.txt
 ptr.txt
 test.txt
-unittests
 boost_serialize
 arr.txt
 performance
-sandbox
-sandbox_rtti
-sandbox_json
 include_renamed
 .ycm_extra_conf.py*
 doc/html
+rtti.txt
 doc/latex
+portability64
+portability32
+file.json
+out.xml
+cereal_version.out
+xml_ordering.out
+build

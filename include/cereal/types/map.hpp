@@ -2,7 +2,7 @@
     \brief Support for types found in \<map\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,11 @@ namespace cereal
         typename MapT::mapped_type value;
 
         ar( make_map_item(key, value) );
-        hint = map.insert(hint, {key, value} );
+        #ifdef CEREAL_OLDER_GCC
+        hint = map.insert( hint, std::make_pair(std::move(key), std::move(value)) );
+        #else // NOT CEREAL_OLDER_GCC
+        hint = map.emplace_hint( hint, std::move( key ), std::move( value ) );
+        #endif // NOT CEREAL_OLDER_GCC
       }
     }
   }
