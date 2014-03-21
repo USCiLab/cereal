@@ -1,7 +1,7 @@
 /*! \file cereal.hpp
     \brief Main cereal functionality */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ namespace cereal
         This allows for empty classes to be serialized even if they do not provide
         a serialization function.  Classes with no data members are considered to be
         empty.  Be warned that if this is enabled and you attempt to serialize an
-        empty class with improperly formed serialize or save/load functions, no
+        empty class with improperly formed serialize or load/save functions, no
         static error will occur - the error will propogate silently and your
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
@@ -134,7 +134,8 @@ namespace cereal
   /*! This registration should be done once per archive.  A good place to
       put this is immediately following the definition of your archive.
       Archive registration is only strictly necessary if you wish to
-      support pointers to polymorphic data types
+      support pointers to polymorphic data types.  All archives that
+      come with cereal are already registered.
       @ingroup Internal */
   #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
   namespace cereal { namespace detail {                               \
@@ -166,6 +167,7 @@ namespace cereal
       automatically.
 
       Versioning cannot be mixed with non-versioned serialization functions.
+      Having both types will result result in a compile time error.
 
       Example interface for versioning on a non-member serialize function:
 
@@ -232,6 +234,7 @@ namespace cereal
       { }
 
       //! Serializes all passed in data
+      /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
@@ -356,8 +359,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_serialize<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -367,8 +370,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_serialize<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -378,8 +381,8 @@ namespace cereal
 
       //! Member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_save<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_save<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_save<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -389,12 +392,34 @@ namespace cereal
 
       //! Non member split (save)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_save<T, ArchiveType>::value ||
-                              (traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_save<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_save<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
         save(*self, t);
+        return *self;
+      }
+
+      //! Member split (save_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_member_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        self->process( access::member_save_minimal(*self, t) );
+        return *self;
+      }
+
+      //! Non member split (save_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        self->process( save_minimal(*self, t) );
         return *self;
       }
 
@@ -410,21 +435,22 @@ namespace cereal
 
       //! No matching serialization
       template <class T> inline
-      typename std::enable_if<!traits::is_specialized<T, ArchiveType>::value && !traits::is_output_serializable<T, ArchiveType>::value &&
-        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)),
+      typename std::enable_if<traits::has_invalid_output_versioning<T, ArchiveType>::value ||
+        (!traits::is_specialized<T, ArchiveType>::value && !traits::is_output_serializable<T, ArchiveType>::value &&
+        (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value))),
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n"
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
-            "Serialize functions generally have the following signature: \n\n"
-            "template<class Archive> \n"
-            "  void serialize(Archive & ar)\n"
-            "  {\n"
-            "    ar( member1, member2, member3 );\n"
-            "  }\n\n" );
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
+            "Serialize functions generally have the following signature: \n\n "
+            "template<class Archive> \n "
+            "  void serialize(Archive & ar) \n "
+            "  { \n "
+            "    ar( member1, member2, member3 ); \n "
+            "  } \n\n " );
         return *self;
       }
 
@@ -446,7 +472,8 @@ namespace cereal
       //! Member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_serialize<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -458,7 +485,8 @@ namespace cereal
       //! Non member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_serialize<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -470,7 +498,8 @@ namespace cereal
       //! Member split (save)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_member_versioned_save<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_save<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
@@ -482,12 +511,39 @@ namespace cereal
       //! Non member split (save)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_output_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_save<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_save<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T const & t)
       {
         registerClassVersion<T>( detail::Version<T>::version );
         save(*self, t, detail::Version<T>::version);
+        return *self;
+      }
+
+      //! Member split (save_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_member_versioned_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        self->process( access::member_save_minimal(*self, t, detail::Version<T>::version) );
+        return *self;
+      }
+
+      //! Non member split (save_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_versioned_save_minimal<T, ArchiveType>::value && !traits::has_invalid_output_versioning<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_save_minimal<T, ArchiveType>::value || traits::is_output_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T const & t)
+      {
+        registerClassVersion<T>( detail::Version<T>::version );
+        self->process( save_minimal(*self, t, detail::Version<T>::version) );
         return *self;
       }
 
@@ -545,6 +601,7 @@ namespace cereal
       { }
 
       //! Serializes all passed in data
+      /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
@@ -682,8 +739,8 @@ namespace cereal
 
       //! Member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -693,8 +750,8 @@ namespace cereal
 
       //! Non member serialization
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_serialize<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_serialize<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -704,8 +761,8 @@ namespace cereal
 
       //! Member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_member_load<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_load<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_member_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -715,12 +772,38 @@ namespace cereal
 
       //! Non member split (load)
       template <class T> inline
-      typename std::enable_if<traits::is_specialized_non_member_load<T, ArchiveType>::value ||
-                              (traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_load<T, ArchiveType>::value),
+      typename std::enable_if<traits::has_non_member_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
         load(*self, t);
+        return *self;
+      }
+
+      //! Member split (load_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_member_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        typename traits::has_member_save_minimal<T, ArchiveType>::type value;
+        self->process( value );
+        access::member_load_minimal(*self, t, value);
+        return *self;
+      }
+
+      //! Non member split (load_minimal)
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        typename traits::has_non_member_save_minimal<T, ArchiveType>::type value;
+        self->process( value );
+        load_minimal(*self, t, value);
         return *self;
       }
 
@@ -741,16 +824,16 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n"
-            "Types must either have a serialize function, or separate save/load functions (but not both). \n"
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs save/load functions.  \n"
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n"
-            "Serialize functions generally have the following signature: \n\n"
-            "template<class Archive> \n"
-            "  void serialize(Archive & ar)\n"
-            "  {\n"
-            "    ar( member1, member2, member3 );\n"
-            "  }\n\n" );
+        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
+            "Serialize functions generally have the following signature: \n\n "
+            "template<class Archive> \n "
+            "  void serialize(Archive & ar) \n "
+            "  { \n "
+            "    ar( member1, member2, member3 ); \n "
+            "  } \n\n " );
         return *self;
       }
 
@@ -782,7 +865,8 @@ namespace cereal
       //! Member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -794,7 +878,8 @@ namespace cereal
       //! Non member serialization
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_serialize<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_serialize<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_serialize<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -806,7 +891,8 @@ namespace cereal
       //! Member split (load)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_member_versioned_load<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_member_versioned_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
@@ -818,12 +904,43 @@ namespace cereal
       //! Non member split (load)
       /*! Versioning implementation */
       template <class T> inline
-      typename std::enable_if<traits::is_input_serializable<T, ArchiveType>::value && traits::has_non_member_versioned_load<T, ArchiveType>::value,
+      typename std::enable_if<traits::has_non_member_versioned_load<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
                               ArchiveType &>::type
       processImpl(T & t)
       {
         const auto version = loadClassVersion<T>();
         load(*self, t, version);
+        return *self;
+      }
+
+      //! Member split (load_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_member_versioned_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        const auto version = loadClassVersion<T>();
+        typename traits::has_member_versioned_save_minimal<T, ArchiveType>::type value;
+        self->process(value);
+        access::member_load_minimal(*self, t, value, version);
+        return *self;
+      }
+
+      //! Non member split (load_minimal)
+      /*! Versioning implementation */
+      template <class T> inline
+      typename std::enable_if<traits::has_non_member_versioned_load_minimal<T, ArchiveType>::value &&
+                              (traits::is_specialized_non_member_load_minimal<T, ArchiveType>::value || traits::is_input_serializable<T, ArchiveType>::value),
+                              ArchiveType &>::type
+      processImpl(T & t)
+      {
+        const auto version = loadClassVersion<T>();
+        typename traits::has_non_member_versioned_save_minimal<T, ArchiveType>::type value;
+        self->process(value);
+        load_minimal(*self, t, value, version);
         return *self;
       }
 

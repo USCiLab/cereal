@@ -42,6 +42,7 @@
     <ClCompile Include="..\..\unittests\set.cpp" />
     <ClCompile Include="..\..\unittests\stack.cpp" />
     <ClCompile Include="..\..\unittests\structs.cpp" />
+    <ClCompile Include="..\..\unittests\structs_minimal.cpp" />
     <ClCompile Include="..\..\unittests\structs_specialized.cpp" />
     <ClCompile Include="..\..\unittests\tuple.cpp" />
     <ClCompile Include="..\..\unittests\unordered_loads.cpp" />

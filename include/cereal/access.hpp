@@ -1,7 +1,7 @@
 /*! \file access.hpp
     \brief Access control, default construction, and serialization disambiguation */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ namespace cereal
         MyType( int x ); // note: no default ctor
         int myX;
 
-        // Define a serialize or save/load pair as you normally would
+        // Define a serialize or load/save pair as you normally would
         template <class Archive>
         void serialize( Archive & ar )
         {
@@ -239,6 +239,18 @@ namespace cereal
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
       { t.load(ar); }
 
+      template<class Archive, class T> inline
+      static auto member_save_minimal(Archive const & ar, T const & t) -> decltype(t.save_minimal(ar))
+      { return t.save_minimal(ar); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal_non_const(Archive const & ar, T & t) -> decltype(t.save_minimal(ar))
+      { return t.save_minimal(ar); }
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal(Archive const & ar, T & t, U && u) -> decltype(t.load_minimal(ar, std::forward<U>(u)))
+      { t.load_minimal(ar, std::forward<U>(u)); }
+
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
@@ -255,6 +267,18 @@ namespace cereal
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
       { t.load(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal(Archive const & ar, T const & t, const std::uint32_t version) -> decltype(t.save_minimal(ar, version))
+      { return t.save_minimal(ar, version); }
+
+      template<class Archive, class T> inline
+      static auto member_save_minimal_non_const(Archive const & ar, T & t, const std::uint32_t version) -> decltype(t.save_minimal(ar, version))
+      { return t.save_minimal(ar, version); }
+
+      template<class Archive, class T, class U> inline
+      static auto member_load_minimal(Archive const & ar, T & t, U && u, const std::uint32_t version) -> decltype(t.load_minimal(ar, std::forward<U>(u), version))
+      { t.load_minimal(ar, std::forward<U>(u), version); }
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
@@ -286,10 +310,12 @@ namespace cereal
       @ingroup Access */
   enum class specialization
   {
-    member_serialize,          //!< Force the use of a member serialize function
-    member_load_save,          //!< Force the use of a member load/save pair
-    non_member_serialize,      //!< Force the use of a non-member serialize function
-    non_member_load_save       //!< Force the use of a non-member load/save pair
+    member_serialize,            //!< Force the use of a member serialize function
+    member_load_save,            //!< Force the use of a member load/save pair
+    member_load_save_minimal,    //!< Force the use of a member minimal load/save pair
+    non_member_serialize,        //!< Force the use of a non-member serialize function
+    non_member_load_save,        //!< Force the use of a non-member load/save pair
+    non_member_load_save_minimal //!< Force the use of a non-member minimal load/save pair
   };
 
   //! A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class
@@ -325,7 +351,7 @@ namespace cereal
           void save( Archive & ar ) {}
       };
 
-      // The save/load pair in MyDerived is ambiguous because serialize in MyParent can
+      // The load/save pair in MyDerived is ambiguous because serialize in MyParent can
       // be accessed from cereal::access.  This looks the same as making serialize public
       // in MyParent, making it seem as though MyDerived has both a serialize and a load/save pair.
       // cereal will complain about this at compile time unless we disambiguate:

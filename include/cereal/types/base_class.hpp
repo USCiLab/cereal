@@ -2,7 +2,7 @@
     \brief Support for base classes (virtual and non-virtual)
     \ingroup OtherTypes */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*! \file xml.hpp
     \brief XML input and output archives */
 /*
-  Copyright (c) 2013, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -716,35 +716,43 @@ namespace cereal
   { }
 
   // ######################################################################
-  //! Prologue for all other types for XML output archives
+  //! Prologue for all other types for XML output archives (except minimal types)
   /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived */
+      that may be given data by the type about to be archived
+
+      Minimal types do not start or end nodes */
   template <class T> inline
-  void prologue( XMLOutputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  prologue( XMLOutputArchive & ar, T const & )
   {
     ar.startNode();
     ar.insertType<T>();
   }
 
-  //! Prologue for all other types for XML input archives
+  //! Prologue for all other types for XML input archives (except minimal types)
   template <class T> inline
-  void prologue( XMLInputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  prologue( XMLInputArchive & ar, T const & )
   {
     ar.startNode();
   }
 
   // ######################################################################
-  //! Epilogue for all other types other for XML output archives
-  /*! Finishes the node created in the prologue */
+  //! Epilogue for all other types other for XML output archives (except minimal types)
+  /*! Finishes the node created in the prologue
+
+      Minimal types do not start or end nodes */
   template <class T> inline
-  void epilogue( XMLOutputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
+  epilogue( XMLOutputArchive & ar, T const & )
   {
     ar.finishNode();
   }
 
-  //! Epilogue for all other types other for XML output archives
+  //! Epilogue for all other types other for XML output archives (except minimal types)
   template <class T> inline
-  void epilogue( XMLInputArchive & ar, T const & )
+  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
+  epilogue( XMLInputArchive & ar, T const & )
   {
     ar.finishNode();
   }
