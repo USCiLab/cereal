@@ -776,6 +776,11 @@ namespace cereal
     // Non-Member Load Minimal
     namespace detail
     {
+      #ifdef CEREAL_OLDER_GCC
+      void load_minimal(); // prevents nonsense complaining about not finding this
+      void save_minimal();
+      #endif // CEREAL_OLDER_GCC
+
       // See notes from member load_minimal
       template <class T, class A, class U = void>
       struct has_non_member_load_minimal_impl
