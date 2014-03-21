@@ -615,7 +615,7 @@ namespace cereal
 
         //! only allow conversion if the types are the same and we are converting into a const reference
         template <class Dest, class = typename std::enable_if<std::is_same<Source, Dest>::value>::type>
-        operator Dest const & () const;
+        operator Dest const & ();
       };
 
       //! A struct that prevents implicit conversion
