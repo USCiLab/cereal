@@ -7,8 +7,6 @@
 # this requires lcov 1.10 or newer
 
 set -e
-pwd
-echo $1
 
 COVERAGE_TESTS=./coverage_*
 
@@ -29,8 +27,8 @@ genhtml --demangle-cpp coverage.info --output-directory ${tempdir}
 # copy over to gh pages
 git checkout gh-pages-1.0
 
-rm -rf assets/coverage
+rm -rf $1/assets/coverage
 
-cp -r ${tempdir}/* assets/coverage/
+cp -r ${tempdir}/* $1/assets/coverage/
 
 rm -rf ${tempdir}
