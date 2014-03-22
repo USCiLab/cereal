@@ -11,7 +11,7 @@ branch=`git rev-parse --abbrev-ref HEAD`
 cp -r @CMAKE_CURRENT_BINARY_DIR@/doc/html/ ${tempdir}
 
 git stash
-git checkout gh-pages-1.0
+git checkout gh-pages
 
 rm -rf @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen
 mkdir @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen
