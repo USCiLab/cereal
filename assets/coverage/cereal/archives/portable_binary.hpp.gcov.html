@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-20</td>
+            <td class="headerValue">2014-03-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">171</td>
@@ -101,10 +101,10 @@
 <span class="lineNum">      39 </span>            :   {
 <a name="40"><span class="lineNum">      40 </span>            :     //! Returns true if the current machine is little endian</a>
 <span class="lineNum">      41 </span>            :     /*! @ingroup Internal */
-<span class="lineNum">      42 </span><span class="lineCov">      13200 :     inline bool is_little_endian()</span>
+<span class="lineNum">      42 </span><span class="lineCov">       6600 :     inline bool is_little_endian()</span>
 <span class="lineNum">      43 </span>            :     {
 <span class="lineNum">      44 </span>            :       static std::int32_t test = 1;
-<span class="lineNum">      45 </span><span class="lineCov">      13200 :       return *reinterpret_cast&lt;std::int8_t*&gt;( &amp;test ) == 1;</span>
+<span class="lineNum">      45 </span><span class="lineCov">       6600 :       return *reinterpret_cast&lt;std::int8_t*&gt;( &amp;test ) == 1;</span>
 <span class="lineNum">      46 </span>            :     }
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :     //! Swaps the order of bytes for some chunk of memory
@@ -112,11 +112,11 @@
 <span class="lineNum">      50 </span>            :         @tparam DataSize The true size of the data
 <a name="51"><span class="lineNum">      51 </span>            :         @ingroup Internal */</a>
 <span class="lineNum">      52 </span>            :     template &lt;std::size_t DataSize&gt;
-<span class="lineNum">      53 </span><span class="lineCov">       6600 :     inline void swap_bytes( std::uint8_t * data )</span>
+<span class="lineNum">      53 </span><span class="lineCov">       3300 :     inline void swap_bytes( std::uint8_t * data )</span>
 <span class="lineNum">      54 </span>            :     {
-<span class="lineNum">      55 </span><span class="lineCov">      18600 :       for( std::size_t i = 0, end = DataSize / 2; i &lt; end; ++i )</span>
-<span class="lineNum">      56 </span><span class="lineCov">      12000 :         std::swap( data[i], data[DataSize - i - 1] );</span>
-<span class="lineNum">      57 </span><span class="lineCov">       6600 :     }</span>
+<span class="lineNum">      55 </span><span class="lineCov">       9300 :       for( std::size_t i = 0, end = DataSize / 2; i &lt; end; ++i )</span>
+<span class="lineNum">      56 </span><span class="lineCov">       6000 :         std::swap( data[i], data[DataSize - i - 1] );</span>
+<span class="lineNum">      57 </span><span class="lineCov">       3300 :     }</span>
 <span class="lineNum">      58 </span>            :   } // end namespace portable_binary_detail
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            :   // ######################################################################
@@ -137,27 +137,27 @@
 <span class="lineNum">      75 </span>            :                &lt;a href=&quot;www.github.com/USCiLab/cereal&quot;&gt;the project github&lt;/a&gt;.
 <a name="76"><span class="lineNum">      76 </span>            : </a>
 <span class="lineNum">      77 </span>            :     \ingroup Archives */
-<span class="lineNum">      78 </span><span class="lineCov">       6400 :   class PortableBinaryOutputArchive : public OutputArchive&lt;PortableBinaryOutputArchive, AllowEmptyClassElision&gt;</span>
+<span class="lineNum">      78 </span><span class="lineCov">       3200 :   class PortableBinaryOutputArchive : public OutputArchive&lt;PortableBinaryOutputArchive, AllowEmptyClassElision&gt;</span>
 <span class="lineNum">      79 </span>            :   {
 <span class="lineNum">      80 </span>            :     public:
 <span class="lineNum">      81 </span>            :       //! Construct, outputting to the provided stream
 <a name="82"><span class="lineNum">      82 </span>            :       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or</a>
 <span class="lineNum">      83 </span>            :         even cout! */
-<span class="lineNum">      84 </span><span class="lineCov">       6400 :       PortableBinaryOutputArchive(std::ostream &amp; stream) :</span>
+<span class="lineNum">      84 </span><span class="lineCov">       3200 :       PortableBinaryOutputArchive(std::ostream &amp; stream) :</span>
 <span class="lineNum">      85 </span>            :         OutputArchive&lt;PortableBinaryOutputArchive, AllowEmptyClassElision&gt;(this),
-<span class="lineNum">      86 </span><span class="lineCov">       6400 :         itsStream(stream)</span>
+<span class="lineNum">      86 </span><span class="lineCov">       3200 :         itsStream(stream)</span>
 <span class="lineNum">      87 </span>            :       {
-<span class="lineNum">      88 </span><span class="lineCov">       6400 :         this-&gt;operator()( portable_binary_detail::is_little_endian() );</span>
-<span class="lineNum">      89 </span><span class="lineCov">       6400 :       }</span>
+<span class="lineNum">      88 </span><span class="lineCov">       3200 :         this-&gt;operator()( portable_binary_detail::is_little_endian() );</span>
+<span class="lineNum">      89 </span><span class="lineCov">       3200 :       }</span>
 <a name="90"><span class="lineNum">      90 </span>            : </a>
 <span class="lineNum">      91 </span>            :       //! Writes size bytes of data to the output stream
-<span class="lineNum">      92 </span><span class="lineCov">    4844412 :       void saveBinary( const void * data, std::size_t size )</span>
+<span class="lineNum">      92 </span><span class="lineCov">    2422371 :       void saveBinary( const void * data, std::size_t size )</span>
 <span class="lineNum">      93 </span>            :       {
-<span class="lineNum">      94 </span><span class="lineCov">    4844412 :         auto const writtenSize = static_cast&lt;std::size_t&gt;( itsStream.rdbuf()-&gt;sputn( reinterpret_cast&lt;const char*&gt;( data ), size ) );</span>
+<span class="lineNum">      94 </span><span class="lineCov">    2422371 :         auto const writtenSize = static_cast&lt;std::size_t&gt;( itsStream.rdbuf()-&gt;sputn( reinterpret_cast&lt;const char*&gt;( data ), size ) );</span>
 <span class="lineNum">      95 </span>            : 
-<span class="lineNum">      96 </span><span class="lineCov">    4844412 :         if(writtenSize != size)</span>
+<span class="lineNum">      96 </span><span class="lineCov">    2422371 :         if(writtenSize != size)</span>
 <span class="lineNum">      97 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Failed to write &quot; + std::to_string(size) + &quot; bytes to output stream! Wrote &quot; + std::to_string(writtenSize));</span>
-<span class="lineNum">      98 </span><span class="lineCov">    4844412 :       }</span>
+<span class="lineNum">      98 </span><span class="lineCov">    2422371 :       }</span>
 <span class="lineNum">      99 </span>            : 
 <span class="lineNum">     100 </span>            :     private:
 <span class="lineNum">     101 </span>            :       std::ostream &amp; itsStream;
@@ -189,42 +189,42 @@
 <span class="lineNum">     127 </span>            :                &lt;a href=&quot;www.github.com/USCiLab/cereal&quot;&gt;the project github&lt;/a&gt;.
 <a name="128"><span class="lineNum">     128 </span>            : </a>
 <span class="lineNum">     129 </span>            :     \ingroup Archives */
-<span class="lineNum">     130 </span><span class="lineCov">       6600 :   class PortableBinaryInputArchive : public InputArchive&lt;PortableBinaryInputArchive, AllowEmptyClassElision&gt;</span>
+<span class="lineNum">     130 </span><span class="lineCov">       3300 :   class PortableBinaryInputArchive : public InputArchive&lt;PortableBinaryInputArchive, AllowEmptyClassElision&gt;</span>
 <span class="lineNum">     131 </span>            :   {
 <span class="lineNum">     132 </span>            :     public:
 <a name="133"><span class="lineNum">     133 </span>            :       //! Construct, loading from the provided stream</a>
 <span class="lineNum">     134 </span>            :       /*! @param stream The stream to read from. */
-<span class="lineNum">     135 </span><span class="lineCov">       6600 :       PortableBinaryInputArchive(std::istream &amp; stream) :</span>
+<span class="lineNum">     135 </span><span class="lineCov">       3300 :       PortableBinaryInputArchive(std::istream &amp; stream) :</span>
 <span class="lineNum">     136 </span>            :         InputArchive&lt;PortableBinaryInputArchive, AllowEmptyClassElision&gt;(this),
 <span class="lineNum">     137 </span>            :         itsStream(stream),
-<span class="lineNum">     138 </span><span class="lineCov">       6600 :         itsConvertEndianness( false )</span>
+<span class="lineNum">     138 </span><span class="lineCov">       3300 :         itsConvertEndianness( false )</span>
 <span class="lineNum">     139 </span>            :       {
 <span class="lineNum">     140 </span>            :         bool streamLittleEndian;
-<span class="lineNum">     141 </span><span class="lineCov">       6600 :         this-&gt;operator()( streamLittleEndian );</span>
-<span class="lineNum">     142 </span><span class="lineCov">       6600 :         itsConvertEndianness = portable_binary_detail::is_little_endian() ^ streamLittleEndian;</span>
-<span class="lineNum">     143 </span><span class="lineCov">       6600 :       }</span>
+<span class="lineNum">     141 </span><span class="lineCov">       3300 :         this-&gt;operator()( streamLittleEndian );</span>
+<span class="lineNum">     142 </span><span class="lineCov">       3300 :         itsConvertEndianness = portable_binary_detail::is_little_endian() ^ streamLittleEndian;</span>
+<span class="lineNum">     143 </span><span class="lineCov">       3300 :       }</span>
 <span class="lineNum">     144 </span>            : 
 <span class="lineNum">     145 </span>            :       //! Reads size bytes of data from the input stream
 <span class="lineNum">     146 </span>            :       /*! @param data The data to save
 <span class="lineNum">     147 </span>            :           @param size The number of bytes in the data
 <a name="148"><span class="lineNum">     148 </span>            :           @tparam DataSize T The size of the actual type of the data elements being loaded */</a>
 <span class="lineNum">     149 </span>            :       template &lt;std::size_t DataSize&gt;
-<span class="lineNum">     150 </span><span class="lineCov">    4846812 :       void loadBinary( void * const data, std::size_t size )</span>
+<span class="lineNum">     150 </span><span class="lineCov">    2423571 :       void loadBinary( void * const data, std::size_t size )</span>
 <span class="lineNum">     151 </span>            :       {
 <span class="lineNum">     152 </span>            :         // load data
-<span class="lineNum">     153 </span><span class="lineCov">    4846812 :         auto const readSize = static_cast&lt;std::size_t&gt;( itsStream.rdbuf()-&gt;sgetn( reinterpret_cast&lt;char*&gt;( data ), size ) );</span>
+<span class="lineNum">     153 </span><span class="lineCov">    2423571 :         auto const readSize = static_cast&lt;std::size_t&gt;( itsStream.rdbuf()-&gt;sgetn( reinterpret_cast&lt;char*&gt;( data ), size ) );</span>
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">    4846812 :         if(readSize != size)</span>
+<span class="lineNum">     155 </span><span class="lineCov">    2423571 :         if(readSize != size)</span>
 <span class="lineNum">     156 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Failed to read &quot; + std::to_string(size) + &quot; bytes from input stream! Read &quot; + std::to_string(readSize));</span>
 <span class="lineNum">     157 </span>            : 
 <span class="lineNum">     158 </span>            :         // flip bits if needed
-<span class="lineNum">     159 </span><span class="lineCov">    4846812 :         if( itsConvertEndianness )</span>
+<span class="lineNum">     159 </span><span class="lineCov">    2423571 :         if( itsConvertEndianness )</span>
 <span class="lineNum">     160 </span>            :         {
-<span class="lineNum">     161 </span><span class="lineCov">       2200 :           std::uint8_t * ptr = reinterpret_cast&lt;std::uint8_t*&gt;( data );</span>
-<span class="lineNum">     162 </span><span class="lineCov">       4400 :           for( std::size_t i = 0; i &lt; size; i += DataSize )</span>
-<span class="lineNum">     163 </span><span class="lineCov">       2200 :             portable_binary_detail::swap_bytes&lt;DataSize&gt;( ptr );</span>
+<span class="lineNum">     161 </span><span class="lineCov">       1100 :           std::uint8_t * ptr = reinterpret_cast&lt;std::uint8_t*&gt;( data );</span>
+<span class="lineNum">     162 </span><span class="lineCov">       2200 :           for( std::size_t i = 0; i &lt; size; i += DataSize )</span>
+<span class="lineNum">     163 </span><span class="lineCov">       1100 :             portable_binary_detail::swap_bytes&lt;DataSize&gt;( ptr );</span>
 <span class="lineNum">     164 </span>            :         }
-<span class="lineNum">     165 </span><span class="lineCov">    4846812 :       }</span>
+<span class="lineNum">     165 </span><span class="lineCov">    2423571 :       }</span>
 <span class="lineNum">     166 </span>            : 
 <span class="lineNum">     167 </span>            :     private:
 <span class="lineNum">     168 </span>            :       std::istream &amp; itsStream;
@@ -237,64 +237,64 @@
 <span class="lineNum">     175 </span>            :   //! Saving for POD types to portable binary
 <a name="176"><span class="lineNum">     176 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     177 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     178 </span><span class="lineCov">    4722118 :   save(PortableBinaryOutputArchive &amp; ar, T const &amp; t)</span>
+<span class="lineNum">     178 </span><span class="lineCov">    2361221 :   save(PortableBinaryOutputArchive &amp; ar, T const &amp; t)</span>
 <span class="lineNum">     179 </span>            :   {
 <span class="lineNum">     180 </span>            :     static_assert( !std::is_floating_point&lt;T&gt;::value ||
 <span class="lineNum">     181 </span>            :                    (std::is_floating_point&lt;T&gt;::value &amp;&amp; std::numeric_limits&lt;T&gt;::is_iec559),
 <span class="lineNum">     182 </span>            :                    &quot;Portable binary only supports IEEE 754 standardized floating point&quot; );
-<span class="lineNum">     183 </span><span class="lineCov">    4722118 :     ar.saveBinary(std::addressof(t), sizeof(t));</span>
-<span class="lineNum">     184 </span><span class="lineCov">    4722118 :   }</span>
+<span class="lineNum">     183 </span><span class="lineCov">    2361221 :     ar.saveBinary(std::addressof(t), sizeof(t));</span>
+<span class="lineNum">     184 </span><span class="lineCov">    2361221 :   }</span>
 <span class="lineNum">     185 </span>            : 
 <span class="lineNum">     186 </span>            :   //! Loading for POD types from portable binary
 <a name="187"><span class="lineNum">     187 </span>            :   template&lt;class T&gt; inline</a>
 <span class="lineNum">     188 </span>            :   typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     189 </span><span class="lineCov">    4724518 :   load(PortableBinaryInputArchive &amp; ar, T &amp; t)</span>
+<span class="lineNum">     189 </span><span class="lineCov">    2362421 :   load(PortableBinaryInputArchive &amp; ar, T &amp; t)</span>
 <span class="lineNum">     190 </span>            :   {
 <span class="lineNum">     191 </span>            :     static_assert( !std::is_floating_point&lt;T&gt;::value ||
 <span class="lineNum">     192 </span>            :                    (std::is_floating_point&lt;T&gt;::value &amp;&amp; std::numeric_limits&lt;T&gt;::is_iec559),
 <span class="lineNum">     193 </span>            :                    &quot;Portable binary only supports IEEE 754 standardized floating point&quot; );
-<span class="lineNum">     194 </span><span class="lineCov">    4724518 :     ar.template loadBinary&lt;sizeof(T)&gt;(std::addressof(t), sizeof(t));</span>
-<span class="lineNum">     195 </span><span class="lineCov">    4724518 :   }</span>
+<span class="lineNum">     194 </span><span class="lineCov">    2362421 :     ar.template loadBinary&lt;sizeof(T)&gt;(std::addressof(t), sizeof(t));</span>
+<span class="lineNum">     195 </span><span class="lineCov">    2362421 :   }</span>
 <span class="lineNum">     196 </span>            : 
 <span class="lineNum">     197 </span>            :   //! Serializing NVP types to portable binary
 <a name="198"><span class="lineNum">     198 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     199 </span>            :   CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
-<span class="lineNum">     200 </span><span class="lineCov">    2817424 :   serialize( Archive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
+<span class="lineNum">     200 </span><span class="lineCov">    1408928 :   serialize( Archive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</span>
 <span class="lineNum">     201 </span>            :   {
-<span class="lineNum">     202 </span><span class="lineCov">    2817424 :     ar( t.value );</span>
-<span class="lineNum">     203 </span><span class="lineCov">    2817424 :   }</span>
+<span class="lineNum">     202 </span><span class="lineCov">    1408928 :     ar( t.value );</span>
+<span class="lineNum">     203 </span><span class="lineCov">    1408928 :   }</span>
 <span class="lineNum">     204 </span>            : 
 <span class="lineNum">     205 </span>            :   //! Serializing SizeTags to portable binary
 <a name="206"><span class="lineNum">     206 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     207 </span>            :   CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
-<span class="lineNum">     208 </span><span class="lineCov">     279788 :   serialize( Archive &amp; ar, SizeTag&lt;T&gt; &amp; t )</span>
+<span class="lineNum">     208 </span><span class="lineCov">     139900 :   serialize( Archive &amp; ar, SizeTag&lt;T&gt; &amp; t )</span>
 <span class="lineNum">     209 </span>            :   {
-<span class="lineNum">     210 </span><span class="lineCov">     279788 :     ar( t.size );</span>
-<span class="lineNum">     211 </span><span class="lineCov">     279788 :   }</span>
+<span class="lineNum">     210 </span><span class="lineCov">     139900 :     ar( t.size );</span>
+<span class="lineNum">     211 </span><span class="lineCov">     139900 :   }</span>
 <span class="lineNum">     212 </span>            : 
 <a name="213"><span class="lineNum">     213 </span>            :   //! Saving binary data to portable binary</a>
 <span class="lineNum">     214 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     215 </span><span class="lineCov">     122294 :   void save(PortableBinaryOutputArchive &amp; ar, BinaryData&lt;T&gt; const &amp; bd)</span>
+<span class="lineNum">     215 </span><span class="lineCov">      61150 :   void save(PortableBinaryOutputArchive &amp; ar, BinaryData&lt;T&gt; const &amp; bd)</span>
 <span class="lineNum">     216 </span>            :   {
 <span class="lineNum">     217 </span>            :     typedef typename std::remove_pointer&lt;T&gt;::type TT;
 <span class="lineNum">     218 </span>            :     static_assert( !std::is_floating_point&lt;TT&gt;::value ||
 <span class="lineNum">     219 </span>            :                    (std::is_floating_point&lt;TT&gt;::value &amp;&amp; std::numeric_limits&lt;TT&gt;::is_iec559),
 <span class="lineNum">     220 </span>            :                    &quot;Portable binary only supports IEEE 754 standardized floating point&quot; );
 <span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span><span class="lineCov">     122294 :     ar.saveBinary( bd.data, static_cast&lt;std::size_t&gt;( bd.size ) );</span>
-<span class="lineNum">     223 </span><span class="lineCov">     122294 :   }</span>
+<span class="lineNum">     222 </span><span class="lineCov">      61150 :     ar.saveBinary( bd.data, static_cast&lt;std::size_t&gt;( bd.size ) );</span>
+<span class="lineNum">     223 </span><span class="lineCov">      61150 :   }</span>
 <span class="lineNum">     224 </span>            : 
 <a name="225"><span class="lineNum">     225 </span>            :   //! Loading binary data from portable binary</a>
 <span class="lineNum">     226 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">     227 </span><span class="lineCov">     122294 :   void load(PortableBinaryInputArchive &amp; ar, BinaryData&lt;T&gt; &amp; bd)</span>
+<span class="lineNum">     227 </span><span class="lineCov">      61150 :   void load(PortableBinaryInputArchive &amp; ar, BinaryData&lt;T&gt; &amp; bd)</span>
 <span class="lineNum">     228 </span>            :   {
 <span class="lineNum">     229 </span>            :     typedef typename std::remove_pointer&lt;T&gt;::type TT;
 <span class="lineNum">     230 </span>            :     static_assert( !std::is_floating_point&lt;TT&gt;::value ||
 <span class="lineNum">     231 </span>            :                    (std::is_floating_point&lt;TT&gt;::value &amp;&amp; std::numeric_limits&lt;TT&gt;::is_iec559),
 <span class="lineNum">     232 </span>            :                    &quot;Portable binary only supports IEEE 754 standardized floating point&quot; );
 <span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span><span class="lineCov">     122294 :     ar.template loadBinary&lt;sizeof(TT)&gt;( bd.data, static_cast&lt;std::size_t&gt;( bd.size ) );</span>
-<span class="lineNum">     235 </span><span class="lineCov">     122294 :   }</span>
+<span class="lineNum">     234 </span><span class="lineCov">      61150 :     ar.template loadBinary&lt;sizeof(TT)&gt;( bd.data, static_cast&lt;std::size_t&gt;( bd.size ) );</span>
+<span class="lineNum">     235 </span><span class="lineCov">      61150 :   }</span>
 <span class="lineNum">     236 </span>            : } // namespace cereal
 <span class="lineNum">     237 </span>            : 
 <span class="lineNum">     238 </span>            : // register archives for polymorphic support

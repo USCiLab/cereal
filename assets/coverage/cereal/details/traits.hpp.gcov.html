@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-20</td>
+            <td class="headerValue">2014-03-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">32</td>
@@ -1308,26 +1308,26 @@
 <span class="lineNum">    1246 </span>            :                      &quot;  ar( a ) \n &quot;
 <a name="1247"><span class="lineNum">    1247 </span>            :                      &quot;  construct( a ); \n &quot;</a>
 <span class="lineNum">    1248 </span>            :                      &quot;} \n\n&quot; );
-<span class="lineNum">    1249 </span><span class="lineCov">     164000 :       static T * load_andor_construct()</span>
-<span class="lineNum">    1250 </span><span class="lineCov">     164000 :       { return new T(); }</span>
+<span class="lineNum">    1249 </span><span class="lineCov">      82000 :       static T * load_andor_construct()</span>
+<span class="lineNum">    1250 </span><span class="lineCov">      82000 :       { return new T(); }</span>
 <span class="lineNum">    1251 </span>            :     };
 <span class="lineNum">    1252 </span>            : 
 <span class="lineNum">    1253 </span>            :     template &lt;class T, class A&gt;
 <a name="1254"><span class="lineNum">    1254 </span>            :     struct Construct&lt;T, A, true, false&gt;</a>
 <span class="lineNum">    1255 </span>            :     {
-<span class="lineNum">    1256 </span><span class="lineCov">       4800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1256 </span><span class="lineCov">       2400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1257 </span>            :       {
-<span class="lineNum">    1258 </span><span class="lineCov">       4800 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
-<span class="lineNum">    1259 </span><span class="lineCov">       4800 :       }</span>
+<span class="lineNum">    1258 </span><span class="lineCov">       2400 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
+<span class="lineNum">    1259 </span><span class="lineCov">       2400 :       }</span>
 <span class="lineNum">    1260 </span>            :     };
 <span class="lineNum">    1261 </span>            : 
 <span class="lineNum">    1262 </span>            :     template &lt;class T, class A&gt;
 <a name="1263"><span class="lineNum">    1263 </span>            :     struct Construct&lt;T, A, false, true&gt;</a>
 <span class="lineNum">    1264 </span>            :     {
-<span class="lineNum">    1265 </span><span class="lineCov">       1600 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1265 </span><span class="lineCov">        800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1266 </span>            :       {
-<span class="lineNum">    1267 </span><span class="lineCov">       1600 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
-<span class="lineNum">    1268 </span><span class="lineCov">       1600 :       }</span>
+<span class="lineNum">    1267 </span><span class="lineCov">        800 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
+<span class="lineNum">    1268 </span><span class="lineCov">        800 :       }</span>
 <span class="lineNum">    1269 </span>            :     };
 <span class="lineNum">    1270 </span>            :   } // namespace detail
 <span class="lineNum">    1271 </span>            : } // namespace cereal

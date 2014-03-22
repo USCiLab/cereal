@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-20</td>
+            <td class="headerValue">2014-03-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">24</td>
@@ -111,45 +111,45 @@
 <span class="lineNum">      49 </span>            : 
 <a name="50"><span class="lineNum">      50 </span>            :   //! Serializing (save) for std::bitset</a>
 <span class="lineNum">      51 </span>            :   template &lt;class Archive, size_t N&gt; inline
-<span class="lineNum">      52 </span><span class="lineCov">       2400 :   void save( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
+<span class="lineNum">      52 </span><span class="lineCov">       1200 :   void save( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
 <span class="lineNum">      53 </span>            :   {
 <span class="lineNum">      54 </span>            :     try
 <span class="lineNum">      55 </span>            :     {
-<span class="lineNum">      56 </span><span class="lineCov">       2400 :       auto const b = bits.to_ulong();</span>
-<span class="lineNum">      57 </span><span class="lineCov">       1196 :       ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ulong) );</span>
-<span class="lineNum">      58 </span><span class="lineCov">       1196 :       ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
+<span class="lineNum">      56 </span><span class="lineCov">       1200 :       auto const b = bits.to_ulong();</span>
+<span class="lineNum">      57 </span><span class="lineCov">        598 :       ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ulong) );</span>
+<span class="lineNum">      58 </span><span class="lineCov">        598 :       ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
 <span class="lineNum">      59 </span>            :     }
-<span class="lineNum">      60 </span><span class="lineCov">       1204 :     catch( std::overflow_error const &amp; )</span>
+<span class="lineNum">      60 </span><span class="lineCov">        602 :     catch( std::overflow_error const &amp; )</span>
 <span class="lineNum">      61 </span>            :     {
 <span class="lineNum">      62 </span>            :       try
 <span class="lineNum">      63 </span>            :       {
-<span class="lineNum">      64 </span><span class="lineCov">       1204 :         auto const b = bits.to_ullong();</span>
+<span class="lineNum">      64 </span><span class="lineCov">        602 :         auto const b = bits.to_ullong();</span>
 <span class="lineNum">      65 </span>            :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::ullong) );
 <span class="lineNum">      66 </span>            :         ar( _CEREAL_NVP(&quot;data&quot;, b) );
 <span class="lineNum">      67 </span>            :       }
-<span class="lineNum">      68 </span><span class="lineCov">       1204 :       catch( std::overflow_error const &amp; )</span>
+<span class="lineNum">      68 </span><span class="lineCov">        602 :       catch( std::overflow_error const &amp; )</span>
 <span class="lineNum">      69 </span>            :       {
-<span class="lineNum">      70 </span><span class="lineCov">       1204 :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::string) );</span>
-<span class="lineNum">      71 </span><span class="lineCov">       1204 :         ar( _CEREAL_NVP(&quot;data&quot;, bits.to_string()) );</span>
+<span class="lineNum">      70 </span><span class="lineCov">        602 :         ar( _CEREAL_NVP(&quot;type&quot;, bitset_detail::type::string) );</span>
+<span class="lineNum">      71 </span><span class="lineCov">        602 :         ar( _CEREAL_NVP(&quot;data&quot;, bits.to_string()) );</span>
 <span class="lineNum">      72 </span>            :       }
 <span class="lineNum">      73 </span>            :     }
-<span class="lineNum">      74 </span><span class="lineCov">       2400 :   }</span>
+<span class="lineNum">      74 </span><span class="lineCov">       1200 :   }</span>
 <span class="lineNum">      75 </span>            : 
 <a name="76"><span class="lineNum">      76 </span>            :   //! Serializing (load) for std::bitset</a>
 <span class="lineNum">      77 </span>            :   template &lt;class Archive, size_t N&gt; inline
-<span class="lineNum">      78 </span><span class="lineCov">       2400 :   void load( Archive &amp; ar, std::bitset&lt;N&gt; &amp; bits )</span>
+<span class="lineNum">      78 </span><span class="lineCov">       1200 :   void load( Archive &amp; ar, std::bitset&lt;N&gt; &amp; bits )</span>
 <span class="lineNum">      79 </span>            :   {
 <span class="lineNum">      80 </span>            :     bitset_detail::type t;
-<span class="lineNum">      81 </span><span class="lineCov">       2400 :     ar( _CEREAL_NVP(&quot;type&quot;, t) );</span>
+<span class="lineNum">      81 </span><span class="lineCov">       1200 :     ar( _CEREAL_NVP(&quot;type&quot;, t) );</span>
 <span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">       2400 :     switch( t )</span>
+<span class="lineNum">      83 </span><span class="lineCov">       1200 :     switch( t )</span>
 <span class="lineNum">      84 </span>            :     {
 <span class="lineNum">      85 </span>            :       case bitset_detail::type::ulong:
 <span class="lineNum">      86 </span>            :       {
 <span class="lineNum">      87 </span>            :         unsigned long b;
-<span class="lineNum">      88 </span><span class="lineCov">       1196 :         ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
-<span class="lineNum">      89 </span><span class="lineCov">       1196 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">      90 </span><span class="lineCov">       1196 :         break;</span>
+<span class="lineNum">      88 </span><span class="lineCov">        598 :         ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
+<span class="lineNum">      89 </span><span class="lineCov">        598 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">      90 </span><span class="lineCov">        598 :         break;</span>
 <span class="lineNum">      91 </span>            :       }
 <span class="lineNum">      92 </span>            :       case bitset_detail::type::ullong:
 <span class="lineNum">      93 </span>            :       {
@@ -160,15 +160,15 @@
 <span class="lineNum">      98 </span>            :       }
 <span class="lineNum">      99 </span>            :       case bitset_detail::type::string:
 <span class="lineNum">     100 </span>            :       {
-<span class="lineNum">     101 </span><span class="lineCov">       1204 :         std::string b;</span>
-<span class="lineNum">     102 </span><span class="lineCov">       1204 :         ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
-<span class="lineNum">     103 </span><span class="lineCov">       1204 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">     104 </span><span class="lineCov">       1204 :         break;</span>
+<span class="lineNum">     101 </span><span class="lineCov">        602 :         std::string b;</span>
+<span class="lineNum">     102 </span><span class="lineCov">        602 :         ar( _CEREAL_NVP(&quot;data&quot;, b) );</span>
+<span class="lineNum">     103 </span><span class="lineCov">        602 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">     104 </span><span class="lineCov">        602 :         break;</span>
 <span class="lineNum">     105 </span>            :       }
 <span class="lineNum">     106 </span>            :       default:
 <span class="lineNum">     107 </span><span class="lineNoCov">          0 :         throw Exception(&quot;Invalid bitset data representation&quot;);</span>
 <span class="lineNum">     108 </span>            :     }
-<span class="lineNum">     109 </span><span class="lineCov">       2400 :   }</span>
+<span class="lineNum">     109 </span><span class="lineCov">       1200 :   }</span>
 <span class="lineNum">     110 </span>            : } // namespace cereal
 <span class="lineNum">     111 </span>            : 
 <span class="lineNum">     112 </span>            : #endif // CEREAL_TYPES_BITSET_HPP_

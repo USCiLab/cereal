@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-20</td>
+            <td class="headerValue">2014-03-21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">16</td>
@@ -100,23 +100,23 @@
 <span class="lineNum">      38 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="39"><span class="lineNum">      39 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      40 </span>            :   typename std::enable_if&lt;traits::is_output_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;::value, void&gt;::type
-<span class="lineNum">      41 </span><span class="lineCov">     243403 :   save(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
+<span class="lineNum">      41 </span><span class="lineCov">     121699 :   save(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
 <span class="lineNum">      42 </span>            :   {
 <span class="lineNum">      43 </span>            :     // Save number of chars + the data
-<span class="lineNum">      44 </span><span class="lineCov">     243403 :     ar( make_size_tag( static_cast&lt;size_type&gt;(str.size()) ) );</span>
-<span class="lineNum">      45 </span><span class="lineCov">     243403 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
-<span class="lineNum">      46 </span><span class="lineCov">     243403 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">     121699 :     ar( make_size_tag( static_cast&lt;size_type&gt;(str.size()) ) );</span>
+<span class="lineNum">      45 </span><span class="lineCov">     121699 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
+<span class="lineNum">      46 </span><span class="lineCov">     121699 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="49"><span class="lineNum">      49 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      50 </span>            :   typename std::enable_if&lt;traits::is_input_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;::value, void&gt;::type
-<span class="lineNum">      51 </span><span class="lineCov">     243403 :   load(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
+<span class="lineNum">      51 </span><span class="lineCov">     121699 :   load(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
 <span class="lineNum">      52 </span>            :   {
 <span class="lineNum">      53 </span>            :     size_type size;
-<span class="lineNum">      54 </span><span class="lineCov">     243403 :     ar( make_size_tag( size ) );</span>
-<span class="lineNum">      55 </span><span class="lineCov">     243403 :     str.resize(static_cast&lt;std::size_t&gt;(size));</span>
-<span class="lineNum">      56 </span><span class="lineCov">     243403 :     ar( binary_data( const_cast&lt;CharT *&gt;( str.data() ), static_cast&lt;std::size_t&gt;(size) * sizeof(CharT) ) );</span>
-<span class="lineNum">      57 </span><span class="lineCov">     243403 :   }</span>
+<span class="lineNum">      54 </span><span class="lineCov">     121699 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">     121699 :     str.resize(static_cast&lt;std::size_t&gt;(size));</span>
+<span class="lineNum">      56 </span><span class="lineCov">     121699 :     ar( binary_data( const_cast&lt;CharT *&gt;( str.data() ), static_cast&lt;std::size_t&gt;(size) * sizeof(CharT) ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">     121699 :   }</span>
 <span class="lineNum">      58 </span>            : } // namespace cereal
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            : #endif // CEREAL_TYPES_STRING_HPP_
