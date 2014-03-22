@@ -55,7 +55,7 @@ struct SomeData
 
 int main()
 {
-  std::ofstream os("out.cereal");
+  std::ofstream os("out.cereal", std::ios::binary);
   cereal::BinaryOutputArchive archive( os );
 
   SomeData myData;
