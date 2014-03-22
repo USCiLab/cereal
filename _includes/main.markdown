@@ -18,17 +18,17 @@ experience any issues. A 1.0 version will be released soon.
 
 ## xCEREAL comes with full support for C++11
 
-Serialization support for pretty much every type in the [standard library](http://en.cppreference.com/w/) comes out of the box with cereal.  cereal also fully supports inheritance and polymorphism.  Since cereal was written to be a minimal, fast library, it does not perform the same level of object tracking as other serialization libraries such as boost.  As a consequence of this raw pointers are not supported, however smart pointers (things like `std::shared_ptr` and `std::unique_ptr`) are no problem.
+Serialization support for pretty much every type in the [standard library](http://en.cppreference.com/w/) comes out of the box with cereal.  cereal also fully supports inheritance and polymorphism.  Since cereal was written to be a minimal, fast library, it does not perform the same level of object tracking as other serialization libraries such as Boost.  As a consequence of this raw pointers and references are not supported, however smart pointers (things like `std::shared_ptr` and `std::unique_ptr`) are no problem.
 
-### xCEREAL requires a compliant C++11 compiler
+### xCEREAL works on a wide range of C++11 compliant compilers
 
-cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3 and clang++ 3.3 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  VC++ support is currently under development and will target versions 2013 preview and newer.
+cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3, clang++ 3.3, and MSVC 2013 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  cereal works under both libstdc++ and libc++ when compiling with g++ or clang++.
 
 ---
 
 ## xCEREAL is fast and compact
 
-In simple performance tests, cereal is usually faster than boost's serialization library and produces binary representations that take up less space, especially for smaller objects.  When compared against another new C++11 serialization library, [Srl](https://github.com/night-shift/Srl), cereal can produce binary representations at 50% the size at 20x the speed.  The source code for cereal is considerably easier to understand and extend than that of boost.
+In simple performance tests, cereal is usually faster than Boost's serialization library and produces binary representations that take up less space, especially for smaller objects.  cereal uses some of the fastest [XML](http://rapidxml.sourceforge.net/) and [JSON](https://code.google.com/p/rapidjson/) parsers and generators available in C++.  The source code for cereal is considerably easier to understand and extend than that of Boost.
 
 ### xCEREAL is extensible
 
@@ -36,7 +36,7 @@ cereal comes with excellent standard library support as well as binary, XML, and
 
 ### xCEREAL is unit tested
 
-Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/coverage/index.html)!) to make sure cereal is doing what it should be doing.  These unit tests require the [boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
+Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/coverage/index.html)!) to make sure cereal is doing what it should be doing.  These unit tests require the [Boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
 
 ---
 
@@ -46,9 +46,9 @@ Adding support for cereal is a simple as including a header file and writing a s
 functionality is well documented both conceptually and at the code level.  cereal will do its best to give descriptive static assertions at compile time if you
 make any mistakes along the way.
 
-### xCEREAL offers a familiar syntax to users of boost
+### xCEREAL offers a familiar syntax to users of Boost
 
-cereal's syntax will look familiar if you've used boost's serialization library.  cereal looks for serialization functions either defined in the type to be serialized or for non-member functions to do the same thing.  Unlike boost, cereal doesn't need to be told (in most cases) what type of functions to look for, and will warn you at compile time if you make a mistake.
+cereal's syntax will look familiar if you've used Boost's serialization library and is designed to make the transition easy.  cereal looks for serialization functions either defined in the type to be serialized or for non-member functions to do the same thing.  Unlike Boost, cereal doesn't need to be told (in most cases) what type of functions to look for, and will warn you at compile time if you make a mistake.  If you are coming from Boost, be sure to check out our [transition guide](transition_from_boost.html).
 
 ```cpp
 #include <cereal/types/map.hpp>
@@ -90,7 +90,7 @@ struct SomeData
 
 int main()
 {
-  std::ofstream os("out.cereal");
+  std::ofstream os("out.cereal", std::ios::binary);
   cereal::BinaryOutputArchive archive( os );
 
   SomeData myData;

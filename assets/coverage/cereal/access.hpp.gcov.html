@@ -1,0 +1,495 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - cereal/access.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">cereal</a> - access.hpp<span style="font-size: 80%;"> (source / <a href="access.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">35</td>
+            <td class="headerCovTableEntry">37</td>
+            <td class="headerCovTableEntryHi">94.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-03-20</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">300</td>
+            <td class="headerCovTableEntry">300</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*! \file access.hpp</a>
+<span class="lineNum">       2 </span>            :     \brief Access control, default construction, and serialization disambiguation */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :   Copyright (c) 2014, Randolph Voorhies, Shane Grant
+<span class="lineNum">       5 </span>            :   All rights reserved.
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       8 </span>            :   modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       9 </span>            :       * Redistributions of source code must retain the above copyright
+<span class="lineNum">      10 </span>            :         notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      11 </span>            :       * Redistributions in binary form must reproduce the above copyright
+<span class="lineNum">      12 </span>            :         notice, this list of conditions and the following disclaimer in the
+<span class="lineNum">      13 </span>            :         documentation and/or other materials provided with the distribution.
+<span class="lineNum">      14 </span>            :       * Neither the name of cereal nor the
+<span class="lineNum">      15 </span>            :         names of its contributors may be used to endorse or promote products
+<span class="lineNum">      16 </span>            :         derived from this software without specific prior written permission.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+<span class="lineNum">      19 </span>            :   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+<span class="lineNum">      20 </span>            :   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+<span class="lineNum">      21 </span>            :   DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+<span class="lineNum">      22 </span>            :   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+<span class="lineNum">      23 </span>            :   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+<span class="lineNum">      24 </span>            :   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+<span class="lineNum">      25 </span>            :   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      26 </span>            :   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+<span class="lineNum">      27 </span>            :   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      28 </span>            : */
+<span class="lineNum">      29 </span>            : #ifndef CEREAL_ACCESS_HPP_
+<span class="lineNum">      30 </span>            : #define CEREAL_ACCESS_HPP_
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      33 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">      34 </span>            : #include &lt;cstdint&gt;
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : #include &lt;cereal/details/helpers.hpp&gt;
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : namespace cereal
+<span class="lineNum">      39 </span>            : {
+<span class="lineNum">      40 </span>            :   // ######################################################################
+<span class="lineNum">      41 </span>            :   //! A class that allows cereal to load smart pointers to types that have no default constructor
+<span class="lineNum">      42 </span>            :   /*! If your class does not have a default constructor, cereal will not be able
+<span class="lineNum">      43 </span>            :       to load any smart pointers to it unless you overload LoadAndConstruct
+<span class="lineNum">      44 </span>            :       for your class, and provide an appropriate load_and_construct method.  You can also
+<span class="lineNum">      45 </span>            :       choose to define a member static function instead of specializing this class.
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :       The specialization of LoadAndConstruct must be placed within the cereal namespace:
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            :       @code{.cpp}
+<span class="lineNum">      50 </span>            :       struct MyType
+<span class="lineNum">      51 </span>            :       {
+<span class="lineNum">      52 </span>            :         MyType( int x ); // note: no default ctor
+<span class="lineNum">      53 </span>            :         int myX;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :         // Define a serialize or load/save pair as you normally would
+<span class="lineNum">      56 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">      57 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">      58 </span>            :         {
+<span class="lineNum">      59 </span>            :           ar( myX );
+<span class="lineNum">      60 </span>            :         }
+<span class="lineNum">      61 </span>            :       };
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :       // Provide a specialization for LoadAndConstruct for your type
+<span class="lineNum">      64 </span>            :       namespace cereal
+<span class="lineNum">      65 </span>            :       {
+<span class="lineNum">      66 </span>            :         template &lt;&gt; struct LoadAndConstruct&lt;MyType&gt;
+<span class="lineNum">      67 </span>            :         {
+<span class="lineNum">      68 </span>            :           // load_and_construct will be passed the archive that you will be loading
+<span class="lineNum">      69 </span>            :           // from as well as a construct object which you can use as if it were the
+<span class="lineNum">      70 </span>            :           // constructor for your type.  cereal will handle all memory management for you.
+<span class="lineNum">      71 </span>            :           template &lt;class Archive&gt;
+<span class="lineNum">      72 </span>            :           static void load_and_construct( Archive &amp; ar, cereal::construct&lt;MyType&gt; &amp; construct )
+<span class="lineNum">      73 </span>            :           {
+<span class="lineNum">      74 </span>            :             int x;
+<span class="lineNum">      75 </span>            :             ar( x );
+<span class="lineNum">      76 </span>            :             construct( x );
+<span class="lineNum">      77 </span>            :           }
+<span class="lineNum">      78 </span>            :         };
+<span class="lineNum">      79 </span>            :       } // end namespace cereal
+<span class="lineNum">      80 </span>            :       @endcode
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :       Please note that just as in using external serialization functions, you cannot get
+<span class="lineNum">      83 </span>            :       access to non-public members of your class by befriending cereal::access.  If you
+<span class="lineNum">      84 </span>            :       have the ability to modify the class you wish to serialize, it is recommended that you
+<span class="lineNum">      85 </span>            :       use member serialize functions and a static member load_and_construct function.
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :       @tparam T The type to specialize for
+<span class="lineNum">      88 </span>            :       @ingroup Access */
+<span class="lineNum">      89 </span>            :   template &lt;class T&gt;
+<span class="lineNum">      90 </span>            :   struct LoadAndConstruct
+<span class="lineNum">      91 </span>            :   {
+<span class="lineNum">      92 </span>            :     //! Called by cereal if no default constructor exists to load and construct data simultaneously
+<span class="lineNum">      93 </span>            :     /*! Overloads of this should return a pointer to T and expect an archive as a parameter */
+<span class="lineNum">      94 </span>            :     static std::false_type load_and_construct(...)
+<span class="lineNum">      95 </span>            :     { return std::false_type(); }
+<span class="lineNum">      96 </span>            :   };
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :   // forward decl for construct
+<span class="lineNum">      99 </span>            :   //! @cond PRIVATE_NEVERDEFINED
+<span class="lineNum">     100 </span>            :   namespace memory_detail{ template &lt;class Ar, class T&gt; struct LoadAndConstructLoadWrapper; }
+<span class="lineNum">     101 </span>            :   //! @endcond
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :   //! Used to construct types with no default constructor
+<span class="lineNum">     104 </span>            :   /*! When serializing a type that has no default constructor, cereal
+<span class="lineNum">     105 </span>            :       will attempt to call either the class static function load_and_construct
+<span class="lineNum">     106 </span>            :       or the appropriate template specialization of LoadAndConstruct.  cereal
+<span class="lineNum">     107 </span>            :       will pass that function a reference to the archive as well as a reference
+<span class="lineNum">     108 </span>            :       to a construct object which should be used to perform the allocation once
+<span class="lineNum">     109 </span>            :       data has been appropriately loaded.
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :       @code{.cpp}
+<span class="lineNum">     112 </span>            :       struct MyType
+<span class="lineNum">     113 </span>            :       {
+<span class="lineNum">     114 </span>            :         // note the lack of default constructor
+<span class="lineNum">     115 </span>            :         MyType( int xx, int yy );
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :         int x, y;
+<span class="lineNum">     118 </span>            :         double notInConstructor;
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     121 </span>            :         void serialize( Archive &amp; ar )
+<span class="lineNum">     122 </span>            :         {
+<span class="lineNum">     123 </span>            :           ar( x, y );
+<span class="lineNum">     124 </span>            :           ar( notInConstructor );
+<span class="lineNum">     125 </span>            :         }
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     128 </span>            :         static void load_and_construct( Archive &amp; ar, cereal::construct&lt;MyType&gt; &amp; construct )
+<span class="lineNum">     129 </span>            :         {
+<span class="lineNum">     130 </span>            :           int x, y;
+<span class="lineNum">     131 </span>            :           ar( x, y );
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :           // use construct object to initialize with loaded data
+<span class="lineNum">     134 </span>            :           construct( x, y );
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            :           // access to member variables and functions via -&gt; operator
+<span class="lineNum">     137 </span>            :           ar( construct-&gt;notInConstructor );
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            :           // could also do the above section by:
+<span class="lineNum">     140 </span>            :           double z;
+<span class="lineNum">     141 </span>            :           ar( z );
+<span class="lineNum">     142 </span>            :           construct-&gt;notInConstructor = z;
+<span class="lineNum">     143 </span>            :         }
+<span class="lineNum">     144 </span>            :       };
+<span class="lineNum">     145 </span>            :       @endcode
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :       @tparam T The class type being serialized
+<span class="lineNum">     148 </span>            :       */
+<span class="lineNum">     149 </span>            :   template &lt;class T&gt;
+<span class="lineNum">     150 </span>            :   class construct
+<span class="lineNum">     151 </span>            :   {
+<span class="lineNum">     152 </span>            :     public:
+<span class="lineNum">     153 </span>            :       //! Construct and initialize the type T with the given arguments
+<span class="lineNum">     154 </span>            :       /*! This will forward all arguments to the underlying type T,
+<span class="lineNum">     155 </span>            :           calling an appropriate constructor.
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            :           Calling this function more than once will result in an exception
+<span class="lineNum">     158 </span>            :           being thrown.
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :           @param args The arguments to the constructor for T
+<span class="lineNum">     161 </span>            :           @throw Exception If called more than once */
+<span class="lineNum">     162 </span>            :       template &lt;class ... Args&gt;
+<span class="lineNum">     163 </span>            :       void operator()( Args &amp;&amp; ... args );
+<span class="lineNum">     164 </span>            :       // implementation deferred due to reliance on cereal::access
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span>            :       //! Get a reference to the initialized underlying object
+<span class="lineNum">     167 </span>            :       /*! This must be called after the object has been initialized.
+<span class="lineNum">     168 </span>            : 
+<a name="169"><span class="lineNum">     169 </span>            :           @return A reference to the initialized object</a>
+<span class="lineNum">     170 </span>            :           @throw Exception If called before initialization */
+<span class="lineNum">     171 </span><span class="lineCov">       1600 :       T * operator-&gt;()</span>
+<span class="lineNum">     172 </span>            :       {
+<span class="lineNum">     173 </span><span class="lineCov">       1600 :         if( !itsValid )</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Object must be initialized prior to accessing members&quot;);</span>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineCov">       1600 :         return itsPtr;</span>
+<span class="lineNum">     177 </span>            :       }
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :       //! Returns a raw pointer to the initialized underlying object
+<span class="lineNum">     180 </span>            :       /*! This is mainly intended for use with passing an instance of
+<span class="lineNum">     181 </span>            :           a constructed object to cereal::base_class.
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :           It is strongly recommended to avoid using this function in
+<span class="lineNum">     184 </span>            :           any other circumstance.
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :           @return A raw pointer to the initialized type */
+<span class="lineNum">     187 </span>            :       T * ptr()
+<span class="lineNum">     188 </span>            :       {
+<span class="lineNum">     189 </span>            :         return operator-&gt;();
+<span class="lineNum">     190 </span>            :       }
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span>            :     private:
+<a name="193"><span class="lineNum">     193 </span>            :       template &lt;class A, class B&gt; friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;</a>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineCov">       6400 :       construct( T * p ) : itsPtr( p ), itsValid( false ) {}</span>
+<span class="lineNum">     196 </span>            :       construct( construct const &amp; ) = delete;
+<span class="lineNum">     197 </span>            :       construct &amp; operator=( construct const &amp; ) = delete;
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :       T * itsPtr;
+<span class="lineNum">     200 </span>            :       bool itsValid;
+<span class="lineNum">     201 </span>            :   };
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :   // ######################################################################
+<span class="lineNum">     204 </span>            :   //! A class that can be made a friend to give cereal access to non public functions
+<span class="lineNum">     205 </span>            :   /*! If you desire non-public serialization functions within a class, cereal can only
+<span class="lineNum">     206 </span>            :       access these if you declare cereal::access a friend.
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            :       @code{.cpp}
+<span class="lineNum">     209 </span>            :       class MyClass
+<span class="lineNum">     210 </span>            :       {
+<span class="lineNum">     211 </span>            :         private:
+<span class="lineNum">     212 </span>            :           friend class cereal::access; // gives access to the private serialize
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span>            :           template &lt;class Archive&gt;
+<span class="lineNum">     215 </span>            :           void serialize( Archive &amp; ar )
+<span class="lineNum">     216 </span>            :           {
+<span class="lineNum">     217 </span>            :             // some code
+<span class="lineNum">     218 </span>            :           }
+<span class="lineNum">     219 </span>            :       };
+<span class="lineNum">     220 </span>            :       @endcode
+<span class="lineNum">     221 </span>            :       @ingroup Access */
+<span class="lineNum">     222 </span>            :   class access
+<span class="lineNum">     223 </span>            :   {
+<span class="lineNum">     224 </span>            :     public:
+<a name="225"><span class="lineNum">     225 </span>            :       // ####### Standard Serialization ########################################</a>
+<span class="lineNum">     226 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     227 </span><span class="lineCov">    9915798 :       static auto member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.serialize(ar))</span>
+<span class="lineNum">     228 </span><span class="lineCov">    9915798 :       { t.serialize(ar); }</span>
+<a name="229"><span class="lineNum">     229 </span>            : </a>
+<span class="lineNum">     230 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     231 </span><span class="lineCov">    1606744 :       static auto member_save(Archive &amp; ar, T const &amp; t) -&gt; decltype(t.save(ar))</span>
+<span class="lineNum">     232 </span><span class="lineCov">    1606744 :       { t.save(ar); }</span>
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     235 </span>            :       static auto member_save_non_const(Archive &amp; ar, T &amp; t) -&gt; decltype(t.save(ar))
+<span class="lineNum">     236 </span>            :       { t.save(ar); }
+<a name="237"><span class="lineNum">     237 </span>            : </a>
+<span class="lineNum">     238 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     239 </span><span class="lineCov">    1606744 :       static auto member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.load(ar))</span>
+<span class="lineNum">     240 </span><span class="lineCov">    1606744 :       { t.load(ar); }</span>
+<a name="241"><span class="lineNum">     241 </span>            : </a>
+<span class="lineNum">     242 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     243 </span><span class="lineCov">       1600 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t) -&gt; decltype(t.save_minimal(ar))</span>
+<span class="lineNum">     244 </span><span class="lineCov">       1600 :       { return t.save_minimal(ar); }</span>
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     247 </span>            :       static auto member_save_minimal_non_const(Archive const &amp; ar, T &amp; t) -&gt; decltype(t.save_minimal(ar))
+<span class="lineNum">     248 </span>            :       { return t.save_minimal(ar); }
+<a name="249"><span class="lineNum">     249 </span>            : </a>
+<span class="lineNum">     250 </span>            :       template&lt;class Archive, class T, class U&gt; inline
+<span class="lineNum">     251 </span><span class="lineCov">       1600 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u) -&gt; decltype(t.load_minimal(ar, std::forward&lt;U&gt;(u)))</span>
+<span class="lineNum">     252 </span><span class="lineCov">       1600 :       { t.load_minimal(ar, std::forward&lt;U&gt;(u)); }</span>
+<span class="lineNum">     253 </span>            : 
+<a name="254"><span class="lineNum">     254 </span>            :       // ####### Versioned Serialization #######################################</a>
+<span class="lineNum">     255 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     256 </span><span class="lineCov">       4800 :       static auto member_serialize(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.serialize(ar, version))</span>
+<span class="lineNum">     257 </span><span class="lineCov">       4800 :       { t.serialize(ar, version); }</span>
+<a name="258"><span class="lineNum">     258 </span>            : </a>
+<span class="lineNum">     259 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     260 </span><span class="lineCov">       2400 :       static auto member_save(Archive &amp; ar, T const &amp; t, const std::uint32_t version ) -&gt; decltype(t.save(ar, version))</span>
+<span class="lineNum">     261 </span><span class="lineCov">       2400 :       { t.save(ar, version); }</span>
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     264 </span>            :       static auto member_save_non_const(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.save(ar, version))
+<span class="lineNum">     265 </span>            :       { t.save(ar, version); }
+<a name="266"><span class="lineNum">     266 </span>            : </a>
+<span class="lineNum">     267 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     268 </span><span class="lineCov">       2400 :       static auto member_load(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.load(ar, version))</span>
+<span class="lineNum">     269 </span><span class="lineCov">       2400 :       { t.load(ar, version); }</span>
+<a name="270"><span class="lineNum">     270 </span>            : </a>
+<span class="lineNum">     271 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     272 </span><span class="lineCov">       1600 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t, const std::uint32_t version) -&gt; decltype(t.save_minimal(ar, version))</span>
+<span class="lineNum">     273 </span><span class="lineCov">       1600 :       { return t.save_minimal(ar, version); }</span>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :       template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     276 </span>            :       static auto member_save_minimal_non_const(Archive const &amp; ar, T &amp; t, const std::uint32_t version) -&gt; decltype(t.save_minimal(ar, version))
+<span class="lineNum">     277 </span>            :       { return t.save_minimal(ar, version); }
+<a name="278"><span class="lineNum">     278 </span>            : </a>
+<span class="lineNum">     279 </span>            :       template&lt;class Archive, class T, class U&gt; inline
+<span class="lineNum">     280 </span><span class="lineCov">       1600 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u, const std::uint32_t version) -&gt; decltype(t.load_minimal(ar, std::forward&lt;U&gt;(u), version))</span>
+<span class="lineNum">     281 </span><span class="lineCov">       1600 :       { t.load_minimal(ar, std::forward&lt;U&gt;(u), version); }</span>
+<span class="lineNum">     282 </span>            : 
+<span class="lineNum">     283 </span>            :       // ####### Other Functionality ##########################################
+<span class="lineNum">     284 </span>            :       // for detecting inheritance from enable_shared_from_this
+<span class="lineNum">     285 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     286 </span>            :       static auto shared_from_this(T &amp; t) -&gt; decltype(t.shared_from_this());
+<span class="lineNum">     287 </span>            : 
+<a name="288"><span class="lineNum">     288 </span>            :       // for placement new</a>
+<span class="lineNum">     289 </span>            :       template &lt;class T, class ... Args&gt; inline
+<span class="lineNum">     290 </span><span class="lineCov">       6400 :       static void construct( T *&amp; ptr, Args &amp;&amp; ... args )</span>
+<span class="lineNum">     291 </span>            :       {
+<span class="lineNum">     292 </span><span class="lineCov">       6400 :         new (ptr) T( std::forward&lt;Args&gt;( args )... );</span>
+<span class="lineNum">     293 </span><span class="lineCov">       6400 :       }</span>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     296 </span>            :       static std::false_type load_and_construct(...)
+<span class="lineNum">     297 </span>            :       { return std::false_type(); }
+<a name="298"><span class="lineNum">     298 </span>            : </a>
+<span class="lineNum">     299 </span>            :       template&lt;class T, class Archive&gt; inline
+<span class="lineNum">     300 </span><span class="lineCov">       4800 :       static auto load_and_construct(Archive &amp; ar, ::cereal::construct&lt;T&gt; &amp; construct) -&gt; decltype(T::load_and_construct(ar, construct))</span>
+<span class="lineNum">     301 </span>            :       {
+<span class="lineNum">     302 </span><span class="lineCov">       4800 :         T::load_and_construct( ar, construct );</span>
+<span class="lineNum">     303 </span><span class="lineCov">       4800 :       }</span>
+<span class="lineNum">     304 </span>            :   }; // end class access
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span>            :   // ######################################################################
+<span class="lineNum">     307 </span>            :   //! A specifier used in conjunction with cereal::specialize to disambiguate
+<span class="lineNum">     308 </span>            :   //! serialization in special cases
+<span class="lineNum">     309 </span>            :   /*! @relates specialize
+<span class="lineNum">     310 </span>            :       @ingroup Access */
+<span class="lineNum">     311 </span>            :   enum class specialization
+<span class="lineNum">     312 </span>            :   {
+<span class="lineNum">     313 </span>            :     member_serialize,            //!&lt; Force the use of a member serialize function
+<span class="lineNum">     314 </span>            :     member_load_save,            //!&lt; Force the use of a member load/save pair
+<span class="lineNum">     315 </span>            :     member_load_save_minimal,    //!&lt; Force the use of a member minimal load/save pair
+<span class="lineNum">     316 </span>            :     non_member_serialize,        //!&lt; Force the use of a non-member serialize function
+<span class="lineNum">     317 </span>            :     non_member_load_save,        //!&lt; Force the use of a non-member load/save pair
+<span class="lineNum">     318 </span>            :     non_member_load_save_minimal //!&lt; Force the use of a non-member minimal load/save pair
+<span class="lineNum">     319 </span>            :   };
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span>            :   //! A class used to disambiguate cases where cereal cannot detect a unique way of serializing a class
+<span class="lineNum">     322 </span>            :   /*! cereal attempts to figure out which method of serialization (member vs. non-member serialize
+<span class="lineNum">     323 </span>            :       or load/save pair) at compile time.  If for some reason cereal cannot find a non-ambiguous way
+<span class="lineNum">     324 </span>            :       of serializing a type, it will produce a static assertion complaining about this.
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span>            :       This can happen because you have both a serialize and load/save pair, or even because a base
+<span class="lineNum">     327 </span>            :       class has a serialize (public or private with friend access) and a derived class does not
+<span class="lineNum">     328 </span>            :       overwrite this due to choosing some other serialization type.
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span>            :       Specializing this class will tell cereal to explicitly use the serialization type you specify
+<span class="lineNum">     331 </span>            :       and it will not complain about ambiguity in its compile time selection.  However, if cereal detects
+<span class="lineNum">     332 </span>            :       an ambiguity in specializations, it will continue to issue a static assertion.
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span>            :       @code{.cpp}
+<span class="lineNum">     335 </span>            :       class MyParent
+<span class="lineNum">     336 </span>            :       {
+<span class="lineNum">     337 </span>            :         friend class cereal::access;
+<span class="lineNum">     338 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">     339 </span>            :         void serialize( Archive &amp; ar ) {}
+<span class="lineNum">     340 </span>            :       };
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span>            :       // Although serialize is private in MyParent, to cereal::access it will look public,
+<span class="lineNum">     343 </span>            :       // even through MyDerived
+<span class="lineNum">     344 </span>            :       class MyDerived : public MyParent
+<span class="lineNum">     345 </span>            :       {
+<span class="lineNum">     346 </span>            :         public:
+<span class="lineNum">     347 </span>            :           template &lt;class Archive&gt;
+<span class="lineNum">     348 </span>            :           void load( Archive &amp; ar ) {}
+<span class="lineNum">     349 </span>            : 
+<span class="lineNum">     350 </span>            :           template &lt;class Archive&gt;
+<span class="lineNum">     351 </span>            :           void save( Archive &amp; ar ) {}
+<span class="lineNum">     352 </span>            :       };
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :       // The load/save pair in MyDerived is ambiguous because serialize in MyParent can
+<span class="lineNum">     355 </span>            :       // be accessed from cereal::access.  This looks the same as making serialize public
+<span class="lineNum">     356 </span>            :       // in MyParent, making it seem as though MyDerived has both a serialize and a load/save pair.
+<span class="lineNum">     357 </span>            :       // cereal will complain about this at compile time unless we disambiguate:
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :       namespace cereal
+<span class="lineNum">     360 </span>            :       {
+<span class="lineNum">     361 </span>            :         // This struct specialization will tell cereal which is the right way to serialize the ambiguity
+<span class="lineNum">     362 </span>            :         template &lt;class Archive&gt; struct specialize&lt;Archive, MyDerived, cereal::specialization::member_load_save&gt; {};
+<span class="lineNum">     363 </span>            : 
+<span class="lineNum">     364 </span>            :         // If we only had a disambiguation for a specific archive type, it would look something like this
+<span class="lineNum">     365 </span>            :         template &lt;&gt; struct specialize&lt;cereal::BinaryOutputArchive, MyDerived, cereal::specialization::member_load_save&gt; {};
+<span class="lineNum">     366 </span>            :       }
+<span class="lineNum">     367 </span>            :       @endcode
+<span class="lineNum">     368 </span>            : 
+<span class="lineNum">     369 </span>            :       You can also choose to use the macros CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES or
+<span class="lineNum">     370 </span>            :       CEREAL_SPECIALIZE_FOR_ARCHIVE if you want to type a little bit less.
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span>            :       @tparam T The type to specialize the serialization for
+<span class="lineNum">     373 </span>            :       @tparam S The specialization type to use for T
+<span class="lineNum">     374 </span>            :       @ingroup Access */
+<span class="lineNum">     375 </span>            :   template &lt;class Archive, class T, specialization S&gt;
+<span class="lineNum">     376 </span>            :   struct specialize : public std::false_type {};
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span>            :   //! Convenient macro for performing specialization for all archive types
+<span class="lineNum">     379 </span>            :   /*! This performs specialization for the specific type for all types of archives.
+<span class="lineNum">     380 </span>            :       This macro should be placed at the global namespace.
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span>            :       @code{cpp}
+<span class="lineNum">     383 </span>            :       struct MyType {};
+<span class="lineNum">     384 </span>            :       CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( MyType, cereal::specialization::member_load_save );
+<span class="lineNum">     385 </span>            :       @endcode
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span>            :       @relates specialize
+<span class="lineNum">     388 </span>            :       @ingroup Access */
+<span class="lineNum">     389 </span>            :   #define CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( Type, Specialization )                                \
+<span class="lineNum">     390 </span>            :   namespace cereal { template &lt;class Archive&gt; struct specialize&lt;Archive, Type, Specialization&gt; {}; }
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span>            :   //! Convenient macro for performing specialization for a single archive type
+<span class="lineNum">     393 </span>            :   /*! This performs specialization for the specific type for a single type of archive.
+<span class="lineNum">     394 </span>            :       This macro should be placed at the global namespace.
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span>            :       @code{cpp}
+<span class="lineNum">     397 </span>            :       struct MyType {};
+<span class="lineNum">     398 </span>            :       CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
+<span class="lineNum">     399 </span>            :       @endcode
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            :       @relates specialize
+<span class="lineNum">     402 </span>            :       @ingroup Access */
+<span class="lineNum">     403 </span>            :   #define CEREAL_SPECIALIZE_FOR_ARCHIVE( Archive, Type, Specialization )               \
+<span class="lineNum">     404 </span>            :   namespace cereal { template &lt;&gt; struct specialize&lt;Archive, Type, Specialization&gt; {}; }
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span>            :   // ######################################################################
+<a name="407"><span class="lineNum">     407 </span>            :   // Deferred Implementation, see construct for more information</a>
+<span class="lineNum">     408 </span>            :   template &lt;class T&gt; template &lt;class ... Args&gt; inline
+<span class="lineNum">     409 </span><span class="lineCov">       6400 :   void construct&lt;T&gt;::operator()( Args &amp;&amp; ... args )</span>
+<span class="lineNum">     410 </span>            :   {
+<span class="lineNum">     411 </span><span class="lineCov">       6400 :     if( itsValid )</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :       throw Exception(&quot;Attempting to construct an already initialized object&quot;);</span>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineCov">       6400 :     ::cereal::access::construct( itsPtr, std::forward&lt;Args&gt;( args )... );</span>
+<span class="lineNum">     415 </span><span class="lineCov">       6400 :     itsValid = true;</span>
+<span class="lineNum">     416 </span><span class="lineCov">       6400 :   }</span>
+<span class="lineNum">     417 </span>            : } // namespace cereal
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            : #endif // CEREAL_ACCESS_HPP_
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

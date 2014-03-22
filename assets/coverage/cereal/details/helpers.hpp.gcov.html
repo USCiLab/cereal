@@ -1,0 +1,527 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - cereal/details/helpers.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/details</a> - helpers.hpp<span style="font-size: 80%;"> (source / <a href="helpers.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2014-03-20</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">740</td>
+            <td class="headerCovTableEntry">770</td>
+            <td class="headerCovTableEntryHi">96.1 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*! \file helpers.hpp</a>
+<span class="lineNum">       2 </span>            :     \brief Internal helper functionality
+<span class="lineNum">       3 </span>            :     \ingroup Internal */
+<span class="lineNum">       4 </span>            : /*
+<span class="lineNum">       5 </span>            :   Copyright (c) 2014, Randolph Voorhies, Shane Grant
+<span class="lineNum">       6 </span>            :   All rights reserved.
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            :   Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       9 </span>            :   modification, are permitted provided that the following conditions are met:
+<span class="lineNum">      10 </span>            :       * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :         notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            :       * Redistributions in binary form must reproduce the above copyright
+<span class="lineNum">      13 </span>            :         notice, this list of conditions and the following disclaimer in the
+<span class="lineNum">      14 </span>            :         documentation and/or other materials provided with the distribution.
+<span class="lineNum">      15 </span>            :       * Neither the name of cereal nor the
+<span class="lineNum">      16 </span>            :         names of its contributors may be used to endorse or promote products
+<span class="lineNum">      17 </span>            :         derived from this software without specific prior written permission.
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+<span class="lineNum">      20 </span>            :   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+<span class="lineNum">      21 </span>            :   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+<span class="lineNum">      22 </span>            :   DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+<span class="lineNum">      23 </span>            :   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+<span class="lineNum">      24 </span>            :   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+<span class="lineNum">      25 </span>            :   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+<span class="lineNum">      26 </span>            :   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      27 </span>            :   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+<span class="lineNum">      28 </span>            :   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      29 </span>            : */
+<span class="lineNum">      30 </span>            : #ifndef CEREAL_DETAILS_HELPERS_HPP_
+<span class="lineNum">      31 </span>            : #define CEREAL_DETAILS_HELPERS_HPP_
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      34 </span>            : #include &lt;cstdint&gt;
+<span class="lineNum">      35 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      36 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      37 </span>            : #include &lt;unordered_map&gt;
+<span class="lineNum">      38 </span>            : #include &lt;stdexcept&gt;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #include &lt;cereal/details/static_object.hpp&gt;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : namespace cereal
+<span class="lineNum">      43 </span>            : {
+<span class="lineNum">      44 </span>            :   // ######################################################################
+<a name="45"><span class="lineNum">      45 </span>            :   //! An exception class thrown when things go wrong at runtime</a>
+<span class="lineNum">      46 </span>            :   /*! @ingroup Utility */
+<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :   struct Exception : public std::runtime_error</span></a>
+<a name="48"><span class="lineNum">      48 </span>            :   {</a>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     Exception( const std::string &amp; what_ ) : std::runtime_error(what_) {}</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     Exception( const char * what_ ) : std::runtime_error(what_) {}</span>
+<span class="lineNum">      51 </span>            :   };
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            :   // ######################################################################
+<span class="lineNum">      54 </span>            :   //! The size type used by cereal
+<span class="lineNum">      55 </span>            :   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
+<span class="lineNum">      56 </span>            :    * a fixed size type instead of size_t, which may vary from machine to
+<span class="lineNum">      57 </span>            :    * machine. */
+<span class="lineNum">      58 </span>            :   using size_type = uint64_t;
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :   // forward decls
+<span class="lineNum">      61 </span>            :   class BinaryOutputArchive;
+<span class="lineNum">      62 </span>            :   class BinaryInputArchive;
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :   // ######################################################################
+<a name="65"><span class="lineNum">      65 </span>            :   namespace detail</a>
+<span class="lineNum">      66 </span>            :   {
+<span class="lineNum">      67 </span><span class="lineCov">    8461152 :     struct NameValuePairCore {};</span>
+<span class="lineNum">      68 </span>            :   }
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :   //! For holding name value pairs
+<span class="lineNum">      71 </span>            :   /*! This pairs a name (some string) with some value such that an archive
+<span class="lineNum">      72 </span>            :       can potentially take advantage of the pairing.
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :       In serialization functions, NameValuePairs are usually created like so:
+<span class="lineNum">      75 </span>            :       @code{.cpp}
+<span class="lineNum">      76 </span>            :       struct MyStruct
+<span class="lineNum">      77 </span>            :       {
+<span class="lineNum">      78 </span>            :         int a, b, c, d, e;
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :         template&lt;class Archive&gt;
+<span class="lineNum">      81 </span>            :         void serialize(Archive &amp; archive)
+<span class="lineNum">      82 </span>            :         {
+<span class="lineNum">      83 </span>            :           archive( CEREAL_NVP(a),
+<span class="lineNum">      84 </span>            :                    CEREAL_NVP(b),
+<span class="lineNum">      85 </span>            :                    CEREAL_NVP(c),
+<span class="lineNum">      86 </span>            :                    CEREAL_NVP(d),
+<span class="lineNum">      87 </span>            :                    CEREAL_NVP(e) );
+<span class="lineNum">      88 </span>            :         }
+<span class="lineNum">      89 </span>            :       };
+<span class="lineNum">      90 </span>            :       @endcode
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            :       Alternatively, you can give you data members custom names like so:
+<span class="lineNum">      93 </span>            :       @code{.cpp}
+<span class="lineNum">      94 </span>            :       struct MyStruct
+<span class="lineNum">      95 </span>            :       {
+<span class="lineNum">      96 </span>            :         int a, b, my_embarrassing_variable_name, d, e;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :         template&lt;class Archive&gt;
+<span class="lineNum">      99 </span>            :         void serialize(Archive &amp; archive)
+<span class="lineNum">     100 </span>            :         {
+<span class="lineNum">     101 </span>            :           archive( CEREAL_NVP(a),
+<span class="lineNum">     102 </span>            :                    CEREAL_NVP(b),
+<span class="lineNum">     103 </span>            :                    cereal::make_nvp(&quot;var&quot;, my_embarrassing_variable_name) );
+<span class="lineNum">     104 </span>            :                    CEREAL_NVP(d),
+<span class="lineNum">     105 </span>            :                    CEREAL_NVP(e) );
+<span class="lineNum">     106 </span>            :         }
+<span class="lineNum">     107 </span>            :       };
+<span class="lineNum">     108 </span>            :       @endcode
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            :       There is a slight amount of overhead to creating NameValuePairs, so there
+<span class="lineNum">     111 </span>            :       is a third method which will elide the names when they are not needed by
+<span class="lineNum">     112 </span>            :       the Archive:
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            :       @code{.cpp}
+<span class="lineNum">     115 </span>            :       struct MyStruct
+<span class="lineNum">     116 </span>            :       {
+<span class="lineNum">     117 </span>            :         int a, b;
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span>            :         template&lt;class Archive&gt;
+<span class="lineNum">     120 </span>            :         void serialize(Archive &amp; archive)
+<span class="lineNum">     121 </span>            :         {
+<span class="lineNum">     122 </span>            :           archive( cereal::make_nvp&lt;Archive&gt;(a),
+<span class="lineNum">     123 </span>            :                    cereal::make_nvp&lt;Archive&gt;(b) );
+<span class="lineNum">     124 </span>            :         }
+<span class="lineNum">     125 </span>            :       };
+<span class="lineNum">     126 </span>            :       @endcode
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            :       This third method is generally only used when providing generic type
+<span class="lineNum">     129 </span>            :       support.  Users writing their own serialize functions will normally
+<span class="lineNum">     130 </span>            :       explicitly control whether they want to use NVPs or not.
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :       @internal */
+<span class="lineNum">     133 </span>            :   template &lt;class T&gt;
+<span class="lineNum">     134 </span>            :   class NameValuePair : detail::NameValuePairCore
+<span class="lineNum">     135 </span>            :   {
+<span class="lineNum">     136 </span>            :     private:
+<span class="lineNum">     137 </span>            :       // If we get passed an RValue, we'll just make a local copy if it here
+<span class="lineNum">     138 </span>            :       // otherwise, we store a reference.  If we were passed an array, don't
+<span class="lineNum">     139 </span>            :       // decay the type - keep it as an array, and then proceed as normal
+<span class="lineNum">     140 </span>            :       // with the RValue business
+<span class="lineNum">     141 </span>            :       using DT = typename std::conditional&lt;std::is_array&lt;typename std::remove_reference&lt;T&gt;::type&gt;::value,
+<span class="lineNum">     142 </span>            :                                            typename std::remove_cv&lt;T&gt;::type,
+<span class="lineNum">     143 </span>            :                                            typename std::decay&lt;T&gt;::type&gt;::type;
+<span class="lineNum">     144 </span>            :       using Type = typename std::conditional&lt;std::is_rvalue_reference&lt;T&gt;::value,
+<span class="lineNum">     145 </span>            :                                              DT,
+<span class="lineNum">     146 </span>            :                                              typename std::add_lvalue_reference&lt;DT&gt;::type&gt;::type;
+<span class="lineNum">     147 </span>            :       // prevent nested nvps
+<span class="lineNum">     148 </span>            :       static_assert( !std::is_base_of&lt;detail::NameValuePairCore, T&gt;::value,
+<span class="lineNum">     149 </span>            :                      &quot;Cannot pair a name to a NameValuePair&quot; );
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :     public:
+<span class="lineNum">     152 </span>            :       //! Constructs a new NameValuePair
+<span class="lineNum">     153 </span>            :       /*! @param n The name of the pair
+<span class="lineNum">     154 </span>            :           @param v The value to pair.  Ideally this should be an l-value reference so that
+<span class="lineNum">     155 </span>            :                    the value can be both loaded and saved to.  If you pass an r-value reference,
+<span class="lineNum">     156 </span>            :                    the NameValuePair will store a copy of it instead of a reference.  Thus you should
+<span class="lineNum">     157 </span>            :                    only pass r-values in cases where this makes sense, such as the result of some
+<a name="158"><span class="lineNum">     158 </span>            :                    size() call.  In either case, any constness will be stripped away</a>
+<span class="lineNum">     159 </span>            :       @internal */
+<span class="lineNum">     160 </span><span class="lineCov">    8461152 :       NameValuePair( char const * n, T &amp;&amp; v ) : name(n), value(const_cast&lt;Type&gt;(v)) {}</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :       char const * name;
+<span class="lineNum">     163 </span>            :       Type value;
+<span class="lineNum">     164 </span>            :   };
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span>            :   //! A specialization of make_nvp&lt;&gt; that simply forwards the value for binary archives
+<span class="lineNum">     167 </span>            :   /*! @relates NameValuePair
+<span class="lineNum">     168 </span>            :       @internal */
+<span class="lineNum">     169 </span>            :   template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     170 </span>            :   typename
+<span class="lineNum">     171 </span>            :   std::enable_if&lt;std::is_same&lt;Archive, ::cereal::BinaryInputArchive&gt;::value ||
+<a name="172"><span class="lineNum">     172 </span>            :                  std::is_same&lt;Archive, ::cereal::BinaryOutputArchive&gt;::value,</a>
+<span class="lineNum">     173 </span>            :   T &amp;&amp; &gt;::type
+<span class="lineNum">     174 </span><span class="lineCov">    2817120 :   make_nvp( const char *, T &amp;&amp; value )</span>
+<span class="lineNum">     175 </span>            :   {
+<span class="lineNum">     176 </span><span class="lineCov">    2817120 :     return std::forward&lt;T&gt;(value);</span>
+<span class="lineNum">     177 </span>            :   }
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :   //! A specialization of make_nvp&lt;&gt; that actually creates an nvp for non-binary archives
+<span class="lineNum">     180 </span>            :   /*! @relates NameValuePair
+<span class="lineNum">     181 </span>            :       @internal */
+<span class="lineNum">     182 </span>            :   template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     183 </span>            :   typename
+<span class="lineNum">     184 </span>            :   std::enable_if&lt;!std::is_same&lt;Archive, ::cereal::BinaryInputArchive&gt;::value &amp;&amp;
+<a name="185"><span class="lineNum">     185 </span>            :                  !std::is_same&lt;Archive, ::cereal::BinaryOutputArchive&gt;::value,</a>
+<span class="lineNum">     186 </span>            :   NameValuePair&lt;T&gt; &gt;::type
+<span class="lineNum">     187 </span><span class="lineCov">    8453952 :   make_nvp( const char * name, T &amp;&amp; value)</span>
+<span class="lineNum">     188 </span>            :   {
+<span class="lineNum">     189 </span><span class="lineCov">    8453952 :     return {name, std::forward&lt;T&gt;(value)};</span>
+<span class="lineNum">     190 </span>            :   }
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span>            :   //! Convenience for creating a templated NVP
+<span class="lineNum">     193 </span>            :   /*! For use in inteneral generic typing functions which have an
+<span class="lineNum">     194 </span>            :       Archive type declared
+<span class="lineNum">     195 </span>            :       @internal */
+<span class="lineNum">     196 </span>            : #define _CEREAL_NVP(name, value) ::cereal::make_nvp&lt;Archive&gt;(name, value)
+<span class="lineNum">     197 </span>            : 
+<span class="lineNum">     198 </span>            :   // ######################################################################
+<span class="lineNum">     199 </span>            :   //! A wrapper around data that can be serialized in a binary fashion
+<span class="lineNum">     200 </span>            :   /*! This class is used to demarcate data that can safely be serialized
+<span class="lineNum">     201 </span>            :       as a binary chunk of data.  Individual archives can then choose how
+<span class="lineNum">     202 </span>            :       best represent this during serialization.
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span>            :       @internal */
+<span class="lineNum">     205 </span>            :   template &lt;class T&gt;
+<span class="lineNum">     206 </span>            :   struct BinaryData
+<span class="lineNum">     207 </span>            :   {
+<span class="lineNum">     208 </span>            :     //! Internally store the pointer as a void *, keeping const if created with
+<span class="lineNum">     209 </span>            :     //! a const pointer
+<span class="lineNum">     210 </span>            :     using PT = typename std::conditional&lt;std::is_const&lt;typename std::remove_pointer&lt;T&gt;::type&gt;::value,
+<span class="lineNum">     211 </span>            :                                          const void *,
+<a name="212"><span class="lineNum">     212 </span>            :                                          void *&gt;::type;</a>
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span><span class="lineCov">     489206 :     BinaryData( T &amp;&amp; d, uint64_t s ) : data(d), size(s) {}</span>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            :     PT data;   //!&lt; pointer to beginning of data
+<span class="lineNum">     217 </span>            :     uint64_t size; //!&lt; size in bytes
+<span class="lineNum">     218 </span>            :   };
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span>            :   // ######################################################################
+<span class="lineNum">     221 </span>            :   namespace detail
+<a name="222"><span class="lineNum">     222 </span>            :   {</a>
+<a name="223"><span class="lineNum">     223 </span>            :     // base classes for type checking</a>
+<span class="lineNum">     224 </span><span class="lineCov">      26200 :     struct OutputArchiveBase {};</span>
+<span class="lineNum">     225 </span><span class="lineCov">      26200 :     struct InputArchiveBase {};</span>
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span>            :     // forward decls for polymorphic support
+<span class="lineNum">     228 </span>            :     template &lt;class Archive, class T&gt; struct polymorphic_serialization_support;
+<span class="lineNum">     229 </span>            :     struct adl_tag;
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :     // used during saving pointers
+<span class="lineNum">     232 </span>            :     static const int32_t msb_32bit = 0x80000000;
+<span class="lineNum">     233 </span>            :     static const int32_t msb2_32bit = 0x40000000;
+<span class="lineNum">     234 </span>            :   }
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span>            :   // ######################################################################
+<span class="lineNum">     237 </span>            :   //! A wrapper around size metadata
+<span class="lineNum">     238 </span>            :   /*! This class provides a way for archives to have more flexibility over how
+<span class="lineNum">     239 </span>            :       they choose to serialize size metadata for containers.  For some archive
+<span class="lineNum">     240 </span>            :       types, the size may be implicitly encoded in the output (e.g. JSON) and
+<span class="lineNum">     241 </span>            :       not need an explicit entry.  Specializing serialize or load/save for
+<span class="lineNum">     242 </span>            :       your archive and SizeTags allows you to choose what happens.
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :       @internal */
+<span class="lineNum">     245 </span>            :   template &lt;class T&gt;
+<span class="lineNum">     246 </span>            :   class SizeTag
+<span class="lineNum">     247 </span>            :   {
+<span class="lineNum">     248 </span>            :     private:
+<span class="lineNum">     249 </span>            :       // If we get passed an RValue, we'll just make a local copy if it here
+<span class="lineNum">     250 </span>            :       // otherwise, we store a reference
+<span class="lineNum">     251 </span>            :       using DT = typename std::decay&lt;T&gt;::type;
+<span class="lineNum">     252 </span>            :       using Type = typename std::conditional&lt;std::is_rvalue_reference&lt;T&gt;::value,
+<span class="lineNum">     253 </span>            :                                              DT,
+<span class="lineNum">     254 </span>            :                                              typename std::add_lvalue_reference&lt;DT&gt;::type&gt;::type;
+<a name="255"><span class="lineNum">     255 </span>            : </a>
+<span class="lineNum">     256 </span>            :     public:
+<span class="lineNum">     257 </span><span class="lineCov">     633206 :       SizeTag( T &amp;&amp; sz ) : size(const_cast&lt;Type&gt;(sz)) {}</span>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span>            :       Type size;
+<span class="lineNum">     260 </span>            :   };
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span>            :   // ######################################################################
+<span class="lineNum">     263 </span>            :   //! A wrapper around a key and value for serializing data into maps.
+<span class="lineNum">     264 </span>            :   /*! This class just provides a grouping of keys and values into a struct for
+<span class="lineNum">     265 </span>            :       human readable archives. For example, XML archives will use this wrapper
+<span class="lineNum">     266 </span>            :       to write maps like so:
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :       @code{.xml}
+<span class="lineNum">     269 </span>            :       &lt;mymap&gt;
+<span class="lineNum">     270 </span>            :         &lt;item0&gt;
+<span class="lineNum">     271 </span>            :           &lt;key&gt;MyFirstKey&lt;/key&gt;
+<span class="lineNum">     272 </span>            :           &lt;value&gt;MyFirstValue&lt;/value&gt;
+<span class="lineNum">     273 </span>            :         &lt;/item0&gt;
+<span class="lineNum">     274 </span>            :         &lt;item1&gt;
+<span class="lineNum">     275 </span>            :           &lt;key&gt;MySecondKey&lt;/key&gt;
+<span class="lineNum">     276 </span>            :           &lt;value&gt;MySecondValue&lt;/value&gt;
+<span class="lineNum">     277 </span>            :         &lt;/item1&gt;
+<span class="lineNum">     278 </span>            :       &lt;/mymap&gt;
+<span class="lineNum">     279 </span>            :       @endcode
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            :       \sa make_map_item
+<span class="lineNum">     282 </span>            :       @internal */
+<span class="lineNum">     283 </span>            :   template &lt;class Key, class Value&gt;
+<span class="lineNum">     284 </span>            :   struct MapItem
+<span class="lineNum">     285 </span>            :   {
+<span class="lineNum">     286 </span>            :     using DecayKey = typename std::decay&lt;Key&gt;::type;
+<span class="lineNum">     287 </span>            :     using KeyType = typename std::conditional&lt;
+<span class="lineNum">     288 </span>            :       std::is_rvalue_reference&lt;Key&gt;::value,
+<span class="lineNum">     289 </span>            :       DecayKey,
+<span class="lineNum">     290 </span>            :       typename std::add_lvalue_reference&lt;DecayKey&gt;::type&gt;::type;
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            :     using DecayValue = typename std::decay&lt;Value&gt;::type;
+<span class="lineNum">     293 </span>            :     using ValueType =  typename std::conditional&lt;
+<span class="lineNum">     294 </span>            :       std::is_rvalue_reference&lt;Value&gt;::value,
+<span class="lineNum">     295 </span>            :       DecayValue,
+<span class="lineNum">     296 </span>            :       typename std::add_lvalue_reference&lt;DecayValue&gt;::type&gt;::type;
+<span class="lineNum">     297 </span>            : 
+<a name="298"><span class="lineNum">     298 </span>            :     //! Construct a MapItem from a key and a value</a>
+<span class="lineNum">     299 </span>            :     /*! @internal */
+<span class="lineNum">     300 </span><span class="lineCov">    5080736 :     MapItem( Key &amp;&amp; key_, Value &amp;&amp; value_ ) : key(const_cast&lt;KeyType&gt;(key_)), value(const_cast&lt;ValueType&gt;(value_)) {}</span>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :     KeyType key;
+<span class="lineNum">     303 </span>            :     ValueType value;
+<span class="lineNum">     304 </span>            : 
+<a name="305"><span class="lineNum">     305 </span>            :     //! Serialize the MapItem with the NVPs &quot;key&quot; and &quot;value&quot;</a>
+<span class="lineNum">     306 </span>            :     template &lt;class Archive&gt; inline
+<span class="lineNum">     307 </span><span class="lineCov">    5080736 :     void serialize(Archive &amp; archive)</span>
+<span class="lineNum">     308 </span>            :     {
+<span class="lineNum">     309 </span><span class="lineCov">   10161472 :       archive( make_nvp&lt;Archive&gt;(&quot;key&quot;,   key),</span>
+<span class="lineNum">     310 </span><span class="lineCov">   13972148 :                make_nvp&lt;Archive&gt;(&quot;value&quot;, value) );</span>
+<span class="lineNum">     311 </span><span class="lineCov">    5080736 :     }</span>
+<span class="lineNum">     312 </span>            :   };
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :   //! Create a MapItem so that human readable archives will group keys and values together
+<span class="lineNum">     315 </span>            :   /*! @internal
+<a name="316"><span class="lineNum">     316 </span>            :       @relates MapItem */</a>
+<span class="lineNum">     317 </span>            :   template &lt;class KeyType, class ValueType&gt; inline
+<span class="lineNum">     318 </span><span class="lineCov">    5080736 :   MapItem&lt;KeyType, ValueType&gt; make_map_item(KeyType &amp;&amp; key, ValueType &amp;&amp; value)</span>
+<span class="lineNum">     319 </span>            :   {
+<span class="lineNum">     320 </span><span class="lineCov">    5080736 :     return {std::forward&lt;KeyType&gt;(key), std::forward&lt;ValueType&gt;(value)};</span>
+<span class="lineNum">     321 </span>            :   }
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            :   namespace detail
+<span class="lineNum">     324 </span>            :   {
+<a name="325"><span class="lineNum">     325 </span>            :     // ######################################################################</a>
+<span class="lineNum">     326 </span>            :     //! Holds all registered version information
+<span class="lineNum">     327 </span><span class="lineCov">          2 :     struct Versions</span>
+<span class="lineNum">     328 </span>            :     {
+<span class="lineNum">     329 </span>            :       std::unordered_map&lt;std::size_t, std::uint32_t&gt; mapping;
+<span class="lineNum">     330 </span>            :     }; // struct Versions
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :     //! Version information class
+<span class="lineNum">     333 </span>            :     /*! This is the base case for classes that have not been explicitly
+<span class="lineNum">     334 </span>            :         registered */
+<span class="lineNum">     335 </span>            :     template &lt;class T&gt; struct Version
+<span class="lineNum">     336 </span>            :     {
+<span class="lineNum">     337 </span>            :       static const std::uint32_t version = 0;
+<span class="lineNum">     338 </span>            :       // we don't need to explicitly register these types since they
+<span class="lineNum">     339 </span>            :       // always get a version number of 0
+<span class="lineNum">     340 </span>            :     };
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span>            :     #ifdef CEREAL_FUTURE_EXPERIMENTAL
+<span class="lineNum">     343 </span>            :     // ######################################################################
+<span class="lineNum">     344 </span>            :     //! A class that can store any type
+<span class="lineNum">     345 </span>            :     /*! This is inspired by boost::any and is intended to be a very light-weight
+<span class="lineNum">     346 </span>            :         replacement for internal use only.
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span>            :         This class is only here as a candidate for issue #46 (see github) and
+<span class="lineNum">     349 </span>            :         should be considered unsupported until a future version of cereal.
+<span class="lineNum">     350 </span>            :         */
+<span class="lineNum">     351 </span>            :     class Any
+<span class="lineNum">     352 </span>            :     {
+<span class="lineNum">     353 </span>            :       private:
+<span class="lineNum">     354 </span>            :         //! Convenience alias for decay
+<span class="lineNum">     355 </span>            :         template &lt;class T&gt;
+<span class="lineNum">     356 </span>            :         using ST = typename std::decay&lt;T&gt;::type;
+<span class="lineNum">     357 </span>            : 
+<span class="lineNum">     358 </span>            :         struct Base
+<span class="lineNum">     359 </span>            :         {
+<span class="lineNum">     360 </span>            :           virtual ~Base() {}
+<span class="lineNum">     361 </span>            :           virtual std::unique_ptr&lt;Base&gt; clone() const = 0;
+<span class="lineNum">     362 </span>            :         };
+<span class="lineNum">     363 </span>            : 
+<span class="lineNum">     364 </span>            :         template &lt;class T&gt;
+<span class="lineNum">     365 </span>            :         struct Derived : Base
+<span class="lineNum">     366 </span>            :         {
+<span class="lineNum">     367 </span>            :           template &lt;class U&gt;
+<span class="lineNum">     368 </span>            :           Derived( U &amp;&amp; data ) : value( std::forward&lt;U&gt;( data ) ) {}
+<span class="lineNum">     369 </span>            : 
+<span class="lineNum">     370 </span>            :           std::unique_ptr&lt;Base&gt; clone() const
+<span class="lineNum">     371 </span>            :           {
+<span class="lineNum">     372 </span>            :             return std::unique_ptr&lt;Base&gt;( new Derived&lt;T&gt;( value ) );
+<span class="lineNum">     373 </span>            :           }
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span>            :           T value;
+<span class="lineNum">     376 </span>            :         };
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span>            :       public:
+<span class="lineNum">     379 </span>            :         //! Construct from any type
+<span class="lineNum">     380 </span>            :         template &lt;class T&gt; inline
+<span class="lineNum">     381 </span>            :         Any( T &amp;&amp; data ) :
+<span class="lineNum">     382 </span>            :           itsPtr( new Derived&lt;ST&lt;T&gt;&gt;( std::forward&lt;T&gt;( data ) ) )
+<span class="lineNum">     383 </span>            :         { }
+<span class="lineNum">     384 </span>            : 
+<span class="lineNum">     385 </span>            :         //! Convert to any type, if possible
+<span class="lineNum">     386 </span>            :         /*! Attempts to perform the conversion if possible,
+<span class="lineNum">     387 </span>            :             otherwise throws an exception.
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            :             @throw Exception if conversion is not possible (see get() for more info)
+<span class="lineNum">     390 </span>            :             @tparam The requested type to convert to */
+<span class="lineNum">     391 </span>            :         template &lt;class T&gt; inline
+<span class="lineNum">     392 </span>            :         operator T()
+<span class="lineNum">     393 </span>            :         {
+<span class="lineNum">     394 </span>            :           return get&lt;ST&lt;T&gt;&gt;();
+<span class="lineNum">     395 </span>            :         }
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span>            :         Any() : itsPtr() {}
+<span class="lineNum">     398 </span>            :         Any( Any &amp; other ) : itsPtr( other.clone() ) {}
+<span class="lineNum">     399 </span>            :         Any( Any const &amp; other ) : itsPtr( other.clone() ) {}
+<span class="lineNum">     400 </span>            :         Any( Any &amp;&amp; other ) : itsPtr( std::move( other.itsPtr ) ) {}
+<span class="lineNum">     401 </span>            : 
+<span class="lineNum">     402 </span>            :         Any &amp; operator=( Any const &amp; other )
+<span class="lineNum">     403 </span>            :         {
+<span class="lineNum">     404 </span>            :           if( itsPtr == other.itsPtr ) return *this;
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span>            :           auto cloned = other.clone();
+<span class="lineNum">     407 </span>            :           itsPtr = std::move( cloned );
+<span class="lineNum">     408 </span>            : 
+<span class="lineNum">     409 </span>            :           return *this;
+<span class="lineNum">     410 </span>            :         }
+<span class="lineNum">     411 </span>            : 
+<span class="lineNum">     412 </span>            :         Any &amp; operator=( Any &amp;&amp; other )
+<span class="lineNum">     413 </span>            :         {
+<span class="lineNum">     414 </span>            :           if( itsPtr == other.itsPtr ) return *this;
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span>            :           itsPtr = std::move( other.itsPtr );
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span>            :           return *this;
+<span class="lineNum">     419 </span>            :         }
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span>            :       protected:
+<span class="lineNum">     422 </span>            :         //! Get the contained type as type T
+<span class="lineNum">     423 </span>            :         /*! @tparam T The requested type to convert to
+<span class="lineNum">     424 </span>            :             @return The type converted to T
+<span class="lineNum">     425 </span>            :             @throw Exception if conversion is impossible */
+<span class="lineNum">     426 </span>            :         template &lt;class T&gt;
+<span class="lineNum">     427 </span>            :         ST&lt;T&gt; &amp; get()
+<span class="lineNum">     428 </span>            :         {
+<span class="lineNum">     429 </span>            :           auto * derived = dynamic_cast&lt;Derived&lt;ST&lt;T&gt;&gt; *&gt;( itsPtr.get() );
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span>            :           if( !derived )
+<span class="lineNum">     432 </span>            :             throw ::cereal::Exception( &quot;Invalid conversion requested on ASDFA&quot; );
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span>            :           return derived-&gt;value;
+<span class="lineNum">     435 </span>            :         }
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span>            :         //! Clones the held data if it exists
+<span class="lineNum">     438 </span>            :         std::unique_ptr&lt;Base&gt; clone() const
+<span class="lineNum">     439 </span>            :         {
+<span class="lineNum">     440 </span>            :           if( itsPtr ) return itsPtr-&gt;clone();
+<span class="lineNum">     441 </span>            :           else return {};
+<span class="lineNum">     442 </span>            :         }
+<span class="lineNum">     443 </span>            : 
+<span class="lineNum">     444 </span>            :       private:
+<span class="lineNum">     445 </span>            :         std::unique_ptr&lt;Base&gt; itsPtr;
+<span class="lineNum">     446 </span>            :     }; // struct Any
+<span class="lineNum">     447 </span>            :     #endif // CEREAL_FUTURE_EXPERIMENTAL
+<span class="lineNum">     448 </span>            :   } // namespace detail
+<span class="lineNum">     449 </span>            : } // namespace cereal
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span>            : #endif // CEREAL_DETAILS_HELPERS_HPP_
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

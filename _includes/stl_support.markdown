@@ -1,7 +1,7 @@
 Standard Library Support
 ========================
 
-cereal supports most of the containers found in the C++ standard library out of the box.
+cereal supports most of the containers and classes found in the C++ standard library out of the box.
 
 ---
 
@@ -110,6 +110,9 @@ which will produce the following JSON:
     }
 }
 ```
+
+If you find yourself attempting to serialize a standard library type and receiving compile time errors about cereal
+being unable to find an appropriate serialization function, you have likely forgotten to include the type support.
 
 More information on the archives and functions used in the above example can be found in the [serialization
 functions](serialization_functions.html) and [serialization archives](serialization_archives.html) sections of the
