@@ -65,6 +65,11 @@ int main()
 }
 ```    
 
+### cereal has a mailing list
+
+Either get in touch over <a href="mailto:cerealcpp@googlegroups.com">email</a> or [on the web](https://groups.google.com/forum/#!forum/cerealcpp).
+
+
 
 ## cereal has a permissive license
 
