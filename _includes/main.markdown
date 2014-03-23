@@ -13,6 +13,9 @@ easily bundled with other code or used standalone.
 <span class="label label-inverse">1.0.0 is here!</span>
 We are pleased to announce that [cereal v1.0.0](https://github.com/USCiLab/cereal/releases/tag/v1.0.0) is available.
 
+<span class="label label-inverse">mailing list</span>
+We now have a mailing list! <a href="mailto:cerealcpp@googlegroups.com">Email</a> or [on the web](https://groups.google.com/forum/#!forum/cerealcpp).
+
 ---
 
 ## xCEREAL comes with full support for C++11
