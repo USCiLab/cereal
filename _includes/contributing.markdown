@@ -5,7 +5,8 @@ cereal is open source software developed with an open mindset.  If you have sugg
 you would like to see, we would love to hear from you.  We're especialy enamored with people who have the technical ability to implement their suggestions in code.
 
 Check out our [GitHub](https://github.com/USCiLab/cereal) page to see the latest changes, open issues, or discuss ideas
-with other users.
+with other users.  You can also check out the [mailing list](https://groups.google.com/forum/#!forum/cerealcpp), which
+is probably better for discussion.
 
 ### Contributing code to cereal
 
