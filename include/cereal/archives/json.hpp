@@ -605,12 +605,14 @@ namespace cereal
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       
       //! Loads a value from the current node - 64-bit unsigned long overload
-      typename std::enable_if<sizeof(unsigned long) == sizeof(uint64_t), void>::type
+      typename std::enable_if<(sizeof(unsigned long) == sizeof(uint64_t)) &&
+                              !std::is_same<unsigned long, uint64_t>::value, void>::type
         loadValue(unsigned long & val)
         { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
 
       //! Loads a value from the current node - 64-bit long overload
-      typename std::enable_if<sizeof(long) == sizeof(int64_t), void>::type
+      typename std::enable_if<sizeof(long) == sizeof(int64_t) &&
+                              !std::is_same<long, int64_t>::value, void>::type
         loadValue(long & val)
         { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
 
