@@ -604,15 +604,15 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       
-      ////! Loads a value from the current node - 64-bit unsigned long overload
-      //typename std::enable_if<sizeof(unsigned long) == sizeof(uint64_t), void>::type
-      //  loadValue(unsigned long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
+      //! Loads a value from the current node - 64-bit unsigned long overload
+      typename std::enable_if<sizeof(unsigned long) == sizeof(uint64_t), void>::type
+        loadValue(unsigned long & val)
+        { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
 
-      ////! Loads a value from the current node - 64-bit long overload
-      //typename std::enable_if<sizeof(long) == sizeof(int64_t), void>::type
-      //  loadValue(long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
+      //! Loads a value from the current node - 64-bit long overload
+      typename std::enable_if<sizeof(long) == sizeof(int64_t), void>::type
+        loadValue(long & val)
+        { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
 
 
     private:
