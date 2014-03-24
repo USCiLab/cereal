@@ -604,17 +604,18 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       
-      //! Loads a value from the current node - 64-bit unsigned long overload
-      typename std::enable_if<(sizeof(unsigned long) == sizeof(uint64_t)) &&
-                              !std::is_same<unsigned long, uint64_t>::value, void>::type
-        loadValue(unsigned long & val)
-        { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
+      //// TODO: This allows compilation on OS X (clang 3.3/libc++ as well as g++-4.9/libstdc++), but breaks compilation on Ubuntu.
+      ////! Loads a value from the current node - 64-bit unsigned long overload
+      //typename std::enable_if<(sizeof(unsigned long) == sizeof(uint64_t)) &&
+      //                        !std::is_same<unsigned long, uint64_t>::value, void>::type
+      //  loadValue(unsigned long & val)
+      //  { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
 
-      //! Loads a value from the current node - 64-bit long overload
-      typename std::enable_if<sizeof(long) == sizeof(int64_t) &&
-                              !std::is_same<long, int64_t>::value, void>::type
-        loadValue(long & val)
-        { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
+      ////! Loads a value from the current node - 64-bit long overload
+      //typename std::enable_if<(sizeof(long) == sizeof(int64_t)) &&
+      //                        !std::is_same<long, int64_t>::value, void>::type
+      //  loadValue(long & val)
+      //  { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
 
 
     private:
