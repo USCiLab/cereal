@@ -1,8 +1,7 @@
-/*! \file tuple.hpp
-    \brief Support for types found in \<tuple\>
-    \ingroup STLSupport */
+/*! \file macros.hpp
+    \brief Preprocessor macros that can customise the cereal library */
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2013, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -27,46 +26,28 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_TUPLE_HPP_
-#define CEREAL_TYPES_TUPLE_HPP_
+#ifndef CEREAL_MACROS_HPP_
+#define CEREAL_MACROS_HPP_
 
-#include <cereal/cereal.hpp>
-#include <tuple>
+#ifndef CEREAL_SERIALIZE_FUNCTION_NAME
+//! The serialization/deserialization function name to search for.
+/*! You can define @c CEREAL_SERIALIZE_FUNCTION_NAME to be different assuming
+    you do so before this file is included. */
+#define CEREAL_SERIALIZE_FUNCTION_NAME serialize
+#endif // CEREAL_SERIALIZE_FUNCTION_NAME
 
-namespace cereal
-{
-  namespace tuple_detail
-  {
-    // unwinds a tuple to save it
-    //! @internal
-    template <size_t Height>
-    struct serialize
-    {
-      template <class Archive, class ... Types> inline
-      static void apply( Archive & ar, std::tuple<Types...> & tuple )
-      {
-        ar( _CEREAL_NVP("tuple_element", std::get<Height - 1>( tuple )) );
-        serialize<Height - 1>::template apply( ar, tuple );
-      }
-    };
+#ifndef CEREAL_LOAD_FUNCTION_NAME
+//! The deserialization function name to search for.
+/*! You can define @c CEREAL_LOAD_FUNCTION_NAME to be different assuming you do so
+    before this file is included. */
+#define CEREAL_LOAD_FUNCTION_NAME load
+#endif // CEREAL_LOAD_FUNCTION_NAME
 
-    // Zero height specialization - nothing to do here
-    //! @internal
-    template <>
-    struct serialize<0>
-    {
-      template <class Archive, class ... Types> inline
-      static void apply( Archive &, std::tuple<Types...> & )
-      { }
-    };
-  }
+#ifndef CEREAL_SAVE_FUNCTION_NAME
+//! The serialization function name to search for.
+/*! You can define @c CEREAL_SAVE_FUNCTION_NAME to be different assuming you do so
+    before this file is included. */
+#define CEREAL_SAVE_FUNCTION_NAME save
+#endif // CEREAL_SAVE_FUNCTION_NAME
 
-  //! Serializing for std::tuple
-  template <class Archive, class ... Types> inline
-  void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::tuple<Types...> & tuple )
-  {
-    tuple_detail::serialize<std::tuple_size<std::tuple<Types...>>::value>::template apply( ar, tuple );
-  }
-} // namespace cereal
-
-#endif // CEREAL_TYPES_TUPLE_HPP_
+#endif // CEREAL_MACROS_HPP_

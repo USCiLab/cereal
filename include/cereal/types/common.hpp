@@ -107,7 +107,7 @@ namespace cereal
   //! Serialization for raw pointers
   /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */
   template <class Archive, class T> inline
-  void serialize( Archive &, T * & )
+  void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &, T * & )
   {
     static_assert(cereal::traits::detail::delay_static_assert<T>::value,
       "Cereal does not support serializing raw pointers - please use a smart pointer");
@@ -116,7 +116,7 @@ namespace cereal
   //! Serialization for C style arrays
   template <class Archive, class T> inline
   typename std::enable_if<std::is_array<T>::value, void>::type
-  serialize(Archive & ar, T & array)
+  CEREAL_SERIALIZE_FUNCTION_NAME(Archive & ar, T & array)
   {
     common_detail::serializeArray( ar, array,
         std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>::value &&

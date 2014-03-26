@@ -58,14 +58,14 @@ namespace cereal
 
   //! Saving for std::stack
   template <class Archive, class T, class C> inline
-  void save( Archive & ar, std::stack<T, C> const & stack )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::stack<T, C> const & stack )
   {
     ar( _CEREAL_NVP("container", stack_detail::container( stack )) );
   }
 
   //! Loading for std::stack
   template <class Archive, class T, class C> inline
-  void load( Archive & ar, std::stack<T, C> & stack )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::stack<T, C> & stack )
   {
     C container;
     ar( _CEREAL_NVP("container", container) );

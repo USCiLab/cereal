@@ -763,7 +763,7 @@ namespace cereal
 
   //! Saving NVP types to XML
   template <class T> inline
-  void save( XMLOutputArchive & ar, NameValuePair<T> const & t )
+  void CEREAL_SAVE_FUNCTION_NAME( XMLOutputArchive & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
@@ -771,7 +771,7 @@ namespace cereal
 
   //! Loading NVP types from XML
   template <class T> inline
-  void load( XMLInputArchive & ar, NameValuePair<T> & t )
+  void CEREAL_LOAD_FUNCTION_NAME( XMLInputArchive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
@@ -780,12 +780,12 @@ namespace cereal
   // ######################################################################
   //! Saving SizeTags to XML
   template <class T> inline
-  void save( XMLOutputArchive &, SizeTag<T> const & )
+  void CEREAL_SAVE_FUNCTION_NAME( XMLOutputArchive &, SizeTag<T> const & )
   { }
 
   //! Loading SizeTags from XML
   template <class T> inline
-  void load( XMLInputArchive & ar, SizeTag<T> & st )
+  void CEREAL_LOAD_FUNCTION_NAME( XMLInputArchive & ar, SizeTag<T> & st )
   {
     ar.loadSize( st.size );
   }
@@ -794,7 +794,7 @@ namespace cereal
   //! Saving for POD types to xml
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(XMLOutputArchive & ar, T const & t)
+  CEREAL_SAVE_FUNCTION_NAME(XMLOutputArchive & ar, T const & t)
   {
     ar.saveValue( t );
   }
@@ -802,7 +802,7 @@ namespace cereal
   //! Loading for POD types from xml
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(XMLInputArchive & ar, T & t)
+  CEREAL_LOAD_FUNCTION_NAME(XMLInputArchive & ar, T & t)
   {
     ar.loadValue( t );
   }
@@ -810,14 +810,14 @@ namespace cereal
   // ######################################################################
   //! saving string to xml
   template<class CharT, class Traits, class Alloc> inline
-  void save(XMLOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  void CEREAL_SAVE_FUNCTION_NAME(XMLOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     ar.saveValue( str );
   }
 
   //! loading string from xml
   template<class CharT, class Traits, class Alloc> inline
-  void load(XMLInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
+  void CEREAL_LOAD_FUNCTION_NAME(XMLInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
     ar.loadValue( str );
   }
