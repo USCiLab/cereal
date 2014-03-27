@@ -90,8 +90,9 @@ namespace cereal
 
   //! Saving for enum types
   template <class Archive, class T> inline
-  typename std::enable_if<common_detail::is_enum<T>::value, typename common_detail::is_enum<T>::base_type>::type
-  save_minimal( Archive const &, T const & t )
+  typename std::enable_if<common_detail::is_enum<T>::value,
+                          typename common_detail::is_enum<T>::base_type>::type
+  CEREAL_SAVE_MINIMAL_FUNCTION_NAME( Archive const &, T const & t )
   {
     return static_cast<typename common_detail::is_enum<T>::base_type>(t);
   }
@@ -99,7 +100,8 @@ namespace cereal
   //! Loading for enum types
   template <class Archive, class T> inline
   typename std::enable_if<common_detail::is_enum<T>::value, void>::type
-  load_minimal( Archive const &, T && t, typename common_detail::is_enum<T>::base_type const & value )
+  CEREAL_LOAD_MINIMAL_FUNCTION_NAME( Archive const &, T && t,
+                                     typename common_detail::is_enum<T>::base_type const & value )
   {
     t = reinterpret_cast<typename common_detail::is_enum<T>::type const &>( value );
   }

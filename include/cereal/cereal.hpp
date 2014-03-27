@@ -420,7 +420,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        self->process( save_minimal(*self, t) );
+        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t) );
         return *self;
       }
 
@@ -544,7 +544,7 @@ namespace cereal
       processImpl(T const & t)
       {
         registerClassVersion<T>( detail::Version<T>::version );
-        self->process( save_minimal(*self, t, detail::Version<T>::version) );
+        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t, detail::Version<T>::version) );
         return *self;
       }
 
@@ -804,7 +804,7 @@ namespace cereal
       {
         typename traits::has_non_member_save_minimal<T, ArchiveType>::type value;
         self->process( value );
-        load_minimal(*self, t, value);
+        CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value);
         return *self;
       }
 
@@ -941,7 +941,7 @@ namespace cereal
         const auto version = loadClassVersion<T>();
         typename traits::has_non_member_versioned_save_minimal<T, ArchiveType>::type value;
         self->process(value);
-        load_minimal(*self, t, value, version);
+        CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value, version);
         return *self;
       }
 
