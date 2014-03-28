@@ -227,7 +227,8 @@ namespace cereal
         itsOS << value << std::ends;
 
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        const std::string s = itsOS.str();
+        auto dataPtr = itsXML.allocate_string( s.c_str() );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
