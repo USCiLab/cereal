@@ -74,12 +74,12 @@ BOOST_AUTO_TEST_CASE( portable_binary_string )
   test_concatenation<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
-#if 0
 BOOST_AUTO_TEST_CASE( xml_string_basic )
 {
   test_concatenation<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
+#if 0
 BOOST_AUTO_TEST_CASE( json_string_basic )
 {
   test_concatenation<cereal::JSONInputArchive, cereal::JSONOutputArchive>();

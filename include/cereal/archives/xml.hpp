@@ -362,18 +362,42 @@ namespace cereal
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
       XMLInputArchive( std::istream & stream ) :
-        InputArchive<XMLInputArchive>( this ),
-        itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
+        InputArchive<XMLInputArchive>( this )
       {
-        try
+        bool valid = false;
+        std::string line, document;
+
+        while (!valid && stream)
         {
-          itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          // Read until we get an empty line - this may indicate that the document has ended
+          while (getline(stream, line))
+          {
+            document += line + '\n';
+            if (line.empty())
+              break;
+          }
+
+	  // Set this as the document data
+          // Make a fresh copy every time, because RapidXml parsing is destructive
+          itsData.clear();
+          itsData.reserve(document.length() + 1);
+          itsData.insert(itsData.begin(), document.cbegin(), document.cend());
+          itsData.push_back('\0');
+
+          // If the line is empty, this may indicate the document has ended, if so try and parse it
+          try
+          {
+            itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>(
+              reinterpret_cast<char *>(itsData.data()) );
+            valid = true;
+          }
+          catch( rapidxml::parse_error const & )
+          {
+          }
         }
-        catch( rapidxml::parse_error const & )
-        {
+
+        if (!valid)
           throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
-        }
 
         // Parse the root
         auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
