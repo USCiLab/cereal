@@ -637,7 +637,7 @@ namespace cereal
 
     private:
       std::string itsNextName;                //!< Next name set by NVP
-      ReadStream itsReadStream;               //!< Rapidjson write stream
+      ReadStream itsReadStream;               //!< Rapidjson read stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
