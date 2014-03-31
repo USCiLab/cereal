@@ -143,7 +143,7 @@ namespace cereal
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, options.itsPrecision),
-        itsNextName(nullptr)
+        itsNextName()
       {
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
@@ -215,7 +215,7 @@ namespace cereal
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsNextName = name;
+        itsNextName = name ? std::string(name) : std::string();
       }
 
       //! Saves a bool to the current node
@@ -327,7 +327,7 @@ namespace cereal
         // Array types do not output names
         if(nodeType == NodeType::InArray) return;
 
-        if(itsNextName == nullptr)
+        if(itsNextName.empty())
         {
           std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
           saveValue(name);
@@ -335,7 +335,7 @@ namespace cereal
         else
         {
           saveValue(itsNextName);
-          itsNextName = nullptr;
+          itsNextName.clear();
         }
       }
 
@@ -350,7 +350,7 @@ namespace cereal
     private:
       WriteStream itsWriteStream;          //!< Rapidjson write stream
       JSONWriter itsWriter;                //!< Rapidjson writer
-      char const * itsNextName;            //!< The next name
+      std::string itsNextName;             //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
   }; // JSONOutputArchive
