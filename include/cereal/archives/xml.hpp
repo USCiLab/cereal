@@ -278,12 +278,12 @@ namespace cereal
                   const char * nm = nullptr ) :
           node( n ),
           counter( 0 ),
-          name( nm )
+          name( nm ? std::string(nm) : std::string() )
         { }
 
         rapidxml::xml_node<> * node; //!< A pointer to this node
         size_t counter;              //!< The counter for naming child nodes
-        const char * name;           //!< The name for the next child node
+        std::string name;            //!< The name for the next child node
 
         //! Gets the name for the next child node created from this node
         /*! The name will be automatically generated using the counter if
@@ -291,10 +291,10 @@ namespace cereal
             set, that name will be returned only once */
         std::string getValueName()
         {
-          if( name )
+          if( !name.empty() )
           {
             auto n = name;
-            name = nullptr;
+            name = std::string();
             return {n};
           }
           else
