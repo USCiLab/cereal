@@ -433,12 +433,12 @@ namespace cereal
       void startNode()
       {
         auto next = itsNodes.top().child; // By default we would move to the next child node
-        auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
+        const std::string &expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
 
         // If we were given an NVP name, look for it in the current level of the document.
         //    We only need to do this if either we have exhausted the siblings of the current level or
         //    the NVP name does not match the name of the node we would normally read next
-        if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
+        if( !expectedName.empty() && ( next == nullptr || expectedName != next->name() ) )
         {
           next = itsNodes.top().search( expectedName );
 
@@ -459,13 +459,13 @@ namespace cereal
         itsNodes.top().advance();
 
         // Reset name
-        itsNodes.top().name = nullptr;
+        itsNodes.top().name.clear();
       }
 
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsNodes.top().name = name;
+        itsNodes.top().name = name ? std::string(name) : std::string();
       }
 
       //! Loads a bool from the current top node
@@ -611,7 +611,7 @@ namespace cereal
           node( n ),
           child( n->first_node() ),
           size( XMLInputArchive::getNumChildren( n ) ),
-          name( nullptr )
+          name()
         { }
 
         //! Advances to the next sibling node of the child
@@ -626,18 +626,19 @@ namespace cereal
         }
 
         //! Searches for a child with the given name in this node
-        /*! @param searchName The name to search for (must be null terminated)
+        /*! @param searchName The name to search for
             @return The node if found, nullptr otherwise */
-        rapidxml::xml_node<> * search( const char * searchName )
+        rapidxml::xml_node<> * search( const std::string &searchName )
         {
-          if( searchName )
+          if( !searchName.empty() )
           {
             size_t new_size = XMLInputArchive::getNumChildren( node );
-            const size_t name_size = rapidxml::internal::measure( searchName );
+            const size_t name_size = rapidxml::internal::measure( searchName.c_str() );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
             {
-              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), searchName, name_size, true ) )
+              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(),
+                searchName.c_str(), name_size, true ) )
               {
                 size = new_size;
                 child = new_child;
@@ -654,7 +655,7 @@ namespace cereal
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
         size_t size;                  //!< The remaining number of children for this node
-        const char * name;            //!< The NVP name for next next child node
+        std::string name;             //!< The NVP name for next next child node
       }; // NodeInfo
 
       //! @}
