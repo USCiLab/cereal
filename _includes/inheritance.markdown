@@ -21,13 +21,12 @@ When inheriting from objects without using virtual inheritance (e.g. `struct Der
 struct Base
 {
   int x;
-  // Note the non-member serialize - trying to call serialize
-  // from a derived class wouldn't work
+  
+  template <class Archive>
+  void serialize( Archive & ar )
+  { ar( x ); }
 };
 
-template <class Archive>
-void serialize( Archive & ar, Base & b )
-{ ar( b.x ); }
 
 struct Derived : public Base
 {
