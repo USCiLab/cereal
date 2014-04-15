@@ -204,7 +204,7 @@ namespace cereal
   //! Saving std::shared_ptr for polymorphic types, abstract
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value && std::is_abstract<T>::value, void>::type
-  save( Archive & ar, std::shared_ptr<T> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     if(!ptr)
     {
@@ -230,7 +230,7 @@ namespace cereal
   //! Saving std::shared_ptr for polymorphic types, not abstract
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value && !std::is_abstract<T>::value, void>::type
-  save( Archive & ar, std::shared_ptr<T> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> const & ptr )
   {
     if(!ptr)
     {
@@ -265,7 +265,7 @@ namespace cereal
   //! Loading std::shared_ptr for polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::shared_ptr<T> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> & ptr )
   {
     std::uint32_t nameid;
     ar( _CEREAL_NVP("polymorphic_id", nameid) );
@@ -283,7 +283,7 @@ namespace cereal
   //! Saving std::weak_ptr for polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
-  save( Archive & ar, std::weak_ptr<T> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto const sptr = ptr.lock();
     ar( _CEREAL_NVP("locked_ptr", sptr) );
@@ -292,7 +292,7 @@ namespace cereal
   //! Loading std::weak_ptr for polymorphic types
   template <class Archive, class T> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::weak_ptr<T> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
     ar( _CEREAL_NVP("locked_ptr", sptr) );
@@ -302,7 +302,7 @@ namespace cereal
   //! Saving std::unique_ptr for polymorphic types that are abstract
   template <class Archive, class T, class D> inline
   typename std::enable_if<std::is_polymorphic<T>::value && std::is_abstract<T>::value, void>::type
-  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     if(!ptr)
     {
@@ -328,7 +328,7 @@ namespace cereal
   //! Saving std::unique_ptr for polymorphic types, not abstract
   template <class Archive, class T, class D> inline
   typename std::enable_if<std::is_polymorphic<T>::value && !std::is_abstract<T>::value, void>::type
-  save( Archive & ar, std::unique_ptr<T, D> const & ptr )
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> const & ptr )
   {
     if(!ptr)
     {
@@ -363,7 +363,7 @@ namespace cereal
   //! Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types
   template <class Archive, class T, class D> inline
   typename std::enable_if<std::is_polymorphic<T>::value, void>::type
-  load( Archive & ar, std::unique_ptr<T, D> & ptr )
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     std::uint32_t nameid;
     ar( _CEREAL_NVP("polymorphic_id", nameid) );

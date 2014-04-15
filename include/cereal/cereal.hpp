@@ -39,6 +39,7 @@
 #include <cstdint>
 #include <functional>
 
+#include <cereal/macros.hpp>
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
 #include <cereal/types/base_class.hpp>
@@ -375,7 +376,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        serialize(*self, const_cast<T &>(t));
+        CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast<T &>(t));
         return *self;
       }
 
@@ -397,7 +398,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        save(*self, t);
+        CEREAL_SAVE_FUNCTION_NAME(*self, t);
         return *self;
       }
 
@@ -419,7 +420,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T const & t)
       {
-        self->process( save_minimal(*self, t) );
+        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t) );
         return *self;
       }
 
@@ -491,7 +492,7 @@ namespace cereal
       processImpl(T const & t)
       {
         registerClassVersion<T>( detail::Version<T>::version );
-        serialize(*self, const_cast<T &>(t), detail::Version<T>::version);
+        CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast<T &>(t), detail::Version<T>::version);
         return *self;
       }
 
@@ -517,7 +518,7 @@ namespace cereal
       processImpl(T const & t)
       {
         registerClassVersion<T>( detail::Version<T>::version );
-        save(*self, t, detail::Version<T>::version);
+        CEREAL_SAVE_FUNCTION_NAME(*self, t, detail::Version<T>::version);
         return *self;
       }
 
@@ -543,7 +544,7 @@ namespace cereal
       processImpl(T const & t)
       {
         registerClassVersion<T>( detail::Version<T>::version );
-        self->process( save_minimal(*self, t, detail::Version<T>::version) );
+        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t, detail::Version<T>::version) );
         return *self;
       }
 
@@ -755,7 +756,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        serialize(*self, t);
+        CEREAL_SERIALIZE_FUNCTION_NAME(*self, t);
         return *self;
       }
 
@@ -777,7 +778,7 @@ namespace cereal
                               ArchiveType &>::type
       processImpl(T & t)
       {
-        load(*self, t);
+        CEREAL_LOAD_FUNCTION_NAME(*self, t);
         return *self;
       }
 
@@ -803,7 +804,7 @@ namespace cereal
       {
         typename traits::has_non_member_save_minimal<T, ArchiveType>::type value;
         self->process( value );
-        load_minimal(*self, t, value);
+        CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value);
         return *self;
       }
 
@@ -884,7 +885,7 @@ namespace cereal
       processImpl(T & t)
       {
         const auto version = loadClassVersion<T>();
-        serialize(*self, t, version);
+        CEREAL_SERIALIZE_FUNCTION_NAME(*self, t, version);
         return *self;
       }
 
@@ -910,7 +911,7 @@ namespace cereal
       processImpl(T & t)
       {
         const auto version = loadClassVersion<T>();
-        load(*self, t, version);
+        CEREAL_LOAD_FUNCTION_NAME(*self, t, version);
         return *self;
       }
 
@@ -940,7 +941,7 @@ namespace cereal
         const auto version = loadClassVersion<T>();
         typename traits::has_non_member_versioned_save_minimal<T, ArchiveType>::type value;
         self->process(value);
-        load_minimal(*self, t, value, version);
+        CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value, version);
         return *self;
       }
 

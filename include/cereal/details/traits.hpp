@@ -39,6 +39,7 @@
 #include <type_traits>
 #include <typeindex>
 
+#include <cereal/macros.hpp>
 #include <cereal/access.hpp>
 
 namespace cereal
@@ -90,14 +91,14 @@ namespace cereal
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper non-member function for the given archive. */
-    #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(name)                                                                                  \
+    #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(name, func)                                                                            \
     namespace detail                                                                                                               \
     {                                                                                                                              \
       template <class T, class A>                                                                                                  \
       struct has_non_member_##name##_impl                                                                                          \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>() ), yes());                               \
+        static auto test(int) -> decltype( func( std::declval<AA&>(), std::declval<TT&>() ), yes());                               \
         template <class, class>                                                                                                    \
         static no test( ... );                                                                                                     \
         static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
@@ -137,14 +138,14 @@ namespace cereal
     //! Creates a test for whether a non const non-member function exists with a version parameter
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper non-member function for the given archive. */
-    #define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(name)                                                                        \
+    #define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(name, func)                                                                  \
     namespace detail                                                                                                               \
     {                                                                                                                              \
       template <class T, class A>                                                                                                  \
       struct has_non_member_versioned_##name##_impl                                                                                \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( name( std::declval<AA&>(), std::declval<TT&>(), 0 ), yes());                            \
+        static auto test(int) -> decltype( func( std::declval<AA&>(), std::declval<TT&>(), 0 ), yes());                            \
         template <class, class>                                                                                                    \
         static no test( ... );                                                                                                     \
         static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
@@ -182,11 +183,11 @@ namespace cereal
 
     // ######################################################################
     // Non Member Serialize
-    CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize, CEREAL_SERIALIZE_FUNCTION_NAME);
 
     // ######################################################################
     // Non Member Serialize (versioned)
-    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize);
+    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize, CEREAL_SERIALIZE_FUNCTION_NAME);
 
     // ######################################################################
     // Member Load
@@ -198,11 +199,11 @@ namespace cereal
 
     // ######################################################################
     // Non Member Load
-    CEREAL_MAKE_HAS_NON_MEMBER_TEST(load);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(load, CEREAL_LOAD_FUNCTION_NAME);
 
     // ######################################################################
     // Non Member Load (versioned)
-    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load);
+    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load, CEREAL_LOAD_FUNCTION_NAME);
 
     // ######################################################################
     // Member Save
@@ -304,13 +305,13 @@ namespace cereal
       struct has_non_member_save_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save( std::declval<AA&>(), std::declval<TT const &>() ), yes());
+        static auto test(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME( std::declval<AA&>(), std::declval<TT const &>() ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
+        static auto test2(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -334,13 +335,13 @@ namespace cereal
       struct has_non_member_versioned_save_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
+        static auto test(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        static auto test2(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -504,13 +505,13 @@ namespace cereal
       struct has_non_member_save_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<TT const &>() ), yes());
+        static auto test(int) -> decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT const &>() ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
+        static auto test2(int) -> decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -524,7 +525,7 @@ namespace cereal
       template <class T, class A>
       struct get_non_member_save_minimal_type <T, A, true>
       {
-        using type = decltype( save_minimal( std::declval<A const &>(), std::declval<T const &>() ) );
+        using type = decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<A const &>(), std::declval<T const &>() ) );
       };
     } // end namespace detail
 
@@ -550,13 +551,13 @@ namespace cereal
       struct has_non_member_versioned_save_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<TT const &>(), 0 ), yes());
+        static auto test(int) -> decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT const &>(), 0 ), yes());
         template <class, class>
         static no test(...);
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
 
         template <class TT, class AA>
-        static auto test2(int) -> decltype( save_minimal( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
+        static auto test2(int) -> decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
         template <class, class>
         static no test2(...);
         static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
@@ -570,7 +571,7 @@ namespace cereal
       template <class T, class A>
       struct get_non_member_versioned_save_minimal_type <T, A, true>
       {
-        using type = decltype( save_minimal( std::declval<A const &>(), std::declval<T const &>(), 0 ) );
+        using type = decltype( CEREAL_SAVE_MINIMAL_FUNCTION_NAME( std::declval<A const &>(), std::declval<T const &>(), 0 ) );
       };
     } // end namespace detail
 
@@ -777,8 +778,8 @@ namespace cereal
     namespace detail
     {
       #ifdef CEREAL_OLDER_GCC
-      void load_minimal(); // prevents nonsense complaining about not finding this
-      void save_minimal();
+      void CEREAL_LOAD_MINIMAL_FUNCTION_NAME(); // prevents nonsense complaining about not finding this
+      void CEREAL_SAVE_MINIMAL_FUNCTION_NAME();
       #endif // CEREAL_OLDER_GCC
 
       // See notes from member load_minimal
@@ -786,19 +787,19 @@ namespace cereal
       struct has_non_member_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() ), yes() );
+        static auto test(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() ), yes() );
         template <class, class>
         static no test( ... );
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
+        static auto test2(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
 
         template <class TT, class AA>
-        static auto test3(int) -> decltype( load_minimal( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert() ), yes() );
+        static auto test3(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert() ), yes() );
         template <class, class>
         static no test3( ... );
         static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
@@ -838,19 +839,19 @@ namespace cereal
       struct has_non_member_versioned_load_minimal_impl
       {
         template <class TT, class AA>
-        static auto test(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert(), 0 ), yes() );
+        static auto test(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert(), 0 ), yes() );
         template <class, class>
         static no test( ... );
         static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
 
         template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( load_minimal( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
+        static auto test2(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
         template <class, class, class>
         static no test2( ... );
         static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
 
         template <class TT, class AA>
-        static auto test3(int) -> decltype( load_minimal( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
+        static auto test3(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
         template <class, class>
         static no test3( ... );
         static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;

@@ -63,7 +63,7 @@ namespace cereal
 
   //! Serializing for std::tuple
   template <class Archive, class ... Types> inline
-  void serialize( Archive & ar, std::tuple<Types...> & tuple )
+  void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::tuple<Types...> & tuple )
   {
     tuple_detail::serialize<std::tuple_size<std::tuple<Types...>>::value>::template apply( ar, tuple );
   }

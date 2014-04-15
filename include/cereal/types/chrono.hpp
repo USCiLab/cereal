@@ -36,14 +36,14 @@ namespace cereal
 {
   //! Saving std::chrono::duration
   template <class Archive, class R, class P> inline
-  void save( Archive & ar, std::chrono::duration<R, P> const & dur )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::chrono::duration<R, P> const & dur )
   {
     ar( _CEREAL_NVP("count", dur.count()) );
   }
 
   //! Loading std::chrono::duration
   template <class Archive, class R, class P> inline
-  void load( Archive & ar, std::chrono::duration<R, P> & dur )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::chrono::duration<R, P> & dur )
   {
     R count;
     ar( _CEREAL_NVP("count", count) );
@@ -53,14 +53,14 @@ namespace cereal
 
   //! Saving std::chrono::time_point
   template <class Archive, class C, class D> inline
-  void save( Archive & ar, std::chrono::time_point<C, D> const & dur )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::chrono::time_point<C, D> const & dur )
   {
     ar( _CEREAL_NVP("time_since_epoch", dur.time_since_epoch()) );
   }
 
   //! Loading std::chrono::time_point
   template <class Archive, class C, class D> inline
-  void load( Archive & ar, std::chrono::time_point<C, D> & dur )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::chrono::time_point<C, D> & dur )
   {
     D elapsed;
     ar( _CEREAL_NVP("time_since_epoch", elapsed) );

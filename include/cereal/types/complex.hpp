@@ -36,7 +36,7 @@ namespace cereal
 {
   //! Serializing (save) for std::complex
   template <class Archive, class T> inline
-  void save( Archive & ar, std::complex<T> const & comp )
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::complex<T> const & comp )
   {
     ar( _CEREAL_NVP("real", comp.real()),
         _CEREAL_NVP("imag", comp.imag()) );
@@ -44,7 +44,7 @@ namespace cereal
 
   //! Serializing (load) for std::complex
   template <class Archive, class T> inline
-  void load( Archive & ar, std::complex<T> & bits )
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::complex<T> & bits )
   {
     T real, imag;
     ar( _CEREAL_NVP("real", real),
