@@ -51,15 +51,103 @@ namespace cereal
 
     namespace detail
     {
+      // ######################################################################
       //! Used to delay a static_assert until template instantiation
       template <class T>
       struct delay_static_assert : std::false_type {};
 
+      // ######################################################################
+      // SFINAE Helpers
       #ifdef CEREAL_OLDER_GCC // when VS supports better SFINAE, we can use this as the default
       template<typename> struct Void { typedef void type; };
       #endif // CEREAL_OLDER_GCC
+
+      //! Return type for SFINAE Enablers
+      enum class sfinae {};
+
+      // ######################################################################
+      // Helper functionality for boolean integral constants and Enable/DisableIf
+      template <bool H, bool ... T> struct meta_bool_and : std::integral_constant<bool, H && meta_bool_and<T...>::value> {};
+      template <bool B> struct meta_bool_and<B> : std::integral_constant<bool, B> {};
+
+      template <bool H, bool ... T> struct meta_bool_or : std::integral_constant<bool, H || meta_bool_or<T...>::value> {};
+      template <bool B> struct meta_bool_or<B> : std::integral_constant<bool, B> {};
+
+      // workaround needed due to bug in MSVC 2013, see
+      // http://connect.microsoft.com/VisualStudio/feedback/details/800231/c-11-alias-template-issue
+      template <bool ... Conditions>
+      struct EnableIfHelper : std::enable_if<meta_bool_and<Conditions...>::value, sfinae> {};
+
+      template <bool ... Conditions>
+      struct DisableIfHelper : std::enable_if<!meta_bool_or<Conditions...>::value, sfinae> {};
     } // namespace detail
 
+    //! Used as the default value for EnableIf and DisableIf template parameters
+    /*! @relates EnableIf
+        @relates DisableIf */
+    static const detail::sfinae sfinae = {};
+
+    // ######################################################################
+    //! Provides a way to enable a function if conditions are met
+    /*! This is intended to be used in a near identical fashion to std::enable_if
+        while being significantly easier to read at the cost of not allowing for as
+        complicated of a condition.
+
+        This will compile (allow the function) if every condition evaluates to true.
+        at compile time.  This should be used with SFINAE to ensure that at least
+        one other candidate function works when one fails due to an EnableIf.
+
+        This should be used as the las template parameter to a function as
+        an unnamed parameter with a default value of cereal::traits::sfinae:
+
+        @code{cpp}
+        // using by making the last template argument variadic
+        template <class T, EnableIf<std::is_same<T, bool>::value> = sfinae>
+        void func(T t );
+        @endcode
+
+        Note that this performs a logical AND of all conditions, so you will need
+        to construct more complicated requirements with this fact in mind.
+
+        @relates DisableIf
+        @relates sfinae
+        @tparam Conditions The conditions which will be logically ANDed to enable the function. */
+    template <bool ... Conditions>
+    using EnableIf = typename detail::EnableIfHelper<Conditions...>::type;
+
+    // ######################################################################
+    //! Provides a way to disable a function if conditions are met
+    /*! This is intended to be used in a near identical fashion to std::enable_if
+        while being significantly easier to read at the cost of not allowing for as
+        complicated of a condition.
+
+        This will compile (allow the function) if every condition evaluates to false.
+        This should be used with SFINAE to ensure that at least one other candidate
+        function works when one fails due to a DisableIf.
+
+        This should be used as the las template parameter to a function as
+        an unnamed parameter with a default value of cereal::traits::sfinae:
+
+        @code{cpp}
+        // using by making the last template argument variadic
+        template <class T, DisableIf<std::is_same<T, bool>::value> = sfinae>
+        void func(T t );
+        @endcode
+
+        This is often used in conjunction with EnableIf to form an enable/disable pair of
+        overloads.
+
+        Note that this performs a logical AND of all conditions, so you will need
+        to construct more complicated requirements with this fact in mind.  If all conditions
+        hold, the function will be disabled.
+
+        @relates EnableIf
+        @relates sfinae
+        @tparam Conditions The conditions which will be logically ANDed to disable the function. */
+    template <bool ... Conditions>
+    using DisableIf = typename detail::DisableIfHelper<Conditions...>::type;
+
+    // ######################################################################
     //! Creates a test for whether a non const member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
@@ -951,31 +1039,22 @@ namespace cereal
     // ######################################################################
     namespace detail
     {
-      template <class T, class A>
-      struct is_specialized_member_serialize : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::member_serialize>>::value> {};
+      //! Create a test for a cereal::specialization entry
+      #define CEREAL_MAKE_IS_SPECIALIZED_IMPL(name)                                          \
+      template <class T, class A>                                                            \
+      struct is_specialized_##name : std::integral_constant<bool,                            \
+        !std::is_base_of<std::false_type, specialize<A, T, specialization::name>>::value> {}
 
-      template <class T, class A>
-      struct is_specialized_member_load_save : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save>>::value> {};
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_serialize);
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save);
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save_minimal);
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_serialize);
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save);
+      CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save_minimal);
 
-      template <class T, class A>
-      struct is_specialized_member_load_save_minimal : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::member_load_save_minimal>>::value> {};
+      #undef CEREAL_MAKE_IS_SPECIALIZED_IMPL
 
-      template <class T, class A>
-      struct is_specialized_non_member_serialize : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_serialize>>::value> {};
-
-      template <class T, class A>
-      struct is_specialized_non_member_load_save : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_load_save>>::value> {};
-
-      template <class T, class A>
-      struct is_specialized_non_member_load_save_minimal : std::integral_constant<bool,
-        !std::is_base_of<std::false_type, specialize<A, T, specialization::non_member_load_save_minimal>>::value> {};
-
-      // Considered an error if specialization exists for more than one type
+      //! Considered an error if specialization exists for more than one type
       template <class T, class A>
       struct is_specialized_error : std::integral_constant<bool,
         (is_specialized_member_serialize<T, A>::value +
@@ -986,6 +1065,7 @@ namespace cereal
          is_specialized_non_member_load_save_minimal<T, A>::value) <= 1> {};
     } // namespace detail
 
+    //! Check if any specialization exists for a type
     template <class T, class A>
     struct is_specialized : std::integral_constant<bool,
       detail::is_specialized_member_serialize<T, A>::value ||
@@ -998,105 +1078,43 @@ namespace cereal
       static_assert(detail::is_specialized_error<T, A>::value, "More than one explicit specialization detected for type.");
     };
 
-    template <class T, class A>
-    struct is_specialized_member_serialize : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value &&
-                     (has_member_serialize<T, A>::value || has_member_versioned_serialize<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_member_serialize<T, A>::value),
-                     "cereal detected member serialization specialization but no member serialize function" );
-    };
+    //! Create the static assertion for some specialization
+    /*! This assertion will fail if the type is indeed specialized and does not have the appropriate
+        type of serialization functions */
+    #define CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, print_name, spec_name)                      \
+    static_assert( (is_specialized<T, A>::value && detail::is_specialized_##spec_name<T, A>::value &&           \
+                   (has_##name<T, A>::value || has_##versioned_name<T, A>::value))                              \
+                   || !(is_specialized<T, A>::value && detail::is_specialized_##spec_name<T, A>::value),        \
+                   "cereal detected " #print_name " specialization but no " #print_name " serialize function" )
 
-    template <class T, class A>
-    struct is_specialized_member_load : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value &&
-                     (has_member_load<T, A>::value || has_member_versioned_load<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value),
-                     "cereal detected member load specialization but no member load function" );
-    };
+    //! Generates a test for specialization for versioned and unversioned functions
+    /*! This creates checks that can be queried to see if a given type of serialization function
+        has been specialized for this type */
+    #define CEREAL_MAKE_IS_SPECIALIZED(name, versioned_name, spec_name)                     \
+    template <class T, class A>                                                             \
+    struct is_specialized_##name : std::integral_constant<bool,                             \
+      is_specialized<T, A>::value && detail::is_specialized_##spec_name<T, A>::value>       \
+    { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, name, spec_name); };          \
+    template <class T, class A>                                                             \
+    struct is_specialized_##versioned_name : std::integral_constant<bool,                   \
+      is_specialized<T, A>::value && detail::is_specialized_##spec_name<T, A>::value>       \
+    { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, versioned_name, spec_name); }
 
-    template <class T, class A>
-    struct is_specialized_member_save : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value &&
-                     (has_member_save<T, A>::value || has_member_versioned_save<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save<T, A>::value),
-                     "cereal detected member save specialization but no member save function" );
-    };
+    CEREAL_MAKE_IS_SPECIALIZED(member_serialize, member_versioned_serialize, member_serialize);
+    CEREAL_MAKE_IS_SPECIALIZED(non_member_serialize, non_member_versioned_serialize, non_member_serialize);
 
-    template <class T, class A>
-    struct is_specialized_member_load_minimal : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value &&
-                     (has_member_load_minimal<T, A>::value || has_member_versioned_load_minimal<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value),
-                     "cereal detected member load_minimal specialization but no member load_minimal function" );
-    };
+    CEREAL_MAKE_IS_SPECIALIZED(member_save, member_versioned_save, member_load_save);
+    CEREAL_MAKE_IS_SPECIALIZED(non_member_save, non_member_versioned_save, non_member_load_save);
+    CEREAL_MAKE_IS_SPECIALIZED(member_load, member_versioned_load, member_load_save);
+    CEREAL_MAKE_IS_SPECIALIZED(non_member_load, non_member_versioned_load, non_member_load_save);
 
-    template <class T, class A>
-    struct is_specialized_member_save_minimal : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value &&
-                     (has_member_save_minimal<T, A>::value || has_member_versioned_save_minimal<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_member_load_save_minimal<T, A>::value),
-                     "cereal detected member save_minimal specialization but no member save_minimal function" );
-    };
+    CEREAL_MAKE_IS_SPECIALIZED(member_save_minimal, member_versioned_save_minimal, member_load_save_minimal);
+    CEREAL_MAKE_IS_SPECIALIZED(non_member_save_minimal, non_member_versioned_save_minimal, non_member_load_save_minimal);
+    CEREAL_MAKE_IS_SPECIALIZED(member_load_minimal, member_versioned_load_minimal, member_load_save_minimal);
+    CEREAL_MAKE_IS_SPECIALIZED(non_member_load_minimal, non_member_versioned_load_minimal, non_member_load_save_minimal);
 
-    template <class T, class A>
-    struct is_specialized_non_member_serialize : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value &&
-                     (has_non_member_serialize<T, A>::value || has_non_member_versioned_serialize<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_serialize<T, A>::value),
-                     "cereal detected non-member serialization specialization but no non-member serialize function" );
-    };
-
-    template <class T, class A>
-    struct is_specialized_non_member_load : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value &&
-                     (has_non_member_load<T, A>::value || has_non_member_versioned_load<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
-                     "cereal detected non-member load specialization but no non-member load function" );
-    };
-
-    template <class T, class A>
-    struct is_specialized_non_member_save : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value &&
-                     (has_non_member_save<T, A>::value || has_non_member_versioned_save<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save<T, A>::value),
-                     "cereal detected non-member save specialization but no non-member save function" );
-    };
-
-    template <class T, class A>
-    struct is_specialized_non_member_load_minimal : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value &&
-                     (has_non_member_load_minimal<T, A>::value || has_non_member_versioned_load_minimal<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value),
-                     "cereal detected non-member load specialization but no non-member load function" );
-    };
-
-    template <class T, class A>
-    struct is_specialized_non_member_save_minimal : std::integral_constant<bool,
-      is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value>
-    {
-      static_assert( (is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value &&
-                     (has_non_member_save_minimal<T, A>::value || has_non_member_versioned_save_minimal<T, A>::value))
-                     || !(is_specialized<T, A>::value && detail::is_specialized_non_member_load_save_minimal<T, A>::value),
-                     "cereal detected non-member save specialization but no non-member save function" );
-    };
+    #undef CEREAL_MAKE_IS_SPECIALIZED_ASSERT
+    #undef CEREAL_MAKE_IS_SPECIALIZED
 
     // ######################################################################
     // detects if a type has any active minimal output serialization

@@ -11,7 +11,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 
   add_executable(portability_test64 portability_test.cpp)
 
-  add_test(NAME portability_test COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/run_portability_test.sh")
+  add_test(NAME portability_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_portability_test.sh)
 
 endif()
 
@@ -48,13 +48,13 @@ endforeach()
 
 # Add the valgrind target
 add_custom_target(valgrind
-  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/run_valgrind.sh")
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_valgrind.sh)
 
 # Add the coverage target
 add_custom_target(coverage)
 add_custom_command(TARGET coverage
-  COMMAND "${CMAKE_SOURCE_DIR}/scripts/updatecoverage.sh" ${CMAKE_SOURCE_DIR}
-  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/coverage")
+  COMMAND ${CMAKE_SOURCE_DIR}/scripts/updatecoverage.sh ${CMAKE_SOURCE_DIR}
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
 
 # add tests to coverage
 foreach(TEST_SOURCE ${TESTS})
@@ -67,7 +67,7 @@ foreach(TEST_SOURCE ${TESTS})
   if(IS_SPECIAL_TEST EQUAL -1)
     add_dependencies(coverage ${COVERAGE_TARGET})
     
-    add_executable(${COVERAGE_TARGET} ${TEST_SOURCE})
+    add_executable(${COVERAGE_TARGET} EXCLUDE_FROM_ALL ${TEST_SOURCE})
     set_target_properties(${COVERAGE_TARGET} PROPERTIES COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${COVERAGE_TARGET}")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES COMPILE_FLAGS "-coverage")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES LINK_FLAGS "-coverage")
