@@ -601,19 +601,41 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
-      //// TODO: This allows compilation on OS X (clang 3.3/libc++ as well as g++-4.9/libstdc++), but breaks compilation on Ubuntu.
-      ////! Loads a value from the current node - 64-bit unsigned long overload
-      //typename std::enable_if<(sizeof(unsigned long) == sizeof(uint64_t)) &&
-      //                        !std::is_same<unsigned long, uint64_t>::value, void>::type
-      //  loadValue(unsigned long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
+    private:
+      //! 32 bit signed long loading from current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
+      loadLong(T & l){ loadValue( reinterpret_cast<std::int32_t&>( l ) ); }
 
-      ////! Loads a value from the current node - 64-bit long overload
-      //typename std::enable_if<(sizeof(long) == sizeof(int64_t)) &&
-      //                        !std::is_same<long, int64_t>::value, void>::type
-      //  loadValue(long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
+      //! non 32 bit signed long loading from current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::int64_t) && std::is_signed<T>::value, void>::type
+      loadLong(T & l){ loadValue( reinterpret_cast<std::int64_t&>( l ) ); }
 
+      //! 32 bit unsigned long loading from current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
+      loadLong(T & lu){ loadValue( reinterpret_cast<std::uint32_t&>( lu ) ); }
+
+      //! non 32 bit unsigned long loading from current node
+      template <class T> inline
+      typename std::enable_if<sizeof(T) == sizeof(std::uint64_t) && !std::is_signed<T>::value, void>::type
+      loadLong(T & lu){ loadValue( reinterpret_cast<std::uint64_t&>( lu ) ); }
+
+    public:
+      //! Serialize a long if it would not be caught otherwise
+      template <class T> inline
+      typename std::enable_if<std::is_same<T, long>::value &&
+                              !std::is_same<T, std::int32_t>::value &&
+                              !std::is_same<T, std::int64_t>::value, void>::type
+      loadValue( T & t ){ loadLong(t); }
+
+      //! Serialize an unsigned long if it would not be caught otherwise
+      template <class T> inline
+      typename std::enable_if<std::is_same<T, unsigned long>::value &&
+                              !std::is_same<T, std::uint32_t>::value &&
+                              !std::is_same<T, std::uint64_t>::value, void>::type
+      loadValue( T & t ){ loadLong(t); }
 
     private:
       //! Convert a string to a long long
