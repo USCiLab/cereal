@@ -605,7 +605,6 @@ namespace cereal
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
     private:
-      
       //! 32 bit signed long loading from current node
       template <class T> inline
       typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
@@ -627,7 +626,6 @@ namespace cereal
       loadLong(T & lu){ loadValue( reinterpret_cast<std::uint64_t&>( lu ) ); }
 
     public:
-
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, long>::value &&
@@ -641,21 +639,6 @@ namespace cereal
                               !std::is_same<T, std::uint32_t>::value &&
                               !std::is_same<T, std::uint64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
-      
-      
-      //// TODO: This allows compilation on OS X (clang 3.3/libc++ as well as g++-4.9/libstdc++), but breaks compilation on Ubuntu.
-      ////! Loads a value from the current node - 64-bit unsigned long overload
-      //typename std::enable_if<(sizeof(unsigned long) == sizeof(uint64_t)) &&
-      //                        !std::is_same<unsigned long, uint64_t>::value, void>::type
-      //  loadValue(unsigned long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
-
-      ////! Loads a value from the current node - 64-bit long overload
-      //typename std::enable_if<(sizeof(long) == sizeof(int64_t)) &&
-      //                        !std::is_same<long, int64_t>::value, void>::type
-      //  loadValue(long & val)
-      //  { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
-
 
     private:
       //! Convert a string to a long long
