@@ -247,15 +247,14 @@ namespace cereal
   class SizeTag
   {
     private:
-      // If we get passed an RValue, we'll just make a local copy if it here
-      // otherwise, we store a reference
-      using DT = typename std::decay<T>::type;
-      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
-                                             DT,
-                                             typename std::add_lvalue_reference<DT>::type>::type;
+      // Store a reference if passed an lvalue reference, otherwise
+      // make a copy of the data
+      using Type = typename std::conditional<std::is_lvalue_reference<T>::value,
+                                             T,
+                                             typename std::decay<T>::type>::type;
 
     public:
-      SizeTag( T && sz ) : size(const_cast<Type>(sz)) {}
+      SizeTag( T && sz ) : size(sz) {}
 
       Type size;
   };
@@ -284,21 +283,19 @@ namespace cereal
   template <class Key, class Value>
   struct MapItem
   {
-    using DecayKey = typename std::decay<Key>::type;
     using KeyType = typename std::conditional<
-      std::is_rvalue_reference<Key>::value,
-      DecayKey,
-      typename std::add_lvalue_reference<DecayKey>::type>::type;
+      std::is_lvalue_reference<Key>::value,
+      Key,
+      typename std::decay<Key>::type>::type;
 
-    using DecayValue = typename std::decay<Value>::type;
-    using ValueType =  typename std::conditional<
-      std::is_rvalue_reference<Value>::value,
-      DecayValue,
-      typename std::add_lvalue_reference<DecayValue>::type>::type;
+    using ValueType = typename std::conditional<
+      std::is_lvalue_reference<Value>::value,
+      Value,
+      typename std::decay<Value>::type>::type;
 
     //! Construct a MapItem from a key and a value
     /*! @internal */
-    MapItem( Key && key_, Value && value_ ) : key(const_cast<KeyType>(key_)), value(const_cast<ValueType>(value_)) {}
+    MapItem( Key && key_, Value && value_ ) : key(key_), value(value_) {}
 
     KeyType key;
     ValueType value;
