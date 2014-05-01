@@ -54,8 +54,8 @@ namespace cereal
   // ######################################################################
   //! The size type used by cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
-   * a fixed size type instead of size_t, which may vary from machine to
-   * machine. */
+      a fixed size type instead of size_t, which may vary from machine to
+      machine. */
   using size_type = uint64_t;
 
   // forward decls
@@ -109,7 +109,7 @@ namespace cereal
       @endcode
 
       There is a slight amount of overhead to creating NameValuePairs, so there
-      is a third method which will elide the names when they are not needed by
+      is a third method which will elide the names when they are not used by
       the Archive:
 
       @code{.cpp}
@@ -154,10 +154,9 @@ namespace cereal
                    the value can be both loaded and saved to.  If you pass an r-value reference,
                    the NameValuePair will store a copy of it instead of a reference.  Thus you should
                    only pass r-values in cases where this makes sense, such as the result of some
-                   size() call.  In either case, any constness will be stripped away
-      @internal */
-      //NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
-      NameValuePair( char const * n, T && v ) : name(n), value(v) {}
+                   size() call.
+          @internal */
+      NameValuePair( char const * n, T && v ) : name(n), value(std::forward<T>(v)) {}
 
       char const * name;
       Type value;
@@ -193,7 +192,7 @@ namespace cereal
   /*! For use in inteneral generic typing functions which have an
       Archive type declared
       @internal */
-#define _CEREAL_NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
+  #define _CEREAL_NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion
@@ -211,9 +210,9 @@ namespace cereal
                                          const void *,
                                          void *>::type;
 
-    BinaryData( T && d, uint64_t s ) : data(d), size(s) {}
+    BinaryData( T && d, uint64_t s ) : data(std::forward<T>(d)), size(s) {}
 
-    PT data;   //!< pointer to beginning of data
+    PT data;       //!< pointer to beginning of data
     uint64_t size; //!< size in bytes
   };
 
@@ -229,7 +228,7 @@ namespace cereal
     struct adl_tag;
 
     // used during saving pointers
-    static const int32_t msb_32bit = 0x80000000;
+    static const int32_t msb_32bit  = 0x80000000;
     static const int32_t msb2_32bit = 0x40000000;
   }
 
@@ -253,7 +252,7 @@ namespace cereal
                                              typename std::decay<T>::type>::type;
 
     public:
-      SizeTag( T && sz ) : size(sz) {}
+      SizeTag( T && sz ) : size(std::forward<T>(sz)) {}
 
       Type size;
   };
@@ -294,7 +293,7 @@ namespace cereal
 
     //! Construct a MapItem from a key and a value
     /*! @internal */
-    MapItem( Key && key_, Value && value_ ) : key(key_), value(value_) {}
+    MapItem( Key && key_, Value && value_ ) : key(std::forward<Key>(key_)), value(std::forward<Value>(value_)) {}
 
     KeyType key;
     ValueType value;
