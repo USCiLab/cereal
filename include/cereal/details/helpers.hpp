@@ -135,16 +135,14 @@ namespace cereal
   class NameValuePair : detail::NameValuePairCore
   {
     private:
-      // If we get passed an RValue, we'll just make a local copy if it here
-      // otherwise, we store a reference.  If we were passed an array, don't
-      // decay the type - keep it as an array, and then proceed as normal
-      // with the RValue business
-      using DT = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
-                                           typename std::remove_cv<T>::type,
-                                           typename std::decay<T>::type>::type;
-      using Type = typename std::conditional<std::is_rvalue_reference<T>::value,
-                                             DT,
-                                             typename std::add_lvalue_reference<DT>::type>::type;
+      // If we get passed an array, keep the type as is, otherwise store
+      // a reference if we were passed an l value reference, else copy the value
+      using Type = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
+                                             typename std::remove_cv<T>::type,
+                                             typename std::conditional<std::is_lvalue_reference<T>::value,
+                                                                       T,
+                                                                       typename std::decay<T>::type>::type>::type;
+
       // prevent nested nvps
       static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
                      "Cannot pair a name to a NameValuePair" );
@@ -158,7 +156,8 @@ namespace cereal
                    only pass r-values in cases where this makes sense, such as the result of some
                    size() call.  In either case, any constness will be stripped away
       @internal */
-      NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
+      //NameValuePair( char const * n, T && v ) : name(n), value(const_cast<Type>(v)) {}
+      NameValuePair( char const * n, T && v ) : name(n), value(v) {}
 
       char const * name;
       Type value;
