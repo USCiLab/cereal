@@ -50,7 +50,7 @@ make any mistakes along the way.
 cereal's syntax will look familiar if you've used Boost's serialization library and is designed to make the transition easy.  cereal looks for serialization functions either defined in the type to be serialized or for non-member functions to do the same thing.  Unlike Boost, cereal doesn't need to be told (in most cases) what type of functions to look for, and will warn you at compile time if you make a mistake.  If you are coming from Boost, be sure to check out our [transition guide](transition_from_boost.html).
 
 ```cpp
-#include <cereal/types/map.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/archives/binary.hpp>
 #include <fstream>
