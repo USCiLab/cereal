@@ -39,8 +39,8 @@ namespace cereal
   template <class Archive, class T1, class T2> inline
   void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<T1, T2> & pair )
   {
-    ar( _CEREAL_NVP("first",  pair.first),
-        _CEREAL_NVP("second", pair.second) );
+    ar( CEREAL_NVP_("first",  pair.first),
+        CEREAL_NVP_("second", pair.second) );
   }
 } // namespace cereal
 

@@ -47,8 +47,8 @@ namespace cereal
   /*! @ingroup Utility */
   struct Exception : public std::runtime_error
   {
-    Exception( const std::string & what_ ) : std::runtime_error(what_) {}
-    Exception( const char * what_ ) : std::runtime_error(what_) {}
+    explicit Exception( const std::string & what_ ) : std::runtime_error(what_) {}
+    explicit Exception( const char * what_ ) : std::runtime_error(what_) {}
   };
 
   // ######################################################################
@@ -192,7 +192,7 @@ namespace cereal
   /*! For use in inteneral generic typing functions which have an
       Archive type declared
       @internal */
-  #define _CEREAL_NVP(name, value) ::cereal::make_nvp<Archive>(name, value)
+  #define CEREAL_NVP_(name, value) ::cereal::make_nvp<Archive>(name, value)
 
   // ######################################################################
   //! A wrapper around data that can be serialized in a binary fashion

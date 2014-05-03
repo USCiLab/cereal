@@ -110,7 +110,7 @@ namespace cereal
       std::string name;
       if(nameid & detail::msb_32bit)
       {
-        ar( _CEREAL_NVP("polymorphic_name", name) );
+        ar( CEREAL_NVP_("polymorphic_name", name) );
         ar.registerPolymorphicName(nameid, name);
       }
       else
@@ -139,7 +139,7 @@ namespace cereal
     {
       if(nameid & detail::msb2_32bit)
       {
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+        ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
         return true;
       }
       return false;
@@ -157,7 +157,7 @@ namespace cereal
     {
       if(nameid & detail::msb2_32bit)
       {
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+        ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
         return true;
       }
       return false;
@@ -209,7 +209,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
+      ar( CEREAL_NVP_("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -235,7 +235,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
+      ar( CEREAL_NVP_("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -246,9 +246,9 @@ namespace cereal
     {
       // The 2nd msb signals that the following pointer does not need to be
       // cast with our polymorphic machinery
-      ar( _CEREAL_NVP("polymorphic_id", detail::msb2_32bit) );
+      ar( CEREAL_NVP_("polymorphic_id", detail::msb2_32bit) );
 
-      ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+      ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
 
       return;
     }
@@ -268,7 +268,7 @@ namespace cereal
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::shared_ptr<T> & ptr )
   {
     std::uint32_t nameid;
-    ar( _CEREAL_NVP("polymorphic_id", nameid) );
+    ar( CEREAL_NVP_("polymorphic_id", nameid) );
 
     // Check to see if we can skip all of this polymorphism business
     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))
@@ -286,7 +286,7 @@ namespace cereal
   CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> const & ptr )
   {
     auto const sptr = ptr.lock();
-    ar( _CEREAL_NVP("locked_ptr", sptr) );
+    ar( CEREAL_NVP_("locked_ptr", sptr) );
   }
 
   //! Loading std::weak_ptr for polymorphic types
@@ -295,7 +295,7 @@ namespace cereal
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::weak_ptr<T> & ptr )
   {
     std::shared_ptr<T> sptr;
-    ar( _CEREAL_NVP("locked_ptr", sptr) );
+    ar( CEREAL_NVP_("locked_ptr", sptr) );
     ptr = sptr;
   }
 
@@ -307,7 +307,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
+      ar( CEREAL_NVP_("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -333,7 +333,7 @@ namespace cereal
     if(!ptr)
     {
       // same behavior as nullptr in memory implementation
-      ar( _CEREAL_NVP("polymorphic_id", std::uint32_t(0)) );
+      ar( CEREAL_NVP_("polymorphic_id", std::uint32_t(0)) );
       return;
     }
 
@@ -344,9 +344,9 @@ namespace cereal
     {
       // The 2nd msb signals that the following pointer does not need to be
       // cast with our polymorphic machinery
-      ar( _CEREAL_NVP("polymorphic_id", detail::msb2_32bit) );
+      ar( CEREAL_NVP_("polymorphic_id", detail::msb2_32bit) );
 
-      ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+      ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
 
       return;
     }
@@ -366,7 +366,7 @@ namespace cereal
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::unique_ptr<T, D> & ptr )
   {
     std::uint32_t nameid;
-    ar( _CEREAL_NVP("polymorphic_id", nameid) );
+    ar( CEREAL_NVP_("polymorphic_id", nameid) );
 
     // Check to see if we can skip all of this polymorphism business
     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))

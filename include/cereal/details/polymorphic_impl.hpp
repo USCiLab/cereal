@@ -157,7 +157,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::shared_ptr<T> ptr;
 
-            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
+            ar( CEREAL_NVP_("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr = ptr;
           };
@@ -168,7 +168,7 @@ namespace cereal
             Archive & ar = *static_cast<Archive*>(arptr);
             std::unique_ptr<T> ptr;
 
-            ar( _CEREAL_NVP("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
+            ar( CEREAL_NVP_("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr.reset(ptr.release());
           };
@@ -192,13 +192,13 @@ namespace cereal
         std::uint32_t id = ar.registerPolymorphicType(name);
 
         // Serialize the id
-        ar( _CEREAL_NVP("polymorphic_id", id) );
+        ar( CEREAL_NVP_("polymorphic_id", id) );
 
         // If the msb of the id is 1, then the type name is new, and we should serialize it
         if( id & detail::msb_32bit )
         {
           std::string namestring(name);
-          ar( _CEREAL_NVP("polymorphic_name", namestring) );
+          ar( CEREAL_NVP_("polymorphic_name", namestring) );
         }
       }
 
@@ -250,7 +250,7 @@ namespace cereal
       {
         ::cereal::memory_detail::EnableSharedStateHelper<T> state( static_cast<T *>(const_cast<void *>(dptr)) );
         PolymorphicSharedPointerWrapper psptr( dptr );
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
+        ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
       }
 
       //! Does the actual work of saving a polymorphic shared_ptr
@@ -264,7 +264,7 @@ namespace cereal
       static inline void savePolymorphicSharedPtr( Archive & ar, void const * dptr, std::false_type /* has_shared_from_this */ )
       {
         PolymorphicSharedPointerWrapper psptr( dptr );
-        ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
+        ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper( psptr() ) ) );
       }
 
       //! Initialize the binding
@@ -295,7 +295,7 @@ namespace cereal
 
             std::unique_ptr<T const, EmptyDeleter<T const>> const ptr(static_cast<T const *>(dptr));
 
-            ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
+            ar( CEREAL_NVP_("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
 
         StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );
