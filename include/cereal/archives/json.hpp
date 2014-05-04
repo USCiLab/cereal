@@ -143,7 +143,7 @@ namespace cereal
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, options.itsPrecision),
-        itsNextName(nullptr)
+        itsNextName()
       {
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
@@ -215,7 +215,7 @@ namespace cereal
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsNextName = name;
+        itsNextName = name ? std::string(name) : std::string();
       }
 
       //! Saves a bool to the current node
@@ -327,7 +327,7 @@ namespace cereal
         // Array types do not output names
         if(nodeType == NodeType::InArray) return;
 
-        if(itsNextName == nullptr)
+        if(itsNextName.empty())
         {
           std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
           saveValue(name);
@@ -335,7 +335,7 @@ namespace cereal
         else
         {
           saveValue(itsNextName);
-          itsNextName = nullptr;
+          itsNextName.clear();
         }
       }
 
@@ -350,7 +350,7 @@ namespace cereal
     private:
       WriteStream itsWriteStream;          //!< Rapidjson write stream
       JSONWriter itsWriter;                //!< Rapidjson writer
-      char const * itsNextName;            //!< The next name
+      std::string itsNextName;             //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
   }; // JSONOutputArchive
@@ -408,7 +408,7 @@ namespace cereal
       /*! @param stream The stream to read from */
       JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
-        itsNextName( nullptr ),
+        itsNextName(),
         itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
@@ -423,7 +423,7 @@ namespace cereal
           to loading in/out of order */
       void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
       {
-        itsNextName = name;
+        itsNextName = name ? std::string(name) : std::string();
 
         std::string encoded;
         loadValue( encoded );
@@ -433,7 +433,7 @@ namespace cereal
           throw Exception("Decoded binary data size does not match specified size");
 
         std::memcpy( data, decoded.data(), decoded.size() );
-        itsNextName = nullptr;
+        itsNextName.clear();
       };
 
     private:
@@ -488,12 +488,11 @@ namespace cereal
 
           //! Adjust our position such that we are at the node with the given name
           /*! @throws Exception if no such named node exists */
-          inline void search( const char * searchName )
+          inline void search( const std::string &searchName )
           {
-            const auto len = std::strlen( searchName );
             size_t index = 0;
             for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
-              if( std::strncmp( searchName, it->name.GetString(), len ) == 0 )
+              if( searchName == it->name.GetString() )
               {
                 itsIndex = index;
                 return;
@@ -521,17 +520,17 @@ namespace cereal
       inline void search()
       {
         // The name an NVP provided with setNextName()
-        if( itsNextName )
+        if( !itsNextName.empty() )
         {
           // The actual name of the current node
           auto const actualName = itsIteratorStack.back().name();
 
           // Do a search if we don't see a name coming up, or if the names don't match
-          if( !actualName || std::strcmp( itsNextName, actualName ) != 0 )
+          if( !actualName || itsNextName != actualName )
             itsIteratorStack.back().search( itsNextName );
         }
 
-        itsNextName = nullptr;
+        itsNextName.clear();
       }
 
     public:
@@ -565,7 +564,7 @@ namespace cereal
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsNextName = name;
+        itsNextName = name ? std::string(name) : std::string();
       }
 
       //! Loads a value from the current node - small signed overload
@@ -637,8 +636,8 @@ namespace cereal
       //! @}
 
     private:
-      const char * itsNextName;               //!< Next name set by NVP
-      ReadStream itsReadStream;               //!< Rapidjson write stream
+      std::string itsNextName;                //!< Next name set by NVP
+      ReadStream itsReadStream;               //!< Rapidjson read stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };

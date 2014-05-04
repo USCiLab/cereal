@@ -227,7 +227,8 @@ namespace cereal
         itsOS << value << std::ends;
 
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        const std::string s = itsOS.str();
+        auto dataPtr = itsXML.allocate_string( s.c_str() );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
@@ -277,12 +278,12 @@ namespace cereal
                   const char * nm = nullptr ) :
           node( n ),
           counter( 0 ),
-          name( nm )
+          name( nm ? std::string(nm) : std::string() )
         { }
 
         rapidxml::xml_node<> * node; //!< A pointer to this node
         size_t counter;              //!< The counter for naming child nodes
-        const char * name;           //!< The name for the next child node
+        std::string name;            //!< The name for the next child node
 
         //! Gets the name for the next child node created from this node
         /*! The name will be automatically generated using the counter if
@@ -290,10 +291,10 @@ namespace cereal
             set, that name will be returned only once */
         std::string getValueName()
         {
-          if( name )
+          if( !name.empty() )
           {
             auto n = name;
-            name = nullptr;
+            name = std::string();
             return {n};
           }
           else
@@ -361,25 +362,42 @@ namespace cereal
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
       XMLInputArchive( std::istream & stream ) :
-        InputArchive<XMLInputArchive>( this ),
-        itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
+        InputArchive<XMLInputArchive>( this )
       {
-        try
-        {
-          itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
-        }
-        catch( rapidxml::parse_error const & )
-        {
-          //std::cerr << "-----Original-----" << std::endl;
-          //stream.seekg(0);
-          //std::cout << std::string( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() ) << std::endl;
+        bool valid = false;
+        std::string line, document;
 
-          //std::cerr << "-----Error-----" << std::endl;
-          //std::cerr << e.what() << std::endl;
-          //std::cerr << e.where<char>() << std::endl;
-          throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
+        while (!valid && stream)
+        {
+          // Read until we get an empty line - this may indicate that the document has ended
+          while (getline(stream, line))
+          {
+            document += line + '\n';
+            if (line.empty())
+              break;
+          }
+
+	  // Set this as the document data
+          // Make a fresh copy every time, because RapidXml parsing is destructive
+          itsData.clear();
+          itsData.reserve(document.length() + 1);
+          itsData.insert(itsData.begin(), document.cbegin(), document.cend());
+          itsData.push_back('\0');
+
+          // If the line is empty, this may indicate the document has ended, if so try and parse it
+          try
+          {
+            itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>(
+              reinterpret_cast<char *>(itsData.data()) );
+            valid = true;
+          }
+          catch( rapidxml::parse_error const & )
+          {
+          }
         }
+
+        if (!valid)
+          throw Exception("XML Parsing failed - likely due to invalid characters or invalid naming");
 
         // Parse the root
         auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
@@ -432,12 +450,12 @@ namespace cereal
       void startNode()
       {
         auto next = itsNodes.top().child; // By default we would move to the next child node
-        auto const expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
+        const std::string &expectedName = itsNodes.top().name; // this is the expected name from the NVP, if provided
 
         // If we were given an NVP name, look for it in the current level of the document.
         //    We only need to do this if either we have exhausted the siblings of the current level or
         //    the NVP name does not match the name of the node we would normally read next
-        if( expectedName && ( next == nullptr || std::strcmp( next->name(), expectedName ) != 0 ) )
+        if( !expectedName.empty() && ( next == nullptr || expectedName != next->name() ) )
         {
           next = itsNodes.top().search( expectedName );
 
@@ -458,13 +476,13 @@ namespace cereal
         itsNodes.top().advance();
 
         // Reset name
-        itsNodes.top().name = nullptr;
+        itsNodes.top().name.clear();
       }
 
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
-        itsNodes.top().name = name;
+        itsNodes.top().name = name ? std::string(name) : std::string();
       }
 
       //! Loads a bool from the current top node
@@ -610,7 +628,7 @@ namespace cereal
           node( n ),
           child( n->first_node() ),
           size( XMLInputArchive::getNumChildren( n ) ),
-          name( nullptr )
+          name()
         { }
 
         //! Advances to the next sibling node of the child
@@ -625,18 +643,19 @@ namespace cereal
         }
 
         //! Searches for a child with the given name in this node
-        /*! @param searchName The name to search for (must be null terminated)
+        /*! @param searchName The name to search for
             @return The node if found, nullptr otherwise */
-        rapidxml::xml_node<> * search( const char * searchName )
+        rapidxml::xml_node<> * search( const std::string &searchName )
         {
-          if( searchName )
+          if( !searchName.empty() )
           {
             size_t new_size = XMLInputArchive::getNumChildren( node );
-            const size_t name_size = rapidxml::internal::measure( searchName );
+            const size_t name_size = rapidxml::internal::measure( searchName.c_str() );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
             {
-              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(), searchName, name_size, true ) )
+              if( rapidxml::internal::compare( new_child->name(), new_child->name_size(),
+                searchName.c_str(), name_size, true ) )
               {
                 size = new_size;
                 child = new_child;
@@ -653,7 +672,7 @@ namespace cereal
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
         size_t size;                  //!< The remaining number of children for this node
-        const char * name;            //!< The NVP name for next next child node
+        std::string name;             //!< The NVP name for next next child node
       }; // NodeInfo
 
       //! @}
