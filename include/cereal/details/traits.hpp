@@ -185,51 +185,24 @@ namespace cereal
     #endif // NOT CEREAL_OLDER_GCC
 
     // ######################################################################
-    //! Creates a test for whether a non const member function exists
-    /*! This creates a class derived from std::integral_constant that will be true if
-        the type has the proper member function for the given archive. */
-
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper non-member function for the given archive. */
-    #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(name, func)                                                                            \
-    namespace detail                                                                                                               \
-    {                                                                                                                              \
-      template <class T, class A>                                                                                                  \
-      struct has_non_member_##name##_impl                                                                                          \
-      {                                                                                                                            \
-        template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( func( std::declval<AA&>(), std::declval<TT&>() ), yes());                               \
-        template <class, class>                                                                                                    \
-        static no test( ... );                                                                                                     \
-        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
-      };                                                                                                                           \
-    } /* end namespace detail */                                                                                                   \
-    template <class T, class A>                                                                                                    \
-    struct has_non_member_##name : std::integral_constant<bool, detail::has_non_member_##name##_impl<T, A>::value> {}
-
-    //! Creates a test for whether a non const member function exists with a version parameter
-    /*! This creates a class derived from std::integral_constant that will be true if
-        the type has the proper member function for the given archive. */
-
-    //! Creates a test for whether a non const non-member function exists with a version parameter
-    /*! This creates a class derived from std::integral_constant that will be true if
-        the type has the proper non-member function for the given archive. */
-    #define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(name, func)                                                                  \
-    namespace detail                                                                                                               \
-    {                                                                                                                              \
-      template <class T, class A>                                                                                                  \
-      struct has_non_member_versioned_##name##_impl                                                                                \
-      {                                                                                                                            \
-        template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( func( std::declval<AA&>(), std::declval<TT&>(), 0 ), yes());                            \
-        template <class, class>                                                                                                    \
-        static no test( ... );                                                                                                     \
-        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                           \
-      };                                                                                                                           \
-    } /* end namespace detail */                                                                                                   \
-    template <class T, class A>                                                                                                    \
-    struct has_non_member_versioned_##name : std::integral_constant<bool, detail::has_non_member_versioned_##name##_impl<T, A>::value> {}
+    #define CEREAL_MAKE_HAS_NON_MEMBER_TEST(test_name, func, versioned)                                                         \
+    namespace detail                                                                                                            \
+    {                                                                                                                           \
+      template <class T, class A>                                                                                               \
+      struct has_non_member_##test_name##_impl                                                                                  \
+      {                                                                                                                         \
+        template <class TT, class AA>                                                                                           \
+        static auto test(int) -> decltype( func( std::declval<AA&>(), std::declval<TT&>() versioned ), yes());                  \
+        template <class, class>                                                                                                 \
+        static no test( ... );                                                                                                  \
+        static const bool value = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                        \
+      };                                                                                                                        \
+    } /* end namespace detail */                                                                                                \
+    template <class T, class A>                                                                                                 \
+    struct has_non_member_##test_name : std::integral_constant<bool, detail::has_non_member_##test_name##_impl<T, A>::value> {}
 
     // ######################################################################
     // Member load_and_construct
@@ -262,11 +235,11 @@ namespace cereal
 
     // ######################################################################
     // Non Member Serialize
-    CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize, CEREAL_SERIALIZE_FUNCTION_NAME);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(serialize, CEREAL_SERIALIZE_FUNCTION_NAME,);
 
     // ######################################################################
     // Non Member Serialize (versioned)
-    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(serialize, CEREAL_SERIALIZE_FUNCTION_NAME);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(versioned_serialize, CEREAL_SERIALIZE_FUNCTION_NAME, CEREAL_MAKE_VERSIONED_TEST);
 
     // ######################################################################
     // Member Load
@@ -278,11 +251,11 @@ namespace cereal
 
     // ######################################################################
     // Non Member Load
-    CEREAL_MAKE_HAS_NON_MEMBER_TEST(load, CEREAL_LOAD_FUNCTION_NAME);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(load, CEREAL_LOAD_FUNCTION_NAME,);
 
     // ######################################################################
     // Non Member Load (versioned)
-    CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST(load, CEREAL_LOAD_FUNCTION_NAME);
+    CEREAL_MAKE_HAS_NON_MEMBER_TEST(versioned_load, CEREAL_LOAD_FUNCTION_NAME, CEREAL_MAKE_VERSIONED_TEST);
 
     // ######################################################################
     // Member Save
