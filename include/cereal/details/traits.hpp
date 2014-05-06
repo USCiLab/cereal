@@ -205,27 +205,6 @@ namespace cereal
     struct has_non_member_##test_name : std::integral_constant<bool, detail::has_non_member_##test_name##_impl<T, A>::value> {}
 
     // ######################################################################
-    // Member load_and_construct
-    template<typename T, typename A>
-    struct has_member_load_and_construct : std::integral_constant<bool,
-      std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
-    { };
-
-    // ######################################################################
-    // Non Member load_and_construct
-    template<typename T, typename A>
-    struct has_non_member_load_and_construct : std::integral_constant<bool,
-      std::is_same<decltype( LoadAndConstruct<T>::load_and_construct( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
-    { };
-
-    // ######################################################################
-    // Has either a member or non member allocate
-    template<typename T, typename A>
-    struct has_load_and_construct : std::integral_constant<bool,
-      has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
-    { };
-
-    // ######################################################################
     // Member Serialize
     CEREAL_MAKE_HAS_MEMBER_TEST(serialize, serialize,);
 
@@ -258,41 +237,61 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(versioned_load, CEREAL_LOAD_FUNCTION_NAME, CEREAL_MAKE_VERSIONED_TEST);
 
     // ######################################################################
-    // Member Save
-    namespace detail
-    {
-      template <class T, class A>
-      struct has_member_save_impl
-      {
-        #ifdef CEREAL_OLDER_GCC
-        template <class TT, class AA, class SFINAE = void>
-        struct test : no {};
-        template <class TT, class AA>
-        struct test<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>() ) ) >::type> : yes {};
-        static const bool value = test<T, A>();
+    //! Creates a test for whether a member save function exists
+    /*! This creates a class derived from std::integral_constant that will be true if
+        the type has the proper member function for the given archive.
 
-        template <class TT, class AA, class SFINAE = void>
-        struct test2 : no {};
-        template <class TT, class AA>
-        struct test2<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_non_const( std::declval<AA&>(), std::declval<typename std::remove_const<TT>::type&>() ) ) >::type> : yes {};
-        static const bool not_const_type = test2<T, A>();
-        #else // NOT CEREAL_OLDER_GCC =========================================
-        template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>() ), yes());
-        template <class, class>
-        static no test(...);
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
-
-        template <class TT, class AA>
-        static auto test2(int) -> decltype( cereal::access::member_save_non_const( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>() ), yes());
-        template <class, class>
-        static no test2(...);
-        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
-        #endif // NOT CEREAL_OLDER_GCC
-      };
+        @param name The name to give the test (e.g. save or versioned_save)
+        @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
+    #ifdef CEREAL_OLDER_GCC
+    #define CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL(name, versioned)                                                                       \
+    namespace detail                                                                                                                \
+    {                                                                                                                               \
+    template <class T, class A>                                                                                                     \
+    struct has_member_##name##_impl                                                                                                 \
+      {                                                                                                                             \
+        template <class TT, class AA, class SFINAE = void> struct test : no {};                                                     \
+        template <class TT, class AA>                                                                                               \
+        struct test<TT, AA,                                                                                                         \
+          typename detail::Void< decltype( cereal::access::member_save( std::declval<AA&>(),                                        \
+                                                                        std::declval<TT const &>() versioned ) ) >::type> : yes {}; \
+        static const bool value = test<T, A>();                                                                                     \
+                                                                                                                                    \
+        template <class TT, class AA, class SFINAE = void> struct test2 : no {};                                                    \
+        template <class TT, class AA>                                                                                               \
+        struct test2<TT, AA,                                                                                                        \
+          typename detail::Void< decltype( cereal::access::member_save_non_const(                                                   \
+                                            std::declval<AA&>(),                                                                    \
+                                            std::declval<typename std::remove_const<TT>::type&>() versioned ) ) >::type> : yes {};  \
+        static const bool not_const_type = test2<T, A>();                                                                           \
+      };                                                                                                                            \
     } // end namespace detail
+    #else /* NOT CEREAL_OLDER_GCC =================================== */
+    #define CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL(name, versioned)                                                                       \
+    namespace detail                                                                                                                \
+    {                                                                                                                               \
+    template <class T, class A>                                                                                                     \
+    struct has_member_##name##_impl                                                                                                 \
+      {                                                                                                                             \
+        template <class TT, class AA>                                                                                               \
+        static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(),                                        \
+                                                                        std::declval<TT const &>() versioned ), yes());             \
+        template <class, class> static no test(...);                                                                                \
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                                \
+                                                                                                                                    \
+        template <class TT, class AA>                                                                                               \
+        static auto test2(int) -> decltype( cereal::access::member_save_non_const(                                                  \
+                                              std::declval<AA &>(),                                                                 \
+                                              std::declval<typename std::remove_const<TT>::type&>() versioned ), yes());            \
+        template <class, class> static no test2(...);                                                                               \
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                                      \
+      };                                                                                                                            \
+    } // end namespace detail
+    #endif /* NOT CEREAL_OLDER_GCC */
+
+    // ######################################################################
+    // Member save
+    CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL(save, )
 
     template <class T, class A>
     struct has_member_save : std::integral_constant<bool, detail::has_member_save_impl<T, A>::value>
@@ -304,41 +303,8 @@ namespace cereal
     };
 
     // ######################################################################
-    // Member Save (versioned)
-    namespace detail
-    {
-      template <class T, class A>
-      struct has_member_versioned_save_impl
-      {
-        #ifdef CEREAL_OLDER_GCC
-        template <class TT, class AA, class SFINAE = void>
-        struct test : no {};
-        template <class TT, class AA>
-        struct test<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>(), 0 ) ) >::type> : yes {};
-        static const bool value = test<T, A>();
-
-        template <class TT, class AA, class SFINAE = void>
-        struct test2 : no {};
-        template <class TT, class AA>
-        struct test2<TT, AA,
-          typename detail::Void< decltype( cereal::access::member_save_non_const( std::declval<AA&>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ) ) >::type> : yes {};
-        static const bool not_const_type = test2<T, A>();
-        #else // NOT CEREAL_OLDER_GCC =========================================
-        template <class TT, class AA>
-        static auto test(int) -> decltype( cereal::access::member_save( std::declval<AA&>(), std::declval<TT const &>(), 0 ), yes());
-        template <class, class>
-        static no test(...);
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;
-
-        template <class TT, class AA>
-        static auto test2(int) -> decltype( cereal::access::member_save_non_const( std::declval<AA &>(), std::declval<typename std::remove_const<TT>::type&>(), 0 ), yes());
-        template <class, class>
-        static no test2(...);
-        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;
-        #endif // NOT_CEREAL_OLDER_GCC
-      };
-    } // end namespace detail
+    // Member save (versioned)
+    CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL(versioned_save, CEREAL_MAKE_VERSIONED_TEST)
 
     template <class T, class A>
     struct has_member_versioned_save : std::integral_constant<bool, detail::has_member_versioned_save_impl<T, A>::value>
@@ -1201,6 +1167,27 @@ namespace cereal
     {
       using type = typename T::type;
     };
+
+    // ######################################################################
+    // Member load_and_construct
+    template<typename T, typename A>
+    struct has_member_load_and_construct : std::integral_constant<bool,
+      std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
+    { };
+
+    // ######################################################################
+    // Non Member load_and_construct
+    template<typename T, typename A>
+    struct has_non_member_load_and_construct : std::integral_constant<bool,
+      std::is_same<decltype( LoadAndConstruct<T>::load_and_construct( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
+    { };
+
+    // ######################################################################
+    // Has either a member or non member allocate
+    template<typename T, typename A>
+    struct has_load_and_construct : std::integral_constant<bool,
+      has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
+    { };
   } // namespace traits
 
   // ######################################################################
