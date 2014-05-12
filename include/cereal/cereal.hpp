@@ -362,7 +362,7 @@ namespace cereal
       #define PROCESS_IF(name)                                                                   \
       traits::EnableIf<traits::has_##name<T, ArchiveType>::value,                                \
                        !traits::has_invalid_output_versioning<T, ArchiveType>::value,            \
-                       (traits::is_specialized_##name<T, ArchiveType>::value ||          \
+                       (traits::is_specialized_##name<T, ArchiveType>::value ||                  \
                         traits::is_output_serializable<T, ArchiveType>::value)> = traits::sfinae
 
       //! Member serialization
