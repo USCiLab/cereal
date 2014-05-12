@@ -197,15 +197,15 @@ namespace cereal
   namespace cereal { namespace detail {                                          \
     template <> struct Version<TYPE>                                             \
     {                                                                            \
-      static const std::uint32_t version = VERSION_NUMBER;                       \
-      static Version<TYPE> registerVersion()                                     \
+      static const std::uint32_t version;                                        \
+      static std::uint32_t registerVersion()                                     \
       {                                                                          \
         ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
-        return {};                                                               \
+        return VERSION_NUMBER;                                                   \
       }                                                                          \
     }; /* end Version */                                                         \
-    static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \
+    const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
   } } // end namespaces
 

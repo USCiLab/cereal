@@ -27,6 +27,20 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
+namespace Nested
+{
+  struct NestedClass
+  {
+    int x;
+
+    template <class Archive>
+    void serialize( Archive & ar )
+    { ar( x ); }
+  };
+}
+
+CEREAL_CLASS_VERSION( Nested::NestedClass, 1 )
+
 class VersionStructMS
 {
   public:
