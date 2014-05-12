@@ -16,7 +16,7 @@ Installation and use of of cereal is fully documented on the [main web page](htt
 * Use the serialization archives to load and save data
 
 ```cpp
-#include <cereal/types/map.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/archives/binary.hpp>
 #include <fstream>
@@ -55,7 +55,7 @@ struct SomeData
 
 int main()
 {
-  std::ofstream os("out.cereal");
+  std::ofstream os("out.cereal", std::ios::binary);
   cereal::BinaryOutputArchive archive( os );
 
   SomeData myData;
@@ -64,6 +64,11 @@ int main()
   return 0;
 }
 ```    
+
+### cereal has a mailing list
+
+Either get in touch over <a href="mailto:cerealcpp@googlegroups.com">email</a> or [on the web](https://groups.google.com/forum/#!forum/cerealcpp).
+
 
 
 ## cereal has a permissive license
