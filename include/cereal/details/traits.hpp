@@ -46,8 +46,8 @@ namespace cereal
 {
   namespace traits
   {
-    typedef std::true_type yes;
-    typedef std::false_type no;
+    using yes = std::true_type;
+    using no  = std::false_type;
 
     namespace detail
     {
@@ -237,6 +237,10 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(versioned_load, CEREAL_LOAD_FUNCTION_NAME, CEREAL_MAKE_VERSIONED_TEST);
 
     // ######################################################################
+    #undef CEREAL_MAKE_HAS_NON_MEMBER_TEST
+    #undef CEREAL_MAKE_HAS_MEMBER_TEST
+
+    // ######################################################################
     //! Creates a test for whether a member save function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive.
@@ -316,6 +320,9 @@ namespace cereal
     };
 
     // ######################################################################
+    #undef CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL
+
+    // ######################################################################
     //! Creates a test for whether a non-member save function exists
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper non-member function for the given archive.
@@ -369,6 +376,9 @@ namespace cereal
         "cereal detected a non-const type parameter in versioned non-member save. \n "
         "save non-member functions must always pass their types as const" );
     };
+
+    // ######################################################################
+    #undef CEREAL_MAKE_HAS_NON_MEMBER_SAVE_IMPL
 
     // ######################################################################
     // Minimal Utilities
