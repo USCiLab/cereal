@@ -329,56 +329,47 @@ namespace cereal
 
         @param test_name The name to give the test (e.g. save or versioned_save)
         @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
-    #define CEREAL_MAKE_HAS_NON_MEMBER_SAVE_IMPL(test_name, versioned)                                                   \
-    namespace detail                                                                                                     \
-    {                                                                                                                    \
-      template <class T, class A>                                                                                        \
-      struct has_non_member_##test_name##_impl                                                                           \
-      {                                                                                                                  \
-        template <class TT, class AA>                                                                                    \
-        static auto test(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME(                                                    \
-                                              std::declval<AA&>(),                                                       \
-                                              std::declval<TT const &>() versioned ), yes());                            \
-        template <class, class> static no test(...);                                                                     \
-        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                     \
-                                                                                                                         \
-        template <class TT, class AA>                                                                                    \
-        static auto test2(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME(                                                   \
-                                              std::declval<AA &>(),                                                      \
-                                              std::declval<typename std::remove_const<TT>::type&>() versioned ), yes()); \
-        template <class, class> static no test2(...);                                                                    \
-        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                           \
-      };                                                                                                                 \
-    } /* end namespace detail */
+    #define CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST(test_name, versioned)                                                       \
+    namespace detail                                                                                                         \
+    {                                                                                                                        \
+      template <class T, class A>                                                                                            \
+      struct has_non_member_##test_name##_impl                                                                               \
+      {                                                                                                                      \
+        template <class TT, class AA>                                                                                        \
+        static auto test(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME(                                                        \
+                                              std::declval<AA&>(),                                                           \
+                                              std::declval<TT const &>() versioned ), yes());                                \
+        template <class, class> static no test(...);                                                                         \
+        static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                         \
+                                                                                                                             \
+        template <class TT, class AA>                                                                                        \
+        static auto test2(int) -> decltype( CEREAL_SAVE_FUNCTION_NAME(                                                       \
+                                              std::declval<AA &>(),                                                          \
+                                              std::declval<typename std::remove_const<TT>::type&>() versioned ), yes());     \
+        template <class, class> static no test2(...);                                                                        \
+        static const bool not_const_type = std::is_same<decltype(test2<T, A>(0)), yes>::value;                               \
+      };                                                                                                                     \
+    } /* end namespace detail */                                                                                             \
+                                                                                                                             \
+    template <class T, class A>                                                                                              \
+    struct has_non_member_##test_name : std::integral_constant<bool, detail::has_non_member_##test_name##_impl<T, A>::value> \
+    {                                                                                                                        \
+      using check = typename detail::has_non_member_##test_name##_impl<T, A>;                                                \
+      static_assert( check::value || !check::not_const_type,                                                                 \
+        "cereal detected a non-const type parameter in non-member " #test_name ". \n "                                       \
+        #test_name " non-member functions must always pass their types as const" );                                          \
+    };
 
     // ######################################################################
     // Non Member Save
-    CEREAL_MAKE_HAS_NON_MEMBER_SAVE_IMPL(save, )
-
-    template <class T, class A>
-    struct has_non_member_save : std::integral_constant<bool, detail::has_non_member_save_impl<T, A>::value>
-    {
-      typedef typename detail::has_non_member_save_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in non-member save. \n "
-        "save non-member functions must always pass their types as const" );
-    };
+    CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST(save, )
 
     // ######################################################################
     // Non Member Save (versioned)
-    CEREAL_MAKE_HAS_NON_MEMBER_SAVE_IMPL(versioned_save, CEREAL_MAKE_VERSIONED_TEST)
-
-    template <class T, class A>
-    struct has_non_member_versioned_save : std::integral_constant<bool, detail::has_non_member_versioned_save_impl<T, A>::value>
-    {
-      typedef typename detail::has_non_member_versioned_save_impl<T, A> check;
-      static_assert( check::value || !check::not_const_type,
-        "cereal detected a non-const type parameter in versioned non-member save. \n "
-        "save non-member functions must always pass their types as const" );
-    };
+    CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST(versioned_save, CEREAL_MAKE_VERSIONED_TEST)
 
     // ######################################################################
-    #undef CEREAL_MAKE_HAS_NON_MEMBER_SAVE_IMPL
+    #undef CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST
 
     // ######################################################################
     // Minimal Utilities
@@ -489,12 +480,12 @@ namespace cereal
     {                                                                                                                \
       using check = typename detail::has_member_##test_name##_impl<T, A>;                                            \
       static_assert( check::valid,                                                                                   \
-        "cereal detected a non-const member " #test_name ".  "                                                       \
+        "cereal detected a non-const member " #test_name ". \n "                                                     \
         #test_name " member functions must always be const" );                                                       \
                                                                                                                      \
       using type = typename detail::get_member_##test_name##_type<T, A, check::value>::type;                         \
       static_assert( (check::value && is_minimal_type<type>::value) || !check::value,                                \
-        "cereal detected a member " #test_name " with an invalid return type.  "                                     \
+        "cereal detected a member " #test_name " with an invalid return type. \n "                                   \
         "return type must be arithmetic or string" );                                                                \
     };
 
