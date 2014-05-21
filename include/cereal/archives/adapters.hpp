@@ -105,6 +105,12 @@ namespace cereal
 
     UserData & userdata;
   };
+
+  template <class UserData, class Archive> inline
+  UserData & get_user_data( Archive & ar )
+  {
+    return static_cast<UserDataAdapter<UserData, Archive>>( ar ).userdata;
+  }
 } // namespace cereal
 
 #endif // CEREAL_ARCHIVES_ADAPTERS_HPP_
