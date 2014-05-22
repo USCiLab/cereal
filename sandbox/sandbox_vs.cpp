@@ -41,6 +41,7 @@
 #include <functional>
 
 struct Archive {};
+CEREAL_SETUP_ARCHIVE_TRAITS(Archive, Archive)
 
 struct Test
 {
@@ -226,6 +227,6 @@ int main()
   std::cout << "\textra" << std::endl;
   std::cout << cereal::traits::has_member_save_minimal<MemberMinimal, Archive>::value << std::endl;
   std::cout << cereal::traits::has_member_load_minimal<MemberMinimal, Archive>::value << std::endl;
-       
-  return 0; 
+
+  return 0;
 }

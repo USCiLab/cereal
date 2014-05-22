@@ -756,7 +756,8 @@ namespace cereal
       template <class T, PROCESS_IF(member_load_minimal)> inline
       ArchiveType & processImpl(T & t)
       {
-        typename traits::has_member_save_minimal<T, ArchiveType>::type value;
+        using OutArchiveType = typename traits::detail::get_output_from_input<ArchiveType>::type;
+        typename traits::has_member_save_minimal<T, OutArchiveType>::type value;
         self->process( value );
         access::member_load_minimal(*self, t, value);
         return *self;
@@ -766,7 +767,8 @@ namespace cereal
       template <class T, PROCESS_IF(non_member_load_minimal)> inline
       ArchiveType & processImpl(T & t)
       {
-        typename traits::has_non_member_save_minimal<T, ArchiveType>::type value;
+        using OutArchiveType = typename traits::detail::get_output_from_input<ArchiveType>::type;
+        typename traits::has_non_member_save_minimal<T, OutArchiveType>::type value;
         self->process( value );
         CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value);
         return *self;
@@ -875,8 +877,9 @@ namespace cereal
       template <class T, PROCESS_IF(member_versioned_load_minimal)> inline
       ArchiveType & processImpl(T & t)
       {
+        using OutArchiveType = typename traits::detail::get_output_from_input<ArchiveType>::type;
         const auto version = loadClassVersion<T>();
-        typename traits::has_member_versioned_save_minimal<T, ArchiveType>::type value;
+        typename traits::has_member_versioned_save_minimal<T, OutArchiveType>::type value;
         self->process(value);
         access::member_load_minimal(*self, t, value, version);
         return *self;
@@ -887,8 +890,9 @@ namespace cereal
       template <class T, PROCESS_IF(non_member_versioned_load_minimal)> inline
       ArchiveType & processImpl(T & t)
       {
+        using OutArchiveType = typename traits::detail::get_output_from_input<ArchiveType>::type;
         const auto version = loadClassVersion<T>();
-        typename traits::has_non_member_versioned_save_minimal<T, ArchiveType>::type value;
+        typename traits::has_non_member_versioned_save_minimal<T, OutArchiveType>::type value;
         self->process(value);
         CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value, version);
         return *self;

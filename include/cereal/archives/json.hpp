@@ -887,4 +887,7 @@ namespace cereal
 CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive)
 CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
 
+// tie input and output archives together
+CEREAL_SETUP_ARCHIVE_TRAITS(cereal::JSONInputArchive, cereal::JSONOutputArchive)
+
 #endif // CEREAL_ARCHIVES_JSON_HPP_

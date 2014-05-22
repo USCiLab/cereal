@@ -148,6 +148,32 @@ namespace cereal
     using DisableIf = typename detail::DisableIfHelper<Conditions...>::type;
 
     // ######################################################################
+    namespace detail
+    {
+      template <class InputArchive>
+      struct get_output_from_input : no
+      {
+        static_assert( detail::delay_static_assert<InputArchive>::value,
+            "Could not find an associated output archive for input archive." );
+      };
+
+      template <class OutputArchive>
+      struct get_input_from_output : no
+      {
+        static_assert( detail::delay_static_assert<OutputArchive>::value,
+            "Could not find an associated input archive for output archive." );
+      };
+    }
+
+    //! Sets up traits that relate an input archive to an output archive
+    #define CEREAL_SETUP_ARCHIVE_TRAITS(InputArchive, OutputArchive)  \
+    namespace cereal { namespace traits { namespace detail {          \
+      template <> struct get_output_from_input<InputArchive>          \
+      { using type = OutputArchive; };                                \
+      template <> struct get_input_from_output<OutputArchive>         \
+      { using type = InputArchive; }; } } } /* end namespaces */
+
+    // ######################################################################
     //! Used to convert a MAKE_HAS_XXX macro into a versioned variant
     #define CEREAL_MAKE_VERSIONED_TEST ,0
 
@@ -678,11 +704,13 @@ namespace cereal
       template <class T, class A>
       struct has_member_load_minimal_wrapper<T, A, true>
       {
-        static_assert( has_member_save_minimal<T, A>::value,
+        using AOut = typename detail::get_output_from_input<A>::type;
+
+        static_assert( has_member_save_minimal<T, AOut>::value,
           "cereal detected member load_minimal but no valid member save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
 
-        using SaveType = typename detail::get_member_save_minimal_type<T, A, true>::type;
+        using SaveType = typename detail::get_member_save_minimal_type<T, AOut, true>::type;
         const static bool value = has_member_load_minimal_impl<T, A>::value;
         const static bool valid = has_member_load_minimal_type_impl<T, A, SaveType>::value;
 
@@ -739,11 +767,13 @@ namespace cereal
       template <class T, class A>
       struct has_member_versioned_load_minimal_wrapper<T, A, true>
       {
-        static_assert( has_member_versioned_save_minimal<T, A>::value,
+        using AOut = typename detail::get_output_from_input<A>::type;
+
+        static_assert( has_member_versioned_save_minimal<T, AOut>::value,
           "cereal detected member versioned load_minimal but no valid member versioned save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
 
-        using SaveType = typename detail::get_member_versioned_save_minimal_type<T, A, true>::type;
+        using SaveType = typename detail::get_member_versioned_save_minimal_type<T, AOut, true>::type;
         const static bool value = has_member_versioned_load_minimal_impl<T, A>::value;
         const static bool valid = has_member_versioned_load_minimal_type_impl<T, A, SaveType>::value;
 
@@ -794,11 +824,13 @@ namespace cereal
       template <class T, class A>
       struct has_non_member_load_minimal_wrapper<T, A, true>
       {
-        static_assert( detail::has_non_member_save_minimal_impl<T, A>::valid,
+        using AOut = typename detail::get_output_from_input<A>::type;
+
+        static_assert( detail::has_non_member_save_minimal_impl<T, AOut>::valid,
           "cereal detected non-member load_minimal but no valid non-member save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
 
-        using SaveType = typename detail::get_non_member_save_minimal_type<T, A, true>::type;
+        using SaveType = typename detail::get_non_member_save_minimal_type<T, AOut, true>::type;
         using check = has_non_member_load_minimal_impl<T, A, SaveType>;
         static const bool value = check::exists;
 
@@ -846,11 +878,13 @@ namespace cereal
       template <class T, class A>
       struct has_non_member_versioned_load_minimal_wrapper<T, A, true>
       {
-        static_assert( detail::has_non_member_versioned_save_minimal_impl<T, A>::valid,
+        using AOut = typename detail::get_output_from_input<A>::type;
+
+        static_assert( detail::has_non_member_versioned_save_minimal_impl<T, AOut>::valid,
           "cereal detected non-member versioned load_minimal but no valid non-member versioned save_minimal.  "
           "cannot evaluate correctness of load_minimal without valid save_minimal." );
 
-        using SaveType = typename detail::get_non_member_versioned_save_minimal_type<T, A, true>::type;
+        using SaveType = typename detail::get_non_member_versioned_save_minimal_type<T, AOut, true>::type;
         using check = has_non_member_versioned_load_minimal_impl<T, A, SaveType>;
         static const bool value = check::exists;
 

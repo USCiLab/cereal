@@ -134,6 +134,41 @@ struct TestStruct
   NonMemberMinimalVersioned nmmv;
 };
 
+struct Issue79Struct
+{
+  Issue79Struct() = default;
+  Issue79Struct( std::int32_t xx ) : x(xx) {}
+  std::int32_t x;
+};
+
+template <class Archive, cereal::traits::DisableIf<std::is_same<Archive, cereal::BinaryOutputArchive>::value ||
+                                                   std::is_same<Archive, cereal::PortableBinaryOutputArchive>::value> = cereal::traits::sfinae>
+std::string save_minimal( Archive const &, Issue79Struct const & val )
+{
+  return std::to_string( val.x );
+}
+
+template <class Archive, cereal::traits::DisableIf<std::is_same<Archive, cereal::BinaryInputArchive>::value ||
+                                                   std::is_same<Archive, cereal::PortableBinaryInputArchive>::value> = cereal::traits::sfinae>
+void load_minimal( Archive const &, Issue79Struct & val, std::string const & str )
+{
+  val.x = std::stoi( str );
+}
+
+template <class Archive, cereal::traits::EnableIf<std::is_same<Archive, cereal::BinaryOutputArchive>::value ||
+                                                  std::is_same<Archive, cereal::PortableBinaryOutputArchive>::value> = cereal::traits::sfinae>
+std::int32_t save_minimal( Archive const &, Issue79Struct const & val )
+{
+  return val.x;
+}
+
+template <class Archive, cereal::traits::EnableIf<std::is_same<Archive, cereal::BinaryInputArchive>::value ||
+                                                  std::is_same<Archive, cereal::PortableBinaryInputArchive>::value> = cereal::traits::sfinae>
+void load_minimal( Archive const &, Issue79Struct & val, std::int32_t const & xx )
+{
+  val.x = xx;
+}
+
 template <class IArchive, class OArchive>
 void test_structs_minimal()
 {
@@ -145,18 +180,23 @@ void test_structs_minimal()
     TestStruct o_struct = { random_basic_string<char>(gen), random_value<double>(gen),
                             random_value<std::uint32_t>(gen), random_value<uint8_t>(gen) % 2 ? true : false };
 
+    Issue79Struct o_struct2 = { random_value<std::int32_t>(gen) };
+
     std::ostringstream os;
     {
       OArchive oar(os);
       oar( o_struct );
+      oar( o_struct2 );
     }
 
     decltype(o_struct) i_struct;
+    decltype(o_struct2) i_struct2;
 
     std::istringstream is(os.str());
     {
       IArchive iar(is);
       iar( i_struct );
+      iar( i_struct2 );
     }
 
     BOOST_CHECK(o_struct.mm.x == i_struct.mm.x);
@@ -164,6 +204,8 @@ void test_structs_minimal()
 
     BOOST_CHECK(o_struct.nmm.x == i_struct.nmm.x);
     BOOST_CHECK(o_struct.nmmv.x == i_struct.nmmv.x);
+
+    BOOST_CHECK(o_struct2.x == i_struct2.x);
   }
 }
 
