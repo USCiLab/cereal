@@ -73,6 +73,9 @@ namespace cereal
   };
 ```
 
+Implementing either of the `load_and_construct` styles will allow you to serialize smart pointers to a type without a
+default constructor.
+
 ### Implementation notes
 
 If you are a casual user of cereal, there's no need to worry about the details of loading and saving smart pointers.  If you are curious or want a
