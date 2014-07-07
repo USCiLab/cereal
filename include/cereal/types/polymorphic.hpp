@@ -85,6 +85,44 @@
   } } /* end namespaces */                                   \
   CEREAL_BIND_TO_ARCHIVES(T)
 
+//! Adds a way to force loading of a shared library containing
+//! only calls to CEREAL_REGISTER_TYPE
+/*! Since CEREAL_REGISTER_TYPE must be in a source file,
+    it is possible for the linker to never load a shared
+    library containing only these registrations as they are
+    never explicitly referenced.  This macro, in combination with
+    CEREAL_FORCE_LINK_SHARED_LIBRARY, prevents this link
+    from being optimized away.  This is only necessary if
+    you never explicitly reference any code implemented in your
+    shared library (header files do not count).
+
+    This must be placed in a single source file of your shared
+    library.
+
+    LibName can be any unique name of your choosing. */
+#define CEREAL_REGISTER_SHARED_LIBRARY(LibName) \
+  namespace cereal {                            \
+  namespace detail {                            \
+    void load_library_dummy_##LibName() {}      \
+  } } /* end namespaces */
+
+//! Forces the linker to link a previously registered
+//! (with cereal) shared library
+/*! @sa CEREAL_REGISTER_SHARED_LIBRARY
+
+    This should be placed in your executable source. */
+#define CEREAL_FORCE_LINK_SHARED_LIBRARY(LibName)       \
+  namespace cereal {                                    \
+  namespace detail {                                    \
+    void load_library_dummy_##LibName();                \
+  } /* end detail */                                    \
+  namespace load_dummy {                                \
+    void load_library_##LibName()                       \
+    {                                                   \
+      ::cereal::detail::load_library_dummy_##LibName(); \
+    }                                                   \
+  } } /* end namespaces */
+
 #ifdef _MSC_VER
 #undef CONSTEXPR
 #endif
@@ -222,7 +260,9 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
+                              "Make sure your type is registered with CEREAL_REGISTER_TYPE.\n"
+                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
@@ -257,7 +297,9 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
+                              "Make sure your type is registered with CEREAL_REGISTER_TYPE.\n"
+                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
