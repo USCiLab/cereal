@@ -233,6 +233,22 @@ namespace cereal
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
       }
 
+      void saveValue( std::string const & value )
+      {
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
+        itsOS << value << std::ends;
+
+        // allocate strings for all of the data in the XML object
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+
+        // allocate cdata and set its value
+        auto cdata = itsXML.allocate_node( rapidxml::node_cdata );
+        cdata->value( dataPtr );
+
+        // insert into the XML
+        itsNodes.top().node->append_node( cdata );
+      }
+
       //! Overload for uint8_t prevents them from being serialized as characters
       void saveValue( uint8_t const & value )
       {
@@ -367,7 +383,7 @@ namespace cereal
         try
         {
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          itsXML.parse<rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & )
         {
@@ -572,7 +588,11 @@ namespace cereal
       template<class CharT, class Traits, class Alloc> inline
       void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
       {
-        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
+        auto first_node = itsNodes.top().node->first_node();
+        if ( first_node == nullptr )
+          throw Exception("Cannot read string value");
+
+        std::basic_istringstream<CharT, Traits> is( first_node->value() );
 
         str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
                     std::istreambuf_iterator<CharT, Traits>() );
