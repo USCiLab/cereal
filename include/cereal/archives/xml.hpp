@@ -238,8 +238,11 @@ namespace cereal
         itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
+        // workaround rapidxml restriction on whitespace handling.
+        auto encoded = encode_cdata( itsOS.str() );
+
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        auto dataPtr = itsXML.allocate_string( encoded.c_str() );
 
         // allocate cdata and set its value
         auto cdata = itsXML.allocate_node( rapidxml::node_cdata );
@@ -316,6 +319,34 @@ namespace cereal
             return "value" + std::to_string( counter++ ) + "\0";
         }
       }; // NodeInfo
+
+      //! Encode only & and > in cdata text
+      /* Normally CDATA when saved to XML should not be changed in any way
+         but since rapidxml doesn't handle xml:space attribute in XML elements then
+         we use CDATA and do escaping of non-allowed characters manually. */
+      std::string encode_cdata( std::string const & text )
+      {
+        std::string res;
+        res.reserve( text.size() );
+
+        for( auto c : text )
+        {
+          if( c == '&' )
+          {
+            res.append( "&amp;" );
+          }
+          else if( c == '>' )
+          {
+            res.append( "&gt;" );
+          }
+          else
+          {
+            res.append( 1, c );
+          }
+        }
+
+        return res;
+      }
 
       //! @}
 
@@ -594,8 +625,8 @@ namespace cereal
 
         std::basic_istringstream<CharT, Traits> is( first_node->value() );
 
-        str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
-                    std::istreambuf_iterator<CharT, Traits>() );
+        str = decode_cdata<CharT, Traits, Alloc>( std::istreambuf_iterator<CharT, Traits>( is ),
+                                                  std::istreambuf_iterator<CharT, Traits>() );
       }
 
       //! Loads the size of the current top node
@@ -675,6 +706,44 @@ namespace cereal
         size_t size;                  //!< The remaining number of children for this node
         const char * name;            //!< The NVP name for next next child node
       }; // NodeInfo
+
+      //! Decode & and > characters in cdata
+      /*  For details see explanation for XMLOutputArchive::encode_cdata(). */
+      template<class CharT, class Traits, class Alloc>
+      std::basic_string<CharT, Traits, Alloc> decode_cdata( std::istreambuf_iterator<CharT, Traits> start,
+                                                            const std::istreambuf_iterator<CharT, Traits>& end )
+      {
+        std::basic_string<CharT, Traits, Alloc> res;
+
+        for( ; start != end; ++start )
+        {
+          if( *start == '&' )
+          {
+            const auto first = *( ++start );
+            const auto second = *( ++start );
+            const auto third = *( ++start );
+
+            if( first == 'g' && second == 't' && third == ';' )
+            {
+              res.append( 1, '>' );
+            }
+            else if( first == 'a' && second == 'm' && third == 'p' && *( ++start ) == ';' )
+            {
+              res.append( 1, '&' );
+            }
+            else
+            {
+              throw Exception("Cannot decode cdata value");
+            }
+          }
+          else
+          {
+            res.append( 1, *start );
+          }
+        }
+
+        return res;
+      }
 
       //! @}
 

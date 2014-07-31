@@ -125,3 +125,43 @@ BOOST_AUTO_TEST_CASE( json_string_basic )
   test_string_basic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+template <class IArchive, class OArchive, class T, size_t N, size_t M>
+void test_string_for_array(T (&strings)[N][M])
+{
+  for(size_t i=0; i<N; ++i)
+  {
+    std::basic_string<T> o_string = strings[i];
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar(o_string);
+    }
+
+    std::basic_string<T> i_string;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+      iar(i_string);
+    }
+
+    BOOST_CHECK_EQUAL(i_string, o_string);
+  }
+}
+
+BOOST_AUTO_TEST_CASE( xml_string_issue109 )
+{
+  char strings[][20] = {
+    "some text",
+    " some text ",
+    "  ",
+    "    text    ",
+    " ]]> ",
+    " &gt; > ]]> ",
+    " < <]>] &lt; ",
+    " &amp; &   "
+  };
+
+  test_string_for_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>(strings);
+}
