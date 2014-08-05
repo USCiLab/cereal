@@ -4,7 +4,7 @@ file(GLOB TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 set(SPECIAL_TESTS "portability_test.cpp")
 
 # Build the portability test only if we are on a 64-bit machine (void* is 8 bytes)
-if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
+if((${CMAKE_SIZEOF_VOID_P} EQUAL 8) AND (NOT SKIP_PORTABILITY_TEST))
   add_executable(portability_test32 portability_test.cpp)
   set_target_properties(portability_test32 PROPERTIES COMPILE_FLAGS "-m32")
   set_target_properties(portability_test32 PROPERTIES LINK_FLAGS "-m32")
