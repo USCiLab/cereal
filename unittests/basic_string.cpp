@@ -26,6 +26,7 @@
 */
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
+#include <boost/utility/string_ref.hpp>
 
 template <class IArchive, class OArchive>
 void test_string_basic()
@@ -125,28 +126,37 @@ BOOST_AUTO_TEST_CASE( json_string_basic )
   test_string_basic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
-template <class IArchive, class OArchive, class T, size_t N, size_t M>
-void test_string_for_array(T (&strings)[N][M])
+template <class IArchive, class OArchive, class Out, class In = Out>
+void test_ws_in_out(Out const & o_value_with_ws)
 {
-  for(size_t i=0; i<N; ++i)
+  std::ostringstream os;
   {
-    std::basic_string<T> o_string = strings[i];
+    OArchive oar(os);
+    oar(o_value_with_ws);
+  }
 
-    std::ostringstream os;
-    {
-      OArchive oar(os);
-      oar(o_string);
-    }
+  In i_value_with_ws;
 
-    std::basic_string<T> i_string;
+  std::istringstream is(os.str());
+  {
+    IArchive iar(is);
+    iar(i_value_with_ws);
+  }
 
-    std::istringstream is(os.str());
-    {
-      IArchive iar(is);
-      iar(i_string);
-    }
+  BOOST_CHECK_EQUAL(i_value_with_ws, o_value_with_ws);
+}
 
-    BOOST_CHECK_EQUAL(i_string, o_string);
+namespace boost
+{
+
+  void save( cereal::XMLOutputArchive & ar, boost::string_ref const & str )
+  {
+    ar.saveValue( str );
+  }
+
+  bool operator==( std::string const & s1, boost::string_ref const & s2 )
+  {
+    return s1 == std::string(s2.data(), s2.length());
   }
 }
 
@@ -154,6 +164,8 @@ BOOST_AUTO_TEST_CASE( xml_string_issue109 )
 {
   char strings[][20] = {
     "some text",
+    "some text ",
+    " some text",
     " some text ",
     "  ",
     "    text    ",
@@ -163,5 +175,50 @@ BOOST_AUTO_TEST_CASE( xml_string_issue109 )
     " &amp; &   "
   };
 
-  test_string_for_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>(strings);
+  for( size_t i=0; i<( sizeof( strings ) / sizeof( strings[0] ) ); ++i )
+  {
+    std::basic_string<char> o_string = strings[i];
+
+    test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( o_string );
+  }
+
+  for( size_t i=0; i<( sizeof( strings ) / sizeof( strings[0] ) ); ++i )
+  {
+    boost::string_ref o_string = strings[i];
+
+    test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive, boost::string_ref, std::string>( o_string );
+  }
+}
+
+BOOST_AUTO_TEST_CASE( xml_char_issue109 )
+{
+  uint8_t chars[] = {
+    ' ',
+    '\t',
+    '\n',
+    '\r',
+    '&',
+    '>',
+    '<',
+    '\'',
+    '"',
+    '!',
+    '|'
+  };
+
+  for( size_t i=0; i<( sizeof( chars ) / sizeof( chars[0] ) ); ++i )
+  {
+    test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( chars[i] );
+  }
+
+  for( size_t i=0; i<( sizeof( chars ) / sizeof( chars[0] ) ); ++i )
+  {
+    test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( int8_t( chars[i] ) );
+  }
+
+  // TODO: Uncomment these lines once support for char in XML archive is fixed.
+  //for( size_t i=0; i<( sizeof( chars ) / sizeof( chars[0] ) ); ++i )
+  //{
+  //  test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( char( chars[i] ) );
+  //}
 }
