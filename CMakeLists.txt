@@ -9,12 +9,13 @@ include_directories(./include)
 
 find_package(Boost COMPONENTS serialization unit_test_framework)
 
-add_subdirectory(sandbox)
-
 if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
   enable_testing()
   add_subdirectory(unittests)
 endif(Boost_FOUND)
+
+add_subdirectory(sandbox)
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -27,7 +28,7 @@ if(DOXYGEN_FOUND)
     )
 
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/scripts/updatedoc.in" "${CMAKE_CURRENT_BINARY_DIR}/updatedoc.sh" @ONLY)
-  add_custom_target(update-doc 
+  add_custom_target(update-doc
     COMMAND "${CMAKE_CURRENT_BINARY_DIR}/updatedoc.sh"
     DEPENDS doc
     COMMENT "Copying documentation to gh-pages branch" VERBATIM
