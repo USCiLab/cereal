@@ -8,6 +8,9 @@ compiler:
 before_install:
   # Always install g++4.8.1
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  
+  # Install recent version of Boost
+  - sudo add-apt-repository -y ppa:boost-latest/ppa 
 
   # clang 3.3
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
@@ -16,7 +19,7 @@ before_install:
 
 install: 
   - sudo apt-get install cmake
-  - sudo apt-get install libboost-all-dev
+  - sudo apt-get install libboost1.54-all-dev
 
   # Always install valgrind
   - sudo apt-get install valgrind
