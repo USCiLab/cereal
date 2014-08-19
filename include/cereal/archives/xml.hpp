@@ -56,6 +56,11 @@ namespace cereal
 
     //! The name given to the root node in a cereal xml archive
     static const char * CEREAL_XML_STRING = CEREAL_XML_STRING_VALUE;
+
+    inline bool isWhitespace( char c )
+    {
+      return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
   }
 
   // ######################################################################
@@ -229,7 +234,7 @@ namespace cereal
         const auto strValue = itsOS.str();
         // if there is the first or the last character in string is whitespace then add xml:space attribute
         // the last character has index length-2 because there is \0 character at end added with std::ends
-        if( !strValue.empty() && ( isWhitespace( strValue[0] ) || isWhitespace( strValue[strValue.length() - 2] ) ) )
+        if( !strValue.empty() && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[strValue.length() - 2] ) ) )
         {
           itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "xml:space", "preserve" ) );
         }
@@ -308,11 +313,6 @@ namespace cereal
             return "value" + std::to_string( counter++ ) + "\0";
         }
       }; // NodeInfo
-
-      bool isWhitespace( char c )
-      {
-        return c == ' ' || c == '\t' || c == '\n' || c == '\r' ;
-      }
 
       //! @}
 
