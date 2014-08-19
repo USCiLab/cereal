@@ -623,6 +623,7 @@ namespace cereal
       loadLong(T & lu){ loadValue( reinterpret_cast<std::uint64_t&>( lu ) ); }
 
     public:
+      #ifndef _MSC_VER
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, long>::value &&
@@ -636,6 +637,7 @@ namespace cereal
                               !std::is_same<T, std::uint32_t>::value &&
                               !std::is_same<T, std::uint64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
+      #endif // _MSC_VER
 
     private:
       //! Convert a string to a long long

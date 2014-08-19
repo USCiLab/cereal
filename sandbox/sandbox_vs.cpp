@@ -228,5 +228,10 @@ int main()
   std::cout << cereal::traits::has_member_save_minimal<MemberMinimal, Archive>::value << std::endl;
   std::cout << cereal::traits::has_member_load_minimal<MemberMinimal, Archive>::value << std::endl;
 
+
+  cereal::JSONInputArchive bla(std::cin);
+  long l;
+  bla.loadValue(l);
+
   return 0;
 }
