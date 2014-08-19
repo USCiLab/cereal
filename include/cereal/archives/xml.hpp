@@ -56,6 +56,11 @@ namespace cereal
 
     //! The name given to the root node in a cereal xml archive
     static const char * CEREAL_XML_STRING = CEREAL_XML_STRING_VALUE;
+
+    inline bool isWhitespace( char c )
+    {
+      return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
   }
 
   // ######################################################################
@@ -226,8 +231,16 @@ namespace cereal
         itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
+        const auto strValue = itsOS.str();
+        // if there is the first or the last character in string is whitespace then add xml:space attribute
+        // the last character has index length-2 because there is \0 character at end added with std::ends
+        if( !strValue.empty() && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[strValue.length() - 2] ) ) )
+        {
+          itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "xml:space", "preserve" ) );
+        }
+
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        auto dataPtr = itsXML.allocate_string( strValue.c_str() );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
@@ -367,7 +380,7 @@ namespace cereal
         try
         {
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          itsXML.parse<rapidxml::parse_trim_whitespace | rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & )
         {
