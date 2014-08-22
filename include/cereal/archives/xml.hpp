@@ -57,6 +57,7 @@ namespace cereal
     //! The name given to the root node in a cereal xml archive
     static const char * CEREAL_XML_STRING = CEREAL_XML_STRING_VALUE;
 
+    //! Returns true if the character is whitespace
     inline bool isWhitespace( char c )
     {
       return c == ' ' || c == '\t' || c == '\n' || c == '\r';
@@ -490,9 +491,31 @@ namespace cereal
         is >> value;
       }
 
+      //! Loads a char (signed or unsigned) from the current top node
+      template <class T, traits::EnableIf<std::is_integral<T>::value,
+                                          !std::is_same<T, bool>::value,
+                                          sizeof(T) == sizeof(char)> = traits::sfinae> inline
+      void loadValue( T & value )
+      {
+        value = *reinterpret_cast<T*>( itsNodes.top().node->value() );
+      }
+
+      //! Load an int8_t from the current top node (ensures we parse entire number)
+      void loadValue( int8_t & value )
+      {
+        int32_t val; loadValue( val ); value = val;
+      }
+
+      //! Load a uint8_t from the current top node (ensures we parse entire number)
+      void loadValue( uint8_t & value )
+      {
+        uint32_t val; loadValue( val ); value = val;
+      }
+
       //! Loads a type best represented as an unsigned long from the current top node
       template <class T, traits::EnableIf<std::is_unsigned<T>::value,
                                           !std::is_same<T, bool>::value,
+                                          !std::is_same<T, unsigned char>::value,
                                           sizeof(T) < sizeof(long long)> = traits::sfinae> inline
       void loadValue( T & value )
       {
@@ -510,6 +533,7 @@ namespace cereal
 
       //! Loads a type best represented as an int from the current top node
       template <class T, traits::EnableIf<std::is_signed<T>::value,
+                                          !std::is_same<T, char>::value,
                                           sizeof(T) <= sizeof(int)> = traits::sfinae> inline
       void loadValue( T & value )
       {
