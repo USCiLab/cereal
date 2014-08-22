@@ -216,9 +216,8 @@ BOOST_AUTO_TEST_CASE( xml_char_issue109 )
     test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( int8_t( chars[i] ) );
   }
 
-  // TODO: Uncomment these lines once support for char in XML archive is fixed.
-  //for( size_t i=0; i<( sizeof( chars ) / sizeof( chars[0] ) ); ++i )
-  //{
-  //  test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( char( chars[i] ) );
-  //}
+  for( size_t i=0; i<( sizeof( chars ) / sizeof( chars[0] ) ); ++i )
+  {
+    test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( char( chars[i] ) );
+  }
 }
