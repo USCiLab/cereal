@@ -99,3 +99,56 @@ BOOST_AUTO_TEST_CASE( json_memory )
   test_memory<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+class TestClass
+{
+  public:
+    TestClass(int v) : x(v) { }
+    int x;
+
+  private:
+    friend class cereal::access;
+    TestClass() { };
+
+    template<class Archive>
+      void serialize(Archive & ar) { ar(x); }
+};
+
+
+template <class IArchive, class OArchive>
+void test_default_construction()
+{
+  auto o_ptr = std::make_shared<TestClass>(1);
+  std::shared_ptr<TestClass> i_ptr;
+
+  std::ostringstream os;
+  {
+    OArchive oar(os);
+    oar(o_ptr);
+  }
+  {
+    std::istringstream is(os.str());
+    IArchive iar(is);
+    iar(i_ptr);
+  }
+  BOOST_CHECK_EQUAL(o_ptr->x, i_ptr->x);
+}
+
+BOOST_AUTO_TEST_CASE( binary_default_construction )
+{
+  test_default_construction<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_default_construction )
+{
+  test_default_construction<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_default_construction )
+{
+  test_default_construction<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_default_construction )
+{
+  test_default_construction<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}

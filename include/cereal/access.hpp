@@ -293,6 +293,13 @@ namespace cereal
         new (ptr) T( std::forward<Args>( args )... );
       }
 
+      // for non-placement new with a default constructor
+      template <class T> inline
+      static T * construct()
+      {
+        return new T();
+      }
+
       template <class T> inline
       static std::false_type load_and_construct(...)
       { return std::false_type(); }

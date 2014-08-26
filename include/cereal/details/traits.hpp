@@ -1187,6 +1187,25 @@ namespace cereal
     struct has_load_and_construct : std::integral_constant<bool,
       has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
     { };
+    
+    //! Determines whether the class T can be default constructed by cereal::access
+    template <class T>
+    struct is_default_constructible
+    {
+      #ifdef CEREAL_OLDER_GCC
+      template <class TT, class SFINAE = void>
+      struct test : no {};
+      template <class TT>
+      struct test<TT, typename detail::Void< decltype( cereal::access::construct<TT>() ) >::type> : yes {};
+      static const bool value = test<T>();
+      #else // NOT CEREAL_OLDER_GCC =========================================
+      template <class TT>
+      static auto test(int) -> decltype( cereal::access::construct<TT>(), yes());
+      template <class>
+      static no test(...);
+      static const bool value = std::is_same<decltype(test<T>(0)), yes>::value;
+      #endif // NOT CEREAL_OLDER_GCC
+    };
   } // namespace traits
 
   // ######################################################################
@@ -1204,7 +1223,7 @@ namespace cereal
     template <class T, class A>
     struct Construct<T, A, false, false>
     {
-      static_assert( std::is_default_constructible<T>::value,
+      static_assert( ::cereal::traits::is_default_constructible<T>::value,
                      "Trying to serialize a an object with no default constructor. \n\n "
                      "Types must either be default constructible or define either a member or non member Construct function. \n "
                      "Construct functions generally have the signature: \n\n "
@@ -1216,7 +1235,7 @@ namespace cereal
                      "  construct( a ); \n "
                      "} \n\n" );
       static T * load_andor_construct()
-      { return new T(); }
+      { return ::cereal::access::construct<T>(); }
     };
 
     template <class T, class A>
