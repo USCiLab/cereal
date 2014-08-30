@@ -601,6 +601,9 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
+      // Special cases to handle various flavors of long, which tend to conflict with
+      // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
+      #ifndef _MSC_VER
     private:
       //! 32 bit signed long loading from current node
       template <class T> inline
@@ -621,9 +624,8 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<sizeof(T) == sizeof(std::uint64_t) && !std::is_signed<T>::value, void>::type
       loadLong(T & lu){ loadValue( reinterpret_cast<std::uint64_t&>( lu ) ); }
-
+            
     public:
-      #ifndef _MSC_VER
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, long>::value &&
