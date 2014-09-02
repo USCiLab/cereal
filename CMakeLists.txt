@@ -3,6 +3,7 @@ project (cereal)
 
 option(SKIP_PORTABILITY_TEST "Skip portability tests" OFF)
 
+set(CMAKE_CXX_COMPILER "icc")
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -g -Wextra -Wshadow -pedantic ${CMAKE_CXX_FLAGS}")
 
 include_directories(./include)

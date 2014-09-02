@@ -65,8 +65,8 @@ namespace cereal
   CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::vector<T, A> const & vector )
   {
     ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
-    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( *it );
+    for(auto && v : vector)
+      ar( v );
   }
 
   //! Serialization for non-arithmetic vector types
@@ -79,8 +79,8 @@ namespace cereal
     ar( make_size_tag( size ) );
 
     vector.resize( static_cast<std::size_t>( size ) );
-    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( *it );
+    for(auto && v : vector)
+      ar( v );
   }
 
   //! Serialization for bool vector types
@@ -88,8 +88,8 @@ namespace cereal
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::vector<bool, A> const & vector )
   {
     ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
-    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
-      ar( static_cast<bool>( *it ) );
+    for(auto && v : vector)
+      ar( static_cast<bool>(v) );
   }
 
   //! Serialization for bool vector types
@@ -100,11 +100,11 @@ namespace cereal
     ar( make_size_tag( size ) );
 
     vector.resize( static_cast<std::size_t>( size ) );
-    for( auto it = vector.begin(), end = vector.end(); it != end; ++it )
+    for(auto && v : vector)
     {
       bool b;
       ar( b );
-      *it = b;
+      v = b;
     }
   }
 } // namespace cereal
