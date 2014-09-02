@@ -338,7 +338,7 @@ namespace cereal
     template <class Archive, class T>
     struct polymorphic_serialization_support
     {
-      #ifdef _MSC_VER
+      #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
       virtual void instantiate();
