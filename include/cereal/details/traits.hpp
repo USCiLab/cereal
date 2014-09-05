@@ -1168,6 +1168,22 @@ namespace cereal
     };
 
     // ######################################################################
+    //! Checks if the provided archive type is equal to some cereal archive type
+    /*! This automatically does things such as std::decay and removing any other wrappers that may be
+        on the Archive template parameter.
+
+        Example use:
+        @code{cpp}
+        // example use to disable a serialization function
+        template <class Archive, EnableIf<cereal::traits::is_same_archive<Archive, cereal::BinaryOutputArchive>::value> = sfinae>
+        void save( Archive & ar, MyType const & mt );
+        @endcode */
+    template <class ArchiveT, class CerealArchiveT>
+    struct is_same_archive : std::integral_constant<bool,
+      std::is_same<typename std::decay<typename strip_minimal<ArchiveT>::type>::type, CerealArchiveT>::value>
+    { };
+
+    // ######################################################################
     // Member load_and_construct
     template<typename T, typename A>
     struct has_member_load_and_construct : std::integral_constant<bool,
@@ -1187,7 +1203,7 @@ namespace cereal
     struct has_load_and_construct : std::integral_constant<bool,
       has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
     { };
-    
+
     //! Determines whether the class T can be default constructed by cereal::access
     template <class T>
     struct is_default_constructible
