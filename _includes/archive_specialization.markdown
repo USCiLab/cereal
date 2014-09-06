@@ -1,21 +1,30 @@
-Polymorphism
+Archive Specialization
 ============
 
-cereal supports serializing smart pointers to polymorphic base classes and will automatically deduce the derived types at runtime.
+cereal supports specializing serialization behaviors for different archive types.
 
 ---
 
 ### TLDR Version
 
-If you want to serialize some data through pointers to base types:
+You can use function overloading to replace built in serialization functions for existing or specific archives.  
 
-1. Include `<cereal/types/polymorphic.hpp>`
-2. Include all of the archives you want to be able to use with your class (`<cereal/archives/*.hpp`)
-3. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro in a .cpp file to register all of your derived classes
+You can also use function overloading to have different behaviors for a type depending on the archive (e.g. binary vs XML).  In some cases, you may need to use type-traits to restrict template parameters.
 
 ---
 
-## Registering Polymorphic Types
+## Specializing Built-in Types
+
+cereal comes with a support for nearly every type in the [standard library](stl_support.html).
+
+---
+
+## Specializing User Defined Types
+
+When serializing a type
+
+
+### Registering Polymorphic Types
 
 When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type.  When writing the object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
 
@@ -135,7 +144,7 @@ int main()
 
 ---
 
-## Registering Archives
+### Registering Archives
 In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.  This is already done for all archives that come with cereal.
 
 ```cpp
@@ -151,7 +160,7 @@ It is recommended to do this immediately following the declaration of your archi
 
 ---
 
-## Implementation notes
+### Implementation notes
 
 The implementation for polymorphic support can be considered a simplified version of that found in boost's serialization library.  Please
 see `<cereal/types/polymorphic.hpp>` and `<cereal/details/polymorphic_impl.hpp>` for acknowledgement and implementation
