@@ -1,21 +1,157 @@
 Archive Specialization
 ============
 
-cereal supports specializing serialization behaviors for different archive types.
+cereal supports having specific serialization behaviors for different archive types.
 
 ---
 
 ### TLDR Version
 
-You can use function overloading to replace built in serialization functions for existing or specific archives.  
+You can specialize your own types or types that cereal supports by default to exhibit specific behaviors with
+specific archives.  This is typically done by replacing the generic templated archive parameter (`template <class
+Archive>`) with the specific
+archive you wish to specialize for.  Specializations will be given precedence over any templated
+serialization function.
 
-You can also use function overloading to have different behaviors for a type depending on the archive (e.g. binary vs XML).  In some cases, you may need to use type-traits to restrict template parameters.
+If you want to specialize for several types of archives, you will need to use templates and type traits to restrict
+template instantiation.  cereal provides several facilities to help with this, such as:
+`cereal::traits::is_same_archive`, `cereal::traits::EnableIf`, and `cereal::traits::DisableIf`.
 
 ---
 
 ## Specializing Built-in Types
 
-cereal comes with a support for nearly every type in the [standard library](stl_support.html).
+Although cereal comes with a support for nearly every type in the [standard library](stl_support.html), there can be
+times when it is desirable to have custom functionality for a type that cereal provides the serialization for.  Function
+overloading can be used to override the cereal implementation with a custom one.
+
+### Specializing the archive
+
+If you want to make an archive behave differently for some type, you can do this by creating overloads where the archive
+is explicitly defined (and not a template parameter).
+
+```cpp
+namespace cereal
+{
+  // Overload the std::complex serialization code for a specific archive
+  template <class T>
+  void save( cereal::XMLOutputArchive & ar, std::complex<T> const & comp )
+  { /* your code here */ }
+
+  template <class T>
+  void load( cereal::XMLInputArchive & ar, std::complex<T> & comp )
+  { /* your code here */ }
+
+  // Note that it doesn't make much sense to overload a plain serialize function
+  // (one that does both the loading and saving) because it expects to be called
+  // for loading (an input archive) and saving (an output archive).
+  // We would end up needing to implement two versions of it, so using a load/save
+  // pair makes more sense.
+}
+```
+
+<span class="label label-warning">Important!</span>
+When overloading a cereal provided serialization function, you should place it in the `xCEREAL` namespace.
+
+### Specializing the type
+
+
+The following example shows how to specialize serialization for `std::map<std::string, std::string>` such that it
+roughly matches the output of an SQL \`WHERE\` clause in which all the expressions (from a name-value-pair perspective)
+are ANDed together:
+
+#### The serialization code:
+```cpp
+namespace cereal
+{
+  //! Saving for std::map<std::string, std::string> for text based archives
+  // Note that this shows off some internal cereal traits such as EnableIf,
+  // which will only allow this template to be instantiated if its predicates
+  // are true
+  template <class Archive, class C, class A,
+            traits::EnableIf<traits::is_text_archive<Archive>::value> = traits::sfinae> inline
+  void save( Archive & ar, std::map<std::string, std::string, C, A> const & map )
+  {
+    for( const auto & i : map )
+      ar( cereal::make_nvp<Archive>( i.first, i.second ) );
+  }
+
+  //! Loading for std::map<std::string, std::string> for text based archives
+  template <class Archive, class C, class A> inline
+  void load( Archive & ar, std::map<std::string, std::string, C, A> & map )
+  {
+    map.clear();
+
+    auto hint = map.begin();
+    while( true )
+    {
+      const auto namePtr = ar.getNodeName();
+
+      if( !namePtr )
+        break;
+
+      std::string key = namePtr;
+      std::string value; ar( value );
+      hint = map.emplace_hint( hint, std::move( key ), std::move( value ) );
+    }
+  }
+} // namespace cereal
+```
+<span class="label label-warning">Important!</span>
+Please note that for all specializations, you must have at least one parameter that has higher precedence than the
+default templated version that cereal provides.  This usually means you need to explicitly specialize at least one
+template parameter.
+
+#### Using the serialization code:
+```cpp
+int main()
+{
+  std::stringstream ss;
+  {
+    cereal::JSONOutputArchive ar(ss);
+    std::map<std::string, std::string> filter = {% raw %}{{"type", "sensor"}, {"status", "critical"}}{% endraw %};
+
+    ar( CEREAL_NVP(filter) );
+  }
+
+  std::cout << ss.str() << std::endl;
+
+  {
+    cereal::JSONInputArchive ar(ss);
+    cereal::JSONOutputArchive ar2(std::cout);
+
+    std::map<std::string, std::string> filter;
+
+    ar( CEREAL_NVP(filter) );
+    ar2( CEREAL_NVP(filter) );
+  }
+
+  std::cout << std::endl;
+  return 0;
+}
+```
+
+#### Output using xCEREAL built in support:
+```json
+{
+  "filter": [
+    { "key": "type", "value": "sensor" },
+    { "key": "status", "value": "critical" }
+  ]
+}
+```
+
+#### Output using the above specialized serializaton code:
+```json
+{
+    "filter": {
+        "status": "critical",
+        "type": "sensor"
+    }
+}
+```
+
+
 
 ---
 
