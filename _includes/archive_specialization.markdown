@@ -7,15 +7,11 @@ cereal supports having specific serialization behaviors for different archive ty
 
 ### TLDR Version
 
-You can specialize your own types or types that cereal supports by default to exhibit specific behaviors with
-specific archives.  This is typically done by replacing the generic templated archive parameter (`template <class
-Archive>`) with the specific
-archive you wish to specialize for.  Specializations will be given precedence over any templated
-serialization function.
+You can specialize your own types or types that cereal comes with support for to exhibit specific behaviors with
+specific archives.  This is typically done by replacing at least one generic templated parameter with the type you wish to specialize for.  Specializations will be given precedence over any templated serialization function.
 
 If you want to specialize for several types of archives, you will need to use templates and type traits to restrict
-template instantiation.  cereal provides several facilities to help with this, such as:
-`cereal::traits::is_same_archive`, `cereal::traits::EnableIf`, and `cereal::traits::DisableIf`.
+template instantiation.  cereal provides several traits to help with this, defined in `<cereal/details/traits.hpp>`.
 
 ---
 
@@ -23,12 +19,13 @@ template instantiation.  cereal provides several facilities to help with this, s
 
 Although cereal comes with a support for nearly every type in the [standard library](stl_support.html), there can be
 times when it is desirable to have custom functionality for a type that cereal provides the serialization for.  Function
-overloading can be used to override the cereal implementation with a custom one.
+overloading can be used to override the cereal implementation with a custom one.  This will work even if you include the
+cereal support for a type assuming that the compiler doesn't find any ambiguity in your overload (more on that later).
 
 ### Specializing the archive
 
 If you want to make an archive behave differently for some type, you can do this by creating overloads where the archive
-is explicitly defined (and not a template parameter).
+is explicitly defined (and not a template parameter):
 
 ```cpp
 namespace cereal
@@ -43,7 +40,7 @@ namespace cereal
   { /* your code here */ }
 
   // Note that it doesn't make much sense to overload a plain serialize function
-  // (one that does both the loading and saving) because it expects to be called
+  // (i.e. void serialize()) because it expects to be called
   // for loading (an input archive) and saving (an output archive).
   // We would end up needing to implement two versions of it, so using a load/save
   // pair makes more sense.
@@ -55,8 +52,11 @@ When overloading a cereal provided serialization function, you should place it i
 
 ### Specializing the type
 
+It is also easy to specialize the behavior of a specific type for all archives or a group of archives.  This is done by
+restricting the serialized type instead of restricting the archive (though you can definitely specialize on both the
+archive and the type).
 
-The following example shows how to specialize serialization for `std::map<std::string, std::string>` such that it
+The following example shows how to specialize serialization for `std::map<std::string, std::string>` for text archives such that it
 roughly matches the output of an SQL \`WHERE\` clause in which all the expressions (from a name-value-pair perspective)
 are ANDed together:
 
@@ -65,7 +65,7 @@ are ANDed together:
 namespace cereal
 {
   //! Saving for std::map<std::string, std::string> for text based archives
-  // Note that this shows off some internal cereal traits such as EnableIf,
+  // Note that this shows off some internal xCEREAL traits such as EnableIf,
   // which will only allow this template to be instantiated if its predicates
   // are true
   template <class Archive, class C, class A,
@@ -77,7 +77,8 @@ namespace cereal
   }
 
   //! Loading for std::map<std::string, std::string> for text based archives
-  template <class Archive, class C, class A> inline
+  template <class Archive, class C, class A,
+            traits::EnableIf<traits::is_text_archive<Archive>::value> = traits::sfinae> inline
   void load( Archive & ar, std::map<std::string, std::string, C, A> & map )
   {
     map.clear();
@@ -100,7 +101,7 @@ namespace cereal
 <span class="label label-warning">Important!</span>
 Please note that for all specializations, you must have at least one parameter that has higher precedence than the
 default templated version that cereal provides.  This usually means you need to explicitly specialize at least one
-template parameter.
+template parameter.  In the above examples we specialized two of the template parameters for `std::map`.
 
 #### Using the serialization code:
 ```cpp
@@ -144,160 +145,78 @@ int main()
 #### Output using the above specialized serializaton code:
 ```json
 {
-    "filter": {
-        "status": "critical",
-        "type": "sensor"
-    }
+  "filter": {
+    "status": "critical",
+    "type": "sensor"
+  }
 }
 ```
-
-
 
 ---
 
 ## Specializing User Defined Types
 
-When serializing a type
+Specializing a user defined type works in almost exactly the same fashion to types in the standard library that cereal provides
+the implementation for.  The only real difference is that there is no longer a requirement that the serialization code
+reside in the `xCEREAL` namespace - it now goes wherever you would normally put your serialization code.
 
-
-### Registering Polymorphic Types
-
-When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type.  When writing the object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
-
-<span class="label label-warning">Important!</span>
-Before registering a type, you must be sure that every archive type that will be used has already been included.
-
-<span class="label label-warning">Important!</span>
-Calling `CEREAL_REGISTER_TYPE` in a header file will result in linker errors if the header is included more than once. Call it in a .cpp file instead.
-
-#### myclasses.hpp
-``` {cpp}
- // A pure virtual base class
-struct BaseClass
-{
-  virtual void sayType() = 0;
-};
-
-// A class derived from BaseClass
-struct DerivedClassOne : public BaseClass
-{
-  void sayType();
-
-  int x;
-
-  template<class Archive>
-    void serialize( Archive & ar )
-    { ar( x ); }
-};
-
-// Another class derived from BaseClass
-struct EmbarrassingDerivedClass : public BaseClass
-{
-  void sayType();
-
-  float y;
-
-  template<class Archive>
-    void serialize( Archive & ar )
-    { ar( y ); }
-};
-```
-
-#### myclasses.cpp
-``` {cpp}
-
-#include "myclasses.hpp"
-#include <iostream>
-
-// Include any archives you plan on using with your type before you register it
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/xml.hpp>
-#include <cereal/archives/json.hpp>
-
-// Include the polymorphic serialization and registration mechanisms
-#include <cereal/types/polymorphic.hpp>
-
-void DerivedClassOne::sayType()
-{
-  std::cout << "DerivedClassOne" << std::endl; 
-}
-
-void EmbarrassingDerivedClass::sayType()
-{
-  std::cout << "EmbarrassingDerivedClass. Wait.. I mean DerivedClassTwo!" << std::endl; 
-}
-
-// Register DerivedClassOne
-CEREAL_REGISTER_TYPE(DerivedClassOne);
-
-// Register EmbarassingDerivedClass with a less embarrasing name
-CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
-
-// Note that there is no need to register the base class, only derived classes
-
-```
-
-#### main.cpp
-``` {cpp}
-#include "myclasses.hpp"
-
-#include <cereal/archives/xml.hpp>
-#include <cereal/types/polymorphic.hpp>
-
-#include <iostream>
-#include <fstream>
-
-int main()
-{
-  {
-    std::ofstream os( "polymorphism_test.xml" );
-    cereal::XMLOutputArchive oarchive( os );
-
-    // Create instances of the derived classes, but only keep base class pointers
-    std::shared_ptr<BaseClass> ptr1 = std::make_shared<DerivedClassOne>();
-    std::shared_ptr<BaseClass> ptr2 = std::make_shared<EmbarrassingDerivedClass>();
-    oarchive( ptr1, ptr2 );
-  }
-
-  {
-    std::ifstream is( "polymorphism_test.xml" );
-    cereal::XMLInputArchive iarchive( is );
-
-    // De-serialize the data as base class pointers, and watch as they are
-    // re-instantiated as derived classes
-    std::shared_ptr<BaseClass> ptr1;
-    std::shared_ptr<BaseClass> ptr2;
-    iarchive( ptr1, ptr2 );
-
-    // Ta-da! This should output:
-    ptr1->sayType();  // "DerivedClassOne"
-    ptr2->sayType();  // "EmbarrassingDerivedClass. Wait.. I mean DerivedClassTwo!"
-  }
-
-  return 0;
-}
-```
-
----
-
-### Registering Archives
-In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.  This is already done for all archives that come with cereal.
+Since there is no provided implementation to conflict with, you have more control over the generality of your
+implementations.  It is much easier to use templates to restrict how the serialization functions are instantiated, as
+shown in the following example, which uses different serialization depending on whether a binary archive is used versus
+some other type:
 
 ```cpp
-namespace mynamespace
+struct Hello
 {
-  class MyNewOutputArchive : public OutputArchive<MyNewArchive>
-  { /* ... */ }; 
-}
-CEREAL_REGISTER_ARCHIVE(mynamespace::MyNewOutputArchive)
+  int x;
+  
+  // Enabled for text archives (e.g. XML, JSON)
+  template <class Archive,
+            cereal::traits::EnableIf<cereal::traits::is_text_archive<Archive>::value>
+            = cereal::traits::sfinae>
+  std::string save_minimal( Archive & ) const
+  { 
+    return std::to_string( x ) + "hello";
+  }
+
+  // Enabled for text archives (e.g. XML, JSON)
+  template <class Archive,
+            cereal::traits::EnableIf<cereal::traits::is_text_archive<Archive>::value>
+            = cereal::traits::sfinae>
+  void load_minimal( Archive const &, std::string const & str )
+  {
+    x = std::stoi( str.substr(0, 1) );
+  }
+
+  // Enabled for binary archives (e.g. binary, portable binary)
+  template <class Archive,
+            cereal::traits::DisableIf<cereal::traits::is_text_archive<Archive>::value>
+            = cereal::traits::sfinae>
+  int save_minimal( Archive & ) const
+  { 
+    return x; 
+  }
+
+  // Enabled for binary archives (e.g. binary, portable binary)
+  template <class Archive,
+            cereal::traits::DisableIf<cereal::traits::is_text_archive<Archive>::value>
+            = cereal::traits::sfinae>
+  void load_minimal( Archive const &, int const & xx )
+  { 
+    x = xx;
+  }
+};
 ```
 
-It is recommended to do this immediately following the declaration of your archive.
+## Useful Type Traits
 
----
+There are quite a few useful type traits in `<cereal/details/traits.hpp>` that are especially useful for specializing
+various serialization functions.
 
-### Implementation notes
+EnableIf and DisableIf
 
-The implementation for polymorphic support can be considered a simplified version of that found in boost's serialization library.  Please
-see `<cereal/types/polymorphic.hpp>` and `<cereal/details/polymorphic_impl.hpp>` for acknowledgement and implementation
-notes.
+is_same_archive
+
+is_text_archive
+
+strip_minimal
