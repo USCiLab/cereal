@@ -117,5 +117,8 @@
     <ClCompile Include="..\..\unittests\structs_minimal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\unittests\boost_optional.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
