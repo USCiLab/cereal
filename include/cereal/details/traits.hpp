@@ -912,38 +912,52 @@ namespace cereal
       (has_non_member_versioned_load<T, InputArchive>::value && has_non_member_versioned_save<T, OutputArchive>::value)> {};
 
     // ######################################################################
+    namespace detail
+    {
+      template <class T, class OutputArchive>
+      struct count_output_serializers : std::integral_constant<int,
+        has_member_save<T, OutputArchive>::value +
+        has_non_member_save<T, OutputArchive>::value +
+        has_member_serialize<T, OutputArchive>::value +
+        has_non_member_serialize<T, OutputArchive>::value +
+        has_member_save_minimal<T, OutputArchive>::value +
+        has_non_member_save_minimal<T, OutputArchive>::value +
+        /*-versioned---------------------------------------------------------*/
+        has_member_versioned_save<T, OutputArchive>::value +
+        has_non_member_versioned_save<T, OutputArchive>::value +
+        has_member_versioned_serialize<T, OutputArchive>::value +
+        has_non_member_versioned_serialize<T, OutputArchive>::value +
+        has_member_versioned_save_minimal<T, OutputArchive>::value +
+        has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
+    }
+
     template <class T, class OutputArchive>
     struct is_output_serializable : std::integral_constant<bool,
-      has_member_save<T, OutputArchive>::value +
-      has_non_member_save<T, OutputArchive>::value +
-      has_member_serialize<T, OutputArchive>::value +
-      has_non_member_serialize<T, OutputArchive>::value +
-      has_member_save_minimal<T, OutputArchive>::value +
-      has_non_member_save_minimal<T, OutputArchive>::value +
-      /*-versioned---------------------------------------------------------*/
-      has_member_versioned_save<T, OutputArchive>::value +
-      has_non_member_versioned_save<T, OutputArchive>::value +
-      has_member_versioned_serialize<T, OutputArchive>::value +
-      has_non_member_versioned_serialize<T, OutputArchive>::value +
-      has_member_versioned_save_minimal<T, OutputArchive>::value +
-      has_non_member_versioned_save_minimal<T, OutputArchive>::value == 1> {};
+      detail::count_output_serializers<T, OutputArchive>::value == 1> {};
 
     // ######################################################################
+    namespace detail
+    {
+      template <class T, class InputArchive>
+      struct count_input_serializers : std::integral_constant<int,
+        has_member_load<T, InputArchive>::value +
+        has_non_member_load<T, InputArchive>::value +
+        has_member_serialize<T, InputArchive>::value +
+        has_non_member_serialize<T, InputArchive>::value +
+        has_member_load_minimal<T, InputArchive>::value +
+        has_non_member_load_minimal<T, InputArchive>::value +
+        /*-versioned---------------------------------------------------------*/
+        has_member_versioned_load<T, InputArchive>::value +
+        has_non_member_versioned_load<T, InputArchive>::value +
+        has_member_versioned_serialize<T, InputArchive>::value +
+        has_non_member_versioned_serialize<T, InputArchive>::value +
+        has_member_versioned_load_minimal<T, InputArchive>::value +
+        has_non_member_versioned_load_minimal<T, InputArchive>::value> {};
+    }
+
     template <class T, class InputArchive>
     struct is_input_serializable : std::integral_constant<bool,
-      has_member_load<T, InputArchive>::value +
-      has_non_member_load<T, InputArchive>::value +
-      has_member_serialize<T, InputArchive>::value +
-      has_non_member_serialize<T, InputArchive>::value +
-      has_member_load_minimal<T, InputArchive>::value +
-      has_non_member_load_minimal<T, InputArchive>::value +
-      /*-versioned---------------------------------------------------------*/
-      has_member_versioned_load<T, InputArchive>::value +
-      has_non_member_versioned_load<T, InputArchive>::value +
-      has_member_versioned_serialize<T, InputArchive>::value +
-      has_non_member_versioned_serialize<T, InputArchive>::value +
-      has_member_versioned_load_minimal<T, InputArchive>::value +
-      has_non_member_versioned_load_minimal<T, InputArchive>::value == 1> {};
+      detail::count_input_serializers<T, InputArchive>::value == 1> {};
 
     // ######################################################################
     template <class T, class OutputArchive>

@@ -433,16 +433,23 @@ namespace cereal
                                            (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)))> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+        static_assert(traits::detail::count_output_serializers<T, ArchiveType>::value != 0,
+            "cereal could not find any output serialization functions for the provided type and archive combination. \n\n "
             "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
             "Serialize functions generally have the following signature: \n\n "
             "template<class Archive> \n "
             "  void serialize(Archive & ar) \n "
             "  { \n "
             "    ar( member1, member2, member3 ); \n "
             "  } \n\n " );
+
+        static_assert(traits::detail::count_output_serializers<T, ArchiveType>::value < 2,
+            "cereal found more than one compatible output serializtion function for the provided type and archive combination. \n\n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
+            "Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n\n ");
+
         return *self;
       }
 
@@ -794,16 +801,23 @@ namespace cereal
                                            (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)))> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+        static_assert(traits::detail::count_input_serializers<T, ArchiveType>::value != 0,
+            "cereal could not find any input serialization functions for the provided type and archive combination. \n\n "
             "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
             "Serialize functions generally have the following signature: \n\n "
             "template<class Archive> \n "
             "  void serialize(Archive & ar) \n "
             "  { \n "
             "    ar( member1, member2, member3 ); \n "
             "  } \n\n " );
+
+        static_assert(traits::detail::count_input_serializers<T, ArchiveType>::value < 2,
+            "cereal found more than one compatible input serializtion function for the provided type and archive combination. \n\n "
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
+            "Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n "
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n\n ");
+
         return *self;
       }
 
