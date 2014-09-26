@@ -93,7 +93,7 @@ namespace cereal
       is accomplished through the cereal::SizeTag object, which will also add an attribute
       to its parent field.
       \ingroup Archives */
-  class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
+  class XMLOutputArchive : public OutputArchive<XMLOutputArchive>, public traits::TextArchive
   {
     public:
       /*! @name Common Functionality
@@ -362,7 +362,7 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  class XMLInputArchive : public InputArchive<XMLInputArchive>
+  class XMLInputArchive : public InputArchive<XMLInputArchive>, public traits::TextArchive
   {
     public:
       /*! @name Common Functionality

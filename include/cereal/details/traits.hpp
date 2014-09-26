@@ -1182,22 +1182,6 @@ namespace cereal
     };
 
     // ######################################################################
-    //! Checks if the provided archive type is equal to some cereal archive type
-    /*! This automatically does things such as std::decay and removing any other wrappers that may be
-        on the Archive template parameter.
-
-        Example use:
-        @code{cpp}
-        // example use to disable a serialization function
-        template <class Archive, EnableIf<cereal::traits::is_same_archive<Archive, cereal::BinaryOutputArchive>::value> = sfinae>
-        void save( Archive & ar, MyType const & mt );
-        @endcode */
-    template <class ArchiveT, class CerealArchiveT>
-    struct is_same_archive : std::integral_constant<bool,
-      std::is_same<typename std::decay<typename strip_minimal<ArchiveT>::type>::type, CerealArchiveT>::value>
-    { };
-
-    // ######################################################################
     // Member load_and_construct
     template<typename T, typename A>
     struct has_member_load_and_construct : std::integral_constant<bool,
@@ -1236,6 +1220,40 @@ namespace cereal
       static const bool value = std::is_same<decltype(test<T>(0)), yes>::value;
       #endif // NOT CEREAL_OLDER_GCC
     };
+
+    // ######################################################################
+    namespace detail
+    {
+      //! Removes all qualifiers and minimal wrappers from an archive
+      template <class A>
+      using decay_archive = typename std::decay<typename strip_minimal<A>::type>::type;
+    }
+
+    //! Checks if the provided archive type is equal to some cereal archive type
+    /*! This automatically does things such as std::decay and removing any other wrappers that may be
+        on the Archive template parameter.
+
+        Example use:
+        @code{cpp}
+        // example use to disable a serialization function
+        template <class Archive, EnableIf<cereal::traits::is_same_archive<Archive, cereal::BinaryOutputArchive>::value> = sfinae>
+        void save( Archive & ar, MyType const & mt );
+        @endcode */
+    template <class ArchiveT, class CerealArchiveT>
+    struct is_same_archive : std::integral_constant<bool,
+      std::is_same<detail::decay_archive<ArchiveT>, CerealArchiveT>::value>
+    { };
+
+    //! Type traits only struct used to mark an archive as human readable (text based)
+    /*! Archives that wish to identify as text based/human readable should inherit from
+        this struct */
+    struct TextArchive {};
+
+    //! Checks if an archive is a text archive (human readable)
+    template <class A>
+    struct is_text_archive : std::integral_constant<bool,
+      std::is_base_of<TextArchive, detail::decay_archive<A>>::value>
+    { };
   } // namespace traits
 
   // ######################################################################
