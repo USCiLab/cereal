@@ -127,7 +127,7 @@ void save(Archive & archive,
 }
 
 template<class Archive>
-void load(Archive & archive)
+void load(Archive & archive,
           MyClass & m)
 {
   archive( m.x, m.y, m.z ); 
