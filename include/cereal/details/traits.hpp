@@ -498,8 +498,7 @@ namespace cereal
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive.
 
-        @param test_name The name to give the test (e.g. save_minimal or versioned_save_minimal)
-        @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
+        @param test_name The name to give the test (e.g. save_minimal or versioned_save_minimal) */
     #define CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_TEST(test_name)                                                      \
     template <class T, class A>                                                                                      \
     struct has_member_##test_name : std::integral_constant<bool, detail::has_member_##test_name##_impl<T, A>::value> \
