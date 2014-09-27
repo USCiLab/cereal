@@ -165,6 +165,8 @@ implementations.  It is much easier to use templates to restrict how the seriali
 shown in the following example, which uses different serialization depending on whether a binary archive is used versus
 some other type:
 
+<a name="user_defined_types_example"></a>
+
 ```cpp
 struct Hello
 {
@@ -210,13 +212,42 @@ struct Hello
 
 ## Useful Type Traits
 
-There are quite a few useful type traits in `<cereal/details/traits.hpp>` that are especially useful for specializing
-various serialization functions.
+There are several useful type traits defined in `<cereal/details/traits.hpp>` which are useful when specializing serialization functions.  The doxygen documentation for this entire file can be found [here]({{ site.baseurl }}/assets/doxygen/traits_8hpp.html).  The following are a few especially helpful traits:
 
-EnableIf and DisableIf
+### EnableIf and DisableIf
 
-is_same_archive
+If you are used to template metaprogramming in C++, you may already be familiar with techniques such as
+[`std::enable_if`](http://en.cppreference.com/w/cpp/types/enable_if), which can be used to selectively disable function
+overloads.
 
-is_text_archive
+cereal provides some similar functionality in a slightly more aesthetically pleasing manner with `EnableIf`
+([documentation]({{ site.baseurl }}/assets/doxygen/traits_8hpp.html#a07719740a7cec6692b44244201a92603)) and
+`DisableIf` ([documentation]({{ site.baseurl }}/assets/doxygen/traits_8hpp.html#a42e5f793ba5a1b3d2fd674d7334b12bd)).  These will enable (with `EnableIf`) or disable (with `DisableIf`) a function overload if all of their variadic bool parameters, when ANDed together, are true.  Since they perform an AND operation of their arguments, OR operations or other more complicated boolean expressions should be done manually beforehand.
 
-strip_minimal
+Instead of using the clumsy syntax of `std::enable_if`, which requires replacing the function return type, `EnableIf`
+and `DisableIf` are added as an extra template parameter to the function, with the default value of
+`cereal::traits::sfinae`.  See any of the above [examples](#user_defined_types_example) or the
+linked documentation for useage details.
+
+### is\_same_archive
+
+`is_same_archive` operates in a similar manner to [`std::is_same`](http://en.cppreference.com/w/cpp/types/is_same)
+except that it will automatically strip various wrappers and CV (const or volatile) qualifiers that may be applied.  Its
+use is recommended over `std::is_same` because cereal will often slightly adjust archive parameters so that they become
+const or are wrapped in some internal traits class.  See the [documentation]({{ site.baseurl }}/assets/doxygen/structcereal_1_1traits_1_1is__same__archive.html) for more information and an example.
+
+### is\_text_archive
+
+`is_text_archive` checks to see if an archive has been tagged with the `cereal::traits::TextArchive` tag.  JSON and XML
+archives that ship with cereal both have this tag.  See [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1traits_1_1is__text__archive.html) for more information.
+
+<a name="strip_minimal"></a>
+
+### strip\_minimal
+
+`strip_minimal` is especially useful when working with custom `save_minimal` or `load_minimal` functions.  cereal may
+wrap types when performing compile time checks to ensure the validity of such functions, which may cause some custom
+metaprogramming to fail unexpectedly.  Using the type provided by `strip_minimal`, instead of the raw template
+parameter, will help prevent this.  Check out the [documentation]({{ site.baseurl }}/assets/doxygen/structcereal_1_1traits_1_1strip__minimal.html) as well as its use for serializing enums in the
+`common.hpp` type support [here]({{ site.baseurl }}/assets/doxygen/common_8hpp_source.html).
+

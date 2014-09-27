@@ -292,6 +292,10 @@ which produces the output:
 
 Note the lack of an internal node for the minimal representation.
 
+If you are using template metaprogramming on your minimal serialization functions, you may find the discussion of
+`strip_minimal` in the advanced section of the 
+[archive specialization]({{ site.baseurl }}/archive_specialization.html#strip_minimal) documentation useful.
+
 <a name="versioning"></a>
 ### Explicit versioning
 
