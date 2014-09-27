@@ -20,7 +20,7 @@ template instantiation.  cereal provides several traits to help with this, defin
 Although cereal comes with a support for nearly every type in the [standard library](stl_support.html), there can be
 times when it is desirable to have custom functionality for a type that cereal provides the serialization for.  Function
 overloading can be used to override the cereal implementation with a custom one.  This will work even if you include the
-cereal support for a type assuming that the compiler doesn't find any ambiguity in your overload (more on that later).
+cereal support for a type - assuming that the compiler doesn't find any ambiguity in your overload (more on that later).
 
 ### Specializing the archive
 
@@ -58,7 +58,7 @@ archive and the type).
 
 The following example shows how to specialize serialization for `std::map<std::string, std::string>` for text archives such that it
 roughly matches the output of an SQL \`WHERE\` clause in which all the expressions (from a name-value-pair perspective)
-are ANDed together:
+are ANDed together (inspired by [this](http://stackoverflow.com/questions/22569832/is-there-a-way-to-specify-a-simpler-json-de-serialization-for-stdmap-using-c) stackoverflow post):
 
 #### The serialization code:
 ```cpp
