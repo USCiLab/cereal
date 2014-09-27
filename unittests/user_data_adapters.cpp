@@ -30,6 +30,15 @@
 
 struct SomeStruct {};
 
+struct UserData
+{
+  UserData( SomeStruct * pp, SomeStruct & r ) :
+    p(pp), ref(r) {}
+
+  SomeStruct * p;
+  std::reference_wrapper<SomeStruct> ref;
+};
+
 struct UserStruct
 {
   UserStruct( std::int32_t i,
@@ -55,17 +64,10 @@ struct UserStruct
   {
     std::int32_t ii;
     ar( ii );
-    construct( ii, ar.userdata.p, ar.userdata.ref.get() );
+    auto & data = cereal::get_user_data<UserData>( ar );
+    construct( ii, data.p, data.ref.get() );
+    //construct( ii, ar.userdata.p, ar.userdata.ref.get() );
   }
-};
-
-struct UserData
-{
-  UserData( SomeStruct * pp, SomeStruct & r ) :
-    p(pp), ref(r) {}
-
-  SomeStruct * p;
-  std::reference_wrapper<SomeStruct> ref;
 };
 
 template <class IArchive, class OArchive>
@@ -92,8 +94,9 @@ void test_user_data_adapters()
 
     std::istringstream is(os.str());
     {
-      UserData ud(&ss, ss);
-      cereal::UserDataAdapter<UserData, IArchive> iar(ud, is);
+      //UserData ud(&ss, ss);
+      //cereal::UserDataAdapter<UserData, IArchive> iar(ud, is);
+      IArchive iar(is);
 
       iar(i_ptr);
     }

@@ -34,6 +34,9 @@
 
 namespace cereal
 {
+  // Forward declaration for friend access
+  template <class U, class A> U & get_user_data( A & );
+
   //! Wraps an archive and gives access to user data
   /*! This adapter is useful if you require access to
       either raw pointers or references within your
@@ -95,21 +98,26 @@ namespace cereal
       @tparam UserData The type to give the archive access to
       @tparam Archive The arachive to wrap */
   template <class UserData, class Archive>
-  struct UserDataAdapter : public Archive
+  class UserDataAdapter : public Archive
   {
-    template <class ... Args>
-    UserDataAdapter( UserData ud, Args && ... args ) :
-      Archive( std::forward<Args>( args )... ),
-      userdata( ud )
-    { }
+    public:
+      template <class ... Args>
+      UserDataAdapter( UserData ud, Args && ... args ) :
+        Archive( std::forward<Args>( args )... ),
+        userdata( ud )
+      { }
 
-    UserData & userdata;
+    private:
+      void rtti() {}
+      friend UserData & get_user_data<UserData>( Archive & ar );
+      UserData & userdata;
   };
 
-  template <class UserData, class Archive> inline
+  template <class UserData, class Archive>
   UserData & get_user_data( Archive & ar )
   {
-    return static_cast<UserDataAdapter<UserData, Archive>>( ar ).userdata;
+    //return static_cast<UserDataAdapter<UserData, Archive> &>( ar ).userdata;
+    return dynamic_cast<UserDataAdapter<UserData, Archive> &>( ar ).userdata;
   }
 } // namespace cereal
 

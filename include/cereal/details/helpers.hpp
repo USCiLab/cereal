@@ -220,8 +220,8 @@ namespace cereal
   namespace detail
   {
     // base classes for type checking
-    struct OutputArchiveBase {};
-    struct InputArchiveBase {};
+    class OutputArchiveBase { protected: virtual void rtti(){} };
+    class InputArchiveBase { protected: virtual void rtti(){} };
 
     // forward decls for polymorphic support
     template <class Archive, class T> struct polymorphic_serialization_support;
