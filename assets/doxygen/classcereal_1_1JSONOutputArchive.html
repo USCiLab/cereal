@@ -107,6 +107,7 @@ Inheritance diagram for cereal::JSONOutputArchive:</div>
   <img src="classcereal_1_1JSONOutputArchive.png" usemap="#cereal::JSONOutputArchive_map" alt=""/>
   <map id="cereal::JSONOutputArchive_map" name="cereal::JSONOutputArchive_map">
 <area href="classcereal_1_1OutputArchive.html" alt="cereal::OutputArchive&lt; JSONOutputArchive &gt;" shape="rect" coords="0,56,276,80"/>
+<area href="structcereal_1_1traits_1_1TextArchive.html" title="Type traits only struct used to mark an archive as human readable (text based) " alt="cereal::traits::TextArchive" shape="rect" coords="286,56,562,80"/>
 <area href="structcereal_1_1detail_1_1OutputArchiveBase.html" alt="cereal::detail::OutputArchiveBase" shape="rect" coords="0,0,276,24"/>
 </map>
  </div></div>
@@ -199,43 +200,20 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#ad08dc226626239c6e22bf2747a7cf275">saveValue</a> (char const *s)</td></tr>
 <tr class="memdesc:ad08dc226626239c6e22bf2747a7cf275"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a const char * to the current node. <br/></td></tr>
 <tr class="separator:ad08dc226626239c6e22bf2747a7cf275"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5413e5b75baf3f5a9800fd7848642168"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5413e5b75baf3f5a9800fd7848642168"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a5413e5b75baf3f5a9800fd7848642168"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_same<br class="typebreak"/>
-&lt; T, long &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::int32_t &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::int64_t &gt;::value, void &gt;<br class="typebreak"/>
-::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a5413e5b75baf3f5a9800fd7848642168">saveValue</a> (T t)</td></tr>
-<tr class="memdesc:a5413e5b75baf3f5a9800fd7848642168"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a long if it would not be caught otherwise. <br/></td></tr>
-<tr class="separator:a5413e5b75baf3f5a9800fd7848642168"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ec457ea83ab1a683d521d1b35f7a8d1"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1ec457ea83ab1a683d521d1b35f7a8d1"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a1ec457ea83ab1a683d521d1b35f7a8d1"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_same<br class="typebreak"/>
-&lt; T, unsigned long &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::uint32_t &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::uint64_t &gt;::value, void &gt;<br class="typebreak"/>
-::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a1ec457ea83ab1a683d521d1b35f7a8d1">saveValue</a> (T t)</td></tr>
-<tr class="memdesc:a1ec457ea83ab1a683d521d1b35f7a8d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize an unsigned long if it would not be caught otherwise. <br/></td></tr>
-<tr class="separator:a1ec457ea83ab1a683d521d1b35f7a8d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad747505c72a88f217d650525b6a10e6"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:aad747505c72a88f217d650525b6a10e6"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value &amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-long &gt;::value &amp;&amp;!std::is_same<br class="typebreak"/>
-&lt; T, unsigned long &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::int64_t &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::uint64_t &gt;::value <br class="typebreak"/>
-&amp;&amp;(sizeof(T) &gt;=sizeof(long <br class="typebreak"/>
-double)||sizeof(T) &gt;=sizeof(long <br class="typebreak"/>
-long)), void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#aad747505c72a88f217d650525b6a10e6">saveValue</a> (T const &amp;t)</td></tr>
-<tr class="memdesc:aad747505c72a88f217d650525b6a10e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save exotic arithmetic as strings to current node.  <a href="#aad747505c72a88f217d650525b6a10e6">More...</a><br/></td></tr>
-<tr class="separator:aad747505c72a88f217d650525b6a10e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memTemplParams" colspan="2"><a class="anchor" id="a60c9ae47585eb6eb0207ebf3c1f8a345"></a>
+template&lt;class T , traits::EnableIf&lt; std::is_same&lt; T, long &gt;::value,!std::is_same&lt; T, std::int32_t &gt;::value,!std::is_same&lt; T, std::int64_t &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a60c9ae47585eb6eb0207ebf3c1f8a345">saveValue</a> (T t)</td></tr>
+<tr class="memdesc:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a long if it would not be caught otherwise. <br/></td></tr>
+<tr class="separator:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memTemplParams" colspan="2"><a class="anchor" id="a60c9ae47585eb6eb0207ebf3c1f8a345"></a>
+template&lt;class T , traits::EnableIf&lt; std::is_same&lt; T, unsigned long &gt;::value,!std::is_same&lt; T, std::uint32_t &gt;::value,!std::is_same&lt; T, std::uint64_t &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a60c9ae47585eb6eb0207ebf3c1f8a345">saveValue</a> (T t)</td></tr>
+<tr class="memdesc:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize an unsigned long if it would not be caught otherwise. <br/></td></tr>
+<tr class="separator:a60c9ae47585eb6eb0207ebf3c1f8a345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3918206b9255e0b523ace06e16a02ea"><td class="memTemplParams" colspan="2">template&lt;class T , traits::EnableIf&lt; std::is_arithmetic&lt; T &gt;::value,!std::is_same&lt; T, long &gt;::value,!std::is_same&lt; T, unsigned long &gt;::value,!std::is_same&lt; T, std::int64_t &gt;::value,!std::is_same&lt; T, std::uint64_t &gt;::value,(sizeof(T) &gt;  = sizeof(long double) || sizeof(T) &gt;= sizeof(long long)&gt; </td></tr>
+<tr class="memitem:ac3918206b9255e0b523ace06e16a02ea"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#ac3918206b9255e0b523ace06e16a02ea">saveValue</a> (T const &amp;t)</td></tr>
+<tr class="memdesc:ac3918206b9255e0b523ace06e16a02ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save exotic arithmetic as strings to current node.  <a href="#ac3918206b9255e0b523ace06e16a02ea">More...</a><br/></td></tr>
+<tr class="separator:ac3918206b9255e0b523ace06e16a02ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5014cca0214e98b2d93be821a9e1ce36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONOutputArchive.html#a5014cca0214e98b2d93be821a9e1ce36">writeName</a> ()</td></tr>
 <tr class="memdesc:a5014cca0214e98b2d93be821a9e1ce36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the name of the upcoming node and prepare object/array state.  <a href="#a5014cca0214e98b2d93be821a9e1ce36">More...</a><br/></td></tr>
 <tr class="separator:a5014cca0214e98b2d93be821a9e1ce36"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -339,17 +317,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a class="anchor" id="aad747505c72a88f217d650525b6a10e6"></a>
+<a class="anchor" id="ac3918206b9255e0b523ace06e16a02ea"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class T , traits::EnableIf&lt; std::is_arithmetic&lt; T &gt;::value,!std::is_same&lt; T, long &gt;::value,!std::is_same&lt; T, unsigned long &gt;::value,!std::is_same&lt; T, std::int64_t &gt;::value,!std::is_same&lt; T, std::uint64_t &gt;::value,(sizeof(T) &gt;  = sizeof(long double) || sizeof(T) &gt;= sizeof(long long)&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value &amp;&amp; !std::is_same&lt;T, long&gt;::value &amp;&amp; !std::is_same&lt;T, unsigned long&gt;::value &amp;&amp; !std::is_same&lt;T, std::int64_t&gt;::value &amp;&amp; !std::is_same&lt;T, std::uint64_t&gt;::value &amp;&amp; (sizeof(T) &gt;= sizeof(long double) || sizeof(T) &gt;= sizeof(long long)), void&gt;::type cereal::JSONOutputArchive::saveValue </td>
+          <td class="memname">void cereal::JSONOutputArchive::saveValue </td>
           <td>(</td>
           <td class="paramtype">T const &amp;&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
@@ -436,7 +414,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -112,38 +112,38 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4bbe63a5ea761fb49b47a3b790d7de9d"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4bbe63a5ea761fb49b47a3b790d7de9d"></a>
+<tr class="memitem:a8aeb7b414512d91291d759aaa284a8c2"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8aeb7b414512d91291d759aaa284a8c2"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a4bbe63a5ea761fb49b47a3b790d7de9d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a8aeb7b414512d91291d759aaa284a8c2"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (BinaryOutputArchive &amp;ar, T const &amp;t)</td></tr>
-<tr class="memdesc:a4bbe63a5ea761fb49b47a3b790d7de9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for POD types to binary. <br/></td></tr>
-<tr class="separator:a4bbe63a5ea761fb49b47a3b790d7de9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ac105aae16492395ff64a0645b4658c"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6ac105aae16492395ff64a0645b4658c"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (BinaryOutputArchive &amp;ar, T const &amp;t)</td></tr>
+<tr class="memdesc:a8aeb7b414512d91291d759aaa284a8c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for POD types to binary. <br/></td></tr>
+<tr class="separator:a8aeb7b414512d91291d759aaa284a8c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d9235c50bdb3961865274a086dda972"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4d9235c50bdb3961865274a086dda972"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a6ac105aae16492395ff64a0645b4658c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a4d9235c50bdb3961865274a086dda972"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (BinaryInputArchive &amp;ar, T &amp;t)</td></tr>
-<tr class="memdesc:a6ac105aae16492395ff64a0645b4658c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for POD types from binary. <br/></td></tr>
-<tr class="separator:a6ac105aae16492395ff64a0645b4658c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
-<tr class="memdesc:aef54ff4b5afaa7967af7cdefecd6f134"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing NVP types to binary.  <a href="#aef54ff4b5afaa7967af7cdefecd6f134">More...</a><br/></td></tr>
-<tr class="separator:aef54ff4b5afaa7967af7cdefecd6f134"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, SizeTag&lt; T &gt; &amp;t)</td></tr>
-<tr class="memdesc:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing SizeTags to binary.  <a href="#a42a7af89d6d5445bf7bdc35daa66d9bb">More...</a><br/></td></tr>
-<tr class="separator:a42a7af89d6d5445bf7bdc35daa66d9bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd8924b66686b003f01b5ceafa9d6ce1"><td class="memTemplParams" colspan="2"><a class="anchor" id="acd8924b66686b003f01b5ceafa9d6ce1"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (BinaryInputArchive &amp;ar, T &amp;t)</td></tr>
+<tr class="memdesc:a4d9235c50bdb3961865274a086dda972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for POD types from binary. <br/></td></tr>
+<tr class="separator:a4d9235c50bdb3961865274a086dda972"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64ec0a04e5dc57a58de5e78b5a87b8d3"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a64ec0a04e5dc57a58de5e78b5a87b8d3"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SERIALIZE_FUNCTION_NAME</b> (Archive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
+<tr class="memdesc:a64ec0a04e5dc57a58de5e78b5a87b8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing NVP types to binary.  <a href="#a64ec0a04e5dc57a58de5e78b5a87b8d3">More...</a><br/></td></tr>
+<tr class="separator:a64ec0a04e5dc57a58de5e78b5a87b8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5fb9b1468920e7e23cb2817e65fed4a"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:ac5fb9b1468920e7e23cb2817e65fed4a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SERIALIZE_FUNCTION_NAME</b> (Archive &amp;ar, SizeTag&lt; T &gt; &amp;t)</td></tr>
+<tr class="memdesc:ac5fb9b1468920e7e23cb2817e65fed4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing SizeTags to binary.  <a href="#ac5fb9b1468920e7e23cb2817e65fed4a">More...</a><br/></td></tr>
+<tr class="separator:ac5fb9b1468920e7e23cb2817e65fed4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a189662781a0f3b710901f892d87792d5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a189662781a0f3b710901f892d87792d5"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:acd8924b66686b003f01b5ceafa9d6ce1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (BinaryOutputArchive &amp;ar, BinaryData&lt; T &gt; const &amp;bd)</td></tr>
-<tr class="memdesc:acd8924b66686b003f01b5ceafa9d6ce1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving binary data. <br/></td></tr>
-<tr class="separator:acd8924b66686b003f01b5ceafa9d6ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae70a5689e08c0b5012651e2c7d4391ec"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae70a5689e08c0b5012651e2c7d4391ec"></a>
+<tr class="memitem:a189662781a0f3b710901f892d87792d5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (BinaryOutputArchive &amp;ar, BinaryData&lt; T &gt; const &amp;bd)</td></tr>
+<tr class="memdesc:a189662781a0f3b710901f892d87792d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving binary data. <br/></td></tr>
+<tr class="separator:a189662781a0f3b710901f892d87792d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8577c2834d64922e9460cad77f9a3ac"><td class="memTemplParams" colspan="2"><a class="anchor" id="af8577c2834d64922e9460cad77f9a3ac"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:ae70a5689e08c0b5012651e2c7d4391ec"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (BinaryInputArchive &amp;ar, BinaryData&lt; T &gt; &amp;bd)</td></tr>
-<tr class="memdesc:ae70a5689e08c0b5012651e2c7d4391ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading binary data. <br/></td></tr>
-<tr class="separator:ae70a5689e08c0b5012651e2c7d4391ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8577c2834d64922e9460cad77f9a3ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (BinaryInputArchive &amp;ar, BinaryData&lt; T &gt; &amp;bd)</td></tr>
+<tr class="memdesc:af8577c2834d64922e9460cad77f9a3ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading binary data. <br/></td></tr>
+<tr class="separator:af8577c2834d64922e9460cad77f9a3ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Binary input and output archives. </p>
@@ -151,7 +151,7 @@ template&lt;class T &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

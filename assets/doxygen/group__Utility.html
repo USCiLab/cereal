@@ -154,15 +154,15 @@ template&lt;class T &gt; </td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>detail {                                          \</div>
 <div class="line">    template &lt;&gt; <span class="keyword">struct </span>Version&lt;TYPE&gt;                                             \</div>
 <div class="line">    {                                                                            \</div>
-<div class="line">      static <span class="keyword">const</span> std::uint32_t version = VERSION_NUMBER;                       \</div>
-<div class="line">      static Version&lt;TYPE&gt; registerVersion()                                     \</div>
+<div class="line">      static <span class="keyword">const</span> std::uint32_t version;                                        \</div>
+<div class="line">      static std::uint32_t registerVersion()                                     \</div>
 <div class="line">      {                                                                          \</div>
 <div class="line">        ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \</div>
 <div class="line">             std::type_index(<span class="keyword">typeid</span>(TYPE)).hash_code(), VERSION_NUMBER );        \</div>
-<div class="line">        return {};                                                               \</div>
+<div class="line">        return VERSION_NUMBER;                                                   \</div>
 <div class="line">      }                                                                          \</div>
 <div class="line">    }; <span class="comment">/* end Version */</span>                                                         \</div>
-<div class="line">    static <span class="keyword">const</span> <span class="keyword">auto</span> CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \</div>
+<div class="line">    const std::uint32_t Version&lt;TYPE&gt;::version =                                 \</div>
 <div class="line">      Version&lt;TYPE&gt;::registerVersion();                                          \</div>
 <div class="line">  } }</div>
 </div><!-- fragment -->
@@ -271,7 +271,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

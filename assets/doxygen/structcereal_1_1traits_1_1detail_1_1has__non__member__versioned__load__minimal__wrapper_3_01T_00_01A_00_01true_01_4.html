@@ -99,9 +99,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a91b718b011f70cdd35591950263af88c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91b718b011f70cdd35591950263af88c"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>SaveType</b> = typename <a class="el" href="structcereal_1_1traits_1_1detail_1_1get__non__member__versioned__save__minimal__type.html">detail::get_non_member_versioned_save_minimal_type</a>&lt; T, A, true &gt;::type</td></tr>
-<tr class="separator:a91b718b011f70cdd35591950263af88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a874bddf6ca897f1773bef5aeba04cec5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a874bddf6ca897f1773bef5aeba04cec5"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>AOut</b> = typename <a class="el" href="structcereal_1_1traits_1_1detail_1_1get__output__from__input.html">detail::get_output_from_input</a>&lt; A &gt;::type</td></tr>
+<tr class="separator:a874bddf6ca897f1773bef5aeba04cec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accfa8221a35523e3ebff05f24f17b98d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="accfa8221a35523e3ebff05f24f17b98d"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>SaveType</b> = typename detail::get_non_member_versioned_save_minimal_type&lt; T, AOut, true &gt;::type</td></tr>
+<tr class="separator:accfa8221a35523e3ebff05f24f17b98d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bdefb140846c6ffbc63d35544613228"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bdefb140846c6ffbc63d35544613228"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> = <a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__load__minimal__impl.html">has_non_member_versioned_load_minimal_impl</a>&lt; T, A, SaveType &gt;</td></tr>
 <tr class="separator:a5bdefb140846c6ffbc63d35544613228"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,7 +122,7 @@ static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>value</b
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:04 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -99,9 +99,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ae8d093921138a185219aa54637c71a9d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8d093921138a185219aa54637c71a9d"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>SaveType</b> = typename <a class="el" href="structcereal_1_1traits_1_1detail_1_1get__member__versioned__save__minimal__type.html">detail::get_member_versioned_save_minimal_type</a>&lt; T, A, true &gt;::type</td></tr>
-<tr class="separator:ae8d093921138a185219aa54637c71a9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89186c704a3f73f828ccee73fcd76668"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89186c704a3f73f828ccee73fcd76668"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>AOut</b> = typename <a class="el" href="structcereal_1_1traits_1_1detail_1_1get__output__from__input.html">detail::get_output_from_input</a>&lt; A &gt;::type</td></tr>
+<tr class="separator:a89186c704a3f73f828ccee73fcd76668"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76f8099fa7f9d060feb790a6da00d6da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a76f8099fa7f9d060feb790a6da00d6da"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>SaveType</b> = typename detail::get_member_versioned_save_minimal_type&lt; T, AOut, true &gt;::type</td></tr>
+<tr class="separator:a76f8099fa7f9d060feb790a6da00d6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -119,7 +122,7 @@ static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>valid</b
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:04 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

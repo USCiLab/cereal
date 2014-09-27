@@ -138,6 +138,10 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a6931d2bbffc4579c110dead25437e297"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6931d2bbffc4579c110dead25437e297"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::xml_detail::isWhitespace</b> (char c)</td></tr>
+<tr class="memdesc:a6931d2bbffc4579c110dead25437e297"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the character is whitespace. <br/></td></tr>
+<tr class="separator:a6931d2bbffc4579c110dead25437e297"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2582cc8477f9482910fc5733e13f75f7"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a2582cc8477f9482910fc5733e13f75f7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;, NameValuePair&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:a2582cc8477f9482910fc5733e13f75f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for NVPs for XML output archives.  <a href="#a2582cc8477f9482910fc5733e13f75f7">More...</a><br/></td></tr>
@@ -172,80 +176,64 @@ template&lt;class T &gt; </td></tr>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:ada513bbfcf8c1996e6f7a439f129a208"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
 <tr class="separator:ada513bbfcf8c1996e6f7a439f129a208"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad11052fa4f597744f2dfe6d8ec99f608"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad11052fa4f597744f2dfe6d8ec99f608"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!traits::has_minimal_output_serialization<br class="typebreak"/>
-&lt; T, XMLOutputArchive &gt;::value, <br class="typebreak"/>
-void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
-<tr class="memdesc:ad11052fa4f597744f2dfe6d8ec99f608"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML output archives (except minimal types)  <a href="#ad11052fa4f597744f2dfe6d8ec99f608">More...</a><br/></td></tr>
-<tr class="separator:ad11052fa4f597744f2dfe6d8ec99f608"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36cbc45bb34fc9db279d473d09850280"><td class="memTemplParams" colspan="2"><a class="anchor" id="a36cbc45bb34fc9db279d473d09850280"></a>
+<tr class="memitem:af751c02a4443b571fee21416a4b899c1"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:af751c02a4443b571fee21416a4b899c1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:af751c02a4443b571fee21416a4b899c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML output archives (except minimal types)  <a href="#af751c02a4443b571fee21416a4b899c1">More...</a><br/></td></tr>
+<tr class="separator:af751c02a4443b571fee21416a4b899c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7ea2b824c9d003b9e2b36473db1d22c0"></a>
+template&lt;class T , traits::DisableIf&lt; traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML input archives (except minimal types) <br/></td></tr>
+<tr class="separator:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16ca55f7d5556527de1584198ea3c414"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a16ca55f7d5556527de1584198ea3c414"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:a16ca55f7d5556527de1584198ea3c414"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types)  <a href="#a16ca55f7d5556527de1584198ea3c414">More...</a><br/></td></tr>
+<tr class="separator:a16ca55f7d5556527de1584198ea3c414"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae06e3f89a66231db109db984a87e0cfd"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae06e3f89a66231db109db984a87e0cfd"></a>
+template&lt;class T , traits::DisableIf&lt; traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:ae06e3f89a66231db109db984a87e0cfd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
+<tr class="memdesc:ae06e3f89a66231db109db984a87e0cfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types) <br/></td></tr>
+<tr class="separator:ae06e3f89a66231db109db984a87e0cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a252f7731760e1186c3c552f640fc7b"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9a252f7731760e1186c3c552f640fc7b"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a36cbc45bb34fc9db279d473d09850280"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!traits::has_minimal_input_serialization<br class="typebreak"/>
-&lt; T, XMLInputArchive &gt;::value, <br class="typebreak"/>
-void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
-<tr class="memdesc:a36cbc45bb34fc9db279d473d09850280"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML input archives (except minimal types) <br/></td></tr>
-<tr class="separator:a36cbc45bb34fc9db279d473d09850280"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b3876ea3a936e3fa076cc2b45b63a89"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a1b3876ea3a936e3fa076cc2b45b63a89"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!traits::has_minimal_output_serialization<br class="typebreak"/>
-&lt; T, XMLOutputArchive &gt;::value, <br class="typebreak"/>
-void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
-<tr class="memdesc:a1b3876ea3a936e3fa076cc2b45b63a89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types)  <a href="#a1b3876ea3a936e3fa076cc2b45b63a89">More...</a><br/></td></tr>
-<tr class="separator:a1b3876ea3a936e3fa076cc2b45b63a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9d5eb0c9cd448e58f06957796457c37"><td class="memTemplParams" colspan="2"><a class="anchor" id="af9d5eb0c9cd448e58f06957796457c37"></a>
+<tr class="memitem:a9a252f7731760e1186c3c552f640fc7b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (XMLOutputArchive &amp;ar, NameValuePair&lt; T &gt; const &amp;t)</td></tr>
+<tr class="memdesc:a9a252f7731760e1186c3c552f640fc7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving NVP types to XML. <br/></td></tr>
+<tr class="separator:a9a252f7731760e1186c3c552f640fc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a08767af52642e109545f05a4694380"><td class="memTemplParams" colspan="2"><a class="anchor" id="a0a08767af52642e109545f05a4694380"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:af9d5eb0c9cd448e58f06957796457c37"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;!traits::has_minimal_input_serialization<br class="typebreak"/>
-&lt; T, XMLInputArchive &gt;::value, <br class="typebreak"/>
-void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
-<tr class="memdesc:af9d5eb0c9cd448e58f06957796457c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types) <br/></td></tr>
-<tr class="separator:af9d5eb0c9cd448e58f06957796457c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad075d60988f3c5caf46cd10210bfdef6"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad075d60988f3c5caf46cd10210bfdef6"></a>
+<tr class="memitem:a0a08767af52642e109545f05a4694380"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (XMLInputArchive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
+<tr class="memdesc:a0a08767af52642e109545f05a4694380"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading NVP types from XML. <br/></td></tr>
+<tr class="separator:a0a08767af52642e109545f05a4694380"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1703ea149fc65a4d7851fa85823287b2"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1703ea149fc65a4d7851fa85823287b2"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad075d60988f3c5caf46cd10210bfdef6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (XMLOutputArchive &amp;ar, NameValuePair&lt; T &gt; const &amp;t)</td></tr>
-<tr class="memdesc:ad075d60988f3c5caf46cd10210bfdef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving NVP types to XML. <br/></td></tr>
-<tr class="separator:ad075d60988f3c5caf46cd10210bfdef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a705f76c146c3ea83f68a026a4c952ed9"><td class="memTemplParams" colspan="2"><a class="anchor" id="a705f76c146c3ea83f68a026a4c952ed9"></a>
+<tr class="memitem:a1703ea149fc65a4d7851fa85823287b2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (XMLOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
+<tr class="memdesc:a1703ea149fc65a4d7851fa85823287b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving SizeTags to XML. <br/></td></tr>
+<tr class="separator:a1703ea149fc65a4d7851fa85823287b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88090838a4dbf54f907dee8969c0d5cf"><td class="memTemplParams" colspan="2"><a class="anchor" id="a88090838a4dbf54f907dee8969c0d5cf"></a>
 template&lt;class T &gt; </td></tr>
-<tr class="memitem:a705f76c146c3ea83f68a026a4c952ed9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (XMLInputArchive &amp;ar, NameValuePair&lt; T &gt; &amp;t)</td></tr>
-<tr class="memdesc:a705f76c146c3ea83f68a026a4c952ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading NVP types from XML. <br/></td></tr>
-<tr class="separator:a705f76c146c3ea83f68a026a4c952ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a339da2589080ab747e6f96664390a85f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a339da2589080ab747e6f96664390a85f"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a339da2589080ab747e6f96664390a85f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (XMLOutputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
-<tr class="memdesc:a339da2589080ab747e6f96664390a85f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving SizeTags to XML. <br/></td></tr>
-<tr class="separator:a339da2589080ab747e6f96664390a85f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadea41c9df1a9c38ccb97cc536a55f3c"><td class="memTemplParams" colspan="2"><a class="anchor" id="aadea41c9df1a9c38ccb97cc536a55f3c"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:aadea41c9df1a9c38ccb97cc536a55f3c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (XMLInputArchive &amp;ar, SizeTag&lt; T &gt; &amp;st)</td></tr>
-<tr class="memdesc:aadea41c9df1a9c38ccb97cc536a55f3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading SizeTags from XML. <br/></td></tr>
-<tr class="separator:aadea41c9df1a9c38ccb97cc536a55f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af015af110f583b6464dac6346042c76a"><td class="memTemplParams" colspan="2"><a class="anchor" id="af015af110f583b6464dac6346042c76a"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:af015af110f583b6464dac6346042c76a"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (XMLOutputArchive &amp;ar, T const &amp;t)</td></tr>
-<tr class="memdesc:af015af110f583b6464dac6346042c76a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for POD types to xml. <br/></td></tr>
-<tr class="separator:af015af110f583b6464dac6346042c76a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a459346e608bbc0b0c3eb52ff028ec43a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a459346e608bbc0b0c3eb52ff028ec43a"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a459346e608bbc0b0c3eb52ff028ec43a"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (XMLInputArchive &amp;ar, T &amp;t)</td></tr>
-<tr class="memdesc:a459346e608bbc0b0c3eb52ff028ec43a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for POD types from xml. <br/></td></tr>
-<tr class="separator:a459346e608bbc0b0c3eb52ff028ec43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a626f0ef10ea03172c3c6950cd35fa1be"><td class="memTemplParams" colspan="2"><a class="anchor" id="a626f0ef10ea03172c3c6950cd35fa1be"></a>
+<tr class="memitem:a88090838a4dbf54f907dee8969c0d5cf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (XMLInputArchive &amp;ar, SizeTag&lt; T &gt; &amp;st)</td></tr>
+<tr class="memdesc:a88090838a4dbf54f907dee8969c0d5cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading SizeTags from XML. <br/></td></tr>
+<tr class="separator:a88090838a4dbf54f907dee8969c0d5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6311a745c3a12848550eff8fba71f31"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac6311a745c3a12848550eff8fba71f31"></a>
+template&lt;class T , traits::EnableIf&lt; std::is_arithmetic&lt; T &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:ac6311a745c3a12848550eff8fba71f31"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (XMLOutputArchive &amp;ar, T const &amp;t)</td></tr>
+<tr class="memdesc:ac6311a745c3a12848550eff8fba71f31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for POD types to xml. <br/></td></tr>
+<tr class="separator:ac6311a745c3a12848550eff8fba71f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea476a67114d4998f2113da658c25468"><td class="memTemplParams" colspan="2"><a class="anchor" id="aea476a67114d4998f2113da658c25468"></a>
+template&lt;class T , traits::EnableIf&lt; std::is_arithmetic&lt; T &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:aea476a67114d4998f2113da658c25468"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (XMLInputArchive &amp;ar, T &amp;t)</td></tr>
+<tr class="memdesc:aea476a67114d4998f2113da658c25468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for POD types from xml. <br/></td></tr>
+<tr class="separator:aea476a67114d4998f2113da658c25468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63696aa0de3dc95bc27f97bf455d15e8"><td class="memTemplParams" colspan="2"><a class="anchor" id="a63696aa0de3dc95bc27f97bf455d15e8"></a>
 template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
-<tr class="memitem:a626f0ef10ea03172c3c6950cd35fa1be"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (XMLOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;str)</td></tr>
-<tr class="memdesc:a626f0ef10ea03172c3c6950cd35fa1be"><td class="mdescLeft">&#160;</td><td class="mdescRight">saving string to xml <br/></td></tr>
-<tr class="separator:a626f0ef10ea03172c3c6950cd35fa1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cadfb5adec66081493c6c9b84743e72"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1cadfb5adec66081493c6c9b84743e72"></a>
+<tr class="memitem:a63696aa0de3dc95bc27f97bf455d15e8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (XMLOutputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; const &amp;str)</td></tr>
+<tr class="memdesc:a63696aa0de3dc95bc27f97bf455d15e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">saving string to xml <br/></td></tr>
+<tr class="separator:a63696aa0de3dc95bc27f97bf455d15e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f5b214a91e6d61bcdae422e1cf27b37"><td class="memTemplParams" colspan="2"><a class="anchor" id="a3f5b214a91e6d61bcdae422e1cf27b37"></a>
 template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
-<tr class="memitem:a1cadfb5adec66081493c6c9b84743e72"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (XMLInputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; &amp;str)</td></tr>
-<tr class="memdesc:a1cadfb5adec66081493c6c9b84743e72"><td class="mdescLeft">&#160;</td><td class="mdescRight">loading string from xml <br/></td></tr>
-<tr class="separator:a1cadfb5adec66081493c6c9b84743e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f5b214a91e6d61bcdae422e1cf27b37"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (XMLInputArchive &amp;ar, std::basic_string&lt; CharT, Traits, Alloc &gt; &amp;str)</td></tr>
+<tr class="memdesc:a3f5b214a91e6d61bcdae422e1cf27b37"><td class="mdescLeft">&#160;</td><td class="mdescRight">loading string from xml <br/></td></tr>
+<tr class="separator:a3f5b214a91e6d61bcdae422e1cf27b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>XML input and output archives. </p>
@@ -269,7 +257,7 @@ template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

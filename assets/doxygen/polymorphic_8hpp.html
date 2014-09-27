@@ -115,6 +115,10 @@ Macros</h2></td></tr>
 <tr class="separator:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84efbe4f256827ca26fe3d86d8bd528c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a84efbe4f256827ca26fe3d86d8bd528c">CEREAL_REGISTER_TYPE_WITH_NAME</a>(T, Name)</td></tr>
 <tr class="separator:a84efbe4f256827ca26fe3d86d8bd528c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9fc708b2a6772ce3d05e026b7f25cfe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#aa9fc708b2a6772ce3d05e026b7f25cfe">CEREAL_REGISTER_SHARED_LIBRARY</a>(LibName)</td></tr>
+<tr class="separator:aa9fc708b2a6772ce3d05e026b7f25cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a495c30b6fd11b5d26a3556a6503b1cd8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a495c30b6fd11b5d26a3556a6503b1cd8">CEREAL_FORCE_LINK_SHARED_LIBRARY</a>(LibName)</td></tr>
+<tr class="separator:a495c30b6fd11b5d26a3556a6503b1cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -124,104 +128,157 @@ template&lt;class Archive &gt; </td></tr>
 &lt; Archive &gt;::Serializers&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::getInputBinding</b> (Archive &amp;ar, std::uint32_t const nameid)</td></tr>
 <tr class="memdesc:a1ba6164125996cf35136a4309f966453"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an input binding from the given archive by deserializing the type meta data. <br/></td></tr>
 <tr class="separator:a1ba6164125996cf35136a4309f966453"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64793a3c3fd2d4015b294f40d82b4340"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a64793a3c3fd2d4015b294f40d82b4340"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;(std::is_default_constructible<br class="typebreak"/>
+<tr class="memitem:a8d33747ce687e324440a360c1b8987b8"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a8d33747ce687e324440a360c1b8987b8"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(traits::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value||traits::has_load_and_construct<br class="typebreak"/>
 &lt; T, Archive &gt;::value)&amp;&amp;!std::is_abstract<br class="typebreak"/>
 &lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:a64793a3c3fd2d4015b294f40d82b4340"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a64793a3c3fd2d4015b294f40d82b4340">More...</a><br/></td></tr>
-<tr class="separator:a64793a3c3fd2d4015b294f40d82b4340"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51da209159646b671e9ca86cc68a6d42"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a51da209159646b671e9ca86cc68a6d42"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;(std::is_default_constructible<br class="typebreak"/>
+<tr class="memdesc:a8d33747ce687e324440a360c1b8987b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a8d33747ce687e324440a360c1b8987b8">More...</a><br/></td></tr>
+<tr class="separator:a8d33747ce687e324440a360c1b8987b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c9e4b18c837d2487a4edcffe4c2a879"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
+<tr class="memitem:a8c9e4b18c837d2487a4edcffe4c2a879"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(traits::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value||traits::has_load_and_construct<br class="typebreak"/>
 &lt; T, Archive &gt;::value)&amp;&amp;!std::is_abstract<br class="typebreak"/>
 &lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; &amp;ptr, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:a51da209159646b671e9ca86cc68a6d42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a51da209159646b671e9ca86cc68a6d42">More...</a><br/></td></tr>
-<tr class="separator:a51da209159646b671e9ca86cc68a6d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1298c9b2b56563c6666ef437dccb78e9"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a1298c9b2b56563c6666ef437dccb78e9"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;(!std::is_default_constructible<br class="typebreak"/>
+<tr class="memdesc:a8c9e4b18c837d2487a4edcffe4c2a879"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a8c9e4b18c837d2487a4edcffe4c2a879">More...</a><br/></td></tr>
+<tr class="separator:a8c9e4b18c837d2487a4edcffe4c2a879"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8faa1bd3d8119fcdb34b5b5453e6be"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a0e8faa1bd3d8119fcdb34b5b5453e6be"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(!traits::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value <br class="typebreak"/>
 &amp;&amp;!traits::has_load_and_construct<br class="typebreak"/>
 &lt; T, Archive &gt;::value)||std::is_abstract<br class="typebreak"/>
 &lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::shared_ptr&lt; T &gt; &amp;, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:a1298c9b2b56563c6666ef437dccb78e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a1298c9b2b56563c6666ef437dccb78e9">More...</a><br/></td></tr>
-<tr class="separator:a1298c9b2b56563c6666ef437dccb78e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e6b8212d16e20aa57f84739e3c20c6f"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a9e6b8212d16e20aa57f84739e3c20c6f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
-&lt;(!std::is_default_constructible<br class="typebreak"/>
+<tr class="memdesc:a0e8faa1bd3d8119fcdb34b5b5453e6be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a0e8faa1bd3d8119fcdb34b5b5453e6be">More...</a><br/></td></tr>
+<tr class="separator:a0e8faa1bd3d8119fcdb34b5b5453e6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dac803441014030e0f686f535d72eeb"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , class D &gt; </td></tr>
+<tr class="memitem:a9dac803441014030e0f686f535d72eeb"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt;(!traits::is_default_constructible<br class="typebreak"/>
 &lt; T &gt;::value <br class="typebreak"/>
 &amp;&amp;!traits::has_load_and_construct<br class="typebreak"/>
 &lt; T, Archive &gt;::value)||std::is_abstract<br class="typebreak"/>
 &lt; T &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::polymorphic_detail::serialize_wrapper</b> (Archive &amp;, std::unique_ptr&lt; T, D &gt; &amp;, std::uint32_t const nameid)</td></tr>
-<tr class="memdesc:a9e6b8212d16e20aa57f84739e3c20c6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a9e6b8212d16e20aa57f84739e3c20c6f">More...</a><br/></td></tr>
-<tr class="separator:a9e6b8212d16e20aa57f84739e3c20c6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad375eb8b14ca04e568eefee2f915ce58"></a>
+<tr class="memdesc:a9dac803441014030e0f686f535d72eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee.  <a href="#a9dac803441014030e0f686f535d72eeb">More...</a><br/></td></tr>
+<tr class="separator:a9dac803441014030e0f686f535d72eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a759a15c02fad55311de9e5dd645a7319"><td class="memTemplParams" colspan="2"><a class="anchor" id="a759a15c02fad55311de9e5dd645a7319"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:ad375eb8b14ca04e568eefee2f915ce58"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a759a15c02fad55311de9e5dd645a7319"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
 ::value &amp;&amp;std::is_abstract&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:ad375eb8b14ca04e568eefee2f915ce58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, abstract. <br/></td></tr>
-<tr class="separator:ad375eb8b14ca04e568eefee2f915ce58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa12407de2c83f2c00d1da6b0376b019d"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa12407de2c83f2c00d1da6b0376b019d"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:a759a15c02fad55311de9e5dd645a7319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, abstract. <br/></td></tr>
+<tr class="separator:a759a15c02fad55311de9e5dd645a7319"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6e1ce1157644fad605ade652112daf1"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa6e1ce1157644fad605ade652112daf1"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:aa12407de2c83f2c00d1da6b0376b019d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aa6e1ce1157644fad605ade652112daf1"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
 ::value &amp;&amp;!std::is_abstract&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:aa12407de2c83f2c00d1da6b0376b019d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, not abstract. <br/></td></tr>
-<tr class="separator:aa12407de2c83f2c00d1da6b0376b019d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1bd9d48e5bf888a0fccb94468893953"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad1bd9d48e5bf888a0fccb94468893953"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:aa6e1ce1157644fad605ade652112daf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::shared_ptr for polymorphic types, not abstract. <br/></td></tr>
+<tr class="separator:aa6e1ce1157644fad605ade652112daf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a162562abb32a0be716dbfb98f1a31a33"><td class="memTemplParams" colspan="2"><a class="anchor" id="a162562abb32a0be716dbfb98f1a31a33"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:ad1bd9d48e5bf888a0fccb94468893953"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a162562abb32a0be716dbfb98f1a31a33"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; &amp;ptr)</td></tr>
-<tr class="memdesc:ad1bd9d48e5bf888a0fccb94468893953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr for polymorphic types. <br/></td></tr>
-<tr class="separator:ad1bd9d48e5bf888a0fccb94468893953"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6adf822e52333901624db2519dd92fc9"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6adf822e52333901624db2519dd92fc9"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::shared_ptr&lt; T &gt; &amp;ptr)</td></tr>
+<tr class="memdesc:a162562abb32a0be716dbfb98f1a31a33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::shared_ptr for polymorphic types. <br/></td></tr>
+<tr class="separator:a162562abb32a0be716dbfb98f1a31a33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0fd3494d3937e25e00c63e3822e8037"><td class="memTemplParams" colspan="2"><a class="anchor" id="af0fd3494d3937e25e00c63e3822e8037"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a6adf822e52333901624db2519dd92fc9"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:af0fd3494d3937e25e00c63e3822e8037"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::weak_ptr&lt; T &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:a6adf822e52333901624db2519dd92fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::weak_ptr for polymorphic types. <br/></td></tr>
-<tr class="separator:a6adf822e52333901624db2519dd92fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a904b1865fbe1a0acac552bd2ae0e1136"><td class="memTemplParams" colspan="2"><a class="anchor" id="a904b1865fbe1a0acac552bd2ae0e1136"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::weak_ptr&lt; T &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:af0fd3494d3937e25e00c63e3822e8037"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::weak_ptr for polymorphic types. <br/></td></tr>
+<tr class="separator:af0fd3494d3937e25e00c63e3822e8037"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0cbd30aefc13f4a54094593603db13c"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa0cbd30aefc13f4a54094593603db13c"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a904b1865fbe1a0acac552bd2ae0e1136"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aa0cbd30aefc13f4a54094593603db13c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::weak_ptr&lt; T &gt; &amp;ptr)</td></tr>
-<tr class="memdesc:a904b1865fbe1a0acac552bd2ae0e1136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::weak_ptr for polymorphic types. <br/></td></tr>
-<tr class="separator:a904b1865fbe1a0acac552bd2ae0e1136"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25ca0d069f51e6999d094090bc03d7fa"><td class="memTemplParams" colspan="2"><a class="anchor" id="a25ca0d069f51e6999d094090bc03d7fa"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::weak_ptr&lt; T &gt; &amp;ptr)</td></tr>
+<tr class="memdesc:aa0cbd30aefc13f4a54094593603db13c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::weak_ptr for polymorphic types. <br/></td></tr>
+<tr class="separator:aa0cbd30aefc13f4a54094593603db13c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba7690f06f7ad55613cec7ae757b1750"><td class="memTemplParams" colspan="2"><a class="anchor" id="aba7690f06f7ad55613cec7ae757b1750"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a25ca0d069f51e6999d094090bc03d7fa"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aba7690f06f7ad55613cec7ae757b1750"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
 ::value &amp;&amp;std::is_abstract&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:a25ca0d069f51e6999d094090bc03d7fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types that are abstract. <br/></td></tr>
-<tr class="separator:a25ca0d069f51e6999d094090bc03d7fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78937267a72a59d88d890f45a294de41"><td class="memTemplParams" colspan="2"><a class="anchor" id="a78937267a72a59d88d890f45a294de41"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:aba7690f06f7ad55613cec7ae757b1750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types that are abstract. <br/></td></tr>
+<tr class="separator:aba7690f06f7ad55613cec7ae757b1750"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7296078465310c1af67d5674d7258c2"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab7296078465310c1af67d5674d7258c2"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:a78937267a72a59d88d890f45a294de41"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:ab7296078465310c1af67d5674d7258c2"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
 ::value &amp;&amp;!std::is_abstract&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
-<tr class="memdesc:a78937267a72a59d88d890f45a294de41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types, not abstract. <br/></td></tr>
-<tr class="separator:a78937267a72a59d88d890f45a294de41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab580fdd7c909b445ae4105d45159894f"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab580fdd7c909b445ae4105d45159894f"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; const &amp;ptr)</td></tr>
+<tr class="memdesc:ab7296078465310c1af67d5674d7258c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving std::unique_ptr for polymorphic types, not abstract. <br/></td></tr>
+<tr class="separator:ab7296078465310c1af67d5674d7258c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d1d69a4d25ed7715c105b14ed6f8957"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8d1d69a4d25ed7715c105b14ed6f8957"></a>
 template&lt;class Archive , class T , class D &gt; </td></tr>
-<tr class="memitem:ab580fdd7c909b445ae4105d45159894f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a8d1d69a4d25ed7715c105b14ed6f8957"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; std::is_polymorphic&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; &amp;ptr)</td></tr>
-<tr class="memdesc:ab580fdd7c909b445ae4105d45159894f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types. <br/></td></tr>
-<tr class="separator:ab580fdd7c909b445ae4105d45159894f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::unique_ptr&lt; T, D &gt; &amp;ptr)</td></tr>
+<tr class="memdesc:a8d1d69a4d25ed7715c105b14ed6f8957"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types. <br/></td></tr>
+<tr class="separator:a8d1d69a4d25ed7715c105b14ed6f8957"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for pointers to polymorphic base classes. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a495c30b6fd11b5d26a3556a6503b1cd8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_FORCE_LINK_SHARED_LIBRARY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">LibName</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                                    \</div>
+<div class="line">  namespace detail {                                    \</div>
+<div class="line">    void load_library_dummy_##LibName();                \</div>
+<div class="line">  } <span class="comment">/* end detail */</span>                                    \</div>
+<div class="line">  namespace load_dummy {                                \</div>
+<div class="line">    void load_library_##LibName()                       \</div>
+<div class="line">    {                                                   \</div>
+<div class="line">      ::cereal::detail::load_library_dummy_##LibName(); \</div>
+<div class="line">    }                                                   \</div>
+<div class="line">  } } <span class="comment">/* end namespaces */</span></div>
+</div><!-- fragment --><p>Forces the linker to link a previously registered (with cereal) shared library</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="polymorphic_8hpp.html#aa9fc708b2a6772ce3d05e026b7f25cfe">CEREAL_REGISTER_SHARED_LIBRARY</a></dd></dl>
+<p>This should be placed in your executable source. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa9fc708b2a6772ce3d05e026b7f25cfe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_REGISTER_SHARED_LIBRARY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">LibName</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                            \</div>
+<div class="line">  namespace detail {                            \</div>
+<div class="line">    void load_library_dummy_##LibName() {}      \</div>
+<div class="line">  } } <span class="comment">/* end namespaces */</span></div>
+</div><!-- fragment --><p>Adds a way to force loading of a shared library containing only calls to CEREAL_REGISTER_TYPE</p>
+<p>Since CEREAL_REGISTER_TYPE must be in a source file, it is possible for the linker to never load a shared library containing only these registrations as they are never explicitly referenced. This macro, in combination with CEREAL_FORCE_LINK_SHARED_LIBRARY, prevents this link from being optimized away. This is only necessary if you never explicitly reference any code implemented in your shared library (header files do not count).</p>
+<p>This must be placed in a single source file of your shared library.</p>
+<p>LibName can be any unique name of your choosing. </p>
+
+</div>
+</div>
 <a class="anchor" id="ae2d7d9fc98f7a55a6f0031ea5eaea4e6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -293,7 +350,7 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

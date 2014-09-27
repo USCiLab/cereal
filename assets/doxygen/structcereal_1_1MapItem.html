@@ -105,18 +105,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aa9ca5f7dd68ae0b570ee4c61bc9c71dc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9ca5f7dd68ae0b570ee4c61bc9c71dc"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>DecayKey</b> = typename std::decay&lt; Key &gt;::type</td></tr>
-<tr class="separator:aa9ca5f7dd68ae0b570ee4c61bc9c71dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac208ee88004132165398b85839b19243"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac208ee88004132165398b85839b19243"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>KeyType</b> = typename std::conditional&lt; std::is_rvalue_reference&lt; Key &gt;::value, DecayKey, typename std::add_lvalue_reference&lt; DecayKey &gt;::type &gt;::type</td></tr>
-<tr class="separator:ac208ee88004132165398b85839b19243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf4702afc109fd544dc65a9b3505c668"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf4702afc109fd544dc65a9b3505c668"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>DecayValue</b> = typename std::decay&lt; Value &gt;::type</td></tr>
-<tr class="separator:acf4702afc109fd544dc65a9b3505c668"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f573d2b2b1191e3558d8a7ba595036b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f573d2b2b1191e3558d8a7ba595036b"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>ValueType</b> = typename std::conditional&lt; std::is_rvalue_reference&lt; Value &gt;::value, DecayValue, typename std::add_lvalue_reference&lt; DecayValue &gt;::type &gt;::type</td></tr>
-<tr class="separator:a2f573d2b2b1191e3558d8a7ba595036b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a725a4a2d5fe60c37e90cebb7e4a7fe30"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a725a4a2d5fe60c37e90cebb7e4a7fe30"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>KeyType</b> = typename std::conditional&lt; std::is_lvalue_reference&lt; Key &gt;::value, Key, typename std::decay&lt; Key &gt;::type &gt;::type</td></tr>
+<tr class="separator:a725a4a2d5fe60c37e90cebb7e4a7fe30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a788423f5877112816610d168f18e968c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a788423f5877112816610d168f18e968c"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>ValueType</b> = typename std::conditional&lt; std::is_lvalue_reference&lt; Value &gt;::value, Value, typename std::decay&lt; Value &gt;::type &gt;::type</td></tr>
+<tr class="separator:a788423f5877112816610d168f18e968c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -124,11 +118,11 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1MapItem.html#a4f348c6c831ee140b28c2fda7f1075cb">MapItem</a> (Key &amp;&amp;key_, Value &amp;&amp;value_)</td></tr>
 <tr class="memdesc:a4f348c6c831ee140b28c2fda7f1075cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="structcereal_1_1MapItem.html" title="A wrapper around a key and value for serializing data into maps. ">MapItem</a> from a key and a value. <br/></td></tr>
 <tr class="separator:a4f348c6c831ee140b28c2fda7f1075cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d09988754e8e86d8f40bee73421d329"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4d09988754e8e86d8f40bee73421d329"></a>
+<tr class="memitem:aabc18ae871506e4965cd785ad314e1ec"><td class="memTemplParams" colspan="2"><a class="anchor" id="aabc18ae871506e4965cd785ad314e1ec"></a>
 template&lt;class Archive &gt; </td></tr>
-<tr class="memitem:a4d09988754e8e86d8f40bee73421d329"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcereal_1_1MapItem.html#a4d09988754e8e86d8f40bee73421d329">serialize</a> (Archive &amp;archive)</td></tr>
-<tr class="memdesc:a4d09988754e8e86d8f40bee73421d329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the <a class="el" href="structcereal_1_1MapItem.html" title="A wrapper around a key and value for serializing data into maps. ">MapItem</a> with the NVPs "key" and "value". <br/></td></tr>
-<tr class="separator:a4d09988754e8e86d8f40bee73421d329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabc18ae871506e4965cd785ad314e1ec"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcereal_1_1MapItem.html#aabc18ae871506e4965cd785ad314e1ec">CEREAL_SERIALIZE_FUNCTION_NAME</a> (Archive &amp;archive)</td></tr>
+<tr class="memdesc:aabc18ae871506e4965cd785ad314e1ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the <a class="el" href="structcereal_1_1MapItem.html" title="A wrapper around a key and value for serializing data into maps. ">MapItem</a> with the NVPs "key" and "value". <br/></td></tr>
+<tr class="separator:aabc18ae871506e4965cd785ad314e1ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -163,7 +157,7 @@ struct cereal::MapItem&lt; Key, Value &gt;</h3>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

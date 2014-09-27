@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pt',['PT',['../structcereal_1_1BinaryData.html#a5da7601825183538439d32e77436af88',1,'cereal::BinaryData']]]
+  ['disableif',['DisableIf',['../traits_8hpp.html#a07719740a7cec6692b44244201a92603',1,'traits.hpp']]]
 ];

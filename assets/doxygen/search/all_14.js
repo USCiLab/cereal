@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['unique_5fptr',['unique_ptr',['../structcereal_1_1detail_1_1OutputBindingMap_1_1Serializers.html#ab4c2f8544bdbe179ef4664de9589f825',1,'cereal::detail::OutputBindingMap::Serializers::unique_ptr()'],['../structcereal_1_1detail_1_1InputBindingMap_1_1Serializers.html#a94620847674f5398454cbdb9660b8532',1,'cereal::detail::InputBindingMap::Serializers::unique_ptr()']]],
-  ['uniqueserializer',['UniqueSerializer',['../structcereal_1_1detail_1_1InputBindingMap.html#a1f22dc26aa2c1e3fe7eb84609408f145',1,'cereal::detail::InputBindingMap']]],
-  ['unordered_5fmap_2ehpp',['unordered_map.hpp',['../unordered__map_8hpp.html',1,'']]],
-  ['unordered_5fset_2ehpp',['unordered_set.hpp',['../unordered__set_8hpp.html',1,'']]],
-  ['unused',['unused',['../structcereal_1_1detail_1_1polymorphic__serialization__support.html#af32ebd1e93fee3dbed819bf1cfbfd073',1,'cereal::detail::polymorphic_serialization_support']]],
-  ['util_2ehpp',['util.hpp',['../util_8hpp.html',1,'']]],
-  ['utility_20functionality',['Utility Functionality',['../group__Utility.html',1,'']]],
-  ['utility_2ehpp',['utility.hpp',['../utility_8hpp.html',1,'']]]
+  ['value',['value',['../classcereal_1_1XMLInputArchive.html#acd31f5302f9d5d9046b4b1425e370fc6',1,'cereal::XMLInputArchive']]],
+  ['variant_5fsave_5fvisitor',['variant_save_visitor',['../structcereal_1_1variant__detail_1_1variant__save__visitor.html',1,'cereal::variant_detail']]],
+  ['vector_2ehpp',['vector.hpp',['../vector_8hpp.html',1,'']]],
+  ['version',['Version',['../structcereal_1_1detail_1_1Version.html',1,'cereal::detail']]],
+  ['versions',['Versions',['../structcereal_1_1detail_1_1Versions.html',1,'cereal::detail']]],
+  ['virtual_5fbase_5fclass',['virtual_base_class',['../structcereal_1_1virtual__base__class.html',1,'cereal']]]
 ];

@@ -102,38 +102,38 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac32e5f39a2af2c617642a194ae91fc58"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , size_t N&gt; </td></tr>
-<tr class="memitem:ac32e5f39a2af2c617642a194ae91fc58"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a7dd86a3c7ebb03502832158513b91ee3"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , size_t N&gt; </td></tr>
+<tr class="memitem:a7dd86a3c7ebb03502832158513b91ee3"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::is_output_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
 ::value &amp;&amp;std::is_arithmetic<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::array&lt; T, N &gt; const &amp;array)</td></tr>
-<tr class="separator:ac32e5f39a2af2c617642a194ae91fc58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37157604c52a37c4b25f25659d1b91b7"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , size_t N&gt; </td></tr>
-<tr class="memitem:a37157604c52a37c4b25f25659d1b91b7"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::array&lt; T, N &gt; const &amp;array)</td></tr>
+<tr class="separator:a7dd86a3c7ebb03502832158513b91ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49547021764b554ce332679c9f9fec70"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T , size_t N&gt; </td></tr>
+<tr class="memitem:a49547021764b554ce332679c9f9fec70"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; traits::is_input_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
 ::value &amp;&amp;std::is_arithmetic<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::array&lt; T, N &gt; &amp;array)</td></tr>
-<tr class="separator:a37157604c52a37c4b25f25659d1b91b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10a8843b7cbb7ae279338e2ec7e20b0b"><td class="memTemplParams" colspan="2"><a class="anchor" id="a10a8843b7cbb7ae279338e2ec7e20b0b"></a>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::array&lt; T, N &gt; &amp;array)</td></tr>
+<tr class="separator:a49547021764b554ce332679c9f9fec70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008414a8d23778c73ddb47270d7d477f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a008414a8d23778c73ddb47270d7d477f"></a>
 template&lt;class Archive , class T , size_t N&gt; </td></tr>
-<tr class="memitem:a10a8843b7cbb7ae279338e2ec7e20b0b"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a008414a8d23778c73ddb47270d7d477f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::is_output_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
 ::value||!std::is_arithmetic<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save</b> (Archive &amp;ar, std::array&lt; T, N &gt; const &amp;array)</td></tr>
-<tr class="memdesc:a10a8843b7cbb7ae279338e2ec7e20b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::array all other types. <br/></td></tr>
-<tr class="separator:a10a8843b7cbb7ae279338e2ec7e20b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5278baa0b2302badfe61b2947672bf2f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5278baa0b2302badfe61b2947672bf2f"></a>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::array&lt; T, N &gt; const &amp;array)</td></tr>
+<tr class="memdesc:a008414a8d23778c73ddb47270d7d477f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::array all other types. <br/></td></tr>
+<tr class="separator:a008414a8d23778c73ddb47270d7d477f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2e9db02cc3b58b053b47fb1456d8c92"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa2e9db02cc3b58b053b47fb1456d8c92"></a>
 template&lt;class Archive , class T , size_t N&gt; </td></tr>
-<tr class="memitem:a5278baa0b2302badfe61b2947672bf2f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aa2e9db02cc3b58b053b47fb1456d8c92"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt;!traits::is_input_serializable<br class="typebreak"/>
 &lt; BinaryData&lt; T &gt;, Archive &gt;<br class="typebreak"/>
 ::value||!std::is_arithmetic<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load</b> (Archive &amp;ar, std::array&lt; T, N &gt; &amp;array)</td></tr>
-<tr class="memdesc:a5278baa0b2302badfe61b2947672bf2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::array all other types. <br/></td></tr>
-<tr class="separator:a5278baa0b2302badfe61b2947672bf2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::array&lt; T, N &gt; &amp;array)</td></tr>
+<tr class="memdesc:aa2e9db02cc3b58b053b47fb1456d8c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::array all other types. <br/></td></tr>
+<tr class="separator:aa2e9db02cc3b58b053b47fb1456d8c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;array&gt; </p>
@@ -141,7 +141,7 @@ template&lt;class Archive , class T , size_t N&gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

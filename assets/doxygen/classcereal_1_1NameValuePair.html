@@ -196,7 +196,7 @@ class cereal::NameValuePair&lt; T &gt;</h3>
 <div class="line">             <a class="code" href="group__Utility.html#ga78892c2ccfac7a5454639ca121e84439">CEREAL_NVP</a>(e) );</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-</div><!-- fragment --><p>There is a slight amount of overhead to creating NameValuePairs, so there is a third method which will elide the names when they are not needed by the Archive:</p>
+</div><!-- fragment --><p>There is a slight amount of overhead to creating NameValuePairs, so there is a third method which will elide the names when they are not used by the Archive:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>MyStruct</div>
 <div class="line">{</div>
 <div class="line">  <span class="keywordtype">int</span> a, b;</div>
@@ -248,7 +248,7 @@ template&lt;class T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>The name of the pair </td></tr>
-    <tr><td class="paramname">v</td><td>The value to pair. Ideally this should be an l-value reference so that the value can be both loaded and saved to. If you pass an r-value reference, the <a class="el" href="classcereal_1_1NameValuePair.html" title="For holding name value pairs. ">NameValuePair</a> will store a copy of it instead of a reference. Thus you should only pass r-values in cases where this makes sense, such as the result of some size() call. In either case, any constness will be stripped away </td></tr>
+    <tr><td class="paramname">v</td><td>The value to pair. Ideally this should be an l-value reference so that the value can be both loaded and saved to. If you pass an r-value reference, the <a class="el" href="classcereal_1_1NameValuePair.html" title="For holding name value pairs. ">NameValuePair</a> will store a copy of it instead of a reference. Thus you should only pass r-values in cases where this makes sense, such as the result of some size() call. </td></tr>
   </table>
   </dd>
 </dl>
@@ -263,7 +263,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
