@@ -773,7 +773,7 @@ namespace cereal
     CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_TEST(load_minimal, load)
 
     // ######################################################################
-    // Member Save Minimal (versioned)
+    // Member Load Minimal (versioned)
     CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_IMPL(versioned_load_minimal, CEREAL_MAKE_VERSIONED_TEST)
     CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_HELPERS_IMPL(versioned_load_minimal, versioned_save_minimal, versioned_save, CEREAL_MAKE_VERSIONED_TEST)
     CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_TEST(versioned_load_minimal, versioned_load)
