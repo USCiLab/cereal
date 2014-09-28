@@ -791,110 +791,86 @@ namespace cereal
       void CEREAL_LOAD_MINIMAL_FUNCTION_NAME(); // prevents nonsense complaining about not finding this
       void CEREAL_SAVE_MINIMAL_FUNCTION_NAME();
       #endif // CEREAL_OLDER_GCC
+    } // namespace detail
 
-      // See notes from member load_minimal
-      template <class T, class A, class U = void>
-      struct has_non_member_load_minimal_impl
-      {
-        template <class TT, class AA>
-        static auto test(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() ), yes() );
-        template <class, class>
-        static no test( ... );
-        static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
+    // ######################################################################
+    //! Creates a test for whether a non-member load_minimal function exists
+    /*! This creates a class derived from std::integral_constant that will be true if
+        the type has the proper member function for the given archive.
 
-        template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>() ), yes() );
-        template <class, class, class>
-        static no test2( ... );
-        static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
+        See notes from member load_minimal implementation.
 
-        template <class TT, class AA>
-        static auto test3(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert() ), yes() );
-        template <class, class>
-        static no test3( ... );
-        static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
-      };
+        @param test_name The name to give the test (e.g. load_minimal or versioned_load_minimal)
+        @param save_name The corresponding name the save test would have (e.g. save_minimal or versioned_save_minimal)
+        @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
+    #define CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST(test_name, save_name, versioned)                                    \
+    namespace detail                                                                                                         \
+    {                                                                                                                        \
+      template <class T, class A, class U = void>                                                                            \
+      struct has_non_member_##test_name##_impl                                                                               \
+      {                                                                                                                      \
+        template <class TT, class AA>                                                                                        \
+        static auto test(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME(                                                \
+              std::declval<AA const &>(), std::declval<TT&>(), AnyConvert() versioned ), yes() );                            \
+        template <class, class> static no test( ... );                                                                       \
+        static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;                                    \
+                                                                                                                             \
+        template <class TT, class AA, class UU>                                                                              \
+        static auto test2(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME(                                               \
+              std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>() versioned ), yes() );                 \
+        template <class, class, class> static no test2( ... );                                                               \
+        static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;                                 \
+                                                                                                                             \
+        template <class TT, class AA>                                                                                        \
+        static auto test3(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME(                                               \
+              std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert() versioned ), yes() );                             \
+        template <class, class> static no test3( ... );                                                                      \
+        static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;                              \
+      };                                                                                                                     \
+                                                                                                                             \
+      template <class T, class A, bool Valid>                                                                                \
+      struct has_non_member_##test_name##_wrapper : std::false_type {};                                                      \
+                                                                                                                             \
+      template <class T, class A>                                                                                            \
+      struct has_non_member_##test_name##_wrapper<T, A, true>                                                                \
+      {                                                                                                                      \
+        using AOut = typename detail::get_output_from_input<A>::type;                                                        \
+                                                                                                                             \
+        static_assert( detail::has_non_member_##save_name##_impl<T, AOut>::valid,                                            \
+          "cereal detected non-member " #test_name " but no valid non-member " #save_name ". \n "                            \
+          "cannot evaluate correctness of " #test_name " without valid " #save_name "." );                                   \
+                                                                                                                             \
+        using SaveType = typename detail::get_non_member_##save_name##_type<T, AOut, true>::type;                            \
+        using check = has_non_member_##test_name##_impl<T, A, SaveType>;                                                     \
+        static const bool value = check::exists;                                                                             \
+                                                                                                                             \
+        static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member "        \
+            #test_name " and " #save_name " functions. \n "                                                                  \
+            "the paramater to " #test_name " must be a constant reference to the type that " #save_name " returns." );       \
+        static_assert( check::const_valid || !check::exists,                                                                 \
+            "cereal detected an invalid serialization type parameter in non-member " #test_name ".  "                        \
+            #test_name " non-member functions must accept their serialization type by non-const reference" );                \
+      };                                                                                                                     \
+    } /* namespace detail */                                                                                                 \
+                                                                                                                             \
+    template <class T, class A>                                                                                              \
+    struct has_non_member_##test_name : std::integral_constant<bool,                                                         \
+      detail::has_non_member_##test_name##_wrapper<T, A, detail::has_non_member_##test_name##_impl<T, A>::exists>::value> {};
 
-      template <class T, class A, bool Valid>
-      struct has_non_member_load_minimal_wrapper : std::false_type {};
-
-      template <class T, class A>
-      struct has_non_member_load_minimal_wrapper<T, A, true>
-      {
-        using AOut = typename detail::get_output_from_input<A>::type;
-
-        static_assert( detail::has_non_member_save_minimal_impl<T, AOut>::valid,
-          "cereal detected non-member load_minimal but no valid non-member save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-
-        using SaveType = typename detail::get_non_member_save_minimal_type<T, AOut, true>::type;
-        using check = has_non_member_load_minimal_impl<T, A, SaveType>;
-        static const bool value = check::exists;
-
-        static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member load_minimal and save_minimal functions.  "
-            "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
-        static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member load_minimal.  "
-            "load_minimal non-member functions must accept their serialization type by non-const reference" );
-      };
-    }
-
-    template <class T, class A>
-    struct has_non_member_load_minimal : std::integral_constant<bool,
-      detail::has_non_member_load_minimal_wrapper<T, A, detail::has_non_member_load_minimal_impl<T, A>::exists>::value> {};
+    // ######################################################################
+    // Non-Member Load Minimal
+    CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST(load_minimal, save_minimal, )
 
     // ######################################################################
     // Non-Member Load Minimal (versioned)
-    namespace detail
-    {
-      // See notes from member load_minimal
-      template <class T, class A, class U = void>
-      struct has_non_member_versioned_load_minimal_impl
-      {
-        template <class TT, class AA>
-        static auto test(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), AnyConvert(), 0 ), yes() );
-        template <class, class>
-        static no test( ... );
-        static const bool exists = std::is_same<decltype( test<T, A>( 0 ) ), yes>::value;
+    CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST(versioned_load_minimal, versioned_save_minimal, CEREAL_MAKE_VERSIONED_TEST)
 
-        template <class TT, class AA, class UU>
-        static auto test2(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), std::declval<TT&>(), NoConvertConstRef<UU>(), 0 ), yes() );
-        template <class, class, class>
-        static no test2( ... );
-        static const bool valid = std::is_same<decltype( test2<T, A, U>( 0 ) ), yes>::value;
+    // ######################################################################
+    #undef CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST
 
-        template <class TT, class AA>
-        static auto test3(int) -> decltype( CEREAL_LOAD_MINIMAL_FUNCTION_NAME( std::declval<AA const &>(), NoConvertRef<TT>(), AnyConvert(), 0 ), yes() );
-        template <class, class>
-        static no test3( ... );
-        static const bool const_valid = std::is_same<decltype( test3<T, A>( 0 ) ), yes>::value;
-      };
-
-      template <class T, class A, bool Valid>
-      struct has_non_member_versioned_load_minimal_wrapper : std::false_type {};
-
-      template <class T, class A>
-      struct has_non_member_versioned_load_minimal_wrapper<T, A, true>
-      {
-        using AOut = typename detail::get_output_from_input<A>::type;
-
-        static_assert( detail::has_non_member_versioned_save_minimal_impl<T, AOut>::valid,
-          "cereal detected non-member versioned load_minimal but no valid non-member versioned save_minimal.  "
-          "cannot evaluate correctness of load_minimal without valid save_minimal." );
-
-        using SaveType = typename detail::get_non_member_versioned_save_minimal_type<T, AOut, true>::type;
-        using check = has_non_member_versioned_load_minimal_impl<T, A, SaveType>;
-        static const bool value = check::exists;
-
-        static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member versioned load_minimal and save_minimal functions.  "
-            "the paramater to load_minimal must be a constant reference to the type that save_minimal returns." );
-        static_assert( check::const_valid || !check::exists, "cereal detected an invalid serialization type parameter in non-member versioned load_minimal.  "
-            "load_minimal non-member versioned functions must accept their serialization type by non-const reference" );
-      };
-    }
-
-    template <class T, class A>
-    struct has_non_member_versioned_load_minimal : std::integral_constant<bool,
-      detail::has_non_member_versioned_load_minimal_wrapper<T, A, detail::has_non_member_versioned_load_minimal_impl<T, A>::exists>::value> {};
+    // ######################################################################
+    // End of serialization existence tests
+    #undef CEREAL_MAKE_VERSIONED_TEST
 
     // ######################################################################
     template <class T, class InputArchive, class OutputArchive>
@@ -1103,30 +1079,6 @@ namespace cereal
     } // namespace detail
 
     // ######################################################################
-    //! A macro to use to restrict which types of archives your function will work for.
-    /*! This requires you to have a template class parameter named Archive and replaces the void return
-        type for your function.
-
-        INTYPE refers to the input archive type you wish to restrict on.
-        OUTTYPE refers to the output archive type you wish to restrict on.
-
-        For example, if we want to limit a serialize to only work with binary serialization:
-
-        @code{.cpp}
-        template <class Archive>
-        CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-        serialize( Archive & ar, MyCoolType & m )
-        {
-          ar & m;
-        }
-        @endcode
-
-        If you need to do more restrictions in your enable_if, you will need to do this by hand.
-     */
-    #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
-    typename std::enable_if<std::is_same<Archive, INTYPE>::value || std::is_same<Archive, OUTTYPE>::value, void>::type
-
-    // ######################################################################
     namespace detail
     {
       struct shared_from_this_wrapper
@@ -1240,6 +1192,30 @@ namespace cereal
     struct is_same_archive : std::integral_constant<bool,
       std::is_same<detail::decay_archive<ArchiveT>, CerealArchiveT>::value>
     { };
+
+    // ######################################################################
+    //! A macro to use to restrict which types of archives your function will work for.
+    /*! This requires you to have a template class parameter named Archive and replaces the void return
+        type for your function.
+
+        INTYPE refers to the input archive type you wish to restrict on.
+        OUTTYPE refers to the output archive type you wish to restrict on.
+
+        For example, if we want to limit a serialize to only work with binary serialization:
+
+        @code{.cpp}
+        template <class Archive>
+        CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
+        serialize( Archive & ar, MyCoolType & m )
+        {
+          ar & m;
+        }
+        @endcode
+
+        If you need to do more restrictions in your enable_if, you will need to do this by hand.
+     */
+    #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
+    typename std::enable_if<cereal::traits::is_same_archive<Archive, INTYPE>::value || cereal::traits::is_same_archive<Archive, OUTTYPE>::value, void>::type
 
     //! Type traits only struct used to mark an archive as human readable (text based)
     /*! Archives that wish to identify as text based/human readable should inherit from
