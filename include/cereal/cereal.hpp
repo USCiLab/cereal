@@ -824,7 +824,7 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
+        static_assert(traits::is_input_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an input archive. \n\n "
             "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
             "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
             "In addition, you may not mix versioned with non-versioned serialization functions. \n "
@@ -959,6 +959,57 @@ namespace cereal
       //! Maps from type hash codes to version numbers
       std::unordered_map<std::size_t, std::uint32_t> itsVersionedTypes;
   }; // class InputArchive
+
+  //! The base class for concrete archives.
+  /*! This class eases the creation of a concrete archive for a templated implementation by providing 'prologue'/'epilogue'
+      functions that delegate to the ones defined for the Base template. The derived class may override them by providing
+      member functions with the same names.
+
+      @tparam Derived The concrete archive that derives from ConcreteArchiveBase
+      @tparam Base The templated implementation of an archive, that accepts Derived as a template parameter.
+      @ingroup Archives */
+  template <class Derived, template <class D> class Base>
+  class ConcreteArchiveBase: public Base<Derived>
+  {
+    public:
+
+      template <typename... Params>
+      ConcreteArchiveBase(Derived* derived, Params&&... params):
+          Base<Derived>(derived, std::forward<Params>(params)...)
+      {
+        static_assert(std::is_base_of<ConcreteArchiveBase, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<ConcreteArchiveBase*>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in ConcreteArchiveBase");
+        }
+      }
+
+      template <typename T>
+      friend void prologue(Derived& d, const T& t)
+      {
+        d.prologue(t);
+      }
+
+      template <typename T>
+      friend void epilogue(Derived& d, const T& t)
+      {
+        d.epilogue(t);
+      }
+
+      template <typename T>
+      void prologue(const T& t)
+      {
+        using cereal::prologue;
+        prologue(static_cast<Base<Derived>&>(*this), t);
+      }
+
+      template <typename T>
+      void epilogue(const T& t)
+      {
+        using cereal::epilogue;
+        epilogue(static_cast<Base<Derived>&>(*this), t);
+      }
+  };
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
