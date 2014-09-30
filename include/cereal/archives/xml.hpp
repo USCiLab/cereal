@@ -381,7 +381,7 @@ namespace cereal
         try
         {
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & )
         {
@@ -586,11 +586,7 @@ namespace cereal
       template<class CharT, class Traits, class Alloc> inline
       void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
       {
-        auto first_node = itsNodes.top().node->first_node();
-        if ( first_node == nullptr )
-          throw Exception("Cannot read string value");
-
-        std::basic_istringstream<CharT, Traits> is( first_node->value() );
+        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
 
         str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
                     std::istreambuf_iterator<CharT, Traits>() );
