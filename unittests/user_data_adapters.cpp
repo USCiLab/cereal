@@ -66,7 +66,6 @@ struct UserStruct
     ar( ii );
     auto & data = cereal::get_user_data<UserData>( ar );
     construct( ii, data.p, data.ref.get() );
-    //construct( ii, ar.userdata.p, ar.userdata.ref.get() );
   }
 };
 
@@ -94,15 +93,21 @@ void test_user_data_adapters()
 
     std::istringstream is(os.str());
     {
-      //UserData ud(&ss, ss);
-      //cereal::UserDataAdapter<UserData, IArchive> iar(ud, is);
-      IArchive iar(is);
+      UserData ud(&ss, ss);
+      cereal::UserDataAdapter<UserData, IArchive> iar(ud, is);
 
       iar(i_ptr);
     }
 
     BOOST_CHECK_EQUAL( i_ptr->p == o_ptr->p, true );
     BOOST_CHECK_EQUAL( i_ptr->i32, o_ptr->i32 );
+
+    std::istringstream bad_is(os.str());
+    {
+      IArchive iar(bad_is);
+
+      BOOST_CHECK_THROW( iar(i_ptr), ::cereal::Exception )
+    }
   }
 }
 

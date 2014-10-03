@@ -30,6 +30,7 @@
 #ifndef CEREAL_ARCHIVES_ADAPTERS_HPP_
 #define CEREAL_ARCHIVES_ADAPTERS_HPP_
 
+#include <cereal/details/helpers.hpp>
 #include <utility>
 
 namespace cereal
@@ -96,13 +97,13 @@ namespace cereal
       @endcode
 
       @tparam UserData The type to give the archive access to
-      @tparam Archive The arachive to wrap */
+      @tparam Archive The archive to wrap */
   template <class UserData, class Archive>
   class UserDataAdapter : public Archive
   {
     public:
       template <class ... Args>
-      UserDataAdapter( UserData ud, Args && ... args ) :
+      UserDataAdapter( UserData & ud, Args && ... args ) :
         Archive( std::forward<Args>( args )... ),
         userdata( ud )
       { }
@@ -116,8 +117,14 @@ namespace cereal
   template <class UserData, class Archive>
   UserData & get_user_data( Archive & ar )
   {
-    //return static_cast<UserDataAdapter<UserData, Archive> &>( ar ).userdata;
-    return dynamic_cast<UserDataAdapter<UserData, Archive> &>( ar ).userdata;
+    try
+    {
+      return dynamic_cast<UserDataAdapter<UserData, Archive> &>( ar ).userdata;
+    }
+    catch( std::bad_cast const & )
+    {
+      throw ::cereal::Exception("Attempting to get user data from archive not wrapped in UserDataAdapter");
+    }
   }
 } // namespace cereal
 
