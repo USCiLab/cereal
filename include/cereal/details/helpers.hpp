@@ -220,8 +220,11 @@ namespace cereal
   namespace detail
   {
     // base classes for type checking
-    struct OutputArchiveBase {};
-    struct InputArchiveBase {};
+    /* The rtti virtual function only exists to enable an archive to
+       be used in a polymorphic fashion, if necessary.  See the
+       archive adapters for an example of this */
+    class OutputArchiveBase { private: virtual void rtti(){} };
+    class InputArchiveBase { private: virtual void rtti(){} };
 
     // forward decls for polymorphic support
     template <class Archive, class T> struct polymorphic_serialization_support;
