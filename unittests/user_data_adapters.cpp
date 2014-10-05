@@ -100,6 +100,7 @@ void test_user_data_adapters()
     }
 
     BOOST_CHECK_EQUAL( i_ptr->p == o_ptr->p, true );
+    BOOST_CHECK_EQUAL( std::addressof(i_ptr->ref) == std::addressof(o_ptr->ref), true );
     BOOST_CHECK_EQUAL( i_ptr->i32, o_ptr->i32 );
 
     std::istringstream bad_is(os.str());
