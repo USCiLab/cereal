@@ -136,8 +136,8 @@ namespace cereal
     };
 
     // forward decls for archives from cereal.hpp
-    struct InputArchiveBase;
-    struct OutputArchiveBase;
+    class InputArchiveBase;
+    class OutputArchiveBase;
 
     //! Creates a binding (map entry) between an input archive type and a polymorphic type
     /*! Bindings are made when types are registered, assuming that at least one
