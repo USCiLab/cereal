@@ -74,7 +74,8 @@ namespace cereal
         {
           int xx;
           ar( xx );
-          construct( xx, ar.userdata.myRawPointer );
+          // note the need to use get_user_data to retrieve user data from the archive
+          construct( xx, cereal::get_user_data<MyUserData>( ar ).myRawPointer );
         }
       };
 
@@ -86,7 +87,7 @@ namespace cereal
           md.myReference = someInstanceOfType;
 
           std::ifstream is( "data.xml" );
-          cereal::UserDataAdapter<MyUserData, cereal::XMLInputArchive> ar( md );
+          cereal::UserDataAdapter<MyUserData, cereal::XMLInputArchive> ar( md, is );
 
           std::unique_ptr<MyClass> sc;
           ar( sc ); // use as normal
@@ -96,12 +97,21 @@ namespace cereal
       }
       @endcode
 
+      @relates get_user_data
+
       @tparam UserData The type to give the archive access to
       @tparam Archive The archive to wrap */
   template <class UserData, class Archive>
   class UserDataAdapter : public Archive
   {
     public:
+      //! Construct the archive with some user data struct
+      /*! This will forward all arguments (other than the user
+          data) to the wrapped archive type.  The UserDataAdapter
+          can then be used identically to the wrapped archive type
+
+          @tparam Args The arguments to pass to the constructor of
+                       the archive. */
       template <class ... Args>
       UserDataAdapter( UserData & ud, Args && ... args ) :
         Archive( std::forward<Args>( args )... ),
@@ -109,11 +119,26 @@ namespace cereal
       { }
 
     private:
+      //! Overload the rtti function to enable dynamic_cast
       void rtti() {}
       friend UserData & get_user_data<UserData>( Archive & ar );
-      UserData & userdata;
+      UserData & userdata; //!< The actual user data
   };
 
+  //! Retrieves user data from an archive wrapped by UserDataAdapter
+  /*! This will attempt to retrieve the user data associated with
+      some archive wrapped by UserDataAdapter.  If this is used on
+      an archive that is not wrapped, a run-time exception will occur.
+
+      @note The correct use of this function cannot be enforced at compile
+            time.
+
+      @relates UserDataAdapter
+      @tparam UserData The data struct contained in the archive
+      @tparam Archive The archive, which should be wrapped by UserDataAdapter
+      @param ar The archive
+      @throws Exception if the archive this is used upon is not wrapped with
+                        UserDataAdapter. */
   template <class UserData, class Archive>
   UserData & get_user_data( Archive & ar )
   {

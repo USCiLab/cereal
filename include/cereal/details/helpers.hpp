@@ -220,6 +220,9 @@ namespace cereal
   namespace detail
   {
     // base classes for type checking
+    /* The rtti virtual function only exists to enable an archive to
+       be used in a polymorphic fashion, if necessary.  See the
+       archive adapters for an example of this */
     class OutputArchiveBase { private: virtual void rtti(){} };
     class InputArchiveBase { private: virtual void rtti(){} };
 
