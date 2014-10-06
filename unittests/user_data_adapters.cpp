@@ -107,27 +107,27 @@ void test_user_data_adapters()
     {
       IArchive iar(bad_is);
 
-      BOOST_CHECK_THROW( iar(i_ptr), ::cereal::Exception )
+      BOOST_CHECK_THROW( iar(i_ptr), ::cereal::Exception );
     }
   }
 }
 
-BOOST_AUTO_TEST_CASE( binary_tuple )
+BOOST_AUTO_TEST_CASE( binary_user_data_adapters )
 {
   test_user_data_adapters<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( portable_binary_tuple )
+BOOST_AUTO_TEST_CASE( portable_binary_user_data_adapters )
 {
   test_user_data_adapters<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( xml_tuple )
+BOOST_AUTO_TEST_CASE( xml_user_data_adapters )
 {
   test_user_data_adapters<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( json_tuple )
+BOOST_AUTO_TEST_CASE( json_user_data_adapters )
 {
   test_user_data_adapters<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
