@@ -85,7 +85,8 @@ namespace cereal
       that the container is variable sized and may be edited.
 
       \ingroup Archives */
-  class JSONOutputArchive : public OutputArchive<JSONOutputArchive>
+  template <class Derived>
+  class JSONOutputArchiveBase : public OutputArchive<Derived>
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
@@ -129,7 +130,7 @@ namespace cereal
             itsIndentLength( indentLength ) { }
 
         private:
-          friend class JSONOutputArchive;
+          friend class JSONOutputArchiveBase;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
@@ -139,19 +140,25 @@ namespace cereal
       /*! @param stream The stream to output to.
           @param options The JSON specific options to use.  See the Options struct
                          for the values of default parameters */
-      JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<JSONOutputArchive>(this),
+      JSONOutputArchiveBase( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
+        OutputArchive<Derived>(derived),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, options.itsPrecision),
         itsNextName(nullptr)
       {
+        static_assert(std::is_base_of<JSONOutputArchiveBase, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<JSONOutputArchiveBase *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in JSONOutputArchiveBase");
+        }
+
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
 
       //! Destructor, flushes the JSON
-      ~JSONOutputArchive()
+      ~JSONOutputArchiveBase()
       {
         itsWriter.EndObject();
       }
@@ -234,6 +241,128 @@ namespace cereal
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+
+      //! Prologue for NVPs for JSON archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void prologue( NameValuePair<T> const & )
+      { }
+
+      //! Epilogue for NVPs for JSON archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void epilogue( NameValuePair<T> const & )
+      { }
+
+      //! Prologue for SizeTags for JSON archives
+      /*! SizeTags are strictly ignored for JSON, they just indicate
+          that the current node should be made into an array */
+      template <class T>
+      void prologue( SizeTag<T> const & )
+      {
+        this->makeArray();
+      }
+
+      //! Epilogue for SizeTags for JSON archives
+      /*! SizeTags are strictly ignored for JSON */
+      template <class T>
+      void epilogue( SizeTag<T> const & )
+      { }
+
+      //! Prologue for all other types for JSON archives, except minimal types
+      /*! Starts a new node, named either automatically or by some NVP,
+          that may be given data by the type about to be archived
+
+          Minimal types do not start or finish nodes */
+      template <class T>
+      typename std::enable_if<!std::is_arithmetic<T>::value &&
+                              !traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+        this->startNode();
+      }
+
+      //! Epilogue for all other types other for JSON archives, except minimal types
+      /*! Finishes the node created in the prologue
+
+          Minimal types do not start or finish nodes */
+      template <class T>
+      typename std::enable_if<!std::is_arithmetic<T>::value &&
+                              !traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+        this->finishNode();
+      }
+
+      //! Prologue for arithmetic types for JSON archives
+      template <class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      prologue( T const & )
+      {
+        this->writeName();
+      }
+
+      //! Epilogue for arithmetic types for JSON archives
+      template <class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      epilogue( T const & )
+      { }
+
+      //! Prologue for strings for JSON archives
+      template<class CharT, class Traits, class Alloc>
+      void prologue(std::basic_string<CharT, Traits, Alloc> const &)
+      {
+        this->writeName();
+      }
+
+      //! Epilogue for strings for JSON archives
+      template<class CharT, class Traits, class Alloc>
+      void epilogue(std::basic_string<CharT, Traits, Alloc> const &)
+      { }
+
+      //! Prologue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+      }
+
+      //! Epilogue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+      }
+
+      //! Serializing NVP types to JSON
+      template <class T>
+      void save_override( NameValuePair<T> const & t )
+      {
+        this->setNextName( t.name );
+        (*this)( t.value );
+      }
+
+      //! Saving for arithmetic to JSON
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      save_override(T const & t)
+      {
+        this->saveValue( t );
+      }
+
+      //! saving string to JSON
+      template<class CharT, class Traits, class Alloc>
+      void save_override(std::basic_string<CharT, Traits, Alloc> const & str)
+      {
+        this->saveValue( str );
+      }
+
+      //! Saving SizeTags to JSON
+      template <class T>
+      void save_override( SizeTag<T> const & )
+      {
+        // nothing to do here, we don't explicitly save the size
+      }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -390,7 +519,8 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  class JSONInputArchive : public InputArchive<JSONInputArchive>
+  template <class Derived>
+  class JSONInputArchiveBase : public InputArchive<Derived>
   {
     private:
       typedef rapidjson::GenericReadStream ReadStream;
@@ -406,11 +536,17 @@ namespace cereal
 
       //! Construct, reading from the provided stream
       /*! @param stream The stream to read from */
-      JSONInputArchive(std::istream & stream) :
-        InputArchive<JSONInputArchive>(this),
+      JSONInputArchiveBase(Derived * derived, std::istream & stream) :
+        InputArchive<Derived>(derived),
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
+        static_assert(std::is_base_of<JSONInputArchiveBase, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<JSONInputArchiveBase *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in JSONInputArchiveBase");
+        }
+
         itsDocument.ParseStream<0>(itsReadStream);
         itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
@@ -604,6 +740,114 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
 
+      //! Prologue for NVPs for JSON archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void prologue( NameValuePair<T> const & )
+      { }
+
+      //! Epilogue for NVPs for JSON archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void epilogue( NameValuePair<T> const & )
+      { }
+
+      //! Prologue for SizeTags for JSON archives
+      /*! SizeTags are strictly ignored for JSON */
+      template <class T>
+      void prologue( SizeTag<T> const & )
+      { }
+
+      //! Epilogue for SizeTags for JSON archives
+      /*! SizeTags are strictly ignored for JSON */
+      template <class T>
+      void epilogue( SizeTag<T> const & )
+      { }
+
+      //! Prologue for all other types for JSON archives
+      template <class T>
+      typename std::enable_if<!std::is_arithmetic<T>::value &&
+                              !traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+        this->startNode();
+      }
+
+      //! Epilogue for all other types other for JSON archives
+      template <class T>
+      typename std::enable_if<!std::is_arithmetic<T>::value &&
+                              !traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+        this->finishNode();
+      }
+
+      //! Prologue for arithmetic types for JSON archives
+      template <class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      prologue( T const & )
+      { }
+
+      //! Epilogue for arithmetic types for JSON archives
+      template <class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      epilogue( T const & )
+      { }
+
+      //! Prologue for strings for JSON archives
+      template<class CharT, class Traits, class Alloc>
+      void prologue(std::basic_string<CharT, Traits, Alloc> const &)
+      { }
+
+      //! Epilogue for strings for JSON archives
+      template<class CharT, class Traits, class Alloc>
+      void epilogue(std::basic_string<CharT, Traits, Alloc> const &)
+      { }
+
+      //! Prologue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+      }
+
+      //! Epilogue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+      }
+
+      //! Serializing NVP types from JSON
+      template <class T>
+      void load_override( NameValuePair<T> & t )
+      {
+        this->setNextName( t.name );
+        (*this)( t.value );
+      }
+
+      //! Loading arithmetic from JSON
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      load_override(T & t)
+      {
+        this->loadValue( t );
+      }
+
+      //! loading string from JSON
+      template<class CharT, class Traits, class Alloc>
+      void load_override(std::basic_string<CharT, Traits, Alloc> & str)
+      {
+        this->loadValue( str );
+      }
+
+      //! Loading SizeTags from JSON
+      template <class T>
+      void load_override( SizeTag<T> & st )
+      {
+        this->loadSize( st.size );
+      }
+
     private:
       //! Convert a string to a long long
       void stringToNumber( std::string const & str, long long & val ) { val = std::stoll( str ); }
@@ -643,222 +887,25 @@ namespace cereal
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 
-  // ######################################################################
-  // JSONArchive prologue and epilogue functions
-  // ######################################################################
-
-  // ######################################################################
-  //! Prologue for NVPs for JSON archives
-  /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void prologue( JSONOutputArchive &, NameValuePair<T> const & )
-  { }
-
-  //! Prologue for NVPs for JSON archives
-  template <class T> inline
-  void prologue( JSONInputArchive &, NameValuePair<T> const & )
-  { }
-
-  // ######################################################################
-  //! Epilogue for NVPs for JSON archives
-  /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
-  { }
-
-  //! Epilogue for NVPs for JSON archives
-  /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void epilogue( JSONInputArchive &, NameValuePair<T> const & )
-  { }
-
-  // ######################################################################
-  //! Prologue for SizeTags for JSON archives
-  /*! SizeTags are strictly ignored for JSON, they just indicate
-      that the current node should be made into an array */
-  template <class T> inline
-  void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
+  class JSONOutputArchive: public ConcreteArchiveBase<JSONOutputArchive, JSONOutputArchiveBase>
   {
-    ar.makeArray();
-  }
+    public:
+      template <typename... Params>
+      JSONOutputArchive(Params&&... params):
+        ConcreteArchiveBase<JSONOutputArchive, JSONOutputArchiveBase>(this, std::forward<Params>(params)...)
+      {
+      }
+  };
 
-  //! Prologue for SizeTags for JSON archives
-  template <class T> inline
-  void prologue( JSONInputArchive &, SizeTag<T> const & )
-  { }
-
-  // ######################################################################
-  //! Epilogue for SizeTags for JSON archives
-  /*! SizeTags are strictly ignored for JSON */
-  template <class T> inline
-  void epilogue( JSONOutputArchive &, SizeTag<T> const & )
-  { }
-
-  //! Epilogue for SizeTags for JSON archives
-  template <class T> inline
-  void epilogue( JSONInputArchive &, SizeTag<T> const & )
-  { }
-
-  // ######################################################################
-  //! Prologue for all other types for JSON archives (except minimal types)
-  /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived
-
-      Minimal types do not start or finish nodes */
-  template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value, void>::type
-  prologue( JSONOutputArchive & ar, T const & )
+  class JSONInputArchive: public ConcreteArchiveBase<JSONInputArchive, JSONInputArchiveBase>
   {
-    ar.startNode();
-  }
-
-  //! Prologue for all other types for JSON archives
-  template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
-  prologue( JSONInputArchive & ar, T const & )
-  {
-    ar.startNode();
-  }
-
-  // ######################################################################
-  //! Epilogue for all other types other for JSON archives (except minimal types
-  /*! Finishes the node created in the prologue
-
-      Minimal types do not start or finish nodes */
-  template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value, void>::type
-  epilogue( JSONOutputArchive & ar, T const & )
-  {
-    ar.finishNode();
-  }
-
-  //! Epilogue for all other types other for JSON archives
-  template <class T> inline
-  typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
-  epilogue( JSONInputArchive & ar, T const & )
-  {
-    ar.finishNode();
-  }
-
-  // ######################################################################
-  //! Prologue for arithmetic types for JSON archives
-  template <class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  prologue( JSONOutputArchive & ar, T const & )
-  {
-    ar.writeName();
-  }
-
-  //! Prologue for arithmetic types for JSON archives
-  template <class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  prologue( JSONInputArchive &, T const & )
-  { }
-
-  // ######################################################################
-  //! Epilogue for arithmetic types for JSON archives
-  template <class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONOutputArchive &, T const & )
-  { }
-
-  //! Epilogue for arithmetic types for JSON archives
-  template <class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  epilogue( JSONInputArchive &, T const & )
-  { }
-
-  // ######################################################################
-  //! Prologue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void prologue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const &)
-  {
-    ar.writeName();
-  }
-
-  //! Prologue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void prologue(JSONInputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
-  { }
-
-  // ######################################################################
-  //! Epilogue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONOutputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
-  { }
-
-  //! Epilogue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONInputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
-  { }
-
-  // ######################################################################
-  // Common JSONArchive serialization functions
-  // ######################################################################
-
-  //! Serializing NVP types to JSON
-  template <class T> inline
-  void save( JSONOutputArchive & ar, NameValuePair<T> const & t )
-  {
-    ar.setNextName( t.name );
-    ar( t.value );
-  }
-
-  template <class T> inline
-  void load( JSONInputArchive & ar, NameValuePair<T> & t )
-  {
-    ar.setNextName( t.name );
-    ar( t.value );
-  }
-
-  //! Saving for arithmetic to JSON
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(JSONOutputArchive & ar, T const & t)
-  {
-    ar.saveValue( t );
-  }
-
-  //! Loading arithmetic from JSON
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(JSONInputArchive & ar, T & t)
-  {
-    ar.loadValue( t );
-  }
-
-  //! saving string to JSON
-  template<class CharT, class Traits, class Alloc> inline
-  void save(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
-  {
-    ar.saveValue( str );
-  }
-
-  //! loading string from JSON
-  template<class CharT, class Traits, class Alloc> inline
-  void load(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
-  {
-    ar.loadValue( str );
-  }
-
-  // ######################################################################
-  //! Saving SizeTags to JSON
-  template <class T> inline
-  void save( JSONOutputArchive &, SizeTag<T> const & )
-  {
-    // nothing to do here, we don't explicitly save the size
-  }
-
-  //! Loading SizeTags from JSON
-  template <class T> inline
-  void load( JSONInputArchive & ar, SizeTag<T> & st )
-  {
-    ar.loadSize( st.size );
-  }
+    public:
+      template <typename... Params>
+      JSONInputArchive(Params&&... params):
+        ConcreteArchiveBase<JSONInputArchive, JSONInputArchiveBase>(this, std::forward<Params>(params)...)
+      {
+      }
+  };
 } // namespace cereal
 
 // register archives for polymorphic support

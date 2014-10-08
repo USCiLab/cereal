@@ -316,14 +316,33 @@ namespace cereal
           return id->second;
       }
 
-    private:
+    protected:
+
+      // TODO: rename processImpl, since now it's accessible from descendant classes.
+
+      //! Default prologue implementation
+      template <class T> inline
+      void prologue( T const & t )
+      {
+        using cereal::prologue;
+        prologue( *self, t );
+      }
+
+      //! Default epilogue implementation
+      template <class T> inline
+      void epilogue( T const & t )
+      {
+        using cereal::epilogue;
+        epilogue( *self, t );
+      }
+
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
-        prologue( *self, head );
+        self->prologue( head );
         self->processImpl( head );
-        epilogue( *self, head );
+        self->epilogue( head );
       }
 
       //! Unwinds to process all data
@@ -696,14 +715,33 @@ namespace cereal
         itsPolymorphicTypeMap.insert( {stripped_id, name} );
       }
 
-    private:
+    protected:
+
+      // TODO: rename processImpl, since now it's accessible from descendant classes.
+
+      //! Default prologue implementation
+      template <class T> inline
+      void prologue( T const & t )
+      {
+        using cereal::prologue;
+        prologue( *self, t );
+      }
+
+      //! Default epilogue implementation
+      template <class T> inline
+      void epilogue( T const & t )
+      {
+        using cereal::epilogue;
+        epilogue( *self, t );
+      }
+
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
-        prologue( *self, head );
+        self->prologue( head );
         self->processImpl( head );
-        epilogue( *self, head );
+        self->epilogue( head );
       }
 
       //! Unwinds to process all data
@@ -960,10 +998,30 @@ namespace cereal
       std::unordered_map<std::size_t, std::uint32_t> itsVersionedTypes;
   }; // class InputArchive
 
+  namespace traits
+  {
+    namespace concrete_archive_specific
+    {
+      template<class Param, class Obj> inline
+      auto member_save_override(Param const & p, Obj & o) -> decltype(o.save_override(p))
+      {
+        o.save_override(p);
+      }
+
+      template<class Param, class Obj> inline
+      auto member_load_override(Param & p, Obj & o) -> decltype(o.load_override(p))
+      {
+        o.load_override(p);
+      }
+
+      CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(save_override, member_save_override);
+      CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(load_override, member_load_override);
+    } // namespace detail
+  } // namespace traits
+
   //! The base class for concrete archives.
-  /*! This class eases the creation of a concrete archive for a templated implementation by providing 'prologue'/'epilogue'
-      functions that delegate to the ones defined for the Base template. The derived class may override them by providing
-      member functions with the same names.
+  /*! This class eases the creation of a concrete archive for a templated implementation by providing 'save'/'load'
+      free functions that delegate to save_override/load_override members of Derived.
 
       @tparam Derived The concrete archive that derives from ConcreteArchiveBase
       @tparam Base The templated implementation of an archive, that accepts Derived as a template parameter.
@@ -973,41 +1031,27 @@ namespace cereal
   {
     public:
 
-      template <typename... Params>
-      ConcreteArchiveBase(Derived* derived, Params&&... params):
+      template <class... Params>
+      ConcreteArchiveBase(Derived * derived, Params && ... params):
           Base<Derived>(derived, std::forward<Params>(params)...)
       {
         static_assert(std::is_base_of<ConcreteArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<ConcreteArchiveBase*>(derived) != this)
+        if (static_cast<ConcreteArchiveBase *>(derived) != this)
         {
           throw Exception("Wrong derived pointer in ConcreteArchiveBase");
         }
       }
 
-      template <typename T>
-      friend void prologue(Derived& d, const T& t)
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Derived, T>::value, int>::type = 0>
+      friend void save(Derived& d, const T& t)
       {
-        d.prologue(t);
+        d.save_override(t);
       }
 
-      template <typename T>
-      friend void epilogue(Derived& d, const T& t)
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Derived, T>::value, int>::type = 0>
+      friend void load(Derived& d, T& t)
       {
-        d.epilogue(t);
-      }
-
-      template <typename T>
-      void prologue(const T& t)
-      {
-        using cereal::prologue;
-        prologue(static_cast<Base<Derived>&>(*this), t);
-      }
-
-      template <typename T>
-      void epilogue(const T& t)
-      {
-        using cereal::epilogue;
-        epilogue(static_cast<Base<Derived>&>(*this), t);
+        d.load_override(t);
       }
   };
 } // namespace cereal
