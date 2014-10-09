@@ -262,7 +262,7 @@ namespace cereal
     public:
       template <typename... Params>
       PortableBinaryOutputArchive(Params&&... params):
-        ConcreteArchiveBase<PortableBinaryOutputArchive, PortableBinaryOutputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };
@@ -272,7 +272,7 @@ namespace cereal
     public:
       template <typename... Params>
       PortableBinaryInputArchive(Params&&... params):
-        ConcreteArchiveBase<PortableBinaryInputArchive, PortableBinaryInputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };

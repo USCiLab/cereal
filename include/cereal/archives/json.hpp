@@ -892,7 +892,7 @@ namespace cereal
     public:
       template <typename... Params>
       JSONOutputArchive(Params&&... params):
-        ConcreteArchiveBase<JSONOutputArchive, JSONOutputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };
@@ -902,7 +902,7 @@ namespace cereal
     public:
       template <typename... Params>
       JSONInputArchive(Params&&... params):
-        ConcreteArchiveBase<JSONInputArchive, JSONInputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };

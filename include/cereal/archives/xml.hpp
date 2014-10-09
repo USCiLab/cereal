@@ -859,7 +859,7 @@ namespace cereal
     public:
       template <typename... Params>
       XMLOutputArchive(Params&&... params):
-        ConcreteArchiveBase<XMLOutputArchive, XMLOutputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };
@@ -869,7 +869,7 @@ namespace cereal
     public:
       template <typename... Params>
       XMLInputArchive(Params&&... params):
-        ConcreteArchiveBase<XMLInputArchive, XMLInputArchiveBase>(this, std::forward<Params>(params)...)
+        ConcreteArchiveBase(this, std::forward<Params>(params)...)
       {
       }
   };
