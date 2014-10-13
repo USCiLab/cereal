@@ -1016,42 +1016,39 @@ namespace cereal
 
       CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(save_override, member_save_override);
       CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(load_override, member_load_override);
-    } // namespace detail
+    } // namespace concrete_archive_specific
   } // namespace traits
 
-  //! The base class for concrete archives.
-  /*! This class eases the creation of a concrete archive for a templated implementation by providing 'save'/'load'
+  /*! ConcreteArchive allows the creation of a concrete archive for a templated implementation by providing 'save'/'load'
       free functions that delegate to save_override/load_override members of Derived.
 
-      @tparam Derived The concrete archive that derives from ConcreteArchiveBase
-      @tparam Base The templated implementation of an archive, that accepts Derived as a template parameter.
+      @tparam ArchiveT The templated implementation of an archive, that accepts a derived class as the first template
+                       parameter flags as the second.
       @ingroup Archives */
-  template <class Derived, template <class D> class Base>
-  class ConcreteArchiveBase: public Base<Derived>
+  template <template <class, std::uint32_t> class ArchiveT, std::uint32_t Flags = 0>
+  class ConcreteArchive: public ArchiveT<ConcreteArchive<ArchiveT, Flags>, Flags>
   {
     public:
 
+      using Self = ConcreteArchive<ArchiveT, Flags>;
+      using Base = ArchiveT<Self, Flags>;
+
       template <class... Params>
-      ConcreteArchiveBase(Derived * derived, Params && ... params):
-          Base<Derived>(derived, std::forward<Params>(params)...)
+      ConcreteArchive(Params && ... params):
+          Base(this, std::forward<Params>(params)...)
       {
-        static_assert(std::is_base_of<ConcreteArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<ConcreteArchiveBase *>(derived) != this)
-        {
-          throw Exception("Wrong derived pointer in ConcreteArchiveBase");
-        }
       }
 
-      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Derived, T>::value, int>::type = 0>
-      friend void save(Derived& d, const T& t)
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Self, T>::value, int>::type = 0>
+      friend void save(Self& s, const T& t)
       {
-        d.save_override(t);
+        s.save_override(t);
       }
 
-      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Derived, T>::value, int>::type = 0>
-      friend void load(Derived& d, T& t)
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Self, T>::value, int>::type = 0>
+      friend void load(Self& s, T& t)
       {
-        d.load_override(t);
+        s.load_override(t);
       }
   };
 } // namespace cereal

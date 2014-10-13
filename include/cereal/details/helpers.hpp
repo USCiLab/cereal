@@ -57,14 +57,15 @@ namespace cereal
    * machine. */
   using size_type = uint64_t;
 
-  // forward decls
-  class BinaryOutputArchive;
-  class BinaryInputArchive;
-
   // ######################################################################
   namespace detail
   {
     struct NameValuePairCore {};
+
+    // base classes for type checking
+    struct OutputArchiveBase {};
+    struct InputArchiveBase {};
+    struct BinaryArchiveBase {};
   }
 
   //! For holding name value pairs
@@ -168,9 +169,7 @@ namespace cereal
       @internal */
   template<class Archive, class T> inline
   typename
-  std::enable_if<std::is_same<Archive, ::cereal::BinaryInputArchive>::value ||
-                 std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
-  T && >::type
+  std::enable_if<std::is_base_of<detail::BinaryArchiveBase, Archive>::value, T && >::type
   make_nvp( const char *, T && value )
   {
     return std::forward<T>(value);
@@ -181,9 +180,7 @@ namespace cereal
       @internal */
   template<class Archive, class T> inline
   typename
-  std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
-                 !std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
-  NameValuePair<T> >::type
+  std::enable_if<!std::is_base_of<detail::BinaryArchiveBase, Archive>::value, NameValuePair<T> >::type
   make_nvp( const char * name, T && value)
   {
     return {name, std::forward<T>(value)};
@@ -220,10 +217,6 @@ namespace cereal
   // ######################################################################
   namespace detail
   {
-    // base classes for type checking
-    struct OutputArchiveBase {};
-    struct InputArchiveBase {};
-
     // forward decls for polymorphic support
     template <class Archive, class T> struct polymorphic_serialization_support;
     struct adl_tag;

@@ -48,21 +48,21 @@ namespace cereal
       inadvertently.
 
       \ingroup Archives */
-  template <class Derived>
-  class BinaryOutputArchiveBase : public OutputArchive<Derived, AllowEmptyClassElision>
+  template <class Derived, std::uint32_t Flags = 0>
+  class BinaryOutputArchiveT : public OutputArchive<Derived, Flags | AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
-      BinaryOutputArchiveBase(Derived * derived, std::ostream & stream) :
-        OutputArchive<Derived, AllowEmptyClassElision>(derived),
+      BinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
+        OutputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
-        static_assert(std::is_base_of<BinaryOutputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<BinaryOutputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<BinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<BinaryOutputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in BinaryOutputArchiveBase");
+          throw Exception("Wrong derived pointer in BinaryOutputArchiveT");
         }
       }
 
@@ -120,19 +120,19 @@ namespace cereal
 
       \ingroup Archives */
 
-  template <class Derived>
-  class BinaryInputArchiveBase : public InputArchive<Derived, AllowEmptyClassElision>
+  template <class Derived, std::uint32_t Flags = 0>
+  class BinaryInputArchiveT : public InputArchive<Derived, Flags | AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, loading from the provided stream
-      BinaryInputArchiveBase(Derived * derived, std::istream & stream) :
-        InputArchive<Derived, AllowEmptyClassElision>(derived),
+      BinaryInputArchiveT(Derived * derived, std::istream & stream) :
+        InputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
-        static_assert(std::is_base_of<BinaryInputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<BinaryInputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<BinaryInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<BinaryInputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in BinaryInputArchiveBase");
+          throw Exception("Wrong derived pointer in BinaryInputArchiveT");
         }
       }
 
@@ -178,25 +178,8 @@ namespace cereal
       std::istream & itsStream;
   };
 
-  class BinaryOutputArchive: public ConcreteArchiveBase<BinaryOutputArchive, BinaryOutputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      BinaryOutputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
-
-  class BinaryInputArchive: public ConcreteArchiveBase<BinaryInputArchive, BinaryInputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      BinaryInputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
+  using BinaryOutputArchive = ConcreteArchive<BinaryOutputArchiveT>;
+  using BinaryInputArchive = ConcreteArchive<BinaryInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support

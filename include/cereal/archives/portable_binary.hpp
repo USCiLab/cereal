@@ -75,21 +75,21 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  template <class Derived>
-  class PortableBinaryOutputArchiveBase : public OutputArchive<Derived, AllowEmptyClassElision>
+  template <class Derived, std::uint32_t Flags = 0>
+  class PortableBinaryOutputArchiveT : public OutputArchive<Derived, Flags | AllowEmptyClassElision>
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
         even cout! */
-      PortableBinaryOutputArchiveBase(Derived * derived, std::ostream & stream) :
-        OutputArchive<Derived, AllowEmptyClassElision>(derived),
+      PortableBinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
+        OutputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
-        static_assert(std::is_base_of<PortableBinaryOutputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<PortableBinaryOutputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<PortableBinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<PortableBinaryOutputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in PortableBinaryOutputArchiveBase");
+          throw Exception("Wrong derived pointer in PortableBinaryOutputArchiveT");
         }
 
         this->operator()( portable_binary_detail::is_little_endian() );
@@ -171,21 +171,21 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  template <class Derived>
-  class PortableBinaryInputArchiveBase : public InputArchive<Derived, AllowEmptyClassElision>
+  template <class Derived, std::uint32_t Flags = 0>
+  class PortableBinaryInputArchiveT : public InputArchive<Derived, Flags | AllowEmptyClassElision>
   {
     public:
       //! Construct, loading from the provided stream
       /*! @param stream The stream to read from. */
-      PortableBinaryInputArchiveBase(Derived * derived, std::istream & stream) :
-        InputArchive<Derived, AllowEmptyClassElision>(derived),
+      PortableBinaryInputArchiveT(Derived * derived, std::istream & stream) :
+        InputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
         itsStream(stream),
         itsConvertEndianness( false )
       {
-        static_assert(std::is_base_of<PortableBinaryInputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<PortableBinaryInputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<PortableBinaryInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<PortableBinaryInputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in PortableBinaryInputArchiveBase");
+          throw Exception("Wrong derived pointer in PortableBinaryInputArchiveT");
         }
 
         bool streamLittleEndian;
@@ -257,25 +257,8 @@ namespace cereal
       bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
   };
 
-  class PortableBinaryOutputArchive: public ConcreteArchiveBase<PortableBinaryOutputArchive, PortableBinaryOutputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      PortableBinaryOutputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
-
-  class PortableBinaryInputArchive: public ConcreteArchiveBase<PortableBinaryInputArchive, PortableBinaryInputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      PortableBinaryInputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
+  using PortableBinaryOutputArchive = ConcreteArchive<PortableBinaryOutputArchiveT>;
+  using PortableBinaryInputArchive = ConcreteArchive<PortableBinaryInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support

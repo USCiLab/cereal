@@ -85,8 +85,8 @@ namespace cereal
       that the container is variable sized and may be edited.
 
       \ingroup Archives */
-  template <class Derived>
-  class JSONOutputArchiveBase : public OutputArchive<Derived>
+  template <class Derived, std::uint32_t Flags = 0>
+  class JSONOutputArchiveT : public OutputArchive<Derived, Flags>
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
@@ -130,7 +130,7 @@ namespace cereal
             itsIndentLength( indentLength ) { }
 
         private:
-          friend class JSONOutputArchiveBase;
+          friend class JSONOutputArchiveT;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
@@ -140,16 +140,16 @@ namespace cereal
       /*! @param stream The stream to output to.
           @param options The JSON specific options to use.  See the Options struct
                          for the values of default parameters */
-      JSONOutputArchiveBase( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<Derived>(derived),
+      JSONOutputArchiveT( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
+        OutputArchive<Derived, Flags>(derived),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, options.itsPrecision),
         itsNextName(nullptr)
       {
-        static_assert(std::is_base_of<JSONOutputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<JSONOutputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<JSONOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<JSONOutputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in JSONOutputArchiveBase");
+          throw Exception("Wrong derived pointer in JSONOutputArchiveT");
         }
 
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
@@ -158,7 +158,7 @@ namespace cereal
       }
 
       //! Destructor, flushes the JSON
-      ~JSONOutputArchiveBase()
+      ~JSONOutputArchiveT()
       {
         itsWriter.EndObject();
       }
@@ -519,8 +519,8 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  template <class Derived>
-  class JSONInputArchiveBase : public InputArchive<Derived>
+  template <class Derived, std::uint32_t Flags = 0>
+  class JSONInputArchiveT : public InputArchive<Derived, Flags>
   {
     private:
       typedef rapidjson::GenericReadStream ReadStream;
@@ -536,15 +536,15 @@ namespace cereal
 
       //! Construct, reading from the provided stream
       /*! @param stream The stream to read from */
-      JSONInputArchiveBase(Derived * derived, std::istream & stream) :
-        InputArchive<Derived>(derived),
+      JSONInputArchiveT(Derived * derived, std::istream & stream) :
+        InputArchive<Derived, Flags>(derived),
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        static_assert(std::is_base_of<JSONInputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<JSONInputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<JSONInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<JSONInputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in JSONInputArchiveBase");
+          throw Exception("Wrong derived pointer in JSONInputArchiveT");
         }
 
         itsDocument.ParseStream<0>(itsReadStream);
@@ -887,25 +887,8 @@ namespace cereal
       rapidjson::Document itsDocument;        //!< Rapidjson document
   };
 
-  class JSONOutputArchive: public ConcreteArchiveBase<JSONOutputArchive, JSONOutputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      JSONOutputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
-
-  class JSONInputArchive: public ConcreteArchiveBase<JSONInputArchive, JSONInputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      JSONInputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
+  using JSONOutputArchive = ConcreteArchive<JSONOutputArchiveT>;
+  using JSONInputArchive = ConcreteArchive<JSONInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support

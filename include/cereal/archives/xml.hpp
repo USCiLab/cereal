@@ -87,12 +87,12 @@ namespace cereal
       is accomplished through the cereal::SizeTag object, which will also add an attribute
       to its parent field.
       \ingroup Archives */
-  template <class Derived>
-  class XMLOutputArchiveBase : public OutputArchive<Derived>
+  template <class Derived, std::uint32_t Flags = 0>
+  class XMLOutputArchiveT : public OutputArchive<Derived, Flags>
   {
     public:
       /*! @name Common Functionality
-          Common use cases for directly interacting with an XMLOutputArchiveBase */
+          Common use cases for directly interacting with an XMLOutputArchiveT */
       //! @{
 
       //! A class containing various advanced options for the XML archive
@@ -105,7 +105,7 @@ namespace cereal
           //! Default options with no indentation
           static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
 
-          //! Specify specific options for the XMLOutputArchiveBase
+          //! Specify specific options for the XMLOutputArchiveT
           /*! @param precision The precision used for floating point numbers
               @param indent Whether to indent each line of XML
               @param outputType Whether to output the type of each serialized object as an attribute */
@@ -117,7 +117,7 @@ namespace cereal
             itsOutputType( outputType ) { }
 
         private:
-          friend class XMLOutputArchiveBase;
+          friend class XMLOutputArchiveT;
           int itsPrecision;
           bool itsIndent;
           bool itsOutputType;
@@ -128,16 +128,16 @@ namespace cereal
                          its output to the stream upon destruction.
           @param options The XML specific options to use.  See the Options struct
                          for the values of default parameters */
-      XMLOutputArchiveBase( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<Derived>(derived),
+      XMLOutputArchiveT( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
+        OutputArchive<Derived, Flags>(derived),
         itsStream(stream),
         itsOutputType( options.itsOutputType ),
         itsIndent( options.itsIndent )
       {
-        static_assert(std::is_base_of<XMLOutputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<XMLOutputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<XMLOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<XMLOutputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in XMLOutputArchiveBase");
+          throw Exception("Wrong derived pointer in XMLOutputArchiveT");
         }
 
         // rapidxml will delete all allocations when xml_document is cleared
@@ -159,7 +159,7 @@ namespace cereal
       }
 
       //! Destructor, flushes the XML
-      ~XMLOutputArchiveBase()
+      ~XMLOutputArchiveT()
       {
         const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
         rapidxml::print( itsStream, itsXML, flags );
@@ -188,7 +188,7 @@ namespace cereal
       //! @}
       /*! @name Internal Functionality
           Functionality designed for use by those requiring control over the inner mechanisms of
-          the XMLOutputArchiveBase */
+          the XMLOutputArchiveT */
       //! @{
 
       //! Creates a new node that is a child of the node at the top of the stack
@@ -409,21 +409,21 @@ namespace cereal
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
       bool itsIndent;                  //!< Controls whether indenting is used
-  }; // XMLOutputArchiveBase
+  }; // XMLOutputArchiveT
 
   // ######################################################################
   //! An output archive designed to load data from XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data in the stream it is given before loading any types serialized.
 
-      Input XML should have been produced by the XMLOutputArchiveBase.  Data can
+      Input XML should have been produced by the XMLOutputArchiveT.  Data can
       only be added to dynamically sized containers - the input archive will
       determine their size by looking at the number of child nodes.  Data that
-      did not originate from an XMLOutputArchiveBase is not officially supported,
+      did not originate from an XMLOutputArchiveT is not officially supported,
       but may be possible to use if properly formatted.
 
       The XMLInputArchive does not require that nodes are loaded in the same
-      order they were saved by XMLOutputArchiveBase.  Using name value pairs (NVPs),
+      order they were saved by XMLOutputArchiveT.  Using name value pairs (NVPs),
       it is possible to load in an out of order fashion or otherwise skip/select
       specific nodes to load.
 
@@ -447,12 +447,12 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  template <class Derived>
-  class XMLInputArchiveBase : public InputArchive<Derived>
+  template <class Derived, std::uint32_t Flags = 0>
+  class XMLInputArchiveT : public InputArchive<Derived>
   {
     public:
       /*! @name Common Functionality
-          Common use cases for directly interacting with an XMLInputArchiveBase */
+          Common use cases for directly interacting with an XMLInputArchiveT */
       //! @{
 
       //! Construct, reading in from the provided stream
@@ -460,14 +460,14 @@ namespace cereal
           as serialization starts
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
-      XMLInputArchiveBase( Derived * derived, std::istream & stream ) :
-        InputArchive<Derived>( derived ),
+      XMLInputArchiveT( Derived * derived, std::istream & stream ) :
+        InputArchive<Derived, Flags>( derived ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
-        static_assert(std::is_base_of<XMLInputArchiveBase, Derived>::value, "The passed class must derive from this one");
-        if (static_cast<XMLInputArchiveBase *>(derived) != this)
+        static_assert(std::is_base_of<XMLInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<XMLInputArchiveT *>(derived) != this)
         {
-          throw Exception("Wrong derived pointer in XMLInputArchiveBase");
+          throw Exception("Wrong derived pointer in XMLInputArchiveT");
         }
 
         try
@@ -522,7 +522,7 @@ namespace cereal
       //! @}
       /*! @name Internal Functionality
           Functionality designed for use by those requiring control over the inner mechanisms of
-          the XMLInputArchiveBase */
+          the XMLInputArchiveT */
       //! @{
 
       //! Prepares to start reading the next node
@@ -799,7 +799,7 @@ namespace cereal
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
           child( n->first_node() ),
-          size( XMLInputArchiveBase::getNumChildren( n ) ),
+          size( XMLInputArchiveT::getNumChildren( n ) ),
           name( nullptr )
         { }
 
@@ -821,7 +821,7 @@ namespace cereal
         {
           if( searchName )
           {
-            size_t new_size = XMLInputArchiveBase::getNumChildren( node );
+            size_t new_size = XMLInputArchiveT::getNumChildren( node );
             const size_t name_size = rapidxml::internal::measure( searchName );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
@@ -854,25 +854,8 @@ namespace cereal
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };
 
-  class XMLOutputArchive: public ConcreteArchiveBase<XMLOutputArchive, XMLOutputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      XMLOutputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
-
-  class XMLInputArchive: public ConcreteArchiveBase<XMLInputArchive, XMLInputArchiveBase>
-  {
-    public:
-      template <typename... Params>
-      XMLInputArchive(Params&&... params):
-        ConcreteArchiveBase(this, std::forward<Params>(params)...)
-      {
-      }
-  };
+  using XMLOutputArchive = ConcreteArchive<XMLOutputArchiveT>;
+  using XMLInputArchive = ConcreteArchive<XMLInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support
