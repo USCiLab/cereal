@@ -1025,13 +1025,13 @@ namespace cereal
       @tparam ArchiveT The templated implementation of an archive, that accepts a derived class as the first template
                        parameter flags as the second.
       @ingroup Archives */
-  template <template <class, std::uint32_t> class ArchiveT, std::uint32_t Flags = 0>
-  class ConcreteArchive: public ArchiveT<ConcreteArchive<ArchiveT, Flags>, Flags>
+  template <template <class> class ArchiveT>
+  class ConcreteArchive: public ArchiveT<ConcreteArchive<ArchiveT>>
   {
     public:
 
-      using Self = ConcreteArchive<ArchiveT, Flags>;
-      using Base = ArchiveT<Self, Flags>;
+      using Self = ConcreteArchive<ArchiveT>;
+      using Base = ArchiveT<Self>;
 
       template <class... Params>
       ConcreteArchive(Params && ... params):

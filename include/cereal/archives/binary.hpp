@@ -48,15 +48,15 @@ namespace cereal
       inadvertently.
 
       \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class BinaryOutputArchiveT : public OutputArchive<Derived, Flags | AllowEmptyClassElision>, public detail::BinaryArchiveBase
+  template <class Derived>
+  class BinaryOutputArchiveT : public OutputArchive<Derived, AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
       BinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
-        OutputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
+        OutputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
         static_assert(std::is_base_of<BinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
@@ -120,13 +120,13 @@ namespace cereal
 
       \ingroup Archives */
 
-  template <class Derived, std::uint32_t Flags = 0>
-  class BinaryInputArchiveT : public InputArchive<Derived, Flags | AllowEmptyClassElision>, public detail::BinaryArchiveBase
+  template <class Derived>
+  class BinaryInputArchiveT : public InputArchive<Derived, AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, loading from the provided stream
       BinaryInputArchiveT(Derived * derived, std::istream & stream) :
-        InputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
+        InputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
         static_assert(std::is_base_of<BinaryInputArchiveT, Derived>::value, "The passed class must derive from this one");

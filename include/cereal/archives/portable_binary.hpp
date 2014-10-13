@@ -75,15 +75,15 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class PortableBinaryOutputArchiveT : public OutputArchive<Derived, Flags | AllowEmptyClassElision>
+  template <class Derived>
+  class PortableBinaryOutputArchiveT : public OutputArchive<Derived, AllowEmptyClassElision>
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
         even cout! */
       PortableBinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
-        OutputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
+        OutputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
         static_assert(std::is_base_of<PortableBinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
@@ -171,14 +171,14 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class PortableBinaryInputArchiveT : public InputArchive<Derived, Flags | AllowEmptyClassElision>
+  template <class Derived>
+  class PortableBinaryInputArchiveT : public InputArchive<Derived, AllowEmptyClassElision>
   {
     public:
       //! Construct, loading from the provided stream
       /*! @param stream The stream to read from. */
       PortableBinaryInputArchiveT(Derived * derived, std::istream & stream) :
-        InputArchive<Derived, Flags | AllowEmptyClassElision>(derived),
+        InputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream),
         itsConvertEndianness( false )
       {

@@ -85,8 +85,8 @@ namespace cereal
       that the container is variable sized and may be edited.
 
       \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class JSONOutputArchiveT : public OutputArchive<Derived, Flags>
+  template <class Derived>
+  class JSONOutputArchiveT : public OutputArchive<Derived>
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
@@ -141,7 +141,7 @@ namespace cereal
           @param options The JSON specific options to use.  See the Options struct
                          for the values of default parameters */
       JSONOutputArchiveT( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<Derived, Flags>(derived),
+        OutputArchive<Derived>(derived),
         itsWriteStream(stream),
         itsWriter(itsWriteStream, options.itsPrecision),
         itsNextName(nullptr)
@@ -519,8 +519,8 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class JSONInputArchiveT : public InputArchive<Derived, Flags>
+  template <class Derived>
+  class JSONInputArchiveT : public InputArchive<Derived>
   {
     private:
       typedef rapidjson::GenericReadStream ReadStream;
@@ -537,7 +537,7 @@ namespace cereal
       //! Construct, reading from the provided stream
       /*! @param stream The stream to read from */
       JSONInputArchiveT(Derived * derived, std::istream & stream) :
-        InputArchive<Derived, Flags>(derived),
+        InputArchive<Derived>(derived),
         itsNextName( nullptr ),
         itsReadStream(stream)
       {

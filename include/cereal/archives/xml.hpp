@@ -87,8 +87,8 @@ namespace cereal
       is accomplished through the cereal::SizeTag object, which will also add an attribute
       to its parent field.
       \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
-  class XMLOutputArchiveT : public OutputArchive<Derived, Flags>
+  template <class Derived>
+  class XMLOutputArchiveT : public OutputArchive<Derived>
   {
     public:
       /*! @name Common Functionality
@@ -129,7 +129,7 @@ namespace cereal
           @param options The XML specific options to use.  See the Options struct
                          for the values of default parameters */
       XMLOutputArchiveT( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<Derived, Flags>(derived),
+        OutputArchive<Derived>(derived),
         itsStream(stream),
         itsOutputType( options.itsOutputType ),
         itsIndent( options.itsIndent )
@@ -447,7 +447,7 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  template <class Derived, std::uint32_t Flags = 0>
+  template <class Derived>
   class XMLInputArchiveT : public InputArchive<Derived>
   {
     public:
@@ -461,7 +461,7 @@ namespace cereal
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
       XMLInputArchiveT( Derived * derived, std::istream & stream ) :
-        InputArchive<Derived, Flags>( derived ),
+        InputArchive<Derived>( derived ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
         static_assert(std::is_base_of<XMLInputArchiveT, Derived>::value, "The passed class must derive from this one");
