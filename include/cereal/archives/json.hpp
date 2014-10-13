@@ -715,6 +715,18 @@ namespace cereal
         ++itsIteratorStack.back();
       }
 
+      //! Loads a value from the current node - 64 bit signed overload
+      //! Note: can't just overload for int64_t - it won't work when both long and long long are 64 bit.
+      template<class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) == sizeof(int64_t), void>::type
+      loadValue(T & val)
+      {
+        search();
+
+        val = itsIteratorStack.back().value().GetInt64();
+        ++itsIteratorStack.back();
+      }
+
       //! Loads a value from the current node - small unsigned overload
       template<class T> inline
       typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
@@ -727,12 +739,20 @@ namespace cereal
         ++itsIteratorStack.back();
       }
 
+       //! Loads a value from the current node - 64 bit unsigned overload
+      //! Note: can't just overload for uint64_t - it won't work when both unsigned long and unsigned long long are 64 bit.
+      template<class T> inline
+      typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)), void>::type
+      loadValue(T & val)
+      {
+          search();
+          
+          val = itsIteratorStack.back().value().GetUint64();
+          ++itsIteratorStack.back();
+      }
+
       //! Loads a value from the current node - bool overload
       void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_();   ++itsIteratorStack.back(); }
-      //! Loads a value from the current node - int64 overload
-      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
-      //! Loads a value from the current node - uint64 overload
-      void loadValue(uint64_t & val)    { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - float overload
       void loadValue(float & val)       { search(); val = static_cast<float>(itsIteratorStack.back().value().GetDouble()); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - double overload
