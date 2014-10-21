@@ -742,6 +742,7 @@ namespace cereal
 
       Minimal types do not start or finish nodes */
   template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+                                       traits::is_elided_minimal<T>::value ||
                                        traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
   inline void prologue( JSONOutputArchive & ar, T const & )
   {
@@ -750,6 +751,7 @@ namespace cereal
 
   //! Prologue for all other types for JSON archives
   template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+                                       traits::is_elided_minimal<T>::value ||
                                        traits::has_minimal_input_serialization<T, JSONInputArchive>::value> = traits::sfinae>
   inline void prologue( JSONInputArchive & ar, T const & )
   {
@@ -762,6 +764,7 @@ namespace cereal
 
       Minimal types do not start or finish nodes */
   template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+                                       traits::is_elided_minimal<T>::value ||
                                        traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
   inline void epilogue( JSONOutputArchive & ar, T const & )
   {
@@ -770,6 +773,7 @@ namespace cereal
 
   //! Epilogue for all other types other for JSON archives
   template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+                                       traits::is_elided_minimal<T>::value ||
                                        traits::has_minimal_input_serialization<T, JSONInputArchive>::value> = traits::sfinae>
   inline void epilogue( JSONInputArchive & ar, T const & )
   {
@@ -827,7 +831,6 @@ namespace cereal
   // ######################################################################
   // Common JSONArchive serialization functions
   // ######################################################################
-
   //! Serializing NVP types to JSON
   template <class T> inline
   void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )

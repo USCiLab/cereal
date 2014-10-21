@@ -30,7 +30,7 @@
 #ifndef CEREAL_TYPES_BASE_CLASS_HPP_
 #define CEREAL_TYPES_BASE_CLASS_HPP_
 
-#include <cereal/details/helpers.hpp>
+#include <cereal/details/traits.hpp>
 
 namespace cereal
 {
@@ -69,7 +69,7 @@ namespace cereal
       };
       @endcode */
   template<class Base>
-    struct base_class : public traits::WrapperBase
+    struct base_class : private traits::ElideMinimal
     {
       template<class Derived>
         base_class(Derived const * derived) :
@@ -149,7 +149,7 @@ namespace cereal
      }
      @endcode */
   template<class Base>
-    struct virtual_base_class : public traits::WrapperBase
+    struct virtual_base_class : private traits::ElideMinimal
     {
       template<class Derived>
         virtual_base_class(Derived const * derived) :

@@ -63,13 +63,9 @@ namespace cereal
   class BinaryInputArchive;
 
   // ######################################################################
-  namespace traits
-  {
-    struct WrapperBase {}; //!< Traits struct to tag internal wrappers
-  }
   namespace detail
   {
-    struct NameValuePairCore : public traits::WrapperBase {}; //!< Traits struct for NVPs
+    struct NameValuePairCore {}; //!< Traits struct for NVPs
   }
 
   //! For holding name value pairs
@@ -206,7 +202,7 @@ namespace cereal
 
       @internal */
   template <class T>
-  struct BinaryData : public traits::WrapperCore
+  struct BinaryData
   {
     //! Internally store the pointer as a void *, keeping const if created with
     //! a const pointer
@@ -249,7 +245,7 @@ namespace cereal
 
       @internal */
   template <class T>
-  class SizeTag : public traits::WrapperBase
+  class SizeTag
   {
     private:
       // Store a reference if passed an lvalue reference, otherwise
@@ -286,7 +282,7 @@ namespace cereal
       \sa make_map_item
       @internal */
   template <class Key, class Value>
-  struct MapItem : public traits::WrapperBase
+  struct MapItem
   {
     using KeyType = typename std::conditional<
       std::is_lvalue_reference<Key>::value,

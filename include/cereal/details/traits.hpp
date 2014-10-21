@@ -1131,32 +1131,38 @@ namespace cereal
     };
 
     // ######################################################################
-    //! Check if the type is some internal cereal wrapper
-    /*! Types that wish to be known as wrappers should inherit from traits::WraperBase */
+    //! Signifiy that deriving class is a wrapper that should not affect in/output for minimal serialization
+    struct ElideMinimal{};
+
+    //! Check if the type should be elided during minimal serialization
+    /*! This allows us to bypass creating nodes for certain wrappers during minimal
+        serialization in text archives.  The motivating example for this are the
+        base_class and virtual_base_class structs, which wrap pointers to a base class. */
     template <class T>
-    using is_wrapped = std::is_base_of<::cereal::traits::WrapperBase, T>;
+    using is_elided_minimal = std::is_base_of<traits::ElideMinimal, T>;
 
     // ######################################################################
-    // Member load_and_construct
+    //! Member load and construct check
     template<typename T, typename A>
     struct has_member_load_and_construct : std::integral_constant<bool,
       std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
     { };
 
     // ######################################################################
-    // Non Member load_and_construct
+    //! Non member load and construct check
     template<typename T, typename A>
     struct has_non_member_load_and_construct : std::integral_constant<bool,
       std::is_same<decltype( LoadAndConstruct<T>::load_and_construct( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
     { };
 
     // ######################################################################
-    // Has either a member or non member allocate
+    //! Has either a member or non member allocate
     template<typename T, typename A>
     struct has_load_and_construct : std::integral_constant<bool,
       has_member_load_and_construct<T, A>::value || has_non_member_load_and_construct<T, A>::value>
     { };
 
+    // ######################################################################
     //! Determines whether the class T can be default constructed by cereal::access
     template <class T>
     struct is_default_constructible
