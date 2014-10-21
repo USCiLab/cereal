@@ -1160,6 +1160,12 @@ namespace cereal
     };
 
     // ######################################################################
+    //! Check if the type is some internal cereal wrapper
+    /*! Types that wish to be known as wrappers should inherit from traits::WraperBase */
+    template <class T>
+    using is_wrapped = std::is_base_of<::cereal::traits::WrapperBase, T>;
+
+    // ######################################################################
     // Member load_and_construct
     template<typename T, typename A>
     struct has_member_load_and_construct : std::integral_constant<bool,

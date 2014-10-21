@@ -30,6 +30,8 @@
 #ifndef CEREAL_TYPES_BASE_CLASS_HPP_
 #define CEREAL_TYPES_BASE_CLASS_HPP_
 
+#include <cereal/details/helpers.hpp>
+
 namespace cereal
 {
   //! Casts a derived class to its non-virtual base class in a way that safely supports abstract classes
@@ -67,7 +69,7 @@ namespace cereal
       };
       @endcode */
   template<class Base>
-    struct base_class
+    struct base_class : public traits::WrapperBase
     {
       template<class Derived>
         base_class(Derived const * derived) :
@@ -147,7 +149,7 @@ namespace cereal
      }
      @endcode */
   template<class Base>
-    struct virtual_base_class
+    struct virtual_base_class : public traits::WrapperBase
     {
       template<class Derived>
         virtual_base_class(Derived const * derived) :
