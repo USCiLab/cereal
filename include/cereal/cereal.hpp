@@ -1025,17 +1025,16 @@ namespace cereal
       @tparam ArchiveT The templated implementation of an archive, that accepts a derived class as the first template
                        parameter flags as the second.
       @ingroup Archives */
-  template <template <class> class ArchiveT>
+  template <template <class D> class ArchiveT>
   class ConcreteArchive: public ArchiveT<ConcreteArchive<ArchiveT>>
   {
     public:
 
       using Self = ConcreteArchive<ArchiveT>;
-      using Base = ArchiveT<Self>;
 
       template <class... Params>
       ConcreteArchive(Params && ... params):
-          Base(this, std::forward<Params>(params)...)
+          ArchiveT<Self>(this, std::forward<Params>(params)...)
       {
       }
 
@@ -1051,6 +1050,33 @@ namespace cereal
         s.load_override(t);
       }
   };
+
+  /*! A templated wrapper for existing archive template will normally look like the following:
+        template <template <class> class ArchiveBaseT, class Derived>
+        class MyArchiveWrapperT: public ArchiveBaseT<Derived> { ... };
+      It's impossible to pass MyArchiveWrapperT to ConcreteArchive directly, since the latter's template template parameter
+      ArchiveT can take only one template parameter - Derived. ApplyArchiveWrapper solves this problem by partially applying
+      MyArchiveWrapperT to an ArchiveBaseT parameter and producing template with one "class Derived" parameter.
+      Example: ConcreteArchive<ApplyArchiveWrapper<MyArchiveWrapperT, SomeBaseArchiveT>::Type> */
+  template
+  <
+    template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT
+  >
+  struct ApplyArchiveWrapper
+  {
+    template <class Derived>
+    using Type = ArchiveWrapperT<WrappedArchiveT, Derived>;
+  };
+
+  /*! ConcreteArchiveWrapper<WrapperT, WrappedT> is a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT>::Type>
+   */
+  template
+  <
+    template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT
+  >
+  using ConcreteArchiveWrapper = ConcreteArchive<ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::Type>;
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
