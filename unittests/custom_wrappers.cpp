@@ -174,14 +174,14 @@ public:
   int descendantSeenInProcess = 0;
 };
 
-using XMLInputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::XMLInputArchiveT>::Type>;
-using XMLOutputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::XMLOutputArchiveT>::Type>;
-using BinaryInputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::BinaryInputArchiveT>::Type>;
-using BinaryOutputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::BinaryOutputArchiveT>::Type>;
-using PortableBinaryInputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::PortableBinaryInputArchiveT>::Type>;
-using PortableBinaryOutputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::PortableBinaryOutputArchiveT>::Type>;
-using JSONInputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::JSONInputArchiveT>::Type>;
-using JSONOutputArchive = cereal::ConcreteArchive<ApplyArchiveWrapper<ArchiveT, cereal::JSONOutputArchiveT>::Type>;
+using XMLInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::XMLInputArchiveT>;
+using XMLOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::XMLOutputArchiveT>;
+using BinaryInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::BinaryInputArchiveT>;
+using BinaryOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::BinaryOutputArchiveT>;
+using PortableBinaryInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::PortableBinaryInputArchiveT>;
+using PortableBinaryOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::PortableBinaryOutputArchiveT>;
+using JSONInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::JSONInputArchiveT>;
+using JSONOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::JSONOutputArchiveT>;
 
 template <class IArchive, class OArchive>
 void test()

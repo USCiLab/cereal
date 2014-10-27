@@ -1076,7 +1076,7 @@ namespace cereal
     template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
     template <class> class WrappedArchiveT
   >
-  using ConcreteArchiveWrapper = ConcreteArchive<ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::Type>;
+  using ConcreteArchiveWrapper = ConcreteArchive<ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::template Type>;
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
