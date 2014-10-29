@@ -225,19 +225,19 @@ namespace cereal
       // ####### Standard Serialization ########################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t) -> decltype(t.serialize(ar))
-      { t.serialize(ar); }
+      { return t.serialize(ar); }
 
       template<class Archive, class T> inline
       static auto member_save(Archive & ar, T const & t) -> decltype(t.save(ar))
-      { t.save(ar); }
+      { return t.save(ar); }
 
       template<class Archive, class T> inline
       static auto member_save_non_const(Archive & ar, T & t) -> decltype(t.save(ar))
-      { t.save(ar); }
+      { return t.save(ar); }
 
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t) -> decltype(t.load(ar))
-      { t.load(ar); }
+      { return t.load(ar); }
 
       template<class Archive, class T> inline
       static auto member_save_minimal(Archive const & ar, T const & t) -> decltype(t.save_minimal(ar))
@@ -249,24 +249,24 @@ namespace cereal
 
       template<class Archive, class T, class U> inline
       static auto member_load_minimal(Archive const & ar, T & t, U && u) -> decltype(t.load_minimal(ar, std::forward<U>(u)))
-      { t.load_minimal(ar, std::forward<U>(u)); }
+      { return t.load_minimal(ar, std::forward<U>(u)); }
 
       // ####### Versioned Serialization #######################################
       template<class Archive, class T> inline
       static auto member_serialize(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.serialize(ar, version))
-      { t.serialize(ar, version); }
+      { return t.serialize(ar, version); }
 
       template<class Archive, class T> inline
       static auto member_save(Archive & ar, T const & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
-      { t.save(ar, version); }
+      { return t.save(ar, version); }
 
       template<class Archive, class T> inline
       static auto member_save_non_const(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.save(ar, version))
-      { t.save(ar, version); }
+      { return t.save(ar, version); }
 
       template<class Archive, class T> inline
       static auto member_load(Archive & ar, T & t, const std::uint32_t version ) -> decltype(t.load(ar, version))
-      { t.load(ar, version); }
+      { return t.load(ar, version); }
 
       template<class Archive, class T> inline
       static auto member_save_minimal(Archive const & ar, T const & t, const std::uint32_t version) -> decltype(t.save_minimal(ar, version))
@@ -278,7 +278,7 @@ namespace cereal
 
       template<class Archive, class T, class U> inline
       static auto member_load_minimal(Archive const & ar, T & t, U && u, const std::uint32_t version) -> decltype(t.load_minimal(ar, std::forward<U>(u), version))
-      { t.load_minimal(ar, std::forward<U>(u), version); }
+      { return t.load_minimal(ar, std::forward<U>(u), version); }
 
       // ####### Other Functionality ##########################################
       // for detecting inheritance from enable_shared_from_this
