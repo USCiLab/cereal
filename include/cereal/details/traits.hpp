@@ -1041,8 +1041,8 @@ namespace cereal
         has_non_member_save_minimal<T, OutputArchive>::value ||
         has_member_versioned_save_minimal<T, OutputArchive>::value ||
         has_non_member_versioned_save_minimal<T, OutputArchive>::value) &&
-       (!is_specialized_member_serialize<T, OutputArchive>::value ||
-        !is_specialized_member_save<T, OutputArchive>::value))> {};
+       !(is_specialized_member_serialize<T, OutputArchive>::value ||
+         is_specialized_member_save<T, OutputArchive>::value))> {};
 
     // ######################################################################
     // detects if a type has any active minimal input serialization
@@ -1053,8 +1053,8 @@ namespace cereal
         has_non_member_load_minimal<T, InputArchive>::value ||
         has_member_versioned_load_minimal<T, InputArchive>::value ||
         has_non_member_versioned_load_minimal<T, InputArchive>::value) &&
-       (!is_specialized_member_serialize<T, InputArchive>::value ||
-        !is_specialized_member_load<T, InputArchive>::value))> {};
+       !(is_specialized_member_serialize<T, InputArchive>::value ||
+         is_specialized_member_load<T, InputArchive>::value))> {};
 
     // ######################################################################
     namespace detail
