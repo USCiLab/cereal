@@ -1139,7 +1139,7 @@ namespace cereal
         serialization in text archives.  The motivating example for this are the
         base_class and virtual_base_class structs, which wrap pointers to a base class. */
     template <class T>
-    using is_elided_minimal = std::is_base_of<traits::ElideMinimal, T>;
+    struct is_elided_minimal : std::is_base_of<traits::ElideMinimal, T> {};
 
     // ######################################################################
     //! Member load and construct check
