@@ -345,7 +345,7 @@ namespace cereal
       #else // NOT _MSC_VER
       //! Creates the appropriate bindings depending on whether the archive supports
       //! saving or loading
-      static void instantiate();
+      static void instantiate() CEREAL_USED;
       //! This typedef causes the compiler to instantiate this static function
       typedef instantiate_function<instantiate> unused;
       #endif // _MSC_VER
@@ -372,6 +372,7 @@ namespace cereal
       void bind(std::false_type) const
 	    {
 		    instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
+        std::cerr << "here i am " << std::endl;
       }
 
       //! Binding for abstract types

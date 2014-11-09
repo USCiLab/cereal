@@ -258,6 +258,8 @@ namespace cereal
 
     auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
+    std::cerr << "o " <<  bindingMap.size () << std::endl;
+
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
       throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"

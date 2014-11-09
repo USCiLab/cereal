@@ -322,12 +322,6 @@ namespace cereal
   namespace detail
   {
     // ######################################################################
-    //! Holds all registered version information
-    struct Versions
-    {
-      std::unordered_map<std::size_t, std::uint32_t> mapping;
-    }; // struct Versions
-
     //! Version information class
     /*! This is the base case for classes that have not been explicitly
         registered */
@@ -337,6 +331,18 @@ namespace cereal
       // we don't need to explicitly register these types since they
       // always get a version number of 0
     };
+
+    //! Holds all registered version information
+    struct Versions
+    {
+      std::unordered_map<std::size_t, std::uint32_t> mapping;
+
+      std::uint32_t find( std::size_t hash, std::uint32_t version )
+      {
+        const auto result = mapping.emplace( hash, version );
+        return result.first->second;
+      }
+    }; // struct Versions
 
     #ifdef CEREAL_FUTURE_EXPERIMENTAL
     // ######################################################################
