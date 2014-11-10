@@ -40,6 +40,11 @@
 #include <type_traits>
 #include <functional>
 
+#include <base.hpp>
+#include <derived.hpp>
+
+CEREAL_FORCE_LINK_SHARED_LIBRARY(Sandbox)
+
 struct Archive {};
 CEREAL_SETUP_ARCHIVE_TRAITS(Archive, Archive)
 
@@ -232,10 +237,20 @@ int main()
   std::cout << cereal::traits::has_member_save_minimal<MemberMinimal, Archive>::value << std::endl;
   std::cout << cereal::traits::has_member_load_minimal<MemberMinimal, Archive>::value << std::endl;
 
+  // DLL testing
+  std::cout << "------DLL TESTING------" << std::endl;
+  std::stringstream dllSS1;
+  std::stringstream dllSS2;
+  {
+    cereal::XMLOutputArchive out(dllSS1);
+    VersionTest x{1};
+    std::shared_ptr<Base> p = std::make_shared<Derived>();
+    out(x);
+    //out( p );
+  }
 
-  cereal::JSONInputArchive bla(std::cin);
-  long l;
-  bla.loadValue(l);
+  std::cout << dllSS1.str() << std::endl;
+  std::cout << "yo" << std::endl;
 
   return 0;
 }

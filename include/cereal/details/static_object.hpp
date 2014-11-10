@@ -37,6 +37,7 @@
     Use, modification and distribution is subject to the Boost Software
     License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt) */
+
 #ifdef _MSC_VER
 #   define CEREAL_DLL_EXPORT __declspec(dllexport)
 #   define CEREAL_USED
@@ -64,26 +65,27 @@ namespace cereal
         //! Forces instantiation at pre-execution time
         static void instantiate( T const & ) {}
 
-        CEREAL_DLL_EXPORT static T & create()
+        static T & create()
         {
           static T t;
           instantiate(instance);
+          std::cerr << "I AM A STATIC OBJECT AT " << typeid(T).name() << " " << std::addressof(t) << std::endl;
           return t;
         }
 
         StaticObject( StaticObject const & /*other*/ ) {}
 
       public:
-        CEREAL_DLL_EXPORT static T & getInstance()
+        static T & getInstance()
         {
           return create();
         }
 
       private:
-        CEREAL_DLL_EXPORT static T & instance;
+        static T & instance;
     };
 
-    template <class T> CEREAL_DLL_EXPORT T & StaticObject<T>::instance = StaticObject<T>::create();
+    template <class T> T & StaticObject<T>::instance = StaticObject<T>::create();
   } // namespace detail
 } // namespace cereal
 

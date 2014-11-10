@@ -11,6 +11,17 @@
 #define DECLSPECIFIER __declspec(dllimport) 
 #endif 
 
+int doit();
+
+class VersionTest
+{
+  public:
+    int x;
+    template <class Archive>
+    void serialize( Archive & ar, const std::uint32_t /* version */ )
+    { ar( x ); }
+};
+
 class Base
 {
   public:

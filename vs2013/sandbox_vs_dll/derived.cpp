@@ -1,6 +1,6 @@
 #include "derived.hpp" 
 
-//CEREAL_REGISTER_TYPE(Derived) 
+CEREAL_REGISTER_TYPE(Derived) 
 
 template void Derived::serialize<cereal::XMLOutputArchive>
     ( cereal::XMLOutputArchive & ar, std::uint32_t const version ); 
