@@ -174,14 +174,17 @@ public:
   int descendantSeenInProcess = 0;
 };
 
-using XMLInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::XMLInputArchiveT>;
-using XMLOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::XMLOutputArchiveT>;
-using BinaryInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::BinaryInputArchiveT>;
-using BinaryOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::BinaryOutputArchiveT>;
-using PortableBinaryInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::PortableBinaryInputArchiveT>;
-using PortableBinaryOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::PortableBinaryOutputArchiveT>;
-using JSONInputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::JSONInputArchiveT>;
-using JSONOutputArchive = cereal::ConcreteArchiveWrapper<ArchiveT, cereal::JSONOutputArchiveT>;
+template <template <typename D> class BaseArchiveT>
+using WrapperT =  cereal::ConcreteArchiveWrapper<ArchiveT, BaseArchiveT>;
+
+using XMLInputArchive = WrapperT<cereal::XMLInputArchiveT>;
+using XMLOutputArchive = WrapperT<cereal::XMLOutputArchiveT>;
+using BinaryInputArchive = WrapperT<cereal::BinaryInputArchiveT>;
+using BinaryOutputArchive = WrapperT<cereal::BinaryOutputArchiveT>;
+using PortableBinaryInputArchive = WrapperT<cereal::PortableBinaryInputArchiveT>;
+using PortableBinaryOutputArchive = WrapperT<cereal::PortableBinaryOutputArchiveT>;
+using JSONInputArchive = WrapperT<cereal::JSONInputArchiveT>;
+using JSONOutputArchive = WrapperT<cereal::JSONOutputArchiveT>;
 
 template <class IArchive, class OArchive>
 void test()
@@ -233,6 +236,29 @@ void test()
   BOOST_CHECK_EQUAL(2, innerDescendant->i);
   BOOST_CHECK(!innerDescendant->b1);
   BOOST_CHECK(innerDescendant->b2);
+}
+
+template <template <class D> class ArchiveT>
+void deducing_func(const WrapperT<ArchiveT>&)
+{
+}
+
+// This test just checks that the code compiles.
+void test_deducibility()
+{
+  std::stringstream stream;
+
+  test_ns::deducing_func(test_ns::XMLInputArchive(stream));
+  test_ns::deducing_func(test_ns::XMLOutputArchive(stream));
+
+  test_ns::deducing_func(test_ns::BinaryInputArchive(stream));
+  test_ns::deducing_func(test_ns::BinaryOutputArchive(stream));
+
+  test_ns::deducing_func(test_ns::PortableBinaryInputArchive(stream));
+  test_ns::deducing_func(test_ns::PortableBinaryOutputArchive(stream));
+
+  test_ns::deducing_func(test_ns::JSONInputArchive(stream));
+  test_ns::deducing_func(test_ns::JSONOutputArchive(stream));
 }
 
 } // namespace test_ns

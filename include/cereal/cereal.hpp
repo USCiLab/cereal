@@ -1069,14 +1069,39 @@ namespace cereal
     using Type = ArchiveWrapperT<WrappedArchiveT, Derived>;
   };
 
-  /*! ConcreteArchiveWrapper<WrapperT, WrappedT> is a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT>::Type>
+  /*! ConcreteArchiveWrapper<WrapperT, WrappedT> is effectively a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT>::Type>.
+      However, inheritance is used instead of mere templated typedef in order for the template parameters to be deducible.
+      Note: the friend 'save'/'load' functions below duplicate the ones in ConcreteArchive.
    */
   template
   <
     template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
     template <class> class WrappedArchiveT
   >
-  using ConcreteArchiveWrapper = ConcreteArchive<ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::template Type>;
+  class ConcreteArchiveWrapper: public ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::template Type<ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>>
+  {
+    public:
+
+      using Self = ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>;
+
+      template <class... Params>
+      ConcreteArchiveWrapper(Params && ... params):
+          ArchiveWrapperT<WrappedArchiveT, Self>(this, std::forward<Params>(params)...)
+      {
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Self, T>::value, int>::type = 0>
+      friend void save(Self& s, const T& t)
+      {
+        s.save_override(t);
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Self, T>::value, int>::type = 0>
+      friend void load(Self& s, T& t)
+      {
+        s.load_override(t);
+      }
+  };
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
