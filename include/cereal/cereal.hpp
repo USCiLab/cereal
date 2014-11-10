@@ -460,17 +460,26 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
-            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
-            "Serialize functions generally have the following signature: \n\n "
-            "template<class Archive> \n "
-            "  void serialize(Archive & ar) \n "
-            "  { \n "
-            "    ar( member1, member2, member3 ); \n "
-            "  } \n\n " );
+        #define _CEREAL_STATIC_ASSERT_MESSAGE \
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n " \
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n " \
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n " \
+            "Serialize functions generally have the following signature: \n\n " \
+            "template<class Archive> \n " \
+            "  void serialize(Archive & ar) \n " \
+            "  { \n " \
+            "    ar( member1, member2, member3 ); \n " \
+            "  } \n\n "
+        
+        static_assert(traits::output_serialization_impl_count<T, ArchiveType>::value == 0,
+            "Multiple serialization routines were detected for this type/archive combination. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
+        static_assert(traits::output_serialization_impl_count<T, ArchiveType>::value != 0,
+            "Trying to serialize an unserializable type with an output archive. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
         return *self;
+        
+        #undef _CEREAL_STATIC_ASSERT_MESSAGE
       }
 
       //! Registers a class version with the archive and serializes it if necessary
@@ -862,17 +871,26 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_input_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an input archive. \n\n "
-            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
-            "Serialize functions generally have the following signature: \n\n "
-            "template<class Archive> \n "
-            "  void serialize(Archive & ar) \n "
-            "  { \n "
-            "    ar( member1, member2, member3 ); \n "
-            "  } \n\n " );
+        #define _CEREAL_STATIC_ASSERT_MESSAGE \
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n " \
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n " \
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n " \
+            "Serialize functions generally have the following signature: \n\n " \
+            "template<class Archive> \n " \
+            "  void serialize(Archive & ar) \n " \
+            "  { \n " \
+            "    ar( member1, member2, member3 ); \n " \
+            "  } \n\n "
+        
+        static_assert(traits::input_serialization_impl_count<T, ArchiveType>::value == 0,
+            "Multiple serialization routines were detected for this type/archive combination. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
+        static_assert(traits::input_serialization_impl_count<T, ArchiveType>::value != 0,
+            "Trying to serialize an unserializable type with an input archive. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
         return *self;
+        
+        #undef _CEREAL_STATIC_ASSERT_MESSAGE
       }
 
       //! Registers a class version with the archive and serializes it if necessary

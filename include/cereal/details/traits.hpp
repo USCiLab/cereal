@@ -898,7 +898,7 @@ namespace cereal
 
     // ######################################################################
     template <class T, class OutputArchive>
-    struct is_output_serializable : std::integral_constant<bool,
+    struct output_serialization_impl_count : std::integral_constant<int,
       has_member_save<T, OutputArchive>::value +
       has_non_member_save<T, OutputArchive>::value +
       has_member_serialize<T, OutputArchive>::value +
@@ -911,11 +911,15 @@ namespace cereal
       has_member_versioned_serialize<T, OutputArchive>::value +
       has_non_member_versioned_serialize<T, OutputArchive>::value +
       has_member_versioned_save_minimal<T, OutputArchive>::value +
-      has_non_member_versioned_save_minimal<T, OutputArchive>::value == 1> {};
+      has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
+
+      template <class T, class OutputArchive>
+      struct is_output_serializable : std::integral_constant<bool,
+        output_serialization_impl_count<T, OutputArchive>::value == 1> {};
 
     // ######################################################################
     template <class T, class InputArchive>
-    struct is_input_serializable : std::integral_constant<bool,
+    struct input_serialization_impl_count : std::integral_constant<int,
       has_member_load<T, InputArchive>::value +
       has_non_member_load<T, InputArchive>::value +
       has_member_serialize<T, InputArchive>::value +
@@ -928,7 +932,11 @@ namespace cereal
       has_member_versioned_serialize<T, InputArchive>::value +
       has_non_member_versioned_serialize<T, InputArchive>::value +
       has_member_versioned_load_minimal<T, InputArchive>::value +
-      has_non_member_versioned_load_minimal<T, InputArchive>::value == 1> {};
+      has_non_member_versioned_load_minimal<T, InputArchive>::value> {};
+    
+    template <class T, class InputArchive>
+    struct is_input_serializable : std::integral_constant<bool,
+      input_serialization_impl_count<T, InputArchive>::value == 1> {};
 
     // ######################################################################
     template <class T, class OutputArchive>
