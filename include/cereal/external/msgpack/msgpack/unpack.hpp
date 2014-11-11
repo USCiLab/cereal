@@ -18,7 +18,7 @@
 #ifndef MSGPACK_UNPACK_HPP
 #define MSGPACK_UNPACK_HPP
 
-#include "msgpack/versioning.hpp"
+#include "versioning.hpp"
 #include "object.hpp"
 #include "zone.hpp"
 #include "unpack_define.h"
@@ -65,13 +65,13 @@ namespace detail {
 
 class unpack_user {
 public:
-    unpack_user(unpack_reference_func f = nullptr, void* user_data = nullptr)
-        :m_func(f), m_user_data(user_data) {}
+    unpack_user(unpack_reference_func f = nullptr, void* user_data_ = nullptr)
+        :m_func(f), m_user_data(user_data_) {}
     msgpack::zone const& zone() const { return *m_zone; }
     msgpack::zone& zone() { return *m_zone; }
-    void set_zone(msgpack::zone& zone) { m_zone = &zone; }
+    void set_zone(msgpack::zone& zone_) { m_zone = &zone_; }
     bool referenced() const { return m_referenced; }
-    void set_referenced(bool referenced) { m_referenced = referenced; }
+    void set_referenced(bool referenced_) { m_referenced = referenced_; }
     unpack_reference_func reference_func() const { return m_func; }
     void* user_data() const { return m_user_data; }
 private:
@@ -211,14 +211,14 @@ class unpack_stack {
 public:
     object const& obj() const { return m_obj; }
     object& obj() { return m_obj; }
-    void set_obj(object const& obj) { m_obj = obj; }
+    void set_obj(object const& obj_) { m_obj = obj_; }
     std::size_t count() const { return m_count; }
-    void set_count(std::size_t count) { m_count = count; }
+    void set_count(std::size_t count_) { m_count = count_; }
     std::size_t decl_count() { return --m_count; }
     uint32_t container_type() const { return m_container_type; }
-    void set_container_type(uint32_t container_type) { m_container_type = container_type; }
+    void set_container_type(uint32_t container_type_) { m_container_type = container_type_; }
     object const& map_key() const { return m_map_key; }
-    void set_map_key(object const& map_key) { m_map_key = map_key; }
+    void set_map_key(object const& map_key_) { m_map_key = map_key_; }
 private:
     object m_obj;
     std::size_t m_count;
@@ -316,14 +316,14 @@ public:
         return m_user;
     }
 
-    int execute(const char* data, std::size_t len, std::size_t& off)
+    int execute(const char* data_, std::size_t len, std::size_t& off)
     {
         assert(len >= off);
 
-        m_start = data;
-        m_current = data + off;
+        m_start = data_;
+        m_current = data_ + off;
         m_stack_idx = 0;
-        const char* const pe = data + len;
+        const char* const pe = data_ + len;
         const char* n = nullptr;
 
         object obj;
@@ -1030,12 +1030,12 @@ inline unpacker::unpacker(unpack_reference_func f,
         initial_buffer_size = COUNTER_SIZE;
     }
 
-    char* buffer = static_cast<char*>(::malloc(initial_buffer_size));
-    if(!buffer) {
+    char* buffer_ = static_cast<char*>(::malloc(initial_buffer_size));
+    if(!buffer_) {
         throw std::bad_alloc();
     }
 
-    m_buffer = buffer;
+    m_buffer = buffer_;
     m_used = COUNTER_SIZE;
     m_free = initial_buffer_size - m_used;
     m_off = COUNTER_SIZE;

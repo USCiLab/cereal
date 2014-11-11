@@ -18,8 +18,8 @@
 #ifndef MSGPACK_CPP11_TUPLE_HPP
 #define MSGPACK_CPP11_TUPLE_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "../../versioning.hpp"
+#include "../../object_fwd.hpp"
 
 #include <tuple>
 

@@ -32,7 +32,7 @@
 #include <cereal/cereal.hpp>
 #include <cereal/details/util.hpp>
 
-#include <cereal/external/msgpack.hpp>
+#include <cereal/external/msgpack/msgpack.hpp>
 
 #include <limits>
 #include <sstream>

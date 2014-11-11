@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_RAW_HPP
 #define MSGPACK_TYPE_RAW_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "../versioning.hpp"
+#include "../object_fwd.hpp"
 #include <string.h>
 #include <string>
 

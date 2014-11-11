@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_ARRAY_CHAR_HPP
 #define MSGPACK_TYPE_ARRAY_CHAR_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack_fwd.hpp"
+#include "../../versioning.hpp"
+#include "../../../msgpack_fwd.hpp"
 #include <array>
 
 namespace msgpack {

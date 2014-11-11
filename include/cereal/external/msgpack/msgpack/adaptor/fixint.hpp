@@ -18,9 +18,9 @@
 #ifndef MSGPACK_TYPE_FIXINT_HPP
 #define MSGPACK_TYPE_FIXINT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include "msgpack/adaptor/int.hpp"
+#include "../versioning.hpp"
+#include "../object_fwd.hpp"
+#include "../adaptor/int.hpp"
 
 namespace msgpack {
 
@@ -32,7 +32,7 @@ namespace type {
 template <typename T>
 struct fix_int {
     fix_int() : value(0) { }
-    fix_int(T value) : value(value) { }
+    fix_int(T value_) : value(value_) { }
 
     operator T() const { return value; }
 

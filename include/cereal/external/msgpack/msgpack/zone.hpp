@@ -18,7 +18,7 @@
 #ifndef MSGPACK_ZONE_HPP
 #define MSGPACK_ZONE_HPP
 
-#include "msgpack/cpp_config.hpp"
+#include "cpp_config.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 #include "detail/cpp03_zone.hpp"

@@ -19,9 +19,9 @@
 #ifndef MSGPACK_OBJECT_FWD_HPP
 #define MSGPACK_OBJECT_FWD_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/zone.hpp"
-#include "msgpack/object.h"
+#include "versioning.hpp"
+#include "zone.hpp"
+#include "object.h"
 
 #include <typeinfo>
 

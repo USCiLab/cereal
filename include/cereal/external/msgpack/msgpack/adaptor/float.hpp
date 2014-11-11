@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_FLOAT_HPP
 #define MSGPACK_TYPE_FLOAT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "../versioning.hpp"
+#include "../object_fwd.hpp"
 #include <vector>
 
 namespace msgpack {

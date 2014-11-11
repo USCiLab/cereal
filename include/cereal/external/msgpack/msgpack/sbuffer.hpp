@@ -18,7 +18,7 @@
 #ifndef MSGPACK_SBUFFER_HPP
 #define MSGPACK_SBUFFER_HPP
 
-#include "msgpack/versioning.hpp"
+#include "versioning.hpp"
 
 #include <stdexcept>
 

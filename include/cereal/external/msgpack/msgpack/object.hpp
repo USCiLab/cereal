@@ -18,29 +18,29 @@
 #ifndef MSGPACK_OBJECT_HPP
 #define MSGPACK_OBJECT_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include "msgpack/pack.hpp"
-#include "msgpack/zone.hpp"
-#include "msgpack/adaptor/int_fwd.hpp"
-#include "msgpack/adaptor/bool_fwd.hpp"
-#include "msgpack/adaptor/char_ptr_fwd.hpp"
-#include "msgpack/adaptor/deque_fwd.hpp"
-#include "msgpack/adaptor/fixint_fwd.hpp"
-#include "msgpack/adaptor/float_fwd.hpp"
-#include "msgpack/adaptor/int_fwd.hpp"
-#include "msgpack/adaptor/list_fwd.hpp"
-#include "msgpack/adaptor/map_fwd.hpp"
-#include "msgpack/adaptor/msgpack_tuple_fwd.hpp"
-#include "msgpack/adaptor/nil_fwd.hpp"
-#include "msgpack/adaptor/pair_fwd.hpp"
-#include "msgpack/adaptor/raw_fwd.hpp"
-#include "msgpack/adaptor/set_fwd.hpp"
-#include "msgpack/adaptor/string_fwd.hpp"
-#include "msgpack/adaptor/vector_fwd.hpp"
-#include "msgpack/adaptor/vector_char_fwd.hpp"
-#include "msgpack/adaptor/tr1/unordered_map_fwd.hpp"
-#include "msgpack/adaptor/tr1/unordered_set_fwd.hpp"
+#include "versioning.hpp"
+#include "object_fwd.hpp"
+#include "pack.hpp"
+#include "zone.hpp"
+#include "adaptor/int_fwd.hpp"
+#include "adaptor/bool_fwd.hpp"
+#include "adaptor/char_ptr_fwd.hpp"
+#include "adaptor/deque_fwd.hpp"
+#include "adaptor/fixint_fwd.hpp"
+#include "adaptor/float_fwd.hpp"
+#include "adaptor/int_fwd.hpp"
+#include "adaptor/list_fwd.hpp"
+#include "adaptor/map_fwd.hpp"
+#include "adaptor/msgpack_tuple_fwd.hpp"
+#include "adaptor/nil_fwd.hpp"
+#include "adaptor/pair_fwd.hpp"
+#include "adaptor/raw_fwd.hpp"
+#include "adaptor/set_fwd.hpp"
+#include "adaptor/string_fwd.hpp"
+#include "adaptor/vector_fwd.hpp"
+#include "adaptor/vector_char_fwd.hpp"
+#include "adaptor/tr1/unordered_map_fwd.hpp"
+#include "adaptor/tr1/unordered_set_fwd.hpp"
 
 #if !defined(MSGPACK_USE_CPP03)
 #include "adaptor/cpp11/array_fwd.hpp"
@@ -60,7 +60,7 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 struct object::with_zone : object {
-    with_zone(msgpack::zone& zone) : zone(zone) { }
+    with_zone(msgpack::zone& zone_) : zone(zone_) { }
     msgpack::zone& zone;
 private:
     with_zone();
@@ -624,6 +624,6 @@ inline std::ostream& operator<< (std::ostream& s, const object& o)
 
 }  // namespace msgpack
 
-#include "msgpack/type.hpp"
+#include "type.hpp"
 
 #endif /* msgpack/object.hpp */

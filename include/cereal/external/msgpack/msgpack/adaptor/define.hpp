@@ -18,7 +18,7 @@
 #ifndef MSGPACK_DEFINE_HPP
 #define MSGPACK_DEFINE_HPP
 
-#include "msgpack/cpp_config.hpp"
+#include "../cpp_config.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 #include "detail/cpp03_define.hpp"

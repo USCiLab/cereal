@@ -18,7 +18,7 @@
 #ifndef MSGPACK_MSGPACK_TUPLE_HPP
 #define MSGPACK_MSGPACK_TUPLE_HPP
 
-#include "msgpack/cpp_config.hpp"
+#include "../cpp_config.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 #include "detail/cpp03_msgpack_tuple.hpp"

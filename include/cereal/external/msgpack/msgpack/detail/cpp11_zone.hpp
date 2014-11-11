@@ -18,13 +18,13 @@
 #ifndef MSGPACK_CPP11_ZONE_HPP
 #define MSGPACK_CPP11_ZONE_HPP
 
-#include "msgpack/versioning.hpp"
+#include "../versioning.hpp"
 
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-#include "msgpack/cpp_config.hpp"
+#include "../cpp_config.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192

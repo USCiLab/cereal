@@ -18,7 +18,7 @@
 #ifndef MSGPACK_CPP_CONFIG_HPP
 #define MSGPACK_CPP_CONFIG_HPP
 
-#include "msgpack/versioning.hpp"
+#include "versioning.hpp"
 
 #if !defined(MSGPACK_USE_CPP03)
   // If MSVC would support C++11 completely,
@@ -35,7 +35,7 @@
 #if __cplusplus < 201103
 
 #if !defined(nullptr)
-#  if _MSC_VER < 1600 
+#  if _MSC_VER < 1600
 #    define nullptr (0)
 #  endif
 #endif

@@ -18,11 +18,11 @@
 #ifndef MSGPACK_CPP11_DEFINE_HPP
 #define MSGPACK_CPP11_DEFINE_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "../../versioning.hpp"
+#include "../../object_fwd.hpp"
 
 // for MSGPACK_ADD_ENUM
-#include "msgpack/adaptor/int_fwd.hpp"
+#include "../../adaptor/int_fwd.hpp"
 
 #include <type_traits>
 #include <tuple>

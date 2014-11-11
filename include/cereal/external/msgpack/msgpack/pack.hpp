@@ -18,7 +18,7 @@
 #ifndef MSGPACK_PACK_HPP
 #define MSGPACK_PACK_HPP
 
-#include "msgpack/versioning.hpp"
+#include "versioning.hpp"
 
 #include <stdexcept>
 #include <limits>

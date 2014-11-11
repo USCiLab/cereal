@@ -18,8 +18,8 @@
 #ifndef MSGPACK_TYPE_TR1_UNORDERED_SET_FWD_HPP
 #define MSGPACK_TYPE_TR1_UNORDERED_SET_FWD_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "../../versioning.hpp"
+#include "../../object_fwd.hpp"
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
