@@ -434,3 +434,8 @@ BOOST_AUTO_TEST_CASE( json_structs_specialized )
   test_structs_specialized<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_structs_specialized )
+{
+  test_structs_specialized<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

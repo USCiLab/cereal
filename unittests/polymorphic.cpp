@@ -210,3 +210,8 @@ BOOST_AUTO_TEST_CASE( json_polymorphic )
   test_polymorphic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_polymorphic )
+{
+  test_polymorphic<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

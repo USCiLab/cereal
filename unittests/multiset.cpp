@@ -150,4 +150,9 @@ BOOST_AUTO_TEST_CASE( json_multiset )
   test_multiset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_multiset )
+{
+  test_multiset<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+
 

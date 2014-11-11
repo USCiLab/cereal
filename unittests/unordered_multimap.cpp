@@ -170,3 +170,8 @@ BOOST_AUTO_TEST_CASE( json_unordered_multimap )
 {
   test_unordered_multimap<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+BOOST_AUTO_TEST_CASE( message_pack_unordered_multimap )
+{
+  test_unordered_multimap<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}

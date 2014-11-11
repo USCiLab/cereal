@@ -111,3 +111,8 @@ BOOST_AUTO_TEST_CASE( json_list )
   test_list<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_list )
+{
+  test_list<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

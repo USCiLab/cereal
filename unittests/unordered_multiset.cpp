@@ -150,3 +150,8 @@ BOOST_AUTO_TEST_CASE( json_unordered_multiset )
   test_unordered_multiset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_unordered_multiset )
+{
+  test_unordered_multiset<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+
