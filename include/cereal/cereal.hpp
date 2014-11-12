@@ -444,7 +444,7 @@ namespace cereal
             "  } \n\n " );
 
         static_assert(traits::detail::count_output_serializers<T, ArchiveType>::value < 2,
-            "cereal found more than one compatible output serializtion function for the provided type and archive combination. \n\n "
+            "cereal found more than one compatible output serialization function for the provided type and archive combination. \n\n "
             "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
             "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
             "Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n "
@@ -812,7 +812,7 @@ namespace cereal
             "  } \n\n " );
 
         static_assert(traits::detail::count_input_serializers<T, ArchiveType>::value < 2,
-            "cereal found more than one compatible input serializtion function for the provided type and archive combination. \n\n "
+            "cereal found more than one compatible input serialization function for the provided type and archive combination. \n\n "
             "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
             "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
             "Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n "
