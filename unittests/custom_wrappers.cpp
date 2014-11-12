@@ -261,26 +261,67 @@ void test_deducibility()
   test_ns::deducing_func(test_ns::JSONOutputArchive(stream));
 }
 
+template <template <class> class ArchiveBaseT, class Derived, class Something>
+class TrivialParameterizedWrapperT: public ArchiveBaseT<Derived>
+{
+  public:
+    using ArchiveBaseT<Derived>::ArchiveBaseT;
+    
+    using TheParam = Something;
+};
+
+template <template <class D> class IArchiveBaseT, template <class D> class OArchiveBaseT>
+void test_additional_params_for_wrapper()
+{
+  // Here we mostly check that the following code compiles.
+  using IArchive = cereal::ConcreteArchiveWrapper<TrivialParameterizedWrapperT, IArchiveBaseT, int>;
+  using OArchive = cereal::ConcreteArchiveWrapper<TrivialParameterizedWrapperT, OArchiveBaseT, int>;
+  
+  static_assert(std::is_same<typename IArchive::TheParam, int>::value, "");
+  static_assert(std::is_same<typename OArchive::TheParam, int>::value, "");
+  
+  std::stringstream stream;
+  
+  {
+    OArchive out(stream);
+    out(1);
+  }
+
+  stream.seekg(0);
+
+  {
+    IArchive in(stream);
+    int i;
+    in(i);
+
+    BOOST_CHECK_EQUAL(1, i);
+  }
+}
+
 } // namespace test_ns
 
 BOOST_AUTO_TEST_CASE(xml)
 {
   test_ns::test<test_ns::XMLInputArchive, test_ns::XMLOutputArchive>();
+  test_ns::test_additional_params_for_wrapper<cereal::XMLInputArchiveT, cereal::XMLOutputArchiveT>();
 }
 
 BOOST_AUTO_TEST_CASE(binary)
 {
   test_ns::test<test_ns::BinaryInputArchive, test_ns::BinaryOutputArchive>();
+  test_ns::test_additional_params_for_wrapper<cereal::BinaryInputArchiveT, cereal::BinaryOutputArchiveT>();
 }
 
 BOOST_AUTO_TEST_CASE(portable_binary)
 {
   test_ns::test<test_ns::PortableBinaryInputArchive, test_ns::PortableBinaryOutputArchive>();
+  test_ns::test_additional_params_for_wrapper<cereal::PortableBinaryInputArchiveT, cereal::PortableBinaryOutputArchiveT>();
 }
 
 BOOST_AUTO_TEST_CASE(json)
 {
   test_ns::test<test_ns::JSONInputArchive, test_ns::JSONOutputArchive>();
+  test_ns::test_additional_params_for_wrapper<cereal::JSONInputArchiveT, cereal::JSONOutputArchiveT>();
 }
 
 CEREAL_REGISTER_ARCHIVE(test_ns::XMLInputArchive)

@@ -1078,33 +1078,35 @@ namespace cereal
       Example: ConcreteArchive<ApplyArchiveWrapper<MyArchiveWrapperT, SomeBaseArchiveT>::Type> */
   template
   <
-    template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
-    template <class> class WrappedArchiveT
+    template <template <class> class WrappedArchiveT, class Derived, class... MoreParams> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT,
+    class... MoreParams
   >
   struct ApplyArchiveWrapper
   {
     template <class Derived>
-    using Type = ArchiveWrapperT<WrappedArchiveT, Derived>;
+    using Type = ArchiveWrapperT<WrappedArchiveT, Derived, MoreParams...>;
   };
 
-  /*! ConcreteArchiveWrapper<WrapperT, WrappedT> is effectively a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT>::Type>.
+  /*! ConcreteArchiveWrapper<WrapperT, WrappedT, ...> is effectively a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT, ...>::Type>.
       However, inheritance is used instead of mere templated typedef in order for the template parameters to be deducible.
       Note: the friend 'save'/'load' functions below duplicate the ones in ConcreteArchive.
    */
   template
   <
-    template <template <class> class WrappedArchiveT, class Derived> class ArchiveWrapperT,
-    template <class> class WrappedArchiveT
+    template <template <class> class WrappedArchiveT, class Derived, class... MoreParams> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT,
+    class... MoreParams
   >
-  class ConcreteArchiveWrapper: public ApplyArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>::template Type<ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>>
+  class ConcreteArchiveWrapper: public ArchiveWrapperT<WrappedArchiveT, ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT, MoreParams...>, MoreParams...>
   {
     public:
 
-      using Self = ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT>;
+      using Self = ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT, MoreParams...>;
 
       template <class... Params>
       ConcreteArchiveWrapper(Params && ... params):
-          ArchiveWrapperT<WrappedArchiveT, Self>(this, std::forward<Params>(params)...)
+          ArchiveWrapperT<WrappedArchiveT, Self, MoreParams...>(this, std::forward<Params>(params)...)
       {
       }
 
