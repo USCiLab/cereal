@@ -882,8 +882,8 @@ namespace cereal
       typename std::enable_if<std::is_arithmetic<T>::value &&
                               !std::is_same<T, long>::value &&
                               !std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::int64_t>::value &&
-                              !std::is_same<T, std::uint64_t>::value &&
+                              !(std::is_signed<T>::value && sizeof(T) == sizeof(int64_t)) &&
+                              !(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)) &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       loadValue(T & val)
       {
