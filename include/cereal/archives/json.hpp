@@ -231,16 +231,26 @@ namespace cereal
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
       void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
-      //! Saves an int64 to the current node
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
-      //! Saves a uint64 to the current node
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
       //! Saves a double to the current node
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       //! Saves a string to the current node
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+
+      template<class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) == sizeof(int64_t), void>::type
+      saveValue(T val)
+      {
+          itsWriter.Int64(val);
+      }
+
+      template<class T> inline
+      typename std::enable_if<std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t), void>::type
+      saveValue(T val)
+      {
+          itsWriter.Uint64(val);
+      }
 
       //! Prologue for NVPs for JSON archives
       /*! NVPs do not start or finish nodes - they just set up the names */
@@ -414,8 +424,8 @@ namespace cereal
       typename std::enable_if<std::is_arithmetic<T>::value &&
                               !std::is_same<T, long>::value &&
                               !std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::int64_t>::value &&
-                              !std::is_same<T, std::uint64_t>::value &&
+                              !(std::is_signed<T>::value && sizeof(T) == sizeof(int64_t)) &&
+                              !(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)) &&
                               (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
       saveValue(T const & t)
       {
