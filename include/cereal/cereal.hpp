@@ -137,11 +137,11 @@ namespace cereal
       support pointers to polymorphic data types.  All archives that
       come with cereal are already registered.
       @ingroup Internal */
-  #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
-  namespace cereal { namespace detail {                               \
-  template <class T>                                                  \
-  typename polymorphic_serialization_support<Archive, T>::type        \
-  instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \
+  #define CEREAL_REGISTER_ARCHIVE(Archive)                                  \
+  namespace cereal { namespace detail {                                     \
+  template <class T, typename BindingTag>                                   \
+  typename polymorphic_serialization_support<Archive, T>::type              \
+  instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag );     \
   } } // end namespaces
 
   //! Defines a class version for some type

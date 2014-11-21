@@ -56,17 +56,17 @@
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
     have been included). */
-#define CEREAL_BIND_TO_ARCHIVES(T)                           \
-    namespace cereal {                                       \
-    namespace detail {                                       \
-    template<>                                               \
-    struct init_binding<T> {                                 \
-        static bind_to_archives<T> const & b;                \
-    };                                                       \
-    bind_to_archives<T> const & init_binding<T>::b =         \
-        ::cereal::detail::StaticObject<                      \
-            bind_to_archives<T>                              \
-        >::getInstance().bind();                             \
+#define CEREAL_BIND_TO_ARCHIVES(T)                                              \
+    namespace cereal {                                                          \
+    namespace detail {                                                          \
+    template<>                                                                  \
+    struct init_binding<T, binding_tag> {                                       \
+        static bind_to_archives<T, binding_tag> const & b;                      \
+    };                                                                          \
+    bind_to_archives<T, binding_tag> const & init_binding<T, binding_tag>::b =  \
+        ::cereal::detail::StaticObject<                                         \
+            bind_to_archives<T, binding_tag>                                    \
+        >::getInstance().bind();                                                \
     }} // end namespaces
 
 namespace cereal
@@ -149,6 +149,15 @@ namespace cereal
       //! Initialize the binding
       InputBindingCreator()
       {
+        auto& map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
+        auto key = std::string(binding_name<T>::name());
+        auto lb = map.lower_bound(key);
+
+        if (lb != map.end() && lb->first == key)
+        {
+          return;
+        }
+
         typename InputBindingMap<Archive>::Serializers serializers;
 
         serializers.shared_ptr =
@@ -173,7 +182,7 @@ namespace cereal
             dptr.reset(ptr.release());
           };
 
-        StaticObject<InputBindingMap<Archive>>::getInstance().map.insert( { std::string(binding_name<T>::name()), serializers } );
+        map.insert( lb, { std::move(key), std::move(serializers) } );
       }
     };
 
@@ -270,6 +279,15 @@ namespace cereal
       //! Initialize the binding
       OutputBindingCreator()
       {
+        auto& map = StaticObject<OutputBindingMap<Archive>>::getInstance().map;
+        auto key = std::type_index(typeid(T));
+        auto lb = map.lower_bound(key);
+
+        if (lb != map.end() && lb->first == key)
+        {
+          return;
+        }
+
         typename OutputBindingMap<Archive>::Serializers serializers;
 
         serializers.shared_ptr =
@@ -298,13 +316,17 @@ namespace cereal
             ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
 
-        StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );
+        map.insert( { std::move(key), std::move(serializers) } );
       }
     };
 
     //! Used to help out argument dependent lookup for finding potential overloads
     //! of instantiate_polymorphic_binding
     struct adl_tag {};
+
+    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous
+    //! namespace it becomes a different type in each translation unit.
+    namespace { struct binding_tag {}; }
 
     //! Causes the static object bindings between an archive type and a serializable type T
     template <class Archive, class T>
@@ -365,13 +387,13 @@ namespace cereal
         the CEREAL_REGISTER_ARCHIVE macro.  Overload resolution will then force
         several static objects to be made that allow us to bind together all
         registered archive types with the parameter type T. */
-    template <class T>
+    template <class T, class Tag>
     struct bind_to_archives
     {
       //! Binding for non abstract types
       void bind(std::false_type) const
 	    {
-		    instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
+		    instantiate_polymorphic_binding((T*) 0, 0, Tag(), adl_tag{});
       }
 
       //! Binding for abstract types
@@ -391,7 +413,7 @@ namespace cereal
     };
 
     //! Used to hide the static object used to bind T to registered archives
-    template <class T>
+    template <class T, class Tag>
     struct init_binding;
 
     //! Base case overload for instantiation
@@ -406,8 +428,8 @@ namespace cereal
         mechanisms even though they are never called.
 
         See the documentation for the other functions to try and understand this */
-    template <class T>
-    void instantiate_polymorphic_binding( T*, int, adl_tag ) {}
+    template <class T, typename BindingTag>
+    void instantiate_polymorphic_binding( T*, int, BindingTag, adl_tag ) {}
   } // namespace detail
 } // namespace cereal
 
