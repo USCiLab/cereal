@@ -225,32 +225,51 @@ namespace cereal
         itsNextName = name;
       }
 
+      //! Saves a value to the current node - small signed overload
+      template<class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) < sizeof(int64_t), void>::type
+      saveValue(T val)
+      {
+        itsWriter.Int(val);
+      }
+
+      //! Saves a value to the current node - 64 bit signed overload
+      //! Note: can't just overload for int64_t - it won't work when both long and long long are 64 bit.
+      template<class T> inline
+      typename std::enable_if<std::is_signed<T>::value && sizeof(T) == sizeof(int64_t), void>::type
+      saveValue(T val)
+      {
+        itsWriter.Int64(val);
+      }
+
+      //! Saves a value to the current node - small unsigned overload
+      template<class T> inline
+      typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) < sizeof(uint64_t)) &&
+                              !std::is_same<bool, T>::value, void>::type
+      saveValue(T val)
+      {
+        itsWriter.Uint(val);
+      }
+      
+      //! Savess a value to the current node - 64 bit unsigned overload
+      //! Note: can't just overload for uint64_t - it won't work when both unsigned long and unsigned long long are 64 bit.
+      template<class T> inline
+      typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)), void>::type
+      saveValue(T val)
+      {
+          itsWriter.Uint64(val);
+      }
+
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
-      //! Saves an int to the current node
-      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
-      //! Saves a uint to the current node
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+      void saveValue(bool b)                { itsWriter.Bool_(b);                                                        }
+      //! Saves a float to the current node
+      void saveValue(float f)               { itsWriter.Double(f);                                                       }
       //! Saves a double to the current node
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       //! Saves a string to the current node
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
-
-      template<class T> inline
-      typename std::enable_if<std::is_signed<T>::value && sizeof(T) == sizeof(int64_t), void>::type
-      saveValue(T val)
-      {
-          itsWriter.Int64(val);
-      }
-
-      template<class T> inline
-      typename std::enable_if<std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t), void>::type
-      saveValue(T val)
-      {
-          itsWriter.Uint64(val);
-      }
 
       //! Prologue for NVPs for JSON archives
       /*! NVPs do not start or finish nodes - they just set up the names */
@@ -374,63 +393,15 @@ namespace cereal
         // nothing to do here, we don't explicitly save the size
       }
 
-    private:
-      // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
-      // special overloads to handle these cases.
-
-      //! 32 bit signed long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
-      saveLong(T l){ saveValue( static_cast<std::int32_t>( l ) ); }
-
-      //! non 32 bit signed long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
-      saveLong(T l){ saveValue( static_cast<std::int64_t>( l ) ); }
-
-      //! 32 bit unsigned long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
-
-      //! non 32 bit unsigned long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
-
-    public:
-#ifdef _MSC_VER
-      //! MSVC only long overload to current node
-      void saveValue( unsigned long lu ){ saveLong( lu ); };
-#else // _MSC_VER
-      //! Serialize a long if it would not be caught otherwise
-      template <class T> inline
-      typename std::enable_if<std::is_same<T, long>::value &&
-                              !std::is_same<T, std::int32_t>::value &&
-                              !std::is_same<T, std::int64_t>::value, void>::type
-      saveValue( T t ){ saveLong( t ); }
-
-      //! Serialize an unsigned long if it would not be caught otherwise
-      template <class T> inline
-      typename std::enable_if<std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::uint32_t>::value &&
-                              !std::is_same<T, std::uint64_t>::value, void>::type
-      saveValue( T t ){ saveLong( t ); }
-#endif // _MSC_VER
-
-      //! Save exotic arithmetic as strings to current node
-      /*! Handles long long (if distinct from other types), unsigned long (if distinct), and long double */
+      //! Saves a value to the current node - long double and integers longer than 64-bit
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
-                              !std::is_same<T, long>::value &&
-                              !std::is_same<T, unsigned long>::value &&
-                              !(std::is_signed<T>::value && sizeof(T) == sizeof(int64_t)) &&
-                              !(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)) &&
-                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-      saveValue(T const & t)
+                              !(std::is_integral<T>::value && sizeof(T) <= sizeof(int64_t)) &&
+                              !(std::is_floating_point<T>::value && sizeof(T) <= sizeof(double)), void>::type
+      saveValue(T val)
       {
         std::stringstream ss; ss.precision( std::numeric_limits<long double>::max_digits10 );
-        ss << t;
+        ss << val;
         saveValue( ss.str() );
       }
 
@@ -749,7 +720,7 @@ namespace cereal
         ++itsIteratorStack.back();
       }
 
-       //! Loads a value from the current node - 64 bit unsigned overload
+      //! Loads a value from the current node - 64 bit unsigned overload
       //! Note: can't just overload for uint64_t - it won't work when both unsigned long and unsigned long long are 64 bit.
       template<class T> inline
       typename std::enable_if<(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)), void>::type
@@ -887,14 +858,11 @@ namespace cereal
       void stringToNumber( std::string const & str, long double & val ) { val = std::stold( str ); }
 
     public:
-      //! Loads a value from the current node - long double and long long overloads
+      //! Loads a value from the current node - long double and integers longer than 64-bit
       template<class T> inline
       typename std::enable_if<std::is_arithmetic<T>::value &&
-                              !std::is_same<T, long>::value &&
-                              !std::is_same<T, unsigned long>::value &&
-                              !(std::is_signed<T>::value && sizeof(T) == sizeof(int64_t)) &&
-                              !(std::is_unsigned<T>::value && sizeof(T) == sizeof(uint64_t)) &&
-                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+                              !(std::is_integral<T>::value && sizeof(T) <= sizeof(int64_t)) &&
+                              !(std::is_floating_point<T>::value && sizeof(T) <= sizeof(double)), void>::type
       loadValue(T & val)
       {
         std::string encoded;
