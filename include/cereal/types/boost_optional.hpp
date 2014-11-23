@@ -37,7 +37,7 @@ namespace cereal
 {
    //! Saving for boost::optional
    template <class Archive, class Optioned> inline
-      void save(Archive & ar, boost::optional<Optioned> const & optional)
+      void save(Archive & ar, ::boost::optional<Optioned> const & optional)
    {
       bool initFlag = (bool)optional;
       if (initFlag)
@@ -53,7 +53,7 @@ namespace cereal
 
    //! Loading for boost::optional
    template <class Archive, class Optioned> inline
-      void load(Archive & ar, boost::optional<Optioned> & optional)
+      void load(Archive & ar, ::boost::optional<Optioned> & optional)
    {
 
       bool initFlag;
@@ -65,7 +65,7 @@ namespace cereal
          optional = val;
       }
       else
-         optional = boost::none; // this is all we need to do to reset the internal flag and value
+         optional = ::boost::none; // this is all we need to do to reset the internal flag and value
 
    }
 } // namespace cereal
