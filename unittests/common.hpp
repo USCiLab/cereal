@@ -32,6 +32,8 @@
 #include <cereal/types/boost_circular_buffer.hpp>
 #include <cereal/types/boost_compressed_pair.hpp>
 #include <cereal/types/boost_dynamic_bitset.hpp>
+#include <cereal/types/boost_filesystem.hpp>
+//#include <cereal/types/boost_flyweight.hpp>
 #include <cereal/types/boost_optional.hpp>
 #include <cereal/types/boost_variant.hpp>
 #include <cereal/types/complex.hpp>
