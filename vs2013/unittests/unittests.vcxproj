@@ -22,6 +22,11 @@
     <ClCompile Include="..\..\unittests\array.cpp" />
     <ClCompile Include="..\..\unittests\basic_string.cpp" />
     <ClCompile Include="..\..\unittests\bitset.cpp" />
+    <ClCompile Include="..\..\unittests\boost_circular_buffer.cpp" />
+    <ClCompile Include="..\..\unittests\boost_compressed_pair.cpp" />
+    <ClCompile Include="..\..\unittests\boost_dynamic_bitset.cpp" />
+    <ClCompile Include="..\..\unittests\boost_filesystem.cpp" />
+    <ClCompile Include="..\..\unittests\boost_optional.cpp" />
     <ClCompile Include="..\..\unittests\chrono.cpp" />
     <ClCompile Include="..\..\unittests\complex.cpp" />
     <ClCompile Include="..\..\unittests\deque.cpp" />
@@ -126,12 +131,14 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(BOOST_HOME)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(BOOST_LIB)\lib32-msvc-12.0</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
