@@ -730,6 +730,21 @@ namespace cereal
     ar.loadSize( st.size );
   }
 
+
+  //! Saving binary data
+  template <class T> inline
+  void save(MessagePackOutputArchive & ar, BinaryData<T> const & bd)
+  {
+    ar.saveBinaryValue( bd.data, static_cast<std::size_t>( bd.size ) );
+  }
+
+  //! Loading binary data
+  template <class T> inline
+  void load(MessagePackInputArchive & ar, BinaryData<T> & bd)
+  {
+    ar.loadBinaryValue(bd.data, static_cast<std::size_t>(bd.size));
+  }
+
 } // namespace cereal
 
 // register archives for polymorphic support
