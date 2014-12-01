@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant, Steve Hickman
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,13 @@
 
 #include <cereal/types/array.hpp>
 #include <cereal/types/bitset.hpp>
-#include <cereal/types/boost_circular_buffer.hpp>
-#include <cereal/types/boost_compressed_pair.hpp>
-#include <cereal/types/boost_dynamic_bitset.hpp>
-#include <cereal/types/boost_filesystem.hpp>
-//#include <cereal/types/boost_flyweight.hpp>
-#include <cereal/types/boost_optional.hpp>
+#include <cereal/types/boost/circular_buffer.hpp>
+#include <cereal/types/boost/compressed_pair.hpp>
+#include <cereal/types/boost/dynamic_bitset.hpp>
+#include <cereal/types/boost/filesystem.hpp>
+//#include <cereal/types/boost/flyweight.hpp>
+#include <cereal/types/boost/optional.hpp>
+
 #include <cereal/types/boost_variant.hpp>
 #include <cereal/types/complex.hpp>
 #include <cereal/types/chrono.hpp>
