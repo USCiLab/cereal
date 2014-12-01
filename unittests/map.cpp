@@ -185,6 +185,11 @@ BOOST_AUTO_TEST_CASE( json_map )
   test_map<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_map )
+{
+  test_map<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+
 BOOST_AUTO_TEST_CASE( binary_map_memory )
 {
   test_map_memory<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
