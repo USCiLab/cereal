@@ -123,3 +123,8 @@ BOOST_AUTO_TEST_CASE( json_priority_queue )
   test_priority_queue<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_priority_queue )
+{
+  test_priority_queue<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

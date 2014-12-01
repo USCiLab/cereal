@@ -152,3 +152,8 @@ BOOST_AUTO_TEST_CASE( json_pod )
 {
   test_pod<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+BOOST_AUTO_TEST_CASE( message_pack_pod )
+{
+  test_pod<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}

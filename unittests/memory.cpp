@@ -99,3 +99,8 @@ BOOST_AUTO_TEST_CASE( json_memory )
   test_memory<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_memory )
+{
+  test_memory<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

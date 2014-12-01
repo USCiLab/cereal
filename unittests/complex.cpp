@@ -93,4 +93,9 @@ BOOST_AUTO_TEST_CASE( json_complex )
   test_complex<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_complex )
+{
+  test_complex<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+
 

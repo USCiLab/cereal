@@ -123,3 +123,8 @@ BOOST_AUTO_TEST_CASE( json_stack )
   test_stack<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_stack )
+{
+  test_stack<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

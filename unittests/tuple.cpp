@@ -111,3 +111,8 @@ BOOST_AUTO_TEST_CASE( json_tuple )
   test_tuple<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_tuple )
+{
+  test_tuple<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

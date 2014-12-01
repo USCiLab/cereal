@@ -193,3 +193,8 @@ BOOST_AUTO_TEST_CASE( json_memory_load_construct )
   test_memory_load_construct<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_memory_load_construct )
+{
+  test_memory_load_construct<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+

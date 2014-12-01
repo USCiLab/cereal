@@ -140,3 +140,8 @@ BOOST_AUTO_TEST_CASE( json_unordered_map )
   test_unordered_map<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( message_pack_unordered_map )
+{
+  test_unordered_map<cereal::MessagePackInputArchive, cereal::MessagePackOutputArchive>();
+}
+
