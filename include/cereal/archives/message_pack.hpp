@@ -293,9 +293,9 @@ namespace cereal
       MessagePackInputArchive(std::istream & stream) :
         InputArchive<MessagePackInputArchive>(this)
       {
+         msgpack::unpacker unpacker;
          while(true)
          {
-            msgpack::unpacker unpacker;
             unpacker.reserve_buffer();
 
             auto const readSize = static_cast<std::size_t>( stream.rdbuf()->sgetn( unpacker.buffer(), unpacker.buffer_capacity() ) );
