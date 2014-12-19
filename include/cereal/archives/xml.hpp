@@ -35,11 +35,13 @@
 #include <cereal/external/rapidxml/rapidxml_print.hpp>
 #include <cereal/external/base64.hpp>
 
+#include <algorithm>
 #include <sstream>
 #include <stack>
 #include <vector>
 #include <limits>
 #include <string>
+#include <cctype>
 #include <cstring>
 #include <cmath>
 
@@ -223,6 +225,23 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
+      //! Overload for strings that saves them as cdata
+      template<class CharT, class Traits, class Alloc> inline
+      void saveValue( std::basic_string<CharT, Traits, Alloc> const & value )
+      {
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
+        itsOS << value << std::ends;
+
+        // allocate strings for all of the data in the XML object
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        
+        // if the string consists of spaces entirely, store it in cdata.
+        auto node_type = std::find_if_not(value.begin(), value.end(), ::isspace) == value.end() ? rapidxml::node_cdata : rapidxml::node_data;
+        
+        // insert into the XML
+        itsNodes.top().node->append_node( itsXML.allocate_node( node_type, nullptr, dataPtr ) );
+      }
+
       //! Saves some data, encoded as a string, into the current top level node
       /*! The data will be be named with the most recent name if one exists,
           otherwise it will be given some default delimited value that depends upon
@@ -248,6 +267,12 @@ namespace cereal
 
       //! Overload for int8_t prevents them from being serialized as characters
       void saveValue( int8_t const & value )
+      {
+        saveValue( static_cast<int32_t>( value ) );
+      }
+
+      //! Overload for char prevents them from being serialized as characters
+      void saveValue( char const & value )
       {
         saveValue( static_cast<int32_t>( value ) );
       }
@@ -473,7 +498,7 @@ namespace cereal
         try
         {
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          itsXML.parse<rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & )
         {
@@ -678,7 +703,14 @@ namespace cereal
       template<class CharT, class Traits, class Alloc> inline
       void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
       {
-        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
+        auto node = itsNodes.top().node;
+        
+        if ( node && node->value_size() == 0 && node->first_node())
+        {
+          node = node->first_node();
+        }
+        
+        std::basic_istringstream<CharT, Traits> is( node->value() );
 
         str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
                     std::istreambuf_iterator<CharT, Traits>() );

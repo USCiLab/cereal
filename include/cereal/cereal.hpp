@@ -121,7 +121,7 @@ namespace cereal
         a serialization function.  Classes with no data members are considered to be
         empty.  Be warned that if this is enabled and you attempt to serialize an
         empty class with improperly formed serialize or load/save functions, no
-        static error will occur - the error will propogate silently and your
+        static error will occur - the error will propagate silently and your
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
         by using the traits is_output_serializable and is_input_serializable
@@ -137,11 +137,11 @@ namespace cereal
       support pointers to polymorphic data types.  All archives that
       come with cereal are already registered.
       @ingroup Internal */
-  #define CEREAL_REGISTER_ARCHIVE(Archive)                                  \
-  namespace cereal { namespace detail {                                     \
-  template <class T, typename BindingTag>                                   \
-  typename polymorphic_serialization_support<Archive, T>::type              \
-  instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag );     \
+  #define CEREAL_REGISTER_ARCHIVE(Archive)                        \
+  namespace cereal { namespace detail {                           \
+  template <class T>                                              \
+  typename polymorphic_serialization_support<Archive, T>::type    \
+  instantiate_polymorphic_binding( T*, Archive*, adl_tag );       \
   } } // end namespaces
 
   //! Defines a class version for some type

@@ -47,6 +47,7 @@
 #include <cereal/details/static_object.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
+#include <cassert>
 #include <functional>
 #include <typeindex>
 #include <map>
@@ -55,7 +56,10 @@
 /*! This binds a polymorphic type to all registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
-    have been included). */
+    have been included).
+    The binding_tag struct (which is in anonymous namespace) is passed as a template
+    parameter to allow CEREAL_BIND_TO_ARCHIVES to be called for the same type from
+    multiple translation units. */
 #define CEREAL_BIND_TO_ARCHIVES(T)                                              \
     namespace cereal {                                                          \
     namespace detail {                                                          \
@@ -143,21 +147,12 @@ namespace cereal
     /*! Bindings are made when types are registered, assuming that at least one
         archive has already been registered.  When this struct is created,
         it will insert (at run time) an entry into a map that properly handles
-        casting for serializing polymorphic objects */
+        casting for serializing polymorphic objects. */
     template <class Archive, class T> struct InputBindingCreator
     {
       //! Initialize the binding
       InputBindingCreator()
       {
-        auto& map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
-        auto key = std::string(binding_name<T>::name());
-        auto lb = map.lower_bound(key);
-
-        if (lb != map.end() && lb->first == key)
-        {
-          return;
-        }
-
         typename InputBindingMap<Archive>::Serializers serializers;
 
         serializers.shared_ptr =
@@ -182,7 +177,7 @@ namespace cereal
             dptr.reset(ptr.release());
           };
 
-        map.insert( lb, { std::move(key), std::move(serializers) } );
+        StaticObject<InputBindingMap<Archive>>::getInstance().map.insert( { std::string(binding_name<T>::name()), serializers } );
       }
     };
 
@@ -279,15 +274,6 @@ namespace cereal
       //! Initialize the binding
       OutputBindingCreator()
       {
-        auto& map = StaticObject<OutputBindingMap<Archive>>::getInstance().map;
-        auto key = std::type_index(typeid(T));
-        auto lb = map.lower_bound(key);
-
-        if (lb != map.end() && lb->first == key)
-        {
-          return;
-        }
-
         typename OutputBindingMap<Archive>::Serializers serializers;
 
         serializers.shared_ptr =
@@ -316,7 +302,7 @@ namespace cereal
             ar( _CEREAL_NVP("ptr_wrapper", memory_detail::make_ptr_wrapper(ptr)) );
           };
 
-        map.insert( { std::move(key), std::move(serializers) } );
+        StaticObject<OutputBindingMap<Archive>>::getInstance().map.insert( {std::type_index(typeid(T)), serializers} );
       }
     };
 
@@ -324,7 +310,7 @@ namespace cereal
     //! of instantiate_polymorphic_binding
     struct adl_tag {};
 
-    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous
+    //! Tag for init_binding and bind_to_archives. Due to the use of anonymous
     //! namespace it becomes a different type in each translation unit.
     namespace { struct binding_tag {}; }
 
@@ -375,11 +361,11 @@ namespace cereal
 
     // instantiate implementation
     template <class Archive, class T>
-    void polymorphic_serialization_support<Archive,T>::instantiate()
+    void polymorphic_serialization_support<Archive, T>::instantiate()
     {
-      create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
+      create_bindings<Archive, T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
 
-      create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
+      create_bindings<Archive, T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
     }
 
     //! Begins the binding process of a type to all registered archives
@@ -393,7 +379,7 @@ namespace cereal
       //! Binding for non abstract types
       void bind(std::false_type) const
 	    {
-		    instantiate_polymorphic_binding((T*) 0, 0, Tag(), adl_tag{});
+		    instantiate_polymorphic_binding((T*) 0, 0, adl_tag{});
       }
 
       //! Binding for abstract types
@@ -428,8 +414,8 @@ namespace cereal
         mechanisms even though they are never called.
 
         See the documentation for the other functions to try and understand this */
-    template <class T, typename BindingTag>
-    void instantiate_polymorphic_binding( T*, int, BindingTag, adl_tag ) {}
+    template <class T>
+    void instantiate_polymorphic_binding( T*, int, adl_tag ) {}
   } // namespace detail
 } // namespace cereal
 
