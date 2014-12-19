@@ -44,7 +44,7 @@ namespace cereal
       architectures with different endianness, use PortableBinaryOutputArchive.
 
       When using a binary archive and a file stream, you must use the
-      std::ios::binary format flag to avoid having your data altered
+      std::ios::binary format flag to avoid having your data altered 
       inadvertently.
 
       \ingroup Archives */
@@ -113,9 +113,9 @@ namespace cereal
   /*  This archive does nothing to ensure that the endianness of the saved
       and loaded data is the same.  If you need to have portability over
       architectures with different endianness, use PortableBinaryOutputArchive.
-
+      
       When using a binary archive and a file stream, you must use the
-      std::ios::binary format flag to avoid having your data altered
+      std::ios::binary format flag to avoid having your data altered 
       inadvertently.
 
       \ingroup Archives */

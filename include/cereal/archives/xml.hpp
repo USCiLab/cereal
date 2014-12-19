@@ -225,7 +225,7 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
-      //! Overload for strings that saves them as cdata
+      //! Overload for strings that saves space-only strings as cdata
       template<class CharT, class Traits, class Alloc> inline
       void saveValue( std::basic_string<CharT, Traits, Alloc> const & value )
       {
