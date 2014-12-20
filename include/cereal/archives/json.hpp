@@ -46,6 +46,7 @@ namespace cereal
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
+#include <cereal/external/rapidjson/writer.h>
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/genericstream.h>
 #include <cereal/external/rapidjson/reader.h>
@@ -90,7 +91,8 @@ namespace cereal
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
     typedef rapidjson::GenericWriteStream WriteStream;
-    typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
+    typedef rapidjson::Writer<WriteStream> JSONWriter;
+    typedef rapidjson::PrettyWriter<WriteStream> PrettyJSONWriter;
 
     public:
       /*! @name Common Functionality
@@ -104,6 +106,11 @@ namespace cereal
           //! Default options
           static Options Default(){ return Options(); }
 
+          static Options MinimalWhitespace()
+          {
+              return Options(std::numeric_limits<double>::max_digits10, IndentChar::space, 0, PrintType::minimal);
+          }
+
           //! Default options with no indentation
           static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
 
@@ -116,6 +123,14 @@ namespace cereal
             carriage_return = '\r'
           };
 
+          //! Whether to use the minimal print mechanism or "Pretty" Writing
+          enum class PrintType : char
+          {
+              pretty,
+              minimal
+          };
+
+
           //! Specify specific options for the JSONOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
@@ -123,16 +138,17 @@ namespace cereal
                              (0 corresponds to no indentation) */
           explicit Options( int precision = std::numeric_limits<double>::max_digits10,
                             IndentChar indentChar = IndentChar::space,
-                            unsigned int indentLength = 4 ) :
+                            unsigned int indentLength = 4, PrintType printType = PrintType::pretty ) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
-            itsIndentLength( indentLength ) { }
+            itsIndentLength( indentLength ), itsPrintType( printType ) { }
 
         private:
           friend class JSONOutputArchive;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
+          PrintType itsPrintType;
       };
 
       //! Construct, outputting to the provided stream
@@ -142,10 +158,20 @@ namespace cereal
       JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream, options.itsPrecision),
+        itsWriter(),
         itsNextName(nullptr)
       {
-        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
+        if(options.itsPrintType == Options::PrintType::pretty)
+        {
+            PrettyJSONWriter* writer = new PrettyJSONWriter(itsWriteStream, options.itsPrecision);
+            writer->SetIndent( options.itsIndentChar, options.itsIndentLength );
+            itsWriter.reset(writer);
+        }
+        else if (options.itsPrintType == Options::PrintType::minimal)
+        {
+            itsWriter.reset(new JSONWriter(itsWriteStream, options.itsPrecision ));
+        }
+
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
@@ -153,7 +179,7 @@ namespace cereal
       //! Destructor, flushes the JSON
       ~JSONOutputArchive()
       {
-        itsWriter.EndObject();
+        itsWriter->EndObject();
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
@@ -197,14 +223,14 @@ namespace cereal
         switch(itsNodeStack.top())
         {
           case NodeType::StartArray:
-            itsWriter.StartArray();
+            itsWriter->StartArray();
           case NodeType::InArray:
-            itsWriter.EndArray();
+            itsWriter->EndArray();
             break;
           case NodeType::StartObject:
-            itsWriter.StartObject();
+            itsWriter->StartObject();
           case NodeType::InObject:
-            itsWriter.EndObject();
+            itsWriter->EndObject();
             break;
         }
 
@@ -219,21 +245,21 @@ namespace cereal
       }
 
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
+      void saveValue(bool b)                { itsWriter->Bool_(b);                                                         }
       //! Saves an int to the current node
-      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
+      void saveValue(int i)                 { itsWriter->Int(i);                                                          }
       //! Saves a uint to the current node
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+      void saveValue(unsigned u)            { itsWriter->Uint(u);                                                         }
       //! Saves an int64 to the current node
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
+      void saveValue(int64_t i64)           { itsWriter->Int64(i64);                                                      }
       //! Saves a uint64 to the current node
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
+      void saveValue(uint64_t u64)          { itsWriter->Uint64(u64);                                                     }
       //! Saves a double to the current node
-      void saveValue(double d)              { itsWriter.Double(d);                                                       }
+      void saveValue(double d)              { itsWriter->Double(d);                                                       }
       //! Saves a string to the current node
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+      void saveValue(std::string const & s) { itsWriter->String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
-      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+      void saveValue(char const * s)        { itsWriter->String(s);                                                       }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -315,13 +341,13 @@ namespace cereal
         // Start up either an object or an array, depending on state
         if(nodeType == NodeType::StartArray)
         {
-          itsWriter.StartArray();
+          itsWriter->StartArray();
           itsNodeStack.top() = NodeType::InArray;
         }
         else if(nodeType == NodeType::StartObject)
         {
           itsNodeStack.top() = NodeType::InObject;
-          itsWriter.StartObject();
+          itsWriter->StartObject();
         }
 
         // Array types do not output names
@@ -348,10 +374,10 @@ namespace cereal
       //! @}
 
     private:
-      WriteStream itsWriteStream;          //!< Rapidjson write stream
-      JSONWriter itsWriter;                //!< Rapidjson writer
-      char const * itsNextName;            //!< The next name
-      std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
+      WriteStream itsWriteStream;           //!< Rapidjson write stream
+      std::unique_ptr<JSONWriter> itsWriter;//!< Rapidjson writer
+      char const * itsNextName;             //!< The next name
+      std::stack<uint32_t> itsNameCounter;  //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
   }; // JSONOutputArchive
 
