@@ -163,9 +163,9 @@ namespace cereal
       {
         if(options.itsPrintType == Options::PrintType::pretty)
         {
-            PrettyJSONWriter* writer = new PrettyJSONWriter(itsWriteStream, options.itsPrecision);
+            std::unique_ptr<PrettyJSONWriter> writer (new PrettyJSONWriter(itsWriteStream, options.itsPrecision));
             writer->SetIndent( options.itsIndentChar, options.itsIndentLength );
-            itsWriter.reset(writer);
+            itsWriter = std::move(writer);
         }
         else if (options.itsPrintType == Options::PrintType::minimal)
         {
