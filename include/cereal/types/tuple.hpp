@@ -45,7 +45,9 @@ namespace cereal
       template <class Archive, class ... Types> inline
       static void apply( Archive & ar, std::tuple<Types...> & tuple )
       {
-        ar( _CEREAL_NVP("tuple_element", std::get<Height - 1>( tuple )) );
+        
+        ar( _CEREAL_NVP(("tuple_element" + std::to_string(Height -1)).c_str(),
+          std::get<Height - 1>( tuple )) );
         serialize<Height - 1>::template apply( ar, tuple );
       }
     };
