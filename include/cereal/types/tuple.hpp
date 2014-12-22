@@ -37,6 +37,51 @@ namespace cereal
 {
   namespace tuple_detail
   {
+    //! Creates a c string from a sequence of characters
+    /*! The c string created will alwas be prefixed by "tuple_element"
+    Based on code from: http://stackoverflow/a/20973438/710791 */
+    template<char...Cs> 
+    struct char_seq_to_c_str
+    {
+      static const int size = 14;// Size of array for the word: tuple_element
+      typedef const char (&arr_type)[sizeof...(Cs) + size];
+      static const char str[sizeof...(Cs) + size];
+    };
+
+    template<char...Cs>
+    const char char_seq_to_c_str<Cs...>::str[sizeof...(Cs) + size] = 
+      {'t','u','p','l','e','_','e','l','e','m','e','n','t', Cs..., '\0'};
+
+    //! Converts a number into a sequence of characters
+    /*! @tparam Q The quotient of dividing the original number by 10
+    @tparam R The remainder of dividing the original number by 10
+    @tparam C The sequence built so far */
+    template <size_t Q, size_t R, char ... C>
+    struct to_string_impl
+    {
+      using type = typename to_string_impl<Q/1, Q%10, R+'0', C...>::type;
+    };
+
+    //! Base case with no quotient
+    template <size_t R, char ... C>
+    struct to_string_impl<0, R, C...>
+    {
+      using type = char_seq_to_c_str<R+'0', C...>;
+    };
+
+    //! Generates a c string for a given index of a tuple
+    //! @internal
+    /*! Example use:
+        @begincode
+        tuple_element_name<3>::c_str();// returns "tuple_element3"
+        @endcode */
+    template<size_t T>
+    struct tuple_element_name
+    {
+      using type = typename to_string_impl<T/10, T%10>::type;
+      static const typename type::arr_type c_str(){return type::str;};
+    };
+
     // unwinds a tuple to save it
     //! @internal
     template <size_t Height>
@@ -46,9 +91,9 @@ namespace cereal
       static void apply( Archive & ar, std::tuple<Types...> & tuple )
       {
         
-        ar( _CEREAL_NVP(("tuple_element" + std::to_string(Height -1)).c_str(),
-          std::get<Height - 1>( tuple )) );
         serialize<Height - 1>::template apply( ar, tuple );
+        ar( _CEREAL_NVP(tuple_element_name<Height - 1>::c_str(),
+          std::get<Height - 1>( tuple )) );
       }
     };
 
