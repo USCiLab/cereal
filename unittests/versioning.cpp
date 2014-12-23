@@ -189,3 +189,7 @@ BOOST_AUTO_TEST_CASE( json_versioning )
   test_versioning<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_versioning )
+{
+  test_versioning<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

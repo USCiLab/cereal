@@ -259,7 +259,7 @@ namespace cereal
       private:
         template<class WT = WriterType>
         typename std::enable_if<std::is_same<MinimalWriter, WT>::value>::type
-        init(Options const & options)
+        init(Options const &)
         {
           itsNameCounter.push(0);
           itsNodeStack.push(NodeType::StartObject);

@@ -186,3 +186,8 @@ BOOST_AUTO_TEST_CASE( json_structs_minimal )
 {
   test_structs_minimal<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+BOOST_AUTO_TEST_CASE( minimal_json_structs_minimal )
+{
+  test_structs_minimal<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

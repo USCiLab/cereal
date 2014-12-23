@@ -116,3 +116,8 @@ BOOST_AUTO_TEST_CASE( json_dequeue )
 {
   test_deque<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+BOOST_AUTO_TEST_CASE( minimal_json_dequeue )
+{
+  test_deque<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

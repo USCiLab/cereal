@@ -93,4 +93,7 @@ BOOST_AUTO_TEST_CASE( json_complex )
   test_complex<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
-
+BOOST_AUTO_TEST_CASE( minimal_json_complex )
+{
+  test_complex<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

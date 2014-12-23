@@ -91,4 +91,7 @@ BOOST_AUTO_TEST_CASE( json_bitset )
   test_bitset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
-
+BOOST_AUTO_TEST_CASE( minimal_json_bitset )
+{
+  test_bitset<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}
