@@ -111,3 +111,7 @@ BOOST_AUTO_TEST_CASE( json_array )
   test_array<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_array )
+{
+  test_array<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

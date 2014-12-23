@@ -123,3 +123,7 @@ BOOST_AUTO_TEST_CASE( json_priority_queue )
   test_priority_queue<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_priority_queue )
+{
+  test_priority_queue<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

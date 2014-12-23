@@ -102,8 +102,13 @@ BOOST_AUTO_TEST_CASE( xml_pair )
 {
   test_pair<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
+
 BOOST_AUTO_TEST_CASE( json_pair )
 {
   test_pair<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_pair )
+{
+  test_pair<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

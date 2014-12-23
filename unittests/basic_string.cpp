@@ -125,3 +125,7 @@ BOOST_AUTO_TEST_CASE( json_string_basic )
   test_string_basic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_string_basic )
+{
+  test_string_basic<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

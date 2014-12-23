@@ -193,3 +193,7 @@ BOOST_AUTO_TEST_CASE( json_memory_load_construct )
   test_memory_load_construct<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_memory_load_construct )
+{
+  test_memory_load_construct<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

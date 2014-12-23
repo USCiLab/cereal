@@ -60,301 +60,341 @@ namespace cereal
 
 namespace cereal
 {
-  // ######################################################################
-  //! An output archive designed to save data to JSON
-  /*! This archive uses RapidJSON to build serialie data to JSON.
-
-      JSON archives provides a human readable output but at decreased
-      performance (both in time and space) compared to binary archives.
-
-      JSON benefits greatly from name-value pairs, which if present, will
-      name the nodes in the output.  If these are not present, each level
-      of the output will be given an automatically generated delimited name.
-
-      The precision of the output archive controls the number of decimals output
-      for floating point numbers and should be sufficiently large (i.e. at least 20)
-      if there is a desire to have binary equality between the numbers output and
-      those read in.  In general you should expect a loss of precision when going
-      from floating point to text and back.
-
-      JSON archives do not output the size information for any dynamically sized structure
-      and instead infer it from the number of children for a node.  This means that data
-      can be hand edited for dynamic sized structures and will still be readable.  This
-      is accomplished through the cereal::SizeTag object, which will cause the archive
-      to output the data as a JSON array (e.g. marked by [] instead of {}), which indicates
-      that the container is variable sized and may be edited.
-
-      \ingroup Archives */
-  class JSONOutputArchive : public OutputArchive<JSONOutputArchive>
+  namespace detail
   {
-    enum class NodeType { StartObject, InObject, StartArray, InArray };
+    // ######################################################################
+    //! An output archive designed to save data to JSON
+    /*! This archive uses RapidJSON to build serialie data to JSON.
+   
+        JSON archives provides a human readable output but at decreased
+        performance (both in time and space) compared to binary archives.
+   
+        JSON benefits greatly from name-value pairs, which if present, will
+        name the nodes in the output.  If these are not present, each level
+        of the output will be given an automatically generated delimited name.
+   
+        The precision of the output archive controls the number of decimals output
+        for floating point numbers and should be sufficiently large (i.e. at least 20)
+        if there is a desire to have binary equality between the numbers output and
+        those read in.  In general you should expect a loss of precision when going
+        from floating point to text and back.
+   
+        JSON archives do not output the size information for any dynamically sized structure
+        and instead infer it from the number of children for a node.  This means that data
+        can be hand edited for dynamic sized structures and will still be readable.  This
+        is accomplished through the cereal::SizeTag object, which will cause the archive
+        to output the data as a JSON array (e.g. marked by [] instead of {}), which indicates
+        that the container is variable sized and may be edited.
+   
+        \ingroup Archives */
+    template<class WriterType>
+    class JSONOutputArchiveImpl : public OutputArchive<JSONOutputArchiveImpl<WriterType>>
+    {
+      enum class NodeType { StartObject, InObject, StartArray, InArray };
+   
+      typedef rapidjson::GenericWriteStream WriteStream;
+      typedef WriterType JSONWriter;
+      
+      using PrettyWriter = rapidjson::PrettyWriter<WriteStream>;
+      using MinimalWriter = rapidjson::Writer<WriteStream>;
+       
+      public:
+        /*! @name Common Functionality
+            Common use cases for directly interacting with an JSONOutputArchive */
+        //! @{
+   
+        //! A class containing various advanced options for the JSON archive
+        class Options
+        {
+          public:
+            //! Default options
+            static Options Default(){ return Options(); }
+   
+            //! Default options with no indentation
+            template <class WT = WriterType,
+              typename = typename std::enable_if<
+                          std::is_base_of<PrettyWriter, WT>::value>::type
+                     >
+            static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
+   
+            //! The character to use for indenting
+            enum class IndentChar : char
+            {
+              space = ' ',
+              tab = '\t',
+              newline = '\n',
+              carriage_return = '\r'
+            };
+   
+            //! Specify specific options for the JSONOutputArchive
+            /*! @param precision The precision used for floating point numbers */
+            template <class WT = WriterType,
+              typename = typename std::enable_if<
+                          std::is_same<MinimalWriter, WT>::value>::type
+                     >
+            explicit Options( int precision = std::numeric_limits<double>::max_digits10):
+              itsPrecision( precision ) { }
 
-    typedef rapidjson::GenericWriteStream WriteStream;
-    typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
-
-    public:
-      /*! @name Common Functionality
-          Common use cases for directly interacting with an JSONOutputArchive */
-      //! @{
-
-      //! A class containing various advanced options for the JSON archive
-      class Options
-      {
-        public:
-          //! Default options
-          static Options Default(){ return Options(); }
-
-          //! Default options with no indentation
-          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
-
-          //! The character to use for indenting
-          enum class IndentChar : char
+            //! Specify specific options for the JSONOutputArchive
+            /*! @param precision The precision used for floating point numbers
+                @param indentChar The type of character to indent with
+                @param indentLength The number of indentChar to use for indentation
+                               (0 corresponds to no indentation) */
+            template <class WT = WriterType,
+              typename = typename std::enable_if<
+                          std::is_base_of<PrettyWriter, WT>::value>::type
+                     >
+            explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+                              IndentChar indentChar = IndentChar::space,
+                              unsigned int indentLength = 4 ) :
+              itsPrecision( precision ),
+              itsIndentChar( static_cast<char>(indentChar) ),
+              itsIndentLength( indentLength ) { }
+   
+          private:
+            friend class JSONOutputArchiveImpl;
+            int itsPrecision;
+            char itsIndentChar;
+            unsigned int itsIndentLength;
+        };
+   
+        //! Construct, outputting to the provided stream
+        /*! @param stream The stream to output to.
+            @param options The JSON specific options to use.  See the Options struct
+                           for the values of default parameters */
+        JSONOutputArchiveImpl(std::ostream & stream, Options const & options = Options::Default() ) :
+          OutputArchive<JSONOutputArchiveImpl<WriterType>>(this),
+          itsWriteStream(stream),
+          itsWriter(itsWriteStream, options.itsPrecision),
+          itsNextName(nullptr)
+        {
+          init(options);
+        }
+   
+        //! Destructor, flushes the JSON
+        ~JSONOutputArchiveImpl()
+        {
+          itsWriter.EndObject();
+        }
+   
+        //! Saves some binary data, encoded as a base64 string, with an optional name
+        /*! This will create a new node, optionally named, and insert a value that consists of
+            the data encoded as a base64 string */
+        void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
+        {
+          setNextName( name );
+          writeName();
+   
+          auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
+          saveValue( base64string );
+        };
+   
+        //! @}
+        /*! @name Internal Functionality
+            Functionality designed for use by those requiring control over the inner mechanisms of
+            the JSONOutputArchive */
+        //! @{
+   
+        //! Starts a new node in the JSON output
+        /*! The node can optionally be given a name by calling setNextName prior
+            to creating the node
+   
+            Nodes only need to be started for types that are themselves objects or arrays */
+        void startNode()
+        {
+          writeName();
+          itsNodeStack.push(NodeType::StartObject);
+          itsNameCounter.push(0);
+        }
+   
+        //! Designates the most recently added node as finished
+        void finishNode()
+        {
+          // if we ended up serializing an empty object or array, writeName
+          // will never have been called - so start and then immediately end
+          // the object/array.
+          //
+          // We'll also end any object/arrays we happen to be in
+          switch(itsNodeStack.top())
           {
-            space = ' ',
-            tab = '\t',
-            newline = '\n',
-            carriage_return = '\r'
-          };
-
-          //! Specify specific options for the JSONOutputArchive
-          /*! @param precision The precision used for floating point numbers
-              @param indentChar The type of character to indent with
-              @param indentLength The number of indentChar to use for indentation
-                             (0 corresponds to no indentation) */
-          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
-                            IndentChar indentChar = IndentChar::space,
-                            unsigned int indentLength = 4 ) :
-            itsPrecision( precision ),
-            itsIndentChar( static_cast<char>(indentChar) ),
-            itsIndentLength( indentLength ) { }
-
-        private:
-          friend class JSONOutputArchive;
-          int itsPrecision;
-          char itsIndentChar;
-          unsigned int itsIndentLength;
-      };
-
-      //! Construct, outputting to the provided stream
-      /*! @param stream The stream to output to.
-          @param options The JSON specific options to use.  See the Options struct
-                         for the values of default parameters */
-      JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<JSONOutputArchive>(this),
-        itsWriteStream(stream),
-        itsWriter(itsWriteStream, options.itsPrecision),
-        itsNextName(nullptr)
-      {
-        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
-        itsNameCounter.push(0);
-        itsNodeStack.push(NodeType::StartObject);
-      }
-
-      //! Destructor, flushes the JSON
-      ~JSONOutputArchive()
-      {
-        itsWriter.EndObject();
-      }
-
-      //! Saves some binary data, encoded as a base64 string, with an optional name
-      /*! This will create a new node, optionally named, and insert a value that consists of
-          the data encoded as a base64 string */
-      void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
-      {
-        setNextName( name );
-        writeName();
-
-        auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
-        saveValue( base64string );
-      };
-
-      //! @}
-      /*! @name Internal Functionality
-          Functionality designed for use by those requiring control over the inner mechanisms of
-          the JSONOutputArchive */
-      //! @{
-
-      //! Starts a new node in the JSON output
-      /*! The node can optionally be given a name by calling setNextName prior
-          to creating the node
-
-          Nodes only need to be started for types that are themselves objects or arrays */
-      void startNode()
-      {
-        writeName();
-        itsNodeStack.push(NodeType::StartObject);
-        itsNameCounter.push(0);
-      }
-
-      //! Designates the most recently added node as finished
-      void finishNode()
-      {
-        // if we ended up serializing an empty object or array, writeName
-        // will never have been called - so start and then immediately end
-        // the object/array.
-        //
-        // We'll also end any object/arrays we happen to be in
-        switch(itsNodeStack.top())
+            case NodeType::StartArray:
+              itsWriter.StartArray();
+            case NodeType::InArray:
+              itsWriter.EndArray();
+              break;
+            case NodeType::StartObject:
+              itsWriter.StartObject();
+            case NodeType::InObject:
+              itsWriter.EndObject();
+              break;
+          }
+   
+          itsNodeStack.pop();
+          itsNameCounter.pop();
+        }
+   
+        //! Sets the name for the next node created with startNode
+        void setNextName( const char * name )
         {
-          case NodeType::StartArray:
-            itsWriter.StartArray();
-          case NodeType::InArray:
-            itsWriter.EndArray();
-            break;
-          case NodeType::StartObject:
-            itsWriter.StartObject();
-          case NodeType::InObject:
-            itsWriter.EndObject();
-            break;
+          itsNextName = name;
+        }
+   
+        //! Saves a bool to the current node
+        void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
+        //! Saves an int to the current node
+        void saveValue(int i)                 { itsWriter.Int(i);                                                          }
+        //! Saves a uint to the current node
+        void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+        //! Saves an int64 to the current node
+        void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
+        //! Saves a uint64 to the current node
+        void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
+        //! Saves a double to the current node
+        void saveValue(double d)              { itsWriter.Double(d);                                                       }
+        //! Saves a string to the current node
+        void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+        //! Saves a const char * to the current node
+        void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+   
+      private:
+        template<class WT = WriterType>
+        typename std::enable_if<std::is_same<MinimalWriter, WT>::value>::type
+        init(Options const &)
+        {
+          itsNameCounter.push(0);
+          itsNodeStack.push(NodeType::StartObject);
         }
 
-        itsNodeStack.pop();
-        itsNameCounter.pop();
-      }
+        template<class WT = WriterType>
+        typename std::enable_if<std::is_base_of<PrettyWriter, WT>::value>::type
+        init(Options const & options)
+        {
+          itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
+          itsNameCounter.push(0);
+          itsNodeStack.push(NodeType::StartObject);
+        }
 
-      //! Sets the name for the next node created with startNode
-      void setNextName( const char * name )
-      {
-        itsNextName = name;
-      }
-
-      //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
-      //! Saves an int to the current node
-      void saveValue(int i)                 { itsWriter.Int(i);                                                          }
-      //! Saves a uint to the current node
-      void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
-      //! Saves an int64 to the current node
-      void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
-      //! Saves a uint64 to the current node
-      void saveValue(uint64_t u64)          { itsWriter.Uint64(u64);                                                     }
-      //! Saves a double to the current node
-      void saveValue(double d)              { itsWriter.Double(d);                                                       }
-      //! Saves a string to the current node
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
-      //! Saves a const char * to the current node
-      void saveValue(char const * s)        { itsWriter.String(s);                                                       }
-
-    private:
-      // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
-      // special overloads to handle these cases.
-
-      //! 32 bit signed long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
-      saveLong(T l){ saveValue( static_cast<std::int32_t>( l ) ); }
-
-      //! non 32 bit signed long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
-      saveLong(T l){ saveValue( static_cast<std::int64_t>( l ) ); }
-
-      //! 32 bit unsigned long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) == sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
-
-      //! non 32 bit unsigned long saving to current node
-      template <class T> inline
-      typename std::enable_if<sizeof(T) != sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
-      saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
-
-    public:
+        // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
+        // special overloads to handle these cases.
+   
+        //! 32 bit signed long saving to current node
+        template <class T> inline
+        typename std::enable_if<sizeof(T) == sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
+        saveLong(T l){ saveValue( static_cast<std::int32_t>( l ) ); }
+   
+        //! non 32 bit signed long saving to current node
+        template <class T> inline
+        typename std::enable_if<sizeof(T) != sizeof(std::int32_t) && std::is_signed<T>::value, void>::type
+        saveLong(T l){ saveValue( static_cast<std::int64_t>( l ) ); }
+   
+        //! 32 bit unsigned long saving to current node
+        template <class T> inline
+        typename std::enable_if<sizeof(T) == sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
+        saveLong(T lu){ saveValue( static_cast<std::uint32_t>( lu ) ); }
+   
+        //! non 32 bit unsigned long saving to current node
+        template <class T> inline
+        typename std::enable_if<sizeof(T) != sizeof(std::uint32_t) && !std::is_signed<T>::value, void>::type
+        saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
+   
+      public:
 #ifdef _MSC_VER
-      //! MSVC only long overload to current node
-      void saveValue( unsigned long lu ){ saveLong( lu ); };
+        //! MSVC only long overload to current node
+        void saveValue( unsigned long lu ){ saveLong( lu ); };
 #else // _MSC_VER
-      //! Serialize a long if it would not be caught otherwise
-      template <class T> inline
-      typename std::enable_if<std::is_same<T, long>::value &&
-                              !std::is_same<T, std::int32_t>::value &&
-                              !std::is_same<T, std::int64_t>::value, void>::type
-      saveValue( T t ){ saveLong( t ); }
-
-      //! Serialize an unsigned long if it would not be caught otherwise
-      template <class T> inline
-      typename std::enable_if<std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::uint32_t>::value &&
-                              !std::is_same<T, std::uint64_t>::value, void>::type
-      saveValue( T t ){ saveLong( t ); }
+        //! Serialize a long if it would not be caught otherwise
+        template <class T> inline
+        typename std::enable_if<std::is_same<T, long>::value &&
+                                !std::is_same<T, std::int32_t>::value &&
+                                !std::is_same<T, std::int64_t>::value, void>::type
+        saveValue( T t ){ saveLong( t ); }
+   
+        //! Serialize an unsigned long if it would not be caught otherwise
+        template <class T> inline
+        typename std::enable_if<std::is_same<T, unsigned long>::value &&
+                                !std::is_same<T, std::uint32_t>::value &&
+                                !std::is_same<T, std::uint64_t>::value, void>::type
+        saveValue( T t ){ saveLong( t ); }
 #endif // _MSC_VER
-
-      //! Save exotic arithmetic as strings to current node
-      /*! Handles long long (if distinct from other types), unsigned long (if distinct), and long double */
-      template<class T> inline
-      typename std::enable_if<std::is_arithmetic<T>::value &&
-                              !std::is_same<T, long>::value &&
-                              !std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::int64_t>::value &&
-                              !std::is_same<T, std::uint64_t>::value &&
-                              (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
-      saveValue(T const & t)
-      {
-        std::stringstream ss; ss.precision( std::numeric_limits<long double>::max_digits10 );
-        ss << t;
-        saveValue( ss.str() );
-      }
-
-      //! Write the name of the upcoming node and prepare object/array state
-      /*! Since writeName is called for every value that is output, regardless of
-          whether it has a name or not, it is the place where we will do a deferred
-          check of our node state and decide whether we are in an array or an object.
-
-          The general workflow of saving to the JSON archive is:
-
-            1. (optional) Set the name for the next node to be created, usually done by an NVP
-            2. Start the node
-            3. (if there is data to save) Write the name of the node (this function)
-            4. (if there is data to save) Save the data (with saveValue)
-            5. Finish the node
-          */
-      void writeName()
-      {
-        NodeType const & nodeType = itsNodeStack.top();
-
-        // Start up either an object or an array, depending on state
-        if(nodeType == NodeType::StartArray)
+   
+        //! Save exotic arithmetic as strings to current node
+        /*! Handles long long (if distinct from other types), unsigned long (if distinct), and long double */
+        template<class T> inline
+        typename std::enable_if<std::is_arithmetic<T>::value &&
+                                !std::is_same<T, long>::value &&
+                                !std::is_same<T, unsigned long>::value &&
+                                !std::is_same<T, std::int64_t>::value &&
+                                !std::is_same<T, std::uint64_t>::value &&
+                                (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long)), void>::type
+        saveValue(T const & t)
         {
-          itsWriter.StartArray();
-          itsNodeStack.top() = NodeType::InArray;
+          std::stringstream ss; ss.precision( std::numeric_limits<long double>::max_digits10 );
+          ss << t;
+          saveValue( ss.str() );
         }
-        else if(nodeType == NodeType::StartObject)
+   
+        //! Write the name of the upcoming node and prepare object/array state
+        /*! Since writeName is called for every value that is output, regardless of
+            whether it has a name or not, it is the place where we will do a deferred
+            check of our node state and decide whether we are in an array or an object.
+   
+            The general workflow of saving to the JSON archive is:
+   
+              1. (optional) Set the name for the next node to be created, usually done by an NVP
+              2. Start the node
+              3. (if there is data to save) Write the name of the node (this function)
+              4. (if there is data to save) Save the data (with saveValue)
+              5. Finish the node
+            */
+        void writeName()
         {
-          itsNodeStack.top() = NodeType::InObject;
-          itsWriter.StartObject();
+          NodeType const & nodeType = itsNodeStack.top();
+   
+          // Start up either an object or an array, depending on state
+          if(nodeType == NodeType::StartArray)
+          {
+            itsWriter.StartArray();
+            itsNodeStack.top() = NodeType::InArray;
+          }
+          else if(nodeType == NodeType::StartObject)
+          {
+            itsNodeStack.top() = NodeType::InObject;
+            itsWriter.StartObject();
+          }
+   
+          // Array types do not output names
+          if(nodeType == NodeType::InArray) return;
+   
+          if(itsNextName == nullptr)
+          {
+            std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
+            saveValue(name);
+          }
+          else
+          {
+            saveValue(itsNextName);
+            itsNextName = nullptr;
+          }
         }
-
-        // Array types do not output names
-        if(nodeType == NodeType::InArray) return;
-
-        if(itsNextName == nullptr)
+   
+        //! Designates that the current node should be output as an array, not an object
+        void makeArray()
         {
-          std::string name = "value" + std::to_string( itsNameCounter.top()++ ) + "\0";
-          saveValue(name);
+          itsNodeStack.top() = NodeType::StartArray;
         }
-        else
-        {
-          saveValue(itsNextName);
-          itsNextName = nullptr;
-        }
-      }
-
-      //! Designates that the current node should be output as an array, not an object
-      void makeArray()
-      {
-        itsNodeStack.top() = NodeType::StartArray;
-      }
-
-      //! @}
-
-    private:
-      WriteStream itsWriteStream;          //!< Rapidjson write stream
-      JSONWriter itsWriter;                //!< Rapidjson writer
-      char const * itsNextName;            //!< The next name
-      std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
-      std::stack<NodeType> itsNodeStack;
-  }; // JSONOutputArchive
-
+   
+        //! @}
+   
+      private:
+        WriteStream itsWriteStream;          //!< Rapidjson write stream
+        JSONWriter itsWriter;                //!< Rapidjson writer
+        char const * itsNextName;            //!< The next name
+        std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
+        std::stack<NodeType> itsNodeStack;
+    }; // JSONOutputArchiveImpl
+  } // namespace detail
+  using JSONOutputArchive = detail::JSONOutputArchiveImpl<rapidjson::PrettyWriter<rapidjson::GenericWriteStream>>;
+  using MinimalJSONOutputArchive = detail::JSONOutputArchiveImpl<rapidjson::Writer<rapidjson::GenericWriteStream>>;
   // ######################################################################
   //! An input archive designed to load data from JSON
   /*! This archive uses RapidJSON to read in a JSON archive.
@@ -654,6 +694,10 @@ namespace cereal
   void prologue( JSONOutputArchive &, NameValuePair<T> const & )
   { }
 
+  template <class T> inline
+  void prologue( MinimalJSONOutputArchive &, NameValuePair<T> const & )
+  { }
+  
   //! Prologue for NVPs for JSON archives
   template <class T> inline
   void prologue( JSONInputArchive &, NameValuePair<T> const & )
@@ -664,6 +708,10 @@ namespace cereal
   /*! NVPs do not start or finish nodes - they just set up the names */
   template <class T> inline
   void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
+  { }
+
+  template <class T> inline
+  void epilogue( MinimalJSONOutputArchive &, NameValuePair<T> const & )
   { }
 
   //! Epilogue for NVPs for JSON archives
@@ -682,6 +730,12 @@ namespace cereal
     ar.makeArray();
   }
 
+  template <class T> inline
+  void prologue( MinimalJSONOutputArchive & ar, SizeTag<T> const & )
+  {
+    ar.makeArray();
+  }
+
   //! Prologue for SizeTags for JSON archives
   template <class T> inline
   void prologue( JSONInputArchive &, SizeTag<T> const & )
@@ -692,6 +746,10 @@ namespace cereal
   /*! SizeTags are strictly ignored for JSON */
   template <class T> inline
   void epilogue( JSONOutputArchive &, SizeTag<T> const & )
+  { }
+
+  template <class T> inline
+  void epilogue( MinimalJSONOutputArchive &, SizeTag<T> const & )
   { }
 
   //! Epilogue for SizeTags for JSON archives
@@ -707,6 +765,14 @@ namespace cereal
       Minimal types do not start or finish nodes */
   template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_output_serialization<T, MinimalJSONOutputArchive>::value, void>::type
+  prologue( MinimalJSONOutputArchive & ar, T const & )
+  {
+    ar.startNode();
+  }
+
+  template <class T> inline
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
                           !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & )
   {
@@ -716,7 +782,8 @@ namespace cereal
   //! Prologue for all other types for JSON archives
   template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
+                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value &&
+                          !traits::has_minimal_input_serialization<T, MinimalJSONOutputArchive>::value, void>::type
   prologue( JSONInputArchive & ar, T const & )
   {
     ar.startNode();
@@ -735,10 +802,19 @@ namespace cereal
     ar.finishNode();
   }
 
+  template <class T> inline
+  typename std::enable_if<!std::is_arithmetic<T>::value &&
+                          !traits::has_minimal_output_serialization<T, MinimalJSONOutputArchive>::value, void>::type
+  epilogue( MinimalJSONOutputArchive & ar, T const & )
+  {
+    ar.finishNode();
+  }
+
   //! Epilogue for all other types other for JSON archives
   template <class T> inline
   typename std::enable_if<!std::is_arithmetic<T>::value &&
-                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value, void>::type
+                          !traits::has_minimal_input_serialization<T, JSONOutputArchive>::value &&   
+                          !traits::has_minimal_input_serialization<T, MinimalJSONOutputArchive>::value, void>::type
   epilogue( JSONInputArchive & ar, T const & )
   {
     ar.finishNode();
@@ -749,6 +825,13 @@ namespace cereal
   template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   prologue( JSONOutputArchive & ar, T const & )
+  {
+    ar.writeName();
+  }
+
+  template <class T> inline
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  prologue( MinimalJSONOutputArchive & ar, T const & )
   {
     ar.writeName();
   }
@@ -766,6 +849,11 @@ namespace cereal
   epilogue( JSONOutputArchive &, T const & )
   { }
 
+  template <class T> inline
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  epilogue( MinimalJSONOutputArchive &, T const & )
+  { }
+
   //! Epilogue for arithmetic types for JSON archives
   template <class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
@@ -780,6 +868,12 @@ namespace cereal
     ar.writeName();
   }
 
+  template<class CharT, class Traits, class Alloc> inline
+  void prologue(MinimalJSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const &)
+  {
+    ar.writeName();
+  }
+
   //! Prologue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
   void prologue(JSONInputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
@@ -789,6 +883,10 @@ namespace cereal
   //! Epilogue for strings for JSON archives
   template<class CharT, class Traits, class Alloc> inline
   void epilogue(JSONOutputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
+  { }
+
+  template<class CharT, class Traits, class Alloc> inline
+  void epilogue(MinimalJSONOutputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
   { }
 
   //! Epilogue for strings for JSON archives
@@ -809,6 +907,13 @@ namespace cereal
   }
 
   template <class T> inline
+  void save( MinimalJSONOutputArchive & ar, NameValuePair<T> const & t )
+  {
+    ar.setNextName( t.name );
+    ar( t.value );
+  }
+
+  template <class T> inline
   void load( JSONInputArchive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
@@ -819,6 +924,13 @@ namespace cereal
   template<class T> inline
   typename std::enable_if<std::is_arithmetic<T>::value, void>::type
   save(JSONOutputArchive & ar, T const & t)
+  {
+    ar.saveValue( t );
+  }
+
+  template<class T> inline
+  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+  save(MinimalJSONOutputArchive & ar, T const & t)
   {
     ar.saveValue( t );
   }
@@ -838,6 +950,12 @@ namespace cereal
     ar.saveValue( str );
   }
 
+  template<class CharT, class Traits, class Alloc> inline
+  void save(MinimalJSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  {
+    ar.saveValue( str );
+  }
+
   //! loading string from JSON
   template<class CharT, class Traits, class Alloc> inline
   void load(JSONInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
@@ -853,6 +971,12 @@ namespace cereal
     // nothing to do here, we don't explicitly save the size
   }
 
+  template <class T> inline
+  void save( MinimalJSONOutputArchive &, SizeTag<T> const & )
+  {
+    // nothing to do here, we don't explicitly save the size
+  }
+
   //! Loading SizeTags from JSON
   template <class T> inline
   void load( JSONInputArchive & ar, SizeTag<T> & st )
@@ -864,5 +988,6 @@ namespace cereal
 // register archives for polymorphic support
 CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive)
 CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::MinimalJSONOutputArchive)
 
 #endif // CEREAL_ARCHIVES_JSON_HPP_

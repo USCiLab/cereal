@@ -130,4 +130,8 @@ BOOST_AUTO_TEST_CASE( json_unordered_set )
   test_unordered_set<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_unordered_set )
+{
+  test_unordered_set<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}
 

@@ -145,3 +145,7 @@ BOOST_AUTO_TEST_CASE( json_multimap )
   test_multimap<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_multimap )
+{
+  test_multimap<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}

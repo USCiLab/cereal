@@ -123,3 +123,7 @@ BOOST_AUTO_TEST_CASE( json_stack )
   test_stack<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+BOOST_AUTO_TEST_CASE( minimal_json_stack )
+{
+  test_stack<cereal::JSONInputArchive, cereal::MinimalJSONOutputArchive>();
+}
