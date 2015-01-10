@@ -202,7 +202,7 @@ namespace cereal
         const auto nameString = itsNodes.top().getValueName();
 
         // allocate strings for all of the data in the XML object
-        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
+        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.length() + 1 );
 
         // insert into the XML
         auto node = itsXML.allocate_node( rapidxml::node_element, namePtr, nullptr, nameString.size() );
@@ -241,7 +241,7 @@ namespace cereal
         }
 
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( strValue.c_str() );
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str(), itsOS.str().length() + 1 );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
@@ -270,7 +270,7 @@ namespace cereal
         const auto nameString = util::demangledName<T>();
 
         // allocate strings for all of the data in the XML object
-        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
+        auto namePtr = itsXML.allocate_string( nameString.data(), nameString.length() + 1 );
 
         itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
       }

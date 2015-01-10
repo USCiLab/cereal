@@ -507,7 +507,7 @@ int main()
     int xxx[] = {-1, 95, 3};
     archive( xxx );
 
-    cereal::XMLOutputArchive archive2(std::cout);
+    cereal::XMLOutputArchive archive2(std::cout, cereal::XMLOutputArchive::Options(std::numeric_limits<double>::max_digits10, true, true));
     archive2( xxx );
 
     std::vector<int> yyy = {1, 2, 3};
