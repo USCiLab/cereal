@@ -1,26 +1,24 @@
 #ifndef CEREAL_MULTI_REGISTRATION_COMMON_HPP_
 #define CEREAL_MULTI_REGISTRATION_COMMON_HPP_
 
-#include "common.hpp"
+#include "../common.hpp"
 #include <memory>
 
 // Note: in this test case we ensure that multiple CEREAL_REGISTER_TYPE macro calls may exist in several cpp's for the same type.
 
 struct TestTypeBase
 {
-  virtual ~TestTypeBase() {}
+  TestTypeBase();
+  virtual ~TestTypeBase();
 };
 
 using TestTypeBasePtr = std::shared_ptr<TestTypeBase>;
 
 struct TestType: public TestTypeBase
 {
-  TestType() = default;
-
-  TestType(std::string s)
-      : str(std::move(s))
-  {
-  }
+  TestType();
+  TestType(std::string s);
+  ~TestType();
 
   std::string str;
 };

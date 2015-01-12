@@ -1,7 +1,7 @@
-#ifndef CEREAL_MULTI_REGISTRATION_2_ARCHIVE_HPP_
-#define CEREAL_MULTI_REGISTRATION_2_ARCHIVE_HPP_
+#ifndef CEREAL_MULTI_REGISTRATION_ARCHIVE_2_HPP_
+#define CEREAL_MULTI_REGISTRATION_ARCHIVE_2_HPP_
 
-#include "common.hpp"
+#include "../common.hpp"
 
 template <template <typename> class ArchiveBaseT, typename Derived>
 class TestArchiveT : public ArchiveBaseT<Derived>
@@ -51,4 +51,4 @@ CEREAL_REGISTER_ARCHIVE(TestArchive<cereal::JSONOutputArchiveT>)
 CEREAL_REGISTER_ARCHIVE(TestArchive<cereal::BinaryOutputArchiveT>)
 CEREAL_REGISTER_ARCHIVE(TestArchive<cereal::PortableBinaryOutputArchiveT>)
 
-#endif // CEREAL_MULTI_REGISTRATION_2_ARCHIVE_HPP_
+#endif // CEREAL_MULTI_REGISTRATION_ARCHIVE_2_HPP_

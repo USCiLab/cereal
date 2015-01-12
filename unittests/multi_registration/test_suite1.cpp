@@ -1,4 +1,4 @@
-#include "multi_registration-common.hpp"
+#include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
 namespace

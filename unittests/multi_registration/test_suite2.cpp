@@ -1,5 +1,5 @@
-#include "multi_registration-common.hpp"
-#include "multi_registration-2-archive.hpp"
+#include "common.hpp"
+#include "archive2.hpp"
 #include <boost/test/unit_test.hpp>
 
 namespace
