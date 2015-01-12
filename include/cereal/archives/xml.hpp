@@ -258,7 +258,7 @@ namespace cereal
         // allocate strings for all of the data in the XML object
         auto namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );
 
-        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr ) );
+        itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", namePtr, 0, nameString.size() ) );
       }
 
       //! Appends an attribute to the current top level node
