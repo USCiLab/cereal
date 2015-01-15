@@ -321,11 +321,16 @@ namespace cereal
 
   namespace detail
   {
+    //! Tag for Version, which due to its anonymous namespace, becomes a different
+    //! type in each translation unit
+    /*! This allows CEREAL_CLASS_VERSION to be safely called in a header file */
+    namespace{ struct version_binding_tag {}; }
+
     // ######################################################################
     //! Version information class
     /*! This is the base case for classes that have not been explicitly
         registered */
-    template <class T> struct Version
+    template <class T, class BindingTag = version_binding_tag> struct Version
     {
       static const std::uint32_t version = 0;
       // we don't need to explicitly register these types since they
