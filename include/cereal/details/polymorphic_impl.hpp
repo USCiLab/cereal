@@ -56,17 +56,17 @@
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
     have been included). */
-#define CEREAL_BIND_TO_ARCHIVES(T)                                              \
-    namespace cereal {                                                          \
-    namespace detail {                                                          \
-    template<>                                                                  \
-    struct init_binding<T> {                                                    \
-        static bind_to_archives<T> const & b;                                   \
-    };                                                                          \
-    bind_to_archives<T> const & init_binding<T>::b =                            \
-        ::cereal::detail::StaticObject<                                         \
-            bind_to_archives<T>                                                 \
-        >::getInstance().bind();                                                \
+#define CEREAL_BIND_TO_ARCHIVES(T)                   \
+    namespace cereal {                               \
+    namespace detail {                               \
+    template<>                                       \
+    struct init_binding<T> {                         \
+        static bind_to_archives<T> const & b;        \
+    };                                               \
+    bind_to_archives<T> const & init_binding<T>::b = \
+        ::cereal::detail::StaticObject<              \
+            bind_to_archives<T>                      \
+        >::getInstance().bind();                     \
     }} // end namespaces
 
 namespace cereal
