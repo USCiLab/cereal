@@ -43,7 +43,6 @@
 #   define CEREAL_USED
 #else // clang or gcc
 #   define CEREAL_DLL_EXPORT
-//#   define CEREAL_USED
 #   define CEREAL_USED __attribute__ ((__used__))
 #endif
 
@@ -59,7 +58,7 @@ namespace cereal
         serialization mechanisms to bind various archive types with
         different polymorphic classes */
     template <class T>
-    class StaticObject
+    class CEREAL_DLL_EXPORT StaticObject
     {
       private:
         //! Forces instantiation at pre-execution time
@@ -69,7 +68,6 @@ namespace cereal
         {
           static T t;
           instantiate(instance);
-          std::cerr << "I AM A STATIC OBJECT AT " << typeid(T).name() << " " << std::addressof(t) << std::endl;
           return t;
         }
 
