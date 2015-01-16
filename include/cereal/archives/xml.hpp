@@ -35,11 +35,13 @@
 #include <cereal/external/rapidxml/rapidxml_print.hpp>
 #include <cereal/external/base64.hpp>
 
+#include <algorithm>
 #include <sstream>
 #include <stack>
 #include <vector>
 #include <limits>
 #include <string>
+#include <cctype>
 #include <cstring>
 #include <cmath>
 
@@ -87,11 +89,12 @@ namespace cereal
       is accomplished through the cereal::SizeTag object, which will also add an attribute
       to its parent field.
       \ingroup Archives */
-  class XMLOutputArchive : public OutputArchive<XMLOutputArchive>
+  template <class Derived>
+  class XMLOutputArchiveT : public OutputArchive<Derived>
   {
     public:
       /*! @name Common Functionality
-          Common use cases for directly interacting with an XMLOutputArchive */
+          Common use cases for directly interacting with an XMLOutputArchiveT */
       //! @{
 
       //! A class containing various advanced options for the XML archive
@@ -104,7 +107,7 @@ namespace cereal
           //! Default options with no indentation
           static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
 
-          //! Specify specific options for the XMLOutputArchive
+          //! Specify specific options for the XMLOutputArchiveT
           /*! @param precision The precision used for floating point numbers
               @param indent Whether to indent each line of XML
               @param outputType Whether to output the type of each serialized object as an attribute */
@@ -116,7 +119,7 @@ namespace cereal
             itsOutputType( outputType ) { }
 
         private:
-          friend class XMLOutputArchive;
+          friend class XMLOutputArchiveT;
           int itsPrecision;
           bool itsIndent;
           bool itsOutputType;
@@ -127,12 +130,18 @@ namespace cereal
                          its output to the stream upon destruction.
           @param options The XML specific options to use.  See the Options struct
                          for the values of default parameters */
-      XMLOutputArchive( std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<XMLOutputArchive>(this),
+      XMLOutputArchiveT( Derived * derived, std::ostream & stream, Options const & options = Options::Default() ) :
+        OutputArchive<Derived>(derived),
         itsStream(stream),
         itsOutputType( options.itsOutputType ),
         itsIndent( options.itsIndent )
       {
+        static_assert(std::is_base_of<XMLOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<XMLOutputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in XMLOutputArchiveT");
+        }
+
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
         node->append_attribute( itsXML.allocate_attribute( "version", "1.0" ) );
@@ -152,7 +161,7 @@ namespace cereal
       }
 
       //! Destructor, flushes the XML
-      ~XMLOutputArchive()
+      ~XMLOutputArchiveT()
       {
         const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
         rapidxml::print( itsStream, itsXML, flags );
@@ -181,7 +190,7 @@ namespace cereal
       //! @}
       /*! @name Internal Functionality
           Functionality designed for use by those requiring control over the inner mechanisms of
-          the XMLOutputArchive */
+          the XMLOutputArchiveT */
       //! @{
 
       //! Creates a new node that is a child of the node at the top of the stack
@@ -216,6 +225,23 @@ namespace cereal
         itsNodes.top().name = name;
       }
 
+      //! Overload for strings that saves space-only strings as cdata
+      template<class CharT, class Traits, class Alloc> inline
+      void saveValue( std::basic_string<CharT, Traits, Alloc> const & value )
+      {
+        itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
+        itsOS << value << std::ends;
+
+        // allocate strings for all of the data in the XML object
+        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str() );
+        
+        // if the string consists of spaces entirely, store it in cdata.
+        auto node_type = std::find_if_not(value.begin(), value.end(), ::isspace) == value.end() ? rapidxml::node_cdata : rapidxml::node_data;
+        
+        // insert into the XML
+        itsNodes.top().node->append_node( itsXML.allocate_node( node_type, nullptr, dataPtr ) );
+      }
+
       //! Saves some data, encoded as a string, into the current top level node
       /*! The data will be be named with the most recent name if one exists,
           otherwise it will be given some default delimited value that depends upon
@@ -245,6 +271,12 @@ namespace cereal
         saveValue( static_cast<int32_t>( value ) );
       }
 
+      //! Overload for char prevents them from being serialized as characters
+      void saveValue( char const & value )
+      {
+        saveValue( static_cast<int32_t>( value ) );
+      }
+
       //! Causes the type to be appended as an attribute to the most recently made node if output type is set to true
       template <class T> inline
       void insertType()
@@ -267,6 +299,98 @@ namespace cereal
         auto namePtr =  itsXML.allocate_string( name );
         auto valuePtr = itsXML.allocate_string( value );
         itsNodes.top().node->append_attribute( itsXML.allocate_attribute( namePtr, valuePtr ) );
+      }
+
+      //! Prologue for NVPs for XML output archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void prologue( NameValuePair<T> const & )
+      { }
+
+      //! Epilogue for NVPs for XML output archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void epilogue( NameValuePair<T> const & )
+      { }
+
+      //! Prologue for SizeTags for XML output archives
+      /*! SizeTags do not start or finish nodes */
+      template <class T>
+      void prologue( SizeTag<T> const & )
+      {
+        this->appendAttribute( "size", "dynamic" );
+      }
+
+      //! Epilogue for SizeTags for XML output archives
+      /*! SizeTags do not start or finish nodes */
+      template <class T>
+      void epilogue( SizeTag<T> const & )
+      { }
+
+      //! Prologue for all other types for XML output archives, except minimal types
+      /*! Starts a new node, named either automatically or by some NVP,
+          that may be given data by the type about to be archived
+
+          Minimal types do not start or end nodes */
+      template <class T>
+      typename std::enable_if<!traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+        this->startNode();
+        this->insertType<T>();
+      }
+
+      //! Epilogue for all other types other for XML output archives, except minimal types
+      /*! Finishes the node created in the prologue
+
+          Minimal types do not start or end nodes */
+      template <class T>
+      typename std::enable_if<!traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+        this->finishNode();
+      }
+
+      //! Prologue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+      }
+
+      //! Epilogue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_output_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+      }
+
+      //! Saving NVP types to XML
+      template <class T>
+      void save_override( NameValuePair<T> const & t )
+      {
+        this->setNextName( t.name );
+        (*this)( t.value );
+      }
+
+      //! Saving SizeTags to XML
+      template <class T>
+      void save_override( SizeTag<T> const & )
+      { }
+
+      //! Saving for POD types to xml
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      save_override(T const & t)
+      {
+        this->saveValue( t );
+      }
+
+      //! saving string to xml
+      template<class CharT, class Traits, class Alloc>
+      void save_override(std::basic_string<CharT, Traits, Alloc> const & str)
+      {
+        this->saveValue( str );
       }
 
     protected:
@@ -310,21 +434,21 @@ namespace cereal
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
       bool itsIndent;                  //!< Controls whether indenting is used
-  }; // XMLOutputArchive
+  }; // XMLOutputArchiveT
 
   // ######################################################################
   //! An output archive designed to load data from XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data in the stream it is given before loading any types serialized.
 
-      Input XML should have been produced by the XMLOutputArchive.  Data can
+      Input XML should have been produced by the XMLOutputArchiveT.  Data can
       only be added to dynamically sized containers - the input archive will
       determine their size by looking at the number of child nodes.  Data that
-      did not originate from an XMLOutputArchive is not officially supported,
+      did not originate from an XMLOutputArchiveT is not officially supported,
       but may be possible to use if properly formatted.
 
       The XMLInputArchive does not require that nodes are loaded in the same
-      order they were saved by XMLOutputArchive.  Using name value pairs (NVPs),
+      order they were saved by XMLOutputArchiveT.  Using name value pairs (NVPs),
       it is possible to load in an out of order fashion or otherwise skip/select
       specific nodes to load.
 
@@ -348,11 +472,12 @@ namespace cereal
       @endcode
 
       \ingroup Archives */
-  class XMLInputArchive : public InputArchive<XMLInputArchive>
+  template <class Derived>
+  class XMLInputArchiveT : public InputArchive<Derived>
   {
     public:
       /*! @name Common Functionality
-          Common use cases for directly interacting with an XMLInputArchive */
+          Common use cases for directly interacting with an XMLInputArchiveT */
       //! @{
 
       //! Construct, reading in from the provided stream
@@ -360,14 +485,20 @@ namespace cereal
           as serialization starts
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
-      XMLInputArchive( std::istream & stream ) :
-        InputArchive<XMLInputArchive>( this ),
+      XMLInputArchiveT( Derived * derived, std::istream & stream ) :
+        InputArchive<Derived>( derived ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
+        static_assert(std::is_base_of<XMLInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<XMLInputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in XMLInputArchiveT");
+        }
+
         try
         {
           itsData.push_back('\0'); // rapidxml will do terrible things without the data being null terminated
-          itsXML.parse<rapidxml::parse_no_data_nodes | rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
+          itsXML.parse<rapidxml::parse_declaration_node>( reinterpret_cast<char *>( itsData.data() ) );
         }
         catch( rapidxml::parse_error const & )
         {
@@ -416,7 +547,7 @@ namespace cereal
       //! @}
       /*! @name Internal Functionality
           Functionality designed for use by those requiring control over the inner mechanisms of
-          the XMLInputArchive */
+          the XMLInputArchiveT */
       //! @{
 
       //! Prepares to start reading the next node
@@ -572,7 +703,14 @@ namespace cereal
       template<class CharT, class Traits, class Alloc> inline
       void loadValue( std::basic_string<CharT, Traits, Alloc> & str )
       {
-        std::basic_istringstream<CharT, Traits> is( itsNodes.top().node->value() );
+        auto node = itsNodes.top().node;
+        
+        if ( node && node->value_size() == 0 && node->first_node())
+        {
+          node = node->first_node();
+        }
+        
+        std::basic_istringstream<CharT, Traits> is( node->value() );
 
         str.assign( std::istreambuf_iterator<CharT, Traits>( is ),
                     std::istreambuf_iterator<CharT, Traits>() );
@@ -583,6 +721,90 @@ namespace cereal
       void loadSize( T & value )
       {
         value = getNumChildren( itsNodes.top().node );
+      }
+
+      //! Prologue for NVPs for XML input archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void prologue(  NameValuePair<T> const & )
+      { }
+
+      //! Epilogue for NVPs for XML input archives
+      /*! NVPs do not start or finish nodes - they just set up the names */
+      template <class T>
+      void epilogue(  NameValuePair<T> const & )
+      { }
+
+      //! Prologue for SizeTags for XML input archives
+      /*! SizeTags do not start or finish nodes */
+      template <class T>
+      void prologue(  SizeTag<T> const & )
+      { }
+
+      //! Epilogue for SizeTags for XML input archives
+      /*! SizeTags do not start or finish nodes */
+      template <class T>
+      void epilogue(  SizeTag<T> const & )
+      { }
+
+      //! Prologue for all other types for XML input archives, except minimal types
+      template <class T>
+      typename std::enable_if<!traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+        this->startNode();
+      }
+
+      //! Epilogue for all other types other for XML output archives, except minimal types
+      template <class T>
+      typename std::enable_if<!traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+        this->finishNode();
+      }
+
+      //! Prologue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      prologue( T const & )
+      {
+      }
+
+      //! Epilogue for minimal types
+      template <class T>
+      typename std::enable_if<traits::has_minimal_input_serialization<T, Derived>::value, void>::type
+      epilogue( T const & )
+      {
+      }
+
+      //! Loading NVP types from XML
+      template <class T>
+      void load_override( NameValuePair<T> & t )
+      {
+        this->setNextName( t.name );
+        (*this)( t.value );
+      }
+
+      //! Loading SizeTags from XML
+      template <class T>
+      void load_override( SizeTag<T> & st )
+      {
+        this->loadSize( st.size );
+      }
+
+      //! Loading for POD types from xml
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      load_override(T & t)
+      {
+        this->loadValue( t );
+      }
+
+      //! loading string from xml
+      template<class CharT, class Traits, class Alloc>
+      void load_override(std::basic_string<CharT, Traits, Alloc> & str)
+      {
+        this->loadValue( str );
       }
 
     protected:
@@ -609,7 +831,7 @@ namespace cereal
         NodeInfo( rapidxml::xml_node<> * n = nullptr ) :
           node( n ),
           child( n->first_node() ),
-          size( XMLInputArchive::getNumChildren( n ) ),
+          size( XMLInputArchiveT::getNumChildren( n ) ),
           name( nullptr )
         { }
 
@@ -631,7 +853,7 @@ namespace cereal
         {
           if( searchName )
           {
-            size_t new_size = XMLInputArchive::getNumChildren( node );
+            size_t new_size = XMLInputArchiveT::getNumChildren( node );
             const size_t name_size = rapidxml::internal::measure( searchName );
 
             for( auto new_child = node->first_node(); new_child != nullptr; new_child = new_child->next_sibling() )
@@ -664,163 +886,8 @@ namespace cereal
       std::stack<NodeInfo> itsNodes;   //!< A stack of nodes read from the document
   };
 
-  // ######################################################################
-  // XMLArchive prologue and epilogue functions
-  // ######################################################################
-
-  // ######################################################################
-  //! Prologue for NVPs for XML output archives
-  /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void prologue( XMLOutputArchive &, NameValuePair<T> const & )
-  { }
-
-  //! Prologue for NVPs for XML input archives
-  template <class T> inline
-  void prologue( XMLInputArchive &, NameValuePair<T> const & )
-  { }
-
-  // ######################################################################
-  //! Epilogue for NVPs for XML output archives
-  /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void epilogue( XMLOutputArchive &, NameValuePair<T> const & )
-  { }
-
-  //! Epilogue for NVPs for XML input archives
-  template <class T> inline
-  void epilogue( XMLInputArchive &, NameValuePair<T> const & )
-  { }
-
-  // ######################################################################
-  //! Prologue for SizeTags for XML output archives
-  /*! SizeTags do not start or finish nodes */
-  template <class T> inline
-  void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
-  {
-    ar.appendAttribute( "size", "dynamic" );
-  }
-
-  template <class T> inline
-  void prologue( XMLInputArchive &, SizeTag<T> const & )
-  { }
-
-  //! Epilogue for SizeTags for XML output archives
-  /*! SizeTags do not start or finish nodes */
-  template <class T> inline
-  void epilogue( XMLOutputArchive &, SizeTag<T> const & )
-  { }
-
-  template <class T> inline
-  void epilogue( XMLInputArchive &, SizeTag<T> const & )
-  { }
-
-  // ######################################################################
-  //! Prologue for all other types for XML output archives (except minimal types)
-  /*! Starts a new node, named either automatically or by some NVP,
-      that may be given data by the type about to be archived
-
-      Minimal types do not start or end nodes */
-  template <class T> inline
-  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
-  prologue( XMLOutputArchive & ar, T const & )
-  {
-    ar.startNode();
-    ar.insertType<T>();
-  }
-
-  //! Prologue for all other types for XML input archives (except minimal types)
-  template <class T> inline
-  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
-  prologue( XMLInputArchive & ar, T const & )
-  {
-    ar.startNode();
-  }
-
-  // ######################################################################
-  //! Epilogue for all other types other for XML output archives (except minimal types)
-  /*! Finishes the node created in the prologue
-
-      Minimal types do not start or end nodes */
-  template <class T> inline
-  typename std::enable_if<!traits::has_minimal_output_serialization<T, XMLOutputArchive>::value, void>::type
-  epilogue( XMLOutputArchive & ar, T const & )
-  {
-    ar.finishNode();
-  }
-
-  //! Epilogue for all other types other for XML output archives (except minimal types)
-  template <class T> inline
-  typename std::enable_if<!traits::has_minimal_input_serialization<T, XMLInputArchive>::value, void>::type
-  epilogue( XMLInputArchive & ar, T const & )
-  {
-    ar.finishNode();
-  }
-
-  // ######################################################################
-  // Common XMLArchive serialization functions
-  // ######################################################################
-
-  //! Saving NVP types to XML
-  template <class T> inline
-  void save( XMLOutputArchive & ar, NameValuePair<T> const & t )
-  {
-    ar.setNextName( t.name );
-    ar( t.value );
-  }
-
-  //! Loading NVP types from XML
-  template <class T> inline
-  void load( XMLInputArchive & ar, NameValuePair<T> & t )
-  {
-    ar.setNextName( t.name );
-    ar( t.value );
-  }
-
-  // ######################################################################
-  //! Saving SizeTags to XML
-  template <class T> inline
-  void save( XMLOutputArchive &, SizeTag<T> const & )
-  { }
-
-  //! Loading SizeTags from XML
-  template <class T> inline
-  void load( XMLInputArchive & ar, SizeTag<T> & st )
-  {
-    ar.loadSize( st.size );
-  }
-
-  // ######################################################################
-  //! Saving for POD types to xml
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(XMLOutputArchive & ar, T const & t)
-  {
-    ar.saveValue( t );
-  }
-
-  //! Loading for POD types from xml
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(XMLInputArchive & ar, T & t)
-  {
-    ar.loadValue( t );
-  }
-
-  // ######################################################################
-  //! saving string to xml
-  template<class CharT, class Traits, class Alloc> inline
-  void save(XMLOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
-  {
-    ar.saveValue( str );
-  }
-
-  //! loading string from xml
-  template<class CharT, class Traits, class Alloc> inline
-  void load(XMLInputArchive & ar, std::basic_string<CharT, Traits, Alloc> & str)
-  {
-    ar.loadValue( str );
-  }
+  using XMLOutputArchive = ConcreteArchive<XMLOutputArchiveT>;
+  using XMLInputArchive = ConcreteArchive<XMLInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support

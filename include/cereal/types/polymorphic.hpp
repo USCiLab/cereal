@@ -85,6 +85,27 @@
   } } /* end namespaces */                                   \
   CEREAL_BIND_TO_ARCHIVES(T)
 
+/*! In C++ dynamic initialization of non-local variables of a translation unit may be deferred until "the first odr-use
+    of any function or variable defined in the same translation unit as the variable to be initialized". Since polymorphic
+    types support in cereal relies on the fact that dynamic initialization of certain global objects happens before
+    the serialization is performed, it's important to make sure that something from files that call CEREAL_REGISTER_TYPE
+    macro is odr-used before serialization starts, otherwise the serialization will fail.
+    The _DYNAMIC_INIT_ENFORCER macros may be used to do this as follows:
+    1) Put CEREAL_DEFINE_DYNAMIC_INIT_ENFORCER(SomeName) into a source file that contains calls to CEREAL_REGISTER_TYPE;
+    2) Put CEREAL_DECLARE_DYNAMIC_INIT_ENFORCER(SomeName) to its associated header file.
+    Inclusion of the header file will now force the dynamic initialization of global stuff in the corresponding source file. */
+#define CEREAL_DECLARE_DYNAMIC_INIT_ENFORCER(Name)           \
+    struct CEREAL_PP_CAT(Name, DynamicInitEnforcer)          \
+    {                                                        \
+        CEREAL_PP_CAT(Name, DynamicInitEnforcer)();          \
+    };                                                       \
+    const CEREAL_PP_CAT(Name, DynamicInitEnforcer) CEREAL_PP_CAT(Name, DynamicInitEnforcerInstance);
+
+#define CEREAL_DEFINE_DYNAMIC_INIT_ENFORCER(Name)                                         \
+    CEREAL_PP_CAT(Name, DynamicInitEnforcer)::CEREAL_PP_CAT(Name, DynamicInitEnforcer)()  \
+    {                                                                                     \
+    }
+
 #ifdef _MSC_VER
 #undef CONSTEXPR
 #endif

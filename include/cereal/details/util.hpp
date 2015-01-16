@@ -33,6 +33,9 @@
 #include <typeinfo>
 #include <string>
 
+#define _CEREAL_PP_CAT(a, b) a ## b
+#define CEREAL_PP_CAT(a, b) _CEREAL_PP_CAT(a, b)
+
 #ifdef _MSC_VER
 namespace cereal
 {
@@ -85,7 +88,5 @@ namespace cereal
   }
 } // namespace cereal
 #endif
-
-
 
 #endif // CEREAL_DETAILS_UTIL_HPP_

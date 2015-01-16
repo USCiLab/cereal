@@ -63,21 +63,21 @@ namespace cereal
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive. */
     #ifdef CEREAL_OLDER_GCC
-    #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
+    #define CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(name, accessor)                                                              \
     template <class T, class A, class SFINAE = void>                                                                               \
     struct has_member_##name : no {};                                                                                              \
     template <class T, class A>                                                                                                    \
     struct has_member_##name<T, A,                                                                                                 \
-      typename detail::Void< decltype( cereal::access::member_##name( std::declval<A&>(), std::declval<T&>() ) ) >::type> : yes {}
+      typename detail::Void< decltype( accessor( std::declval<A&>(), std::declval<T&>() ) ) >::type> : yes {}
     #else // NOT CEREAL_OLDER_GCC
-    #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
+    #define CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(name, accessor)                                                              \
     namespace detail                                                                                                               \
     {                                                                                                                              \
       template <class T, class A>                                                                                                  \
       struct has_member_##name##_impl                                                                                              \
       {                                                                                                                            \
         template <class TT, class AA>                                                                                              \
-        static auto test(int) -> decltype( cereal::access::member_##name( std::declval<AA&>(), std::declval<TT&>() ), yes());      \
+        static auto test(int) -> decltype( accessor( std::declval<AA&>(), std::declval<TT&>() ), yes());                           \
         template <class, class>                                                                                                    \
         static no test(...);                                                                                                       \
         static const bool value = std::is_same<decltype(test<T, A>(0)), yes>::value;                                               \
@@ -86,6 +86,9 @@ namespace cereal
     template <class T, class A>                                                                                                    \
     struct has_member_##name : std::integral_constant<bool, detail::has_member_##name##_impl<T, A>::value> {}
     #endif // NOT CEREAL_OLDER_GCC
+
+    #define CEREAL_MAKE_HAS_MEMBER_TEST(name)                                                                                      \
+      CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(name, cereal::access::member_##name)
 
     //! Creates a test for whether a non const non-member function exists
     /*! This creates a class derived from std::integral_constant that will be true if
@@ -895,7 +898,7 @@ namespace cereal
 
     // ######################################################################
     template <class T, class OutputArchive>
-    struct is_output_serializable : std::integral_constant<bool,
+    struct output_serialization_impl_count : std::integral_constant<int,
       has_member_save<T, OutputArchive>::value +
       has_non_member_save<T, OutputArchive>::value +
       has_member_serialize<T, OutputArchive>::value +
@@ -908,11 +911,15 @@ namespace cereal
       has_member_versioned_serialize<T, OutputArchive>::value +
       has_non_member_versioned_serialize<T, OutputArchive>::value +
       has_member_versioned_save_minimal<T, OutputArchive>::value +
-      has_non_member_versioned_save_minimal<T, OutputArchive>::value == 1> {};
+      has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
+
+      template <class T, class OutputArchive>
+      struct is_output_serializable : std::integral_constant<bool,
+        output_serialization_impl_count<T, OutputArchive>::value == 1> {};
 
     // ######################################################################
     template <class T, class InputArchive>
-    struct is_input_serializable : std::integral_constant<bool,
+    struct input_serialization_impl_count : std::integral_constant<int,
       has_member_load<T, InputArchive>::value +
       has_non_member_load<T, InputArchive>::value +
       has_member_serialize<T, InputArchive>::value +
@@ -925,7 +932,11 @@ namespace cereal
       has_member_versioned_serialize<T, InputArchive>::value +
       has_non_member_versioned_serialize<T, InputArchive>::value +
       has_member_versioned_load_minimal<T, InputArchive>::value +
-      has_non_member_versioned_load_minimal<T, InputArchive>::value == 1> {};
+      has_non_member_versioned_load_minimal<T, InputArchive>::value> {};
+    
+    template <class T, class InputArchive>
+    struct is_input_serializable : std::integral_constant<bool,
+      input_serialization_impl_count<T, InputArchive>::value == 1> {};
 
     // ######################################################################
     template <class T, class OutputArchive>

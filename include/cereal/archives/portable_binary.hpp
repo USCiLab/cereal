@@ -75,16 +75,23 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  class PortableBinaryOutputArchive : public OutputArchive<PortableBinaryOutputArchive, AllowEmptyClassElision>
+  template <class Derived>
+  class PortableBinaryOutputArchiveT : public OutputArchive<Derived, AllowEmptyClassElision>
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
         even cout! */
-      PortableBinaryOutputArchive(std::ostream & stream) :
-        OutputArchive<PortableBinaryOutputArchive, AllowEmptyClassElision>(this),
+      PortableBinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
+        OutputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
       {
+        static_assert(std::is_base_of<PortableBinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<PortableBinaryOutputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in PortableBinaryOutputArchiveT");
+        }
+
         this->operator()( portable_binary_detail::is_little_endian() );
       }
 
@@ -95,6 +102,43 @@ namespace cereal
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
+      }
+
+      //! Saving for POD types to portable binary
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      save_override(T const & t)
+      {
+        static_assert( !std::is_floating_point<T>::value ||
+                       (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
+                       "Portable binary only supports IEEE 754 standardized floating point" );
+        this->saveBinary(std::addressof(t), sizeof(t));
+      }
+
+      //! Saving for NVP types to portable binary
+      template <class T>
+      void save_override(NameValuePair<T> const & t )
+      {
+        (*this)( t.value );
+      }
+
+      //! Saving for SizeTags to portable binary
+      template <class T>
+      void save_override( SizeTag<T> const & t )
+      {
+        (*this)( t.size );
+      }
+
+      //! Saving binary data to portable binary
+      template <class T>
+      void save_override(BinaryData<T> const & bd)
+      {
+        typedef typename std::remove_pointer<T>::type TT;
+        static_assert( !std::is_floating_point<TT>::value ||
+                       (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
+                       "Portable binary only supports IEEE 754 standardized floating point" );
+
+        this->saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
       }
 
     private:
@@ -127,16 +171,23 @@ namespace cereal
                <a href="www.github.com/USCiLab/cereal">the project github</a>.
 
     \ingroup Archives */
-  class PortableBinaryInputArchive : public InputArchive<PortableBinaryInputArchive, AllowEmptyClassElision>
+  template <class Derived>
+  class PortableBinaryInputArchiveT : public InputArchive<Derived, AllowEmptyClassElision>
   {
     public:
       //! Construct, loading from the provided stream
       /*! @param stream The stream to read from. */
-      PortableBinaryInputArchive(std::istream & stream) :
-        InputArchive<PortableBinaryInputArchive, AllowEmptyClassElision>(this),
+      PortableBinaryInputArchiveT(Derived * derived, std::istream & stream) :
+        InputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream),
         itsConvertEndianness( false )
       {
+        static_assert(std::is_base_of<PortableBinaryInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<PortableBinaryInputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in PortableBinaryInputArchiveT");
+        }
+
         bool streamLittleEndian;
         this->operator()( streamLittleEndian );
         itsConvertEndianness = portable_binary_detail::is_little_endian() ^ streamLittleEndian;
@@ -164,75 +215,50 @@ namespace cereal
         }
       }
 
+      //! Loading for POD types from portable binary
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      load_override(T & t)
+      {
+        static_assert( !std::is_floating_point<T>::value ||
+                       (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
+                       "Portable binary only supports IEEE 754 standardized floating point" );
+        this->loadBinary<sizeof(T)>(std::addressof(t), sizeof(t));
+      }
+
+      //! Loading for NVP types from portable binary
+      template <class T>
+      void load_override( NameValuePair<T> & t )
+      {
+        (*this)( t.value );
+      }
+
+      //! Loading for SizeTags from portable binary
+      template <class T>
+      void load_override( SizeTag<T> & t )
+      {
+        (*this)( t.size );
+      }
+
+      //! Loading binary data from portable binary
+      template <class T>
+      void load_override(BinaryData<T> & bd)
+      {
+        typedef typename std::remove_pointer<T>::type TT;
+        static_assert( !std::is_floating_point<TT>::value ||
+                       (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
+                       "Portable binary only supports IEEE 754 standardized floating point" );
+
+        this->loadBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
+      }
+
     private:
       std::istream & itsStream;
       bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
   };
 
-  // ######################################################################
-  // Common BinaryArchive serialization functions
-
-  //! Saving for POD types to portable binary
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(PortableBinaryOutputArchive & ar, T const & t)
-  {
-    static_assert( !std::is_floating_point<T>::value ||
-                   (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
-                   "Portable binary only supports IEEE 754 standardized floating point" );
-    ar.saveBinary(std::addressof(t), sizeof(t));
-  }
-
-  //! Loading for POD types from portable binary
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(PortableBinaryInputArchive & ar, T & t)
-  {
-    static_assert( !std::is_floating_point<T>::value ||
-                   (std::is_floating_point<T>::value && std::numeric_limits<T>::is_iec559),
-                   "Portable binary only supports IEEE 754 standardized floating point" );
-    ar.template loadBinary<sizeof(T)>(std::addressof(t), sizeof(t));
-  }
-
-  //! Serializing NVP types to portable binary
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
-  serialize( Archive & ar, NameValuePair<T> & t )
-  {
-    ar( t.value );
-  }
-
-  //! Serializing SizeTags to portable binary
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
-  serialize( Archive & ar, SizeTag<T> & t )
-  {
-    ar( t.size );
-  }
-
-  //! Saving binary data to portable binary
-  template <class T> inline
-  void save(PortableBinaryOutputArchive & ar, BinaryData<T> const & bd)
-  {
-    typedef typename std::remove_pointer<T>::type TT;
-    static_assert( !std::is_floating_point<TT>::value ||
-                   (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
-                   "Portable binary only supports IEEE 754 standardized floating point" );
-
-    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
-  }
-
-  //! Loading binary data from portable binary
-  template <class T> inline
-  void load(PortableBinaryInputArchive & ar, BinaryData<T> & bd)
-  {
-    typedef typename std::remove_pointer<T>::type TT;
-    static_assert( !std::is_floating_point<TT>::value ||
-                   (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
-                   "Portable binary only supports IEEE 754 standardized floating point" );
-
-    ar.template loadBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
-  }
+  using PortableBinaryOutputArchive = ConcreteArchive<PortableBinaryOutputArchiveT>;
+  using PortableBinaryInputArchive = ConcreteArchive<PortableBinaryInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support

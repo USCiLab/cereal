@@ -121,7 +121,7 @@ namespace cereal
         a serialization function.  Classes with no data members are considered to be
         empty.  Be warned that if this is enabled and you attempt to serialize an
         empty class with improperly formed serialize or load/save functions, no
-        static error will occur - the error will propogate silently and your
+        static error will occur - the error will propagate silently and your
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
         by using the traits is_output_serializable and is_input_serializable
@@ -316,14 +316,33 @@ namespace cereal
           return id->second;
       }
 
-    private:
+    protected:
+
+      // TODO: rename processImpl, since now it's accessible from descendant classes.
+
+      //! Default prologue implementation
+      template <class T> inline
+      void prologue( T const & t )
+      {
+        using cereal::prologue;
+        prologue( *self, t );
+      }
+
+      //! Default epilogue implementation
+      template <class T> inline
+      void epilogue( T const & t )
+      {
+        using cereal::epilogue;
+        epilogue( *self, t );
+      }
+
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
-        prologue( *self, head );
+        self->prologue( head );
         self->processImpl( head );
-        epilogue( *self, head );
+        self->epilogue( head );
       }
 
       //! Unwinds to process all data
@@ -441,17 +460,26 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
-            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
-            "Serialize functions generally have the following signature: \n\n "
-            "template<class Archive> \n "
-            "  void serialize(Archive & ar) \n "
-            "  { \n "
-            "    ar( member1, member2, member3 ); \n "
-            "  } \n\n " );
+        #define _CEREAL_STATIC_ASSERT_MESSAGE \
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n " \
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n " \
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n " \
+            "Serialize functions generally have the following signature: \n\n " \
+            "template<class Archive> \n " \
+            "  void serialize(Archive & ar) \n " \
+            "  { \n " \
+            "    ar( member1, member2, member3 ); \n " \
+            "  } \n\n "
+        
+        static_assert(traits::output_serialization_impl_count<T, ArchiveType>::value == 0,
+            "Multiple serialization routines were detected for this type/archive combination. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
+        static_assert(traits::output_serialization_impl_count<T, ArchiveType>::value != 0,
+            "Trying to serialize an unserializable type with an output archive. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
         return *self;
+        
+        #undef _CEREAL_STATIC_ASSERT_MESSAGE
       }
 
       //! Registers a class version with the archive and serializes it if necessary
@@ -466,7 +494,7 @@ namespace cereal
         static const auto hash = std::type_index(typeid(T)).hash_code();
         const auto insertResult = itsVersionedTypes.insert( hash );
         if( insertResult.second ) // insertion took place, serialize the version number
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          self->process( make_nvp<ArchiveType>("cereal_class_version", version) );
       }
 
       //! Member serialization
@@ -605,7 +633,7 @@ namespace cereal
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
-        process( std::forward<Types>( args )... );
+        self->process( std::forward<Types>( args )... );
         return *self;
       }
 
@@ -696,22 +724,41 @@ namespace cereal
         itsPolymorphicTypeMap.insert( {stripped_id, name} );
       }
 
-    private:
+    protected:
+
+      // TODO: rename processImpl, since now it's accessible from descendant classes.
+
+      //! Default prologue implementation
+      template <class T> inline
+      void prologue( T const & t )
+      {
+        using cereal::prologue;
+        prologue( *self, t );
+      }
+
+      //! Default epilogue implementation
+      template <class T> inline
+      void epilogue( T const & t )
+      {
+        using cereal::epilogue;
+        epilogue( *self, t );
+      }
+
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
       void process( T && head )
       {
-        prologue( *self, head );
+        self->prologue( head );
         self->processImpl( head );
-        epilogue( *self, head );
+        self->epilogue( head );
       }
 
       //! Unwinds to process all data
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
-        process( std::forward<T>( head ) );
-        process( std::forward<Other>( tail )... );
+        self->process( std::forward<T>( head ) );
+        self->process( std::forward<Other>( tail )... );
       }
 
       //! Serialization of a virtual_base_class wrapper
@@ -824,17 +871,26 @@ namespace cereal
         ArchiveType &>::type
       processImpl(T const &)
       {
-        static_assert(traits::is_output_serializable<T, ArchiveType>::value, "Trying to serialize an unserializable type with an output archive. \n\n "
-            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n "
-            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n "
-            "In addition, you may not mix versioned with non-versioned serialization functions. \n "
-            "Serialize functions generally have the following signature: \n\n "
-            "template<class Archive> \n "
-            "  void serialize(Archive & ar) \n "
-            "  { \n "
-            "    ar( member1, member2, member3 ); \n "
-            "  } \n\n " );
+        #define _CEREAL_STATIC_ASSERT_MESSAGE \
+            "Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n " \
+            "Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n " \
+            "In addition, you may not mix versioned with non-versioned serialization functions. \n " \
+            "Serialize functions generally have the following signature: \n\n " \
+            "template<class Archive> \n " \
+            "  void serialize(Archive & ar) \n " \
+            "  { \n " \
+            "    ar( member1, member2, member3 ); \n " \
+            "  } \n\n "
+        
+        static_assert(traits::input_serialization_impl_count<T, ArchiveType>::value == 0,
+            "Multiple serialization routines were detected for this type/archive combination. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
+        static_assert(traits::input_serialization_impl_count<T, ArchiveType>::value != 0,
+            "Trying to serialize an unserializable type with an input archive. \n\n "
+            _CEREAL_STATIC_ASSERT_MESSAGE);
         return *self;
+        
+        #undef _CEREAL_STATIC_ASSERT_MESSAGE
       }
 
       //! Registers a class version with the archive and serializes it if necessary
@@ -855,7 +911,7 @@ namespace cereal
         {
           std::uint32_t version;
 
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          self->process( make_nvp<ArchiveType>("cereal_class_version", version) );
           itsVersionedTypes.emplace_hint( lookupResult, hash, version );
 
           return version;
@@ -959,6 +1015,113 @@ namespace cereal
       //! Maps from type hash codes to version numbers
       std::unordered_map<std::size_t, std::uint32_t> itsVersionedTypes;
   }; // class InputArchive
+
+  namespace traits
+  {
+    namespace concrete_archive_specific
+    {
+      template<class Param, class Obj> inline
+      auto member_save_override(Param const & p, Obj & o) -> decltype(o.save_override(p))
+      {
+        o.save_override(p);
+      }
+
+      template<class Param, class Obj> inline
+      auto member_load_override(Param & p, Obj & o) -> decltype(o.load_override(p))
+      {
+        o.load_override(p);
+      }
+
+      CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(save_override, member_save_override);
+      CEREAL_MAKE_HAS_MEMBER_TEST_WITH_ACCESSOR(load_override, member_load_override);
+    } // namespace concrete_archive_specific
+  } // namespace traits
+
+  /*! ConcreteArchive allows the creation of a concrete archive for a templated implementation by providing 'save'/'load'
+      free functions that delegate to save_override/load_override members of Derived.
+
+      @tparam ArchiveT The templated implementation of an archive, that accepts a derived class as the first template
+                       parameter flags as the second.
+      @ingroup Archives */
+  template <template <class D> class ArchiveT>
+  class ConcreteArchive: public ArchiveT<ConcreteArchive<ArchiveT>>
+  {
+    public:
+
+      using Self = ConcreteArchive<ArchiveT>;
+
+      template <class... Params>
+      ConcreteArchive(Params && ... params):
+          ArchiveT<Self>(this, std::forward<Params>(params)...)
+      {
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Self, T>::value, int>::type = 0>
+      friend void save(Self& s, const T& t)
+      {
+        s.save_override(t);
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Self, T>::value, int>::type = 0>
+      friend void load(Self& s, T& t)
+      {
+        s.load_override(t);
+      }
+  };
+
+  /*! A templated wrapper for existing archive template will normally look like the following:
+        template <template <class> class ArchiveBaseT, class Derived>
+        class MyArchiveWrapperT: public ArchiveBaseT<Derived> { ... };
+      It's impossible to pass MyArchiveWrapperT to ConcreteArchive directly, since the latter's template template parameter
+      ArchiveT can take only one template parameter - Derived. ApplyArchiveWrapper solves this problem by partially applying
+      MyArchiveWrapperT to an ArchiveBaseT parameter and producing template with one "class Derived" parameter.
+      Example: ConcreteArchive<ApplyArchiveWrapper<MyArchiveWrapperT, SomeBaseArchiveT>::Type> */
+  template
+  <
+    template <template <class> class WrappedArchiveT, class Derived, class... MoreParams> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT,
+    class... MoreParams
+  >
+  struct ApplyArchiveWrapper
+  {
+    template <class Derived>
+    using Type = ArchiveWrapperT<WrappedArchiveT, Derived, MoreParams...>;
+  };
+
+  /*! ConcreteArchiveWrapper<WrapperT, WrappedT, ...> is effectively a shortcut for ConcreteArchive<ApplyArchiveWrapper<WrapperT, WrappedT, ...>::Type>.
+      However, inheritance is used instead of mere templated typedef in order for the template parameters to be deducible.
+      Note: the friend 'save'/'load' functions below duplicate the ones in ConcreteArchive.
+   */
+  template
+  <
+    template <template <class> class WrappedArchiveT, class Derived, class... MoreParams> class ArchiveWrapperT,
+    template <class> class WrappedArchiveT,
+    class... MoreParams
+  >
+  class ConcreteArchiveWrapper: public ArchiveWrapperT<WrappedArchiveT, ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT, MoreParams...>, MoreParams...>
+  {
+    public:
+
+      using Self = ConcreteArchiveWrapper<ArchiveWrapperT, WrappedArchiveT, MoreParams...>;
+
+      template <class... Params>
+      ConcreteArchiveWrapper(Params && ... params):
+          ArchiveWrapperT<WrappedArchiveT, Self, MoreParams...>(this, std::forward<Params>(params)...)
+      {
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_save_override<Self, T>::value, int>::type = 0>
+      friend void save(Self& s, const T& t)
+      {
+        s.save_override(t);
+      }
+
+      template <class T, typename std::enable_if<traits::concrete_archive_specific::has_member_load_override<Self, T>::value, int>::type = 0>
+      friend void load(Self& s, T& t)
+      {
+        s.load_override(t);
+      }
+  };
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc

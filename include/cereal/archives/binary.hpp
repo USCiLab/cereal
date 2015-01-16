@@ -48,16 +48,23 @@ namespace cereal
       inadvertently.
 
       \ingroup Archives */
-  class BinaryOutputArchive : public OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>
+  template <class Derived>
+  class BinaryOutputArchiveT : public OutputArchive<Derived, AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
-      BinaryOutputArchive(std::ostream & stream) :
-        OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
+      BinaryOutputArchiveT(Derived * derived, std::ostream & stream) :
+        OutputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
-      { }
+      {
+        static_assert(std::is_base_of<BinaryOutputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<BinaryOutputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in BinaryOutputArchiveT");
+        }
+      }
 
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, std::size_t size )
@@ -66,6 +73,35 @@ namespace cereal
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
+      }
+
+      //! Saving for POD types to binary
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      save_override(T const & t)
+      {
+        this->saveBinary(std::addressof(t), sizeof(t));
+      }
+
+      //! Saving NVP types to binary
+      template <class T>
+      void save_override( NameValuePair<T> const & t )
+      {
+        (*this)( t.value );
+      }
+
+      //! Saving SizeTags to binary
+      template <class T>
+      void save_override( SizeTag<T> const & t )
+      {
+        (*this)( t.size );
+      }
+
+      //! Saving binary data
+      template <class T>
+      void save_override(BinaryData<T> const & bd)
+      {
+        this->saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
       }
 
     private:
@@ -83,14 +119,22 @@ namespace cereal
       inadvertently.
 
       \ingroup Archives */
-  class BinaryInputArchive : public InputArchive<BinaryInputArchive, AllowEmptyClassElision>
+
+  template <class Derived>
+  class BinaryInputArchiveT : public InputArchive<Derived, AllowEmptyClassElision>, public detail::BinaryArchiveBase
   {
     public:
       //! Construct, loading from the provided stream
-      BinaryInputArchive(std::istream & stream) :
-        InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
+      BinaryInputArchiveT(Derived * derived, std::istream & stream) :
+        InputArchive<Derived, AllowEmptyClassElision>(derived),
         itsStream(stream)
-    { }
+      {
+        static_assert(std::is_base_of<BinaryInputArchiveT, Derived>::value, "The passed class must derive from this one");
+        if (static_cast<BinaryInputArchiveT *>(derived) != this)
+        {
+          throw Exception("Wrong derived pointer in BinaryInputArchiveT");
+        }
+      }
 
       //! Reads size bytes of data from the input stream
       void loadBinary( void * const data, std::size_t size )
@@ -101,58 +145,41 @@ namespace cereal
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
       }
 
+      //! Loading for POD types from binary
+      template<class T>
+      typename std::enable_if<std::is_arithmetic<T>::value, void>::type
+      load_override(T & t)
+      {
+        this->loadBinary(std::addressof(t), sizeof(t));
+      }
+
+      //! Loading for NVP types from binary
+      template <class T>
+      void load_override( NameValuePair<T> & t )
+      {
+        (*this)( t.value );
+      }
+
+      //! Loading for SizeTags from binary
+      template <class T>
+      void load_override( SizeTag<T> & t )
+      {
+        (*this)( t.size );
+      }
+
+      //! Loading binary data
+      template <class T>
+      void load_override(BinaryData<T> & bd)
+      {
+        this->loadBinary(bd.data, static_cast<std::size_t>(bd.size));
+      }
+
     private:
       std::istream & itsStream;
   };
 
-  // ######################################################################
-  // Common BinaryArchive serialization functions
-
-  //! Saving for POD types to binary
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  save(BinaryOutputArchive & ar, T const & t)
-  {
-    ar.saveBinary(std::addressof(t), sizeof(t));
-  }
-
-  //! Loading for POD types from binary
-  template<class T> inline
-  typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-  load(BinaryInputArchive & ar, T & t)
-  {
-    ar.loadBinary(std::addressof(t), sizeof(t));
-  }
-
-  //! Serializing NVP types to binary
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, NameValuePair<T> & t )
-  {
-    ar( t.value );
-  }
-
-  //! Serializing SizeTags to binary
-  template <class Archive, class T> inline
-  CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-  serialize( Archive & ar, SizeTag<T> & t )
-  {
-    ar( t.size );
-  }
-
-  //! Saving binary data
-  template <class T> inline
-  void save(BinaryOutputArchive & ar, BinaryData<T> const & bd)
-  {
-    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
-  }
-
-  //! Loading binary data
-  template <class T> inline
-  void load(BinaryInputArchive & ar, BinaryData<T> & bd)
-  {
-    ar.loadBinary(bd.data, static_cast<std::size_t>(bd.size));
-  }
+  using BinaryOutputArchive = ConcreteArchive<BinaryOutputArchiveT>;
+  using BinaryInputArchive = ConcreteArchive<BinaryInputArchiveT>;
 } // namespace cereal
 
 // register archives for polymorphic support
