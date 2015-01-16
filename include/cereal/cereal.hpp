@@ -494,7 +494,7 @@ namespace cereal
         static const auto hash = std::type_index(typeid(T)).hash_code();
         const auto insertResult = itsVersionedTypes.insert( hash );
         if( insertResult.second ) // insertion took place, serialize the version number
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          self->process( make_nvp<ArchiveType>("cereal_class_version", version) );
       }
 
       //! Member serialization
@@ -633,7 +633,7 @@ namespace cereal
       template <class ... Types> inline
       ArchiveType & operator()( Types && ... args )
       {
-        process( std::forward<Types>( args )... );
+        self->process( std::forward<Types>( args )... );
         return *self;
       }
 
@@ -757,8 +757,8 @@ namespace cereal
       template <class T, class ... Other> inline
       void process( T && head, Other && ... tail )
       {
-        process( std::forward<T>( head ) );
-        process( std::forward<Other>( tail )... );
+        self->process( std::forward<T>( head ) );
+        self->process( std::forward<Other>( tail )... );
       }
 
       //! Serialization of a virtual_base_class wrapper
@@ -911,7 +911,7 @@ namespace cereal
         {
           std::uint32_t version;
 
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          self->process( make_nvp<ArchiveType>("cereal_class_version", version) );
           itsVersionedTypes.emplace_hint( lookupResult, hash, version );
 
           return version;
