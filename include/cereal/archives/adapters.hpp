@@ -35,6 +35,8 @@
 
 namespace cereal
 {
+  #ifdef CEREAL_FUTURE_EXPERIMENTAL
+
   // Forward declaration for friend access
   template <class U, class A> U & get_user_data( A & );
 
@@ -50,6 +52,8 @@ namespace cereal
       In this situation this adapter would likely be used
       with the construct class to allow for non-default
       constructors.
+
+      @note This feature is experimental and may be altered or removed in a future release. See issue #46.
 
       @code{.cpp}
       struct MyUserData
@@ -130,6 +134,8 @@ namespace cereal
       some archive wrapped by UserDataAdapter.  If this is used on
       an archive that is not wrapped, a run-time exception will occur.
 
+      @note This feature is experimental and may be altered or removed in a future release. See issue #46.
+
       @note The correct use of this function cannot be enforced at compile
             time.
 
@@ -151,6 +157,7 @@ namespace cereal
       throw ::cereal::Exception("Attempting to get user data from archive not wrapped in UserDataAdapter");
     }
   }
+  #endif // CEREAL_FUTURE_EXPERIMENTAL
 } // namespace cereal
 
 #endif // CEREAL_ARCHIVES_ADAPTERS_HPP_
