@@ -762,7 +762,7 @@ namespace cereal
       that may be given data by the type about to be archived
 
       Minimal types do not start or end nodes */
-  template <class T, traits::DisableIf<traits::is_elided_minimal<T>::value ||
+  template <class T, traits::DisableIf<traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, XMLOutputArchive>::value ||
                                        traits::has_minimal_output_serialization<T, XMLOutputArchive>::value> = traits::sfinae> inline
   void prologue( XMLOutputArchive & ar, T const & )
   {
@@ -771,7 +771,7 @@ namespace cereal
   }
 
   //! Prologue for all other types for XML input archives (except minimal types)
-  template <class T, traits::DisableIf<traits::is_elided_minimal<T>::value ||
+  template <class T, traits::DisableIf<traits::has_minimal_base_class_serialization<T, traits::has_minimal_input_serialization, XMLInputArchive>::value ||
                                        traits::has_minimal_input_serialization<T, XMLInputArchive>::value> = traits::sfinae> inline
   void prologue( XMLInputArchive & ar, T const & )
   {
@@ -783,7 +783,7 @@ namespace cereal
   /*! Finishes the node created in the prologue
 
       Minimal types do not start or end nodes */
-  template <class T, traits::DisableIf<traits::is_elided_minimal<T>::value ||
+  template <class T, traits::DisableIf<traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, XMLOutputArchive>::value ||
                                        traits::has_minimal_output_serialization<T, XMLOutputArchive>::value> = traits::sfinae> inline
   void epilogue( XMLOutputArchive & ar, T const & )
   {
@@ -791,7 +791,7 @@ namespace cereal
   }
 
   //! Epilogue for all other types other for XML output archives (except minimal types)
-  template <class T, traits::DisableIf<traits::is_elided_minimal<T>::value ||
+  template <class T, traits::DisableIf<traits::has_minimal_base_class_serialization<T, traits::has_minimal_input_serialization, XMLInputArchive>::value ||
                                        traits::has_minimal_input_serialization<T, XMLInputArchive>::value> = traits::sfinae> inline
   void epilogue( XMLInputArchive & ar, T const & )
   {

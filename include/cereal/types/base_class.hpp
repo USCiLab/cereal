@@ -69,12 +69,12 @@ namespace cereal
       };
       @endcode */
   template<class Base>
-    struct base_class : private traits::ElideMinimal
+    struct base_class : private traits::detail::BaseCastBase
     {
       template<class Derived>
         base_class(Derived const * derived) :
           base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
-      { }
+      { static_assert( std::is_base_of<Base, Derived>::value, "Can only use base_class on a valid base class" ); }
 
         Base * base_ptr;
     };
@@ -149,12 +149,12 @@ namespace cereal
      }
      @endcode */
   template<class Base>
-    struct virtual_base_class : private traits::ElideMinimal
+    struct virtual_base_class : private traits::detail::BaseCastBase
     {
       template<class Derived>
         virtual_base_class(Derived const * derived) :
           base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
-      { }
+      { static_assert( std::is_base_of<Base, Derived>::value, "Can only use base_class on a valid base class" ); }
 
         Base * base_ptr;
     };

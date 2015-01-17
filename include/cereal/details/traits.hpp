@@ -1057,6 +1057,7 @@ namespace cereal
          is_specialized_member_load<T, InputArchive>::value))> {};
 
     // ######################################################################
+    // Base Class Support
     namespace detail
     {
       struct base_class_id
@@ -1077,6 +1078,41 @@ namespace cereal
       };
       struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
     } // namespace detail
+
+    namespace detail
+    {
+      //! Common base type for base class casting
+      struct BaseCastBase {};
+
+      template <class>
+      struct get_base_class;
+
+      template <template<typename> class Cast, class Base>
+      struct get_base_class<Cast<Base>>
+      {
+        using type = Base;
+      };
+
+      //! Base class cast, behave as the test
+      template <class Cast, template<class, class> class Test, class Archive,
+                bool IsBaseCast = std::is_base_of<BaseCastBase, Cast>::value>
+      struct has_minimal_base_class_serialization_impl : Test<typename get_base_class<Cast>::type, Archive>
+      { };
+
+      //! Not a base class cast
+      template <class Cast, template<class, class> class Test, class Archive>
+      struct has_minimal_base_class_serialization_impl<Cast,Test, Archive, false> : std::false_type
+      { };
+    }
+
+    //! Checks to see if the base class used in a cast has a minimal serialization
+    /*! @tparam Cast Either base_class or virtual_base_class wrapped type
+        @tparam Test A has_minimal test (for either input or output)
+        @tparam Archive The archive to use with the test */
+    template <class Cast, template<class, class> class Test, class Archive>
+    struct has_minimal_base_class_serialization : detail::has_minimal_base_class_serialization_impl<Cast, Test, Archive>
+    { };
+
 
     // ######################################################################
     namespace detail
@@ -1129,17 +1165,6 @@ namespace cereal
     {
       using type = typename T::type;
     };
-
-    // ######################################################################
-    //! Signifiy that deriving class is a wrapper that should not affect in/output for minimal serialization
-    struct ElideMinimal{};
-
-    //! Check if the type should be elided during minimal serialization
-    /*! This allows us to bypass creating nodes for certain wrappers during minimal
-        serialization in text archives.  The motivating example for this are the
-        base_class and virtual_base_class structs, which wrap pointers to a base class. */
-    template <class T>
-    struct is_elided_minimal : std::is_base_of<traits::ElideMinimal, T> {};
 
     // ######################################################################
     //! Member load and construct check
