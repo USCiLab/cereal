@@ -62,12 +62,13 @@
     template<>                                       \
     struct init_binding<T> {                         \
         static bind_to_archives<T> const & b;        \
+        static void unused() { (void)b; }            \
     };                                               \
     bind_to_archives<T> const & init_binding<T>::b = \
         ::cereal::detail::StaticObject<              \
             bind_to_archives<T>                      \
         >::getInstance().bind();                     \
-    }} // end namespaces
+    }} /* end namespaces */
 
 namespace cereal
 {

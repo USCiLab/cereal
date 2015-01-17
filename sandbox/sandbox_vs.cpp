@@ -144,7 +144,7 @@ struct C
   char a;
 };
 
-CEREAL_REGISTER_TYPE(B);
+CEREAL_REGISTER_TYPE(B)
 
 class MemberMinimal
 {

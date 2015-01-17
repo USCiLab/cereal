@@ -204,6 +204,7 @@ namespace cereal
              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
         return VERSION_NUMBER;                                                   \
       }                                                                          \
+      static void unused() { (void)version; }                                    \
     }; /* end Version */                                                         \
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \

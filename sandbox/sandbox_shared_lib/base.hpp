@@ -1,15 +1,17 @@
-#pragma once 
+#pragma once
 
-#include <memory> 
-#include <cereal/cereal.hpp> 
-#include <cereal/archives/xml.hpp> 
-#include <cereal/types/polymorphic.hpp> 
+#include <memory>
+#include <cereal/cereal.hpp>
+#include <cereal/archives/xml.hpp>
+#include <cereal/types/polymorphic.hpp>
 
-#if defined (_WINDLL) 
-#define DECLSPECIFIER __declspec(dllexport) 
-#else 
-#define DECLSPECIFIER __declspec(dllimport) 
-#endif 
+#if defined (_WINDLL)
+#define DECLSPECIFIER __declspec(dllexport)
+#elif defined(MSC_VER)
+#define DECLSPECIFIER __declspec(dllimport)
+#else
+#define DECLSPECIFIER
+#endif
 
 int doit();
 
@@ -28,7 +30,7 @@ class Base
     friend class cereal::access;
 
     template < class Archive >
-    void serialize(Archive & ar, std::uint32_t const version) {}
+    void serialize(Archive &, std::uint32_t const) {}
     virtual ~Base() {}
 };
 
