@@ -1,3 +1,6 @@
+#include <base.hpp>
+#include <derived.hpp>
+
 #include <cereal/access.hpp>
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
@@ -39,6 +42,8 @@
 #include <iostream>
 #include <type_traits>
 #include <functional>
+
+//CEREAL_FORCE_LINK_SHARED_LIBRARY(Sandbox)
 
 struct Archive {};
 CEREAL_SETUP_ARCHIVE_TRAITS(Archive, Archive)
@@ -139,7 +144,7 @@ struct C
   char a;
 };
 
-//CEREAL_REGISTER_TYPE(B);
+CEREAL_REGISTER_TYPE(B)
 
 class MemberMinimal
 {
@@ -232,10 +237,42 @@ int main()
   std::cout << cereal::traits::has_member_save_minimal<MemberMinimal, Archive>::value << std::endl;
   std::cout << cereal::traits::has_member_load_minimal<MemberMinimal, Archive>::value << std::endl;
 
+  // DLL testing
+  std::cout << "------DLL TESTING------" << std::endl;
+  std::stringstream dllSS1;
+  std::stringstream dllSS2;
+  {
+    cereal::XMLOutputArchive out(dllSS1);
+    VersionTest x{1};
+    std::shared_ptr<Base> p = std::make_shared<Derived>();
+    out(x);
+    out( p );
 
-  cereal::JSONInputArchive bla(std::cin);
-  long l;
-  bla.loadValue(l);
+    std::shared_ptr<A> ay = std::make_shared<B>();
+    out(ay);
+  }
+
+  std::cout << dllSS1.str() << std::endl;
+
+  {
+    VersionTest x;
+    std::shared_ptr<Base> p;
+    std::shared_ptr<A> ay;
+    {
+      cereal::XMLInputArchive in(dllSS1);
+      in(x);
+      in( p );
+      in( ay );
+    }
+    {
+      cereal::XMLOutputArchive out(dllSS2);
+      out( x );
+      out( p );
+      out( ay );
+    }
+  }
+
+  std::cout << dllSS2.str() << std::endl;
 
   return 0;
 }

@@ -138,12 +138,12 @@ namespace cereal
       support pointers to polymorphic data types.  All archives that
       come with cereal are already registered.
       @ingroup Internal */
-  #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
-  namespace cereal { namespace detail {                               \
-  template <class T>                                                  \
-  typename polymorphic_serialization_support<Archive, T>::type        \
-  instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \
-  } } // end namespaces
+  #define CEREAL_REGISTER_ARCHIVE(Archive)                              \
+  namespace cereal { namespace detail {                                 \
+  template <class T, class BindingTag>                                  \
+  typename polymorphic_serialization_support<Archive, T>::type          \
+  instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag ); \
+  } } /* end namespaces */
 
   //! Defines a class version for some type
   /*! Versioning information is optional and adds some small amount of
@@ -204,6 +204,7 @@ namespace cereal
              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
         return VERSION_NUMBER;                                                   \
       }                                                                          \
+      static void unused() { (void)version; }                                    \
     }; /* end Version */                                                         \
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
@@ -460,12 +461,17 @@ namespace cereal
           @tparam T The type of the class being serialized
           @param version The version number associated with it */
       template <class T> inline
-      void registerClassVersion( const std::uint32_t version )
+      std::uint32_t registerClassVersion()
       {
         static const auto hash = std::type_index(typeid(T)).hash_code();
         const auto insertResult = itsVersionedTypes.insert( hash );
+        const auto version =
+          detail::StaticObject<detail::Versions>::getInstance().find( hash, detail::Version<T>::version );
+
         if( insertResult.second ) // insertion took place, serialize the version number
           process( make_nvp<ArchiveType>("cereal_class_version", version) );
+
+        return version;
       }
 
       //! Member serialization
@@ -473,8 +479,7 @@ namespace cereal
       template <class T, PROCESS_IF(member_versioned_serialize)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        access::member_serialize(*self, const_cast<T &>(t), detail::Version<T>::version);
+        access::member_serialize(*self, const_cast<T &>(t), registerClassVersion<T>());
         return *self;
       }
 
@@ -483,8 +488,7 @@ namespace cereal
       template <class T, PROCESS_IF(non_member_versioned_serialize)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast<T &>(t), detail::Version<T>::version);
+        CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast<T &>(t), registerClassVersion<T>());
         return *self;
       }
 
@@ -493,8 +497,7 @@ namespace cereal
       template <class T, PROCESS_IF(member_versioned_save)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        access::member_save(*self, t, detail::Version<T>::version);
+        access::member_save(*self, t, registerClassVersion<T>());
         return *self;
       }
 
@@ -503,8 +506,7 @@ namespace cereal
       template <class T, PROCESS_IF(non_member_versioned_save)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        CEREAL_SAVE_FUNCTION_NAME(*self, t, detail::Version<T>::version);
+        CEREAL_SAVE_FUNCTION_NAME(*self, t, registerClassVersion<T>());
         return *self;
       }
 
@@ -513,8 +515,7 @@ namespace cereal
       template <class T, PROCESS_IF(member_versioned_save_minimal)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        self->process( access::member_save_minimal(*self, t, detail::Version<T>::version) );
+        self->process( access::member_save_minimal(*self, t, registerClassVersion<T>()) );
         return *self;
       }
 
@@ -523,8 +524,7 @@ namespace cereal
       template <class T, PROCESS_IF(non_member_versioned_save_minimal)> inline
       ArchiveType & processImpl(T const & t)
       {
-        registerClassVersion<T>( detail::Version<T>::version );
-        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t, detail::Version<T>::version) );
+        self->process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t, registerClassVersion<T>()) );
         return *self;
       }
 

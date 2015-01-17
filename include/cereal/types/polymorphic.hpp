@@ -103,7 +103,7 @@
 #define CEREAL_REGISTER_SHARED_LIBRARY(LibName) \
   namespace cereal {                            \
   namespace detail {                            \
-    void load_library_dummy_##LibName() {}      \
+    void CEREAL_DLL_EXPORT load_library_dummy_##LibName() {}      \
   } } /* end namespaces */
 
 //! Forces the linker to link a previously registered
