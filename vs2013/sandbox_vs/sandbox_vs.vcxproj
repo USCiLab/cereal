@@ -66,19 +66,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(SolutionDir)\..\sandbox\sandbox_shared_lib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Debug;E:\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(SolutionDir)\..\sandbox\sandbox_shared_lib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(SolutionDir)\..\sandbox\sandbox_shared_lib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Release;E:\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\sandbox_vs_dll;$(SolutionDir)\..\include;E:\Boost\include\boost-1_55;$(SolutionDir)\..\sandbox\sandbox_shared_lib;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

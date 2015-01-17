@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="base.cpp">
+    <ClCompile Include="..\..\sandbox\sandbox_shared_lib\base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="derived.cpp">
+    <ClCompile Include="..\..\sandbox\sandbox_shared_lib\derived.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base.hpp">
+    <ClInclude Include="..\..\sandbox\sandbox_shared_lib\base.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="derived.hpp">
+    <ClInclude Include="..\..\sandbox\sandbox_shared_lib\derived.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\sandbox\sandbox_shared_lib\base.cpp" />
+    <ClCompile Include="..\..\sandbox\sandbox_shared_lib\derived.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\sandbox\sandbox_shared_lib\base.hpp" />
+    <ClInclude Include="..\..\sandbox\sandbox_shared_lib\derived.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{95D6662F-4166-40D2-87D7-CABFB60C199A}</ProjectGuid>
     <RootNamespace>sandbox_vs_dll</RootNamespace>
@@ -129,14 +137,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="base.hpp" />
-    <ClInclude Include="derived.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="base.cpp" />
-    <ClCompile Include="derived.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
