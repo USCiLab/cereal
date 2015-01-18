@@ -149,7 +149,7 @@
   namespace detail {                                    \
     void dynamic_init_dummy_##LibName();                \
   } /* end detail */                                    \
-  namespace dynamic_dummy {                             \
+  namespace {                                           \
     void dynamic_init_##LibName()                       \
     {                                                   \
       ::cereal::detail::dynamic_init_dummy_##LibName(); \
@@ -164,6 +164,14 @@ namespace cereal
 {
   namespace polymorphic_detail
   {
+    //! Error message used for unregistered polymorphic types
+    /*! @internal */
+    #define UNREGISTERED_POLYMORPHIC_EXCEPTION(LoadSave, Name)                                                                                      \
+      throw cereal::Exception("Trying to " #LoadSave " an unregistered polymorphic type (" + Name + ").\n"                                          \
+                              "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "                                   \
+                              "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"   \
+                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.");
+
     //! Get an input binding from the given archive by deserializing the type meta data
     /*! @internal */
     template<class Archive> inline
@@ -191,7 +199,7 @@ namespace cereal
 
       auto binding = bindingMap.find(name);
       if(binding == bindingMap.end())
-        throw cereal::Exception("Trying to load an unregistered polymorphic type (" + name + ")");
+        UNREGISTERED_POLYMORPHIC_EXCEPTION(load, name)
       return binding->second;
     }
 
@@ -293,10 +301,7 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
-                              "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
-                              "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
-                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.");
+      UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
@@ -331,10 +336,7 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
-                              "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
-                              "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
-                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.");
+      UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
@@ -397,7 +399,7 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+      UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
     binding->second.unique_ptr(&ar, ptr.get());
   }
@@ -432,7 +434,7 @@ namespace cereal
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
-      throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ")");
+      UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
     binding->second.unique_ptr(&ar, ptr.get());
   }
@@ -454,5 +456,7 @@ namespace cereal
     binding.unique_ptr(&ar, result);
     ptr.reset(static_cast<T*>(result.release()));
   }
+
+  #undef UNREGISTERED_POLYMORPHIC_EXCEPTION
 } // namespace cereal
 #endif // CEREAL_TYPES_POLYMORPHIC_HPP_
