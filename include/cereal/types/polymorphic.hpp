@@ -47,7 +47,7 @@
 //! Registers a polymorphic type with cereal
 /*! Polymorphic types must be registered before pointers
     to them can be serialized.  This also assumes that
-    all relevent archives have also previously been
+    all relevant archives have also previously been
     registered.  Registration for archives is usually done
     in the header file in which they are defined.  This means
     that type registration needs to happen after specific
@@ -56,6 +56,9 @@
     Registering a type lets cereal know how to properly
     serialize it when a pointer to a base object is
     used in conjunction with a derived class.
+
+    Type registration should be done in the header file
+    in which the type is declared.
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
@@ -84,6 +87,28 @@
   { STATIC_CONSTEXPR char const * name() { return Name; } }; \
   } } /* end namespaces */                                   \
   CEREAL_BIND_TO_ARCHIVES(T)
+
+/*! In C++ dynamic initialization of non-local variables of a translation unit may be deferred until "the first odr-use
+    of any function or variable defined in the same translation unit as the variable to be initialized". Since polymorphic
+    types support in cereal relies on the fact that dynamic initialization of certain global objects happens before
+    the serialization is performed, it's important to make sure that something from files that call CEREAL_REGISTER_TYPE
+    macro is odr-used before serialization starts, otherwise the serialization will fail.
+    The _DYNAMIC_INIT_ENFORCER macros may be used to do this as follows:
+    1) Put CEREAL_DEFINE_DYNAMIC_INIT_ENFORCER(SomeName) into a source file that contains calls to CEREAL_REGISTER_TYPE;
+    2) Put CEREAL_DECLARE_DYNAMIC_INIT_ENFORCER(SomeName) to its associated header file.
+    Inclusion of the header file will now force the dynamic initialization of global stuff in the corresponding source file. */
+
+/*! In C++, dynamic initialization of non-local variables of a translation
+    unit may be deferred until "the first odr-use of any function or variable
+    defined in the same translation unit as the variable to be initialized."
+
+    Since polymorphic type support in cereal relies on the dynamic
+    initialization of certain global objects happens before
+    serialization is performed, it is important to ensure that something
+    from files that call CEREAL_REGI */
+
+#define CEREAL_REGISTER_DYNAMIC_INIT(Name)
+#define CEREAL_FORCE_DYNAMIC_INIT(Name)
 
 //! Adds a way to force loading of a shared library containing
 //! only calls to CEREAL_REGISTER_TYPE
@@ -261,7 +286,8 @@ namespace cereal
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
       throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
-                              "Make sure your type is registered with CEREAL_REGISTER_TYPE.\n"
+                              "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
+                              "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
                               "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
 
     binding->second.shared_ptr(&ar, ptr.get());
@@ -298,7 +324,8 @@ namespace cereal
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
       throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
-                              "Make sure your type is registered with CEREAL_REGISTER_TYPE.\n"
+                              "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
+                              "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
                               "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
 
     binding->second.shared_ptr(&ar, ptr.get());

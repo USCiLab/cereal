@@ -374,9 +374,13 @@ namespace cereal
     template <class Archive, class T>
     CEREAL_DLL_EXPORT void polymorphic_serialization_support<Archive,T>::instantiate()
     {
-      create_bindings<Archive,T>::save( std::is_base_of<detail::OutputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::save( std::integral_constant<bool,
+                                          std::is_base_of<detail::OutputArchiveBase, Archive>::value &&
+                                          traits::is_output_serializable<T, Archive>::value>{} );
 
-      create_bindings<Archive,T>::load( std::is_base_of<detail::InputArchiveBase, Archive>() );
+      create_bindings<Archive,T>::load( std::integral_constant<bool,
+                                          std::is_base_of<detail::InputArchiveBase, Archive>::value &&
+                                          traits::is_input_serializable<T, Archive>::value>{} );
     }
 
     //! Begins the binding process of a type to all registered archives
