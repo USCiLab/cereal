@@ -145,6 +145,7 @@ namespace cereal
   instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag ); \
   } } /* end namespaces */
 
+  // ######################################################################
   //! Defines a class version for some type
   /*! Versioning information is optional and adds some small amount of
       overhead to serialization.  This overhead will occur both in terms of
@@ -168,7 +169,9 @@ namespace cereal
       automatically.
 
       Versioning cannot be mixed with non-versioned serialization functions.
-      Having both types will result result in a compile time error.
+      Having both types will result result in a compile time error.  Data
+      serialized without versioning cannot be loaded by a serialization
+      function with added versioning support.
 
       Example interface for versioning on a non-member serialize function:
 
@@ -210,6 +213,7 @@ namespace cereal
       Version<TYPE>::registerVersion();                                          \
   } } // end namespaces
 
+  // ######################################################################
   //! The base output archive class
   /*! This is the base output archive for all output archives.  If you create
       a custom archive class, it should derive from this, passing itself as

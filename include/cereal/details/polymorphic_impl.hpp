@@ -52,7 +52,7 @@
 #include <map>
 
 //! Binds a polymorhic type to all registered archives
-/*! This binds a polymorphic type to all registered archives that
+/*! This binds a polymorphic type to all compatible registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
     have been included). */

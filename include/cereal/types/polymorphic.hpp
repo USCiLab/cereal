@@ -44,21 +44,38 @@
 #define STATIC_CONSTEXPR static constexpr
 #endif
 
-//! Registers a polymorphic type with cereal
-/*! Polymorphic types must be registered before pointers
-    to them can be serialized.  This also assumes that
-    all relevant archives have also previously been
-    registered.  Registration for archives is usually done
-    in the header file in which they are defined.  This means
-    that type registration needs to happen after specific
-    archives to be used are included.
+//! Registers a derived polymorphic type with cereal
+/*! Polymorphic types must be registered before smart
+    pointers to them can be serialized.  Note that base
+    classes do not need to be registered.
 
     Registering a type lets cereal know how to properly
-    serialize it when a pointer to a base object is
+    serialize it when a smart pointer to a base object is
     used in conjunction with a derived class.
 
-    Type registration should be done in the header file
-    in which the type is declared.
+    This assumes that all relevant archives have also
+    previously been registered.  Registration for archives
+    is usually done in the header file in which they are
+    defined.  This means that type registration needs to
+    happen after specific archives to be used are included.
+
+    It is recommended that type registration be done in
+    the header file in which the type is declared.
+
+    Registration can also be placed in a source file,
+    but this may require the use of the
+    CEREAL_REGISTER_DYNAMIC_INIT macro (see below).
+
+    Registration may be called repeatedly for the same
+    type in different translation units to add support
+    for additional archives if they are not initially
+    available (included and registered).
+
+    When building serialization support as a DLL on
+    Windows, registration must happen in the header file.
+    On Linux and Mac things should still work properly
+    if placed in a source file, but see the above comments
+    on registering in source files.
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
@@ -88,63 +105,54 @@
   } } /* end namespaces */                                   \
   CEREAL_BIND_TO_ARCHIVES(T)
 
-/*! In C++ dynamic initialization of non-local variables of a translation unit may be deferred until "the first odr-use
-    of any function or variable defined in the same translation unit as the variable to be initialized". Since polymorphic
-    types support in cereal relies on the fact that dynamic initialization of certain global objects happens before
-    the serialization is performed, it's important to make sure that something from files that call CEREAL_REGISTER_TYPE
-    macro is odr-used before serialization starts, otherwise the serialization will fail.
-    The _DYNAMIC_INIT_ENFORCER macros may be used to do this as follows:
-    1) Put CEREAL_DEFINE_DYNAMIC_INIT_ENFORCER(SomeName) into a source file that contains calls to CEREAL_REGISTER_TYPE;
-    2) Put CEREAL_DECLARE_DYNAMIC_INIT_ENFORCER(SomeName) to its associated header file.
-    Inclusion of the header file will now force the dynamic initialization of global stuff in the corresponding source file. */
-
+//! Adds a way to force initialization of a translation unit containing
+//! calls to CEREAL_REGISTER_TYPE
 /*! In C++, dynamic initialization of non-local variables of a translation
     unit may be deferred until "the first odr-use of any function or variable
     defined in the same translation unit as the variable to be initialized."
 
+    Informally, odr-use means that your program takes the address of or binds
+    a reference directly to an object, which must have a definition.
+
     Since polymorphic type support in cereal relies on the dynamic
-    initialization of certain global objects happens before
+    initialization of certain global objects happening before
     serialization is performed, it is important to ensure that something
-    from files that call CEREAL_REGI */
+    from files that call CEREAL_REGISTER_TYPE is odr-used before serialization
+    occurs, otherwise the registration will never take place.  This may often
+    be the case when serialization is built as a shared library external from
+    your main program.
 
-#define CEREAL_REGISTER_DYNAMIC_INIT(Name)
-#define CEREAL_FORCE_DYNAMIC_INIT(Name)
+    This macro, with any name of your choosing, should be placed into the
+    source file that contains calls to CEREAL_REGISTER_TYPE.
 
-//! Adds a way to force loading of a shared library containing
-//! only calls to CEREAL_REGISTER_TYPE
-/*! Since CEREAL_REGISTER_TYPE must be in a source file,
-    it is possible for the linker to never load a shared
-    library containing only these registrations as they are
-    never explicitly referenced.  This macro, in combination with
-    CEREAL_FORCE_LINK_SHARED_LIBRARY, prevents this link
-    from being optimized away.  This is only necessary if
-    you never explicitly reference any code implemented in your
-    shared library (header files do not count).
+    Its counterpart, CEREAL_FORCE_DYNAMIC_INIT, should be placed in its
+    associated header file such that it is included in the translation units
+    (source files) in which you want the registration to appear.
 
-    This must be placed in a single source file of your shared
-    library.
-
-    LibName can be any unique name of your choosing. */
-#define CEREAL_REGISTER_SHARED_LIBRARY(LibName) \
-  namespace cereal {                            \
-  namespace detail {                            \
-    void CEREAL_DLL_EXPORT load_library_dummy_##LibName() {}      \
+    @relates CEREAL_FORCE_DYNAMIC_INIT
+    */
+#define CEREAL_REGISTER_DYNAMIC_INIT(Name)                   \
+  namespace cereal {                                         \
+  namespace detail {                                         \
+    void CEREAL_DLL_EXPORT dynamic_init_dummy_##LibName() {} \
   } } /* end namespaces */
 
-//! Forces the linker to link a previously registered
-//! (with cereal) shared library
-/*! @sa CEREAL_REGISTER_SHARED_LIBRARY
+//! Forces dynamic initialization of polymorphic support in a
+//! previously registered source file
+/*! @sa CEREAL_REGISTER_DYNAMIC_INIT
 
-    This should be placed in your executable source. */
-#define CEREAL_FORCE_LINK_SHARED_LIBRARY(LibName)       \
+    See CEREAL_REGISTER_DYNAMIC_INIT for detailed explanation
+    of how this macro should be used.  The name used should
+    match that for CEREAL_REGISTER_DYNAMIC_INIT. */
+#define CEREAL_FORCE_DYNAMIC_INIT(Name)                 \
   namespace cereal {                                    \
   namespace detail {                                    \
-    void load_library_dummy_##LibName();                \
+    void dynamic_init_dummy_##LibName();                \
   } /* end detail */                                    \
-  namespace load_dummy {                                \
-    void load_library_##LibName()                       \
+  namespace dynamic_dummy {                             \
+    void dynamic_init_##LibName()                       \
     {                                                   \
-      ::cereal::detail::load_library_dummy_##LibName(); \
+      ::cereal::detail::dynamic_init_dummy_##LibName(); \
     }                                                   \
   } } /* end namespaces */
 
