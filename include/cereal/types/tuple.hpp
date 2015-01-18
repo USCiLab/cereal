@@ -76,7 +76,7 @@ namespace cereal
 
     //! Generates a c string for a given index of a tuple
     /*! Example use:
-        @begincode
+        @code{cpp}
         tuple_element_name<3>::c_str();// returns "tuple_element3"
         @endcode
         @internal */
