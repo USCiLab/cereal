@@ -296,7 +296,7 @@ namespace cereal
       throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
                               "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
                               "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
-                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
+                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
@@ -334,7 +334,7 @@ namespace cereal
       throw cereal::Exception("Trying to save an unregistered polymorphic type (" + cereal::util::demangle(ptrinfo.name()) + ").\n"
                               "Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive "
                               "you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n"
-                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_SHARED_LIBRARY.");
+                              "If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.");
 
     binding->second.shared_ptr(&ar, ptr.get());
   }
