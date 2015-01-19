@@ -426,3 +426,9 @@ More information can be found by reading the doxygen documentation for `<cereal/
 cereal requires access to a default constructor for types it serializes.  If you don't want to provide a default
 constructor but do want to serialize smart pointers to it, you can get around this restriction using a special overload,
 detailed in the [pointers](pointers) section of the documentation.
+
+### Renaming serialization functions
+
+If your coding conventions conflict with the expected names for cereal serialization functions or if they conflict for
+any other reason, you can use the macros in `<cereal/macros.hpp>` to change these names.  See the [doxygen
+documentation]({{ site.baseurl }}/assets/doxygen/macros_8hpp.html) for more information.
