@@ -83,11 +83,11 @@ class MemoryCycleLoadAndConstruct
     template <class Archive>
     static void load_and_construct( Archive & ar, cereal::construct<MemoryCycleLoadAndConstruct> & construct )
     {
-      int value;
-      std::weak_ptr<MemoryCycleLoadAndConstruct> ptr;
+      int val;
+      std::weak_ptr<MemoryCycleLoadAndConstruct> p;
 
-      ar( value, ptr );
-      construct( value, ptr );
+      ar( val, p );
+      construct( val, p );
     }
 
     int value;

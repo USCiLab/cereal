@@ -266,9 +266,9 @@ public:
   template <class Archive>
   static void load_and_construct( Archive & ar, cereal::construct<NoDefaultCtor> & construct )
   {
-    int y;
-    ar( y );
-    construct( y, true );
+    int yy;
+    ar( yy );
+    construct( yy, true );
     construct->z = 33;
     construct.ptr()->z = 33;
   }
@@ -507,7 +507,7 @@ int main()
     int xxx[] = {-1, 95, 3};
     archive( xxx );
 
-    cereal::XMLOutputArchive archive2(std::cout);
+    cereal::XMLOutputArchive archive2(std::cout, cereal::XMLOutputArchive::Options(std::numeric_limits<double>::max_digits10, true, true));
     archive2( xxx );
 
     std::vector<int> yyy = {1, 2, 3};

@@ -35,17 +35,19 @@ void test_pod()
 
   for(size_t i=0; i<100; ++i)
   {
-    bool     const o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
-    uint8_t  const o_uint8  = random_value<uint8_t>(gen);
-    int8_t   const o_int8   = random_value<int8_t>(gen);
-    uint16_t const o_uint16 = random_value<uint16_t>(gen);
-    int16_t  const o_int16  = random_value<int16_t>(gen);
-    uint32_t const o_uint32 = random_value<uint32_t>(gen);
-    int32_t  const o_int32  = random_value<int32_t>(gen);
-    uint64_t const o_uint64 = random_value<uint64_t>(gen);
-    int64_t  const o_int64  = random_value<int64_t>(gen);
-    float    const o_float  = random_value<float>(gen);
-    double   const o_double = random_value<double>(gen);
+    bool          const o_bool   = random_value<uint8_t>(gen) % 2 ? true : false;
+    char          const o_char   = random_value<char>(gen);
+    unsigned char const o_uchar  = random_value<unsigned char>(gen);
+    uint8_t       const o_uint8  = random_value<uint8_t>(gen);
+    int8_t        const o_int8   = random_value<int8_t>(gen);
+    uint16_t      const o_uint16 = random_value<uint16_t>(gen);
+    int16_t       const o_int16  = random_value<int16_t>(gen);
+    uint32_t      const o_uint32 = random_value<uint32_t>(gen);
+    int32_t       const o_int32  = random_value<int32_t>(gen);
+    uint64_t      const o_uint64 = random_value<uint64_t>(gen);
+    int64_t       const o_int64  = random_value<int64_t>(gen);
+    float         const o_float  = random_value<float>(gen);
+    double        const o_double = random_value<double>(gen);
 
     long double const o_long_double = random_value<long double>(gen);
     long const o_long = random_value<long>(gen);
@@ -57,6 +59,8 @@ void test_pod()
     {
       OArchive oar(os);
       oar(o_bool);
+      oar(o_char);
+      oar(o_uchar);
       oar(o_uint8);
       oar(o_int8);
       oar(o_uint16);
@@ -74,17 +78,19 @@ void test_pod()
       oar(o_ulong_long);
     }
 
-    bool     i_bool                       = false;
-    uint8_t  i_uint8                      = 0;
-    int8_t   i_int8                       = 0;
-    uint16_t i_uint16                     = 0;
-    int16_t  i_int16                      = 0;
-    uint32_t i_uint32                     = 0;
-    int32_t  i_int32                      = 0;
-    uint64_t i_uint64                     = 0;
-    int64_t  i_int64                      = 0;
-    float    i_float                      = 0;
-    double   i_double                     = 0;
+    bool          i_bool                       = false;
+    char          i_char                       = 0;
+    unsigned char i_uchar                      = 0;
+    uint8_t       i_uint8                      = 0;
+    int8_t        i_int8                       = 0;
+    uint16_t      i_uint16                     = 0;
+    int16_t       i_int16                      = 0;
+    uint32_t      i_uint32                     = 0;
+    int32_t       i_int32                      = 0;
+    uint64_t      i_uint64                     = 0;
+    int64_t       i_int64                      = 0;
+    float         i_float                      = 0;
+    double        i_double                     = 0;
 
     long double i_long_double       = 0;
     long i_long                     = 0;
@@ -96,6 +102,8 @@ void test_pod()
     {
       IArchive iar(is);
       iar(i_bool);
+      iar(i_char);
+      iar(i_uchar);
       iar(i_uint8);
       iar(i_int8);
       iar(i_uint16);
@@ -114,6 +122,8 @@ void test_pod()
     }
 
     BOOST_CHECK_EQUAL(i_bool   , o_bool);
+    BOOST_CHECK_EQUAL(i_char   , o_char);
+    BOOST_CHECK_EQUAL(i_uchar  , o_uchar);
     BOOST_CHECK_EQUAL(i_uint8  , o_uint8);
     BOOST_CHECK_EQUAL(i_int8   , o_int8);
     BOOST_CHECK_EQUAL(i_uint16 , o_uint16);
