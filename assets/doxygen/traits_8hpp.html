@@ -90,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">traits.hpp File Reference<div class="ingroups"><a class="el" href="group__Internal.html">Internal Functionality</a></div></div>  </div>
@@ -100,6 +101,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;type_traits&gt;</code><br/>
 <code>#include &lt;typeindex&gt;</code><br/>
+<code>#include &lt;<a class="el" href="macros_8hpp_source.html">cereal/macros.hpp</a>&gt;</code><br/>
 <code>#include &lt;<a class="el" href="access_8hpp_source.html">cereal/access.hpp</a>&gt;</code><br/>
 </div>
 <p><a href="traits_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -109,65 +111,31 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1delay__static__assert.html">cereal::traits::detail::delay_static_assert&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to delay a static_assert until template instantiation.  <a href="structcereal_1_1traits_1_1detail_1_1delay__static__assert.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__load__and__construct.html">cereal::traits::has_member_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1meta__bool__and.html">cereal::traits::detail::meta_bool_and&lt; H, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__load__and__construct.html">cereal::traits::has_non_member_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1meta__bool__and_3_01B_01_4.html">cereal::traits::detail::meta_bool_and&lt; B &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__load__and__construct.html">cereal::traits::has_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1meta__bool__or.html">cereal::traits::detail::meta_bool_or&lt; H, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__save__impl.html">cereal::traits::detail::has_member_save_impl&lt; T, A &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1meta__bool__or_3_01B_01_4.html">cereal::traits::detail::meta_bool_or&lt; B &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1EnableIfHelper.html">cereal::traits::detail::EnableIfHelper&lt; Conditions &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1DisableIfHelper.html">cereal::traits::detail::DisableIfHelper&lt; Conditions &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__output__from__input.html">cereal::traits::detail::get_output_from_input&lt; InputArchive &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__input__from__output.html">cereal::traits::detail::get_input_from_output&lt; OutputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__save.html">cereal::traits::has_member_save&lt; T, A &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__save__impl.html">cereal::traits::detail::has_member_versioned_save_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__versioned__save.html">cereal::traits::has_member_versioned_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__save__impl.html">cereal::traits::detail::has_non_member_save_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__save.html">cereal::traits::has_non_member_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__save__impl.html">cereal::traits::detail::has_non_member_versioned_save_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__versioned__save.html">cereal::traits::has_non_member_versioned_save&lt; T, A &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__string.html">cereal::traits::detail::is_string&lt; class &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__string_3_01std_1_1basic__string_3_01CharT_00_01Traits_00_01Alloc_01_4_01_4.html">cereal::traits::detail::is_string&lt; std::basic_string&lt; CharT, Traits, Alloc &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__minimal__type.html">cereal::traits::is_minimal_type&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__save__minimal__impl.html">cereal::traits::detail::has_member_save_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__member__save__minimal__type.html">cereal::traits::detail::get_member_save_minimal_type&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__member__save__minimal__type_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::get_member_save_minimal_type&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__save__minimal.html">cereal::traits::has_member_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__save__minimal__impl.html">cereal::traits::detail::has_member_versioned_save_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__member__versioned__save__minimal__type.html">cereal::traits::detail::get_member_versioned_save_minimal_type&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__member__versioned__save__minimal__type_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::get_member_versioned_save_minimal_type&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__versioned__save__minimal.html">cereal::traits::has_member_versioned_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__save__minimal__impl.html">cereal::traits::detail::has_non_member_save_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__non__member__save__minimal__type.html">cereal::traits::detail::get_non_member_save_minimal_type&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__non__member__save__minimal__type_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::get_non_member_save_minimal_type&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__save__minimal.html">cereal::traits::has_non_member_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__save__minimal__impl.html">cereal::traits::detail::has_non_member_versioned_save_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__non__member__versioned__save__minimal__type.html">cereal::traits::detail::get_non_member_versioned_save_minimal_type&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__non__member__versioned__save__minimal__type_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::get_non_member_versioned_save_minimal_type&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__versioned__save__minimal.html">cereal::traits::has_non_member_versioned_save_minimal&lt; T, A &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1NoConvertBase.html">cereal::traits::detail::NoConvertBase</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to help strip away conversion wrappers.  <a href="structcereal_1_1traits_1_1detail_1_1NoConvertBase.html#details">More...</a><br/></td></tr>
@@ -181,47 +149,15 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1AnyConvert.html">cereal::traits::detail::AnyConvert</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A type that can implicitly convert to anything else.  <a href="structcereal_1_1traits_1_1detail_1_1AnyConvert.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__load__minimal__impl.html">cereal::traits::detail::has_member_load_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__load__minimal__type__impl.html">cereal::traits::detail::has_member_load_minimal_type_impl&lt; T, A, U &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__load__minimal__wrapper.html">cereal::traits::detail::has_member_load_minimal_wrapper&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__load__minimal__wrapper_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::has_member_load_minimal_wrapper&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__load__minimal.html">cereal::traits::has_member_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__load__minimal__impl.html">cereal::traits::detail::has_member_versioned_load_minimal_impl&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__load__minimal__type__impl.html">cereal::traits::detail::has_member_versioned_load_minimal_type_impl&lt; T, A, U &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__load__minimal__wrapper.html">cereal::traits::detail::has_member_versioned_load_minimal_wrapper&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__member__versioned__load__minimal__wrapper_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::has_member_versioned_load_minimal_wrapper&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__versioned__load__minimal.html">cereal::traits::has_member_versioned_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__load__minimal__impl.html">cereal::traits::detail::has_non_member_load_minimal_impl&lt; T, A, U &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__load__minimal__wrapper.html">cereal::traits::detail::has_non_member_load_minimal_wrapper&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__load__minimal__wrapper_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::has_non_member_load_minimal_wrapper&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__load__minimal.html">cereal::traits::has_non_member_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__load__minimal__impl.html">cereal::traits::detail::has_non_member_versioned_load_minimal_impl&lt; T, A, U &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__load__minimal__wrapper.html">cereal::traits::detail::has_non_member_versioned_load_minimal_wrapper&lt; T, A, Valid &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__non__member__versioned__load__minimal__wrapper_3_01T_00_01A_00_01true_01_4.html">cereal::traits::detail::has_non_member_versioned_load_minimal_wrapper&lt; T, A, true &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__versioned__load__minimal.html">cereal::traits::has_non_member_versioned_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__split.html">cereal::traits::has_member_split&lt; T, InputArchive, OutputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__split.html">cereal::traits::has_non_member_split&lt; T, InputArchive, OutputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1count__output__serializers.html">cereal::traits::detail::count_output_serializers&lt; T, OutputArchive &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__output__serializable.html">cereal::traits::is_output_serializable&lt; T, OutputArchive &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1count__input__serializers.html">cereal::traits::detail::count_input_serializers&lt; T, InputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__input__serializable.html">cereal::traits::is_input_serializable&lt; T, InputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -229,39 +165,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__invalid__input__versioning.html">cereal::traits::has_invalid_input_versioning&lt; T, InputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__member__serialize.html">cereal::traits::detail::is_specialized_member_serialize&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__member__load__save.html">cereal::traits::detail::is_specialized_member_load_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__member__load__save__minimal.html">cereal::traits::detail::is_specialized_member_load_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__non__member__serialize.html">cereal::traits::detail::is_specialized_non_member_serialize&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__non__member__load__save.html">cereal::traits::detail::is_specialized_non_member_load_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1is__specialized__non__member__load__save__minimal.html">cereal::traits::detail::is_specialized_non_member_load_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized.html">cereal::traits::is_specialized&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__member__serialize.html">cereal::traits::is_specialized_member_serialize&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__member__load.html">cereal::traits::is_specialized_member_load&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__member__save.html">cereal::traits::is_specialized_member_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__member__load__minimal.html">cereal::traits::is_specialized_member_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__member__save__minimal.html">cereal::traits::is_specialized_member_save_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__non__member__serialize.html">cereal::traits::is_specialized_non_member_serialize&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__non__member__load.html">cereal::traits::is_specialized_non_member_load&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__non__member__save.html">cereal::traits::is_specialized_non_member_save&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__non__member__load__minimal.html">cereal::traits::is_specialized_non_member_load_minimal&lt; T, A &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__specialized__non__member__save__minimal.html">cereal::traits::is_specialized_non_member_save_minimal&lt; T, A &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if any specialization exists for a type.  <a href="structcereal_1_1traits_1_1is__specialized.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__minimal__output__serialization.html">cereal::traits::has_minimal_output_serialization&lt; T, OutputArchive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -270,6 +175,22 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1base__class__id.html">cereal::traits::detail::base_class_id</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1base__class__id__hash.html">cereal::traits::detail::base_class_id_hash</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1BaseCastBase.html">cereal::traits::detail::BaseCastBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common base type for base class casting.  <a href="structcereal_1_1traits_1_1detail_1_1BaseCastBase.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__base__class.html">cereal::traits::detail::get_base_class&lt; class &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1get__base__class_3_01Cast_3_01Base_01_4_01_4.html">cereal::traits::detail::get_base_class&lt; Cast&lt; Base &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__minimal__base__class__serialization__impl.html">cereal::traits::detail::has_minimal_base_class_serialization_impl&lt; Cast, Test, Archive, IsBaseCast &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class cast, behave as the test.  <a href="structcereal_1_1traits_1_1detail_1_1has__minimal__base__class__serialization__impl.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1has__minimal__base__class__serialization__impl_3_01Cast_00_097b19a5d12c91692c0238b4e5b9d7e3a.html">cereal::traits::detail::has_minimal_base_class_serialization_impl&lt; Cast, Test, Archive, false &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not a base class cast.  <a href="structcereal_1_1traits_1_1detail_1_1has__minimal__base__class__serialization__impl_3_01Cast_00_097b19a5d12c91692c0238b4e5b9d7e3a.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__minimal__base__class__serialization.html">cereal::traits::has_minimal_base_class_serialization&lt; Cast, Test, Archive &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks to see if the base class used in a cast has a minimal serialization.  <a href="structcereal_1_1traits_1_1has__minimal__base__class__serialization.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1detail_1_1shared__from__this__wrapper.html">cereal::traits::detail::shared_from_this_wrapper</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -285,6 +206,27 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1strip__minimal_3_01T_00_01true_01_4.html">cereal::traits::strip_minimal&lt; T, true &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialization for types wrapped in a NoConvert.  <a href="structcereal_1_1traits_1_1strip__minimal_3_01T_00_01true_01_4.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__member__load__and__construct.html">cereal::traits::has_member_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Member load and construct check.  <a href="structcereal_1_1traits_1_1has__member__load__and__construct.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__non__member__load__and__construct.html">cereal::traits::has_non_member_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non member load and construct check.  <a href="structcereal_1_1traits_1_1has__non__member__load__and__construct.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1has__load__and__construct.html">cereal::traits::has_load_and_construct&lt; T, A &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Has either a member or non member allocate.  <a href="structcereal_1_1traits_1_1has__load__and__construct.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__default__constructible.html">cereal::traits::is_default_constructible&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the class T can be default constructed by <a class="el" href="classcereal_1_1access.html" title="A class that can be made a friend to give cereal access to non public functions. ">cereal::access</a>.  <a href="structcereal_1_1traits_1_1is__default__constructible.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__same__archive.html">cereal::traits::is_same_archive&lt; ArchiveT, CerealArchiveT &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the provided archive type is equal to some cereal archive type.  <a href="structcereal_1_1traits_1_1is__same__archive.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1TextArchive.html">cereal::traits::TextArchive</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type traits only struct used to mark an archive as human readable (text based)  <a href="structcereal_1_1traits_1_1TextArchive.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1traits_1_1is__text__archive.html">cereal::traits::is_text_archive&lt; A &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if an archive is a text archive (human readable)  <a href="structcereal_1_1traits_1_1is__text__archive.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1Construct.html">cereal::detail::Construct&lt; T, A, Member, NonMember &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1Construct_3_01T_00_01A_00_01false_00_01false_01_4.html">cereal::detail::Construct&lt; T, A, false, false &gt;</a></td></tr>
@@ -296,57 +238,164 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:afab7b076c0a003eae8957e8fe76e6130"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#afab7b076c0a003eae8957e8fe76e6130">CEREAL_MAKE_HAS_MEMBER_TEST</a>(name)</td></tr>
-<tr class="memdesc:afab7b076c0a003eae8957e8fe76e6130"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const member function exists.  <a href="#afab7b076c0a003eae8957e8fe76e6130">More...</a><br/></td></tr>
-<tr class="separator:afab7b076c0a003eae8957e8fe76e6130"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b4c8dc8729c1cebede70d44b3dc2fd2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a1b4c8dc8729c1cebede70d44b3dc2fd2">CEREAL_MAKE_HAS_NON_MEMBER_TEST</a>(name)</td></tr>
-<tr class="memdesc:a1b4c8dc8729c1cebede70d44b3dc2fd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const non-member function exists.  <a href="#a1b4c8dc8729c1cebede70d44b3dc2fd2">More...</a><br/></td></tr>
-<tr class="separator:a1b4c8dc8729c1cebede70d44b3dc2fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47994cb4682b72799e74dd2c52ecd056"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a47994cb4682b72799e74dd2c52ecd056">CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST</a>(name)</td></tr>
-<tr class="memdesc:a47994cb4682b72799e74dd2c52ecd056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const member function exists with a version parameter.  <a href="#a47994cb4682b72799e74dd2c52ecd056">More...</a><br/></td></tr>
-<tr class="separator:a47994cb4682b72799e74dd2c52ecd056"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71f1d65999f4dace5a05d9d22fd6015a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a71f1d65999f4dace5a05d9d22fd6015a">CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST</a>(name)</td></tr>
-<tr class="memdesc:a71f1d65999f4dace5a05d9d22fd6015a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const non-member function exists with a version parameter.  <a href="#a71f1d65999f4dace5a05d9d22fd6015a">More...</a><br/></td></tr>
-<tr class="separator:a71f1d65999f4dace5a05d9d22fd6015a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29490687675183194498a843f7beeb8b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a29490687675183194498a843f7beeb8b">CEREAL_ARCHIVE_RESTRICT</a>(INTYPE, OUTTYPE)&#160;&#160;&#160;typename std::enable_if&lt;std::is_same&lt;Archive, INTYPE&gt;::value || std::is_same&lt;Archive, OUTTYPE&gt;::value, void&gt;::type</td></tr>
+<tr class="memitem:a039bc7d4a3e8994d3fd7eedf5cae1666"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666">CEREAL_SETUP_ARCHIVE_TRAITS</a>(InputArchive, OutputArchive)</td></tr>
+<tr class="memdesc:a039bc7d4a3e8994d3fd7eedf5cae1666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up traits that relate an input archive to an output archive.  <a href="#a039bc7d4a3e8994d3fd7eedf5cae1666">More...</a><br/></td></tr>
+<tr class="separator:a039bc7d4a3e8994d3fd7eedf5cae1666"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8638d8b3af51cf4f6bed0ed2dae54928"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8638d8b3af51cf4f6bed0ed2dae54928"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928">CEREAL_MAKE_VERSIONED_TEST</a>&#160;&#160;&#160;,0</td></tr>
+<tr class="memdesc:a8638d8b3af51cf4f6bed0ed2dae54928"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to convert a MAKE_HAS_XXX macro into a versioned variant. <br/></td></tr>
+<tr class="separator:a8638d8b3af51cf4f6bed0ed2dae54928"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2fc70d51b619b785c0741568f2012ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#ad2fc70d51b619b785c0741568f2012ba">CEREAL_MAKE_HAS_MEMBER_TEST</a>(name, test_name, versioned)</td></tr>
+<tr class="memdesc:ad2fc70d51b619b785c0741568f2012ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const member function exists.  <a href="#ad2fc70d51b619b785c0741568f2012ba">More...</a><br/></td></tr>
+<tr class="separator:ad2fc70d51b619b785c0741568f2012ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af31f4783772a7f6a3048a793090715cf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#af31f4783772a7f6a3048a793090715cf">CEREAL_MAKE_HAS_NON_MEMBER_TEST</a>(test_name, func, versioned)</td></tr>
+<tr class="memdesc:af31f4783772a7f6a3048a793090715cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non const non-member function exists.  <a href="#af31f4783772a7f6a3048a793090715cf">More...</a><br/></td></tr>
+<tr class="separator:af31f4783772a7f6a3048a793090715cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a669b39fde8f86acef9e5b1470ceb0364"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a669b39fde8f86acef9e5b1470ceb0364">CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:a669b39fde8f86acef9e5b1470ceb0364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a member save function exists.  <a href="#a669b39fde8f86acef9e5b1470ceb0364">More...</a><br/></td></tr>
+<tr class="separator:a669b39fde8f86acef9e5b1470ceb0364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5be76cc82813adfc110f793e37636fb1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a5be76cc82813adfc110f793e37636fb1">CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:a5be76cc82813adfc110f793e37636fb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non-member save function exists.  <a href="#a5be76cc82813adfc110f793e37636fb1">More...</a><br/></td></tr>
+<tr class="separator:a5be76cc82813adfc110f793e37636fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d9d56e1b4254790186b1565796fdd35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a3d9d56e1b4254790186b1565796fdd35">CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_IMPL</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:a3d9d56e1b4254790186b1565796fdd35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates implementation details for whether a member save_minimal function exists.  <a href="#a3d9d56e1b4254790186b1565796fdd35">More...</a><br/></td></tr>
+<tr class="separator:a3d9d56e1b4254790186b1565796fdd35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab60653db33c8898506326963f8a7211"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#aab60653db33c8898506326963f8a7211">CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_HELPERS_IMPL</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:aab60653db33c8898506326963f8a7211"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates helpers for minimal save functions.  <a href="#aab60653db33c8898506326963f8a7211">More...</a><br/></td></tr>
+<tr class="separator:aab60653db33c8898506326963f8a7211"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33f583ea76bb88656995fa4d5d5e9ade"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a33f583ea76bb88656995fa4d5d5e9ade">CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_TEST</a>(test_name)</td></tr>
+<tr class="memdesc:a33f583ea76bb88656995fa4d5d5e9ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a member save_minimal function exists.  <a href="#a33f583ea76bb88656995fa4d5d5e9ade">More...</a><br/></td></tr>
+<tr class="separator:a33f583ea76bb88656995fa4d5d5e9ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7eb2173790b30144a419f33afcd2710"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#ae7eb2173790b30144a419f33afcd2710">CEREAL_MAKE_HAS_NON_MEMBER_SAVE_MINIMAL_TEST</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:ae7eb2173790b30144a419f33afcd2710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non-member save_minimal function exists.  <a href="#ae7eb2173790b30144a419f33afcd2710">More...</a><br/></td></tr>
+<tr class="separator:ae7eb2173790b30144a419f33afcd2710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41354a9a797549bb6802c0f16435f675"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a41354a9a797549bb6802c0f16435f675">CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_IMPL</a>(test_name, versioned)</td></tr>
+<tr class="memdesc:a41354a9a797549bb6802c0f16435f675"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a member load_minimal function exists.  <a href="#a41354a9a797549bb6802c0f16435f675">More...</a><br/></td></tr>
+<tr class="separator:a41354a9a797549bb6802c0f16435f675"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d829a1189314b4adb3b1f6f72d94151"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a4d829a1189314b4adb3b1f6f72d94151">CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_HELPERS_IMPL</a>(load_test_name, save_test_name, save_test_prefix, versioned)</td></tr>
+<tr class="memdesc:a4d829a1189314b4adb3b1f6f72d94151"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates helpers for minimal load functions.  <a href="#a4d829a1189314b4adb3b1f6f72d94151">More...</a><br/></td></tr>
+<tr class="separator:a4d829a1189314b4adb3b1f6f72d94151"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4497ffc80b9053f731b781d740b98af2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a4497ffc80b9053f731b781d740b98af2">CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_TEST</a>(load_test_name, load_test_prefix)</td></tr>
+<tr class="memdesc:a4497ffc80b9053f731b781d740b98af2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a member load_minimal function exists.  <a href="#a4497ffc80b9053f731b781d740b98af2">More...</a><br/></td></tr>
+<tr class="separator:a4497ffc80b9053f731b781d740b98af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99298ef5f4678723f35d175291eb5770"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a99298ef5f4678723f35d175291eb5770">CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST</a>(test_name, save_name, versioned)</td></tr>
+<tr class="memdesc:a99298ef5f4678723f35d175291eb5770"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a test for whether a non-member load_minimal function exists.  <a href="#a99298ef5f4678723f35d175291eb5770">More...</a><br/></td></tr>
+<tr class="separator:a99298ef5f4678723f35d175291eb5770"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33ec65e257576ae208d6a71cf01c4258"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a33ec65e257576ae208d6a71cf01c4258">CEREAL_MAKE_IS_SPECIALIZED_IMPL</a>(name)</td></tr>
+<tr class="memdesc:a33ec65e257576ae208d6a71cf01c4258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a test for a cereal::specialization entry.  <a href="#a33ec65e257576ae208d6a71cf01c4258">More...</a><br/></td></tr>
+<tr class="separator:a33ec65e257576ae208d6a71cf01c4258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e6519141d71272bbe5db25d01d175ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a7e6519141d71272bbe5db25d01d175ad">CEREAL_MAKE_IS_SPECIALIZED_ASSERT</a>(name, versioned_name, print_name, spec_name)</td></tr>
+<tr class="memdesc:a7e6519141d71272bbe5db25d01d175ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the static assertion for some specialization.  <a href="#a7e6519141d71272bbe5db25d01d175ad">More...</a><br/></td></tr>
+<tr class="separator:a7e6519141d71272bbe5db25d01d175ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af566f627f0de18c31e2bbb21a01cce70"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#af566f627f0de18c31e2bbb21a01cce70">CEREAL_MAKE_IS_SPECIALIZED</a>(name, versioned_name, spec_name)</td></tr>
+<tr class="memdesc:af566f627f0de18c31e2bbb21a01cce70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a test for specialization for versioned and unversioned functions.  <a href="#af566f627f0de18c31e2bbb21a01cce70">More...</a><br/></td></tr>
+<tr class="separator:af566f627f0de18c31e2bbb21a01cce70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29490687675183194498a843f7beeb8b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a29490687675183194498a843f7beeb8b">CEREAL_ARCHIVE_RESTRICT</a>(INTYPE, OUTTYPE)&#160;&#160;&#160;typename std::enable_if&lt;<a class="el" href="structcereal_1_1traits_1_1is__same__archive.html">cereal::traits::is_same_archive</a>&lt;Archive, INTYPE&gt;::value || <a class="el" href="structcereal_1_1traits_1_1is__same__archive.html">cereal::traits::is_same_archive</a>&lt;Archive, OUTTYPE&gt;::value, void&gt;::type</td></tr>
 <tr class="memdesc:a29490687675183194498a843f7beeb8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A macro to use to restrict which types of archives your function will work for.  <a href="#a29490687675183194498a843f7beeb8b">More...</a><br/></td></tr>
 <tr class="separator:a29490687675183194498a843f7beeb8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a4c349abeb24ee680759279a21738e0ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c349abeb24ee680759279a21738e0ce"></a>
-typedef std::true_type&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::yes</b></td></tr>
-<tr class="separator:a4c349abeb24ee680759279a21738e0ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cccf7b423ab663e94c9f344aa223245"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7cccf7b423ab663e94c9f344aa223245"></a>
-typedef std::false_type&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::no</b></td></tr>
-<tr class="separator:a7cccf7b423ab663e94c9f344aa223245"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32b99987a136bc56cb30707526c9ba2f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32b99987a136bc56cb30707526c9ba2f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::yes</b> = std::true_type</td></tr>
+<tr class="separator:a32b99987a136bc56cb30707526c9ba2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad22419d99e8d081eef29f2f99e5cb54c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad22419d99e8d081eef29f2f99e5cb54c"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::no</b> = std::false_type</td></tr>
+<tr class="separator:ad22419d99e8d081eef29f2f99e5cb54c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e5f793ba5a1b3d2fd674d7334b12bd"><td class="memTemplParams" colspan="2">template&lt;bool... Conditions&gt; </td></tr>
+<tr class="memitem:a42e5f793ba5a1b3d2fd674d7334b12bd"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a42e5f793ba5a1b3d2fd674d7334b12bd">EnableIf</a> = typename detail::EnableIfHelper&lt; Conditions...&gt;::type</td></tr>
+<tr class="memdesc:a42e5f793ba5a1b3d2fd674d7334b12bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a way to enable a function if conditions are met.  <a href="#a42e5f793ba5a1b3d2fd674d7334b12bd">More...</a><br/></td></tr>
+<tr class="separator:a42e5f793ba5a1b3d2fd674d7334b12bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07719740a7cec6692b44244201a92603"><td class="memTemplParams" colspan="2">template&lt;bool... Conditions&gt; </td></tr>
+<tr class="memitem:a07719740a7cec6692b44244201a92603"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="traits_8hpp.html#a07719740a7cec6692b44244201a92603">DisableIf</a> = typename detail::DisableIfHelper&lt; Conditions...&gt;::type</td></tr>
+<tr class="memdesc:a07719740a7cec6692b44244201a92603"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a way to disable a function if conditions are met.  <a href="#a07719740a7cec6692b44244201a92603">More...</a><br/></td></tr>
+<tr class="separator:a07719740a7cec6692b44244201a92603"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae185068d4b912e2d20c03d35ab553d59"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae185068d4b912e2d20c03d35ab553d59"></a>
+template&lt;class A &gt; </td></tr>
+<tr class="memitem:ae185068d4b912e2d20c03d35ab553d59"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::traits::detail::decay_archive</b> = typename std::decay&lt; typename strip_minimal&lt; A &gt;::type &gt;::type</td></tr>
+<tr class="memdesc:ae185068d4b912e2d20c03d35ab553d59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all qualifiers and minimal wrappers from an archive. <br/></td></tr>
+<tr class="separator:ae185068d4b912e2d20c03d35ab553d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aafd74e5beca7e112de8b2e20ef41d973"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>sfinae</b> </td></tr>
+<tr class="memdesc:aafd74e5beca7e112de8b2e20ef41d973"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return type for SFINAE Enablers. <br/></td></tr>
+<tr class="separator:aafd74e5beca7e112de8b2e20ef41d973"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a956f2adf78051209bf2c0957616a7ba9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a956f2adf78051209bf2c0957616a7ba9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (serialize)</td></tr>
-<tr class="separator:a956f2adf78051209bf2c0957616a7ba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1804eb73e23e928f07adb0118fe66bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1804eb73e23e928f07adb0118fe66bd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST</b> (serialize)</td></tr>
-<tr class="separator:af1804eb73e23e928f07adb0118fe66bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bf0894ff30bef39ac7599e2c6060399"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3bf0894ff30bef39ac7599e2c6060399"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (serialize)</td></tr>
-<tr class="separator:a3bf0894ff30bef39ac7599e2c6060399"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83c1b39769421ac6e071d7a37b46af70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83c1b39769421ac6e071d7a37b46af70"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST</b> (serialize)</td></tr>
-<tr class="separator:a83c1b39769421ac6e071d7a37b46af70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e57c2832089b00d1d95661aafac4db8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e57c2832089b00d1d95661aafac4db8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (load)</td></tr>
-<tr class="separator:a6e57c2832089b00d1d95661aafac4db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba205d1484d554b8995c7982ced5b557"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba205d1484d554b8995c7982ced5b557"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST</b> (load)</td></tr>
-<tr class="separator:aba205d1484d554b8995c7982ced5b557"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e0679f3cd56d5d71afa79d6a75b3659"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e0679f3cd56d5d71afa79d6a75b3659"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (load)</td></tr>
-<tr class="separator:a2e0679f3cd56d5d71afa79d6a75b3659"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abdbeddbb82c1d20a11b1a7b988d2f07e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdbeddbb82c1d20a11b1a7b988d2f07e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST</b> (load)</td></tr>
-<tr class="separator:abdbeddbb82c1d20a11b1a7b988d2f07e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a272f835b66fc9503a8c832007612a7f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a272f835b66fc9503a8c832007612a7f1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (serialize, serialize,)</td></tr>
+<tr class="separator:a272f835b66fc9503a8c832007612a7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba4330c797a0db80059c74ce0d298cf7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba4330c797a0db80059c74ce0d298cf7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (serialize, versioned_serialize, <a class="el" href="traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928">CEREAL_MAKE_VERSIONED_TEST</a>)</td></tr>
+<tr class="separator:aba4330c797a0db80059c74ce0d298cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84537b1c09daf1cfb31c687d3844336c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84537b1c09daf1cfb31c687d3844336c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (serialize, <a class="el" href="macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a">CEREAL_SERIALIZE_FUNCTION_NAME</a>,)</td></tr>
+<tr class="separator:a84537b1c09daf1cfb31c687d3844336c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e4703a037e82b58fa568ea1a869932b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e4703a037e82b58fa568ea1a869932b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (versioned_serialize, <a class="el" href="macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a">CEREAL_SERIALIZE_FUNCTION_NAME</a>, <a class="el" href="traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928">CEREAL_MAKE_VERSIONED_TEST</a>)</td></tr>
+<tr class="separator:a1e4703a037e82b58fa568ea1a869932b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91965ae6af453b52a6479d4e9a8e32f9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91965ae6af453b52a6479d4e9a8e32f9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (load, load,)</td></tr>
+<tr class="separator:a91965ae6af453b52a6479d4e9a8e32f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5be14e72c1af859d2f57da9c6bee521c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5be14e72c1af859d2f57da9c6bee521c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_MEMBER_TEST</b> (load, versioned_load, <a class="el" href="traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928">CEREAL_MAKE_VERSIONED_TEST</a>)</td></tr>
+<tr class="separator:a5be14e72c1af859d2f57da9c6bee521c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba309d0c0b8990cc41264a735f6fe8a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba309d0c0b8990cc41264a735f6fe8a0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (load, <a class="el" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>,)</td></tr>
+<tr class="separator:aba309d0c0b8990cc41264a735f6fe8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83ef3b068e4c18caaf90c2d3adb3b2c0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83ef3b068e4c18caaf90c2d3adb3b2c0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_HAS_NON_MEMBER_TEST</b> (versioned_load, <a class="el" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>, <a class="el" href="traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928">CEREAL_MAKE_VERSIONED_TEST</a>)</td></tr>
+<tr class="separator:a83ef3b068e4c18caaf90c2d3adb3b2c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57b1b50cefc0d028cae13d4bb85b0d45"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57b1b50cefc0d028cae13d4bb85b0d45"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (member_serialize)</td></tr>
+<tr class="separator:a57b1b50cefc0d028cae13d4bb85b0d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d52f02ddb07b4750b1d342db245610"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3d52f02ddb07b4750b1d342db245610"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (member_load_save)</td></tr>
+<tr class="separator:aa3d52f02ddb07b4750b1d342db245610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8074cb2fe6eb50846f5adf3edfcbcd2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8074cb2fe6eb50846f5adf3edfcbcd2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (member_load_save_minimal)</td></tr>
+<tr class="separator:aa8074cb2fe6eb50846f5adf3edfcbcd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e103445b8259599a8c5a2d784dc0ca0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e103445b8259599a8c5a2d784dc0ca0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (non_member_serialize)</td></tr>
+<tr class="separator:a8e103445b8259599a8c5a2d784dc0ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64c27264ebd40cb17fbdbb65fefef319"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64c27264ebd40cb17fbdbb65fefef319"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (non_member_load_save)</td></tr>
+<tr class="separator:a64c27264ebd40cb17fbdbb65fefef319"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57714ba26e46777c7acddca859a047ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57714ba26e46777c7acddca859a047ba"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::detail::CEREAL_MAKE_IS_SPECIALIZED_IMPL</b> (non_member_load_save_minimal)</td></tr>
+<tr class="separator:a57714ba26e46777c7acddca859a047ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37e44b59c6260570584a890efa520a8b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37e44b59c6260570584a890efa520a8b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (member_serialize, member_versioned_serialize, member_serialize)</td></tr>
+<tr class="separator:a37e44b59c6260570584a890efa520a8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b352be989824571c05f6dc304d4df71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b352be989824571c05f6dc304d4df71"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (non_member_serialize, non_member_versioned_serialize, non_member_serialize)</td></tr>
+<tr class="separator:a6b352be989824571c05f6dc304d4df71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcb4eb583516b360022a255f9703b96d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcb4eb583516b360022a255f9703b96d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (member_save, member_versioned_save, member_load_save)</td></tr>
+<tr class="separator:adcb4eb583516b360022a255f9703b96d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d2f0c0f9cdf1701d6be30bfa69107d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d2f0c0f9cdf1701d6be30bfa69107d3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (non_member_save, non_member_versioned_save, non_member_load_save)</td></tr>
+<tr class="separator:a6d2f0c0f9cdf1701d6be30bfa69107d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbe788b8d27ce8494df42e108624d387"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afbe788b8d27ce8494df42e108624d387"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (member_load, member_versioned_load, member_load_save)</td></tr>
+<tr class="separator:afbe788b8d27ce8494df42e108624d387"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6314b143f33f837572c766b8822b5d2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6314b143f33f837572c766b8822b5d2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (non_member_load, non_member_versioned_load, non_member_load_save)</td></tr>
+<tr class="separator:ac6314b143f33f837572c766b8822b5d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04d88853aa20506f95abd46b95e40bac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04d88853aa20506f95abd46b95e40bac"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (member_save_minimal, member_versioned_save_minimal, member_load_save_minimal)</td></tr>
+<tr class="separator:a04d88853aa20506f95abd46b95e40bac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa492e93c41a9b6fb524b68f925f489a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa492e93c41a9b6fb524b68f925f489a4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (non_member_save_minimal, non_member_versioned_save_minimal, non_member_load_save_minimal)</td></tr>
+<tr class="separator:aa492e93c41a9b6fb524b68f925f489a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a5b663e3c4b1bc658070b443829e669"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a5b663e3c4b1bc658070b443829e669"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (member_load_minimal, member_versioned_load_minimal, member_load_save_minimal)</td></tr>
+<tr class="separator:a6a5b663e3c4b1bc658070b443829e669"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32e21033492e984bb43e0ac0ee72fabe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32e21033492e984bb43e0ac0ee72fabe"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cereal::traits::CEREAL_MAKE_IS_SPECIALIZED</b> (non_member_load_minimal, non_member_versioned_load_minimal, non_member_load_save_minimal)</td></tr>
+<tr class="separator:a32e21033492e984bb43e0ac0ee72fabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal type trait support. </p>
@@ -370,7 +419,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;typename std::enable_if&lt;std::is_same&lt;Archive, INTYPE&gt;::value || std::is_same&lt;Archive, OUTTYPE&gt;::value, void&gt;::type</td>
+          <td></td><td>&#160;&#160;&#160;typename std::enable_if&lt;<a class="el" href="structcereal_1_1traits_1_1is__same__archive.html">cereal::traits::is_same_archive</a>&lt;Archive, INTYPE&gt;::value || <a class="el" href="structcereal_1_1traits_1_1is__same__archive.html">cereal::traits::is_same_archive</a>&lt;Archive, OUTTYPE&gt;::value, void&gt;::type</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -389,7 +438,380 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afab7b076c0a003eae8957e8fe76e6130"></a>
+<a class="anchor" id="a4d829a1189314b4adb3b1f6f72d94151"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_HELPERS_IMPL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">load_test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">save_test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">save_test_prefix, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                      \</div>
+<div class="line">    {                                                                                                                     \</div>
+<div class="line">      template &lt;class T, class A, bool Valid&gt;                                                                             \</div>
+<div class="line">      struct has_member_##load_test_name##_wrapper : std::false_type {};                                                  \</div>
+<div class="line">                                                                                                                          \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                                                         \</div>
+<div class="line">      struct has_member_##load_test_name##_wrapper&lt;T, A, true&gt;                                                            \</div>
+<div class="line">      {                                                                                                                   \</div>
+<div class="line">        using AOut = <span class="keyword">typename</span> detail::get_output_from_input&lt;A&gt;::type;                                                     \</div>
+<div class="line">                                                                                                                          \</div>
+<div class="line">        static_assert( has_member_##save_test_prefix##_minimal&lt;T, AOut&gt;::value,                                           \</div>
+<div class="line">          <span class="stringliteral">&quot;cereal detected member &quot;</span> #load_test_name <span class="stringliteral">&quot; but no valid member &quot;</span> #save_test_name <span class="stringliteral">&quot;. \n &quot;</span>                       \</div>
+<div class="line">          <span class="stringliteral">&quot;cannot evaluate correctness of &quot;</span> #load_test_name <span class="stringliteral">&quot; without valid &quot;</span> #save_test_name <span class="stringliteral">&quot;.&quot;</span> );                      \</div>
+<div class="line">                                                                                                                          \</div>
+<div class="line">        using SaveType = <span class="keyword">typename</span> detail::get_member_##save_test_prefix##_minimal_type&lt;T, AOut, true&gt;::type;              \</div>
+<div class="line">        const <span class="keyword">static</span> <span class="keywordtype">bool</span> value = has_member_##load_test_name##_impl&lt;T, A&gt;::value;                                        \</div>
+<div class="line">        const <span class="keyword">static</span> <span class="keywordtype">bool</span> valid = has_member_##load_test_name##_type_impl&lt;T, A, SaveType&gt;::value;                         \</div>
+<div class="line">                                                                                                                          \</div>
+<div class="line">        static_assert( valid || !value, <span class="stringliteral">&quot;cereal detected different or invalid types in corresponding member &quot;</span>             \</div>
+<div class="line">            #load_test_name <span class="stringliteral">&quot; and &quot;</span> #save_test_name <span class="stringliteral">&quot; functions. \n &quot;</span>                                                     \</div>
+<div class="line">            <span class="stringliteral">&quot;the paramater to &quot;</span> #load_test_name <span class="stringliteral">&quot; must be a constant reference to the type that &quot;</span>                         \</div>
+<div class="line">            #save_test_name <span class="stringliteral">&quot; returns.&quot;</span> );                                                                                \</div>
+<div class="line">      };                                                                                                                  \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span></div>
+</div><!-- fragment -->
+<p>Creates helpers for minimal load functions. </p>
+<p>The has_member_*_wrapper structs ensure that the load and save types for the requested function type match appropriately.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">load_test_name</td><td>The name to give the test (e.g. load_minimal or versioned_load_minimal) </td></tr>
+    <tr><td class="paramname">save_test_name</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal, should match the load name. </td></tr>
+    <tr><td class="paramname">save_test_prefix</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal, should match the load name, without the trailing "_minimal" (e.g. save or versioned_save). Needed because the preprocessor is an abomination. </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a41354a9a797549bb6802c0f16435f675"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_IMPL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                    \</div>
+<div class="line">    {                                                                                   \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                       \</div>
+<div class="line">      struct has_member_##test_name##_impl                                              \</div>
+<div class="line">      {                                                                                 \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                   \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_load_minimal(         \</div>
+<div class="line">              std::declval&lt;AA const &amp;&gt;(),                                               \</div>
+<div class="line">              std::declval&lt;TT &amp;&gt;(), AnyConvert() versioned ), yes());                   \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test(...);                                    \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;    \</div>
+<div class="line">      };                                                                                \</div>
+<div class="line">      template &lt;class T, class A, class U&gt;                                              \</div>
+<div class="line">      struct has_member_##test_name##_type_impl                                         \</div>
+<div class="line">      {                                                                                 \</div>
+<div class="line">        template &lt;class TT, class AA, class UU&gt;                                         \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_load_minimal(         \</div>
+<div class="line">              std::declval&lt;AA const &amp;&gt;(),                                               \</div>
+<div class="line">              std::declval&lt;TT &amp;&gt;(), NoConvertConstRef&lt;UU&gt;() versioned ), yes());        \</div>
+<div class="line">        template &lt;class, class, class&gt; <span class="keyword">static</span> no test(...);                             \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A, U&gt;(0)), yes&gt;::value; \</div>
+<div class="line">                                                                                        \</div>
+<div class="line">      };                                                                                \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span></div>
+</div><!-- fragment -->
+<p>Creates a test for whether a member load_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<p>Our strategy here is to first check if a function matching the signature more or less exists (allow anything like load_minimal(xxx) using AnyConvert, and then secondly enforce that it has the correct signature using NoConvertConstRef</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. load_minimal or versioned_load_minimal) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4497ffc80b9053f731b781d740b98af2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_LOAD_MINIMAL_TEST</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">load_test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">load_test_prefix&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> A&gt;                                                                                                \</div>
+<div class="line">    struct has_member_##load_test_prefix##_minimal : std::integral_constant&lt;bool,                                              \</div>
+<div class="line">      detail::has_member_##load_test_name##_wrapper&lt;T, A, detail::has_member_##load_test_name##_impl&lt;T, A&gt;::value&gt;::value&gt; {};</div>
+</div><!-- fragment -->
+<p>Creates a test for whether a member load_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">load_test_name</td><td>The name to give the test (e.g. load_minimal or versioned_load_minimal) </td></tr>
+    <tr><td class="paramname">load_test_prefix</td><td>The above parameter minus the trailing "_minimal" </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a669b39fde8f86acef9e5b1470ceb0364"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_SAVE_IMPL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                                \</div>
+<div class="line">    {                                                                                                                               \</div>
+<div class="line">    template &lt;class T, class A&gt;                                                                                                     \</div>
+<div class="line">    struct has_member_##test_name##_impl                                                                                            \</div>
+<div class="line">      {                                                                                                                             \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                               \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_save( std::declval&lt;AA&amp;&gt;(),                                        \</div>
+<div class="line">                                                                        std::declval&lt;TT const &amp;&gt;() versioned ), yes());             \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test(...);                                                                                \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                                \</div>
+<div class="line">                                                                                                                                    \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                               \</div>
+<div class="line">        static <span class="keyword">auto</span> test2(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_save_non_const(                                                  \</div>
+<div class="line">                                              std::declval&lt;AA &amp;&gt;(),                                                                 \</div>
+<div class="line">                                              std::declval&lt;<span class="keyword">typename</span> std::remove_const&lt;TT&gt;::type&amp;&gt;() versioned ), yes());            \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test2(...);                                                                               \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;                                      \</div>
+<div class="line">      };                                                                                                                            \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span></div>
+</div><!-- fragment -->
+<p>Creates a test for whether a member save function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save or versioned_save) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aab60653db33c8898506326963f8a7211"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_HELPERS_IMPL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                         \</div>
+<div class="line">    {                                                                                                        \</div>
+<div class="line">      template &lt;class T, class A, bool Valid&gt;                                                                \</div>
+<div class="line">      struct get_member_##test_name##_type { <span class="keyword">using</span> type = void; };                                           \</div>
+<div class="line">                                                                                                             \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                                            \</div>
+<div class="line">      struct get_member_##test_name##_type&lt;T, A, true&gt;                                                       \</div>
+<div class="line">      {                                                                                                      \</div>
+<div class="line">        using type = decltype( cereal::access::member_save_minimal( std::declval&lt;A const &amp;&gt;(),               \</div>
+<div class="line">                                                                    std::declval&lt;T const &amp;&gt;() versioned ) ); \</div>
+<div class="line">      };                                                                                                     \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span></div>
+</div><!-- fragment -->
+<p>Creates helpers for minimal save functions. </p>
+<p>The get_member_*_type structs allow access to the return type of a save_minimal, assuming that the function actually exists. If the function does not exist, the type will be void.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a3d9d56e1b4254790186b1565796fdd35"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_IMPL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                           \</div>
+<div class="line">    {                                                                                          \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                              \</div>
+<div class="line">      struct has_member_##test_name##_impl                                                     \</div>
+<div class="line">      {                                                                                        \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                          \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_save_minimal(                \</div>
+<div class="line">              std::declval&lt;AA const &amp;&gt;(),                                                      \</div>
+<div class="line">              std::declval&lt;TT const &amp;&gt;() versioned ), yes());                                  \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test(...);                                           \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;           \</div>
+<div class="line">                                                                                               \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                          \</div>
+<div class="line">        static <span class="keyword">auto</span> test2(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_save_minimal_non_const(     \</div>
+<div class="line">              std::declval&lt;AA const &amp;&gt;(),                                                      \</div>
+<div class="line">              std::declval&lt;<span class="keyword">typename</span> std::remove_const&lt;TT&gt;::type&amp;&gt;() versioned ), yes());       \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test2(...);                                          \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value; \</div>
+<div class="line">                                                                                               \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> valid = value || !not_const_type;                                    \</div>
+<div class="line">      };                                                                                       \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span></div>
+</div><!-- fragment -->
+<p>Creates implementation details for whether a member save_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a33f583ea76bb88656995fa4d5d5e9ade"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_SAVE_MINIMAL_TEST</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> A&gt;                                                                                      \</div>
+<div class="line">    struct has_member_##test_name : std::integral_constant&lt;bool, detail::has_member_##test_name##_impl&lt;T, A&gt;::value&gt; \</div>
+<div class="line">    {                                                                                                                \</div>
+<div class="line">      using check = <span class="keyword">typename</span> detail::has_member_##test_name##_impl&lt;T, A&gt;;                                            \</div>
+<div class="line">      static_assert( check::valid,                                                                                   \</div>
+<div class="line">        <span class="stringliteral">&quot;cereal detected a non-const member &quot;</span> #test_name <span class="stringliteral">&quot;. \n &quot;</span>                                                     \</div>
+<div class="line">        #test_name <span class="stringliteral">&quot; member functions must always be const&quot;</span> );                                                       \</div>
+<div class="line">                                                                                                                     \</div>
+<div class="line">      using type = <span class="keyword">typename</span> detail::get_member_##test_name##_type&lt;T, A, check::value&gt;::type;                         \</div>
+<div class="line">      static_assert( (check::value &amp;&amp; is_minimal_type&lt;type&gt;::value) || !check::value,                                \</div>
+<div class="line">        <span class="stringliteral">&quot;cereal detected a member &quot;</span> #test_name <span class="stringliteral">&quot; with an invalid return type. \n &quot;</span>                                   \</div>
+<div class="line">        <span class="stringliteral">&quot;return type must be arithmetic or string&quot;</span> );                                                                \</div>
+<div class="line">    };</div>
+</div><!-- fragment -->
+<p>Creates a test for whether a member save_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad2fc70d51b619b785c0741568f2012ba"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -397,65 +819,202 @@ Functions</h2></td></tr>
           <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_TEST</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">name</td><td>)</td>
+          <td class="paramname">name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                               \</div>
-<div class="line">    {                                                                                                                              \</div>
-<div class="line">      template &lt;class T, class A&gt;                                                                                                  \</div>
-<div class="line">      struct has_member_##name##_impl                                                                                              \</div>
-<div class="line">      {                                                                                                                            \</div>
-<div class="line">        template &lt;class TT, class AA&gt;                                                                                              \</div>
-<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_##name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() ), yes());      \</div>
-<div class="line">        template &lt;class, class&gt;                                                                                                    \</div>
-<div class="line">        static no test(...);                                                                                                       \</div>
-<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                               \</div>
-<div class="line">      };                                                                                                                           \</div>
-<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                   \</div>
-<div class="line">    template &lt;class T, class A&gt;                                                                                                    \</div>
-<div class="line">    struct has_member_##name : std::integral_constant&lt;bool, detail::has_member_##name##_impl&lt;T, A&gt;::value&gt; {}</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                                    \</div>
+<div class="line">    {                                                                                                                                   \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                                                                       \</div>
+<div class="line">      struct has_member_##name##_##versioned##_impl                                                                                     \</div>
+<div class="line">      {                                                                                                                                 \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                                   \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_##name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() versioned ), yes()); \</div>
+<div class="line">        template &lt;class, class&gt;                                                                                                         \</div>
+<div class="line">        static no test(...);                                                                                                            \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                                    \</div>
+<div class="line">      };                                                                                                                                \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                        \</div>
+<div class="line">    template &lt;class T, class A&gt;                                                                                                         \</div>
+<div class="line">    struct has_member_##test_name : std::integral_constant&lt;bool, detail::has_member_##name##_##versioned##_impl&lt;T, A&gt;::value&gt; {}</div>
 </div><!-- fragment -->
 <p>Creates a test for whether a non const member function exists. </p>
-<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the function to test for (e.g. serialize, load, save) </td></tr>
+    <tr><td class="paramname">test_name</td><td>The name to give the test for the function being tested for (e.g. serialize, versioned_serialize) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="a47994cb4682b72799e74dd2c52ecd056"></a>
+<a class="anchor" id="a99298ef5f4678723f35d175291eb5770"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define CEREAL_MAKE_HAS_MEMBER_VERSIONED_TEST</td>
+          <td class="memname">#define CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">name</td><td>)</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">save_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                               \</div>
-<div class="line">    {                                                                                                                              \</div>
-<div class="line">      template &lt;class T, class A&gt;                                                                                                  \</div>
-<div class="line">      struct has_member_versioned_##name##_impl                                                                                    \</div>
-<div class="line">      {                                                                                                                            \</div>
-<div class="line">        template &lt;class TT, class AA&gt;                                                                                              \</div>
-<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( cereal::access::member_##name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;(), 0 ), yes());   \</div>
-<div class="line">        template &lt;class, class&gt;                                                                                                    \</div>
-<div class="line">        static no test(...);                                                                                                       \</div>
-<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                               \</div>
-<div class="line">      };                                                                                                                           \</div>
-<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                   \</div>
-<div class="line">    template &lt;class T, class A&gt;                                                                                                    \</div>
-<div class="line">    struct has_member_versioned_##name : std::integral_constant&lt;bool, detail::has_member_versioned_##name##_impl&lt;T, A&gt;::value&gt; {}</div>
-</div><!-- fragment -->
-<p>Creates a test for whether a non const member function exists with a version parameter. </p>
-<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive. </p>
+
+<p>Creates a test for whether a non-member load_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<p>See notes from member load_minimal implementation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. load_minimal or versioned_load_minimal) </td></tr>
+    <tr><td class="paramname">save_name</td><td>The corresponding name the save test would have (e.g. save_minimal or versioned_save_minimal) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="a1b4c8dc8729c1cebede70d44b3dc2fd2"></a>
+<a class="anchor" id="ae7eb2173790b30144a419f33afcd2710"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_NON_MEMBER_SAVE_MINIMAL_TEST</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a test for whether a non-member save_minimal function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save_minimal or versioned_save_minimal) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a5be76cc82813adfc110f793e37636fb1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_HAS_NON_MEMBER_SAVE_TEST</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                         \</div>
+<div class="line">    {                                                                                                                        \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                                                            \</div>
+<div class="line">      struct has_non_member_##test_name##_impl                                                                               \</div>
+<div class="line">      {                                                                                                                      \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                        \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(                                                        \</div>
+<div class="line">                                              std::declval&lt;AA&amp;&gt;(),                                                           \</div>
+<div class="line">                                              std::declval&lt;TT const &amp;&gt;() versioned ), yes());                                \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test(...);                                                                         \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype(test&lt;T, A&gt;(0)), yes&gt;::value;                                         \</div>
+<div class="line">                                                                                                                             \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                        \</div>
+<div class="line">        static <span class="keyword">auto</span> test2(<span class="keywordtype">int</span>) -&gt; decltype( <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(                                                       \</div>
+<div class="line">                                              std::declval&lt;AA &amp;&gt;(),                                                          \</div>
+<div class="line">                                              std::declval&lt;<span class="keyword">typename</span> std::remove_const&lt;TT&gt;::type&amp;&gt;() versioned ), yes());     \</div>
+<div class="line">        template &lt;class, class&gt; <span class="keyword">static</span> no test2(...);                                                                        \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> not_const_type = std::is_same&lt;decltype(test2&lt;T, A&gt;(0)), yes&gt;::value;                               \</div>
+<div class="line">      };                                                                                                                     \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                             \</div>
+<div class="line">                                                                                                                             \</div>
+<div class="line">    template &lt;class T, class A&gt;                                                                                              \</div>
+<div class="line">    struct has_non_member_##test_name : std::integral_constant&lt;bool, detail::has_non_member_##test_name##_impl&lt;T, A&gt;::value&gt; \</div>
+<div class="line">    {                                                                                                                        \</div>
+<div class="line">      using check = <span class="keyword">typename</span> detail::has_non_member_##test_name##_impl&lt;T, A&gt;;                                                \</div>
+<div class="line">      static_assert( check::value || !check::not_const_type,                                                                 \</div>
+<div class="line">        <span class="stringliteral">&quot;cereal detected a non-const type parameter in non-member &quot;</span> #test_name <span class="stringliteral">&quot;. \n &quot;</span>                                       \</div>
+<div class="line">        #test_name <span class="stringliteral">&quot; non-member functions must always pass their types as const&quot;</span> );                                          \</div>
+<div class="line">    };</div>
+<div class="ttc" id="macros_8hpp_html_a85b7884671ac5a804b66ec7c34d0ca71"><div class="ttname"><a href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a></div><div class="ttdeci">#define CEREAL_SAVE_FUNCTION_NAME</div><div class="ttdoc">The serialization (save) function name to search for. </div><div class="ttdef"><b>Definition:</b> macros.hpp:65</div></div>
+</div><!-- fragment -->
+<p>Creates a test for whether a non-member save function exists. </p>
+<p>This creates a class derived from std::integral_constant that will be true if the type has the proper non-member function for the given archive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_name</td><td>The name to give the test (e.g. save or versioned_save) </td></tr>
+    <tr><td class="paramname">versioned</td><td>Either blank or the macro CEREAL_MAKE_VERSIONED_TEST </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af31f4783772a7f6a3048a793090715cf"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -463,37 +1022,142 @@ Functions</h2></td></tr>
           <td class="memname">#define CEREAL_MAKE_HAS_NON_MEMBER_TEST</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">name</td><td>)</td>
+          <td class="paramname">test_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">func, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                               \</div>
-<div class="line">    {                                                                                                                              \</div>
-<div class="line">      template &lt;class T, class A&gt;                                                                                                  \</div>
-<div class="line">      struct has_non_member_##name##_impl                                                                                          \</div>
-<div class="line">      {                                                                                                                            \</div>
-<div class="line">        template &lt;class TT, class AA&gt;                                                                                              \</div>
-<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() ), yes());                               \</div>
-<div class="line">        template &lt;class, class&gt;                                                                                                    \</div>
-<div class="line">        static no test( ... );                                                                                                     \</div>
-<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                           \</div>
-<div class="line">      };                                                                                                                           \</div>
-<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                   \</div>
-<div class="line">    template &lt;class T, class A&gt;                                                                                                    \</div>
-<div class="line">    struct has_non_member_##name : std::integral_constant&lt;bool, detail::has_non_member_##name##_impl&lt;T, A&gt;::value&gt; {}</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                            \</div>
+<div class="line">    {                                                                                                                           \</div>
+<div class="line">      template &lt;class T, class A&gt;                                                                                               \</div>
+<div class="line">      struct has_non_member_##test_name##_impl                                                                                  \</div>
+<div class="line">      {                                                                                                                         \</div>
+<div class="line">        template &lt;class TT, class AA&gt;                                                                                           \</div>
+<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( func( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;() versioned ), yes());                  \</div>
+<div class="line">        template &lt;class, class&gt;                                                                                                 \</div>
+<div class="line">        static no test( ... );                                                                                                  \</div>
+<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                        \</div>
+<div class="line">      };                                                                                                                        \</div>
+<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                \</div>
+<div class="line">    template &lt;class T, class A&gt;                                                                                                 \</div>
+<div class="line">    struct has_non_member_##test_name : std::integral_constant&lt;bool, detail::has_non_member_##test_name##_impl&lt;T, A&gt;::value&gt; {}</div>
 </div><!-- fragment -->
 <p>Creates a test for whether a non const non-member function exists. </p>
 <p>This creates a class derived from std::integral_constant that will be true if the type has the proper non-member function for the given archive. </p>
 
 </div>
 </div>
-<a class="anchor" id="a71f1d65999f4dace5a05d9d22fd6015a"></a>
+<a class="anchor" id="af566f627f0de18c31e2bbb21a01cce70"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define CEREAL_MAKE_HAS_NON_MEMBER_VERSIONED_TEST</td>
+          <td class="memname">#define CEREAL_MAKE_IS_SPECIALIZED</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">spec_name&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> A&gt;                                                             \</div>
+<div class="line">    struct is_specialized_##name : std::integral_constant&lt;bool,                             \</div>
+<div class="line">      is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \</div>
+<div class="line">    { <a class="code" href="traits_8hpp.html#a7e6519141d71272bbe5db25d01d175ad">CEREAL_MAKE_IS_SPECIALIZED_ASSERT</a>(name, versioned_name, name, spec_name); };          \</div>
+<div class="line">    template &lt;class T, class A&gt;                                                             \</div>
+<div class="line">    struct is_specialized_##versioned_name : std::integral_constant&lt;bool,                   \</div>
+<div class="line">      is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \</div>
+<div class="line">    { <a class="code" href="traits_8hpp.html#a7e6519141d71272bbe5db25d01d175ad">CEREAL_MAKE_IS_SPECIALIZED_ASSERT</a>(name, versioned_name, versioned_name, spec_name); }</div>
+<div class="ttc" id="traits_8hpp_html_a7e6519141d71272bbe5db25d01d175ad"><div class="ttname"><a href="traits_8hpp.html#a7e6519141d71272bbe5db25d01d175ad">CEREAL_MAKE_IS_SPECIALIZED_ASSERT</a></div><div class="ttdeci">#define CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, print_name, spec_name)</div><div class="ttdoc">Create the static assertion for some specialization. </div><div class="ttdef"><b>Definition:</b> traits.hpp:1000</div></div>
+</div><!-- fragment -->
+<p>Generates a test for specialization for versioned and unversioned functions. </p>
+<p>This creates checks that can be queried to see if a given type of serialization function has been specialized for this type </p>
+
+</div>
+</div>
+<a class="anchor" id="a7e6519141d71272bbe5db25d01d175ad"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_IS_SPECIALIZED_ASSERT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">versioned_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">print_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">spec_name&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value &amp;&amp;           \</div>
+<div class="line">                   (has_##name&lt;T, A&gt;::value || has_##versioned_name&lt;T, A&gt;::value))                              \</div>
+<div class="line">                   || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value),        \</div>
+<div class="line">                   <span class="stringliteral">&quot;cereal detected &quot;</span> #print_name <span class="stringliteral">&quot; specialization but no &quot;</span> #print_name <span class="stringliteral">&quot; serialize function&quot;</span> )</div>
+</div><!-- fragment -->
+<p>Create the static assertion for some specialization. </p>
+<p>This assertion will fail if the type is indeed specialized and does not have the appropriate type of serialization functions </p>
+
+</div>
+</div>
+<a class="anchor" id="a33ec65e257576ae208d6a71cf01c4258"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_MAKE_IS_SPECIALIZED_IMPL</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">name</td><td>)</td>
@@ -501,23 +1165,104 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>detail                                                                                                               \</div>
-<div class="line">    {                                                                                                                              \</div>
-<div class="line">      template &lt;class T, class A&gt;                                                                                                  \</div>
-<div class="line">      struct has_non_member_versioned_##name##_impl                                                                                \</div>
-<div class="line">      {                                                                                                                            \</div>
-<div class="line">        template &lt;class TT, class AA&gt;                                                                                              \</div>
-<div class="line">        static <span class="keyword">auto</span> test(<span class="keywordtype">int</span>) -&gt; decltype( name( std::declval&lt;AA&amp;&gt;(), std::declval&lt;TT&amp;&gt;(), 0 ), yes());                            \</div>
-<div class="line">        template &lt;class, class&gt;                                                                                                    \</div>
-<div class="line">        static no test( ... );                                                                                                     \</div>
-<div class="line">        static <span class="keyword">const</span> <span class="keywordtype">bool</span> value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                           \</div>
-<div class="line">      };                                                                                                                           \</div>
-<div class="line">    } <span class="comment">/* end namespace detail */</span>                                                                                                   \</div>
-<div class="line">    template &lt;class T, class A&gt;                                                                                                    \</div>
-<div class="line">    struct has_non_member_versioned_##name : std::integral_constant&lt;bool, detail::has_non_member_versioned_##name##_impl&lt;T, A&gt;::value&gt; {}</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> A&gt;                                                            \</div>
+<div class="line">      struct is_specialized_##name : std::integral_constant&lt;bool,                            \</div>
+<div class="line">        !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::name&gt;&gt;::value&gt; {}</div>
 </div><!-- fragment -->
-<p>Creates a test for whether a non const non-member function exists with a version parameter. </p>
-<p>This creates a class derived from std::integral_constant that will be true if the type has the proper non-member function for the given archive. </p>
+<p>Create a test for a cereal::specialization entry. </p>
+
+</div>
+</div>
+<a class="anchor" id="a039bc7d4a3e8994d3fd7eedf5cae1666"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_SETUP_ARCHIVE_TRAITS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">InputArchive, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">OutputArchive&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>traits { <span class="keyword">namespace </span>detail {          \</div>
+<div class="line">      template &lt;&gt; <span class="keyword">struct </span>get_output_from_input&lt;InputArchive&gt;          \</div>
+<div class="line">      { <span class="keyword">using</span> type = OutputArchive; };                                \</div>
+<div class="line">      template &lt;&gt; <span class="keyword">struct </span>get_input_from_output&lt;OutputArchive&gt;         \</div>
+<div class="line">      { <span class="keyword">using</span> type = InputArchive; }; } } } <span class="comment">/* end namespaces */</span></div>
+</div><!-- fragment -->
+<p>Sets up traits that relate an input archive to an output archive. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="a07719740a7cec6692b44244201a92603"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;bool... Conditions&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="traits_8hpp.html#a07719740a7cec6692b44244201a92603">DisableIf</a> =  typename detail::DisableIfHelper&lt;Conditions...&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provides a way to disable a function if conditions are met. </p>
+<p>This is intended to be used in a near identical fashion to std::enable_if while being significantly easier to read at the cost of not allowing for as complicated of a condition.</p>
+<p>This will compile (allow the function) if every condition evaluates to false. This should be used with SFINAE to ensure that at least one other candidate function works when one fails due to a DisableIf.</p>
+<p>This should be used as the las template parameter to a function as an unnamed parameter with a default value of cereal::traits::sfinae:</p>
+<div class="fragment"><div class="line"><span class="comment">// using by making the last template argument variadic</span></div>
+<div class="line">template &lt;class T, DisableIf&lt;std::is_same&lt;T, bool&gt;::value&gt; = sfinae&gt;</div>
+<div class="line"><span class="keywordtype">void</span> func(T t );</div>
+</div><!-- fragment --><p>This is often used in conjunction with EnableIf to form an enable/disable pair of overloads.</p>
+<p>Note that this performs a logical AND of all conditions, so you will need to construct more complicated requirements with this fact in mind. If all conditions hold, the function will be disabled.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Conditions</td><td>The conditions which will be logically ANDed to disable the function. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a42e5f793ba5a1b3d2fd674d7334b12bd"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;bool... Conditions&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="traits_8hpp.html#a42e5f793ba5a1b3d2fd674d7334b12bd">EnableIf</a> =  typename detail::EnableIfHelper&lt;Conditions...&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provides a way to enable a function if conditions are met. </p>
+<p>This is intended to be used in a near identical fashion to std::enable_if while being significantly easier to read at the cost of not allowing for as complicated of a condition.</p>
+<p>This will compile (allow the function) if every condition evaluates to true. at compile time. This should be used with SFINAE to ensure that at least one other candidate function works when one fails due to an EnableIf.</p>
+<p>This should be used as the las template parameter to a function as an unnamed parameter with a default value of cereal::traits::sfinae:</p>
+<div class="fragment"><div class="line"><span class="comment">// using by making the last template argument variadic</span></div>
+<div class="line">template &lt;class T, EnableIf&lt;std::is_same&lt;T, bool&gt;::value&gt; = sfinae&gt;</div>
+<div class="line"><span class="keywordtype">void</span> func(T t );</div>
+</div><!-- fragment --><p>Note that this performs a logical AND of all conditions, so you will need to construct more complicated requirements with this fact in mind.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Conditions</td><td>The conditions which will be logically ANDed to enable the function. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -525,7 +1270,7 @@ Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

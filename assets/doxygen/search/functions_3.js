@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['enablesharedstatehelper',['EnableSharedStateHelper',['../classcereal_1_1memory__detail_1_1EnableSharedStateHelper.html#a7358952ac850c005295f899a5aa3b184',1,'cereal::memory_detail::EnableSharedStateHelper']]],
-  ['epilogue',['epilogue',['../group__Internal.html#ga1153b7ce7ffbb86e2c81e076a252938e',1,'cereal']]]
+  ['default',['Default',['../classcereal_1_1JSONOutputArchive_1_1Options.html#a82ac8216b731ffc3669c9a16e18efc86',1,'cereal::JSONOutputArchive::Options::Default()'],['../classcereal_1_1XMLOutputArchive_1_1Options.html#ab7120fd4a284844186093c581e922c87',1,'cereal::XMLOutputArchive::Options::Default()']]]
 ];

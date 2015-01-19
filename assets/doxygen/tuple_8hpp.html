@@ -103,6 +103,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1char__seq__to__c__str.html">cereal::tuple_detail::char_seq_to_c_str&lt; Cs &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a c string from a sequence of characters.  <a href="structcereal_1_1tuple__detail_1_1char__seq__to__c__str.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1to__string__impl.html">cereal::tuple_detail::to_string_impl&lt; Q, R, C &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a number into a sequence of characters.  <a href="structcereal_1_1tuple__detail_1_1to__string__impl.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1to__string__impl_3_010_00_01R_00_01C_8_8_8_4.html">cereal::tuple_detail::to_string_impl&lt; 0, R, C...&gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base case with no quotient.  <a href="structcereal_1_1tuple__detail_1_1to__string__impl_3_010_00_01R_00_01C_8_8_8_4.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1tuple__element__name.html">cereal::tuple_detail::tuple_element_name&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a c string for a given index of a tuple.  <a href="structcereal_1_1tuple__detail_1_1tuple__element__name.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1serialize.html">cereal::tuple_detail::serialize&lt; Height &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1tuple__detail_1_1serialize_3_010_01_4.html">cereal::tuple_detail::serialize&lt; 0 &gt;</a></td></tr>
@@ -110,11 +122,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9276eb26cbedc0f54da914b9191c638f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9276eb26cbedc0f54da914b9191c638f"></a>
+<tr class="memitem:adef1cfebe7c896bb2ea942d0f22cef88"><td class="memTemplParams" colspan="2"><a class="anchor" id="adef1cfebe7c896bb2ea942d0f22cef88"></a>
 template&lt;class Archive , class... Types&gt; </td></tr>
-<tr class="memitem:a9276eb26cbedc0f54da914b9191c638f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, std::tuple&lt; Types...&gt; &amp;tuple)</td></tr>
-<tr class="memdesc:a9276eb26cbedc0f54da914b9191c638f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing for std::tuple. <br/></td></tr>
-<tr class="separator:a9276eb26cbedc0f54da914b9191c638f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adef1cfebe7c896bb2ea942d0f22cef88"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SERIALIZE_FUNCTION_NAME</b> (Archive &amp;ar, std::tuple&lt; Types...&gt; &amp;tuple)</td></tr>
+<tr class="memdesc:adef1cfebe7c896bb2ea942d0f22cef88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializing for std::tuple. <br/></td></tr>
+<tr class="separator:adef1cfebe7c896bb2ea942d0f22cef88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;tuple&gt; </p>
@@ -122,7 +134,7 @@ template&lt;class Archive , class... Types&gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

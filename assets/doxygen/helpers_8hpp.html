@@ -104,6 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;unordered_map&gt;</code><br/>
 <code>#include &lt;stdexcept&gt;</code><br/>
+<code>#include &lt;<a class="el" href="macros_8hpp_source.html">cereal/macros.hpp</a>&gt;</code><br/>
 <code>#include &lt;<a class="el" href="static__object_8hpp_source.html">cereal/details/static_object.hpp</a>&gt;</code><br/>
 </div>
 <p><a href="helpers_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -114,6 +115,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An exception class thrown when things go wrong at runtime.  <a href="structcereal_1_1Exception.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1NameValuePairCore.html">cereal::detail::NameValuePairCore</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traits struct for NVPs.  <a href="structcereal_1_1detail_1_1NameValuePairCore.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1NameValuePair.html">cereal::NameValuePair&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">For holding name value pairs.  <a href="classcereal_1_1NameValuePair.html#details">More...</a><br/></td></tr>
@@ -121,9 +123,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1BinaryData.html">cereal::BinaryData&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper around data that can be serialized in a binary fashion.  <a href="structcereal_1_1BinaryData.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1OutputArchiveBase.html">cereal::detail::OutputArchiveBase</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1detail_1_1OutputArchiveBase.html">cereal::detail::OutputArchiveBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1InputArchiveBase.html">cereal::detail::InputArchiveBase</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1detail_1_1InputArchiveBase.html">cereal::detail::InputArchiveBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1polymorphic__serialization__support.html">cereal::detail::polymorphic_serialization_support&lt; Archive, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,18 +135,18 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1MapItem.html">cereal::MapItem&lt; Key, Value &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper around a key and value for serializing data into maps.  <a href="structcereal_1_1MapItem.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1Version.html">cereal::detail::Version&lt; T, BindingTag &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structcereal_1_1detail_1_1Version.html" title="Version information class. ">Version</a> information class.  <a href="structcereal_1_1detail_1_1Version.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1Versions.html">cereal::detail::Versions</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Holds all registered version information.  <a href="structcereal_1_1detail_1_1Versions.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1Version.html">cereal::detail::Version&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structcereal_1_1detail_1_1Version.html" title="Version information class. ">Version</a> information class.  <a href="structcereal_1_1detail_1_1Version.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a235f9adaac91e8b6390ba549703a4195"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helpers_8hpp.html#a235f9adaac91e8b6390ba549703a4195">_CEREAL_NVP</a>(name, value)&#160;&#160;&#160;::cereal::make_nvp&lt;Archive&gt;(name, value)</td></tr>
-<tr class="memdesc:a235f9adaac91e8b6390ba549703a4195"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience for creating a templated NVP.  <a href="#a235f9adaac91e8b6390ba549703a4195">More...</a><br/></td></tr>
-<tr class="separator:a235f9adaac91e8b6390ba549703a4195"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45c4798e6de29f0f970b658771a4fbf0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helpers_8hpp.html#a45c4798e6de29f0f970b658771a4fbf0">CEREAL_NVP_</a>(name, value)&#160;&#160;&#160;::cereal::make_nvp&lt;Archive&gt;(name, value)</td></tr>
+<tr class="memdesc:a45c4798e6de29f0f970b658771a4fbf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience for creating a templated NVP.  <a href="#a45c4798e6de29f0f970b658771a4fbf0">More...</a><br/></td></tr>
+<tr class="separator:a45c4798e6de29f0f970b658771a4fbf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -163,12 +165,12 @@ template&lt;class KeyType , class ValueType &gt; </td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal helper functionality. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="a235f9adaac91e8b6390ba549703a4195"></a>
+<a class="anchor" id="a45c4798e6de29f0f970b658771a4fbf0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _CEREAL_NVP</td>
+          <td class="memname">#define CEREAL_NVP_</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">name, </td>
@@ -196,7 +198,7 @@ template&lt;class KeyType , class ValueType &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -118,44 +118,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#ifndef CEREAL_TYPES_BASE_CLASS_HPP_</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define CEREAL_TYPES_BASE_CLASS_HPP_</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>cereal</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Base&gt;</div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structcereal_1_1base__class.html">   70</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcereal_1_1base__class.html">base_class</a></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Derived&gt;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <a class="code" href="structcereal_1_1base__class.html">base_class</a>(Derived <span class="keyword">const</span> * derived) :</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;          base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      { }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        Base * base_ptr;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    };</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define CEREAL_TYPES_BASE_CLASS_HPP_</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="traits_8hpp.html">cereal/details/traits.hpp</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>cereal</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Base&gt;</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="structcereal_1_1base__class.html">   72</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcereal_1_1base__class.html">base_class</a> : <span class="keyword">private</span> <a class="code" href="structcereal_1_1traits_1_1detail_1_1BaseCastBase.html">traits::detail::BaseCastBase</a></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Derived&gt;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <a class="code" href="structcereal_1_1base__class.html">base_class</a>(Derived <span class="keyword">const</span> * derived) :</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;          base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      { static_assert( std::is_base_of&lt;Base, Derived&gt;::value, <span class="stringliteral">&quot;Can only use base_class on a valid base class&quot;</span> ); }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        Base * base_ptr;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    };</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Base&gt;</div>
-<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="structcereal_1_1virtual__base__class.html">  150</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcereal_1_1virtual__base__class.html">virtual_base_class</a></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Derived&gt;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <a class="code" href="structcereal_1_1virtual__base__class.html">virtual_base_class</a>(Derived <span class="keyword">const</span> * derived) :</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;          base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      { }</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        Base * base_ptr;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    };</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;} <span class="comment">// namespace cereal</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Base&gt;</div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="structcereal_1_1virtual__base__class.html">  152</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcereal_1_1virtual__base__class.html">virtual_base_class</a> : <span class="keyword">private</span> <a class="code" href="structcereal_1_1traits_1_1detail_1_1BaseCastBase.html">traits::detail::BaseCastBase</a></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    {</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Derived&gt;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="structcereal_1_1virtual__base__class.html">virtual_base_class</a>(Derived <span class="keyword">const</span> * derived) :</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;          base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      { static_assert( std::is_base_of&lt;Base, Derived&gt;::value, <span class="stringliteral">&quot;Can only use base_class on a valid base class&quot;</span> ); }</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        Base * base_ptr;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    };</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="preprocessor">#endif // CEREAL_TYPES_BASE_CLASS_HPP_</span></div>
-<div class="ttc" id="structcereal_1_1virtual__base__class_html"><div class="ttname"><a href="structcereal_1_1virtual__base__class.html">cereal::virtual_base_class</a></div><div class="ttdoc">Casts a derived class to its virtual base class in a way that allows cereal to track inheritance...</div><div class="ttdef"><b>Definition:</b> base_class.hpp:150</div></div>
-<div class="ttc" id="structcereal_1_1base__class_html"><div class="ttname"><a href="structcereal_1_1base__class.html">cereal::base_class</a></div><div class="ttdoc">Casts a derived class to its non-virtual base class in a way that safely supports abstract classes...</div><div class="ttdef"><b>Definition:</b> base_class.hpp:70</div></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;} <span class="comment">// namespace cereal</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#endif // CEREAL_TYPES_BASE_CLASS_HPP_</span></div>
+<div class="ttc" id="structcereal_1_1virtual__base__class_html"><div class="ttname"><a href="structcereal_1_1virtual__base__class.html">cereal::virtual_base_class</a></div><div class="ttdoc">Casts a derived class to its virtual base class in a way that allows cereal to track inheritance...</div><div class="ttdef"><b>Definition:</b> base_class.hpp:152</div></div>
+<div class="ttc" id="structcereal_1_1traits_1_1detail_1_1BaseCastBase_html"><div class="ttname"><a href="structcereal_1_1traits_1_1detail_1_1BaseCastBase.html">cereal::traits::detail::BaseCastBase</a></div><div class="ttdoc">Common base type for base class casting. </div><div class="ttdef"><b>Definition:</b> traits.hpp:1085</div></div>
+<div class="ttc" id="traits_8hpp_html"><div class="ttname"><a href="traits_8hpp.html">traits.hpp</a></div><div class="ttdoc">Internal type trait support. </div></div>
+<div class="ttc" id="structcereal_1_1base__class_html"><div class="ttname"><a href="structcereal_1_1base__class.html">cereal::base_class</a></div><div class="ttdoc">Casts a derived class to its non-virtual base class in a way that safely supports abstract classes...</div><div class="ttdef"><b>Definition:</b> base_class.hpp:72</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

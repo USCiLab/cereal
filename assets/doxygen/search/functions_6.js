@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html#a76455fba49795d1676664f634918c580',1,'cereal::InputArchive']]],
-  ['inputbindingcreator',['InputBindingCreator',['../structcereal_1_1detail_1_1InputBindingCreator.html#a0844036ce968019290e32f9ab183e9e1',1,'cereal::detail::InputBindingCreator']]],
-  ['inserttype',['insertType',['../classcereal_1_1XMLOutputArchive.html#a4af064c2dc6a9451ef9a4dd93bdd304e',1,'cereal::XMLOutputArchive']]],
-  ['instantiate',['instantiate',['../structcereal_1_1detail_1_1polymorphic__serialization__support.html#aff25de045b6bc4b759ae06e460a80e3b',1,'cereal::detail::polymorphic_serialization_support']]],
-  ['is_5flittle_5fendian',['is_little_endian',['../group__Internal.html#ga5bf2f015b88182b92a08399a46c26cd3',1,'cereal::portable_binary_detail']]]
+  ['getnumchildren',['getNumChildren',['../classcereal_1_1XMLInputArchive.html#a1e396aeced2f05e4d76b0e4c7ef3f25d',1,'cereal::XMLInputArchive']]],
+  ['getpolymorphicname',['getPolymorphicName',['../classcereal_1_1InputArchive.html#a2d39247b893f26eecc863a7b321e6a00',1,'cereal::InputArchive']]],
+  ['getsharedpointer',['getSharedPointer',['../classcereal_1_1InputArchive.html#a27251df805e938bd528dd680c2df5a47',1,'cereal::InputArchive']]],
+  ['getvaluename',['getValueName',['../structcereal_1_1XMLOutputArchive_1_1NodeInfo.html#a7ba5c914f9b830e92259794062e51257',1,'cereal::XMLOutputArchive::NodeInfo']]]
 ];

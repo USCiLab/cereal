@@ -103,62 +103,62 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a5802cef18afaebd4575bba992100aa34"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5802cef18afaebd4575bba992100aa34"></a>
+<tr class="memitem:ad05831ccc458a58431b0c26a080d6ec6"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad05831ccc458a58431b0c26a080d6ec6"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a5802cef18afaebd4575bba992100aa34"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_serialize</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(t.serialize(ar))</td></tr>
-<tr class="separator:a5802cef18afaebd4575bba992100aa34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e4738ac69abc3aa64c47aa327e4f767"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1e4738ac69abc3aa64c47aa327e4f767"></a>
+<tr class="memitem:ad05831ccc458a58431b0c26a080d6ec6"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_serialize</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a">t.CEREAL_SERIALIZE_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:ad05831ccc458a58431b0c26a080d6ec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ac38aa11b94a4178ec335aa5dc49fbb"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9ac38aa11b94a4178ec335aa5dc49fbb"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a1e4738ac69abc3aa64c47aa327e4f767"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save</b> (Archive &amp;ar, T const &amp;t) -&gt; decltype(t.save(ar))</td></tr>
-<tr class="separator:a1e4738ac69abc3aa64c47aa327e4f767"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3512947bb178fe44927e0024705b82a4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a3512947bb178fe44927e0024705b82a4"></a>
+<tr class="memitem:a9ac38aa11b94a4178ec335aa5dc49fbb"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save</b> (Archive &amp;ar, T const &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">t.CEREAL_SAVE_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:a9ac38aa11b94a4178ec335aa5dc49fbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aee7c190fe592ab85e2ecef35645adf"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9aee7c190fe592ab85e2ecef35645adf"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a3512947bb178fe44927e0024705b82a4"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_non_const</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(t.save(ar))</td></tr>
-<tr class="separator:a3512947bb178fe44927e0024705b82a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691dd84305c94c69f9eea0a79258b0ee"><td class="memTemplParams" colspan="2"><a class="anchor" id="a691dd84305c94c69f9eea0a79258b0ee"></a>
+<tr class="memitem:a9aee7c190fe592ab85e2ecef35645adf"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_non_const</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">t.CEREAL_SAVE_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:a9aee7c190fe592ab85e2ecef35645adf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a647fdf040a9befbf461baa4a06c2d490"><td class="memTemplParams" colspan="2"><a class="anchor" id="a647fdf040a9befbf461baa4a06c2d490"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a691dd84305c94c69f9eea0a79258b0ee"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(t.load(ar))</td></tr>
-<tr class="separator:a691dd84305c94c69f9eea0a79258b0ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa53bbe5b820b428a03fefc32295e8e2c"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa53bbe5b820b428a03fefc32295e8e2c"></a>
+<tr class="memitem:a647fdf040a9befbf461baa4a06c2d490"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load</b> (Archive &amp;ar, T &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">t.CEREAL_LOAD_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:a647fdf040a9befbf461baa4a06c2d490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed7f0b5ff17ecf3090e43da940534bfb"><td class="memTemplParams" colspan="2"><a class="anchor" id="aed7f0b5ff17ecf3090e43da940534bfb"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:aa53bbe5b820b428a03fefc32295e8e2c"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal</b> (Archive const &amp;ar, T const &amp;t) -&gt; decltype(t.save_minimal(ar))</td></tr>
-<tr class="separator:aa53bbe5b820b428a03fefc32295e8e2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49f47b9e7868fddaab02a5bbc1e8a370"><td class="memTemplParams" colspan="2"><a class="anchor" id="a49f47b9e7868fddaab02a5bbc1e8a370"></a>
+<tr class="memitem:aed7f0b5ff17ecf3090e43da940534bfb"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal</b> (Archive const &amp;ar, T const &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e">t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:aed7f0b5ff17ecf3090e43da940534bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90b1fcd3d987d395e4fc309a75ae007e"><td class="memTemplParams" colspan="2"><a class="anchor" id="a90b1fcd3d987d395e4fc309a75ae007e"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a49f47b9e7868fddaab02a5bbc1e8a370"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal_non_const</b> (Archive const &amp;ar, T &amp;t) -&gt; decltype(t.save_minimal(ar))</td></tr>
-<tr class="separator:a49f47b9e7868fddaab02a5bbc1e8a370"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba4fb4334742f8ab68c03d44c20f8a94"><td class="memTemplParams" colspan="2"><a class="anchor" id="aba4fb4334742f8ab68c03d44c20f8a94"></a>
+<tr class="memitem:a90b1fcd3d987d395e4fc309a75ae007e"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal_non_const</b> (Archive const &amp;ar, T &amp;t) -&gt; decltype(<a class="el" href="macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e">t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME</a>(ar))</td></tr>
+<tr class="separator:a90b1fcd3d987d395e4fc309a75ae007e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4479612424135647241983ad094547"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7e4479612424135647241983ad094547"></a>
 template&lt;class Archive , class T , class U &gt; </td></tr>
-<tr class="memitem:aba4fb4334742f8ab68c03d44c20f8a94"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load_minimal</b> (Archive const &amp;ar, T &amp;t, U &amp;&amp;u) -&gt; decltype(t.load_minimal(ar, std::forward&lt; U &gt;(u)))</td></tr>
-<tr class="separator:aba4fb4334742f8ab68c03d44c20f8a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7af00e3f5b5aa3f77784c0cf59930a2a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7af00e3f5b5aa3f77784c0cf59930a2a"></a>
+<tr class="memitem:a7e4479612424135647241983ad094547"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load_minimal</b> (Archive const &amp;ar, T &amp;t, U &amp;&amp;u) -&gt; decltype(<a class="el" href="macros_8hpp.html#a6d46fc40eb865ec42dd40929ed5db73f">t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME</a>(ar, std::forward&lt; U &gt;(u)))</td></tr>
+<tr class="separator:a7e4479612424135647241983ad094547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a169bc2eeef4214962fb3bef55aff8bf5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a169bc2eeef4214962fb3bef55aff8bf5"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a7af00e3f5b5aa3f77784c0cf59930a2a"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_serialize</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(t.serialize(ar, version))</td></tr>
-<tr class="separator:a7af00e3f5b5aa3f77784c0cf59930a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a965ff875408227190439222d34650743"><td class="memTemplParams" colspan="2"><a class="anchor" id="a965ff875408227190439222d34650743"></a>
+<tr class="memitem:a169bc2eeef4214962fb3bef55aff8bf5"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_serialize</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a">t.CEREAL_SERIALIZE_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a169bc2eeef4214962fb3bef55aff8bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fef6e1344a3e94ea37746577f1d10b5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2fef6e1344a3e94ea37746577f1d10b5"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a965ff875408227190439222d34650743"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save</b> (Archive &amp;ar, T const &amp;t, const std::uint32_t version) -&gt; decltype(t.save(ar, version))</td></tr>
-<tr class="separator:a965ff875408227190439222d34650743"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93d726e10dfa83d2fae927a9243c54bb"><td class="memTemplParams" colspan="2"><a class="anchor" id="a93d726e10dfa83d2fae927a9243c54bb"></a>
+<tr class="memitem:a2fef6e1344a3e94ea37746577f1d10b5"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save</b> (Archive &amp;ar, T const &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">t.CEREAL_SAVE_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a2fef6e1344a3e94ea37746577f1d10b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51fcab9aab1b5d9349b9f6d9d52260b7"><td class="memTemplParams" colspan="2"><a class="anchor" id="a51fcab9aab1b5d9349b9f6d9d52260b7"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a93d726e10dfa83d2fae927a9243c54bb"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_non_const</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(t.save(ar, version))</td></tr>
-<tr class="separator:a93d726e10dfa83d2fae927a9243c54bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a122b597ade6b49f4dfe6a6b9a8ac0661"><td class="memTemplParams" colspan="2"><a class="anchor" id="a122b597ade6b49f4dfe6a6b9a8ac0661"></a>
+<tr class="memitem:a51fcab9aab1b5d9349b9f6d9d52260b7"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_non_const</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">t.CEREAL_SAVE_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a51fcab9aab1b5d9349b9f6d9d52260b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a033697b8fa854bba4b05a3547614c339"><td class="memTemplParams" colspan="2"><a class="anchor" id="a033697b8fa854bba4b05a3547614c339"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a122b597ade6b49f4dfe6a6b9a8ac0661"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(t.load(ar, version))</td></tr>
-<tr class="separator:a122b597ade6b49f4dfe6a6b9a8ac0661"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a58572e44cecd1bae464e493f89f22c"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6a58572e44cecd1bae464e493f89f22c"></a>
+<tr class="memitem:a033697b8fa854bba4b05a3547614c339"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load</b> (Archive &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">t.CEREAL_LOAD_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a033697b8fa854bba4b05a3547614c339"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12207c5a8a7fde360a4210a7a90a6bd9"><td class="memTemplParams" colspan="2"><a class="anchor" id="a12207c5a8a7fde360a4210a7a90a6bd9"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a6a58572e44cecd1bae464e493f89f22c"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal</b> (Archive const &amp;ar, T const &amp;t, const std::uint32_t version) -&gt; decltype(t.save_minimal(ar, version))</td></tr>
-<tr class="separator:a6a58572e44cecd1bae464e493f89f22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05edf2240fc2bf221e2a8849e805be0f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a05edf2240fc2bf221e2a8849e805be0f"></a>
+<tr class="memitem:a12207c5a8a7fde360a4210a7a90a6bd9"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal</b> (Archive const &amp;ar, T const &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e">t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a12207c5a8a7fde360a4210a7a90a6bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a594aedc4a1d99965acf78afd26eea1b4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a594aedc4a1d99965acf78afd26eea1b4"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a05edf2240fc2bf221e2a8849e805be0f"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal_non_const</b> (Archive const &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(t.save_minimal(ar, version))</td></tr>
-<tr class="separator:a05edf2240fc2bf221e2a8849e805be0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a405f7c31ba45b8865bc3df5792dcb8a7"><td class="memTemplParams" colspan="2"><a class="anchor" id="a405f7c31ba45b8865bc3df5792dcb8a7"></a>
+<tr class="memitem:a594aedc4a1d99965acf78afd26eea1b4"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_save_minimal_non_const</b> (Archive const &amp;ar, T &amp;t, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e">t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME</a>(ar, version))</td></tr>
+<tr class="separator:a594aedc4a1d99965acf78afd26eea1b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93be8085cce16064c52d419f06e1c6bd"><td class="memTemplParams" colspan="2"><a class="anchor" id="a93be8085cce16064c52d419f06e1c6bd"></a>
 template&lt;class Archive , class T , class U &gt; </td></tr>
-<tr class="memitem:a405f7c31ba45b8865bc3df5792dcb8a7"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load_minimal</b> (Archive const &amp;ar, T &amp;t, U &amp;&amp;u, const std::uint32_t version) -&gt; decltype(t.load_minimal(ar, std::forward&lt; U &gt;(u), version))</td></tr>
-<tr class="separator:a405f7c31ba45b8865bc3df5792dcb8a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93be8085cce16064c52d419f06e1c6bd"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>member_load_minimal</b> (Archive const &amp;ar, T &amp;t, U &amp;&amp;u, const std::uint32_t version) -&gt; decltype(<a class="el" href="macros_8hpp.html#a6d46fc40eb865ec42dd40929ed5db73f">t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME</a>(ar, std::forward&lt; U &gt;(u), version))</td></tr>
+<tr class="separator:a93be8085cce16064c52d419f06e1c6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4313d611119408a0469ff1e8ac72ec20"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4313d611119408a0469ff1e8ac72ec20"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a4313d611119408a0469ff1e8ac72ec20"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>shared_from_this</b> (T &amp;t) -&gt; decltype(t.shared_from_this())</td></tr>
@@ -167,6 +167,10 @@ template&lt;class T &gt; </td></tr>
 template&lt;class T , class... Args&gt; </td></tr>
 <tr class="memitem:a7694971beea936733a0db92caaf874e1"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>construct</b> (T *&amp;ptr, Args &amp;&amp;...args)</td></tr>
 <tr class="separator:a7694971beea936733a0db92caaf874e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73aa6e2001200b60e4a4996c467e24ad"><td class="memTemplParams" colspan="2"><a class="anchor" id="a73aa6e2001200b60e4a4996c467e24ad"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a73aa6e2001200b60e4a4996c467e24ad"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>construct</b> ()</td></tr>
+<tr class="separator:a73aa6e2001200b60e4a4996c467e24ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c1f5168eb1ddb09d2949182e8bd4241"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1c1f5168eb1ddb09d2949182e8bd4241"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a1c1f5168eb1ddb09d2949182e8bd4241"><td class="memTemplItemLeft" align="right" valign="top">static std::false_type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>load_and_construct</b> (...)</td></tr>
@@ -197,7 +201,7 @@ template&lt;class T , class Archive &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

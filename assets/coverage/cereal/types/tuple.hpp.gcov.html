@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/types</a> - tuple.hpp<span style="font-size: 80%;"> (source / <a href="tuple.hpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/types</a> - tuple.hpp<span style="font-size: 80%;"> (source / <a href="tuple.hpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -31,17 +31,17 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">11</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-21</td>
+            <td class="headerValue">2015-01-19 12:21:46</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">192</td>
-            <td class="headerCovTableEntry">192</td>
+            <td class="headerCovTableEntry">196</td>
+            <td class="headerCovTableEntry">196</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -99,39 +99,90 @@
 <span class="lineNum">      37 </span>            : {
 <span class="lineNum">      38 </span>            :   namespace tuple_detail
 <span class="lineNum">      39 </span>            :   {
-<span class="lineNum">      40 </span>            :     // unwinds a tuple to save it
-<span class="lineNum">      41 </span>            :     //! @internal
-<span class="lineNum">      42 </span>            :     template &lt;size_t Height&gt;
-<span class="lineNum">      43 </span>            :     struct serialize
-<a name="44"><span class="lineNum">      44 </span>            :     {</a>
-<span class="lineNum">      45 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      46 </span><span class="lineCov">      16000 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
-<span class="lineNum">      47 </span>            :       {
-<span class="lineNum">      48 </span><span class="lineCov">      16000 :         ar( _CEREAL_NVP(&quot;tuple_element&quot;, std::get&lt;Height - 1&gt;( tuple )) );</span>
-<span class="lineNum">      49 </span><span class="lineCov">      16000 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
-<span class="lineNum">      50 </span><span class="lineCov">      16000 :       }</span>
-<span class="lineNum">      51 </span>            :     };
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            :     // Zero height specialization - nothing to do here
-<span class="lineNum">      54 </span>            :     //! @internal
-<span class="lineNum">      55 </span>            :     template &lt;&gt;
-<span class="lineNum">      56 </span>            :     struct serialize&lt;0&gt;
-<a name="57"><span class="lineNum">      57 </span>            :     {</a>
-<span class="lineNum">      58 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      59 </span><span class="lineCov">       4000 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
-<span class="lineNum">      60 </span><span class="lineCov">       4000 :       { }</span>
-<span class="lineNum">      61 </span>            :     };
-<span class="lineNum">      62 </span>            :   }
-<span class="lineNum">      63 </span>            : 
-<a name="64"><span class="lineNum">      64 </span>            :   //! Serializing for std::tuple</a>
-<span class="lineNum">      65 </span>            :   template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      66 </span><span class="lineCov">       4000 :   void serialize( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
-<span class="lineNum">      67 </span>            :   {
-<span class="lineNum">      68 </span><span class="lineCov">       4000 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
-<span class="lineNum">      69 </span><span class="lineCov">       4000 :   }</span>
-<span class="lineNum">      70 </span>            : } // namespace cereal
-<span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span>            : #endif // CEREAL_TYPES_TUPLE_HPP_
+<span class="lineNum">      40 </span>            :     //! Creates a c string from a sequence of characters
+<span class="lineNum">      41 </span>            :     /*! The c string created will alwas be prefixed by &quot;tuple_element&quot;
+<span class="lineNum">      42 </span>            :         Based on code from: http://stackoverflow/a/20973438/710791
+<span class="lineNum">      43 </span>            :         @internal */
+<span class="lineNum">      44 </span>            :     template&lt;char...Cs&gt;
+<span class="lineNum">      45 </span>            :     struct char_seq_to_c_str
+<span class="lineNum">      46 </span>            :     {
+<span class="lineNum">      47 </span>            :       static const int size = 14;// Size of array for the word: tuple_element
+<span class="lineNum">      48 </span>            :       typedef const char (&amp;arr_type)[sizeof...(Cs) + size];
+<span class="lineNum">      49 </span>            :       static const char str[sizeof...(Cs) + size];
+<span class="lineNum">      50 </span>            :     };
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :     // the word tuple_element plus a number
+<span class="lineNum">      53 </span>            :     //! @internal
+<span class="lineNum">      54 </span>            :     template&lt;char...Cs&gt;
+<span class="lineNum">      55 </span>            :     const char char_seq_to_c_str&lt;Cs...&gt;::str[sizeof...(Cs) + size] =
+<span class="lineNum">      56 </span>            :       {'t','u','p','l','e','_','e','l','e','m','e','n','t', Cs..., '\0'};
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :     //! Converts a number into a sequence of characters
+<span class="lineNum">      59 </span>            :     /*! @tparam Q The quotient of dividing the original number by 10
+<span class="lineNum">      60 </span>            :         @tparam R The remainder of dividing the original number by 10
+<span class="lineNum">      61 </span>            :         @tparam C The sequence built so far
+<span class="lineNum">      62 </span>            :         @internal */
+<span class="lineNum">      63 </span>            :     template &lt;size_t Q, size_t R, char ... C&gt;
+<span class="lineNum">      64 </span>            :     struct to_string_impl
+<span class="lineNum">      65 </span>            :     {
+<span class="lineNum">      66 </span>            :       using type = typename to_string_impl&lt;Q/1, Q%10, R+'0', C...&gt;::type;
+<span class="lineNum">      67 </span>            :     };
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            :     //! Base case with no quotient
+<span class="lineNum">      70 </span>            :     /*! @internal */
+<span class="lineNum">      71 </span>            :     template &lt;size_t R, char ... C&gt;
+<span class="lineNum">      72 </span>            :     struct to_string_impl&lt;0, R, C...&gt;
+<span class="lineNum">      73 </span>            :     {
+<span class="lineNum">      74 </span>            :       using type = char_seq_to_c_str&lt;R+'0', C...&gt;;
+<span class="lineNum">      75 </span>            :     };
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :     //! Generates a c string for a given index of a tuple
+<span class="lineNum">      78 </span>            :     /*! Example use:
+<span class="lineNum">      79 </span>            :         @code{cpp}
+<span class="lineNum">      80 </span>            :         tuple_element_name&lt;3&gt;::c_str();// returns &quot;tuple_element3&quot;
+<span class="lineNum">      81 </span>            :         @endcode
+<span class="lineNum">      82 </span>            :         @internal */
+<span class="lineNum">      83 </span>            :     template&lt;size_t T&gt;
+<span class="lineNum">      84 </span>            :     struct tuple_element_name
+<a name="85"><span class="lineNum">      85 </span>            :     {</a>
+<span class="lineNum">      86 </span>            :       using type = typename to_string_impl&lt;T/10, T%10&gt;::type;
+<span class="lineNum">      87 </span><span class="lineCov">      32000 :       static const typename type::arr_type c_str(){ return type::str; };</span>
+<span class="lineNum">      88 </span>            :     };
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            :     // unwinds a tuple to save it
+<span class="lineNum">      91 </span>            :     //! @internal
+<span class="lineNum">      92 </span>            :     template &lt;size_t Height&gt;
+<span class="lineNum">      93 </span>            :     struct serialize
+<a name="94"><span class="lineNum">      94 </span>            :     {</a>
+<span class="lineNum">      95 </span>            :       template &lt;class Archive, class ... Types&gt; inline
+<span class="lineNum">      96 </span><span class="lineCov">      32000 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">      97 </span>            :       {
+<span class="lineNum">      98 </span><span class="lineCov">      32000 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">      99 </span><span class="lineCov">      64000 :         ar( CEREAL_NVP_(tuple_element_name&lt;Height - 1&gt;::c_str(),</span>
+<span class="lineNum">     100 </span><span class="lineCov">      56000 :             std::get&lt;Height - 1&gt;( tuple )) );</span>
+<span class="lineNum">     101 </span><span class="lineCov">      32000 :       }</span>
+<span class="lineNum">     102 </span>            :     };
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :     // Zero height specialization - nothing to do here
+<span class="lineNum">     105 </span>            :     //! @internal
+<span class="lineNum">     106 </span>            :     template &lt;&gt;
+<span class="lineNum">     107 </span>            :     struct serialize&lt;0&gt;
+<a name="108"><span class="lineNum">     108 </span>            :     {</a>
+<span class="lineNum">     109 </span>            :       template &lt;class Archive, class ... Types&gt; inline
+<span class="lineNum">     110 </span><span class="lineCov">       8000 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
+<span class="lineNum">     111 </span><span class="lineCov">       8000 :       { }</span>
+<span class="lineNum">     112 </span>            :     };
+<span class="lineNum">     113 </span>            :   }
+<span class="lineNum">     114 </span>            : 
+<a name="115"><span class="lineNum">     115 </span>            :   //! Serializing for std::tuple</a>
+<span class="lineNum">     116 </span>            :   template &lt;class Archive, class ... Types&gt; inline
+<span class="lineNum">     117 </span><span class="lineCov">       8000 :   void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">     118 </span>            :   {
+<span class="lineNum">     119 </span><span class="lineCov">       8000 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">     120 </span><span class="lineCov">       8000 :   }</span>
+<span class="lineNum">     121 </span>            : } // namespace cereal
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span>            : #endif // CEREAL_TYPES_TUPLE_HPP_
 </pre>
       </td>
     </tr>
@@ -140,7 +191,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/types</a> - polymorphic.hpp<span style="font-size: 80%;"> (source / <a href="polymorphic.hpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">cereal/types</a> - polymorphic.hpp<span style="font-size: 80%;"> (source / <a href="polymorphic.hpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-21</td>
+            <td class="headerValue">2015-01-19 12:21:46</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">48</td>
@@ -106,341 +106,422 @@
 <span class="lineNum">      44 </span>            : #define STATIC_CONSTEXPR static constexpr
 <span class="lineNum">      45 </span>            : #endif
 <span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span>            : //! Registers a polymorphic type with cereal
-<span class="lineNum">      48 </span>            : /*! Polymorphic types must be registered before pointers
-<span class="lineNum">      49 </span>            :     to them can be serialized.  This also assumes that
-<span class="lineNum">      50 </span>            :     all relevent archives have also previously been
-<span class="lineNum">      51 </span>            :     registered.  Registration for archives is usually done
-<span class="lineNum">      52 </span>            :     in the header file in which they are defined.  This means
-<span class="lineNum">      53 </span>            :     that type registration needs to happen after specific
-<span class="lineNum">      54 </span>            :     archives to be used are included.
+<span class="lineNum">      47 </span>            : //! Registers a derived polymorphic type with cereal
+<span class="lineNum">      48 </span>            : /*! Polymorphic types must be registered before smart
+<span class="lineNum">      49 </span>            :     pointers to them can be serialized.  Note that base
+<span class="lineNum">      50 </span>            :     classes do not need to be registered.
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :     Registering a type lets cereal know how to properly
+<span class="lineNum">      53 </span>            :     serialize it when a smart pointer to a base object is
+<span class="lineNum">      54 </span>            :     used in conjunction with a derived class.
 <span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span>            :     Registering a type lets cereal know how to properly
-<span class="lineNum">      57 </span>            :     serialize it when a pointer to a base object is
-<span class="lineNum">      58 </span>            :     used in conjunction with a derived class.
-<span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span>            :     Polymorphic support in cereal requires RTTI to be
-<span class="lineNum">      61 </span>            :     enabled */
-<span class="lineNum">      62 </span>            : #define CEREAL_REGISTER_TYPE(T)                         \
-<span class="lineNum">      63 </span>            :   namespace cereal {                                    \
-<span class="lineNum">      64 </span>            :   namespace detail {                                    \
-<span class="lineNum">      65 </span>            :   template &lt;&gt;                                           \
-<span class="lineNum">      66 </span>            :   struct binding_name&lt;T&gt;                                \
-<span class="lineNum">      67 </span>            :   {                                                     \
-<span class="lineNum">      68 </span>            :     STATIC_CONSTEXPR char const * name() { return #T; } \
-<span class="lineNum">      69 </span>            :   };                                                    \
-<span class="lineNum">      70 </span>            :   } } /* end namespaces */                              \
-<span class="lineNum">      71 </span>            :   CEREAL_BIND_TO_ARCHIVES(T)
-<span class="lineNum">      72 </span>            : 
-<span class="lineNum">      73 </span>            : //! Registers a polymorphic type with cereal, giving it a
-<span class="lineNum">      74 </span>            : //! user defined name
-<span class="lineNum">      75 </span>            : /*! In some cases the default name used with
-<span class="lineNum">      76 </span>            :     CEREAL_REGISTER_TYPE (the name of the type) may not be
-<span class="lineNum">      77 </span>            :     suitable.  This macro allows any name to be associated
-<span class="lineNum">      78 </span>            :     with the type.  The name should be unique */
-<span class="lineNum">      79 </span>            : #define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)              \
-<span class="lineNum">      80 </span>            :   namespace cereal {                                         \
-<span class="lineNum">      81 </span>            :   namespace detail {                                         \
-<span class="lineNum">      82 </span>            :   template &lt;&gt;                                                \
-<span class="lineNum">      83 </span>            :   struct binding_name&lt;T&gt;                                     \
-<span class="lineNum">      84 </span>            :   { STATIC_CONSTEXPR char const * name() { return Name; } }; \
-<span class="lineNum">      85 </span>            :   } } /* end namespaces */                                   \
-<span class="lineNum">      86 </span>            :   CEREAL_BIND_TO_ARCHIVES(T)
-<span class="lineNum">      87 </span>            : 
-<span class="lineNum">      88 </span>            : #ifdef _MSC_VER
-<span class="lineNum">      89 </span>            : #undef CONSTEXPR
-<span class="lineNum">      90 </span>            : #endif
-<span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span>            : namespace cereal
-<span class="lineNum">      93 </span>            : {
-<span class="lineNum">      94 </span>            :   namespace polymorphic_detail
-<span class="lineNum">      95 </span>            :   {
-<span class="lineNum">      96 </span>            :     //! Get an input binding from the given archive by deserializing the type meta data
-<a name="97"><span class="lineNum">      97 </span>            :     /*! @internal */</a>
-<span class="lineNum">      98 </span>            :     template&lt;class Archive&gt; inline
-<span class="lineNum">      99 </span><span class="lineCov">       2000 :     typename ::cereal::detail::InputBindingMap&lt;Archive&gt;::Serializers getInputBinding(Archive &amp; ar, std::uint32_t const nameid)</span>
-<span class="lineNum">     100 </span>            :     {
-<span class="lineNum">     101 </span>            :       // If the nameid is zero, we serialized a null pointer
-<span class="lineNum">     102 </span><span class="lineCov">       2000 :       if(nameid == 0)</span>
-<a name="103"><span class="lineNum">     103 </span>            :       {</a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineNoCov">          0 :         typename ::cereal::detail::InputBindingMap&lt;Archive&gt;::Serializers emptySerializers;</span></a>
-<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         emptySerializers.shared_ptr = [](void*, std::shared_ptr&lt;void&gt; &amp; ptr) { ptr.reset(); };</span>
-<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         emptySerializers.unique_ptr = [](void*, std::unique_ptr&lt;void, ::cereal::detail::EmptyDeleter&lt;void&gt;&gt; &amp; ptr) { ptr.reset( nullptr ); };</span>
-<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         return emptySerializers;</span>
-<span class="lineNum">     108 </span>            :       }
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span><span class="lineCov">       2000 :       std::string name;</span>
-<span class="lineNum">     111 </span><span class="lineCov">       2000 :       if(nameid &amp; detail::msb_32bit)</span>
-<span class="lineNum">     112 </span>            :       {
-<span class="lineNum">     113 </span><span class="lineCov">        800 :         ar( _CEREAL_NVP(&quot;polymorphic_name&quot;, name) );</span>
-<span class="lineNum">     114 </span><span class="lineCov">        800 :         ar.registerPolymorphicName(nameid, name);</span>
-<span class="lineNum">     115 </span>            :       }
-<span class="lineNum">     116 </span>            :       else
-<span class="lineNum">     117 </span><span class="lineCov">       1200 :         name = ar.getPolymorphicName(nameid);</span>
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span><span class="lineCov">       2000 :       auto &amp; bindingMap = detail::StaticObject&lt;detail::InputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
-<span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span><span class="lineCov">       2000 :       auto binding = bindingMap.find(name);</span>
-<span class="lineNum">     122 </span><span class="lineCov">       2000 :       if(binding == bindingMap.end())</span>
-<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         throw cereal::Exception(&quot;Trying to load an unregistered polymorphic type (&quot; + name + &quot;)&quot;);</span>
-<span class="lineNum">     124 </span><span class="lineCov">       2000 :       return binding-&gt;second;</span>
-<span class="lineNum">     125 </span>            :     }
-<span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span>            :     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-<span class="lineNum">     128 </span>            :     /*! This check lets us try and skip doing polymorphic machinery if we can get away with
-<span class="lineNum">     129 </span>            :         using the derived class serialize function
-<span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span>            :         Note that on MSVC 2013 preview, is_default_constructible&lt;T&gt; returns true for abstract classes with
-<span class="lineNum">     132 </span>            :         default constructors, but on clang/gcc this will return false.  So we also need to check for that here.
-<span class="lineNum">     133 </span>            :         @internal */
-<span class="lineNum">     134 </span>            :     template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     135 </span>            :     typename std::enable_if&lt;(std::is_default_constructible&lt;T&gt;::value
-<span class="lineNum">     136 </span>            :                              || traits::has_load_and_construct&lt;T, Archive&gt;::value)
-<span class="lineNum">     137 </span>            :                              &amp;&amp; !std::is_abstract&lt;T&gt;::value, bool&gt;::type
-<span class="lineNum">     138 </span>            :     serialize_wrapper(Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr, std::uint32_t const nameid)
-<span class="lineNum">     139 </span>            :     {
-<span class="lineNum">     140 </span>            :       if(nameid &amp; detail::msb2_32bit)
-<span class="lineNum">     141 </span>            :       {
-<span class="lineNum">     142 </span>            :         ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
-<span class="lineNum">     143 </span>            :         return true;
-<span class="lineNum">     144 </span>            :       }
-<span class="lineNum">     145 </span>            :       return false;
-<span class="lineNum">     146 </span>            :     }
-<span class="lineNum">     147 </span>            : 
-<span class="lineNum">     148 </span>            :     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-<span class="lineNum">     149 </span>            :     /*! This check lets us try and skip doing polymorphic machinery if we can get away with
-<span class="lineNum">     150 </span>            :         using the derived class serialize function
-<span class="lineNum">     151 </span>            :         @internal */
-<span class="lineNum">     152 </span>            :     template&lt;class Archive, class T, class D&gt; inline
-<span class="lineNum">     153 </span>            :     typename std::enable_if&lt;(std::is_default_constructible&lt;T&gt;::value
-<span class="lineNum">     154 </span>            :                              || traits::has_load_and_construct&lt;T, Archive&gt;::value)
-<span class="lineNum">     155 </span>            :                              &amp;&amp; !std::is_abstract&lt;T&gt;::value, bool&gt;::type
-<span class="lineNum">     156 </span>            :     serialize_wrapper(Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr, std::uint32_t const nameid)
-<span class="lineNum">     157 </span>            :     {
-<span class="lineNum">     158 </span>            :       if(nameid &amp; detail::msb2_32bit)
-<span class="lineNum">     159 </span>            :       {
-<span class="lineNum">     160 </span>            :         ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
-<span class="lineNum">     161 </span>            :         return true;
-<span class="lineNum">     162 </span>            :       }
-<span class="lineNum">     163 </span>            :       return false;
-<span class="lineNum">     164 </span>            :     }
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span>            :     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-<span class="lineNum">     167 </span>            :     /*! This case is for when we can't actually construct the shared pointer.  Normally this would be caught
-<span class="lineNum">     168 </span>            :         as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
-<span class="lineNum">     169 </span>            :         the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
-<span class="lineNum">     170 </span>            :         this was a polymorphic type serialized by its proper pointer type
-<span class="lineNum">     171 </span>            :         @internal */
-<span class="lineNum">     172 </span>            :     template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     173 </span>            :     typename std::enable_if&lt;(!std::is_default_constructible&lt;T&gt;::value
-<a name="174"><span class="lineNum">     174 </span>            :                              &amp;&amp; !traits::has_load_and_construct&lt;T, Archive&gt;::value)</a>
-<span class="lineNum">     175 </span>            :                              || std::is_abstract&lt;T&gt;::value, bool&gt;::type
-<span class="lineNum">     176 </span><span class="lineCov">       1600 :     serialize_wrapper(Archive &amp;, std::shared_ptr&lt;T&gt; &amp;, std::uint32_t const nameid)</span>
-<span class="lineNum">     177 </span>            :     {
-<span class="lineNum">     178 </span><span class="lineCov">       1600 :       if(nameid &amp; detail::msb2_32bit)</span>
-<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         throw cereal::Exception(&quot;Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function&quot;);</span>
-<span class="lineNum">     180 </span><span class="lineCov">       1600 :       return false;</span>
-<span class="lineNum">     181 </span>            :     }
-<span class="lineNum">     182 </span>            : 
-<span class="lineNum">     183 </span>            :     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
-<span class="lineNum">     184 </span>            :     /*! This case is for when we can't actually construct the unique pointer.  Normally this would be caught
-<span class="lineNum">     185 </span>            :         as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
-<span class="lineNum">     186 </span>            :         the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
-<span class="lineNum">     187 </span>            :         this was a polymorphic type serialized by its proper pointer type
-<span class="lineNum">     188 </span>            :         @internal */
-<span class="lineNum">     189 </span>            :     template&lt;class Archive, class T, class D&gt; inline
-<span class="lineNum">     190 </span>            :      typename std::enable_if&lt;(!std::is_default_constructible&lt;T&gt;::value
-<a name="191"><span class="lineNum">     191 </span>            :                                &amp;&amp; !traits::has_load_and_construct&lt;T, Archive&gt;::value)</a>
-<span class="lineNum">     192 </span>            :                                || std::is_abstract&lt;T&gt;::value, bool&gt;::type
-<span class="lineNum">     193 </span><span class="lineCov">        400 :     serialize_wrapper(Archive &amp;, std::unique_ptr&lt;T, D&gt; &amp;, std::uint32_t const nameid)</span>
-<span class="lineNum">     194 </span>            :     {
-<span class="lineNum">     195 </span><span class="lineCov">        400 :       if(nameid &amp; detail::msb2_32bit)</span>
-<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         throw cereal::Exception(&quot;Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function&quot;);</span>
-<span class="lineNum">     197 </span><span class="lineCov">        400 :       return false;</span>
-<span class="lineNum">     198 </span>            :     }
-<span class="lineNum">     199 </span>            :   } // polymorphic_detail
-<span class="lineNum">     200 </span>            : 
-<span class="lineNum">     201 </span>            :   // ######################################################################
-<span class="lineNum">     202 </span>            :   // Pointer serialization for polymorphic types
-<span class="lineNum">     203 </span>            : 
-<span class="lineNum">     204 </span>            :   //! Saving std::shared_ptr for polymorphic types, abstract
-<a name="205"><span class="lineNum">     205 </span>            :   template &lt;class Archive, class T&gt; inline</a>
-<span class="lineNum">     206 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; std::is_abstract&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     207 </span><span class="lineCov">       1600 :   save( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )</span>
-<span class="lineNum">     208 </span>            :   {
-<span class="lineNum">     209 </span><span class="lineCov">       1600 :     if(!ptr)</span>
-<span class="lineNum">     210 </span>            :     {
-<span class="lineNum">     211 </span>            :       // same behavior as nullptr in memory implementation
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, std::uint32_t(0)) );</span>
-<span class="lineNum">     213 </span><span class="lineCov">       1600 :       return;</span>
-<span class="lineNum">     214 </span>            :     }
-<span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span><span class="lineCov">       1600 :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());</span>
-<span class="lineNum">     217 </span>            :     // ptrinfo can never be equal to T info since we can't have an instance
-<span class="lineNum">     218 </span>            :     // of an abstract object
-<span class="lineNum">     219 </span>            :     //  this implies we need to do the lookup
-<span class="lineNum">     220 </span>            : 
-<span class="lineNum">     221 </span><span class="lineCov">       1600 :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
-<span class="lineNum">     222 </span>            : 
-<span class="lineNum">     223 </span><span class="lineCov">       1600 :     auto binding = bindingMap.find(std::type_index(ptrinfo));</span>
-<span class="lineNum">     224 </span><span class="lineCov">       1600 :     if(binding == bindingMap.end())</span>
-<span class="lineNum">     225 </span><span class="lineNoCov">          0 :       throw cereal::Exception(&quot;Trying to save an unregistered polymorphic type (&quot; + cereal::util::demangle(ptrinfo.name()) + &quot;)&quot;);</span>
+<span class="lineNum">      56 </span>            :     This assumes that all relevant archives have also
+<span class="lineNum">      57 </span>            :     previously been registered.  Registration for archives
+<span class="lineNum">      58 </span>            :     is usually done in the header file in which they are
+<span class="lineNum">      59 </span>            :     defined.  This means that type registration needs to
+<span class="lineNum">      60 </span>            :     happen after specific archives to be used are included.
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :     It is recommended that type registration be done in
+<span class="lineNum">      63 </span>            :     the header file in which the type is declared.
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            :     Registration can also be placed in a source file,
+<span class="lineNum">      66 </span>            :     but this may require the use of the
+<span class="lineNum">      67 </span>            :     CEREAL_REGISTER_DYNAMIC_INIT macro (see below).
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            :     Registration may be called repeatedly for the same
+<span class="lineNum">      70 </span>            :     type in different translation units to add support
+<span class="lineNum">      71 </span>            :     for additional archives if they are not initially
+<span class="lineNum">      72 </span>            :     available (included and registered).
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :     When building serialization support as a DLL on
+<span class="lineNum">      75 </span>            :     Windows, registration must happen in the header file.
+<span class="lineNum">      76 </span>            :     On Linux and Mac things should still work properly
+<span class="lineNum">      77 </span>            :     if placed in a source file, but see the above comments
+<span class="lineNum">      78 </span>            :     on registering in source files.
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :     Polymorphic support in cereal requires RTTI to be
+<span class="lineNum">      81 </span>            :     enabled */
+<span class="lineNum">      82 </span>            : #define CEREAL_REGISTER_TYPE(T)                         \
+<span class="lineNum">      83 </span>            :   namespace cereal {                                    \
+<span class="lineNum">      84 </span>            :   namespace detail {                                    \
+<span class="lineNum">      85 </span>            :   template &lt;&gt;                                           \
+<span class="lineNum">      86 </span>            :   struct binding_name&lt;T&gt;                                \
+<span class="lineNum">      87 </span>            :   {                                                     \
+<span class="lineNum">      88 </span>            :     STATIC_CONSTEXPR char const * name() { return #T; } \
+<span class="lineNum">      89 </span>            :   };                                                    \
+<span class="lineNum">      90 </span>            :   } } /* end namespaces */                              \
+<span class="lineNum">      91 </span>            :   CEREAL_BIND_TO_ARCHIVES(T)
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            : //! Registers a polymorphic type with cereal, giving it a
+<span class="lineNum">      94 </span>            : //! user defined name
+<span class="lineNum">      95 </span>            : /*! In some cases the default name used with
+<span class="lineNum">      96 </span>            :     CEREAL_REGISTER_TYPE (the name of the type) may not be
+<span class="lineNum">      97 </span>            :     suitable.  This macro allows any name to be associated
+<span class="lineNum">      98 </span>            :     with the type.  The name should be unique */
+<span class="lineNum">      99 </span>            : #define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)              \
+<span class="lineNum">     100 </span>            :   namespace cereal {                                         \
+<span class="lineNum">     101 </span>            :   namespace detail {                                         \
+<span class="lineNum">     102 </span>            :   template &lt;&gt;                                                \
+<span class="lineNum">     103 </span>            :   struct binding_name&lt;T&gt;                                     \
+<span class="lineNum">     104 </span>            :   { STATIC_CONSTEXPR char const * name() { return Name; } }; \
+<span class="lineNum">     105 </span>            :   } } /* end namespaces */                                   \
+<span class="lineNum">     106 </span>            :   CEREAL_BIND_TO_ARCHIVES(T)
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            : //! Adds a way to force initialization of a translation unit containing
+<span class="lineNum">     109 </span>            : //! calls to CEREAL_REGISTER_TYPE
+<span class="lineNum">     110 </span>            : /*! In C++, dynamic initialization of non-local variables of a translation
+<span class="lineNum">     111 </span>            :     unit may be deferred until &quot;the first odr-use of any function or variable
+<span class="lineNum">     112 </span>            :     defined in the same translation unit as the variable to be initialized.&quot;
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            :     Informally, odr-use means that your program takes the address of or binds
+<span class="lineNum">     115 </span>            :     a reference directly to an object, which must have a definition.
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :     Since polymorphic type support in cereal relies on the dynamic
+<span class="lineNum">     118 </span>            :     initialization of certain global objects happening before
+<span class="lineNum">     119 </span>            :     serialization is performed, it is important to ensure that something
+<span class="lineNum">     120 </span>            :     from files that call CEREAL_REGISTER_TYPE is odr-used before serialization
+<span class="lineNum">     121 </span>            :     occurs, otherwise the registration will never take place.  This may often
+<span class="lineNum">     122 </span>            :     be the case when serialization is built as a shared library external from
+<span class="lineNum">     123 </span>            :     your main program.
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :     This macro, with any name of your choosing, should be placed into the
+<span class="lineNum">     126 </span>            :     source file that contains calls to CEREAL_REGISTER_TYPE.
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            :     Its counterpart, CEREAL_FORCE_DYNAMIC_INIT, should be placed in its
+<span class="lineNum">     129 </span>            :     associated header file such that it is included in the translation units
+<span class="lineNum">     130 </span>            :     (source files) in which you want the registration to appear.
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :     @relates CEREAL_FORCE_DYNAMIC_INIT
+<span class="lineNum">     133 </span>            :     */
+<span class="lineNum">     134 </span>            : #define CEREAL_REGISTER_DYNAMIC_INIT(Name)                   \
+<span class="lineNum">     135 </span>            :   namespace cereal {                                         \
+<span class="lineNum">     136 </span>            :   namespace detail {                                         \
+<span class="lineNum">     137 </span>            :     void CEREAL_DLL_EXPORT dynamic_init_dummy_##LibName() {} \
+<span class="lineNum">     138 </span>            :   } } /* end namespaces */
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            : //! Forces dynamic initialization of polymorphic support in a
+<span class="lineNum">     141 </span>            : //! previously registered source file
+<span class="lineNum">     142 </span>            : /*! @sa CEREAL_REGISTER_DYNAMIC_INIT
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            :     See CEREAL_REGISTER_DYNAMIC_INIT for detailed explanation
+<span class="lineNum">     145 </span>            :     of how this macro should be used.  The name used should
+<span class="lineNum">     146 </span>            :     match that for CEREAL_REGISTER_DYNAMIC_INIT. */
+<span class="lineNum">     147 </span>            : #define CEREAL_FORCE_DYNAMIC_INIT(Name)                 \
+<span class="lineNum">     148 </span>            :   namespace cereal {                                    \
+<span class="lineNum">     149 </span>            :   namespace detail {                                    \
+<span class="lineNum">     150 </span>            :     void dynamic_init_dummy_##LibName();                \
+<span class="lineNum">     151 </span>            :   } /* end detail */                                    \
+<span class="lineNum">     152 </span>            :   namespace {                                           \
+<span class="lineNum">     153 </span>            :     void dynamic_init_##LibName()                       \
+<span class="lineNum">     154 </span>            :     {                                                   \
+<span class="lineNum">     155 </span>            :       ::cereal::detail::dynamic_init_dummy_##LibName(); \
+<span class="lineNum">     156 </span>            :     }                                                   \
+<span class="lineNum">     157 </span>            :   } } /* end namespaces */
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            : #ifdef _MSC_VER
+<span class="lineNum">     160 </span>            : #undef CONSTEXPR
+<span class="lineNum">     161 </span>            : #endif
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            : namespace cereal
+<span class="lineNum">     164 </span>            : {
+<span class="lineNum">     165 </span>            :   namespace polymorphic_detail
+<span class="lineNum">     166 </span>            :   {
+<span class="lineNum">     167 </span>            :     //! Error message used for unregistered polymorphic types
+<span class="lineNum">     168 </span>            :     /*! @internal */
+<span class="lineNum">     169 </span>            :     #define UNREGISTERED_POLYMORPHIC_EXCEPTION(LoadSave, Name)                                                                                      \
+<span class="lineNum">     170 </span>            :       throw cereal::Exception(&quot;Trying to &quot; #LoadSave &quot; an unregistered polymorphic type (&quot; + Name + &quot;).\n&quot;                                          \
+<span class="lineNum">     171 </span>            :                               &quot;Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive &quot;                                   \
+<span class="lineNum">     172 </span>            :                               &quot;you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n&quot;   \
+<span class="lineNum">     173 </span>            :                               &quot;If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.&quot;);
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            :     //! Get an input binding from the given archive by deserializing the type meta data
+<a name="176"><span class="lineNum">     176 </span>            :     /*! @internal */</a>
+<span class="lineNum">     177 </span>            :     template&lt;class Archive&gt; inline
+<span class="lineNum">     178 </span><span class="lineCov">       4000 :     typename ::cereal::detail::InputBindingMap&lt;Archive&gt;::Serializers getInputBinding(Archive &amp; ar, std::uint32_t const nameid)</span>
+<span class="lineNum">     179 </span>            :     {
+<span class="lineNum">     180 </span>            :       // If the nameid is zero, we serialized a null pointer
+<span class="lineNum">     181 </span><span class="lineCov">       4000 :       if(nameid == 0)</span>
+<a name="182"><span class="lineNum">     182 </span>            :       {</a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :         typename ::cereal::detail::InputBindingMap&lt;Archive&gt;::Serializers emptySerializers;</span></a>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         emptySerializers.shared_ptr = [](void*, std::shared_ptr&lt;void&gt; &amp; ptr) { ptr.reset(); };</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         emptySerializers.unique_ptr = [](void*, std::unique_ptr&lt;void, ::cereal::detail::EmptyDeleter&lt;void&gt;&gt; &amp; ptr) { ptr.reset( nullptr ); };</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         return emptySerializers;</span>
+<span class="lineNum">     187 </span>            :       }
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span><span class="lineCov">       4000 :       std::string name;</span>
+<span class="lineNum">     190 </span><span class="lineCov">       4000 :       if(nameid &amp; detail::msb_32bit)</span>
+<span class="lineNum">     191 </span>            :       {
+<span class="lineNum">     192 </span><span class="lineCov">       1600 :         ar( CEREAL_NVP_(&quot;polymorphic_name&quot;, name) );</span>
+<span class="lineNum">     193 </span><span class="lineCov">       1600 :         ar.registerPolymorphicName(nameid, name);</span>
+<span class="lineNum">     194 </span>            :       }
+<span class="lineNum">     195 </span>            :       else
+<span class="lineNum">     196 </span><span class="lineCov">       2400 :         name = ar.getPolymorphicName(nameid);</span>
+<span class="lineNum">     197 </span>            : 
+<span class="lineNum">     198 </span><span class="lineCov">       4000 :       auto &amp; bindingMap = detail::StaticObject&lt;detail::InputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span><span class="lineCov">       4000 :       auto binding = bindingMap.find(name);</span>
+<span class="lineNum">     201 </span><span class="lineCov">       4000 :       if(binding == bindingMap.end())</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         UNREGISTERED_POLYMORPHIC_EXCEPTION(load, name)</span>
+<span class="lineNum">     203 </span><span class="lineCov">       4000 :       return binding-&gt;second;</span>
+<span class="lineNum">     204 </span>            :     }
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span>            :     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+<span class="lineNum">     207 </span>            :     /*! This check lets us try and skip doing polymorphic machinery if we can get away with
+<span class="lineNum">     208 </span>            :         using the derived class serialize function
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            :         Note that on MSVC 2013 preview, is_default_constructible&lt;T&gt; returns true for abstract classes with
+<span class="lineNum">     211 </span>            :         default constructors, but on clang/gcc this will return false.  So we also need to check for that here.
+<span class="lineNum">     212 </span>            :         @internal */
+<span class="lineNum">     213 </span>            :     template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     214 </span>            :     typename std::enable_if&lt;(traits::is_default_constructible&lt;T&gt;::value
+<span class="lineNum">     215 </span>            :                              || traits::has_load_and_construct&lt;T, Archive&gt;::value)
+<span class="lineNum">     216 </span>            :                              &amp;&amp; !std::is_abstract&lt;T&gt;::value, bool&gt;::type
+<span class="lineNum">     217 </span>            :     serialize_wrapper(Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr, std::uint32_t const nameid)
+<span class="lineNum">     218 </span>            :     {
+<span class="lineNum">     219 </span>            :       if(nameid &amp; detail::msb2_32bit)
+<span class="lineNum">     220 </span>            :       {
+<span class="lineNum">     221 </span>            :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     222 </span>            :         return true;
+<span class="lineNum">     223 </span>            :       }
+<span class="lineNum">     224 </span>            :       return false;
+<span class="lineNum">     225 </span>            :     }
 <span class="lineNum">     226 </span>            : 
-<span class="lineNum">     227 </span><span class="lineCov">       1600 :     binding-&gt;second.shared_ptr(&amp;ar, ptr.get());</span>
-<span class="lineNum">     228 </span>            :   }
-<span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span>            :   //! Saving std::shared_ptr for polymorphic types, not abstract
-<span class="lineNum">     231 </span>            :   template &lt;class Archive, class T&gt; inline
-<span class="lineNum">     232 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; !std::is_abstract&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     233 </span>            :   save( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )
-<span class="lineNum">     234 </span>            :   {
-<span class="lineNum">     235 </span>            :     if(!ptr)
+<span class="lineNum">     227 </span>            :     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+<span class="lineNum">     228 </span>            :     /*! This check lets us try and skip doing polymorphic machinery if we can get away with
+<span class="lineNum">     229 </span>            :         using the derived class serialize function
+<span class="lineNum">     230 </span>            :         @internal */
+<span class="lineNum">     231 </span>            :     template&lt;class Archive, class T, class D&gt; inline
+<span class="lineNum">     232 </span>            :     typename std::enable_if&lt;(traits::is_default_constructible&lt;T&gt;::value
+<span class="lineNum">     233 </span>            :                              || traits::has_load_and_construct&lt;T, Archive&gt;::value)
+<span class="lineNum">     234 </span>            :                              &amp;&amp; !std::is_abstract&lt;T&gt;::value, bool&gt;::type
+<span class="lineNum">     235 </span>            :     serialize_wrapper(Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr, std::uint32_t const nameid)
 <span class="lineNum">     236 </span>            :     {
-<span class="lineNum">     237 </span>            :       // same behavior as nullptr in memory implementation
-<span class="lineNum">     238 </span>            :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, std::uint32_t(0)) );
-<span class="lineNum">     239 </span>            :       return;
-<span class="lineNum">     240 </span>            :     }
-<span class="lineNum">     241 </span>            : 
-<span class="lineNum">     242 </span>            :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());
-<span class="lineNum">     243 </span>            :     static std::type_info const &amp; tinfo = typeid(T);
+<span class="lineNum">     237 </span>            :       if(nameid &amp; detail::msb2_32bit)
+<span class="lineNum">     238 </span>            :       {
+<span class="lineNum">     239 </span>            :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     240 </span>            :         return true;
+<span class="lineNum">     241 </span>            :       }
+<span class="lineNum">     242 </span>            :       return false;
+<span class="lineNum">     243 </span>            :     }
 <span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span>            :     if(ptrinfo == tinfo)
-<span class="lineNum">     246 </span>            :     {
-<span class="lineNum">     247 </span>            :       // The 2nd msb signals that the following pointer does not need to be
-<span class="lineNum">     248 </span>            :       // cast with our polymorphic machinery
-<span class="lineNum">     249 </span>            :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, detail::msb2_32bit) );
-<span class="lineNum">     250 </span>            : 
-<span class="lineNum">     251 </span>            :       ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
-<span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span>            :       return;
-<span class="lineNum">     254 </span>            :     }
-<span class="lineNum">     255 </span>            : 
-<span class="lineNum">     256 </span>            :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;
-<span class="lineNum">     257 </span>            : 
-<span class="lineNum">     258 </span>            :     auto binding = bindingMap.find(std::type_index(ptrinfo));
-<span class="lineNum">     259 </span>            :     if(binding == bindingMap.end())
-<span class="lineNum">     260 </span>            :       throw cereal::Exception(&quot;Trying to save an unregistered polymorphic type (&quot; + cereal::util::demangle(ptrinfo.name()) + &quot;)&quot;);
+<span class="lineNum">     245 </span>            :     //! Serialize a shared_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+<span class="lineNum">     246 </span>            :     /*! This case is for when we can't actually construct the shared pointer.  Normally this would be caught
+<span class="lineNum">     247 </span>            :         as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
+<span class="lineNum">     248 </span>            :         the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
+<span class="lineNum">     249 </span>            :         this was a polymorphic type serialized by its proper pointer type
+<span class="lineNum">     250 </span>            :         @internal */
+<span class="lineNum">     251 </span>            :     template&lt;class Archive, class T&gt; inline
+<span class="lineNum">     252 </span>            :     typename std::enable_if&lt;(!traits::is_default_constructible&lt;T&gt;::value
+<a name="253"><span class="lineNum">     253 </span>            :                              &amp;&amp; !traits::has_load_and_construct&lt;T, Archive&gt;::value)</a>
+<span class="lineNum">     254 </span>            :                              || std::is_abstract&lt;T&gt;::value, bool&gt;::type
+<span class="lineNum">     255 </span><span class="lineCov">       3200 :     serialize_wrapper(Archive &amp;, std::shared_ptr&lt;T&gt; &amp;, std::uint32_t const nameid)</span>
+<span class="lineNum">     256 </span>            :     {
+<span class="lineNum">     257 </span><span class="lineCov">       3200 :       if(nameid &amp; detail::msb2_32bit)</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         throw cereal::Exception(&quot;Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function&quot;);</span>
+<span class="lineNum">     259 </span><span class="lineCov">       3200 :       return false;</span>
+<span class="lineNum">     260 </span>            :     }
 <span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span>            :     binding-&gt;second.shared_ptr(&amp;ar, ptr.get());
-<span class="lineNum">     263 </span>            :   }
-<span class="lineNum">     264 </span>            : 
-<span class="lineNum">     265 </span>            :   //! Loading std::shared_ptr for polymorphic types
-<a name="266"><span class="lineNum">     266 </span>            :   template &lt;class Archive, class T&gt; inline</a>
-<span class="lineNum">     267 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     268 </span><span class="lineCov">       1600 :   load( Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr )</span>
-<span class="lineNum">     269 </span>            :   {
-<span class="lineNum">     270 </span>            :     std::uint32_t nameid;
-<span class="lineNum">     271 </span><span class="lineCov">       1600 :     ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, nameid) );</span>
-<span class="lineNum">     272 </span>            : 
-<span class="lineNum">     273 </span>            :     // Check to see if we can skip all of this polymorphism business
-<span class="lineNum">     274 </span><span class="lineCov">       1600 :     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))</span>
-<span class="lineNum">     275 </span><span class="lineCov">       1600 :       return;</span>
-<span class="lineNum">     276 </span>            : 
-<span class="lineNum">     277 </span><span class="lineCov">       1600 :     auto binding = polymorphic_detail::getInputBinding(ar, nameid);</span>
-<span class="lineNum">     278 </span><span class="lineCov">       3200 :     std::shared_ptr&lt;void&gt; result;</span>
-<span class="lineNum">     279 </span><span class="lineCov">       1600 :     binding.shared_ptr(&amp;ar, result);</span>
-<span class="lineNum">     280 </span><span class="lineCov">       3200 :     ptr = std::static_pointer_cast&lt;T&gt;(result);</span>
-<span class="lineNum">     281 </span>            :   }
+<span class="lineNum">     262 </span>            :     //! Serialize a unique_ptr if the 2nd msb in the nameid is set, and if we can actually construct the pointee
+<span class="lineNum">     263 </span>            :     /*! This case is for when we can't actually construct the unique pointer.  Normally this would be caught
+<span class="lineNum">     264 </span>            :         as the pointer itself is serialized, but since this is a polymorphic pointer, if we tried to serialize
+<span class="lineNum">     265 </span>            :         the pointer we'd end up back here recursively.  So we have to catch the error here as well, if
+<span class="lineNum">     266 </span>            :         this was a polymorphic type serialized by its proper pointer type
+<span class="lineNum">     267 </span>            :         @internal */
+<span class="lineNum">     268 </span>            :     template&lt;class Archive, class T, class D&gt; inline
+<span class="lineNum">     269 </span>            :      typename std::enable_if&lt;(!traits::is_default_constructible&lt;T&gt;::value
+<a name="270"><span class="lineNum">     270 </span>            :                                &amp;&amp; !traits::has_load_and_construct&lt;T, Archive&gt;::value)</a>
+<span class="lineNum">     271 </span>            :                                || std::is_abstract&lt;T&gt;::value, bool&gt;::type
+<span class="lineNum">     272 </span><span class="lineCov">        800 :     serialize_wrapper(Archive &amp;, std::unique_ptr&lt;T, D&gt; &amp;, std::uint32_t const nameid)</span>
+<span class="lineNum">     273 </span>            :     {
+<span class="lineNum">     274 </span><span class="lineCov">        800 :       if(nameid &amp; detail::msb2_32bit)</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         throw cereal::Exception(&quot;Cannot load a polymorphic type that is not default constructable and does not have a load_and_construct function&quot;);</span>
+<span class="lineNum">     276 </span><span class="lineCov">        800 :       return false;</span>
+<span class="lineNum">     277 </span>            :     }
+<span class="lineNum">     278 </span>            :   } // polymorphic_detail
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :   // ######################################################################
+<span class="lineNum">     281 </span>            :   // Pointer serialization for polymorphic types
 <span class="lineNum">     282 </span>            : 
-<span class="lineNum">     283 </span>            :   //! Saving std::weak_ptr for polymorphic types
+<span class="lineNum">     283 </span>            :   //! Saving std::shared_ptr for polymorphic types, abstract
 <a name="284"><span class="lineNum">     284 </span>            :   template &lt;class Archive, class T&gt; inline</a>
-<span class="lineNum">     285 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     286 </span><span class="lineCov">        400 :   save( Archive &amp; ar, std::weak_ptr&lt;T&gt; const &amp; ptr )</span>
+<span class="lineNum">     285 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; std::is_abstract&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     286 </span><span class="lineCov">       3200 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )</span>
 <span class="lineNum">     287 </span>            :   {
-<span class="lineNum">     288 </span><span class="lineCov">        400 :     auto const sptr = ptr.lock();</span>
-<span class="lineNum">     289 </span><span class="lineCov">        400 :     ar( _CEREAL_NVP(&quot;locked_ptr&quot;, sptr) );</span>
-<span class="lineNum">     290 </span><span class="lineCov">        400 :   }</span>
-<span class="lineNum">     291 </span>            : 
-<span class="lineNum">     292 </span>            :   //! Loading std::weak_ptr for polymorphic types
-<a name="293"><span class="lineNum">     293 </span>            :   template &lt;class Archive, class T&gt; inline</a>
-<span class="lineNum">     294 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     295 </span><span class="lineCov">        400 :   load( Archive &amp; ar, std::weak_ptr&lt;T&gt; &amp; ptr )</span>
-<span class="lineNum">     296 </span>            :   {
-<span class="lineNum">     297 </span><span class="lineCov">        400 :     std::shared_ptr&lt;T&gt; sptr;</span>
-<span class="lineNum">     298 </span><span class="lineCov">        400 :     ar( _CEREAL_NVP(&quot;locked_ptr&quot;, sptr) );</span>
-<span class="lineNum">     299 </span><span class="lineCov">        400 :     ptr = sptr;</span>
-<span class="lineNum">     300 </span><span class="lineCov">        400 :   }</span>
+<span class="lineNum">     288 </span><span class="lineCov">       3200 :     if(!ptr)</span>
+<span class="lineNum">     289 </span>            :     {
+<span class="lineNum">     290 </span>            :       // same behavior as nullptr in memory implementation
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, std::uint32_t(0)) );</span>
+<span class="lineNum">     292 </span><span class="lineCov">       3200 :       return;</span>
+<span class="lineNum">     293 </span>            :     }
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span><span class="lineCov">       3200 :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());</span>
+<span class="lineNum">     296 </span>            :     // ptrinfo can never be equal to T info since we can't have an instance
+<span class="lineNum">     297 </span>            :     // of an abstract object
+<span class="lineNum">     298 </span>            :     //  this implies we need to do the lookup
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span><span class="lineCov">       3200 :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
 <span class="lineNum">     301 </span>            : 
-<span class="lineNum">     302 </span>            :   //! Saving std::unique_ptr for polymorphic types that are abstract
-<a name="303"><span class="lineNum">     303 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
-<span class="lineNum">     304 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; std::is_abstract&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     305 </span><span class="lineCov">        400 :   save( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )</span>
-<span class="lineNum">     306 </span>            :   {
-<span class="lineNum">     307 </span><span class="lineCov">        400 :     if(!ptr)</span>
-<span class="lineNum">     308 </span>            :     {
-<span class="lineNum">     309 </span>            :       // same behavior as nullptr in memory implementation
-<span class="lineNum">     310 </span><span class="lineNoCov">          0 :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, std::uint32_t(0)) );</span>
-<span class="lineNum">     311 </span><span class="lineCov">        400 :       return;</span>
-<span class="lineNum">     312 </span>            :     }
-<span class="lineNum">     313 </span>            : 
-<span class="lineNum">     314 </span><span class="lineCov">        400 :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());</span>
-<span class="lineNum">     315 </span>            :     // ptrinfo can never be equal to T info since we can't have an instance
-<span class="lineNum">     316 </span>            :     // of an abstract object
-<span class="lineNum">     317 </span>            :     //  this implies we need to do the lookup
-<span class="lineNum">     318 </span>            : 
-<span class="lineNum">     319 </span><span class="lineCov">        400 :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
+<span class="lineNum">     302 </span><span class="lineCov">       3200 :     auto binding = bindingMap.find(std::type_index(ptrinfo));</span>
+<span class="lineNum">     303 </span><span class="lineCov">       3200 :     if(binding == bindingMap.end())</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))</span>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineCov">       3200 :     binding-&gt;second.shared_ptr(&amp;ar, ptr.get());</span>
+<span class="lineNum">     307 </span>            :   }
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span>            :   //! Saving std::shared_ptr for polymorphic types, not abstract
+<span class="lineNum">     310 </span>            :   template &lt;class Archive, class T&gt; inline
+<span class="lineNum">     311 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; !std::is_abstract&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     312 </span>            :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )
+<span class="lineNum">     313 </span>            :   {
+<span class="lineNum">     314 </span>            :     if(!ptr)
+<span class="lineNum">     315 </span>            :     {
+<span class="lineNum">     316 </span>            :       // same behavior as nullptr in memory implementation
+<span class="lineNum">     317 </span>            :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, std::uint32_t(0)) );
+<span class="lineNum">     318 </span>            :       return;
+<span class="lineNum">     319 </span>            :     }
 <span class="lineNum">     320 </span>            : 
-<span class="lineNum">     321 </span><span class="lineCov">        400 :     auto binding = bindingMap.find(std::type_index(ptrinfo));</span>
-<span class="lineNum">     322 </span><span class="lineCov">        400 :     if(binding == bindingMap.end())</span>
-<span class="lineNum">     323 </span><span class="lineNoCov">          0 :       throw cereal::Exception(&quot;Trying to save an unregistered polymorphic type (&quot; + cereal::util::demangle(ptrinfo.name()) + &quot;)&quot;);</span>
-<span class="lineNum">     324 </span>            : 
-<span class="lineNum">     325 </span><span class="lineCov">        400 :     binding-&gt;second.unique_ptr(&amp;ar, ptr.get());</span>
-<span class="lineNum">     326 </span>            :   }
-<span class="lineNum">     327 </span>            : 
-<span class="lineNum">     328 </span>            :   //! Saving std::unique_ptr for polymorphic types, not abstract
-<span class="lineNum">     329 </span>            :   template &lt;class Archive, class T, class D&gt; inline
-<span class="lineNum">     330 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; !std::is_abstract&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     331 </span>            :   save( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )
-<span class="lineNum">     332 </span>            :   {
-<span class="lineNum">     333 </span>            :     if(!ptr)
-<span class="lineNum">     334 </span>            :     {
-<span class="lineNum">     335 </span>            :       // same behavior as nullptr in memory implementation
-<span class="lineNum">     336 </span>            :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, std::uint32_t(0)) );
-<span class="lineNum">     337 </span>            :       return;
-<span class="lineNum">     338 </span>            :     }
-<span class="lineNum">     339 </span>            : 
-<span class="lineNum">     340 </span>            :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());
-<span class="lineNum">     341 </span>            :     static std::type_info const &amp; tinfo = typeid(T);
-<span class="lineNum">     342 </span>            : 
-<span class="lineNum">     343 </span>            :     if(ptrinfo == tinfo)
-<span class="lineNum">     344 </span>            :     {
-<span class="lineNum">     345 </span>            :       // The 2nd msb signals that the following pointer does not need to be
-<span class="lineNum">     346 </span>            :       // cast with our polymorphic machinery
-<span class="lineNum">     347 </span>            :       ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, detail::msb2_32bit) );
-<span class="lineNum">     348 </span>            : 
-<span class="lineNum">     349 </span>            :       ar( _CEREAL_NVP(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
-<span class="lineNum">     350 </span>            : 
-<span class="lineNum">     351 </span>            :       return;
-<span class="lineNum">     352 </span>            :     }
-<span class="lineNum">     353 </span>            : 
-<span class="lineNum">     354 </span>            :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;
+<span class="lineNum">     321 </span>            :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());
+<span class="lineNum">     322 </span>            :     static std::type_info const &amp; tinfo = typeid(T);
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span>            :     if(ptrinfo == tinfo)
+<span class="lineNum">     325 </span>            :     {
+<span class="lineNum">     326 </span>            :       // The 2nd msb signals that the following pointer does not need to be
+<span class="lineNum">     327 </span>            :       // cast with our polymorphic machinery
+<span class="lineNum">     328 </span>            :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, detail::msb2_32bit) );
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span>            :       ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :       return;
+<span class="lineNum">     333 </span>            :     }
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span>            :     auto binding = bindingMap.find(std::type_index(ptrinfo));
+<span class="lineNum">     338 </span>            :     if(binding == bindingMap.end())
+<span class="lineNum">     339 </span>            :       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span>            :     binding-&gt;second.shared_ptr(&amp;ar, ptr.get());
+<span class="lineNum">     342 </span>            :   }
+<span class="lineNum">     343 </span>            : 
+<span class="lineNum">     344 </span>            :   //! Loading std::shared_ptr for polymorphic types
+<a name="345"><span class="lineNum">     345 </span>            :   template &lt;class Archive, class T&gt; inline</a>
+<span class="lineNum">     346 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     347 </span><span class="lineCov">       3200 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr )</span>
+<span class="lineNum">     348 </span>            :   {
+<span class="lineNum">     349 </span>            :     std::uint32_t nameid;
+<span class="lineNum">     350 </span><span class="lineCov">       3200 :     ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, nameid) );</span>
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span>            :     // Check to see if we can skip all of this polymorphism business
+<span class="lineNum">     353 </span><span class="lineCov">       3200 :     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))</span>
+<span class="lineNum">     354 </span><span class="lineCov">       3200 :       return;</span>
 <span class="lineNum">     355 </span>            : 
-<span class="lineNum">     356 </span>            :     auto binding = bindingMap.find(std::type_index(ptrinfo));
-<span class="lineNum">     357 </span>            :     if(binding == bindingMap.end())
-<span class="lineNum">     358 </span>            :       throw cereal::Exception(&quot;Trying to save an unregistered polymorphic type (&quot; + cereal::util::demangle(ptrinfo.name()) + &quot;)&quot;);
-<span class="lineNum">     359 </span>            : 
-<span class="lineNum">     360 </span>            :     binding-&gt;second.unique_ptr(&amp;ar, ptr.get());
-<span class="lineNum">     361 </span>            :   }
-<span class="lineNum">     362 </span>            : 
-<span class="lineNum">     363 </span>            :   //! Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types
-<a name="364"><span class="lineNum">     364 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
-<span class="lineNum">     365 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     366 </span><span class="lineCov">        400 :   load( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr )</span>
-<span class="lineNum">     367 </span>            :   {
-<span class="lineNum">     368 </span>            :     std::uint32_t nameid;
-<span class="lineNum">     369 </span><span class="lineCov">        400 :     ar( _CEREAL_NVP(&quot;polymorphic_id&quot;, nameid) );</span>
+<span class="lineNum">     356 </span><span class="lineCov">       3200 :     auto binding = polymorphic_detail::getInputBinding(ar, nameid);</span>
+<span class="lineNum">     357 </span><span class="lineCov">       6400 :     std::shared_ptr&lt;void&gt; result;</span>
+<span class="lineNum">     358 </span><span class="lineCov">       3200 :     binding.shared_ptr(&amp;ar, result);</span>
+<span class="lineNum">     359 </span><span class="lineCov">       6400 :     ptr = std::static_pointer_cast&lt;T&gt;(result);</span>
+<span class="lineNum">     360 </span>            :   }
+<span class="lineNum">     361 </span>            : 
+<span class="lineNum">     362 </span>            :   //! Saving std::weak_ptr for polymorphic types
+<a name="363"><span class="lineNum">     363 </span>            :   template &lt;class Archive, class T&gt; inline</a>
+<span class="lineNum">     364 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     365 </span><span class="lineCov">        800 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; const &amp; ptr )</span>
+<span class="lineNum">     366 </span>            :   {
+<span class="lineNum">     367 </span><span class="lineCov">        800 :     auto const sptr = ptr.lock();</span>
+<span class="lineNum">     368 </span><span class="lineCov">        800 :     ar( CEREAL_NVP_(&quot;locked_ptr&quot;, sptr) );</span>
+<span class="lineNum">     369 </span><span class="lineCov">        800 :   }</span>
 <span class="lineNum">     370 </span>            : 
-<span class="lineNum">     371 </span>            :     // Check to see if we can skip all of this polymorphism business
-<span class="lineNum">     372 </span><span class="lineCov">        400 :     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))</span>
-<span class="lineNum">     373 </span><span class="lineCov">        400 :       return;</span>
-<span class="lineNum">     374 </span>            : 
-<span class="lineNum">     375 </span><span class="lineCov">        400 :     auto binding = polymorphic_detail::getInputBinding(ar, nameid);</span>
-<span class="lineNum">     376 </span><span class="lineCov">        800 :     std::unique_ptr&lt;void, ::cereal::detail::EmptyDeleter&lt;void&gt;&gt; result;</span>
-<span class="lineNum">     377 </span><span class="lineCov">        400 :     binding.unique_ptr(&amp;ar, result);</span>
-<span class="lineNum">     378 </span><span class="lineCov">        800 :     ptr.reset(static_cast&lt;T*&gt;(result.release()));</span>
-<span class="lineNum">     379 </span>            :   }
-<span class="lineNum">     380 </span>            : } // namespace cereal
-<span class="lineNum">     381 </span>            : #endif // CEREAL_TYPES_POLYMORPHIC_HPP_
+<span class="lineNum">     371 </span>            :   //! Loading std::weak_ptr for polymorphic types
+<a name="372"><span class="lineNum">     372 </span>            :   template &lt;class Archive, class T&gt; inline</a>
+<span class="lineNum">     373 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     374 </span><span class="lineCov">        800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; &amp; ptr )</span>
+<span class="lineNum">     375 </span>            :   {
+<span class="lineNum">     376 </span><span class="lineCov">        800 :     std::shared_ptr&lt;T&gt; sptr;</span>
+<span class="lineNum">     377 </span><span class="lineCov">        800 :     ar( CEREAL_NVP_(&quot;locked_ptr&quot;, sptr) );</span>
+<span class="lineNum">     378 </span><span class="lineCov">        800 :     ptr = sptr;</span>
+<span class="lineNum">     379 </span><span class="lineCov">        800 :   }</span>
+<span class="lineNum">     380 </span>            : 
+<span class="lineNum">     381 </span>            :   //! Saving std::unique_ptr for polymorphic types that are abstract
+<a name="382"><span class="lineNum">     382 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
+<span class="lineNum">     383 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; std::is_abstract&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     384 </span><span class="lineCov">        800 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )</span>
+<span class="lineNum">     385 </span>            :   {
+<span class="lineNum">     386 </span><span class="lineCov">        800 :     if(!ptr)</span>
+<span class="lineNum">     387 </span>            :     {
+<span class="lineNum">     388 </span>            :       // same behavior as nullptr in memory implementation
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, std::uint32_t(0)) );</span>
+<span class="lineNum">     390 </span><span class="lineCov">        800 :       return;</span>
+<span class="lineNum">     391 </span>            :     }
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span><span class="lineCov">        800 :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());</span>
+<span class="lineNum">     394 </span>            :     // ptrinfo can never be equal to T info since we can't have an instance
+<span class="lineNum">     395 </span>            :     // of an abstract object
+<span class="lineNum">     396 </span>            :     //  this implies we need to do the lookup
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineCov">        800 :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
+<span class="lineNum">     399 </span>            : 
+<span class="lineNum">     400 </span><span class="lineCov">        800 :     auto binding = bindingMap.find(std::type_index(ptrinfo));</span>
+<span class="lineNum">     401 </span><span class="lineCov">        800 :     if(binding == bindingMap.end())</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))</span>
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span><span class="lineCov">        800 :     binding-&gt;second.unique_ptr(&amp;ar, ptr.get());</span>
+<span class="lineNum">     405 </span>            :   }
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span>            :   //! Saving std::unique_ptr for polymorphic types, not abstract
+<span class="lineNum">     408 </span>            :   template &lt;class Archive, class T, class D&gt; inline
+<span class="lineNum">     409 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value &amp;&amp; !std::is_abstract&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     410 </span>            :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )
+<span class="lineNum">     411 </span>            :   {
+<span class="lineNum">     412 </span>            :     if(!ptr)
+<span class="lineNum">     413 </span>            :     {
+<span class="lineNum">     414 </span>            :       // same behavior as nullptr in memory implementation
+<span class="lineNum">     415 </span>            :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, std::uint32_t(0)) );
+<span class="lineNum">     416 </span>            :       return;
+<span class="lineNum">     417 </span>            :     }
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            :     std::type_info const &amp; ptrinfo = typeid(*ptr.get());
+<span class="lineNum">     420 </span>            :     static std::type_info const &amp; tinfo = typeid(T);
+<span class="lineNum">     421 </span>            : 
+<span class="lineNum">     422 </span>            :     if(ptrinfo == tinfo)
+<span class="lineNum">     423 </span>            :     {
+<span class="lineNum">     424 </span>            :       // The 2nd msb signals that the following pointer does not need to be
+<span class="lineNum">     425 </span>            :       // cast with our polymorphic machinery
+<span class="lineNum">     426 </span>            :       ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, detail::msb2_32bit) );
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            :       ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     429 </span>            : 
+<span class="lineNum">     430 </span>            :       return;
+<span class="lineNum">     431 </span>            :     }
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span>            :     auto &amp; bindingMap = detail::StaticObject&lt;detail::OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span>            :     auto binding = bindingMap.find(std::type_index(ptrinfo));
+<span class="lineNum">     436 </span>            :     if(binding == bindingMap.end())
+<span class="lineNum">     437 </span>            :       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span>            :     binding-&gt;second.unique_ptr(&amp;ar, ptr.get());
+<span class="lineNum">     440 </span>            :   }
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span>            :   //! Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types
+<a name="443"><span class="lineNum">     443 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
+<span class="lineNum">     444 </span>            :   typename std::enable_if&lt;std::is_polymorphic&lt;T&gt;::value, void&gt;::type
+<span class="lineNum">     445 </span><span class="lineCov">        800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr )</span>
+<span class="lineNum">     446 </span>            :   {
+<span class="lineNum">     447 </span>            :     std::uint32_t nameid;
+<span class="lineNum">     448 </span><span class="lineCov">        800 :     ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, nameid) );</span>
+<span class="lineNum">     449 </span>            : 
+<span class="lineNum">     450 </span>            :     // Check to see if we can skip all of this polymorphism business
+<span class="lineNum">     451 </span><span class="lineCov">        800 :     if(polymorphic_detail::serialize_wrapper(ar, ptr, nameid))</span>
+<span class="lineNum">     452 </span><span class="lineCov">        800 :       return;</span>
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span><span class="lineCov">        800 :     auto binding = polymorphic_detail::getInputBinding(ar, nameid);</span>
+<span class="lineNum">     455 </span><span class="lineCov">       1600 :     std::unique_ptr&lt;void, ::cereal::detail::EmptyDeleter&lt;void&gt;&gt; result;</span>
+<span class="lineNum">     456 </span><span class="lineCov">        800 :     binding.unique_ptr(&amp;ar, result);</span>
+<span class="lineNum">     457 </span><span class="lineCov">       1600 :     ptr.reset(static_cast&lt;T*&gt;(result.release()));</span>
+<span class="lineNum">     458 </span>            :   }
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span>            :   #undef UNREGISTERED_POLYMORPHIC_EXCEPTION
+<span class="lineNum">     461 </span>            : } // namespace cereal
+<span class="lineNum">     462 </span>            : #endif // CEREAL_TYPES_POLYMORPHIC_HPP_
 </pre>
       </td>
     </tr>
@@ -449,7 +530,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

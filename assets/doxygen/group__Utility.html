@@ -154,15 +154,16 @@ template&lt;class T &gt; </td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>detail {                                          \</div>
 <div class="line">    template &lt;&gt; <span class="keyword">struct </span>Version&lt;TYPE&gt;                                             \</div>
 <div class="line">    {                                                                            \</div>
-<div class="line">      static <span class="keyword">const</span> std::uint32_t version = VERSION_NUMBER;                       \</div>
-<div class="line">      static Version&lt;TYPE&gt; registerVersion()                                     \</div>
+<div class="line">      static <span class="keyword">const</span> std::uint32_t version;                                        \</div>
+<div class="line">      static std::uint32_t registerVersion()                                     \</div>
 <div class="line">      {                                                                          \</div>
 <div class="line">        ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \</div>
 <div class="line">             std::type_index(<span class="keyword">typeid</span>(TYPE)).hash_code(), VERSION_NUMBER );        \</div>
-<div class="line">        return {};                                                               \</div>
+<div class="line">        return VERSION_NUMBER;                                                   \</div>
 <div class="line">      }                                                                          \</div>
+<div class="line">      static <span class="keywordtype">void</span> unused() { (void)version; }                                    \</div>
 <div class="line">    }; <span class="comment">/* end Version */</span>                                                         \</div>
-<div class="line">    static <span class="keyword">const</span> <span class="keyword">auto</span> CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \</div>
+<div class="line">    const std::uint32_t Version&lt;TYPE&gt;::version =                                 \</div>
 <div class="line">      Version&lt;TYPE&gt;::registerVersion();                                          \</div>
 <div class="line">  } }</div>
 </div><!-- fragment -->
@@ -171,7 +172,7 @@ template&lt;class T &gt; </td></tr>
 <p>Versioning is useful if you plan on fundamentally changing the way some type is serialized in the future. Versioned serialization functions cannot be used to load non-versioned data.</p>
 <p>By default, all types have an assumed version value of zero. By using this macro, you may change the version number associated with some type. cereal will then use this value as a second parameter to your serialization functions.</p>
 <p>The interface for the serialization functions is nearly identical to non-versioned serialization with the addition of a second parameter, const std::uint32_t version, which will be supplied with the correct version number. Serializing the version number on a save happens automatically.</p>
-<p>Versioning cannot be mixed with non-versioned serialization functions. Having both types will result result in a compile time error.</p>
+<p>Versioning cannot be mixed with non-versioned serialization functions. Having both types will result result in a compile time error. Data serialized without versioning cannot be loaded by a serialization function with added versioning support.</p>
 <p>Example interface for versioning on a non-member serialize function:</p>
 <div class="fragment"><div class="line"><a class="code" href="group__Utility.html#gabea833652252591a51f75cb9ce31f44a">CEREAL_CLASS_VERSION</a>( Mytype, 77 ); <span class="comment">// register class version</span></div>
 <div class="line"></div>
@@ -271,7 +272,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

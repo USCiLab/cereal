@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['default',['Default',['../classcereal_1_1JSONOutputArchive_1_1Options.html#a82ac8216b731ffc3669c9a16e18efc86',1,'cereal::JSONOutputArchive::Options::Default()'],['../classcereal_1_1XMLOutputArchive_1_1Options.html#ab7120fd4a284844186093c581e922c87',1,'cereal::XMLOutputArchive::Options::Default()']]]
+  ['cereal_5fserialize_5ffunction_5fname',['CEREAL_SERIALIZE_FUNCTION_NAME',['../structcereal_1_1MapItem.html#aabc18ae871506e4965cd785ad314e1ec',1,'cereal::MapItem']]]
 ];

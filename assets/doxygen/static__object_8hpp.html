@@ -87,7 +87,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">static_object.hpp File Reference<div class="ingroups"><a class="el" href="group__Internal.html">Internal Functionality</a></div></div>  </div>
 </div><!--header-->
@@ -95,8 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Internal polymorphism static object support.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;<a class="el" href="util_8hpp_source.html">cereal/details/util.hpp</a>&gt;</code><br/>
-</div>
+
 <p><a href="static__object_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -104,14 +104,39 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1detail_1_1StaticObject.html">cereal::detail::StaticObject&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A static, pre-execution object.  <a href="classcereal_1_1detail_1_1StaticObject.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:afde52a096f363ebe6869a9c0f9ef4cbb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="static__object_8hpp.html#afde52a096f363ebe6869a9c0f9ef4cbb">CEREAL_DLL_EXPORT</a></td></tr>
+<tr class="memdesc:afde52a096f363ebe6869a9c0f9ef4cbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prevent link optimization from removing non-referenced static objects.  <a href="#afde52a096f363ebe6869a9c0f9ef4cbb">More...</a><br/></td></tr>
+<tr class="separator:afde52a096f363ebe6869a9c0f9ef4cbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d77747d06a0ce156758251b8eb6e82d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d77747d06a0ce156758251b8eb6e82d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CEREAL_USED</b>&#160;&#160;&#160;__attribute__ ((__used__))</td></tr>
+<tr class="separator:a8d77747d06a0ce156758251b8eb6e82d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal polymorphism static object support. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="afde52a096f363ebe6869a9c0f9ef4cbb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_DLL_EXPORT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prevent link optimization from removing non-referenced static objects. </p>
+<p>Especially for polymorphic support, we create static objects which may not ever be explicitly referenced. Most linkers will detect this and remove the code causing various unpleasant runtime errors. These macros, adopted from Boost (see force_include.hpp) prevent this (C) Copyright 2002 Robert Ramey - <a href="http://www.rrsd.com">http://www.rrsd.com</a> . Use, modification and distribution is subject to the Boost Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>) </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

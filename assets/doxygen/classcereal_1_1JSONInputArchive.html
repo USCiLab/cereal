@@ -107,7 +107,8 @@ Inheritance diagram for cereal::JSONInputArchive:</div>
   <img src="classcereal_1_1JSONInputArchive.png" usemap="#cereal::JSONInputArchive_map" alt=""/>
   <map id="cereal::JSONInputArchive_map" name="cereal::JSONInputArchive_map">
 <area href="classcereal_1_1InputArchive.html" alt="cereal::InputArchive&lt; JSONInputArchive &gt;" shape="rect" coords="0,56,256,80"/>
-<area href="structcereal_1_1detail_1_1InputArchiveBase.html" alt="cereal::detail::InputArchiveBase" shape="rect" coords="0,0,256,24"/>
+<area href="structcereal_1_1traits_1_1TextArchive.html" title="Type traits only struct used to mark an archive as human readable (text based) " alt="cereal::traits::TextArchive" shape="rect" coords="266,56,522,80"/>
+<area href="classcereal_1_1detail_1_1InputArchiveBase.html" alt="cereal::detail::InputArchiveBase" shape="rect" coords="0,0,256,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -163,50 +164,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONInputArchive.html#afccba6c5547664fbffc72f205557a1ef">setNextName</a> (const char *name)</td></tr>
 <tr class="memdesc:afccba6c5547664fbffc72f205557a1ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the name for the next node created with startNode. <br/></td></tr>
 <tr class="separator:afccba6c5547664fbffc72f205557a1ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa5f07995b1cc95e63a7f1c9909b24e8"><td class="memTemplParams" colspan="2"><a class="anchor" id="aaa5f07995b1cc95e63a7f1c9909b24e8"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:aaa5f07995b1cc95e63a7f1c9909b24e8"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_signed<br class="typebreak"/>
-&lt; T &gt;::value &amp;&amp;sizeof(T)<br class="typebreak"/>
-&lt; sizeof(int64_t), void &gt;<br class="typebreak"/>
-::type loadValue(T &amp;val){search();val=itsIteratorStack.back().value().GetInt();++itsIteratorStack.back();}template<br class="typebreak"/>
-&lt; class T &gt; inline typename <br class="typebreak"/>
-std::enable_if<br class="typebreak"/>
-&lt;(std::is_unsigned&lt; T &gt;::value <br class="typebreak"/>
-&amp;&amp;sizeof(T)&lt; sizeof(uint64_t))&amp;&amp;!std::is_same<br class="typebreak"/>
-&lt; bool, T &gt;::value, void &gt;<br class="typebreak"/>
-::type loadValue(T &amp;val){search();val=itsIteratorStack.back().value().GetUint();++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(bool &amp;val){search();val=itsIteratorStack.back().value().GetBool_();++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(int64_t &amp;val){search();val=itsIteratorStack.back().value().GetInt64();++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(uint64_t &amp;val){search();val=itsIteratorStack.back().value().GetUint64();++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(float &amp;val){search();val=static_cast<br class="typebreak"/>
-&lt; float &gt;itsIteratorStack.back().value().GetDouble());++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(double &amp;val){search();val=itsIteratorStack.back().value().GetDouble();++itsIteratorStack.back();}void <br class="typebreak"/>
-loadValue(std::string &amp;val){search();val=itsIteratorStack.back().value().GetString();++itsIteratorStack.back();}private:void <br class="typebreak"/>
-stringToNumber(std::string <br class="typebreak"/>
-const &amp;str, long long &amp;val){val=std::stoll(str);}void <br class="typebreak"/>
-stringToNumber(std::string <br class="typebreak"/>
-const &amp;str, unsigned long long <br class="typebreak"/>
-&amp;val){val=std::stoull(str);}void <br class="typebreak"/>
-stringToNumber(std::string <br class="typebreak"/>
-const &amp;str, long double &amp;val){val=std::stold(str);}public:template<br class="typebreak"/>
-&lt; class T &gt; inline typename <br class="typebreak"/>
-std::enable_if<br class="typebreak"/>
-&lt; std::is_arithmetic&lt; T &gt;<br class="typebreak"/>
-::value &amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-long &gt;::value &amp;&amp;!std::is_same<br class="typebreak"/>
-&lt; T, unsigned long &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::int64_t &gt;::value <br class="typebreak"/>
-&amp;&amp;!std::is_same&lt; T, <br class="typebreak"/>
-std::uint64_t &gt;::value <br class="typebreak"/>
-&amp;&amp;(sizeof(T) &gt;=sizeof(long <br class="typebreak"/>
-double)||sizeof(T) &gt;=sizeof(long <br class="typebreak"/>
-long)), void &gt;::type loadValue(T <br class="typebreak"/>
-&amp;val){std::string encoded;loadValue(encoded);stringToNumber(encoded, <br class="typebreak"/>
-val);}void loadSize(size_type <br class="typebreak"/>
-&amp;size){size=(itsIteratorStack.rbegin()+1) -&gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1JSONInputArchive.html#aaa5f07995b1cc95e63a7f1c9909b24e8">value</a> ().Size()</td></tr>
-<tr class="memdesc:aaa5f07995b1cc95e63a7f1c9909b24e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a value from the current node - small signed overload. <br/></td></tr>
-<tr class="separator:aaa5f07995b1cc95e63a7f1c9909b24e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An input archive designed to load data from JSON. </p>
@@ -335,7 +292,7 @@ val);}void loadSize(size_type <br class="typebreak"/>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

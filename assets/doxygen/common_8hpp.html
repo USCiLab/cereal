@@ -118,32 +118,32 @@ template&lt;class Archive , class T &gt; </td></tr>
 <tr class="memitem:a52dab5e759681d7252858cdadaf2c1e3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::common_detail::serializeArray</b> (Archive &amp;ar, T &amp;array, std::false_type)</td></tr>
 <tr class="memdesc:a52dab5e759681d7252858cdadaf2c1e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for arrays if <a class="el" href="structcereal_1_1BinaryData.html" title="A wrapper around data that can be serialized in a binary fashion. ">BinaryData</a> is not supported or we are not arithmetic. <br/></td></tr>
 <tr class="separator:a52dab5e759681d7252858cdadaf2c1e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa718df8551b53246520dc06022136917"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa718df8551b53246520dc06022136917"></a>
+<tr class="memitem:a073d35d55ad8dc81ce149fb799aab9f0"><td class="memTemplParams" colspan="2"><a class="anchor" id="a073d35d55ad8dc81ce149fb799aab9f0"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:aa718df8551b53246520dc06022136917"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:a073d35d55ad8dc81ce149fb799aab9f0"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; common_detail::is_enum&lt; T &gt;<br class="typebreak"/>
 ::value, typename <br class="typebreak"/>
 common_detail::is_enum&lt; T &gt;<br class="typebreak"/>
-::base_type &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::save_minimal</b> (Archive const &amp;, T const &amp;t)</td></tr>
-<tr class="memdesc:aa718df8551b53246520dc06022136917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for enum types. <br/></td></tr>
-<tr class="separator:aa718df8551b53246520dc06022136917"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20e7f5033ecd0e26be1b334a51d27190"><td class="memTemplParams" colspan="2"><a class="anchor" id="a20e7f5033ecd0e26be1b334a51d27190"></a>
+::base_type &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_MINIMAL_FUNCTION_NAME</b> (Archive const &amp;, T const &amp;t)</td></tr>
+<tr class="memdesc:a073d35d55ad8dc81ce149fb799aab9f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for enum types. <br/></td></tr>
+<tr class="separator:a073d35d55ad8dc81ce149fb799aab9f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa110605d7a57863ad6cf9370332f446d"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa110605d7a57863ad6cf9370332f446d"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a20e7f5033ecd0e26be1b334a51d27190"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
+<tr class="memitem:aa110605d7a57863ad6cf9370332f446d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if<br class="typebreak"/>
 &lt; common_detail::is_enum&lt; T &gt;<br class="typebreak"/>
-::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::load_minimal</b> (Archive const &amp;, T &amp;&amp;t, typename common_detail::is_enum&lt; T &gt;::base_type const &amp;value)</td></tr>
-<tr class="memdesc:a20e7f5033ecd0e26be1b334a51d27190"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for enum types. <br/></td></tr>
-<tr class="separator:a20e7f5033ecd0e26be1b334a51d27190"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a476cd888a47d6acdbe2994f095e67ff7"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a476cd888a47d6acdbe2994f095e67ff7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;, T *&amp;)</td></tr>
-<tr class="memdesc:a476cd888a47d6acdbe2994f095e67ff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for raw pointers.  <a href="#a476cd888a47d6acdbe2994f095e67ff7">More...</a><br/></td></tr>
-<tr class="separator:a476cd888a47d6acdbe2994f095e67ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f210373fda0fda5ef436f507db010e2"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5f210373fda0fda5ef436f507db010e2"></a>
+::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_MINIMAL_FUNCTION_NAME</b> (Archive const &amp;, T &amp;&amp;t, typename common_detail::is_enum&lt; T &gt;::base_type const &amp;value)</td></tr>
+<tr class="memdesc:aa110605d7a57863ad6cf9370332f446d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for enum types. <br/></td></tr>
+<tr class="separator:aa110605d7a57863ad6cf9370332f446d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a676a85ac8cfcd512a743f930a10b6770"><td class="memTemplParams" colspan="2">template&lt;class Archive , class T &gt; </td></tr>
+<tr class="memitem:a676a85ac8cfcd512a743f930a10b6770"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SERIALIZE_FUNCTION_NAME</b> (Archive &amp;, T *&amp;)</td></tr>
+<tr class="memdesc:a676a85ac8cfcd512a743f930a10b6770"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for raw pointers.  <a href="#a676a85ac8cfcd512a743f930a10b6770">More...</a><br/></td></tr>
+<tr class="separator:a676a85ac8cfcd512a743f930a10b6770"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22053a71b907666422b3a281be15bbc0"><td class="memTemplParams" colspan="2"><a class="anchor" id="a22053a71b907666422b3a281be15bbc0"></a>
 template&lt;class Archive , class T &gt; </td></tr>
-<tr class="memitem:a5f210373fda0fda5ef436f507db010e2"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_array<br class="typebreak"/>
-&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::serialize</b> (Archive &amp;ar, T &amp;array)</td></tr>
-<tr class="memdesc:a5f210373fda0fda5ef436f507db010e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for C style arrays. <br/></td></tr>
-<tr class="separator:a5f210373fda0fda5ef436f507db010e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22053a71b907666422b3a281be15bbc0"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_array<br class="typebreak"/>
+&lt; T &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SERIALIZE_FUNCTION_NAME</b> (Archive &amp;ar, T &amp;array)</td></tr>
+<tr class="memdesc:a22053a71b907666422b3a281be15bbc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization for C style arrays. <br/></td></tr>
+<tr class="separator:a22053a71b907666422b3a281be15bbc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support common types - always included automatically. </p>
@@ -151,7 +151,7 @@ template&lt;class Archive , class T &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 21 2014 17:15:03 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
