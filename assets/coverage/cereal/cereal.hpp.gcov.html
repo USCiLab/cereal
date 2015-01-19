@@ -19,7 +19,7 @@
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">cereal</a> - cereal.hpp<span style="font-size: 80%;"> (source / <a href="cereal.hpp.func.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">cereal</a> - cereal.hpp<span style="font-size: 80%;"> (source / <a href="cereal.hpp.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">184</td>
-            <td class="headerCovTableEntry">186</td>
+            <td class="headerCovTableEntry">180</td>
+            <td class="headerCovTableEntry">182</td>
             <td class="headerCovTableEntryHi">98.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2014-03-21</td>
+            <td class="headerValue">2015-01-19 12:21:46</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">8706</td>
-            <td class="headerCovTableEntry">8800</td>
-            <td class="headerCovTableEntryHi">98.9 %</td>
+            <td class="headerCovTableEntry">9141</td>
+            <td class="headerCovTableEntry">9229</td>
+            <td class="headerCovTableEntryHi">99.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -101,932 +101,906 @@
 <span class="lineNum">      39 </span>            : #include &lt;cstdint&gt;
 <span class="lineNum">      40 </span>            : #include &lt;functional&gt;
 <span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            : #include &lt;cereal/details/traits.hpp&gt;
-<span class="lineNum">      43 </span>            : #include &lt;cereal/details/helpers.hpp&gt;
-<span class="lineNum">      44 </span>            : #include &lt;cereal/types/base_class.hpp&gt;
-<span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span>            : namespace cereal
-<span class="lineNum">      47 </span>            : {
-<span class="lineNum">      48 </span>            :   // ######################################################################
-<span class="lineNum">      49 </span>            :   //! Creates a name value pair
-<span class="lineNum">      50 </span>            :   /*! @relates NameValuePair
-<a name="51"><span class="lineNum">      51 </span>            :       @ingroup Utility */</a>
-<span class="lineNum">      52 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">      53 </span><span class="lineCov">       2600 :   NameValuePair&lt;T&gt; make_nvp( std::string const &amp; name, T &amp;&amp; value )</span>
-<span class="lineNum">      54 </span>            :   {
-<span class="lineNum">      55 </span><span class="lineCov">       2600 :     return {name.c_str(), std::forward&lt;T&gt;(value)};</span>
-<span class="lineNum">      56 </span>            :   }
-<span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span>            :   //! Creates a name value pair
-<span class="lineNum">      59 </span>            :   /*! @relates NameValuePair
-<a name="60"><span class="lineNum">      60 </span>            :       @ingroup Utility */</a>
-<span class="lineNum">      61 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">      62 </span><span class="lineCov">       1000 :   NameValuePair&lt;T&gt; make_nvp( const char * name, T &amp;&amp; value )</span>
-<span class="lineNum">      63 </span>            :   {
-<span class="lineNum">      64 </span><span class="lineCov">       1000 :     return {name, std::forward&lt;T&gt;(value)};</span>
-<span class="lineNum">      65 </span>            :   }
-<span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span>            :   //! Creates a name value pair for the variable T with the same name as the variable
-<span class="lineNum">      68 </span>            :   /*! @relates NameValuePair
-<span class="lineNum">      69 </span>            :       @ingroup Utility */
-<span class="lineNum">      70 </span>            :   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
-<span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span>            :   // ######################################################################
-<span class="lineNum">      73 </span>            :   //! Convenience function to create binary data for both const and non const pointers
-<span class="lineNum">      74 </span>            :   /*! @param data Pointer to beginning of the data
-<span class="lineNum">      75 </span>            :       @param size The size in bytes of the data
-<span class="lineNum">      76 </span>            :       @relates BinaryData
-<a name="77"><span class="lineNum">      77 </span>            :       @ingroup Utility */</a>
-<span class="lineNum">      78 </span>            :   template &lt;class T&gt; inline
-<span class="lineNum">      79 </span><span class="lineCov">     244598 :   BinaryData&lt;T&gt; binary_data( T &amp;&amp; data, size_t size )</span>
-<span class="lineNum">      80 </span>            :   {
-<span class="lineNum">      81 </span><span class="lineCov">     244598 :     return {std::forward&lt;T&gt;(data), size};</span>
-<span class="lineNum">      82 </span>            :   }
-<span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span>            :   // ######################################################################
-<span class="lineNum">      85 </span>            :   //! Creates a size tag from some variable.
-<span class="lineNum">      86 </span>            :   /*! Will normally be used to serialize size (e.g. size()) information for
-<span class="lineNum">      87 </span>            :       variable size containers.  If you have a variable sized container,
-<span class="lineNum">      88 </span>            :       the very first thing it serializes should be its size, wrapped in
-<span class="lineNum">      89 </span>            :       a SizeTag.
-<span class="lineNum">      90 </span>            : 
-<span class="lineNum">      91 </span>            :       @relates SizeTag
-<a name="92"><span class="lineNum">      92 </span>            :       @ingroup Utility */</a>
-<span class="lineNum">      93 </span>            :   template &lt;class T&gt;
-<span class="lineNum">      94 </span><span class="lineCov">     316598 :   SizeTag&lt;T&gt; make_size_tag( T &amp;&amp; sz )</span>
-<span class="lineNum">      95 </span>            :   {
-<span class="lineNum">      96 </span><span class="lineCov">     316598 :     return {std::forward&lt;T&gt;(sz)};</span>
-<span class="lineNum">      97 </span>            :   }
-<span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span>            :   // ######################################################################
-<span class="lineNum">     100 </span>            :   //! Called before a type is serialized to set up any special archive state
-<span class="lineNum">     101 </span>            :   //! for processing some type
-<span class="lineNum">     102 </span>            :   /*! If designing a serializer that needs to set up any kind of special
-<span class="lineNum">     103 </span>            :       state or output extra information for a type, specialize this function
-<span class="lineNum">     104 </span>            :       for the archive type and the types that require the extra information.
-<a name="105"><span class="lineNum">     105 </span>            :       @ingroup Internal */</a>
-<span class="lineNum">     106 </span>            :   template &lt;class Archive, class T&gt;
-<span class="lineNum">     107 </span><span class="lineCov">   16742212 :   void prologue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
-<span class="lineNum">     108 </span><span class="lineCov">   16742212 :   { }</span>
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span>            :   //! Called after a type is serialized to tear down any special archive state
-<span class="lineNum">     111 </span>            :   //! for processing some type
-<a name="112"><span class="lineNum">     112 </span>            :   /*! @ingroup Internal */</a>
-<span class="lineNum">     113 </span>            :   template &lt;class Archive, class T&gt;
-<span class="lineNum">     114 </span><span class="lineCov">   16742212 :   void epilogue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
-<span class="lineNum">     115 </span><span class="lineCov">   16742212 :   { }</span>
-<span class="lineNum">     116 </span>            : 
-<span class="lineNum">     117 </span>            :   // ######################################################################
-<span class="lineNum">     118 </span>            :   //! Special flags for archives
-<span class="lineNum">     119 </span>            :   /*! AllowEmptyClassElision
-<span class="lineNum">     120 </span>            :         This allows for empty classes to be serialized even if they do not provide
-<span class="lineNum">     121 </span>            :         a serialization function.  Classes with no data members are considered to be
-<span class="lineNum">     122 </span>            :         empty.  Be warned that if this is enabled and you attempt to serialize an
-<span class="lineNum">     123 </span>            :         empty class with improperly formed serialize or load/save functions, no
-<span class="lineNum">     124 </span>            :         static error will occur - the error will propogate silently and your
-<span class="lineNum">     125 </span>            :         intended serialization functions may not be called.  You can manually
-<span class="lineNum">     126 </span>            :         ensure that your classes that have custom serialization are correct
-<span class="lineNum">     127 </span>            :         by using the traits is_output_serializable and is_input_serializable
-<span class="lineNum">     128 </span>            :         in cereal/details/traits.hpp.
-<span class="lineNum">     129 </span>            :       @ingroup Internal */
-<span class="lineNum">     130 </span>            :   enum Flags { AllowEmptyClassElision = 1 };
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            :   // ######################################################################
-<span class="lineNum">     133 </span>            :   //! Registers a specific Archive type with cereal
-<span class="lineNum">     134 </span>            :   /*! This registration should be done once per archive.  A good place to
-<span class="lineNum">     135 </span>            :       put this is immediately following the definition of your archive.
-<span class="lineNum">     136 </span>            :       Archive registration is only strictly necessary if you wish to
-<span class="lineNum">     137 </span>            :       support pointers to polymorphic data types.  All archives that
-<span class="lineNum">     138 </span>            :       come with cereal are already registered.
-<span class="lineNum">     139 </span>            :       @ingroup Internal */
-<span class="lineNum">     140 </span>            :   #define CEREAL_REGISTER_ARCHIVE(Archive)                            \
-<span class="lineNum">     141 </span>            :   namespace cereal { namespace detail {                               \
-<span class="lineNum">     142 </span>            :   template &lt;class T&gt;                                                  \
-<span class="lineNum">     143 </span>            :   typename polymorphic_serialization_support&lt;Archive, T&gt;::type        \
-<span class="lineNum">     144 </span>            :   instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \
-<span class="lineNum">     145 </span>            :   } } // end namespaces
-<span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span>            :   //! Defines a class version for some type
-<span class="lineNum">     148 </span>            :   /*! Versioning information is optional and adds some small amount of
-<span class="lineNum">     149 </span>            :       overhead to serialization.  This overhead will occur both in terms of
-<span class="lineNum">     150 </span>            :       space in the archive (the version information for each class will be
-<span class="lineNum">     151 </span>            :       stored exactly once) as well as runtime (versioned serialization functions
-<span class="lineNum">     152 </span>            :       must check to see if they need to load or store version information).
-<span class="lineNum">     153 </span>            : 
-<span class="lineNum">     154 </span>            :       Versioning is useful if you plan on fundamentally changing the way some
-<span class="lineNum">     155 </span>            :       type is serialized in the future.  Versioned serialization functions
-<span class="lineNum">     156 </span>            :       cannot be used to load non-versioned data.
-<span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span>            :       By default, all types have an assumed version value of zero.  By
-<span class="lineNum">     159 </span>            :       using this macro, you may change the version number associated with
-<span class="lineNum">     160 </span>            :       some type.  cereal will then use this value as a second parameter
-<span class="lineNum">     161 </span>            :       to your serialization functions.
-<span class="lineNum">     162 </span>            : 
-<span class="lineNum">     163 </span>            :       The interface for the serialization functions is nearly identical
-<span class="lineNum">     164 </span>            :       to non-versioned serialization with the addition of a second parameter,
-<span class="lineNum">     165 </span>            :       const std::uint32_t version, which will be supplied with the correct
-<span class="lineNum">     166 </span>            :       version number.  Serializing the version number on a save happens
-<span class="lineNum">     167 </span>            :       automatically.
-<span class="lineNum">     168 </span>            : 
-<span class="lineNum">     169 </span>            :       Versioning cannot be mixed with non-versioned serialization functions.
-<span class="lineNum">     170 </span>            :       Having both types will result result in a compile time error.
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            :       Example interface for versioning on a non-member serialize function:
-<span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span>            :       @code{cpp}
-<span class="lineNum">     175 </span>            :       CEREAL_CLASS_VERSION( Mytype, 77 ); // register class version
-<span class="lineNum">     176 </span>            : 
-<span class="lineNum">     177 </span>            :       template &lt;class Archive&gt;
-<span class="lineNum">     178 </span>            :       void serialize( Archive &amp; ar, Mytype &amp; t, const std::uint32_t version )
-<span class="lineNum">     179 </span>            :       {
-<span class="lineNum">     180 </span>            :         // When performing a load, the version associated with the class
-<span class="lineNum">     181 </span>            :         // is whatever it was when that data was originally serialized
-<span class="lineNum">     182 </span>            :         //
-<span class="lineNum">     183 </span>            :         // When we save, we'll use the version that is defined in the macro
-<span class="lineNum">     184 </span>            : 
-<span class="lineNum">     185 </span>            :         if( version &gt;= some_number )
-<span class="lineNum">     186 </span>            :           // do this
-<span class="lineNum">     187 </span>            :         else
-<span class="lineNum">     188 </span>            :           // do that
-<span class="lineNum">     189 </span>            :       }
-<span class="lineNum">     190 </span>            :       @endcode
-<span class="lineNum">     191 </span>            : 
-<span class="lineNum">     192 </span>            :       Interfaces for other forms of serialization functions is similar.  This
-<span class="lineNum">     193 </span>            :       macro should be placed at global scope.
-<span class="lineNum">     194 </span>            :       @ingroup Utility */
-<span class="lineNum">     195 </span>            :   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
-<span class="lineNum">     196 </span>            :   namespace cereal { namespace detail {                                          \
-<span class="lineNum">     197 </span>            :     template &lt;&gt; struct Version&lt;TYPE&gt;                                             \
-<span class="lineNum">     198 </span>            :     {                                                                            \
-<span class="lineNum">     199 </span>            :       static const std::uint32_t version = VERSION_NUMBER;                       \
-<span class="lineNum">     200 </span>            :       static Version&lt;TYPE&gt; registerVersion()                                     \
-<span class="lineNum">     201 </span>            :       {                                                                          \
-<span class="lineNum">     202 </span>            :         ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \
-<span class="lineNum">     203 </span>            :              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
-<span class="lineNum">     204 </span>            :         return {};                                                               \
-<span class="lineNum">     205 </span>            :       }                                                                          \
-<span class="lineNum">     206 </span>            :     }; /* end Version */                                                         \
-<span class="lineNum">     207 </span>            :     static const auto CEREAL_CLASS_VERSION_REGISTER##TYPE##VERSION_NUMBER =      \
-<span class="lineNum">     208 </span>            :       Version&lt;TYPE&gt;::registerVersion();                                          \
-<span class="lineNum">     209 </span>            :   } } // end namespaces
-<span class="lineNum">     210 </span>            : 
-<span class="lineNum">     211 </span>            :   //! The base output archive class
-<span class="lineNum">     212 </span>            :   /*! This is the base output archive for all output archives.  If you create
-<span class="lineNum">     213 </span>            :       a custom archive class, it should derive from this, passing itself as
-<span class="lineNum">     214 </span>            :       a template parameter for the ArchiveType.
+<span class="lineNum">      42 </span>            : #include &lt;cereal/macros.hpp&gt;
+<span class="lineNum">      43 </span>            : #include &lt;cereal/details/traits.hpp&gt;
+<span class="lineNum">      44 </span>            : #include &lt;cereal/details/helpers.hpp&gt;
+<span class="lineNum">      45 </span>            : #include &lt;cereal/types/base_class.hpp&gt;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : namespace cereal
+<span class="lineNum">      48 </span>            : {
+<span class="lineNum">      49 </span>            :   // ######################################################################
+<span class="lineNum">      50 </span>            :   //! Creates a name value pair
+<span class="lineNum">      51 </span>            :   /*! @relates NameValuePair
+<a name="52"><span class="lineNum">      52 </span>            :       @ingroup Utility */</a>
+<span class="lineNum">      53 </span>            :   template &lt;class T&gt; inline
+<span class="lineNum">      54 </span><span class="lineCov">       5200 :   NameValuePair&lt;T&gt; make_nvp( std::string const &amp; name, T &amp;&amp; value )</span>
+<span class="lineNum">      55 </span>            :   {
+<span class="lineNum">      56 </span><span class="lineCov">       5200 :     return {name.c_str(), std::forward&lt;T&gt;(value)};</span>
+<span class="lineNum">      57 </span>            :   }
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            :   //! Creates a name value pair
+<span class="lineNum">      60 </span>            :   /*! @relates NameValuePair
+<a name="61"><span class="lineNum">      61 </span>            :       @ingroup Utility */</a>
+<span class="lineNum">      62 </span>            :   template &lt;class T&gt; inline
+<span class="lineNum">      63 </span><span class="lineCov">       2000 :   NameValuePair&lt;T&gt; make_nvp( const char * name, T &amp;&amp; value )</span>
+<span class="lineNum">      64 </span>            :   {
+<span class="lineNum">      65 </span><span class="lineCov">       2000 :     return {name, std::forward&lt;T&gt;(value)};</span>
+<span class="lineNum">      66 </span>            :   }
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :   //! Creates a name value pair for the variable T with the same name as the variable
+<span class="lineNum">      69 </span>            :   /*! @relates NameValuePair
+<span class="lineNum">      70 </span>            :       @ingroup Utility */
+<span class="lineNum">      71 </span>            :   #define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :   // ######################################################################
+<span class="lineNum">      74 </span>            :   //! Convenience function to create binary data for both const and non const pointers
+<span class="lineNum">      75 </span>            :   /*! @param data Pointer to beginning of the data
+<span class="lineNum">      76 </span>            :       @param size The size in bytes of the data
+<span class="lineNum">      77 </span>            :       @relates BinaryData
+<a name="78"><span class="lineNum">      78 </span>            :       @ingroup Utility */</a>
+<span class="lineNum">      79 </span>            :   template &lt;class T&gt; inline
+<span class="lineNum">      80 </span><span class="lineCov">     489212 :   BinaryData&lt;T&gt; binary_data( T &amp;&amp; data, size_t size )</span>
+<span class="lineNum">      81 </span>            :   {
+<span class="lineNum">      82 </span><span class="lineCov">     489212 :     return {std::forward&lt;T&gt;(data), size};</span>
+<span class="lineNum">      83 </span>            :   }
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :   // ######################################################################
+<span class="lineNum">      86 </span>            :   //! Creates a size tag from some variable.
+<span class="lineNum">      87 </span>            :   /*! Will normally be used to serialize size (e.g. size()) information for
+<span class="lineNum">      88 </span>            :       variable size containers.  If you have a variable sized container,
+<span class="lineNum">      89 </span>            :       the very first thing it serializes should be its size, wrapped in
+<span class="lineNum">      90 </span>            :       a SizeTag.
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            :       @relates SizeTag
+<a name="93"><span class="lineNum">      93 </span>            :       @ingroup Utility */</a>
+<span class="lineNum">      94 </span>            :   template &lt;class T&gt;
+<span class="lineNum">      95 </span><span class="lineCov">     633212 :   SizeTag&lt;T&gt; make_size_tag( T &amp;&amp; sz )</span>
+<span class="lineNum">      96 </span>            :   {
+<span class="lineNum">      97 </span><span class="lineCov">     633212 :     return {std::forward&lt;T&gt;(sz)};</span>
+<span class="lineNum">      98 </span>            :   }
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :   // ######################################################################
+<span class="lineNum">     101 </span>            :   //! Called before a type is serialized to set up any special archive state
+<span class="lineNum">     102 </span>            :   //! for processing some type
+<span class="lineNum">     103 </span>            :   /*! If designing a serializer that needs to set up any kind of special
+<span class="lineNum">     104 </span>            :       state or output extra information for a type, specialize this function
+<span class="lineNum">     105 </span>            :       for the archive type and the types that require the extra information.
+<a name="106"><span class="lineNum">     106 </span>            :       @ingroup Internal */</a>
+<span class="lineNum">     107 </span>            :   template &lt;class Archive, class T&gt;
+<span class="lineNum">     108 </span><span class="lineCov">   33512880 :   void prologue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
+<span class="lineNum">     109 </span><span class="lineCov">   33512880 :   { }</span>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :   //! Called after a type is serialized to tear down any special archive state
+<span class="lineNum">     112 </span>            :   //! for processing some type
+<a name="113"><span class="lineNum">     113 </span>            :   /*! @ingroup Internal */</a>
+<span class="lineNum">     114 </span>            :   template &lt;class Archive, class T&gt;
+<span class="lineNum">     115 </span><span class="lineCov">   33511280 :   void epilogue( Archive &amp; /* archive */, T const &amp; /* data */)</span>
+<span class="lineNum">     116 </span><span class="lineCov">   33511280 :   { }</span>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            :   // ######################################################################
+<span class="lineNum">     119 </span>            :   //! Special flags for archives
+<span class="lineNum">     120 </span>            :   /*! AllowEmptyClassElision
+<span class="lineNum">     121 </span>            :         This allows for empty classes to be serialized even if they do not provide
+<span class="lineNum">     122 </span>            :         a serialization function.  Classes with no data members are considered to be
+<span class="lineNum">     123 </span>            :         empty.  Be warned that if this is enabled and you attempt to serialize an
+<span class="lineNum">     124 </span>            :         empty class with improperly formed serialize or load/save functions, no
+<span class="lineNum">     125 </span>            :         static error will occur - the error will propogate silently and your
+<span class="lineNum">     126 </span>            :         intended serialization functions may not be called.  You can manually
+<span class="lineNum">     127 </span>            :         ensure that your classes that have custom serialization are correct
+<span class="lineNum">     128 </span>            :         by using the traits is_output_serializable and is_input_serializable
+<span class="lineNum">     129 </span>            :         in cereal/details/traits.hpp.
+<span class="lineNum">     130 </span>            :       @ingroup Internal */
+<span class="lineNum">     131 </span>            :   enum Flags { AllowEmptyClassElision = 1 };
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :   // ######################################################################
+<span class="lineNum">     134 </span>            :   //! Registers a specific Archive type with cereal
+<span class="lineNum">     135 </span>            :   /*! This registration should be done once per archive.  A good place to
+<span class="lineNum">     136 </span>            :       put this is immediately following the definition of your archive.
+<span class="lineNum">     137 </span>            :       Archive registration is only strictly necessary if you wish to
+<span class="lineNum">     138 </span>            :       support pointers to polymorphic data types.  All archives that
+<span class="lineNum">     139 </span>            :       come with cereal are already registered.
+<span class="lineNum">     140 </span>            :       @ingroup Internal */
+<span class="lineNum">     141 </span>            :   #define CEREAL_REGISTER_ARCHIVE(Archive)                              \
+<span class="lineNum">     142 </span>            :   namespace cereal { namespace detail {                                 \
+<span class="lineNum">     143 </span>            :   template &lt;class T, class BindingTag&gt;                                  \
+<span class="lineNum">     144 </span>            :   typename polymorphic_serialization_support&lt;Archive, T&gt;::type          \
+<span class="lineNum">     145 </span>            :   instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag ); \
+<span class="lineNum">     146 </span>            :   } } /* end namespaces */
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            :   // ######################################################################
+<span class="lineNum">     149 </span>            :   //! Defines a class version for some type
+<span class="lineNum">     150 </span>            :   /*! Versioning information is optional and adds some small amount of
+<span class="lineNum">     151 </span>            :       overhead to serialization.  This overhead will occur both in terms of
+<span class="lineNum">     152 </span>            :       space in the archive (the version information for each class will be
+<span class="lineNum">     153 </span>            :       stored exactly once) as well as runtime (versioned serialization functions
+<span class="lineNum">     154 </span>            :       must check to see if they need to load or store version information).
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span>            :       Versioning is useful if you plan on fundamentally changing the way some
+<span class="lineNum">     157 </span>            :       type is serialized in the future.  Versioned serialization functions
+<span class="lineNum">     158 </span>            :       cannot be used to load non-versioned data.
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :       By default, all types have an assumed version value of zero.  By
+<span class="lineNum">     161 </span>            :       using this macro, you may change the version number associated with
+<span class="lineNum">     162 </span>            :       some type.  cereal will then use this value as a second parameter
+<span class="lineNum">     163 </span>            :       to your serialization functions.
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :       The interface for the serialization functions is nearly identical
+<span class="lineNum">     166 </span>            :       to non-versioned serialization with the addition of a second parameter,
+<span class="lineNum">     167 </span>            :       const std::uint32_t version, which will be supplied with the correct
+<span class="lineNum">     168 </span>            :       version number.  Serializing the version number on a save happens
+<span class="lineNum">     169 </span>            :       automatically.
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span>            :       Versioning cannot be mixed with non-versioned serialization functions.
+<span class="lineNum">     172 </span>            :       Having both types will result result in a compile time error.  Data
+<span class="lineNum">     173 </span>            :       serialized without versioning cannot be loaded by a serialization
+<span class="lineNum">     174 </span>            :       function with added versioning support.
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            :       Example interface for versioning on a non-member serialize function:
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            :       @code{cpp}
+<span class="lineNum">     179 </span>            :       CEREAL_CLASS_VERSION( Mytype, 77 ); // register class version
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span>            :       template &lt;class Archive&gt;
+<span class="lineNum">     182 </span>            :       void serialize( Archive &amp; ar, Mytype &amp; t, const std::uint32_t version )
+<span class="lineNum">     183 </span>            :       {
+<span class="lineNum">     184 </span>            :         // When performing a load, the version associated with the class
+<span class="lineNum">     185 </span>            :         // is whatever it was when that data was originally serialized
+<span class="lineNum">     186 </span>            :         //
+<span class="lineNum">     187 </span>            :         // When we save, we'll use the version that is defined in the macro
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            :         if( version &gt;= some_number )
+<span class="lineNum">     190 </span>            :           // do this
+<span class="lineNum">     191 </span>            :         else
+<span class="lineNum">     192 </span>            :           // do that
+<span class="lineNum">     193 </span>            :       }
+<span class="lineNum">     194 </span>            :       @endcode
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span>            :       Interfaces for other forms of serialization functions is similar.  This
+<span class="lineNum">     197 </span>            :       macro should be placed at global scope.
+<span class="lineNum">     198 </span>            :       @ingroup Utility */
+<span class="lineNum">     199 </span>            :   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
+<span class="lineNum">     200 </span>            :   namespace cereal { namespace detail {                                          \
+<span class="lineNum">     201 </span>            :     template &lt;&gt; struct Version&lt;TYPE&gt;                                             \
+<span class="lineNum">     202 </span>            :     {                                                                            \
+<span class="lineNum">     203 </span>            :       static const std::uint32_t version;                                        \
+<span class="lineNum">     204 </span>            :       static std::uint32_t registerVersion()                                     \
+<span class="lineNum">     205 </span>            :       {                                                                          \
+<span class="lineNum">     206 </span>            :         ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \
+<span class="lineNum">     207 </span>            :              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+<span class="lineNum">     208 </span>            :         return VERSION_NUMBER;                                                   \
+<span class="lineNum">     209 </span>            :       }                                                                          \
+<span class="lineNum">     210 </span>            :       static void unused() { (void)version; }                                    \
+<span class="lineNum">     211 </span>            :     }; /* end Version */                                                         \
+<span class="lineNum">     212 </span>            :     const std::uint32_t Version&lt;TYPE&gt;::version =                                 \
+<span class="lineNum">     213 </span>            :       Version&lt;TYPE&gt;::registerVersion();                                          \
+<span class="lineNum">     214 </span>            :   } } // end namespaces
 <span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span>            :       The base class provides all of the functionality necessary to
-<span class="lineNum">     217 </span>            :       properly forward data to the correct serialization functions.
-<span class="lineNum">     218 </span>            : 
-<span class="lineNum">     219 </span>            :       Individual archives should use a combination of prologue and
-<span class="lineNum">     220 </span>            :       epilogue functions together with specializations of serialize, save,
-<span class="lineNum">     221 </span>            :       and load to alter the functionality of their serialization.
-<span class="lineNum">     222 </span>            : 
-<span class="lineNum">     223 </span>            :       @tparam ArchiveType The archive type that derives from OutputArchive
-<span class="lineNum">     224 </span>            :       @tparam Flags Flags to control advanced functionality.  See the Flags
-<span class="lineNum">     225 </span>            :                     enum for more information.
-<a name="226"><span class="lineNum">     226 </span>            :       @ingroup Internal */</a>
-<span class="lineNum">     227 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
-<span class="lineNum">     228 </span><span class="lineCov">      13100 :   class OutputArchive : public detail::OutputArchiveBase</span>
-<span class="lineNum">     229 </span>            :   {
-<span class="lineNum">     230 </span>            :     public:
-<a name="231"><span class="lineNum">     231 </span>            :       //! Construct the output archive</a>
-<span class="lineNum">     232 </span>            :       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
-<span class="lineNum">     233 </span><span class="lineCov">      13100 :       OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)</span>
-<span class="lineNum">     234 </span><span class="lineCov">      13100 :       { }</span>
-<span class="lineNum">     235 </span>            : 
-<span class="lineNum">     236 </span>            :       //! Serializes all passed in data
-<a name="237"><span class="lineNum">     237 </span>            :       /*! This is the primary interface for serializing data with an archive */</a>
-<span class="lineNum">     238 </span>            :       template &lt;class ... Types&gt; inline
-<span class="lineNum">     239 </span><span class="lineCov">   12237613 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
-<span class="lineNum">     240 </span>            :       {
-<span class="lineNum">     241 </span><span class="lineCov">   12237613 :         self-&gt;process( std::forward&lt;Types&gt;( args )... );</span>
-<span class="lineNum">     242 </span><span class="lineCov">   12237613 :         return *self;</span>
-<span class="lineNum">     243 </span>            :       }
-<span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span>            :       /*! @name Boost Transition Layer
-<span class="lineNum">     246 </span>            :           Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
-<span class="lineNum">     247 </span>            :           a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
-<span class="lineNum">     248 </span>            :       //! @{
-<span class="lineNum">     249 </span>            : 
-<span class="lineNum">     250 </span>            :       //! Serializes passed in data
-<span class="lineNum">     251 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
-<span class="lineNum">     252 </span>            :           cereal.  If you are transitioning from boost, use this until you can
-<span class="lineNum">     253 </span>            :           transition to the operator() overload */
-<span class="lineNum">     254 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     255 </span>            :       ArchiveType &amp; operator&amp;( T &amp;&amp; arg )
-<span class="lineNum">     256 </span>            :       {
-<span class="lineNum">     257 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
-<span class="lineNum">     258 </span>            :         return *self;
-<span class="lineNum">     259 </span>            :       }
-<span class="lineNum">     260 </span>            : 
-<span class="lineNum">     261 </span>            :       //! Serializes passed in data
-<span class="lineNum">     262 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
-<span class="lineNum">     263 </span>            :           cereal.  If you are transitioning from boost, use this until you can
-<span class="lineNum">     264 </span>            :           transition to the operator() overload */
-<span class="lineNum">     265 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     266 </span>            :       ArchiveType &amp; operator&lt;&lt;( T &amp;&amp; arg )
-<span class="lineNum">     267 </span>            :       {
-<span class="lineNum">     268 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
-<span class="lineNum">     269 </span>            :         return *self;
-<span class="lineNum">     270 </span>            :       }
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span>            :       //! @}
-<span class="lineNum">     273 </span>            : 
-<span class="lineNum">     274 </span>            :       //! Registers a shared pointer with the archive
-<span class="lineNum">     275 </span>            :       /*! This function is used to track shared pointer targets to prevent
-<span class="lineNum">     276 </span>            :           unnecessary saves from taking place if multiple shared pointers
-<span class="lineNum">     277 </span>            :           point to the same data.
-<span class="lineNum">     278 </span>            : 
-<span class="lineNum">     279 </span>            :           @internal
-<a name="280"><span class="lineNum">     280 </span>            :           @param addr The address (see shared_ptr get()) pointed to by the shared pointer</a>
-<span class="lineNum">     281 </span>            :           @return A key that uniquely identifies the pointer */
-<span class="lineNum">     282 </span><span class="lineCov">      46800 :       inline std::uint32_t registerSharedPointer( void const * addr )</span>
-<span class="lineNum">     283 </span>            :       {
-<span class="lineNum">     284 </span>            :         // Handle null pointers by just returning 0
-<span class="lineNum">     285 </span><span class="lineCov">      46800 :         if(addr == 0) return 0;</span>
-<span class="lineNum">     286 </span>            : 
-<span class="lineNum">     287 </span><span class="lineCov">      46000 :         auto id = itsSharedPointerMap.find( addr );</span>
-<span class="lineNum">     288 </span><span class="lineCov">      46000 :         if( id == itsSharedPointerMap.end() )</span>
-<span class="lineNum">     289 </span>            :         {
-<span class="lineNum">     290 </span><span class="lineCov">      44000 :           auto ptrId = itsCurrentPointerId++;</span>
-<span class="lineNum">     291 </span><span class="lineCov">      44000 :           itsSharedPointerMap.insert( {addr, ptrId} );</span>
-<span class="lineNum">     292 </span><span class="lineCov">      44000 :           return ptrId | detail::msb_32bit; // mask MSB to be 1</span>
-<span class="lineNum">     293 </span>            :         }
-<span class="lineNum">     294 </span>            :         else
-<span class="lineNum">     295 </span><span class="lineCov">       2000 :           return id-&gt;second;</span>
-<span class="lineNum">     296 </span>            :       }
-<span class="lineNum">     297 </span>            : 
-<span class="lineNum">     298 </span>            :       //! Registers a polymorphic type name with the archive
-<span class="lineNum">     299 </span>            :       /*! This function is used to track polymorphic types to prevent
-<span class="lineNum">     300 </span>            :           unnecessary saves of identifying strings used by the polymorphic
-<span class="lineNum">     301 </span>            :           support functionality.
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span>            :           @internal
-<a name="304"><span class="lineNum">     304 </span>            :           @param name The name to associate with a polymorphic type</a>
-<span class="lineNum">     305 </span>            :           @return A key that uniquely identifies the polymorphic type name */
-<span class="lineNum">     306 </span><span class="lineCov">       2000 :       inline std::uint32_t registerPolymorphicType( char const * name )</span>
-<span class="lineNum">     307 </span>            :       {
-<span class="lineNum">     308 </span><span class="lineCov">       2000 :         auto id = itsPolymorphicTypeMap.find( name );</span>
-<span class="lineNum">     309 </span><span class="lineCov">       2000 :         if( id == itsPolymorphicTypeMap.end() )</span>
-<span class="lineNum">     310 </span>            :         {
-<span class="lineNum">     311 </span><span class="lineCov">        800 :           auto polyId = itsCurrentPolymorphicTypeId++;</span>
-<span class="lineNum">     312 </span><span class="lineCov">        800 :           itsPolymorphicTypeMap.insert( {name, polyId} );</span>
-<span class="lineNum">     313 </span><span class="lineCov">        800 :           return polyId | detail::msb_32bit; // mask MSB to be 1</span>
-<span class="lineNum">     314 </span>            :         }
-<span class="lineNum">     315 </span>            :         else
-<span class="lineNum">     316 </span><span class="lineCov">       1200 :           return id-&gt;second;</span>
-<span class="lineNum">     317 </span>            :       }
-<span class="lineNum">     318 </span>            : 
-<span class="lineNum">     319 </span>            :     private:
-<a name="320"><span class="lineNum">     320 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
-<span class="lineNum">     321 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     322 </span><span class="lineCov">   17130765 :       void process( T &amp;&amp; head )</span>
-<span class="lineNum">     323 </span>            :       {
-<span class="lineNum">     324 </span><span class="lineCov">   17130765 :         prologue( *self, head );</span>
-<span class="lineNum">     325 </span><span class="lineCov">   17130765 :         self-&gt;processImpl( head );</span>
-<span class="lineNum">     326 </span><span class="lineCov">   17130765 :         epilogue( *self, head );</span>
-<span class="lineNum">     327 </span><span class="lineCov">   17130765 :       }</span>
-<span class="lineNum">     328 </span>            : 
-<a name="329"><span class="lineNum">     329 </span>            :       //! Unwinds to process all data</a>
-<span class="lineNum">     330 </span>            :       template &lt;class T, class ... Other&gt; inline
-<span class="lineNum">     331 </span><span class="lineCov">    4884352 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
-<span class="lineNum">     332 </span>            :       {
-<span class="lineNum">     333 </span><span class="lineCov">    4884352 :         self-&gt;process( std::forward&lt;T&gt;( head ) );</span>
-<span class="lineNum">     334 </span><span class="lineCov">    4884352 :         self-&gt;process( std::forward&lt;Other&gt;( tail )... );</span>
-<span class="lineNum">     335 </span><span class="lineCov">    4884352 :       }</span>
-<span class="lineNum">     336 </span>            : 
-<span class="lineNum">     337 </span>            :       //! Serialization of a virtual_base_class wrapper
-<span class="lineNum">     338 </span>            :       /*! \sa virtual_base_class */
-<span class="lineNum">     339 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     340 </span>            :       ArchiveType &amp; processImpl(virtual_base_class&lt;T&gt; const &amp; b)
-<span class="lineNum">     341 </span>            :       {
-<span class="lineNum">     342 </span>            :         traits::detail::base_class_id id(b.base_ptr);
-<span class="lineNum">     343 </span>            :         if(itsBaseClassSet.count(id) == 0)
-<span class="lineNum">     344 </span>            :         {
-<span class="lineNum">     345 </span>            :           itsBaseClassSet.insert(id);
-<span class="lineNum">     346 </span>            :           self-&gt;processImpl( *b.base_ptr );
-<span class="lineNum">     347 </span>            :         }
-<span class="lineNum">     348 </span>            :         return *self;
-<span class="lineNum">     349 </span>            :       }
-<span class="lineNum">     350 </span>            : 
-<span class="lineNum">     351 </span>            :       //! Serialization of a base_class wrapper
-<a name="352"><span class="lineNum">     352 </span>            :       /*! \sa base_class */</a>
-<span class="lineNum">     353 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     354 </span><span class="lineCov">        800 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; const &amp; b)</span>
-<span class="lineNum">     355 </span>            :       {
-<span class="lineNum">     356 </span><span class="lineCov">        800 :         self-&gt;processImpl( *b.base_ptr );</span>
-<span class="lineNum">     357 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     358 </span>            :       }
-<span class="lineNum">     359 </span>            : 
-<span class="lineNum">     360 </span>            :       //! Member serialization
-<span class="lineNum">     361 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     362 </span>            :       typename std::enable_if&lt;traits::has_member_serialize&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="363"><span class="lineNum">     363 </span>            :                               (traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     364 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     365 </span><span class="lineCov">    2479046 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     366 </span>            :       {
-<span class="lineNum">     367 </span><span class="lineCov">    2479046 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
-<span class="lineNum">     368 </span><span class="lineCov">    2479046 :         return *self;</span>
-<span class="lineNum">     369 </span>            :       }
-<span class="lineNum">     370 </span>            : 
-<span class="lineNum">     371 </span>            :       //! Non member serialization
-<span class="lineNum">     372 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     373 </span>            :       typename std::enable_if&lt;traits::has_non_member_serialize&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="374"><span class="lineNum">     374 </span>            :                               (traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     375 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     376 </span><span class="lineCov">    1660813 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     377 </span>            :       {
-<span class="lineNum">     378 </span><span class="lineCov">    1660813 :         serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
-<span class="lineNum">     379 </span><span class="lineCov">    1660813 :         return *self;</span>
-<span class="lineNum">     380 </span>            :       }
-<span class="lineNum">     381 </span>            : 
-<span class="lineNum">     382 </span>            :       //! Member split (save)
-<span class="lineNum">     383 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     384 </span>            :       typename std::enable_if&lt;traits::has_member_save&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="385"><span class="lineNum">     385 </span>            :                               (traits::is_specialized_member_save&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     386 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     387 </span><span class="lineCov">     803371 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     388 </span>            :       {
-<span class="lineNum">     389 </span><span class="lineCov">     803371 :         access::member_save(*self, t);</span>
-<span class="lineNum">     390 </span><span class="lineCov">     803371 :         return *self;</span>
-<span class="lineNum">     391 </span>            :       }
-<span class="lineNum">     392 </span>            : 
-<span class="lineNum">     393 </span>            :       //! Non member split (save)
-<span class="lineNum">     394 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     395 </span>            :       typename std::enable_if&lt;traits::has_non_member_save&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="396"><span class="lineNum">     396 </span>            :                               (traits::is_specialized_non_member_save&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     397 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     398 </span><span class="lineCov">   12178735 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     399 </span>            :       {
-<span class="lineNum">     400 </span><span class="lineCov">   12178735 :         save(*self, t);</span>
-<span class="lineNum">     401 </span><span class="lineCov">   12178735 :         return *self;</span>
-<span class="lineNum">     402 </span>            :       }
-<span class="lineNum">     403 </span>            : 
-<span class="lineNum">     404 </span>            :       //! Member split (save_minimal)
-<span class="lineNum">     405 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     406 </span>            :       typename std::enable_if&lt;traits::has_member_save_minimal&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="407"><span class="lineNum">     407 </span>            :                               (traits::is_specialized_member_save_minimal&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     408 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     409 </span><span class="lineCov">        800 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     410 </span>            :       {
-<span class="lineNum">     411 </span><span class="lineCov">        800 :         self-&gt;process( access::member_save_minimal(*self, t) );</span>
-<span class="lineNum">     412 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     413 </span>            :       }
-<span class="lineNum">     414 </span>            : 
-<span class="lineNum">     415 </span>            :       //! Non member split (save_minimal)
-<span class="lineNum">     416 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     417 </span>            :       typename std::enable_if&lt;traits::has_non_member_save_minimal&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="418"><span class="lineNum">     418 </span>            :                               (traits::is_specialized_non_member_save_minimal&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     419 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     420 </span><span class="lineCov">       2000 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     421 </span>            :       {
-<span class="lineNum">     422 </span><span class="lineCov">       2000 :         self-&gt;process( save_minimal(*self, t) );</span>
-<span class="lineNum">     423 </span><span class="lineCov">       2000 :         return *self;</span>
-<span class="lineNum">     424 </span>            :       }
-<span class="lineNum">     425 </span>            : 
-<span class="lineNum">     426 </span>            :       //! Empty class specialization
-<span class="lineNum">     427 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     428 </span>            :       typename std::enable_if&lt;(Flags &amp; AllowEmptyClassElision) &amp;&amp;
-<span class="lineNum">     429 </span>            :           !traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp;
-<span class="lineNum">     430 </span>            :           !traits::is_output_serializable&lt;T, ArchiveType&gt;::value &amp;&amp; std::is_empty&lt;T&gt;::value, ArchiveType &amp;&gt;::type
-<span class="lineNum">     431 </span>            :       processImpl(T const &amp;)
-<span class="lineNum">     432 </span>            :       {
-<span class="lineNum">     433 </span>            :         return *self;
-<span class="lineNum">     434 </span>            :       }
-<span class="lineNum">     435 </span>            : 
-<span class="lineNum">     436 </span>            :       //! No matching serialization
-<span class="lineNum">     437 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     438 </span>            :       typename std::enable_if&lt;traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value ||
-<span class="lineNum">     439 </span>            :         (!traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::is_output_serializable&lt;T, ArchiveType&gt;::value &amp;&amp;
-<span class="lineNum">     440 </span>            :         (!(Flags &amp; AllowEmptyClassElision) || ((Flags &amp; AllowEmptyClassElision) &amp;&amp; !std::is_empty&lt;T&gt;::value))),
-<span class="lineNum">     441 </span>            :         ArchiveType &amp;&gt;::type
-<span class="lineNum">     442 </span>            :       processImpl(T const &amp;)
-<span class="lineNum">     443 </span>            :       {
-<span class="lineNum">     444 </span>            :         static_assert(traits::is_output_serializable&lt;T, ArchiveType&gt;::value, &quot;Trying to serialize an unserializable type with an output archive. \n\n &quot;
-<span class="lineNum">     445 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
-<span class="lineNum">     446 </span>            :             &quot;Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n &quot;
-<span class="lineNum">     447 </span>            :             &quot;In addition, you may not mix versioned with non-versioned serialization functions. \n &quot;
-<span class="lineNum">     448 </span>            :             &quot;Serialize functions generally have the following signature: \n\n &quot;
-<span class="lineNum">     449 </span>            :             &quot;template&lt;class Archive&gt; \n &quot;
-<span class="lineNum">     450 </span>            :             &quot;  void serialize(Archive &amp; ar) \n &quot;
-<span class="lineNum">     451 </span>            :             &quot;  { \n &quot;
-<span class="lineNum">     452 </span>            :             &quot;    ar( member1, member2, member3 ); \n &quot;
-<span class="lineNum">     453 </span>            :             &quot;  } \n\n &quot; );
-<span class="lineNum">     454 </span>            :         return *self;
-<span class="lineNum">     455 </span>            :       }
-<span class="lineNum">     456 </span>            : 
-<span class="lineNum">     457 </span>            :       //! Registers a class version with the archive and serializes it if necessary
-<span class="lineNum">     458 </span>            :       /*! If this is the first time this class has been serialized, we will record its
-<span class="lineNum">     459 </span>            :           version number and serialize that.
+<span class="lineNum">     216 </span>            :   // ######################################################################
+<span class="lineNum">     217 </span>            :   //! The base output archive class
+<span class="lineNum">     218 </span>            :   /*! This is the base output archive for all output archives.  If you create
+<span class="lineNum">     219 </span>            :       a custom archive class, it should derive from this, passing itself as
+<span class="lineNum">     220 </span>            :       a template parameter for the ArchiveType.
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            :       The base class provides all of the functionality necessary to
+<span class="lineNum">     223 </span>            :       properly forward data to the correct serialization functions.
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :       Individual archives should use a combination of prologue and
+<span class="lineNum">     226 </span>            :       epilogue functions together with specializations of serialize, save,
+<span class="lineNum">     227 </span>            :       and load to alter the functionality of their serialization.
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :       @tparam ArchiveType The archive type that derives from OutputArchive
+<span class="lineNum">     230 </span>            :       @tparam Flags Flags to control advanced functionality.  See the Flags
+<span class="lineNum">     231 </span>            :                     enum for more information.
+<a name="232"><span class="lineNum">     232 </span>            :       @ingroup Internal */</a>
+<span class="lineNum">     233 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
+<span class="lineNum">     234 </span><span class="lineCov">      27114 :   class OutputArchive : public detail::OutputArchiveBase</span>
+<span class="lineNum">     235 </span>            :   {
+<span class="lineNum">     236 </span>            :     public:
+<a name="237"><span class="lineNum">     237 </span>            :       //! Construct the output archive</a>
+<span class="lineNum">     238 </span>            :       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
+<span class="lineNum">     239 </span><span class="lineCov">      27114 :       OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)</span>
+<span class="lineNum">     240 </span><span class="lineCov">      27114 :       { }</span>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :       //! Serializes all passed in data
+<a name="243"><span class="lineNum">     243 </span>            :       /*! This is the primary interface for serializing data with an archive */</a>
+<span class="lineNum">     244 </span>            :       template &lt;class ... Types&gt; inline
+<span class="lineNum">     245 </span><span class="lineCov">   24483436 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
+<span class="lineNum">     246 </span>            :       {
+<span class="lineNum">     247 </span><span class="lineCov">   24483436 :         self-&gt;process( std::forward&lt;Types&gt;( args )... );</span>
+<span class="lineNum">     248 </span><span class="lineCov">   24483436 :         return *self;</span>
+<span class="lineNum">     249 </span>            :       }
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span>            :       /*! @name Boost Transition Layer
+<span class="lineNum">     252 </span>            :           Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
+<span class="lineNum">     253 </span>            :           a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
+<span class="lineNum">     254 </span>            :       //! @{
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span>            :       //! Serializes passed in data
+<span class="lineNum">     257 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
+<span class="lineNum">     258 </span>            :           cereal.  If you are transitioning from boost, use this until you can
+<span class="lineNum">     259 </span>            :           transition to the operator() overload */
+<span class="lineNum">     260 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     261 </span>            :       ArchiveType &amp; operator&amp;( T &amp;&amp; arg )
+<span class="lineNum">     262 </span>            :       {
+<span class="lineNum">     263 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
+<span class="lineNum">     264 </span>            :         return *self;
+<span class="lineNum">     265 </span>            :       }
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span>            :       //! Serializes passed in data
+<span class="lineNum">     268 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
+<span class="lineNum">     269 </span>            :           cereal.  If you are transitioning from boost, use this until you can
+<span class="lineNum">     270 </span>            :           transition to the operator() overload */
+<span class="lineNum">     271 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     272 </span>            :       ArchiveType &amp; operator&lt;&lt;( T &amp;&amp; arg )
+<span class="lineNum">     273 </span>            :       {
+<span class="lineNum">     274 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
+<span class="lineNum">     275 </span>            :         return *self;
+<span class="lineNum">     276 </span>            :       }
+<span class="lineNum">     277 </span>            : 
+<span class="lineNum">     278 </span>            :       //! @}
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :       //! Registers a shared pointer with the archive
+<span class="lineNum">     281 </span>            :       /*! This function is used to track shared pointer targets to prevent
+<span class="lineNum">     282 </span>            :           unnecessary saves from taking place if multiple shared pointers
+<span class="lineNum">     283 </span>            :           point to the same data.
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :           @internal
+<a name="286"><span class="lineNum">     286 </span>            :           @param addr The address (see shared_ptr get()) pointed to by the shared pointer</a>
+<span class="lineNum">     287 </span>            :           @return A key that uniquely identifies the pointer */
+<span class="lineNum">     288 </span><span class="lineCov">      93608 :       inline std::uint32_t registerSharedPointer( void const * addr )</span>
+<span class="lineNum">     289 </span>            :       {
+<span class="lineNum">     290 </span>            :         // Handle null pointers by just returning 0
+<span class="lineNum">     291 </span><span class="lineCov">      93608 :         if(addr == 0) return 0;</span>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineCov">      92008 :         auto id = itsSharedPointerMap.find( addr );</span>
+<span class="lineNum">     294 </span><span class="lineCov">      92008 :         if( id == itsSharedPointerMap.end() )</span>
+<span class="lineNum">     295 </span>            :         {
+<span class="lineNum">     296 </span><span class="lineCov">      88008 :           auto ptrId = itsCurrentPointerId++;</span>
+<span class="lineNum">     297 </span><span class="lineCov">      88008 :           itsSharedPointerMap.insert( {addr, ptrId} );</span>
+<span class="lineNum">     298 </span><span class="lineCov">      88008 :           return ptrId | detail::msb_32bit; // mask MSB to be 1</span>
+<span class="lineNum">     299 </span>            :         }
+<span class="lineNum">     300 </span>            :         else
+<span class="lineNum">     301 </span><span class="lineCov">       4000 :           return id-&gt;second;</span>
+<span class="lineNum">     302 </span>            :       }
+<span class="lineNum">     303 </span>            : 
+<span class="lineNum">     304 </span>            :       //! Registers a polymorphic type name with the archive
+<span class="lineNum">     305 </span>            :       /*! This function is used to track polymorphic types to prevent
+<span class="lineNum">     306 </span>            :           unnecessary saves of identifying strings used by the polymorphic
+<span class="lineNum">     307 </span>            :           support functionality.
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span>            :           @internal
+<a name="310"><span class="lineNum">     310 </span>            :           @param name The name to associate with a polymorphic type</a>
+<span class="lineNum">     311 </span>            :           @return A key that uniquely identifies the polymorphic type name */
+<span class="lineNum">     312 </span><span class="lineCov">       4000 :       inline std::uint32_t registerPolymorphicType( char const * name )</span>
+<span class="lineNum">     313 </span>            :       {
+<span class="lineNum">     314 </span><span class="lineCov">       4000 :         auto id = itsPolymorphicTypeMap.find( name );</span>
+<span class="lineNum">     315 </span><span class="lineCov">       4000 :         if( id == itsPolymorphicTypeMap.end() )</span>
+<span class="lineNum">     316 </span>            :         {
+<span class="lineNum">     317 </span><span class="lineCov">       1600 :           auto polyId = itsCurrentPolymorphicTypeId++;</span>
+<span class="lineNum">     318 </span><span class="lineCov">       1600 :           itsPolymorphicTypeMap.insert( {name, polyId} );</span>
+<span class="lineNum">     319 </span><span class="lineCov">       1600 :           return polyId | detail::msb_32bit; // mask MSB to be 1</span>
+<span class="lineNum">     320 </span>            :         }
+<span class="lineNum">     321 </span>            :         else
+<span class="lineNum">     322 </span><span class="lineCov">       2400 :           return id-&gt;second;</span>
+<span class="lineNum">     323 </span>            :       }
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span>            :     private:
+<a name="326"><span class="lineNum">     326 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
+<span class="lineNum">     327 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     328 </span><span class="lineCov">   34270796 :       void process( T &amp;&amp; head )</span>
+<span class="lineNum">     329 </span>            :       {
+<span class="lineNum">     330 </span><span class="lineCov">   34270796 :         prologue( *self, head );</span>
+<span class="lineNum">     331 </span><span class="lineCov">   34270796 :         self-&gt;processImpl( head );</span>
+<span class="lineNum">     332 </span><span class="lineCov">   34270796 :         epilogue( *self, head );</span>
+<span class="lineNum">     333 </span><span class="lineCov">   34270796 :       }</span>
+<span class="lineNum">     334 </span>            : 
+<a name="335"><span class="lineNum">     335 </span>            :       //! Unwinds to process all data</a>
+<span class="lineNum">     336 </span>            :       template &lt;class T, class ... Other&gt; inline
+<span class="lineNum">     337 </span><span class="lineCov">    9768160 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
+<span class="lineNum">     338 </span>            :       {
+<span class="lineNum">     339 </span><span class="lineCov">    9768160 :         self-&gt;process( std::forward&lt;T&gt;( head ) );</span>
+<span class="lineNum">     340 </span><span class="lineCov">    9768160 :         self-&gt;process( std::forward&lt;Other&gt;( tail )... );</span>
+<span class="lineNum">     341 </span><span class="lineCov">    9768160 :       }</span>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span>            :       //! Serialization of a virtual_base_class wrapper
+<span class="lineNum">     344 </span>            :       /*! \sa virtual_base_class */
+<span class="lineNum">     345 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     346 </span>            :       ArchiveType &amp; processImpl(virtual_base_class&lt;T&gt; const &amp; b)
+<span class="lineNum">     347 </span>            :       {
+<span class="lineNum">     348 </span>            :         traits::detail::base_class_id id(b.base_ptr);
+<span class="lineNum">     349 </span>            :         if(itsBaseClassSet.count(id) == 0)
+<span class="lineNum">     350 </span>            :         {
+<span class="lineNum">     351 </span>            :           itsBaseClassSet.insert(id);
+<span class="lineNum">     352 </span>            :           self-&gt;processImpl( *b.base_ptr );
+<span class="lineNum">     353 </span>            :         }
+<span class="lineNum">     354 </span>            :         return *self;
+<span class="lineNum">     355 </span>            :       }
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span>            :       //! Serialization of a base_class wrapper
+<a name="358"><span class="lineNum">     358 </span>            :       /*! \sa base_class */</a>
+<span class="lineNum">     359 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     360 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; const &amp; b)</span>
+<span class="lineNum">     361 </span>            :       {
+<span class="lineNum">     362 </span><span class="lineCov">       1600 :         self-&gt;processImpl( *b.base_ptr );</span>
+<span class="lineNum">     363 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     364 </span>            :       }
+<span class="lineNum">     365 </span>            : 
+<span class="lineNum">     366 </span>            :       //! Helper macro that expands the requirements for activating an overload
+<span class="lineNum">     367 </span>            :       #define PROCESS_IF(name)                                                                   \
+<span class="lineNum">     368 </span>            :       traits::EnableIf&lt;traits::has_##name&lt;T, ArchiveType&gt;::value,                                \
+<span class="lineNum">     369 </span>            :                        !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value,            \
+<span class="lineNum">     370 </span>            :                        (traits::is_specialized_##name&lt;T, ArchiveType&gt;::value ||                  \
+<span class="lineNum">     371 </span>            :                         traits::is_output_serializable&lt;T, ArchiveType&gt;::value)&gt; = traits::sfinae
+<span class="lineNum">     372 </span>            : 
+<a name="373"><span class="lineNum">     373 </span>            :       //! Member serialization</a>
+<span class="lineNum">     374 </span>            :       template &lt;class T, PROCESS_IF(member_serialize)&gt; inline
+<span class="lineNum">     375 </span><span class="lineCov">    4958632 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     376 </span>            :       {
+<span class="lineNum">     377 </span><span class="lineCov">    4958632 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t));</span>
+<span class="lineNum">     378 </span><span class="lineCov">    4958632 :         return *self;</span>
+<span class="lineNum">     379 </span>            :       }
+<span class="lineNum">     380 </span>            : 
+<a name="381"><span class="lineNum">     381 </span>            :       //! Non member serialization</a>
+<span class="lineNum">     382 </span>            :       template &lt;class T, PROCESS_IF(non_member_serialize)&gt; inline
+<span class="lineNum">     383 </span><span class="lineCov">    3321876 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     384 </span>            :       {
+<span class="lineNum">     385 </span><span class="lineCov">    3321876 :         CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast&lt;T &amp;&gt;(t));</span>
+<span class="lineNum">     386 </span><span class="lineCov">    3321876 :         return *self;</span>
+<span class="lineNum">     387 </span>            :       }
+<span class="lineNum">     388 </span>            : 
+<a name="389"><span class="lineNum">     389 </span>            :       //! Member split (save)</a>
+<span class="lineNum">     390 </span>            :       template &lt;class T, PROCESS_IF(member_save)&gt; inline
+<span class="lineNum">     391 </span><span class="lineCov">    1606752 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     392 </span>            :       {
+<span class="lineNum">     393 </span><span class="lineCov">    1606752 :         access::member_save(*self, t);</span>
+<span class="lineNum">     394 </span><span class="lineCov">    1606752 :         return *self;</span>
+<span class="lineNum">     395 </span>            :       }
+<span class="lineNum">     396 </span>            : 
+<a name="397"><span class="lineNum">     397 </span>            :       //! Non member split (save)</a>
+<span class="lineNum">     398 </span>            :       template &lt;class T, PROCESS_IF(non_member_save)&gt; inline
+<span class="lineNum">     399 </span><span class="lineCov">   24364336 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     400 </span>            :       {
+<span class="lineNum">     401 </span><span class="lineCov">   24364336 :         CEREAL_SAVE_FUNCTION_NAME(*self, t);</span>
+<span class="lineNum">     402 </span><span class="lineCov">   24364336 :         return *self;</span>
+<span class="lineNum">     403 </span>            :       }
+<span class="lineNum">     404 </span>            : 
+<a name="405"><span class="lineNum">     405 </span>            :       //! Member split (save_minimal)</a>
+<span class="lineNum">     406 </span>            :       template &lt;class T, PROCESS_IF(member_save_minimal)&gt; inline
+<span class="lineNum">     407 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     408 </span>            :       {
+<span class="lineNum">     409 </span><span class="lineCov">       2400 :         self-&gt;process( access::member_save_minimal(*self, t) );</span>
+<span class="lineNum">     410 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     411 </span>            :       }
+<span class="lineNum">     412 </span>            : 
+<a name="413"><span class="lineNum">     413 </span>            :       //! Non member split (save_minimal)</a>
+<span class="lineNum">     414 </span>            :       template &lt;class T, PROCESS_IF(non_member_save_minimal)&gt; inline
+<span class="lineNum">     415 </span><span class="lineCov">       4800 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     416 </span>            :       {
+<span class="lineNum">     417 </span><span class="lineCov">       4800 :         self-&gt;process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t) );</span>
+<span class="lineNum">     418 </span><span class="lineCov">       4800 :         return *self;</span>
+<span class="lineNum">     419 </span>            :       }
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span>            :       //! Empty class specialization
+<span class="lineNum">     422 </span>            :       template &lt;class T, traits::EnableIf&lt;(Flags &amp; AllowEmptyClassElision),
+<span class="lineNum">     423 </span>            :                                           !traits::is_specialized&lt;T, ArchiveType&gt;::value,
+<span class="lineNum">     424 </span>            :                                           !traits::is_output_serializable&lt;T, ArchiveType&gt;::value,
+<span class="lineNum">     425 </span>            :                                           std::is_empty&lt;T&gt;::value&gt; = traits::sfinae&gt; inline
+<span class="lineNum">     426 </span>            :       ArchiveType &amp; processImpl(T const &amp;)
+<span class="lineNum">     427 </span>            :       {
+<span class="lineNum">     428 </span>            :         return *self;
+<span class="lineNum">     429 </span>            :       }
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span>            :       //! No matching serialization
+<span class="lineNum">     432 </span>            :       /*! Invalid if we have invalid output versioning or
+<span class="lineNum">     433 </span>            :           we have no specialization, are not output serializable, and either
+<span class="lineNum">     434 </span>            :           don't allow empty class ellision or allow it but are not serializing an empty class */
+<span class="lineNum">     435 </span>            :       template &lt;class T, traits::EnableIf&lt;traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value ||
+<span class="lineNum">     436 </span>            :                                           (!traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp;
+<span class="lineNum">     437 </span>            :                                            !traits::is_output_serializable&lt;T, ArchiveType&gt;::value &amp;&amp;
+<span class="lineNum">     438 </span>            :                                            (!(Flags &amp; AllowEmptyClassElision) || ((Flags &amp; AllowEmptyClassElision) &amp;&amp; !std::is_empty&lt;T&gt;::value)))&gt; = traits::sfinae&gt; inline
+<span class="lineNum">     439 </span>            :       ArchiveType &amp; processImpl(T const &amp;)
+<span class="lineNum">     440 </span>            :       {
+<span class="lineNum">     441 </span>            :         static_assert(traits::detail::count_output_serializers&lt;T, ArchiveType&gt;::value != 0,
+<span class="lineNum">     442 </span>            :             &quot;cereal could not find any output serialization functions for the provided type and archive combination. \n\n &quot;
+<span class="lineNum">     443 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
+<span class="lineNum">     444 </span>            :             &quot;Serialize functions generally have the following signature: \n\n &quot;
+<span class="lineNum">     445 </span>            :             &quot;template&lt;class Archive&gt; \n &quot;
+<span class="lineNum">     446 </span>            :             &quot;  void serialize(Archive &amp; ar) \n &quot;
+<span class="lineNum">     447 </span>            :             &quot;  { \n &quot;
+<span class="lineNum">     448 </span>            :             &quot;    ar( member1, member2, member3 ); \n &quot;
+<span class="lineNum">     449 </span>            :             &quot;  } \n\n &quot; );
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span>            :         static_assert(traits::detail::count_output_serializers&lt;T, ArchiveType&gt;::value &lt; 2,
+<span class="lineNum">     452 </span>            :             &quot;cereal found more than one compatible output serialization function for the provided type and archive combination. \n\n &quot;
+<span class="lineNum">     453 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
+<span class="lineNum">     454 </span>            :             &quot;Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n &quot;
+<span class="lineNum">     455 </span>            :             &quot;Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n &quot;
+<span class="lineNum">     456 </span>            :             &quot;In addition, you may not mix versioned with non-versioned serialization functions. \n\n &quot;);
+<span class="lineNum">     457 </span>            : 
+<span class="lineNum">     458 </span>            :         return *self;
+<span class="lineNum">     459 </span>            :       }
 <span class="lineNum">     460 </span>            : 
-<span class="lineNum">     461 </span>            :           @tparam T The type of the class being serialized
-<a name="462"><span class="lineNum">     462 </span>            :           @param version The version number associated with it */</a>
-<span class="lineNum">     463 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     464 </span><span class="lineCov">       6000 :       void registerClassVersion( const std::uint32_t version )</span>
-<span class="lineNum">     465 </span>            :       {
-<span class="lineNum">     466 </span><span class="lineCov">       6000 :         static const auto hash = std::type_index(typeid(T)).hash_code();</span>
-<span class="lineNum">     467 </span><span class="lineCov">       6000 :         const auto insertResult = itsVersionedTypes.insert( hash );</span>
-<span class="lineNum">     468 </span><span class="lineCov">       6000 :         if( insertResult.second ) // insertion took place, serialize the version number</span>
-<span class="lineNum">     469 </span><span class="lineCov">       4400 :           process( make_nvp&lt;ArchiveType&gt;(&quot;cereal_class_version&quot;, version) );</span>
-<span class="lineNum">     470 </span><span class="lineCov">       6000 :       }</span>
-<span class="lineNum">     471 </span>            : 
-<span class="lineNum">     472 </span>            :       //! Member serialization
-<span class="lineNum">     473 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     474 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     475 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_serialize&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="476"><span class="lineNum">     476 </span>            :                               (traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     477 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     478 </span><span class="lineCov">       1200 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     479 </span>            :       {
-<span class="lineNum">     480 </span><span class="lineCov">       1200 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     481 </span><span class="lineCov">       1200 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t), detail::Version&lt;T&gt;::version);</span>
-<span class="lineNum">     482 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     483 </span>            :       }
-<span class="lineNum">     484 </span>            : 
-<span class="lineNum">     485 </span>            :       //! Non member serialization
-<span class="lineNum">     486 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     487 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     488 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_serialize&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="489"><span class="lineNum">     489 </span>            :                               (traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     490 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     491 </span><span class="lineCov">        800 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     492 </span>            :       {
-<span class="lineNum">     493 </span><span class="lineCov">        800 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     494 </span><span class="lineCov">        800 :         serialize(*self, const_cast&lt;T &amp;&gt;(t), detail::Version&lt;T&gt;::version);</span>
-<span class="lineNum">     495 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     496 </span>            :       }
-<span class="lineNum">     497 </span>            : 
-<span class="lineNum">     498 </span>            :       //! Member split (save)
-<span class="lineNum">     499 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     500 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     501 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_save&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="502"><span class="lineNum">     502 </span>            :                               (traits::is_specialized_member_save&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     503 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     504 </span><span class="lineCov">       1200 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     505 </span>            :       {
-<span class="lineNum">     506 </span><span class="lineCov">       1200 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     507 </span><span class="lineCov">       1200 :         access::member_save(*self, t, detail::Version&lt;T&gt;::version);</span>
-<span class="lineNum">     508 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     509 </span>            :       }
-<span class="lineNum">     510 </span>            : 
-<span class="lineNum">     511 </span>            :       //! Non member split (save)
-<span class="lineNum">     512 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     513 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     514 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_save&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="515"><span class="lineNum">     515 </span>            :                               (traits::is_specialized_non_member_save&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     516 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     517 </span><span class="lineCov">       1200 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     518 </span>            :       {
-<span class="lineNum">     519 </span><span class="lineCov">       1200 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     520 </span><span class="lineCov">       1200 :         save(*self, t, detail::Version&lt;T&gt;::version);</span>
-<span class="lineNum">     521 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     522 </span>            :       }
-<span class="lineNum">     523 </span>            : 
-<span class="lineNum">     524 </span>            :       //! Member split (save_minimal)
-<span class="lineNum">     525 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     526 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     527 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_save_minimal&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="528"><span class="lineNum">     528 </span>            :                               (traits::is_specialized_member_save_minimal&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     529 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     530 </span><span class="lineCov">        800 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     531 </span>            :       {
-<span class="lineNum">     532 </span><span class="lineCov">        800 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     533 </span><span class="lineCov">        800 :         self-&gt;process( access::member_save_minimal(*self, t, detail::Version&lt;T&gt;::version) );</span>
-<span class="lineNum">     534 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     535 </span>            :       }
+<span class="lineNum">     461 </span>            :       //! Registers a class version with the archive and serializes it if necessary
+<span class="lineNum">     462 </span>            :       /*! If this is the first time this class has been serialized, we will record its
+<span class="lineNum">     463 </span>            :           version number and serialize that.
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span>            :           @tparam T The type of the class being serialized
+<a name="466"><span class="lineNum">     466 </span>            :           @param version The version number associated with it */</a>
+<span class="lineNum">     467 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     468 </span><span class="lineCov">      12000 :       std::uint32_t registerClassVersion()</span>
+<span class="lineNum">     469 </span>            :       {
+<span class="lineNum">     470 </span><span class="lineCov">      12000 :         static const auto hash = std::type_index(typeid(T)).hash_code();</span>
+<span class="lineNum">     471 </span><span class="lineCov">      12000 :         const auto insertResult = itsVersionedTypes.insert( hash );</span>
+<span class="lineNum">     472 </span>            :         const auto version =
+<span class="lineNum">     473 </span><span class="lineCov">      12000 :           detail::StaticObject&lt;detail::Versions&gt;::getInstance().find( hash, detail::Version&lt;T&gt;::version );</span>
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span><span class="lineCov">      12000 :         if( insertResult.second ) // insertion took place, serialize the version number</span>
+<span class="lineNum">     476 </span><span class="lineCov">       8800 :           process( make_nvp&lt;ArchiveType&gt;(&quot;cereal_class_version&quot;, version) );</span>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineCov">      12000 :         return version;</span>
+<span class="lineNum">     479 </span>            :       }
+<span class="lineNum">     480 </span>            : 
+<span class="lineNum">     481 </span>            :       //! Member serialization
+<a name="482"><span class="lineNum">     482 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     483 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_serialize)&gt; inline
+<span class="lineNum">     484 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     485 </span>            :       {
+<span class="lineNum">     486 </span><span class="lineCov">       2400 :         access::member_serialize(*self, const_cast&lt;T &amp;&gt;(t), registerClassVersion&lt;T&gt;());</span>
+<span class="lineNum">     487 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     488 </span>            :       }
+<span class="lineNum">     489 </span>            : 
+<span class="lineNum">     490 </span>            :       //! Non member serialization
+<a name="491"><span class="lineNum">     491 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     492 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_serialize)&gt; inline
+<span class="lineNum">     493 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     494 </span>            :       {
+<span class="lineNum">     495 </span><span class="lineCov">       1600 :         CEREAL_SERIALIZE_FUNCTION_NAME(*self, const_cast&lt;T &amp;&gt;(t), registerClassVersion&lt;T&gt;());</span>
+<span class="lineNum">     496 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     497 </span>            :       }
+<span class="lineNum">     498 </span>            : 
+<span class="lineNum">     499 </span>            :       //! Member split (save)
+<a name="500"><span class="lineNum">     500 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     501 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_save)&gt; inline
+<span class="lineNum">     502 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     503 </span>            :       {
+<span class="lineNum">     504 </span><span class="lineCov">       2400 :         access::member_save(*self, t, registerClassVersion&lt;T&gt;());</span>
+<span class="lineNum">     505 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     506 </span>            :       }
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span>            :       //! Non member split (save)
+<a name="509"><span class="lineNum">     509 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     510 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_save)&gt; inline
+<span class="lineNum">     511 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     512 </span>            :       {
+<span class="lineNum">     513 </span><span class="lineCov">       2400 :         CEREAL_SAVE_FUNCTION_NAME(*self, t, registerClassVersion&lt;T&gt;());</span>
+<span class="lineNum">     514 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     515 </span>            :       }
+<span class="lineNum">     516 </span>            : 
+<span class="lineNum">     517 </span>            :       //! Member split (save_minimal)
+<a name="518"><span class="lineNum">     518 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     519 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_save_minimal)&gt; inline
+<span class="lineNum">     520 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     521 </span>            :       {
+<span class="lineNum">     522 </span><span class="lineCov">       1600 :         self-&gt;process( access::member_save_minimal(*self, t, registerClassVersion&lt;T&gt;()) );</span>
+<span class="lineNum">     523 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     524 </span>            :       }
+<span class="lineNum">     525 </span>            : 
+<span class="lineNum">     526 </span>            :       //! Non member split (save_minimal)
+<a name="527"><span class="lineNum">     527 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     528 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_save_minimal)&gt; inline
+<span class="lineNum">     529 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T const &amp; t)</span>
+<span class="lineNum">     530 </span>            :       {
+<span class="lineNum">     531 </span><span class="lineCov">       1600 :         self-&gt;process( CEREAL_SAVE_MINIMAL_FUNCTION_NAME(*self, t, registerClassVersion&lt;T&gt;()) );</span>
+<span class="lineNum">     532 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     533 </span>            :       }
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span>            :     #undef PROCESS_IF
 <span class="lineNum">     536 </span>            : 
-<span class="lineNum">     537 </span>            :       //! Non member split (save_minimal)
-<span class="lineNum">     538 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     539 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     540 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_save_minimal&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::has_invalid_output_versioning&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="541"><span class="lineNum">     541 </span>            :                               (traits::is_specialized_non_member_save_minimal&lt;T, ArchiveType&gt;::value || traits::is_output_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     542 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     543 </span><span class="lineCov">        800 :       processImpl(T const &amp; t)</span>
-<span class="lineNum">     544 </span>            :       {
-<span class="lineNum">     545 </span><span class="lineCov">        800 :         registerClassVersion&lt;T&gt;( detail::Version&lt;T&gt;::version );</span>
-<span class="lineNum">     546 </span><span class="lineCov">        800 :         self-&gt;process( save_minimal(*self, t, detail::Version&lt;T&gt;::version) );</span>
-<span class="lineNum">     547 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     548 </span>            :       }
-<span class="lineNum">     549 </span>            : 
-<span class="lineNum">     550 </span>            :     private:
-<span class="lineNum">     551 </span>            :       ArchiveType * const self;
-<span class="lineNum">     552 </span>            : 
-<span class="lineNum">     553 </span>            :       //! A set of all base classes that have been serialized
-<span class="lineNum">     554 </span>            :       std::unordered_set&lt;traits::detail::base_class_id, traits::detail::base_class_id_hash&gt; itsBaseClassSet;
-<span class="lineNum">     555 </span>            : 
-<span class="lineNum">     556 </span>            :       //! Maps from addresses to pointer ids
-<span class="lineNum">     557 </span>            :       std::unordered_map&lt;void const *, std::uint32_t&gt; itsSharedPointerMap;
+<span class="lineNum">     537 </span>            :     private:
+<span class="lineNum">     538 </span>            :       ArchiveType * const self;
+<span class="lineNum">     539 </span>            : 
+<span class="lineNum">     540 </span>            :       //! A set of all base classes that have been serialized
+<span class="lineNum">     541 </span>            :       std::unordered_set&lt;traits::detail::base_class_id, traits::detail::base_class_id_hash&gt; itsBaseClassSet;
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span>            :       //! Maps from addresses to pointer ids
+<span class="lineNum">     544 </span>            :       std::unordered_map&lt;void const *, std::uint32_t&gt; itsSharedPointerMap;
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span>            :       //! The id to be given to the next pointer
+<span class="lineNum">     547 </span>            :       std::uint32_t itsCurrentPointerId;
+<span class="lineNum">     548 </span>            : 
+<span class="lineNum">     549 </span>            :       //! Maps from polymorphic type name strings to ids
+<span class="lineNum">     550 </span>            :       std::unordered_map&lt;char const *, std::uint32_t&gt; itsPolymorphicTypeMap;
+<span class="lineNum">     551 </span>            : 
+<span class="lineNum">     552 </span>            :       //! The id to be given to the next polymorphic type name
+<span class="lineNum">     553 </span>            :       std::uint32_t itsCurrentPolymorphicTypeId;
+<span class="lineNum">     554 </span>            : 
+<span class="lineNum">     555 </span>            :       //! Keeps track of classes that have versioning information associated with them
+<span class="lineNum">     556 </span>            :       std::unordered_set&lt;size_type&gt; itsVersionedTypes;
+<span class="lineNum">     557 </span>            :   }; // class OutputArchive
 <span class="lineNum">     558 </span>            : 
-<span class="lineNum">     559 </span>            :       //! The id to be given to the next pointer
-<span class="lineNum">     560 </span>            :       std::uint32_t itsCurrentPointerId;
-<span class="lineNum">     561 </span>            : 
-<span class="lineNum">     562 </span>            :       //! Maps from polymorphic type name strings to ids
-<span class="lineNum">     563 </span>            :       std::unordered_map&lt;char const *, std::uint32_t&gt; itsPolymorphicTypeMap;
+<span class="lineNum">     559 </span>            :   // ######################################################################
+<span class="lineNum">     560 </span>            :   //! The base input archive class
+<span class="lineNum">     561 </span>            :   /*! This is the base input archive for all input archives.  If you create
+<span class="lineNum">     562 </span>            :       a custom archive class, it should derive from this, passing itself as
+<span class="lineNum">     563 </span>            :       a template parameter for the ArchiveType.
 <span class="lineNum">     564 </span>            : 
-<span class="lineNum">     565 </span>            :       //! The id to be given to the next polymorphic type name
-<span class="lineNum">     566 </span>            :       std::uint32_t itsCurrentPolymorphicTypeId;
+<span class="lineNum">     565 </span>            :       The base class provides all of the functionality necessary to
+<span class="lineNum">     566 </span>            :       properly forward data to the correct serialization functions.
 <span class="lineNum">     567 </span>            : 
-<span class="lineNum">     568 </span>            :       //! Keeps track of classes that have versioning information associated with them
-<span class="lineNum">     569 </span>            :       std::unordered_set&lt;size_type&gt; itsVersionedTypes;
-<span class="lineNum">     570 </span>            :   }; // class OutputArchive
+<span class="lineNum">     568 </span>            :       Individual archives should use a combination of prologue and
+<span class="lineNum">     569 </span>            :       epilogue functions together with specializations of serialize, save,
+<span class="lineNum">     570 </span>            :       and load to alter the functionality of their serialization.
 <span class="lineNum">     571 </span>            : 
-<span class="lineNum">     572 </span>            :   // ######################################################################
-<span class="lineNum">     573 </span>            :   //! The base input archive class
-<span class="lineNum">     574 </span>            :   /*! This is the base input archive for all input archives.  If you create
-<span class="lineNum">     575 </span>            :       a custom archive class, it should derive from this, passing itself as
-<span class="lineNum">     576 </span>            :       a template parameter for the ArchiveType.
-<span class="lineNum">     577 </span>            : 
-<span class="lineNum">     578 </span>            :       The base class provides all of the functionality necessary to
-<span class="lineNum">     579 </span>            :       properly forward data to the correct serialization functions.
-<span class="lineNum">     580 </span>            : 
-<span class="lineNum">     581 </span>            :       Individual archives should use a combination of prologue and
-<span class="lineNum">     582 </span>            :       epilogue functions together with specializations of serialize, save,
-<span class="lineNum">     583 </span>            :       and load to alter the functionality of their serialization.
-<span class="lineNum">     584 </span>            : 
-<span class="lineNum">     585 </span>            :       @tparam ArchiveType The archive type that derives from InputArchive
-<span class="lineNum">     586 </span>            :       @tparam Flags Flags to control advanced functionality.  See the Flags
-<span class="lineNum">     587 </span>            :                     enum for more information.
-<a name="588"><span class="lineNum">     588 </span>            :       @ingroup Internal */</a>
-<span class="lineNum">     589 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
-<span class="lineNum">     590 </span><span class="lineCov">      13100 :   class InputArchive : public detail::InputArchiveBase</span>
-<span class="lineNum">     591 </span>            :   {
-<span class="lineNum">     592 </span>            :     public:
-<a name="593"><span class="lineNum">     593 </span>            :       //! Construct the output archive</a>
-<span class="lineNum">     594 </span>            :       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
-<span class="lineNum">     595 </span><span class="lineCov">      13100 :       InputArchive(ArchiveType * const derived) :</span>
-<span class="lineNum">     596 </span>            :         self(derived),
-<span class="lineNum">     597 </span>            :         itsBaseClassSet(),
-<span class="lineNum">     598 </span>            :         itsSharedPointerMap(),
-<span class="lineNum">     599 </span>            :         itsPolymorphicTypeMap(),
-<span class="lineNum">     600 </span><span class="lineCov">      13100 :         itsVersionedTypes()</span>
-<span class="lineNum">     601 </span><span class="lineCov">      13100 :       { }</span>
-<span class="lineNum">     602 </span>            : 
-<span class="lineNum">     603 </span>            :       //! Serializes all passed in data
-<a name="604"><span class="lineNum">     604 </span>            :       /*! This is the primary interface for serializing data with an archive */</a>
-<span class="lineNum">     605 </span>            :       template &lt;class ... Types&gt; inline
-<span class="lineNum">     606 </span><span class="lineCov">   12206913 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
-<span class="lineNum">     607 </span>            :       {
-<span class="lineNum">     608 </span><span class="lineCov">   12206913 :         process( std::forward&lt;Types&gt;( args )... );</span>
-<span class="lineNum">     609 </span><span class="lineCov">   12206913 :         return *self;</span>
-<span class="lineNum">     610 </span>            :       }
-<span class="lineNum">     611 </span>            : 
-<span class="lineNum">     612 </span>            :       /*! @name Boost Transition Layer
-<span class="lineNum">     613 </span>            :           Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
-<span class="lineNum">     614 </span>            :           a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
-<span class="lineNum">     615 </span>            :       //! @{
-<span class="lineNum">     616 </span>            : 
-<span class="lineNum">     617 </span>            :       //! Serializes passed in data
-<span class="lineNum">     618 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
-<span class="lineNum">     619 </span>            :           cereal.  If you are transitioning from boost, use this until you can
-<span class="lineNum">     620 </span>            :           transition to the operator() overload */
-<span class="lineNum">     621 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     622 </span>            :       ArchiveType &amp; operator&amp;( T &amp;&amp; arg )
-<span class="lineNum">     623 </span>            :       {
-<span class="lineNum">     624 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
-<span class="lineNum">     625 </span>            :         return *self;
-<span class="lineNum">     626 </span>            :       }
+<span class="lineNum">     572 </span>            :       @tparam ArchiveType The archive type that derives from InputArchive
+<span class="lineNum">     573 </span>            :       @tparam Flags Flags to control advanced functionality.  See the Flags
+<span class="lineNum">     574 </span>            :                     enum for more information.
+<a name="575"><span class="lineNum">     575 </span>            :       @ingroup Internal */</a>
+<span class="lineNum">     576 </span>            :   template&lt;class ArchiveType, std::uint32_t Flags = 0&gt;
+<span class="lineNum">     577 </span><span class="lineCov">      27914 :   class InputArchive : public detail::InputArchiveBase</span>
+<span class="lineNum">     578 </span>            :   {
+<span class="lineNum">     579 </span>            :     public:
+<a name="580"><span class="lineNum">     580 </span>            :       //! Construct the output archive</a>
+<span class="lineNum">     581 </span>            :       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
+<span class="lineNum">     582 </span><span class="lineCov">      27914 :       InputArchive(ArchiveType * const derived) :</span>
+<span class="lineNum">     583 </span>            :         self(derived),
+<span class="lineNum">     584 </span>            :         itsBaseClassSet(),
+<span class="lineNum">     585 </span>            :         itsSharedPointerMap(),
+<span class="lineNum">     586 </span>            :         itsPolymorphicTypeMap(),
+<span class="lineNum">     587 </span><span class="lineCov">      27914 :         itsVersionedTypes()</span>
+<span class="lineNum">     588 </span><span class="lineCov">      27914 :       { }</span>
+<span class="lineNum">     589 </span>            : 
+<span class="lineNum">     590 </span>            :       //! Serializes all passed in data
+<a name="591"><span class="lineNum">     591 </span>            :       /*! This is the primary interface for serializing data with an archive */</a>
+<span class="lineNum">     592 </span>            :       template &lt;class ... Types&gt; inline
+<span class="lineNum">     593 </span><span class="lineCov">   24488636 :       ArchiveType &amp; operator()( Types &amp;&amp; ... args )</span>
+<span class="lineNum">     594 </span>            :       {
+<span class="lineNum">     595 </span><span class="lineCov">   24488636 :         process( std::forward&lt;Types&gt;( args )... );</span>
+<span class="lineNum">     596 </span><span class="lineCov">   24485036 :         return *self;</span>
+<span class="lineNum">     597 </span>            :       }
+<span class="lineNum">     598 </span>            : 
+<span class="lineNum">     599 </span>            :       /*! @name Boost Transition Layer
+<span class="lineNum">     600 </span>            :           Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
+<span class="lineNum">     601 </span>            :           a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
+<span class="lineNum">     602 </span>            :       //! @{
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span>            :       //! Serializes passed in data
+<span class="lineNum">     605 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
+<span class="lineNum">     606 </span>            :           cereal.  If you are transitioning from boost, use this until you can
+<span class="lineNum">     607 </span>            :           transition to the operator() overload */
+<span class="lineNum">     608 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     609 </span>            :       ArchiveType &amp; operator&amp;( T &amp;&amp; arg )
+<span class="lineNum">     610 </span>            :       {
+<span class="lineNum">     611 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
+<span class="lineNum">     612 </span>            :         return *self;
+<span class="lineNum">     613 </span>            :       }
+<span class="lineNum">     614 </span>            : 
+<span class="lineNum">     615 </span>            :       //! Serializes passed in data
+<span class="lineNum">     616 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
+<span class="lineNum">     617 </span>            :           cereal.  If you are transitioning from boost, use this until you can
+<span class="lineNum">     618 </span>            :           transition to the operator() overload */
+<span class="lineNum">     619 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     620 </span>            :       ArchiveType &amp; operator&gt;&gt;( T &amp;&amp; arg )
+<span class="lineNum">     621 </span>            :       {
+<span class="lineNum">     622 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
+<span class="lineNum">     623 </span>            :         return *self;
+<span class="lineNum">     624 </span>            :       }
+<span class="lineNum">     625 </span>            : 
+<span class="lineNum">     626 </span>            :       //! @}
 <span class="lineNum">     627 </span>            : 
-<span class="lineNum">     628 </span>            :       //! Serializes passed in data
-<span class="lineNum">     629 </span>            :       /*! This is a boost compatability layer and is not the preferred way of using
-<span class="lineNum">     630 </span>            :           cereal.  If you are transitioning from boost, use this until you can
-<span class="lineNum">     631 </span>            :           transition to the operator() overload */
-<span class="lineNum">     632 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     633 </span>            :       ArchiveType &amp; operator&gt;&gt;( T &amp;&amp; arg )
-<span class="lineNum">     634 </span>            :       {
-<span class="lineNum">     635 </span>            :         self-&gt;process( std::forward&lt;T&gt;( arg ) );
-<span class="lineNum">     636 </span>            :         return *self;
-<span class="lineNum">     637 </span>            :       }
+<span class="lineNum">     628 </span>            :       //! Retrieves a shared pointer given a unique key for it
+<span class="lineNum">     629 </span>            :       /*! This is used to retrieve a previously registered shared_ptr
+<span class="lineNum">     630 </span>            :           which has already been loaded.
+<span class="lineNum">     631 </span>            : 
+<span class="lineNum">     632 </span>            :           @param id The unique id that was serialized for the pointer
+<a name="633"><span class="lineNum">     633 </span>            :           @return A shared pointer to the data</a>
+<span class="lineNum">     634 </span>            :           @throw Exception if the id does not exist */
+<span class="lineNum">     635 </span><span class="lineCov">       5600 :       inline std::shared_ptr&lt;void&gt; getSharedPointer(std::uint32_t const id)</span>
+<span class="lineNum">     636 </span>            :       {
+<span class="lineNum">     637 </span><span class="lineCov">       5600 :         if(id == 0) return std::shared_ptr&lt;void&gt;(nullptr);</span>
 <span class="lineNum">     638 </span>            : 
-<span class="lineNum">     639 </span>            :       //! @}
-<span class="lineNum">     640 </span>            : 
-<span class="lineNum">     641 </span>            :       //! Retrieves a shared pointer given a unique key for it
-<span class="lineNum">     642 </span>            :       /*! This is used to retrieve a previously registered shared_ptr
-<span class="lineNum">     643 </span>            :           which has already been loaded.
-<span class="lineNum">     644 </span>            : 
-<span class="lineNum">     645 </span>            :           @param id The unique id that was serialized for the pointer
-<a name="646"><span class="lineNum">     646 </span>            :           @return A shared pointer to the data</a>
-<span class="lineNum">     647 </span>            :           @throw Exception if the id does not exist */
-<span class="lineNum">     648 </span><span class="lineCov">       2800 :       inline std::shared_ptr&lt;void&gt; getSharedPointer(std::uint32_t const id)</span>
-<span class="lineNum">     649 </span>            :       {
-<span class="lineNum">     650 </span><span class="lineCov">       2800 :         if(id == 0) return std::shared_ptr&lt;void&gt;(nullptr);</span>
-<span class="lineNum">     651 </span>            : 
-<span class="lineNum">     652 </span><span class="lineCov">       2000 :         auto iter = itsSharedPointerMap.find( id );</span>
-<span class="lineNum">     653 </span><span class="lineCov">       2000 :         if(iter == itsSharedPointerMap.end())</span>
-<span class="lineNum">     654 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a smart pointer. Could not find id &quot; + std::to_string(id));</span>
-<span class="lineNum">     655 </span>            : 
-<span class="lineNum">     656 </span><span class="lineCov">       2000 :         return iter-&gt;second;</span>
-<span class="lineNum">     657 </span>            :       }
-<span class="lineNum">     658 </span>            : 
-<span class="lineNum">     659 </span>            :       //! Registers a shared pointer to its unique identifier
-<span class="lineNum">     660 </span>            :       /*! After a shared pointer has been allocated for the first time, it should
-<span class="lineNum">     661 </span>            :           be registered with its loaded id for future references to it.
-<span class="lineNum">     662 </span>            : 
-<a name="663"><span class="lineNum">     663 </span>            :           @param id The unique identifier for the shared pointer</a>
-<span class="lineNum">     664 </span>            :           @param ptr The actual shared pointer */
-<span class="lineNum">     665 </span><span class="lineCov">      44000 :       inline void registerSharedPointer(std::uint32_t const id, std::shared_ptr&lt;void&gt; ptr)</span>
-<span class="lineNum">     666 </span>            :       {
-<span class="lineNum">     667 </span><span class="lineCov">      44000 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
-<span class="lineNum">     668 </span><span class="lineCov">      44000 :         itsSharedPointerMap[stripped_id] = ptr;</span>
-<span class="lineNum">     669 </span><span class="lineCov">      44000 :       }</span>
-<span class="lineNum">     670 </span>            : 
-<span class="lineNum">     671 </span>            :       //! Retrieves the string for a polymorphic type given a unique key for it
-<span class="lineNum">     672 </span>            :       /*! This is used to retrieve a string previously registered during
-<span class="lineNum">     673 </span>            :           a polymorphic load.
-<span class="lineNum">     674 </span>            : 
-<a name="675"><span class="lineNum">     675 </span>            :           @param id The unique id that was serialized for the polymorphic type</a>
-<span class="lineNum">     676 </span>            :           @return The string identifier for the tyep */
-<span class="lineNum">     677 </span><span class="lineCov">       1200 :       inline std::string getPolymorphicName(std::uint32_t const id)</span>
-<span class="lineNum">     678 </span>            :       {
-<span class="lineNum">     679 </span><span class="lineCov">       1200 :         auto name = itsPolymorphicTypeMap.find( id );</span>
-<span class="lineNum">     680 </span><span class="lineCov">       1200 :         if(name == itsPolymorphicTypeMap.end())</span>
-<span class="lineNum">     681 </span>            :         {
-<span class="lineNum">     682 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a polymorphic pointer. Could not find type id &quot; + std::to_string(id));</span>
-<span class="lineNum">     683 </span>            :         }
-<span class="lineNum">     684 </span><span class="lineCov">       1200 :         return name-&gt;second;</span>
-<span class="lineNum">     685 </span>            :       }
-<span class="lineNum">     686 </span>            : 
-<span class="lineNum">     687 </span>            :       //! Registers a polymorphic name string to its unique identifier
-<span class="lineNum">     688 </span>            :       /*! After a polymorphic type has been loaded for the first time, it should
-<span class="lineNum">     689 </span>            :           be registered with its loaded id for future references to it.
-<span class="lineNum">     690 </span>            : 
-<a name="691"><span class="lineNum">     691 </span>            :           @param id The unique identifier for the polymorphic type</a>
-<span class="lineNum">     692 </span>            :           @param name The name associated with the tyep */
-<span class="lineNum">     693 </span><span class="lineCov">        800 :       inline void registerPolymorphicName(std::uint32_t const id, std::string const &amp; name)</span>
-<span class="lineNum">     694 </span>            :       {
-<span class="lineNum">     695 </span><span class="lineCov">        800 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
-<span class="lineNum">     696 </span><span class="lineCov">        800 :         itsPolymorphicTypeMap.insert( {stripped_id, name} );</span>
-<span class="lineNum">     697 </span><span class="lineCov">        800 :       }</span>
-<span class="lineNum">     698 </span>            : 
-<span class="lineNum">     699 </span>            :     private:
-<a name="700"><span class="lineNum">     700 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
-<span class="lineNum">     701 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     702 </span><span class="lineCov">   17100065 :       void process( T &amp;&amp; head )</span>
-<span class="lineNum">     703 </span>            :       {
-<span class="lineNum">     704 </span><span class="lineCov">   17100065 :         prologue( *self, head );</span>
-<span class="lineNum">     705 </span><span class="lineCov">   17100065 :         self-&gt;processImpl( head );</span>
-<span class="lineNum">     706 </span><span class="lineCov">   17100065 :         epilogue( *self, head );</span>
-<span class="lineNum">     707 </span><span class="lineCov">   17100065 :       }</span>
-<span class="lineNum">     708 </span>            : 
-<a name="709"><span class="lineNum">     709 </span>            :       //! Unwinds to process all data</a>
-<span class="lineNum">     710 </span>            :       template &lt;class T, class ... Other&gt; inline
-<span class="lineNum">     711 </span><span class="lineCov">    4884352 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
-<span class="lineNum">     712 </span>            :       {
-<span class="lineNum">     713 </span><span class="lineCov">    4884352 :         process( std::forward&lt;T&gt;( head ) );</span>
-<span class="lineNum">     714 </span><span class="lineCov">    4884352 :         process( std::forward&lt;Other&gt;( tail )... );</span>
-<span class="lineNum">     715 </span><span class="lineCov">    4884352 :       }</span>
-<span class="lineNum">     716 </span>            : 
-<span class="lineNum">     717 </span>            :       //! Serialization of a virtual_base_class wrapper
-<span class="lineNum">     718 </span>            :       /*! \sa virtual_base_class */
-<span class="lineNum">     719 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     720 </span>            :       ArchiveType &amp; processImpl(virtual_base_class&lt;T&gt; &amp; b)
-<span class="lineNum">     721 </span>            :       {
-<span class="lineNum">     722 </span>            :         traits::detail::base_class_id id(b.base_ptr);
-<span class="lineNum">     723 </span>            :         if(itsBaseClassSet.count(id) == 0)
-<span class="lineNum">     724 </span>            :         {
-<span class="lineNum">     725 </span>            :           itsBaseClassSet.insert(id);
-<span class="lineNum">     726 </span>            :           self-&gt;processImpl( *b.base_ptr );
-<span class="lineNum">     727 </span>            :         }
-<span class="lineNum">     728 </span>            :         return *self;
-<span class="lineNum">     729 </span>            :       }
-<span class="lineNum">     730 </span>            : 
-<span class="lineNum">     731 </span>            :       //! Serialization of a base_class wrapper
-<a name="732"><span class="lineNum">     732 </span>            :       /*! \sa base_class */</a>
-<span class="lineNum">     733 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     734 </span><span class="lineCov">        800 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; &amp; b)</span>
-<span class="lineNum">     735 </span>            :       {
-<span class="lineNum">     736 </span><span class="lineCov">        800 :         self-&gt;processImpl( *b.base_ptr );</span>
-<span class="lineNum">     737 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     738 </span>            :       }
-<span class="lineNum">     739 </span>            : 
-<span class="lineNum">     740 </span>            :       //! Member serialization
-<span class="lineNum">     741 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     742 </span>            :       typename std::enable_if&lt;traits::has_member_serialize&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="743"><span class="lineNum">     743 </span>            :                               (traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     744 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     745 </span><span class="lineCov">    2479046 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     746 </span>            :       {
-<span class="lineNum">     747 </span><span class="lineCov">    2479046 :         access::member_serialize(*self, t);</span>
-<span class="lineNum">     748 </span><span class="lineCov">    2479046 :         return *self;</span>
-<span class="lineNum">     749 </span>            :       }
-<span class="lineNum">     750 </span>            : 
-<span class="lineNum">     751 </span>            :       //! Non member serialization
-<span class="lineNum">     752 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     753 </span>            :       typename std::enable_if&lt;traits::has_non_member_serialize&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="754"><span class="lineNum">     754 </span>            :                               (traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     755 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     756 </span><span class="lineCov">    1650713 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     757 </span>            :       {
-<span class="lineNum">     758 </span><span class="lineCov">    1650713 :         serialize(*self, t);</span>
-<span class="lineNum">     759 </span><span class="lineCov">    1650713 :         return *self;</span>
-<span class="lineNum">     760 </span>            :       }
-<span class="lineNum">     761 </span>            : 
-<span class="lineNum">     762 </span>            :       //! Member split (load)
-<span class="lineNum">     763 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     764 </span>            :       typename std::enable_if&lt;traits::has_member_load&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="765"><span class="lineNum">     765 </span>            :                               (traits::is_specialized_member_load&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     766 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     767 </span><span class="lineCov">     803371 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     768 </span>            :       {
-<span class="lineNum">     769 </span><span class="lineCov">     803371 :         access::member_load(*self, t);</span>
-<span class="lineNum">     770 </span><span class="lineCov">     803371 :         return *self;</span>
-<span class="lineNum">     771 </span>            :       }
-<span class="lineNum">     772 </span>            : 
-<span class="lineNum">     773 </span>            :       //! Non member split (load)
-<span class="lineNum">     774 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     775 </span>            :       typename std::enable_if&lt;traits::has_non_member_load&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="776"><span class="lineNum">     776 </span>            :                               (traits::is_specialized_non_member_load&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     777 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     778 </span><span class="lineCov">   12158135 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     779 </span>            :       {
-<span class="lineNum">     780 </span><span class="lineCov">   12158135 :         load(*self, t);</span>
-<span class="lineNum">     781 </span><span class="lineCov">   12158135 :         return *self;</span>
-<span class="lineNum">     782 </span>            :       }
-<span class="lineNum">     783 </span>            : 
-<span class="lineNum">     784 </span>            :       //! Member split (load_minimal)
-<span class="lineNum">     785 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     786 </span>            :       typename std::enable_if&lt;traits::has_member_load_minimal&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="787"><span class="lineNum">     787 </span>            :                               (traits::is_specialized_member_load_minimal&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     788 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     789 </span><span class="lineCov">        800 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     790 </span>            :       {
-<span class="lineNum">     791 </span><span class="lineCov">        400 :         typename traits::has_member_save_minimal&lt;T, ArchiveType&gt;::type value;</span>
-<span class="lineNum">     792 </span><span class="lineCov">        800 :         self-&gt;process( value );</span>
-<span class="lineNum">     793 </span><span class="lineCov">        800 :         access::member_load_minimal(*self, t, value);</span>
-<span class="lineNum">     794 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     795 </span>            :       }
-<span class="lineNum">     796 </span>            : 
-<span class="lineNum">     797 </span>            :       //! Non member split (load_minimal)
-<span class="lineNum">     798 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     799 </span>            :       typename std::enable_if&lt;traits::has_non_member_load_minimal&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="800"><span class="lineNum">     800 </span>            :                               (traits::is_specialized_non_member_load_minimal&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     801 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     802 </span><span class="lineCov">       2000 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     803 </span>            :       {
-<span class="lineNum">     804 </span>            :         typename traits::has_non_member_save_minimal&lt;T, ArchiveType&gt;::type value;
-<span class="lineNum">     805 </span><span class="lineCov">       2000 :         self-&gt;process( value );</span>
-<span class="lineNum">     806 </span><span class="lineCov">       2000 :         load_minimal(*self, t, value);</span>
-<span class="lineNum">     807 </span><span class="lineCov">       2000 :         return *self;</span>
-<span class="lineNum">     808 </span>            :       }
-<span class="lineNum">     809 </span>            : 
-<span class="lineNum">     810 </span>            :       //! Empty class specialization
-<span class="lineNum">     811 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     812 </span>            :       typename std::enable_if&lt;(Flags &amp; AllowEmptyClassElision) &amp;&amp;
-<span class="lineNum">     813 </span>            :           !traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp;
-<span class="lineNum">     814 </span>            :           !traits::is_input_serializable&lt;T, ArchiveType&gt;::value &amp;&amp; std::is_empty&lt;T&gt;::value, ArchiveType &amp;&gt;::type
-<span class="lineNum">     815 </span>            :       processImpl(T const &amp;)
-<span class="lineNum">     816 </span>            :       {
-<span class="lineNum">     817 </span>            :         return *self;
-<span class="lineNum">     818 </span>            :       }
-<span class="lineNum">     819 </span>            : 
-<span class="lineNum">     820 </span>            :       //! No matching serialization
-<span class="lineNum">     821 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     822 </span>            :       typename std::enable_if&lt;!traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp; !traits::is_input_serializable&lt;T, ArchiveType&gt;::value &amp;&amp;
-<span class="lineNum">     823 </span>            :         (!(Flags &amp; AllowEmptyClassElision) || ((Flags &amp; AllowEmptyClassElision) &amp;&amp; !std::is_empty&lt;T&gt;::value)),
-<span class="lineNum">     824 </span>            :         ArchiveType &amp;&gt;::type
-<span class="lineNum">     825 </span>            :       processImpl(T const &amp;)
-<span class="lineNum">     826 </span>            :       {
-<span class="lineNum">     827 </span>            :         static_assert(traits::is_output_serializable&lt;T, ArchiveType&gt;::value, &quot;Trying to serialize an unserializable type with an output archive. \n\n &quot;
-<span class="lineNum">     828 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
-<span class="lineNum">     829 </span>            :             &quot;Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n &quot;
-<span class="lineNum">     830 </span>            :             &quot;In addition, you may not mix versioned with non-versioned serialization functions. \n &quot;
-<span class="lineNum">     831 </span>            :             &quot;Serialize functions generally have the following signature: \n\n &quot;
-<span class="lineNum">     832 </span>            :             &quot;template&lt;class Archive&gt; \n &quot;
-<span class="lineNum">     833 </span>            :             &quot;  void serialize(Archive &amp; ar) \n &quot;
-<span class="lineNum">     834 </span>            :             &quot;  { \n &quot;
-<span class="lineNum">     835 </span>            :             &quot;    ar( member1, member2, member3 ); \n &quot;
-<span class="lineNum">     836 </span>            :             &quot;  } \n\n &quot; );
-<span class="lineNum">     837 </span>            :         return *self;
-<span class="lineNum">     838 </span>            :       }
+<span class="lineNum">     639 </span><span class="lineCov">       4000 :         auto iter = itsSharedPointerMap.find( id );</span>
+<span class="lineNum">     640 </span><span class="lineCov">       4000 :         if(iter == itsSharedPointerMap.end())</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a smart pointer. Could not find id &quot; + std::to_string(id));</span>
+<span class="lineNum">     642 </span>            : 
+<span class="lineNum">     643 </span><span class="lineCov">       4000 :         return iter-&gt;second;</span>
+<span class="lineNum">     644 </span>            :       }
+<span class="lineNum">     645 </span>            : 
+<span class="lineNum">     646 </span>            :       //! Registers a shared pointer to its unique identifier
+<span class="lineNum">     647 </span>            :       /*! After a shared pointer has been allocated for the first time, it should
+<span class="lineNum">     648 </span>            :           be registered with its loaded id for future references to it.
+<span class="lineNum">     649 </span>            : 
+<a name="650"><span class="lineNum">     650 </span>            :           @param id The unique identifier for the shared pointer</a>
+<span class="lineNum">     651 </span>            :           @param ptr The actual shared pointer */
+<span class="lineNum">     652 </span><span class="lineCov">      88008 :       inline void registerSharedPointer(std::uint32_t const id, std::shared_ptr&lt;void&gt; ptr)</span>
+<span class="lineNum">     653 </span>            :       {
+<span class="lineNum">     654 </span><span class="lineCov">      88008 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
+<span class="lineNum">     655 </span><span class="lineCov">      88008 :         itsSharedPointerMap[stripped_id] = ptr;</span>
+<span class="lineNum">     656 </span><span class="lineCov">      88008 :       }</span>
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span>            :       //! Retrieves the string for a polymorphic type given a unique key for it
+<span class="lineNum">     659 </span>            :       /*! This is used to retrieve a string previously registered during
+<span class="lineNum">     660 </span>            :           a polymorphic load.
+<span class="lineNum">     661 </span>            : 
+<a name="662"><span class="lineNum">     662 </span>            :           @param id The unique id that was serialized for the polymorphic type</a>
+<span class="lineNum">     663 </span>            :           @return The string identifier for the tyep */
+<span class="lineNum">     664 </span><span class="lineCov">       2400 :       inline std::string getPolymorphicName(std::uint32_t const id)</span>
+<span class="lineNum">     665 </span>            :       {
+<span class="lineNum">     666 </span><span class="lineCov">       2400 :         auto name = itsPolymorphicTypeMap.find( id );</span>
+<span class="lineNum">     667 </span><span class="lineCov">       2400 :         if(name == itsPolymorphicTypeMap.end())</span>
+<span class="lineNum">     668 </span>            :         {
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Error while trying to deserialize a polymorphic pointer. Could not find type id &quot; + std::to_string(id));</span>
+<span class="lineNum">     670 </span>            :         }
+<span class="lineNum">     671 </span><span class="lineCov">       2400 :         return name-&gt;second;</span>
+<span class="lineNum">     672 </span>            :       }
+<span class="lineNum">     673 </span>            : 
+<span class="lineNum">     674 </span>            :       //! Registers a polymorphic name string to its unique identifier
+<span class="lineNum">     675 </span>            :       /*! After a polymorphic type has been loaded for the first time, it should
+<span class="lineNum">     676 </span>            :           be registered with its loaded id for future references to it.
+<span class="lineNum">     677 </span>            : 
+<a name="678"><span class="lineNum">     678 </span>            :           @param id The unique identifier for the polymorphic type</a>
+<span class="lineNum">     679 </span>            :           @param name The name associated with the tyep */
+<span class="lineNum">     680 </span><span class="lineCov">       1600 :       inline void registerPolymorphicName(std::uint32_t const id, std::string const &amp; name)</span>
+<span class="lineNum">     681 </span>            :       {
+<span class="lineNum">     682 </span><span class="lineCov">       1600 :         std::uint32_t const stripped_id = id &amp; ~detail::msb_32bit;</span>
+<span class="lineNum">     683 </span><span class="lineCov">       1600 :         itsPolymorphicTypeMap.insert( {stripped_id, name} );</span>
+<span class="lineNum">     684 </span><span class="lineCov">       1600 :       }</span>
+<span class="lineNum">     685 </span>            : 
+<span class="lineNum">     686 </span>            :     private:
+<a name="687"><span class="lineNum">     687 </span>            :       //! Serializes data after calling prologue, then calls epilogue</a>
+<span class="lineNum">     688 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     689 </span><span class="lineCov">   34275996 :       void process( T &amp;&amp; head )</span>
+<span class="lineNum">     690 </span>            :       {
+<span class="lineNum">     691 </span><span class="lineCov">   34275996 :         prologue( *self, head );</span>
+<span class="lineNum">     692 </span><span class="lineCov">   34275996 :         self-&gt;processImpl( head );</span>
+<span class="lineNum">     693 </span><span class="lineCov">   34272396 :         epilogue( *self, head );</span>
+<span class="lineNum">     694 </span><span class="lineCov">   34272396 :       }</span>
+<span class="lineNum">     695 </span>            : 
+<a name="696"><span class="lineNum">     696 </span>            :       //! Unwinds to process all data</a>
+<span class="lineNum">     697 </span>            :       template &lt;class T, class ... Other&gt; inline
+<span class="lineNum">     698 </span><span class="lineCov">    9768160 :       void process( T &amp;&amp; head, Other &amp;&amp; ... tail )</span>
+<span class="lineNum">     699 </span>            :       {
+<span class="lineNum">     700 </span><span class="lineCov">    9768160 :         process( std::forward&lt;T&gt;( head ) );</span>
+<span class="lineNum">     701 </span><span class="lineCov">    9768160 :         process( std::forward&lt;Other&gt;( tail )... );</span>
+<span class="lineNum">     702 </span><span class="lineCov">    9768160 :       }</span>
+<span class="lineNum">     703 </span>            : 
+<span class="lineNum">     704 </span>            :       //! Serialization of a virtual_base_class wrapper
+<span class="lineNum">     705 </span>            :       /*! \sa virtual_base_class */
+<span class="lineNum">     706 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     707 </span>            :       ArchiveType &amp; processImpl(virtual_base_class&lt;T&gt; &amp; b)
+<span class="lineNum">     708 </span>            :       {
+<span class="lineNum">     709 </span>            :         traits::detail::base_class_id id(b.base_ptr);
+<span class="lineNum">     710 </span>            :         if(itsBaseClassSet.count(id) == 0)
+<span class="lineNum">     711 </span>            :         {
+<span class="lineNum">     712 </span>            :           itsBaseClassSet.insert(id);
+<span class="lineNum">     713 </span>            :           self-&gt;processImpl( *b.base_ptr );
+<span class="lineNum">     714 </span>            :         }
+<span class="lineNum">     715 </span>            :         return *self;
+<span class="lineNum">     716 </span>            :       }
+<span class="lineNum">     717 </span>            : 
+<span class="lineNum">     718 </span>            :       //! Serialization of a base_class wrapper
+<a name="719"><span class="lineNum">     719 </span>            :       /*! \sa base_class */</a>
+<span class="lineNum">     720 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     721 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(base_class&lt;T&gt; &amp; b)</span>
+<span class="lineNum">     722 </span>            :       {
+<span class="lineNum">     723 </span><span class="lineCov">       1600 :         self-&gt;processImpl( *b.base_ptr );</span>
+<span class="lineNum">     724 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     725 </span>            :       }
+<span class="lineNum">     726 </span>            : 
+<span class="lineNum">     727 </span>            :       //! Helper macro that expands the requirements for activating an overload
+<span class="lineNum">     728 </span>            :       #define PROCESS_IF(name)                                                                 \
+<span class="lineNum">     729 </span>            :       traits::EnableIf&lt;traits::has_##name&lt;T, ArchiveType&gt;::value,                              \
+<span class="lineNum">     730 </span>            :                        !traits::has_invalid_input_versioning&lt;T, ArchiveType&gt;::value,           \
+<span class="lineNum">     731 </span>            :                        (traits::is_specialized_##name&lt;T, ArchiveType&gt;::value ||                \
+<span class="lineNum">     732 </span>            :                         traits::is_input_serializable&lt;T, ArchiveType&gt;::value)&gt; = traits::sfinae
+<span class="lineNum">     733 </span>            : 
+<a name="734"><span class="lineNum">     734 </span>            :       //! Member serialization</a>
+<span class="lineNum">     735 </span>            :       template &lt;class T, PROCESS_IF(member_serialize)&gt; inline
+<span class="lineNum">     736 </span><span class="lineCov">    4959432 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     737 </span>            :       {
+<span class="lineNum">     738 </span><span class="lineCov">    4959432 :         access::member_serialize(*self, t);</span>
+<span class="lineNum">     739 </span><span class="lineCov">    4958632 :         return *self;</span>
+<span class="lineNum">     740 </span>            :       }
+<span class="lineNum">     741 </span>            : 
+<a name="742"><span class="lineNum">     742 </span>            :       //! Non member serialization</a>
+<span class="lineNum">     743 </span>            :       template &lt;class T, PROCESS_IF(non_member_serialize)&gt; inline
+<span class="lineNum">     744 </span><span class="lineCov">    3322476 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     745 </span>            :       {
+<span class="lineNum">     746 </span><span class="lineCov">    3322476 :         CEREAL_SERIALIZE_FUNCTION_NAME(*self, t);</span>
+<span class="lineNum">     747 </span><span class="lineCov">    3322076 :         return *self;</span>
+<span class="lineNum">     748 </span>            :       }
+<span class="lineNum">     749 </span>            : 
+<a name="750"><span class="lineNum">     750 </span>            :       //! Member split (load)</a>
+<span class="lineNum">     751 </span>            :       template &lt;class T, PROCESS_IF(member_load)&gt; inline
+<span class="lineNum">     752 </span><span class="lineCov">    1606752 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     753 </span>            :       {
+<span class="lineNum">     754 </span><span class="lineCov">    1606752 :         access::member_load(*self, t);</span>
+<span class="lineNum">     755 </span><span class="lineCov">    1606752 :         return *self;</span>
+<span class="lineNum">     756 </span>            :       }
+<span class="lineNum">     757 </span>            : 
+<a name="758"><span class="lineNum">     758 </span>            :       //! Non member split (load)</a>
+<span class="lineNum">     759 </span>            :       template &lt;class T, PROCESS_IF(non_member_load)&gt; inline
+<span class="lineNum">     760 </span><span class="lineCov">   24368136 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     761 </span>            :       {
+<span class="lineNum">     762 </span><span class="lineCov">   24368136 :         CEREAL_LOAD_FUNCTION_NAME(*self, t);</span>
+<span class="lineNum">     763 </span><span class="lineCov">   24365736 :         return *self;</span>
+<span class="lineNum">     764 </span>            :       }
+<span class="lineNum">     765 </span>            : 
+<a name="766"><span class="lineNum">     766 </span>            :       //! Member split (load_minimal)</a>
+<span class="lineNum">     767 </span>            :       template &lt;class T, PROCESS_IF(member_load_minimal)&gt; inline
+<span class="lineNum">     768 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     769 </span>            :       {
+<span class="lineNum">     770 </span>            :         using OutArchiveType = typename traits::detail::get_output_from_input&lt;ArchiveType&gt;::type;
+<span class="lineNum">     771 </span><span class="lineCov">       1200 :         typename traits::has_member_save_minimal&lt;T, OutArchiveType&gt;::type value;</span>
+<span class="lineNum">     772 </span><span class="lineCov">       2400 :         self-&gt;process( value );</span>
+<span class="lineNum">     773 </span><span class="lineCov">       2400 :         access::member_load_minimal(*self, t, value);</span>
+<span class="lineNum">     774 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     775 </span>            :       }
+<span class="lineNum">     776 </span>            : 
+<a name="777"><span class="lineNum">     777 </span>            :       //! Non member split (load_minimal)</a>
+<span class="lineNum">     778 </span>            :       template &lt;class T, PROCESS_IF(non_member_load_minimal)&gt; inline
+<span class="lineNum">     779 </span><span class="lineCov">       4800 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     780 </span>            :       {
+<span class="lineNum">     781 </span>            :         using OutArchiveType = typename traits::detail::get_output_from_input&lt;ArchiveType&gt;::type;
+<span class="lineNum">     782 </span><span class="lineCov">        400 :         typename traits::has_non_member_save_minimal&lt;T, OutArchiveType&gt;::type value;</span>
+<span class="lineNum">     783 </span><span class="lineCov">       4800 :         self-&gt;process( value );</span>
+<span class="lineNum">     784 </span><span class="lineCov">       4800 :         CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value);</span>
+<span class="lineNum">     785 </span><span class="lineCov">       4800 :         return *self;</span>
+<span class="lineNum">     786 </span>            :       }
+<span class="lineNum">     787 </span>            : 
+<span class="lineNum">     788 </span>            :       //! Empty class specialization
+<span class="lineNum">     789 </span>            :       template &lt;class T, traits::EnableIf&lt;(Flags &amp; AllowEmptyClassElision),
+<span class="lineNum">     790 </span>            :                                           !traits::is_specialized&lt;T, ArchiveType&gt;::value,
+<span class="lineNum">     791 </span>            :                                           !traits::is_input_serializable&lt;T, ArchiveType&gt;::value,
+<span class="lineNum">     792 </span>            :                                           std::is_empty&lt;T&gt;::value&gt; = traits::sfinae&gt; inline
+<span class="lineNum">     793 </span>            :       ArchiveType &amp; processImpl(T const &amp;)
+<span class="lineNum">     794 </span>            :       {
+<span class="lineNum">     795 </span>            :         return *self;
+<span class="lineNum">     796 </span>            :       }
+<span class="lineNum">     797 </span>            : 
+<span class="lineNum">     798 </span>            :       //! No matching serialization
+<span class="lineNum">     799 </span>            :       /*! Invalid if we have invalid input versioning or
+<span class="lineNum">     800 </span>            :           we have no specialization, are not input serializable, and either
+<span class="lineNum">     801 </span>            :           don't allow empty class ellision or allow it but are not serializing an empty class */
+<span class="lineNum">     802 </span>            :       template &lt;class T, traits::EnableIf&lt;traits::has_invalid_input_versioning&lt;T, ArchiveType&gt;::value ||
+<span class="lineNum">     803 </span>            :                                           (!traits::is_specialized&lt;T, ArchiveType&gt;::value &amp;&amp;
+<span class="lineNum">     804 </span>            :                                            !traits::is_input_serializable&lt;T, ArchiveType&gt;::value &amp;&amp;
+<span class="lineNum">     805 </span>            :                                            (!(Flags &amp; AllowEmptyClassElision) || ((Flags &amp; AllowEmptyClassElision) &amp;&amp; !std::is_empty&lt;T&gt;::value)))&gt; = traits::sfinae&gt; inline
+<span class="lineNum">     806 </span>            :       ArchiveType &amp; processImpl(T const &amp;)
+<span class="lineNum">     807 </span>            :       {
+<span class="lineNum">     808 </span>            :         static_assert(traits::detail::count_input_serializers&lt;T, ArchiveType&gt;::value != 0,
+<span class="lineNum">     809 </span>            :             &quot;cereal could not find any input serialization functions for the provided type and archive combination. \n\n &quot;
+<span class="lineNum">     810 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
+<span class="lineNum">     811 </span>            :             &quot;Serialize functions generally have the following signature: \n\n &quot;
+<span class="lineNum">     812 </span>            :             &quot;template&lt;class Archive&gt; \n &quot;
+<span class="lineNum">     813 </span>            :             &quot;  void serialize(Archive &amp; ar) \n &quot;
+<span class="lineNum">     814 </span>            :             &quot;  { \n &quot;
+<span class="lineNum">     815 </span>            :             &quot;    ar( member1, member2, member3 ); \n &quot;
+<span class="lineNum">     816 </span>            :             &quot;  } \n\n &quot; );
+<span class="lineNum">     817 </span>            : 
+<span class="lineNum">     818 </span>            :         static_assert(traits::detail::count_input_serializers&lt;T, ArchiveType&gt;::value &lt; 2,
+<span class="lineNum">     819 </span>            :             &quot;cereal found more than one compatible input serialization function for the provided type and archive combination. \n\n &quot;
+<span class="lineNum">     820 </span>            :             &quot;Types must either have a serialize function, load/save pair, or load_minimal/save_minimal pair (you may not mix these). \n &quot;
+<span class="lineNum">     821 </span>            :             &quot;Use specialization (see access.hpp) if you need to disambiguate between serialize vs load/save functions.  \n &quot;
+<span class="lineNum">     822 </span>            :             &quot;Note that serialization functions can be inherited which may lead to the aforementioned ambiguities. \n &quot;
+<span class="lineNum">     823 </span>            :             &quot;In addition, you may not mix versioned with non-versioned serialization functions. \n\n &quot;);
+<span class="lineNum">     824 </span>            : 
+<span class="lineNum">     825 </span>            :         return *self;
+<span class="lineNum">     826 </span>            :       }
+<span class="lineNum">     827 </span>            : 
+<span class="lineNum">     828 </span>            :       //! Registers a class version with the archive and serializes it if necessary
+<span class="lineNum">     829 </span>            :       /*! If this is the first time this class has been serialized, we will record its
+<span class="lineNum">     830 </span>            :           version number and serialize that.
+<span class="lineNum">     831 </span>            : 
+<span class="lineNum">     832 </span>            :           @tparam T The type of the class being serialized
+<a name="833"><span class="lineNum">     833 </span>            :           @param version The version number associated with it */</a>
+<span class="lineNum">     834 </span>            :       template &lt;class T&gt; inline
+<span class="lineNum">     835 </span><span class="lineCov">      12000 :       std::uint32_t loadClassVersion()</span>
+<span class="lineNum">     836 </span>            :       {
+<span class="lineNum">     837 </span><span class="lineCov">      12000 :         static const auto hash = std::type_index(typeid(T)).hash_code();</span>
+<span class="lineNum">     838 </span><span class="lineCov">      12000 :         auto lookupResult = itsVersionedTypes.find( hash );</span>
 <span class="lineNum">     839 </span>            : 
-<span class="lineNum">     840 </span>            :       //! Registers a class version with the archive and serializes it if necessary
-<span class="lineNum">     841 </span>            :       /*! If this is the first time this class has been serialized, we will record its
-<span class="lineNum">     842 </span>            :           version number and serialize that.
-<span class="lineNum">     843 </span>            : 
-<span class="lineNum">     844 </span>            :           @tparam T The type of the class being serialized
-<a name="845"><span class="lineNum">     845 </span>            :           @param version The version number associated with it */</a>
-<span class="lineNum">     846 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     847 </span><span class="lineCov">       6000 :       std::uint32_t loadClassVersion()</span>
-<span class="lineNum">     848 </span>            :       {
-<span class="lineNum">     849 </span><span class="lineCov">       6000 :         static const auto hash = std::type_index(typeid(T)).hash_code();</span>
-<span class="lineNum">     850 </span><span class="lineCov">       6000 :         auto lookupResult = itsVersionedTypes.find( hash );</span>
-<span class="lineNum">     851 </span>            : 
-<span class="lineNum">     852 </span><span class="lineCov">       6000 :         if( lookupResult != itsVersionedTypes.end() ) // already exists</span>
-<span class="lineNum">     853 </span><span class="lineCov">       1600 :           return lookupResult-&gt;second;</span>
-<span class="lineNum">     854 </span>            :         else // need to load
-<span class="lineNum">     855 </span>            :         {
-<span class="lineNum">     856 </span>            :           std::uint32_t version;
-<span class="lineNum">     857 </span>            : 
-<span class="lineNum">     858 </span><span class="lineCov">       4400 :           process( make_nvp&lt;ArchiveType&gt;(&quot;cereal_class_version&quot;, version) );</span>
-<span class="lineNum">     859 </span><span class="lineCov">       4400 :           itsVersionedTypes.emplace_hint( lookupResult, hash, version );</span>
-<span class="lineNum">     860 </span>            : 
-<span class="lineNum">     861 </span><span class="lineCov">       4400 :           return version;</span>
-<span class="lineNum">     862 </span>            :         }
-<span class="lineNum">     863 </span>            :       }
-<span class="lineNum">     864 </span>            : 
-<span class="lineNum">     865 </span>            :       //! Member serialization
-<span class="lineNum">     866 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     867 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     868 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_serialize&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="869"><span class="lineNum">     869 </span>            :                               (traits::is_specialized_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     870 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     871 </span><span class="lineCov">       1200 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     872 </span>            :       {
-<span class="lineNum">     873 </span><span class="lineCov">       1200 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     874 </span><span class="lineCov">       1200 :         access::member_serialize(*self, t, version);</span>
-<span class="lineNum">     875 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     876 </span>            :       }
-<span class="lineNum">     877 </span>            : 
-<span class="lineNum">     878 </span>            :       //! Non member serialization
-<span class="lineNum">     879 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     880 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     881 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_serialize&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="882"><span class="lineNum">     882 </span>            :                               (traits::is_specialized_non_member_serialize&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     883 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     884 </span><span class="lineCov">        800 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     885 </span>            :       {
-<span class="lineNum">     886 </span><span class="lineCov">        800 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     887 </span><span class="lineCov">        800 :         serialize(*self, t, version);</span>
-<span class="lineNum">     888 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     889 </span>            :       }
-<span class="lineNum">     890 </span>            : 
-<span class="lineNum">     891 </span>            :       //! Member split (load)
-<span class="lineNum">     892 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     893 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     894 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_load&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="895"><span class="lineNum">     895 </span>            :                               (traits::is_specialized_member_load&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     896 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     897 </span><span class="lineCov">       1200 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     898 </span>            :       {
-<span class="lineNum">     899 </span><span class="lineCov">       1200 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     900 </span><span class="lineCov">       1200 :         access::member_load(*self, t, version);</span>
-<span class="lineNum">     901 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     902 </span>            :       }
-<span class="lineNum">     903 </span>            : 
-<span class="lineNum">     904 </span>            :       //! Non member split (load)
-<span class="lineNum">     905 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     906 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     907 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_load&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="908"><span class="lineNum">     908 </span>            :                               (traits::is_specialized_non_member_load&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     909 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     910 </span><span class="lineCov">       1200 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     911 </span>            :       {
-<span class="lineNum">     912 </span><span class="lineCov">       1200 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     913 </span><span class="lineCov">       1200 :         load(*self, t, version);</span>
-<span class="lineNum">     914 </span><span class="lineCov">       1200 :         return *self;</span>
-<span class="lineNum">     915 </span>            :       }
-<span class="lineNum">     916 </span>            : 
-<span class="lineNum">     917 </span>            :       //! Member split (load_minimal)
-<span class="lineNum">     918 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     919 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     920 </span>            :       typename std::enable_if&lt;traits::has_member_versioned_load_minimal&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="921"><span class="lineNum">     921 </span>            :                               (traits::is_specialized_member_load_minimal&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     922 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     923 </span><span class="lineCov">        800 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     924 </span>            :       {
-<span class="lineNum">     925 </span><span class="lineCov">        800 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     926 </span>            :         typename traits::has_member_versioned_save_minimal&lt;T, ArchiveType&gt;::type value;
-<span class="lineNum">     927 </span><span class="lineCov">        800 :         self-&gt;process(value);</span>
-<span class="lineNum">     928 </span><span class="lineCov">        800 :         access::member_load_minimal(*self, t, value, version);</span>
-<span class="lineNum">     929 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     930 </span>            :       }
-<span class="lineNum">     931 </span>            : 
-<span class="lineNum">     932 </span>            :       //! Non member split (load_minimal)
-<span class="lineNum">     933 </span>            :       /*! Versioning implementation */
-<span class="lineNum">     934 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     935 </span>            :       typename std::enable_if&lt;traits::has_non_member_versioned_load_minimal&lt;T, ArchiveType&gt;::value &amp;&amp;
-<a name="936"><span class="lineNum">     936 </span>            :                               (traits::is_specialized_non_member_load_minimal&lt;T, ArchiveType&gt;::value || traits::is_input_serializable&lt;T, ArchiveType&gt;::value),</a>
-<span class="lineNum">     937 </span>            :                               ArchiveType &amp;&gt;::type
-<span class="lineNum">     938 </span><span class="lineCov">        800 :       processImpl(T &amp; t)</span>
-<span class="lineNum">     939 </span>            :       {
-<span class="lineNum">     940 </span><span class="lineCov">        800 :         const auto version = loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">     941 </span>            :         typename traits::has_non_member_versioned_save_minimal&lt;T, ArchiveType&gt;::type value;
-<span class="lineNum">     942 </span><span class="lineCov">        800 :         self-&gt;process(value);</span>
-<span class="lineNum">     943 </span><span class="lineCov">        800 :         load_minimal(*self, t, value, version);</span>
-<span class="lineNum">     944 </span><span class="lineCov">        800 :         return *self;</span>
-<span class="lineNum">     945 </span>            :       }
-<span class="lineNum">     946 </span>            : 
-<span class="lineNum">     947 </span>            :     private:
-<span class="lineNum">     948 </span>            :       ArchiveType * const self;
-<span class="lineNum">     949 </span>            : 
-<span class="lineNum">     950 </span>            :       //! A set of all base classes that have been serialized
-<span class="lineNum">     951 </span>            :       std::unordered_set&lt;traits::detail::base_class_id, traits::detail::base_class_id_hash&gt; itsBaseClassSet;
-<span class="lineNum">     952 </span>            : 
-<span class="lineNum">     953 </span>            :       //! Maps from pointer ids to metadata
-<span class="lineNum">     954 </span>            :       std::unordered_map&lt;std::uint32_t, std::shared_ptr&lt;void&gt;&gt; itsSharedPointerMap;
-<span class="lineNum">     955 </span>            : 
-<span class="lineNum">     956 </span>            :       //! Maps from name ids to names
-<span class="lineNum">     957 </span>            :       std::unordered_map&lt;std::uint32_t, std::string&gt; itsPolymorphicTypeMap;
-<span class="lineNum">     958 </span>            : 
-<span class="lineNum">     959 </span>            :       //! Maps from type hash codes to version numbers
-<span class="lineNum">     960 </span>            :       std::unordered_map&lt;std::size_t, std::uint32_t&gt; itsVersionedTypes;
-<span class="lineNum">     961 </span>            :   }; // class InputArchive
-<span class="lineNum">     962 </span>            : } // namespace cereal
-<span class="lineNum">     963 </span>            : 
-<span class="lineNum">     964 </span>            : // This include needs to come after things such as binary_data, make_nvp, etc
-<span class="lineNum">     965 </span>            : #include &lt;cereal/types/common.hpp&gt;
-<span class="lineNum">     966 </span>            : 
-<span class="lineNum">     967 </span>            : #endif // CEREAL_CEREAL_HPP_
+<span class="lineNum">     840 </span><span class="lineCov">      12000 :         if( lookupResult != itsVersionedTypes.end() ) // already exists</span>
+<span class="lineNum">     841 </span><span class="lineCov">       3200 :           return lookupResult-&gt;second;</span>
+<span class="lineNum">     842 </span>            :         else // need to load
+<span class="lineNum">     843 </span>            :         {
+<span class="lineNum">     844 </span>            :           std::uint32_t version;
+<span class="lineNum">     845 </span>            : 
+<span class="lineNum">     846 </span><span class="lineCov">       8800 :           process( make_nvp&lt;ArchiveType&gt;(&quot;cereal_class_version&quot;, version) );</span>
+<span class="lineNum">     847 </span><span class="lineCov">       8800 :           itsVersionedTypes.emplace_hint( lookupResult, hash, version );</span>
+<span class="lineNum">     848 </span>            : 
+<span class="lineNum">     849 </span><span class="lineCov">       8800 :           return version;</span>
+<span class="lineNum">     850 </span>            :         }
+<span class="lineNum">     851 </span>            :       }
+<span class="lineNum">     852 </span>            : 
+<span class="lineNum">     853 </span>            :       //! Member serialization
+<a name="854"><span class="lineNum">     854 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     855 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_serialize)&gt; inline
+<span class="lineNum">     856 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     857 </span>            :       {
+<span class="lineNum">     858 </span><span class="lineCov">       2400 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     859 </span><span class="lineCov">       2400 :         access::member_serialize(*self, t, version);</span>
+<span class="lineNum">     860 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     861 </span>            :       }
+<span class="lineNum">     862 </span>            : 
+<span class="lineNum">     863 </span>            :       //! Non member serialization
+<a name="864"><span class="lineNum">     864 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     865 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_serialize)&gt; inline
+<span class="lineNum">     866 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     867 </span>            :       {
+<span class="lineNum">     868 </span><span class="lineCov">       1600 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     869 </span><span class="lineCov">       1600 :         CEREAL_SERIALIZE_FUNCTION_NAME(*self, t, version);</span>
+<span class="lineNum">     870 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     871 </span>            :       }
+<span class="lineNum">     872 </span>            : 
+<span class="lineNum">     873 </span>            :       //! Member split (load)
+<a name="874"><span class="lineNum">     874 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     875 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_load)&gt; inline
+<span class="lineNum">     876 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     877 </span>            :       {
+<span class="lineNum">     878 </span><span class="lineCov">       2400 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     879 </span><span class="lineCov">       2400 :         access::member_load(*self, t, version);</span>
+<span class="lineNum">     880 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     881 </span>            :       }
+<span class="lineNum">     882 </span>            : 
+<span class="lineNum">     883 </span>            :       //! Non member split (load)
+<a name="884"><span class="lineNum">     884 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     885 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_load)&gt; inline
+<span class="lineNum">     886 </span><span class="lineCov">       2400 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     887 </span>            :       {
+<span class="lineNum">     888 </span><span class="lineCov">       2400 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     889 </span><span class="lineCov">       2400 :         CEREAL_LOAD_FUNCTION_NAME(*self, t, version);</span>
+<span class="lineNum">     890 </span><span class="lineCov">       2400 :         return *self;</span>
+<span class="lineNum">     891 </span>            :       }
+<span class="lineNum">     892 </span>            : 
+<span class="lineNum">     893 </span>            :       //! Member split (load_minimal)
+<a name="894"><span class="lineNum">     894 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     895 </span>            :       template &lt;class T, PROCESS_IF(member_versioned_load_minimal)&gt; inline
+<span class="lineNum">     896 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     897 </span>            :       {
+<span class="lineNum">     898 </span>            :         using OutArchiveType = typename traits::detail::get_output_from_input&lt;ArchiveType&gt;::type;
+<span class="lineNum">     899 </span><span class="lineCov">       1600 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     900 </span>            :         typename traits::has_member_versioned_save_minimal&lt;T, OutArchiveType&gt;::type value;
+<span class="lineNum">     901 </span><span class="lineCov">       1600 :         self-&gt;process(value);</span>
+<span class="lineNum">     902 </span><span class="lineCov">       1600 :         access::member_load_minimal(*self, t, value, version);</span>
+<span class="lineNum">     903 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     904 </span>            :       }
+<span class="lineNum">     905 </span>            : 
+<span class="lineNum">     906 </span>            :       //! Non member split (load_minimal)
+<a name="907"><span class="lineNum">     907 </span>            :       /*! Versioning implementation */</a>
+<span class="lineNum">     908 </span>            :       template &lt;class T, PROCESS_IF(non_member_versioned_load_minimal)&gt; inline
+<span class="lineNum">     909 </span><span class="lineCov">       1600 :       ArchiveType &amp; processImpl(T &amp; t)</span>
+<span class="lineNum">     910 </span>            :       {
+<span class="lineNum">     911 </span>            :         using OutArchiveType = typename traits::detail::get_output_from_input&lt;ArchiveType&gt;::type;
+<span class="lineNum">     912 </span><span class="lineCov">       1600 :         const auto version = loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">     913 </span>            :         typename traits::has_non_member_versioned_save_minimal&lt;T, OutArchiveType&gt;::type value;
+<span class="lineNum">     914 </span><span class="lineCov">       1600 :         self-&gt;process(value);</span>
+<span class="lineNum">     915 </span><span class="lineCov">       1600 :         CEREAL_LOAD_MINIMAL_FUNCTION_NAME(*self, t, value, version);</span>
+<span class="lineNum">     916 </span><span class="lineCov">       1600 :         return *self;</span>
+<span class="lineNum">     917 </span>            :       }
+<span class="lineNum">     918 </span>            : 
+<span class="lineNum">     919 </span>            :       #undef PROCESS_IF
+<span class="lineNum">     920 </span>            : 
+<span class="lineNum">     921 </span>            :     private:
+<span class="lineNum">     922 </span>            :       ArchiveType * const self;
+<span class="lineNum">     923 </span>            : 
+<span class="lineNum">     924 </span>            :       //! A set of all base classes that have been serialized
+<span class="lineNum">     925 </span>            :       std::unordered_set&lt;traits::detail::base_class_id, traits::detail::base_class_id_hash&gt; itsBaseClassSet;
+<span class="lineNum">     926 </span>            : 
+<span class="lineNum">     927 </span>            :       //! Maps from pointer ids to metadata
+<span class="lineNum">     928 </span>            :       std::unordered_map&lt;std::uint32_t, std::shared_ptr&lt;void&gt;&gt; itsSharedPointerMap;
+<span class="lineNum">     929 </span>            : 
+<span class="lineNum">     930 </span>            :       //! Maps from name ids to names
+<span class="lineNum">     931 </span>            :       std::unordered_map&lt;std::uint32_t, std::string&gt; itsPolymorphicTypeMap;
+<span class="lineNum">     932 </span>            : 
+<span class="lineNum">     933 </span>            :       //! Maps from type hash codes to version numbers
+<span class="lineNum">     934 </span>            :       std::unordered_map&lt;std::size_t, std::uint32_t&gt; itsVersionedTypes;
+<span class="lineNum">     935 </span>            :   }; // class InputArchive
+<span class="lineNum">     936 </span>            : } // namespace cereal
+<span class="lineNum">     937 </span>            : 
+<span class="lineNum">     938 </span>            : // This include needs to come after things such as binary_data, make_nvp, etc
+<span class="lineNum">     939 </span>            : #include &lt;cereal/types/common.hpp&gt;
+<span class="lineNum">     940 </span>            : 
+<span class="lineNum">     941 </span>            : #endif // CEREAL_CEREAL_HPP_
 </pre>
       </td>
     </tr>
@@ -1035,7 +1009,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 
