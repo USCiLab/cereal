@@ -15,7 +15,7 @@ var indexSectionsWithContent =
   5: "depstu",
   6: "fis",
   7: "mn",
-  8: "cp",
+  8: "cpu",
   9: "aimsu",
   10: "c"
 };

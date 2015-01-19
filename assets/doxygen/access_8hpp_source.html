@@ -186,19 +186,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;      <span class="comment">// ####### Standard Serialization ########################################</span></div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar))</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      { t.CEREAL_SERIALIZE_FUNCTION_NAME(ar); }</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SERIALIZE_FUNCTION_NAME(ar); }</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save(Archive &amp; ar, T <span class="keyword">const</span> &amp; t) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;      { t.CEREAL_SAVE_FUNCTION_NAME(ar); }</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SAVE_FUNCTION_NAME(ar); }</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save_non_const(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      { t.CEREAL_SAVE_FUNCTION_NAME(ar); }</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SAVE_FUNCTION_NAME(ar); }</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar))</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;      { t.CEREAL_LOAD_FUNCTION_NAME(ar); }</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_LOAD_FUNCTION_NAME(ar); }</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save_minimal(Archive <span class="keyword">const</span> &amp; ar, T <span class="keyword">const</span> &amp; t) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar))</div>
@@ -210,24 +210,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T, <span class="keyword">class</span> U&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_load_minimal(Archive <span class="keyword">const</span> &amp; ar, T &amp; t, U &amp;&amp; u) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)))</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;      { t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)); }</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)); }</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;      <span class="comment">// ####### Versioned Serialization #######################################</span></div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_serialize(Archive &amp; ar, T &amp; t, <span class="keyword">const</span> std::uint32_t version ) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version))</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;      { t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version); }</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version); }</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save(Archive &amp; ar, T <span class="keyword">const</span> &amp; t, <span class="keyword">const</span> std::uint32_t version ) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      { t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save_non_const(Archive &amp; ar, T &amp; t, <span class="keyword">const</span> std::uint32_t version ) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;      { t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_load(Archive &amp; ar, T &amp; t, <span class="keyword">const</span> std::uint32_t version ) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar, version))</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      { t.CEREAL_LOAD_FUNCTION_NAME(ar, version); }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_LOAD_FUNCTION_NAME(ar, version); }</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_save_minimal(Archive <span class="keyword">const</span> &amp; ar, T <span class="keyword">const</span> &amp; t, <span class="keyword">const</span> std::uint32_t version) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version))</div>
@@ -239,7 +239,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive, <span class="keyword">class</span> T, <span class="keyword">class</span> U&gt; <span class="keyword">inline</span></div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;      <span class="keyword">static</span> <span class="keyword">auto</span> member_load_minimal(Archive <span class="keyword">const</span> &amp; ar, T &amp; t, U &amp;&amp; u, <span class="keyword">const</span> std::uint32_t version) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version))</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;      { t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version); }</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;      { <span class="keywordflow">return</span> t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version); }</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;</div>
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;      <span class="comment">// ####### Other Functionality ##########################################</span></div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;      <span class="comment">// for detecting inheritance from enable_shared_from_this</span></div>
@@ -331,7 +331,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

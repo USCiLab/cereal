@@ -159,11 +159,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>detail {                               \</div>
-<div class="line">  template &lt;class T&gt;                                                  \</div>
-<div class="line">  typename polymorphic_serialization_support&lt;Archive, T&gt;::type        \</div>
-<div class="line">  instantiate_polymorphic_binding( T*, Archive*, adl_tag );           \</div>
-<div class="line">  } }</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal { <span class="keyword">namespace </span>detail {                                 \</div>
+<div class="line">  template &lt;class T, class BindingTag&gt;                                  \</div>
+<div class="line">  typename polymorphic_serialization_support&lt;Archive, T&gt;::type          \</div>
+<div class="line">  instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag ); \</div>
+<div class="line">  } } <span class="comment">/* end namespaces */</span></div>
 </div><!-- fragment -->
 <p>Registers a specific Archive type with cereal. </p>
 <p>This registration should be done once per archive. A good place to put this is immediately following the definition of your archive. Archive registration is only strictly necessary if you wish to support pointers to polymorphic data types. All archives that come with cereal are already registered. </p>
@@ -315,7 +315,7 @@ template&lt;std::size_t DataSize&gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

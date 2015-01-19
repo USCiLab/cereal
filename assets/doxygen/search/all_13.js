@@ -4,6 +4,7 @@ var searchData=
   ['uniqueserializer',['UniqueSerializer',['../structcereal_1_1detail_1_1InputBindingMap.html#a1f22dc26aa2c1e3fe7eb84609408f145',1,'cereal::detail::InputBindingMap']]],
   ['unordered_5fmap_2ehpp',['unordered_map.hpp',['../unordered__map_8hpp.html',1,'']]],
   ['unordered_5fset_2ehpp',['unordered_set.hpp',['../unordered__set_8hpp.html',1,'']]],
+  ['unregistered_5fpolymorphic_5fexception',['UNREGISTERED_POLYMORPHIC_EXCEPTION',['../polymorphic_8hpp.html#a6a90af3fca239017978477a753225101',1,'polymorphic.hpp']]],
   ['unused',['unused',['../structcereal_1_1detail_1_1polymorphic__serialization__support.html#af32ebd1e93fee3dbed819bf1cfbfd073',1,'cereal::detail::polymorphic_serialization_support']]],
   ['util_2ehpp',['util.hpp',['../util_8hpp.html',1,'']]],
   ['utility_20functionality',['Utility Functionality',['../group__Utility.html',1,'']]],

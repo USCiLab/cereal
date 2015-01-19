@@ -176,21 +176,21 @@ template&lt;class T &gt; </td></tr>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:ada513bbfcf8c1996e6f7a439f129a208"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
 <tr class="separator:ada513bbfcf8c1996e6f7a439f129a208"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af751c02a4443b571fee21416a4b899c1"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:af751c02a4443b571fee21416a4b899c1"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_output_serialization, XMLOutputArchive &gt;::value||traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:af751c02a4443b571fee21416a4b899c1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:af751c02a4443b571fee21416a4b899c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML output archives (except minimal types)  <a href="#af751c02a4443b571fee21416a4b899c1">More...</a><br/></td></tr>
 <tr class="separator:af751c02a4443b571fee21416a4b899c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7ea2b824c9d003b9e2b36473db1d22c0"></a>
-template&lt;class T , traits::DisableIf&lt; traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+template&lt;class T , traits::DisableIf&lt; traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_input_serialization, XMLInputArchive &gt;::value||traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for XML input archives (except minimal types) <br/></td></tr>
 <tr class="separator:a7ea2b824c9d003b9e2b36473db1d22c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16ca55f7d5556527de1584198ea3c414"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a16ca55f7d5556527de1584198ea3c414"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_output_serialization, XMLOutputArchive &gt;::value||traits::has_minimal_output_serialization&lt; T, XMLOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:a16ca55f7d5556527de1584198ea3c414"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLOutputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:a16ca55f7d5556527de1584198ea3c414"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types)  <a href="#a16ca55f7d5556527de1584198ea3c414">More...</a><br/></td></tr>
 <tr class="separator:a16ca55f7d5556527de1584198ea3c414"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae06e3f89a66231db109db984a87e0cfd"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae06e3f89a66231db109db984a87e0cfd"></a>
-template&lt;class T , traits::DisableIf&lt; traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+template&lt;class T , traits::DisableIf&lt; traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_input_serialization, XMLInputArchive &gt;::value||traits::has_minimal_input_serialization&lt; T, XMLInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:ae06e3f89a66231db109db984a87e0cfd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (XMLInputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:ae06e3f89a66231db109db984a87e0cfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for XML output archives (except minimal types) <br/></td></tr>
 <tr class="separator:ae06e3f89a66231db109db984a87e0cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -257,7 +257,7 @@ template&lt;class CharT , class Traits , class Alloc &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

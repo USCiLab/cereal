@@ -169,19 +169,19 @@ template&lt;class T &gt; </td></tr>
 <tr class="memitem:acb582097a98c0558c1a6b3cf0ef52270"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;, SizeTag&lt; T &gt; const &amp;)</td></tr>
 <tr class="memdesc:acb582097a98c0558c1a6b3cf0ef52270"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for SizeTags for JSON archives. <br/></td></tr>
 <tr class="separator:acb582097a98c0558c1a6b3cf0ef52270"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba2924cd871a88c20023171f74a68d39"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_output_serialization&lt; T, JSONOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:aba2924cd871a88c20023171f74a68d39"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_output_serialization, JSONOutputArchive &gt;::value||traits::has_minimal_output_serialization&lt; T, JSONOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:aba2924cd871a88c20023171f74a68d39"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONOutputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:aba2924cd871a88c20023171f74a68d39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for JSON archives (except minimal types)  <a href="#aba2924cd871a88c20023171f74a68d39">More...</a><br/></td></tr>
 <tr class="separator:aba2924cd871a88c20023171f74a68d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af88fce78fe97297ab4d22a607fee1e07"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_input_serialization&lt; T, JSONInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:af88fce78fe97297ab4d22a607fee1e07"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_input_serialization, JSONInputArchive &gt;::value||traits::has_minimal_input_serialization&lt; T, JSONInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:af88fce78fe97297ab4d22a607fee1e07"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::prologue</b> (JSONInputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:af88fce78fe97297ab4d22a607fee1e07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prologue for all other types for JSON archives.  <a href="#af88fce78fe97297ab4d22a607fee1e07">More...</a><br/></td></tr>
 <tr class="separator:af88fce78fe97297ab4d22a607fee1e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb6adc568591c0a525f2c16ea5912c5b"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_output_serialization&lt; T, JSONOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:abb6adc568591c0a525f2c16ea5912c5b"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_output_serialization, JSONOutputArchive &gt;::value||traits::has_minimal_output_serialization&lt; T, JSONOutputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:abb6adc568591c0a525f2c16ea5912c5b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONOutputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:abb6adc568591c0a525f2c16ea5912c5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for JSON archives (except minimal types.  <a href="#abb6adc568591c0a525f2c16ea5912c5b">More...</a><br/></td></tr>
 <tr class="separator:abb6adc568591c0a525f2c16ea5912c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cdc10b14dce9340a8df6cb18ac74554"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_input_serialization&lt; T, JSONInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
+<tr class="memitem:a5cdc10b14dce9340a8df6cb18ac74554"><td class="memTemplParams" colspan="2">template&lt;class T , traits::DisableIf&lt; std::is_arithmetic&lt; T &gt;::value||traits::has_minimal_base_class_serialization&lt; T, traits::has_minimal_input_serialization, JSONInputArchive &gt;::value||traits::has_minimal_input_serialization&lt; T, JSONInputArchive &gt;::value &gt;  = traits::sfinae&gt; </td></tr>
 <tr class="memitem:a5cdc10b14dce9340a8df6cb18ac74554"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::epilogue</b> (JSONInputArchive &amp;ar, T const &amp;)</td></tr>
 <tr class="memdesc:a5cdc10b14dce9340a8df6cb18ac74554"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epilogue for all other types other for JSON archives.  <a href="#a5cdc10b14dce9340a8df6cb18ac74554">More...</a><br/></td></tr>
 <tr class="separator:a5cdc10b14dce9340a8df6cb18ac74554"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -270,7 +270,7 @@ template&lt;class T &gt; </td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

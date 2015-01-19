@@ -111,14 +111,17 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>STATIC_CONSTEXPR</b>&#160;&#160;&#160;static constexpr</td></tr>
 <tr class="separator:a7b39ae2066f83f344e5a6881501fc022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#ae2d7d9fc98f7a55a6f0031ea5eaea4e6">CEREAL_REGISTER_TYPE</a>(T)</td></tr>
-<tr class="memdesc:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a polymorphic type with cereal.  <a href="#ae2d7d9fc98f7a55a6f0031ea5eaea4e6">More...</a><br/></td></tr>
+<tr class="memdesc:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a derived polymorphic type with cereal.  <a href="#ae2d7d9fc98f7a55a6f0031ea5eaea4e6">More...</a><br/></td></tr>
 <tr class="separator:ae2d7d9fc98f7a55a6f0031ea5eaea4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84efbe4f256827ca26fe3d86d8bd528c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a84efbe4f256827ca26fe3d86d8bd528c">CEREAL_REGISTER_TYPE_WITH_NAME</a>(T, Name)</td></tr>
 <tr class="separator:a84efbe4f256827ca26fe3d86d8bd528c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9fc708b2a6772ce3d05e026b7f25cfe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#aa9fc708b2a6772ce3d05e026b7f25cfe">CEREAL_REGISTER_SHARED_LIBRARY</a>(LibName)</td></tr>
-<tr class="separator:aa9fc708b2a6772ce3d05e026b7f25cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a495c30b6fd11b5d26a3556a6503b1cd8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a495c30b6fd11b5d26a3556a6503b1cd8">CEREAL_FORCE_LINK_SHARED_LIBRARY</a>(LibName)</td></tr>
-<tr class="separator:a495c30b6fd11b5d26a3556a6503b1cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0479821f6a987e08e7d3f765cda02d91"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a0479821f6a987e08e7d3f765cda02d91">CEREAL_REGISTER_DYNAMIC_INIT</a>(Name)</td></tr>
+<tr class="separator:a0479821f6a987e08e7d3f765cda02d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a421d87fc095313bc0af8dcc8858e4cbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a421d87fc095313bc0af8dcc8858e4cbf">CEREAL_FORCE_DYNAMIC_INIT</a>(Name)</td></tr>
+<tr class="separator:a421d87fc095313bc0af8dcc8858e4cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a90af3fca239017978477a753225101"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="polymorphic_8hpp.html#a6a90af3fca239017978477a753225101">UNREGISTERED_POLYMORPHIC_EXCEPTION</a>(LoadSave, Name)</td></tr>
+<tr class="memdesc:a6a90af3fca239017978477a753225101"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error message used for unregistered polymorphic types.  <a href="#a6a90af3fca239017978477a753225101">More...</a><br/></td></tr>
+<tr class="separator:a6a90af3fca239017978477a753225101"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -226,56 +229,60 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for pointers to polymorphic base classes. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="a495c30b6fd11b5d26a3556a6503b1cd8"></a>
+<a class="anchor" id="a421d87fc095313bc0af8dcc8858e4cbf"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define CEREAL_FORCE_LINK_SHARED_LIBRARY</td>
+          <td class="memname">#define CEREAL_FORCE_DYNAMIC_INIT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">LibName</td><td>)</td>
+          <td class="paramname">Name</td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                                    \</div>
 <div class="line">  namespace detail {                                    \</div>
-<div class="line">    void load_library_dummy_##LibName();                \</div>
+<div class="line">    void dynamic_init_dummy_##LibName();                \</div>
 <div class="line">  } <span class="comment">/* end detail */</span>                                    \</div>
-<div class="line">  namespace load_dummy {                                \</div>
-<div class="line">    void load_library_##LibName()                       \</div>
+<div class="line">  namespace {                                           \</div>
+<div class="line">    void dynamic_init_##LibName()                       \</div>
 <div class="line">    {                                                   \</div>
-<div class="line">      ::cereal::detail::load_library_dummy_##LibName(); \</div>
+<div class="line">      ::cereal::detail::dynamic_init_dummy_##LibName(); \</div>
 <div class="line">    }                                                   \</div>
 <div class="line">  } } <span class="comment">/* end namespaces */</span></div>
-</div><!-- fragment --><p>Forces the linker to link a previously registered (with cereal) shared library</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="polymorphic_8hpp.html#aa9fc708b2a6772ce3d05e026b7f25cfe">CEREAL_REGISTER_SHARED_LIBRARY</a></dd></dl>
-<p>This should be placed in your executable source. </p>
+</div><!-- fragment --><p>Forces dynamic initialization of polymorphic support in a previously registered source file</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="polymorphic_8hpp.html#a0479821f6a987e08e7d3f765cda02d91">CEREAL_REGISTER_DYNAMIC_INIT</a></dd></dl>
+<p>See CEREAL_REGISTER_DYNAMIC_INIT for detailed explanation of how this macro should be used. The name used should match that for CEREAL_REGISTER_DYNAMIC_INIT. </p>
 
 </div>
 </div>
-<a class="anchor" id="aa9fc708b2a6772ce3d05e026b7f25cfe"></a>
+<a class="anchor" id="a0479821f6a987e08e7d3f765cda02d91"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define CEREAL_REGISTER_SHARED_LIBRARY</td>
+          <td class="memname">#define CEREAL_REGISTER_DYNAMIC_INIT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">LibName</td><td>)</td>
+          <td class="paramname">Name</td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                            \</div>
-<div class="line">  namespace detail {                            \</div>
-<div class="line">    void load_library_dummy_##LibName() {}      \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                                         \</div>
+<div class="line">  namespace detail {                                         \</div>
+<div class="line">    void <a class="code" href="static__object_8hpp.html#afde52a096f363ebe6869a9c0f9ef4cbb">CEREAL_DLL_EXPORT</a> dynamic_init_dummy_##LibName() {} \</div>
 <div class="line">  } } <span class="comment">/* end namespaces */</span></div>
-</div><!-- fragment --><p>Adds a way to force loading of a shared library containing only calls to CEREAL_REGISTER_TYPE</p>
-<p>Since CEREAL_REGISTER_TYPE must be in a source file, it is possible for the linker to never load a shared library containing only these registrations as they are never explicitly referenced. This macro, in combination with CEREAL_FORCE_LINK_SHARED_LIBRARY, prevents this link from being optimized away. This is only necessary if you never explicitly reference any code implemented in your shared library (header files do not count).</p>
-<p>This must be placed in a single source file of your shared library.</p>
-<p>LibName can be any unique name of your choosing. </p>
+<div class="ttc" id="static__object_8hpp_html_afde52a096f363ebe6869a9c0f9ef4cbb"><div class="ttname"><a href="static__object_8hpp.html#afde52a096f363ebe6869a9c0f9ef4cbb">CEREAL_DLL_EXPORT</a></div><div class="ttdeci">#define CEREAL_DLL_EXPORT</div><div class="ttdoc">Prevent link optimization from removing non-referenced static objects. </div><div class="ttdef"><b>Definition:</b> static_object.hpp:45</div></div>
+</div><!-- fragment --><p>Adds a way to force initialization of a translation unit containing calls to CEREAL_REGISTER_TYPE</p>
+<p>In C++, dynamic initialization of non-local variables of a translation unit may be deferred until "the first odr-use of any function or variable
+defined in the same translation unit as the variable to be initialized."</p>
+<p>Informally, odr-use means that your program takes the address of or binds a reference directly to an object, which must have a definition.</p>
+<p>Since polymorphic type support in cereal relies on the dynamic initialization of certain global objects happening before serialization is performed, it is important to ensure that something from files that call CEREAL_REGISTER_TYPE is odr-used before serialization occurs, otherwise the registration will never take place. This may often be the case when serialization is built as a shared library external from your main program.</p>
+<p>This macro, with any name of your choosing, should be placed into the source file that contains calls to CEREAL_REGISTER_TYPE.</p>
+<p>Its counterpart, CEREAL_FORCE_DYNAMIC_INIT, should be placed in its associated header file such that it is included in the translation units (source files) in which you want the registration to appear. </p>
 
 </div>
 </div>
@@ -303,9 +310,14 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 <div class="line"><a class="code" href="polymorphic__impl_8hpp.html#a7632998cb974459cfc3f9969da8485d5">  CEREAL_BIND_TO_ARCHIVES</a>(T)</div>
 <div class="ttc" id="polymorphic__impl_8hpp_html_a7632998cb974459cfc3f9969da8485d5"><div class="ttname"><a href="polymorphic__impl_8hpp.html#a7632998cb974459cfc3f9969da8485d5">CEREAL_BIND_TO_ARCHIVES</a></div><div class="ttdeci">#define CEREAL_BIND_TO_ARCHIVES(T)</div><div class="ttdoc">Binds a polymorhic type to all registered archives. </div><div class="ttdef"><b>Definition:</b> polymorphic_impl.hpp:59</div></div>
 </div><!-- fragment -->
-<p>Registers a polymorphic type with cereal. </p>
-<p>Polymorphic types must be registered before pointers to them can be serialized. This also assumes that all relevent archives have also previously been registered. Registration for archives is usually done in the header file in which they are defined. This means that type registration needs to happen after specific archives to be used are included.</p>
-<p>Registering a type lets cereal know how to properly serialize it when a pointer to a base object is used in conjunction with a derived class.</p>
+<p>Registers a derived polymorphic type with cereal. </p>
+<p>Polymorphic types must be registered before smart pointers to them can be serialized. Note that base classes do not need to be registered.</p>
+<p>Registering a type lets cereal know how to properly serialize it when a smart pointer to a base object is used in conjunction with a derived class.</p>
+<p>This assumes that all relevant archives have also previously been registered. Registration for archives is usually done in the header file in which they are defined. This means that type registration needs to happen after specific archives to be used are included.</p>
+<p>It is recommended that type registration be done in the header file in which the type is declared.</p>
+<p>Registration can also be placed in a source file, but this may require the use of the CEREAL_REGISTER_DYNAMIC_INIT macro (see below).</p>
+<p>Registration may be called repeatedly for the same type in different translation units to add support for additional archives if they are not initially available (included and registered).</p>
+<p>When building serialization support as a DLL on Windows, registration must happen in the header file. On Linux and Mac things should still work properly if placed in a source file, but see the above comments on registering in source files.</p>
 <p>Polymorphic support in cereal requires RTTI to be enabled </p>
 
 </div>
@@ -346,11 +358,44 @@ template&lt;class Archive , class T , class D &gt; </td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a6a90af3fca239017978477a753225101"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UNREGISTERED_POLYMORPHIC_EXCEPTION</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">LoadSave, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Name&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">throw</span> <a class="code" href="structcereal_1_1Exception.html">cereal::Exception</a>(<span class="stringliteral">&quot;Trying to &quot;</span> #LoadSave <span class="stringliteral">&quot; an unregistered polymorphic type (&quot;</span> + Name + <span class="stringliteral">&quot;).\n&quot;</span>                                          \</div>
+<div class="line">                              <span class="stringliteral">&quot;Make sure your type is registered with CEREAL_REGISTER_TYPE and that the archive &quot;</span>                                   \</div>
+<div class="line">                              <span class="stringliteral">&quot;you are using was included (and registered with CEREAL_REGISTER_ARCHIVE) prior to calling CEREAL_REGISTER_TYPE.\n&quot;</span>   \</div>
+<div class="line">                              <span class="stringliteral">&quot;If your type is already registered and you still see this error, you may need to use CEREAL_REGISTER_DYNAMIC_INIT.&quot;</span>);</div>
+<div class="ttc" id="structcereal_1_1Exception_html"><div class="ttname"><a href="structcereal_1_1Exception.html">cereal::Exception</a></div><div class="ttdoc">An exception class thrown when things go wrong at runtime. </div><div class="ttdef"><b>Definition:</b> helpers.hpp:48</div></div>
+</div><!-- fragment -->
+<p>Error message used for unregistered polymorphic types. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

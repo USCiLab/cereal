@@ -236,7 +236,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> nameString = itsNodes.top().getValueName();</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <span class="comment">// allocate strings for all of the data in the XML object</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keyword">auto</span> namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keyword">auto</span> namePtr = itsXML.allocate_string( nameString.data(), nameString.length() + 1 );</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="comment">// insert into the XML</span></div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keyword">auto</span> node = itsXML.allocate_node( rapidxml::node_element, namePtr, <span class="keyword">nullptr</span>, nameString.size() );</div>
@@ -270,7 +270,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="comment">// allocate strings for all of the data in the XML object</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        <span class="keyword">auto</span> dataPtr = itsXML.allocate_string( strValue.c_str() );</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        <span class="keyword">auto</span> dataPtr = itsXML.allocate_string( itsOS.str().c_str(), itsOS.str().length() + 1 );</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="comment">// insert into the XML</span></div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        itsNodes.top().node-&gt;append_node( itsXML.allocate_node( rapidxml::node_data, <span class="keyword">nullptr</span>, dataPtr ) );</div>
@@ -296,7 +296,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> nameString = util::demangledName&lt;T&gt;();</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        <span class="comment">// allocate strings for all of the data in the XML object</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="keyword">auto</span> namePtr = itsXML.allocate_string( nameString.data(), nameString.size() );</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="keyword">auto</span> namePtr = itsXML.allocate_string( nameString.data(), nameString.length() + 1 );</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;</div>
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        itsNodes.top().node-&gt;append_attribute( itsXML.allocate_attribute( <span class="stringliteral">&quot;type&quot;</span>, namePtr ) );</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;      }</div>
@@ -690,97 +690,101 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;</div>
 <div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;  <span class="comment">// ######################################################################</span></div>
 <div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_output_serialization&lt;T, XMLOutputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;  <span class="keywordtype">void</span> prologue( XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;  {</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;    ar.startNode();</div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;    ar.insertType&lt;T&gt;();</div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;  }</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_input_serialization&lt;T, XMLInputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;  <span class="keywordtype">void</span> prologue( XMLInputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;  {</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;    ar.startNode();</div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;  }</div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;</div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;  <span class="comment">// ######################################################################</span></div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_output_serialization&lt;T, XMLOutputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;  <span class="keywordtype">void</span> epilogue( XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;  {</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;    ar.finishNode();</div>
-<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;  }</div>
-<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;</div>
-<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_input_serialization&lt;T, XMLInputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;  <span class="keywordtype">void</span> epilogue( XMLInputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
-<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;  {</div>
-<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;    ar.finishNode();</div>
-<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;  }</div>
-<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;</div>
-<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;  <span class="comment">// ######################################################################</span></div>
-<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;  <span class="comment">// Common XMLArchive serialization functions</span></div>
-<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_base_class_serialization&lt;T, traits::has_minimal_output_serialization, XMLOutputArchive&gt;::value ||</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                                       traits::has_minimal_output_serialization&lt;T, XMLOutputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;  <span class="keywordtype">void</span> prologue( XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;  {</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;    ar.startNode();</div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;    ar.insertType&lt;T&gt;();</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;  }</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_base_class_serialization&lt;T, traits::has_minimal_input_serialization, XMLInputArchive&gt;::value ||</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;                                       traits::has_minimal_input_serialization&lt;T, XMLInputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;  <span class="keywordtype">void</span> prologue( XMLInputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;  {</div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;    ar.startNode();</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;  }</div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;</div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_base_class_serialization&lt;T, traits::has_minimal_output_serialization, XMLOutputArchive&gt;::value ||</div>
+<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;                                       traits::has_minimal_output_serialization&lt;T, XMLOutputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;  <span class="keywordtype">void</span> epilogue( XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;  {</div>
+<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;    ar.finishNode();</div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;  }</div>
+<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;</div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;  template &lt;class T, traits::DisableIf&lt;traits::has_minimal_base_class_serialization&lt;T, traits::has_minimal_input_serialization, XMLInputArchive&gt;::value ||</div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;                                       traits::has_minimal_input_serialization&lt;T, XMLInputArchive&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;  <span class="keywordtype">void</span> epilogue( XMLInputArchive &amp; ar, T <span class="keyword">const</span> &amp; )</div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;  {</div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;    ar.finishNode();</div>
+<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;  }</div>
 <div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;</div>
-<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>( XMLOutputArchive &amp; ar, NameValuePair&lt;T&gt; <span class="keyword">const</span> &amp; t )</div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;  {</div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;    ar.setNextName( t.name );</div>
-<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;    ar( t.value );</div>
-<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;  }</div>
-<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;</div>
-<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>( XMLInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;  {</div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;    ar.setNextName( t.name );</div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;    ar( t.value );</div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;  }</div>
-<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;</div>
-<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;  <span class="comment">// ######################################################################</span></div>
-<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;<span class="comment"></span>  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>( XMLOutputArchive &amp;, SizeTag&lt;T&gt; <span class="keyword">const</span> &amp; )</div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;  { }</div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;</div>
-<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>( XMLInputArchive &amp; ar, SizeTag&lt;T&gt; &amp; st )</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;  {</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;    ar.loadSize( st.size );</div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;  }</div>
-<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;  <span class="comment">// ######################################################################</span></div>
-<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;<span class="comment"></span>  template &lt;class T, traits::EnableIf&lt;std::is_arithmetic&lt;T&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; t)</div>
-<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;  {</div>
-<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;    ar.saveValue( t );</div>
-<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;  }</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;</div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;  template &lt;class T, traits::EnableIf&lt;std::is_arithmetic&lt;T&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>(XMLInputArchive &amp; ar, T &amp; t)</div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;  {</div>
-<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;    ar.loadValue( t );</div>
-<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;  }</div>
-<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;</div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;  <span class="comment">// ######################################################################</span></div>
-<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;<span class="comment"></span>  <span class="keyword">template</span>&lt;<span class="keyword">class</span> CharT, <span class="keyword">class</span> Traits, <span class="keyword">class</span> Alloc&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(XMLOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; <span class="keyword">const</span> &amp; str)</div>
-<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;  {</div>
-<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;    ar.saveValue( str );</div>
-<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;  }</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;</div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> CharT, <span class="keyword">class</span> Traits, <span class="keyword">class</span> Alloc&gt; <span class="keyword">inline</span></div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>(XMLInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;  {</div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;    ar.loadValue( str );</div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;  }</div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;} <span class="comment">// namespace cereal</span></div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;</div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;<span class="comment">// register archives for polymorphic support</span></div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;<a class="code" href="group__Internal.html#ga80fe42796f7a4d6132ade9cb632cb1d1">CEREAL_REGISTER_ARCHIVE</a>(<a class="code" href="classcereal_1_1XMLOutputArchive.html">cereal::XMLOutputArchive</a>)</div>
-<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;<a class="code" href="group__Internal.html#ga80fe42796f7a4d6132ade9cb632cb1d1">CEREAL_REGISTER_ARCHIVE</a>(cereal::XMLInputArchive)</div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;  <span class="comment">// Common XMLArchive serialization functions</span></div>
+<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;</div>
+<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>( XMLOutputArchive &amp; ar, NameValuePair&lt;T&gt; <span class="keyword">const</span> &amp; t )</div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;  {</div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;    ar.setNextName( t.name );</div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;    ar( t.value );</div>
+<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;  }</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;</div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>( XMLInputArchive &amp; ar, NameValuePair&lt;T&gt; &amp; t )</div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;  {</div>
+<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;    ar.setNextName( t.name );</div>
+<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;    ar( t.value );</div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;  }</div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;</div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;<span class="comment"></span>  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>( XMLOutputArchive &amp;, SizeTag&lt;T&gt; <span class="keyword">const</span> &amp; )</div>
+<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;  { }</div>
+<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>( XMLInputArchive &amp; ar, SizeTag&lt;T&gt; &amp; st )</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;  {</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    ar.loadSize( st.size );</div>
+<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;  }</div>
+<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;</div>
+<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;<span class="comment"></span>  template &lt;class T, traits::EnableIf&lt;std::is_arithmetic&lt;T&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(XMLOutputArchive &amp; ar, T <span class="keyword">const</span> &amp; t)</div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;  {</div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;    ar.saveValue( t );</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;  }</div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;</div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;  template &lt;class T, traits::EnableIf&lt;std::is_arithmetic&lt;T&gt;::value&gt; = traits::sfinae&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>(XMLInputArchive &amp; ar, T &amp; t)</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;  {</div>
+<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;    ar.loadValue( t );</div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;  }</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;</div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;  <span class="comment">// ######################################################################</span></div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;<span class="comment"></span>  <span class="keyword">template</span>&lt;<span class="keyword">class</span> CharT, <span class="keyword">class</span> Traits, <span class="keyword">class</span> Alloc&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a85b7884671ac5a804b66ec7c34d0ca71">CEREAL_SAVE_FUNCTION_NAME</a>(XMLOutputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; <span class="keyword">const</span> &amp; str)</div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;  {</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    ar.saveValue( str );</div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;  }</div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> CharT, <span class="keyword">class</span> Traits, <span class="keyword">class</span> Alloc&gt; <span class="keyword">inline</span></div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8">CEREAL_LOAD_FUNCTION_NAME</a>(XMLInputArchive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;  {</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;    ar.loadValue( str );</div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;  }</div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;} <span class="comment">// namespace cereal</span></div>
 <div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;<span class="comment">// tie input and output archives together</span></div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;<a class="code" href="traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666">CEREAL_SETUP_ARCHIVE_TRAITS</a>(cereal::XMLInputArchive, cereal::XMLOutputArchive)</div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;<span class="preprocessor">#endif // CEREAL_ARCHIVES_XML_HPP_</span></div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;<span class="comment">// register archives for polymorphic support</span></div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;<a class="code" href="group__Internal.html#ga80fe42796f7a4d6132ade9cb632cb1d1">CEREAL_REGISTER_ARCHIVE</a>(<a class="code" href="classcereal_1_1XMLOutputArchive.html">cereal::XMLOutputArchive</a>)</div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;<a class="code" href="group__Internal.html#ga80fe42796f7a4d6132ade9cb632cb1d1">CEREAL_REGISTER_ARCHIVE</a>(cereal::XMLInputArchive)</div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;</div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;<span class="comment">// tie input and output archives together</span></div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;<a class="code" href="traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666">CEREAL_SETUP_ARCHIVE_TRAITS</a>(cereal::XMLInputArchive, cereal::XMLOutputArchive)</div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;</div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;<span class="preprocessor">#endif // CEREAL_ARCHIVES_XML_HPP_</span></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_html_aa301c06076e60466516f7d69198c2185"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive.html#aa301c06076e60466516f7d69198c2185">cereal::XMLOutputArchive::setNextName</a></div><div class="ttdeci">void setNextName(const char *name)</div><div class="ttdoc">Sets the name for the next node created with startNode. </div><div class="ttdef"><b>Definition:</b> xml.hpp:220</div></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_html_a07643f72cc76630f68593f6673044c82"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive.html#a07643f72cc76630f68593f6673044c82">cereal::XMLOutputArchive::~XMLOutputArchive</a></div><div class="ttdeci">~XMLOutputArchive()</div><div class="ttdoc">Destructor, flushes the XML. </div><div class="ttdef"><b>Definition:</b> xml.hpp:161</div></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_1_1Options_html_accba03e1560e1455f3356cc065536424"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive_1_1Options.html#accba03e1560e1455f3356cc065536424">cereal::XMLOutputArchive::Options::Options</a></div><div class="ttdeci">Options(int precision=std::numeric_limits&lt; double &gt;::max_digits10, bool indent=true, bool outputType=false)</div><div class="ttdoc">Specify specific options for the XMLOutputArchive. </div><div class="ttdef"><b>Definition:</b> xml.hpp:117</div></div>
@@ -792,8 +796,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_1_1Options_html_aa8645cec5def24e31f3763a0be2841ef"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive_1_1Options.html#aa8645cec5def24e31f3763a0be2841ef">cereal::XMLOutputArchive::Options::NoIndent</a></div><div class="ttdeci">static Options NoIndent()</div><div class="ttdoc">Default options with no indentation. </div><div class="ttdef"><b>Definition:</b> xml.hpp:111</div></div>
 <div class="ttc" id="xml_8hpp_html_a44505fe952f8c1f6fef02efc4d7cfefa"><div class="ttname"><a href="xml_8hpp.html#a44505fe952f8c1f6fef02efc4d7cfefa">CEREAL_XML_STRING_VALUE</a></div><div class="ttdeci">#define CEREAL_XML_STRING_VALUE</div><div class="ttdoc">The default name for the root node in a cereal xml archive. </div><div class="ttdef"><b>Definition:</b> xml.hpp:54</div></div>
 <div class="ttc" id="structcereal_1_1XMLInputArchive_1_1NodeInfo_html_a98d18a1207a14f5b3f279f58d82ab9e9"><div class="ttname"><a href="structcereal_1_1XMLInputArchive_1_1NodeInfo.html#a98d18a1207a14f5b3f279f58d82ab9e9">cereal::XMLInputArchive::NodeInfo::node</a></div><div class="ttdeci">rapidxml::xml_node * node</div><div class="ttdoc">A pointer to this node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:694</div></div>
-<div class="ttc" id="structcereal_1_1traits_1_1TextArchive_html"><div class="ttname"><a href="structcereal_1_1traits_1_1TextArchive.html">cereal::traits::TextArchive</a></div><div class="ttdoc">Type traits only struct used to mark an archive as human readable (text based) </div><div class="ttdef"><b>Definition:</b> traits.hpp:1249</div></div>
-<div class="ttc" id="classcereal_1_1InputArchive_html"><div class="ttname"><a href="classcereal_1_1InputArchive.html">cereal::InputArchive</a></div><div class="ttdoc">The base input archive class. </div><div class="ttdef"><b>Definition:</b> cereal.hpp:573</div></div>
+<div class="ttc" id="structcereal_1_1traits_1_1TextArchive_html"><div class="ttname"><a href="structcereal_1_1traits_1_1TextArchive.html">cereal::traits::TextArchive</a></div><div class="ttdoc">Type traits only struct used to mark an archive as human readable (text based) </div><div class="ttdef"><b>Definition:</b> traits.hpp:1260</div></div>
+<div class="ttc" id="classcereal_1_1InputArchive_html"><div class="ttname"><a href="classcereal_1_1InputArchive.html">cereal::InputArchive</a></div><div class="ttdoc">The base input archive class. </div><div class="ttdef"><b>Definition:</b> cereal.hpp:577</div></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_html_a9024955d0fd8cf818bf068d3814b9e09"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive.html#a9024955d0fd8cf818bf068d3814b9e09">cereal::XMLOutputArchive::saveValue</a></div><div class="ttdeci">void saveValue(T const &amp;value)</div><div class="ttdoc">Saves some data, encoded as a string, into the current top level node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:230</div></div>
 <div class="ttc" id="structcereal_1_1XMLInputArchive_1_1NodeInfo_html_a93594e014ef1248bdb79753bf53e7018"><div class="ttname"><a href="structcereal_1_1XMLInputArchive_1_1NodeInfo.html#a93594e014ef1248bdb79753bf53e7018">cereal::XMLInputArchive::NodeInfo::advance</a></div><div class="ttdeci">void advance()</div><div class="ttdoc">Advances to the next sibling node of the child. </div><div class="ttdef"><b>Definition:</b> xml.hpp:659</div></div>
 <div class="ttc" id="structcereal_1_1XMLOutputArchive_1_1NodeInfo_html"><div class="ttname"><a href="structcereal_1_1XMLOutputArchive_1_1NodeInfo.html">cereal::XMLOutputArchive::NodeInfo</a></div><div class="ttdoc">A struct that contains metadata about a node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:288</div></div>
@@ -820,7 +824,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcereal_1_1XMLInputArchive_html_ad9ed2b9bd88b279e999b4df1f3f129f8"><div class="ttname"><a href="classcereal_1_1XMLInputArchive.html#ad9ed2b9bd88b279e999b4df1f3f129f8">cereal::XMLInputArchive::loadSize</a></div><div class="ttdeci">void loadSize(T &amp;value)</div><div class="ttdoc">Loads the size of the current top node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:624</div></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_html_aa71de505f1aa29fe74065df4bbb39d7e"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive.html#aa71de505f1aa29fe74065df4bbb39d7e">cereal::XMLOutputArchive::finishNode</a></div><div class="ttdeci">void finishNode()</div><div class="ttdoc">Designates the most recently added node as finished. </div><div class="ttdef"><b>Definition:</b> xml.hpp:214</div></div>
 <div class="ttc" id="classcereal_1_1XMLInputArchive_html_a06f0c412f74f3b538efac94886005b44"><div class="ttname"><a href="classcereal_1_1XMLInputArchive.html#a06f0c412f74f3b538efac94886005b44">cereal::XMLInputArchive::finishNode</a></div><div class="ttdeci">void finishNode()</div><div class="ttdoc">Finishes reading the current node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:466</div></div>
-<div class="ttc" id="classcereal_1_1OutputArchive_html"><div class="ttname"><a href="classcereal_1_1OutputArchive.html">cereal::OutputArchive</a></div><div class="ttdoc">The base output archive class. </div><div class="ttdef"><b>Definition:</b> cereal.hpp:229</div></div>
+<div class="ttc" id="classcereal_1_1OutputArchive_html"><div class="ttname"><a href="classcereal_1_1OutputArchive.html">cereal::OutputArchive</a></div><div class="ttdoc">The base output archive class. </div><div class="ttdef"><b>Definition:</b> cereal.hpp:234</div></div>
 <div class="ttc" id="classcereal_1_1XMLInputArchive_html_acd31f5302f9d5d9046b4b1425e370fc6"><div class="ttname"><a href="classcereal_1_1XMLInputArchive.html#acd31f5302f9d5d9046b4b1425e370fc6">cereal::XMLInputArchive::value</a></div><div class="ttdeci">value</div><div class="ttdoc">Loads a type best represented as an int from the current top node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:589</div></div>
 <div class="ttc" id="classcereal_1_1XMLOutputArchive_html_afbc756983609a1600576faff3c558c57"><div class="ttname"><a href="classcereal_1_1XMLOutputArchive.html#afbc756983609a1600576faff3c558c57">cereal::XMLOutputArchive::appendAttribute</a></div><div class="ttdeci">void appendAttribute(const char *name, const char *value)</div><div class="ttdoc">Appends an attribute to the current top level node. </div><div class="ttdef"><b>Definition:</b> xml.hpp:279</div></div>
 <div class="ttc" id="classcereal_1_1XMLInputArchive_html_a1e396aeced2f05e4d76b0e4c7ef3f25d"><div class="ttname"><a href="classcereal_1_1XMLInputArchive.html#a1e396aeced2f05e4d76b0e4c7ef3f25d">cereal::XMLInputArchive::getNumChildren</a></div><div class="ttdeci">static size_t getNumChildren(rapidxml::xml_node&lt;&gt; *node)</div><div class="ttdoc">Gets the number of children (usually interpreted as size) for the specified node. ...</div><div class="ttdef"><b>Definition:</b> xml.hpp:631</div></div>
@@ -839,7 +843,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -145,10 +145,10 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1polymorphic__serialization__support.html">cereal::detail::polymorphic_serialization_support&lt; Archive, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1bind__to__archives.html">cereal::detail::bind_to_archives&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1bind__to__archives.html">cereal::detail::bind_to_archives&lt; T, Tag &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begins the binding process of a type to all registered archives.  <a href="structcereal_1_1detail_1_1bind__to__archives.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1init__binding.html">cereal::detail::init_binding&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1detail_1_1init__binding.html">cereal::detail::init_binding&lt; T, Tag &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to hide the static object used to bind T to registered archives.  <a href="structcereal_1_1detail_1_1init__binding.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -160,10 +160,10 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad256b5da20077a47efa9cbd57c1318bf"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad256b5da20077a47efa9cbd57c1318bf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::detail::instantiate_polymorphic_binding</b> (T *, int, adl_tag)</td></tr>
-<tr class="memdesc:ad256b5da20077a47efa9cbd57c1318bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base case overload for instantiation.  <a href="#ad256b5da20077a47efa9cbd57c1318bf">More...</a><br/></td></tr>
-<tr class="separator:ad256b5da20077a47efa9cbd57c1318bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c34d32da6bee20cb6609e78efc69174"><td class="memTemplParams" colspan="2">template&lt;class T , typename BindingTag &gt; </td></tr>
+<tr class="memitem:a9c34d32da6bee20cb6609e78efc69174"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::detail::instantiate_polymorphic_binding</b> (T *, int, BindingTag, adl_tag)</td></tr>
+<tr class="memdesc:a9c34d32da6bee20cb6609e78efc69174"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base case overload for instantiation.  <a href="#a9c34d32da6bee20cb6609e78efc69174">More...</a><br/></td></tr>
+<tr class="separator:a9c34d32da6bee20cb6609e78efc69174"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal polymorphism support. </p>
@@ -181,21 +181,22 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                                       \</div>
-<div class="line">    namespace detail {                                       \</div>
-<div class="line">    template&lt;&gt;                                               \</div>
-<div class="line">    struct init_binding&lt;T&gt; {                                 \</div>
-<div class="line">        static bind_to_archives&lt;T&gt; <span class="keyword">const</span> &amp; b;                \</div>
-<div class="line">    };                                                       \</div>
-<div class="line">    bind_to_archives&lt;T&gt; <span class="keyword">const</span> &amp; init_binding&lt;T&gt;::b =         \</div>
-<div class="line">        <a class="code" href="classcereal_1_1detail_1_1StaticObject.html">::cereal::detail::StaticObject</a>&lt;                      \</div>
-<div class="line">            bind_to_archives&lt;T&gt;                              \</div>
-<div class="line">        &gt;::getInstance().bind();                             \</div>
-<div class="line">    }}</div>
-<div class="ttc" id="classcereal_1_1detail_1_1StaticObject_html"><div class="ttname"><a href="classcereal_1_1detail_1_1StaticObject.html">cereal::detail::StaticObject</a></div><div class="ttdoc">A static, pre-execution object. </div><div class="ttdef"><b>Definition:</b> static_object.hpp:46</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>cereal {                               \</div>
+<div class="line">    namespace detail {                               \</div>
+<div class="line">    template&lt;&gt;                                       \</div>
+<div class="line">    struct init_binding&lt;T&gt; {                         \</div>
+<div class="line">        static bind_to_archives&lt;T&gt; <span class="keyword">const</span> &amp; b;        \</div>
+<div class="line">        static <span class="keywordtype">void</span> unused() { (void)b; }            \</div>
+<div class="line">    };                                               \</div>
+<div class="line">    bind_to_archives&lt;T&gt; <span class="keyword">const</span> &amp; init_binding&lt;T&gt;::b = \</div>
+<div class="line">        <a class="code" href="classcereal_1_1detail_1_1StaticObject.html">::cereal::detail::StaticObject</a>&lt;              \</div>
+<div class="line">            bind_to_archives&lt;T&gt;                      \</div>
+<div class="line">        &gt;::getInstance().bind();                     \</div>
+<div class="line">    }} <span class="comment">/* end namespaces */</span></div>
+<div class="ttc" id="classcereal_1_1detail_1_1StaticObject_html"><div class="ttname"><a href="classcereal_1_1detail_1_1StaticObject.html">cereal::detail::StaticObject</a></div><div class="ttdoc">A static, pre-execution object. </div><div class="ttdef"><b>Definition:</b> static_object.hpp:61</div></div>
 </div><!-- fragment -->
 <p>Binds a polymorhic type to all registered archives. </p>
-<p>This binds a polymorphic type to all registered archives that have been registered with CEREAL_REGISTER_ARCHIVE. This must be called after all archives are registered (usually after the archives themselves have been included). </p>
+<p>This binds a polymorphic type to all compatible registered archives that have been registered with CEREAL_REGISTER_ARCHIVE. This must be called after all archives are registered (usually after the archives themselves have been included). </p>
 
 </div>
 </div>
@@ -203,7 +204,7 @@ Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 27 2014 10:36:09 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 19 2015 12:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
