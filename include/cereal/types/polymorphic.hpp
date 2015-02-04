@@ -131,7 +131,7 @@
 
     @relates CEREAL_FORCE_DYNAMIC_INIT
     */
-#define CEREAL_REGISTER_DYNAMIC_INIT(Name)                   \
+#define CEREAL_REGISTER_DYNAMIC_INIT(LibName)                \
   namespace cereal {                                         \
   namespace detail {                                         \
     void CEREAL_DLL_EXPORT dynamic_init_dummy_##LibName() {} \
@@ -144,7 +144,7 @@
     See CEREAL_REGISTER_DYNAMIC_INIT for detailed explanation
     of how this macro should be used.  The name used should
     match that for CEREAL_REGISTER_DYNAMIC_INIT. */
-#define CEREAL_FORCE_DYNAMIC_INIT(Name)                 \
+#define CEREAL_FORCE_DYNAMIC_INIT(LibName)              \
   namespace cereal {                                    \
   namespace detail {                                    \
     void dynamic_init_dummy_##LibName();                \
