@@ -560,6 +560,13 @@ namespace cereal
         ++itsIteratorStack.back();
       }
 
+      //! Retrieves the current node name
+      /*! @return nullptr if no name exists */
+      const char * getNodeName() const
+      {
+        return itsIteratorStack.back().name();
+      }
+
       //! Sets the name for the next node created with startNode
       void setNextName( const char * name )
       {
