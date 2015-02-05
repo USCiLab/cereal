@@ -491,7 +491,8 @@ namespace cereal
             const auto len = std::strlen( searchName );
             size_t index = 0;
             for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
-              if( std::strncmp( searchName, it->name.GetString(), len ) == 0 )
+              if( std::strncmp( searchName, it->name.GetString(), len ) == 0 &&
+                  len == std::strlen( it->name.GetString() ) )
               {
                 itsIndex = index;
                 return;
