@@ -158,6 +158,8 @@ class SomeData
 {
   public:
     SomeData() = default;
+    int a;
+    int b;
 
   private:
     friend class cereal::access;
