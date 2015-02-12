@@ -53,11 +53,14 @@ support using cereal:
 ```cpp
 #include <boost/archive/binary_oarchive.hpp>
 #include <cereal/archives/binary.hpp>
+#include <fstream>
 
 class SomeData
 {
   public:
     SomeData() = default;
+    int a;
+    int b;
 
   private:
     friend class cereal::access; // befriend the xCEREAL version of access
@@ -82,6 +85,16 @@ class SomeData
   // xCEREAL will figure out you've used split member load/save automatically
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
+
+// Note that the Boost macro BOOST_SERIALIZATION_SPLIT_MEMBER
+// creates a function named serialize, which creates a conflict for 
+// xCEREAL, which does not allow more than one type of serialization
+// function to be present.
+//
+// To get around this, you should temporarily use specialization (see access.hpp)
+// to prevent xCEREAL from seeing this as an error.  Once you remove the Boost
+// macro, you may remove this specialization as well
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( SomeData, cereal::specialization::member_load_save )
 
 BOOST_CLASS_VERSION(SomeData, 1);
 CEREAL_CLASS_VERSION(SomeData, 1); // many things have the same or similar names in xCEREAL
@@ -139,6 +152,7 @@ Below is the above code re-written in the preferred cereal style:
 
 ```cpp
 #include <cereal/archives/binary.hpp>
+#include <fstream>
 
 class SomeData
 {
