@@ -63,7 +63,7 @@ namespace cereal
     template <size_t Q, size_t R, char ... C>
     struct to_string_impl
     {
-      using type = typename to_string_impl<Q/1, Q%10, R+'0', C...>::type;
+      using type = typename to_string_impl<Q/10, Q%10, R+'0', C...>::type;
     };
 
     //! Base case with no quotient
