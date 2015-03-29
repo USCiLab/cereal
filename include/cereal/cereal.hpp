@@ -239,6 +239,8 @@ namespace cereal
       OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
+      OutputArchive & operator=( OutputArchive const & ) = delete;
+
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
@@ -586,6 +588,8 @@ namespace cereal
         itsPolymorphicTypeMap(),
         itsVersionedTypes()
       { }
+      
+      InputArchive & operator=( InputArchive const & ) = delete;
 
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */

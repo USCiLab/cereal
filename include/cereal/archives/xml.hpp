@@ -503,13 +503,13 @@ namespace cereal
       //! Load an int8_t from the current top node (ensures we parse entire number)
       void loadValue( int8_t & value )
       {
-        int32_t val; loadValue( val ); value = val;
+        int32_t val; loadValue( val ); value = static_cast<int8_t>( val );
       }
 
       //! Load a uint8_t from the current top node (ensures we parse entire number)
       void loadValue( uint8_t & value )
       {
-        uint32_t val; loadValue( val ); value = val;
+        uint32_t val; loadValue( val ); value = static_cast<uint8_t>( val );
       }
 
       //! Loads a type best represented as an unsigned long from the current top node

@@ -50,6 +50,8 @@ struct UserStruct
     ref( reference )
   { }
 
+  UserStruct & operator=( UserStruct const & ) = delete;
+
   std::int32_t i32;
   SomeStruct const * p;
   SomeStruct & ref;
