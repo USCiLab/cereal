@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">127</td>
-            <td class="headerCovTableEntry">225</td>
-            <td class="headerCovTableEntryLo">56.4 %</td>
+            <td class="headerCovTableEntry">166</td>
+            <td class="headerCovTableEntry">313</td>
+            <td class="headerCovTableEntryLo">53.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -61,10 +61,14 @@
     </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#106">cereal::detail::EmptyDeleter&lt;PolyDerived const&gt;::operator()(PolyDerived const*) const</a></td>
-              <td class="coverFnHi">800</td>
+              <td class="coverFnHi">400</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#106">cereal::detail::EmptyDeleter&lt;PolyDerivedLA const&gt;::operator()(PolyDerivedLA const*) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#106">cereal::detail::EmptyDeleter&lt;SpecializedMSplitPolymorphic const&gt;::operator()(SpecializedMSplitPolymorphic const*) const</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -73,7 +77,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerived&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -81,7 +85,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -89,11 +93,11 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -101,7 +105,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -112,8 +116,28 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerived&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -121,7 +145,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -129,11 +153,11 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -141,7 +165,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -152,8 +176,28 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -161,7 +205,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -169,11 +213,11 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -181,7 +225,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -192,8 +236,28 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerived&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -201,7 +265,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -209,11 +273,11 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerived&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::InputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
@@ -221,7 +285,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
@@ -232,24 +296,44 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#149">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::_FUN(void*, std::shared_ptr&lt;void&gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#161">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::shared_ptr&lt;void&gt;&amp;)#1}::operator()(void*, std::shared_ptr&lt;void&gt;&amp;) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::_FUN(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#172">cereal::detail::InputBindingCreator&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::InputBindingCreator()::{lambda(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;)#2}::operator()(void*, std::unique_ptr&lt;void, cereal::detail::EmptyDeleter&lt;void&gt; &gt;&amp;) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#114">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::InputBindingMap()</a></td>
               <td class="coverFnHi">2</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">1004</td>
+              <td class="coverFnHi">603</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">1008</td>
+              <td class="coverFnHi">606</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#114">cereal::detail::InputBindingMap&lt;cereal::BinaryInputArchive&gt;::~InputBindingMap()</a></td>
@@ -261,19 +345,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">1004</td>
+              <td class="coverFnHi">603</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">1008</td>
+              <td class="coverFnHi">606</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#114">cereal::detail::InputBindingMap&lt;cereal::JSONInputArchive&gt;::~InputBindingMap()</a></td>
@@ -285,19 +369,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">1004</td>
+              <td class="coverFnHi">603</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">1008</td>
+              <td class="coverFnHi">606</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#114">cereal::detail::InputBindingMap&lt;cereal::PortableBinaryInputArchive&gt;::~InputBindingMap()</a></td>
@@ -309,19 +393,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">1004</td>
+              <td class="coverFnHi">603</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers::Serializers(cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#127">cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">1008</td>
+              <td class="coverFnHi">606</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#114">cereal::detail::InputBindingMap&lt;cereal::XMLInputArchive&gt;::~InputBindingMap()</a></td>
@@ -329,7 +413,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -337,7 +421,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -345,31 +429,31 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::savePolymorphicSharedPtr(cereal::BinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerived&gt;::writeMetadata(cereal::BinaryOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">600</td>
+              <td class="coverFnHi">300</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -377,7 +461,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -389,27 +473,67 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#255">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::savePolymorphicSharedPtr(cereal::BinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, true&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, PolyDerivedLA&gt;::writeMetadata(cereal::BinaryOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::savePolymorphicSharedPtr(cereal::BinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::writeMetadata(cereal::BinaryOutputArchive&amp;)</a></td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -417,7 +541,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -425,31 +549,31 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::savePolymorphicSharedPtr(cereal::JSONOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerived&gt;::writeMetadata(cereal::JSONOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">600</td>
+              <td class="coverFnHi">300</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -457,7 +581,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -469,27 +593,67 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#255">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::savePolymorphicSharedPtr(cereal::JSONOutputArchive&amp;, void const*, std::integral_constant&lt;bool, true&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, PolyDerivedLA&gt;::writeMetadata(cereal::JSONOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::savePolymorphicSharedPtr(cereal::JSONOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::writeMetadata(cereal::JSONOutputArchive&amp;)</a></td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -497,7 +661,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -505,31 +669,31 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::savePolymorphicSharedPtr(cereal::PortableBinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerived&gt;::writeMetadata(cereal::PortableBinaryOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">600</td>
+              <td class="coverFnHi">300</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -537,7 +701,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -549,27 +713,67 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#255">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::savePolymorphicSharedPtr(cereal::PortableBinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, true&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, PolyDerivedLA&gt;::writeMetadata(cereal::PortableBinaryOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::savePolymorphicSharedPtr(cereal::PortableBinaryOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::writeMetadata(cereal::PortableBinaryOutputArchive&amp;)</a></td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -577,7 +781,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -585,31 +789,31 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">200</td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::savePolymorphicSharedPtr(cereal::XMLOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerived&gt;::writeMetadata(cereal::XMLOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">600</td>
+              <td class="coverFnHi">300</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
@@ -617,7 +821,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
@@ -629,23 +833,63 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#255">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::savePolymorphicSharedPtr(cereal::XMLOutputArchive&amp;, void const*, std::integral_constant&lt;bool, true&gt;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, PolyDerivedLA&gt;::writeMetadata(cereal::XMLOutputArchive&amp;)</a></td>
-              <td class="coverFnHi">400</td>
+              <td class="coverFnHi">200</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#277">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#289">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#1}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::_FUN(void*, void const*)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#303">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::OutputBindingCreator()::{lambda(void*, void const*)#2}::operator()(void*, void const*) const</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#227">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::PolymorphicSharedPointerWrapper(void const*)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#240">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::operator()() const</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#212">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::PolymorphicSharedPointerWrapper::~PolymorphicSharedPointerWrapper()</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#270">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::savePolymorphicSharedPtr(cereal::XMLOutputArchive&amp;, void const*, std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnHi">100</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#194">cereal::detail::OutputBindingCreator&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::writeMetadata(cereal::XMLOutputArchive&amp;)</a></td>
+              <td class="coverFnHi">100</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#85">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::OutputBindingMap()</a></td>
@@ -653,19 +897,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">8</td>
+              <td class="coverFnHi">6</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#85">cereal::detail::OutputBindingMap&lt;cereal::BinaryOutputArchive&gt;::~OutputBindingMap()</a></td>
@@ -677,19 +921,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">8</td>
+              <td class="coverFnHi">6</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#85">cereal::detail::OutputBindingMap&lt;cereal::JSONOutputArchive&gt;::~OutputBindingMap()</a></td>
@@ -701,19 +945,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">8</td>
+              <td class="coverFnHi">6</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#85">cereal::detail::OutputBindingMap&lt;cereal::PortableBinaryOutputArchive&gt;::~OutputBindingMap()</a></td>
@@ -725,19 +969,19 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers::Serializers()</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers const&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers::Serializers(cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers&amp;&amp;)</a></td>
-              <td class="coverFnHi">4</td>
+              <td class="coverFnHi">3</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#95">cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::Serializers::~Serializers()</a></td>
-              <td class="coverFnHi">8</td>
+              <td class="coverFnHi">6</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#85">cereal::detail::OutputBindingMap&lt;cereal::XMLOutputArchive&gt;::~OutputBindingMap()</a></td>
@@ -745,19 +989,27 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#405">cereal::detail::bind_to_archives&lt;PolyDerived, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind() const</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#393">cereal::detail::bind_to_archives&lt;PolyDerived, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind(std::integral_constant&lt;bool, false&gt;) const</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#405">cereal::detail::bind_to_archives&lt;PolyDerivedLA, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind() const</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#393">cereal::detail::bind_to_archives&lt;PolyDerivedLA, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind(std::integral_constant&lt;bool, false&gt;) const</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#405">cereal::detail::bind_to_archives&lt;SpecializedMSplitPolymorphic, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind() const</a></td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#393">cereal::detail::bind_to_archives&lt;SpecializedMSplitPolymorphic, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;::bind(std::integral_constant&lt;bool, false&gt;) const</a></td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::BinaryInputArchive, PolyDerived&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
@@ -773,6 +1025,14 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -792,6 +1052,14 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#342">cereal::detail::create_bindings&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#337">cereal::detail::create_bindings&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::JSONInputArchive, PolyDerived&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
@@ -805,6 +1073,14 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -824,6 +1100,14 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#342">cereal::detail::create_bindings&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#337">cereal::detail::create_bindings&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
@@ -837,6 +1121,14 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -856,6 +1148,14 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#342">cereal::detail::create_bindings&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#337">cereal::detail::create_bindings&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::XMLInputArchive, PolyDerived&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
@@ -869,6 +1169,14 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#331">cereal::detail::create_bindings&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#343">cereal::detail::create_bindings&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, false&gt;)</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -888,11 +1196,23 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#342">cereal::detail::create_bindings&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::load(std::integral_constant&lt;bool, false&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#337">cereal::detail::create_bindings&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::save(std::integral_constant&lt;bool, true&gt;)</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::BinaryInputArchive, PolyDerived&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::BinaryInputArchive, PolyDerivedLA&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::BinaryInputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -904,11 +1224,19 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::BinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::JSONInputArchive, PolyDerived&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::JSONInputArchive, PolyDerivedLA&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::JSONInputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -920,11 +1248,19 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::JSONOutputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::PortableBinaryInputArchive, PolyDerived&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::PortableBinaryInputArchive, PolyDerivedLA&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::PortableBinaryInputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -936,11 +1272,19 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::PortableBinaryOutputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::XMLInputArchive, PolyDerived&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::XMLInputArchive, PolyDerivedLA&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::XMLInputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
@@ -952,12 +1296,20 @@
               <td class="coverFnLo">0</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#373">cereal::detail::polymorphic_serialization_support&lt;cereal::XMLOutputArchive, SpecializedMSplitPolymorphic&gt;::instantiate()</a></td>
+              <td class="coverFnLo">0</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#431">void cereal::detail::instantiate_polymorphic_binding&lt;PolyDerived, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;(PolyDerived*, int, cereal::detail::(anonymous namespace)::polymorphic_binding_tag, cereal::detail::adl_tag)</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#431">void cereal::detail::instantiate_polymorphic_binding&lt;PolyDerivedLA, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;(PolyDerivedLA*, int, cereal::detail::(anonymous namespace)::polymorphic_binding_tag, cereal::detail::adl_tag)</a></td>
-              <td class="coverFnHi">2</td>
+              <td class="coverFnHi">1</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="polymorphic_impl.hpp.gcov.html#431">void cereal::detail::instantiate_polymorphic_binding&lt;SpecializedMSplitPolymorphic, cereal::detail::(anonymous namespace)::polymorphic_binding_tag&gt;(SpecializedMSplitPolymorphic*, int, cereal::detail::(anonymous namespace)::polymorphic_binding_tag, cereal::detail::adl_tag)</a></td>
+              <td class="coverFnHi">1</td>
             </tr>
   </table>
   <br>

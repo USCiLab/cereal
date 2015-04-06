@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">335</td>
-            <td class="headerCovTableEntry">335</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntry">344</td>
+            <td class="headerCovTableEntry">353</td>
+            <td class="headerCovTableEntryHi">97.5 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -231,12 +231,12 @@
 <span class="lineNum">     169 </span>            : 
 <a name="170"><span class="lineNum">     170 </span>            :           @return A reference to the initialized object</a>
 <span class="lineNum">     171 </span>            :           @throw Exception If called before initialization */
-<span class="lineNum">     172 </span><span class="lineCov">       1600 :       T * operator-&gt;()</span>
+<span class="lineNum">     172 </span><span class="lineCov">        800 :       T * operator-&gt;()</span>
 <span class="lineNum">     173 </span>            :       {
-<span class="lineNum">     174 </span><span class="lineCov">       1600 :         if( !itsValid )</span>
+<span class="lineNum">     174 </span><span class="lineCov">        800 :         if( !itsValid )</span>
 <span class="lineNum">     175 </span><span class="lineNoCov">          0 :           throw Exception(&quot;Object must be initialized prior to accessing members&quot;);</span>
 <span class="lineNum">     176 </span>            : 
-<span class="lineNum">     177 </span><span class="lineCov">       1600 :         return itsPtr;</span>
+<span class="lineNum">     177 </span><span class="lineCov">        800 :         return itsPtr;</span>
 <span class="lineNum">     178 </span>            :       }
 <span class="lineNum">     179 </span>            : 
 <span class="lineNum">     180 </span>            :       //! Returns a raw pointer to the initialized underlying object
@@ -255,7 +255,7 @@
 <span class="lineNum">     193 </span>            :     private:
 <a name="194"><span class="lineNum">     194 </span>            :       template &lt;class A, class B&gt; friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;</a>
 <span class="lineNum">     195 </span>            : 
-<span class="lineNum">     196 </span><span class="lineCov">       8000 :       construct( T * p ) : itsPtr( p ), itsValid( false ) {}</span>
+<span class="lineNum">     196 </span><span class="lineCov">       4000 :       construct( T * p ) : itsPtr( p ), itsValid( false ) {}</span>
 <span class="lineNum">     197 </span>            :       construct( construct const &amp; ) = delete;
 <span class="lineNum">     198 </span>            :       construct &amp; operator=( construct const &amp; ) = delete;
 <span class="lineNum">     199 </span>            : 
@@ -287,61 +287,61 @@
 <span class="lineNum">     225 </span>            :     public:
 <a name="226"><span class="lineNum">     226 </span>            :       // ####### Standard Serialization ########################################</a>
 <span class="lineNum">     227 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     228 </span><span class="lineCov">    9918064 :       static auto member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar))</span>
-<span class="lineNum">     229 </span><span class="lineCov">    9918064 :       { return t.CEREAL_SERIALIZE_FUNCTION_NAME(ar); }</span>
+<span class="lineNum">     228 </span><span class="lineCov">    4959228 :       static auto member_serialize(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar))</span>
+<span class="lineNum">     229 </span><span class="lineCov">    4959228 :       { return t.CEREAL_SERIALIZE_FUNCTION_NAME(ar); }</span>
 <a name="230"><span class="lineNum">     230 </span>            : </a>
 <span class="lineNum">     231 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     232 </span><span class="lineCov">    1606752 :       static auto member_save(Archive &amp; ar, T const &amp; t) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))</span>
-<span class="lineNum">     233 </span><span class="lineCov">    1606752 :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar); }</span>
+<span class="lineNum">     232 </span><span class="lineCov">     803772 :       static auto member_save(Archive &amp; ar, T const &amp; t) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))</span>
+<span class="lineNum">     233 </span><span class="lineCov">     803772 :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar); }</span>
 <span class="lineNum">     234 </span>            : 
 <span class="lineNum">     235 </span>            :       template&lt;class Archive, class T&gt; inline
 <span class="lineNum">     236 </span>            :       static auto member_save_non_const(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar))
 <span class="lineNum">     237 </span>            :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar); }
 <a name="238"><span class="lineNum">     238 </span>            : </a>
 <span class="lineNum">     239 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     240 </span><span class="lineCov">    1606752 :       static auto member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar))</span>
-<span class="lineNum">     241 </span><span class="lineCov">    1606752 :       { return t.CEREAL_LOAD_FUNCTION_NAME(ar); }</span>
+<span class="lineNum">     240 </span><span class="lineCov">     803772 :       static auto member_load(Archive &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar))</span>
+<span class="lineNum">     241 </span><span class="lineCov">     803772 :       { return t.CEREAL_LOAD_FUNCTION_NAME(ar); }</span>
 <a name="242"><span class="lineNum">     242 </span>            : </a>
 <span class="lineNum">     243 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     244 </span><span class="lineCov">       2400 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar))</span>
-<span class="lineNum">     245 </span><span class="lineCov">       2400 :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar); }</span>
+<span class="lineNum">     244 </span><span class="lineCov">       1200 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar))</span>
+<span class="lineNum">     245 </span><span class="lineCov">       1200 :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar); }</span>
 <span class="lineNum">     246 </span>            : 
 <span class="lineNum">     247 </span>            :       template&lt;class Archive, class T&gt; inline
 <span class="lineNum">     248 </span>            :       static auto member_save_minimal_non_const(Archive const &amp; ar, T &amp; t) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar))
 <span class="lineNum">     249 </span>            :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar); }
 <a name="250"><span class="lineNum">     250 </span>            : </a>
 <span class="lineNum">     251 </span>            :       template&lt;class Archive, class T, class U&gt; inline
-<span class="lineNum">     252 </span><span class="lineCov">       2400 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)))</span>
-<span class="lineNum">     253 </span><span class="lineCov">       2400 :       { return t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)); }</span>
+<span class="lineNum">     252 </span><span class="lineCov">       1200 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)))</span>
+<span class="lineNum">     253 </span><span class="lineCov">       1200 :       { return t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u)); }</span>
 <span class="lineNum">     254 </span>            : 
 <a name="255"><span class="lineNum">     255 </span>            :       // ####### Versioned Serialization #######################################</a>
 <span class="lineNum">     256 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     257 </span><span class="lineCov">       4800 :       static auto member_serialize(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version))</span>
-<span class="lineNum">     258 </span><span class="lineCov">       4800 :       { return t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version); }</span>
+<span class="lineNum">     257 </span><span class="lineCov">       2400 :       static auto member_serialize(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version))</span>
+<span class="lineNum">     258 </span><span class="lineCov">       2400 :       { return t.CEREAL_SERIALIZE_FUNCTION_NAME(ar, version); }</span>
 <a name="259"><span class="lineNum">     259 </span>            : </a>
 <span class="lineNum">     260 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     261 </span><span class="lineCov">       2400 :       static auto member_save(Archive &amp; ar, T const &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))</span>
-<span class="lineNum">     262 </span><span class="lineCov">       2400 :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</span>
+<span class="lineNum">     261 </span><span class="lineCov">       1200 :       static auto member_save(Archive &amp; ar, T const &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))</span>
+<span class="lineNum">     262 </span><span class="lineCov">       1200 :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }</span>
 <span class="lineNum">     263 </span>            : 
 <span class="lineNum">     264 </span>            :       template&lt;class Archive, class T&gt; inline
 <span class="lineNum">     265 </span>            :       static auto member_save_non_const(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_SAVE_FUNCTION_NAME(ar, version))
 <span class="lineNum">     266 </span>            :       { return t.CEREAL_SAVE_FUNCTION_NAME(ar, version); }
 <a name="267"><span class="lineNum">     267 </span>            : </a>
 <span class="lineNum">     268 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     269 </span><span class="lineCov">       2400 :       static auto member_load(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar, version))</span>
-<span class="lineNum">     270 </span><span class="lineCov">       2400 :       { return t.CEREAL_LOAD_FUNCTION_NAME(ar, version); }</span>
+<span class="lineNum">     269 </span><span class="lineCov">       1200 :       static auto member_load(Archive &amp; ar, T &amp; t, const std::uint32_t version ) -&gt; decltype(t.CEREAL_LOAD_FUNCTION_NAME(ar, version))</span>
+<span class="lineNum">     270 </span><span class="lineCov">       1200 :       { return t.CEREAL_LOAD_FUNCTION_NAME(ar, version); }</span>
 <a name="271"><span class="lineNum">     271 </span>            : </a>
 <span class="lineNum">     272 </span>            :       template&lt;class Archive, class T&gt; inline
-<span class="lineNum">     273 </span><span class="lineCov">       1600 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t, const std::uint32_t version) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version))</span>
-<span class="lineNum">     274 </span><span class="lineCov">       1600 :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version); }</span>
+<span class="lineNum">     273 </span><span class="lineCov">        800 :       static auto member_save_minimal(Archive const &amp; ar, T const &amp; t, const std::uint32_t version) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version))</span>
+<span class="lineNum">     274 </span><span class="lineCov">        800 :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version); }</span>
 <span class="lineNum">     275 </span>            : 
 <span class="lineNum">     276 </span>            :       template&lt;class Archive, class T&gt; inline
 <span class="lineNum">     277 </span>            :       static auto member_save_minimal_non_const(Archive const &amp; ar, T &amp; t, const std::uint32_t version) -&gt; decltype(t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version))
 <span class="lineNum">     278 </span>            :       { return t.CEREAL_SAVE_MINIMAL_FUNCTION_NAME(ar, version); }
 <a name="279"><span class="lineNum">     279 </span>            : </a>
 <span class="lineNum">     280 </span>            :       template&lt;class Archive, class T, class U&gt; inline
-<span class="lineNum">     281 </span><span class="lineCov">       1600 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u, const std::uint32_t version) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version))</span>
-<span class="lineNum">     282 </span><span class="lineCov">       1600 :       { return t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version); }</span>
+<span class="lineNum">     281 </span><span class="lineCov">        800 :       static auto member_load_minimal(Archive const &amp; ar, T &amp; t, U &amp;&amp; u, const std::uint32_t version) -&gt; decltype(t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version))</span>
+<span class="lineNum">     282 </span><span class="lineCov">        800 :       { return t.CEREAL_LOAD_MINIMAL_FUNCTION_NAME(ar, std::forward&lt;U&gt;(u), version); }</span>
 <span class="lineNum">     283 </span>            : 
 <span class="lineNum">     284 </span>            :       // ####### Other Functionality ##########################################
 <span class="lineNum">     285 </span>            :       // for detecting inheritance from enable_shared_from_this
@@ -350,16 +350,16 @@
 <span class="lineNum">     288 </span>            : 
 <a name="289"><span class="lineNum">     289 </span>            :       // for placement new</a>
 <span class="lineNum">     290 </span>            :       template &lt;class T, class ... Args&gt; inline
-<span class="lineNum">     291 </span><span class="lineCov">       7200 :       static void construct( T *&amp; ptr, Args &amp;&amp; ... args )</span>
+<span class="lineNum">     291 </span><span class="lineCov">       3600 :       static void construct( T *&amp; ptr, Args &amp;&amp; ... args )</span>
 <span class="lineNum">     292 </span>            :       {
-<span class="lineNum">     293 </span><span class="lineCov">       7200 :         new (ptr) T( std::forward&lt;Args&gt;( args )... );</span>
-<span class="lineNum">     294 </span><span class="lineCov">       7200 :       }</span>
+<span class="lineNum">     293 </span><span class="lineCov">       3600 :         new (ptr) T( std::forward&lt;Args&gt;( args )... );</span>
+<span class="lineNum">     294 </span><span class="lineCov">       3600 :       }</span>
 <span class="lineNum">     295 </span>            : 
 <a name="296"><span class="lineNum">     296 </span>            :       // for non-placement new with a default constructor</a>
 <span class="lineNum">     297 </span>            :       template &lt;class T&gt; inline
-<span class="lineNum">     298 </span><span class="lineCov">     164008 :       static T * construct()</span>
+<span class="lineNum">     298 </span><span class="lineCov">      82404 :       static T * construct()</span>
 <span class="lineNum">     299 </span>            :       {
-<span class="lineNum">     300 </span><span class="lineCov">     164008 :         return new T();</span>
+<span class="lineNum">     300 </span><span class="lineCov">      82404 :         return new T();</span>
 <span class="lineNum">     301 </span>            :       }
 <span class="lineNum">     302 </span>            : 
 <span class="lineNum">     303 </span>            :       template &lt;class T&gt; inline
@@ -367,10 +367,10 @@
 <span class="lineNum">     305 </span>            :       { return std::false_type(); }
 <a name="306"><span class="lineNum">     306 </span>            : </a>
 <span class="lineNum">     307 </span>            :       template&lt;class T, class Archive&gt; inline
-<span class="lineNum">     308 </span><span class="lineCov">       6400 :       static auto load_and_construct(Archive &amp; ar, ::cereal::construct&lt;T&gt; &amp; construct) -&gt; decltype(T::load_and_construct(ar, construct))</span>
+<span class="lineNum">     308 </span><span class="lineCov">       3200 :       static auto load_and_construct(Archive &amp; ar, ::cereal::construct&lt;T&gt; &amp; construct) -&gt; decltype(T::load_and_construct(ar, construct))</span>
 <span class="lineNum">     309 </span>            :       {
-<span class="lineNum">     310 </span><span class="lineCov">       6400 :         T::load_and_construct( ar, construct );</span>
-<span class="lineNum">     311 </span><span class="lineCov">       5600 :       }</span>
+<span class="lineNum">     310 </span><span class="lineCov">       3200 :         T::load_and_construct( ar, construct );</span>
+<span class="lineNum">     311 </span><span class="lineCov">       2800 :       }</span>
 <span class="lineNum">     312 </span>            :   }; // end class access
 <span class="lineNum">     313 </span>            : 
 <span class="lineNum">     314 </span>            :   // ######################################################################
@@ -465,7 +465,7 @@
 <span class="lineNum">     403 </span>            : 
 <span class="lineNum">     404 </span>            :       @code{cpp}
 <span class="lineNum">     405 </span>            :       struct MyType {};
-<span class="lineNum">     406 </span>            :       CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
+<span class="lineNum">     406 </span>            :       CEREAL_SPECIALIZE_FOR_ARCHIVE( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
 <span class="lineNum">     407 </span>            :       @endcode
 <span class="lineNum">     408 </span>            : 
 <span class="lineNum">     409 </span>            :       @relates specialize
@@ -476,14 +476,14 @@
 <span class="lineNum">     414 </span>            :   // ######################################################################
 <a name="415"><span class="lineNum">     415 </span>            :   // Deferred Implementation, see construct for more information</a>
 <span class="lineNum">     416 </span>            :   template &lt;class T&gt; template &lt;class ... Args&gt; inline
-<span class="lineNum">     417 </span><span class="lineCov">       7200 :   void construct&lt;T&gt;::operator()( Args &amp;&amp; ... args )</span>
+<span class="lineNum">     417 </span><span class="lineCov">       3600 :   void construct&lt;T&gt;::operator()( Args &amp;&amp; ... args )</span>
 <span class="lineNum">     418 </span>            :   {
-<span class="lineNum">     419 </span><span class="lineCov">       7200 :     if( itsValid )</span>
+<span class="lineNum">     419 </span><span class="lineCov">       3600 :     if( itsValid )</span>
 <span class="lineNum">     420 </span><span class="lineNoCov">          0 :       throw Exception(&quot;Attempting to construct an already initialized object&quot;);</span>
 <span class="lineNum">     421 </span>            : 
-<span class="lineNum">     422 </span><span class="lineCov">       7200 :     ::cereal::access::construct( itsPtr, std::forward&lt;Args&gt;( args )... );</span>
-<span class="lineNum">     423 </span><span class="lineCov">       7200 :     itsValid = true;</span>
-<span class="lineNum">     424 </span><span class="lineCov">       7200 :   }</span>
+<span class="lineNum">     422 </span><span class="lineCov">       3600 :     ::cereal::access::construct( itsPtr, std::forward&lt;Args&gt;( args )... );</span>
+<span class="lineNum">     423 </span><span class="lineCov">       3600 :     itsValid = true;</span>
+<span class="lineNum">     424 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">     425 </span>            : } // namespace cereal
 <span class="lineNum">     426 </span>            : 
 <span class="lineNum">     427 </span>            : #endif // CEREAL_ACCESS_HPP_

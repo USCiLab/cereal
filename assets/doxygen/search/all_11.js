@@ -17,7 +17,7 @@ var searchData=
   ['sharedserializer',['SharedSerializer',['../structcereal_1_1detail_1_1InputBindingMap.html#a61446513878e80b8570c8a1f4a793cf6',1,'cereal::detail::InputBindingMap']]],
   ['size',['size',['../structcereal_1_1XMLInputArchive_1_1NodeInfo.html#a066a0d18f828d5266d8c186468d9de12',1,'cereal::XMLInputArchive::NodeInfo::size()'],['../structcereal_1_1BinaryData.html#a6c5b15fee4187ac9d948081a3ea9cfe3',1,'cereal::BinaryData::size()']]],
   ['sizetag',['SizeTag',['../classcereal_1_1SizeTag.html',1,'cereal']]],
-  ['specialization',['specialization',['../group__Access.html#gac28bb730353e53b3066cc679e63bb108',1,'cereal']]],
+  ['specialization',['specialization',['../group__Access.html#gac28bb730353e53b3066cc679e63bb108',1,'cereal::specialize']]],
   ['specialize',['specialize',['../structcereal_1_1specialize.html',1,'cereal']]],
   ['stack_2ehpp',['stack.hpp',['../stack_8hpp.html',1,'']]],
   ['startnode',['startNode',['../classcereal_1_1JSONOutputArchive.html#acae7982ee23cacf07cb6c4326818e6b8',1,'cereal::JSONOutputArchive::startNode()'],['../classcereal_1_1JSONInputArchive.html#aa5bf6c42760a02f56657325ed542f1e7',1,'cereal::JSONInputArchive::startNode()'],['../classcereal_1_1XMLOutputArchive.html#a3a5f5505fa97e7544ae4f027ccba27d5',1,'cereal::XMLOutputArchive::startNode()'],['../classcereal_1_1XMLInputArchive.html#a96c8399e6e6651126aaf5d38631c14d0',1,'cereal::XMLInputArchive::startNode()']]],

@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">65</td>
-            <td class="headerCovTableEntry">81</td>
-            <td class="headerCovTableEntryMed">80.2 %</td>
+            <td class="headerCovTableEntry">84</td>
+            <td class="headerCovTableEntry">108</td>
+            <td class="headerCovTableEntryMed">77.8 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -124,28 +124,28 @@
 <span class="lineNum">      62 </span>            :     {
 <a name="63"><span class="lineNum">      63 </span>            :       private:</a>
 <span class="lineNum">      64 </span>            :         //! Forces instantiation at pre-execution time
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">      20102 :         static void instantiate( T const &amp; ) {}</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">      10877 :         static void instantiate( T const &amp; ) {}</span></a>
 <span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span><span class="lineCov">      20102 :         static T &amp; create()</span>
+<span class="lineNum">      67 </span><span class="lineCov">      10877 :         static T &amp; create()</span>
 <span class="lineNum">      68 </span>            :         {
-<span class="lineNum">      69 </span><span class="lineCov">      20094 :           static T t;</span>
-<span class="lineNum">      70 </span><span class="lineCov">      20102 :           instantiate(instance);</span>
-<span class="lineNum">      71 </span><span class="lineCov">      20102 :           return t;</span>
+<span class="lineNum">      69 </span><span class="lineCov">      10871 :           static T t;</span>
+<span class="lineNum">      70 </span><span class="lineCov">      10877 :           instantiate(instance);</span>
+<span class="lineNum">      71 </span><span class="lineCov">      10877 :           return t;</span>
 <span class="lineNum">      72 </span>            :         }
 <span class="lineNum">      73 </span>            : 
 <span class="lineNum">      74 </span>            :         StaticObject( StaticObject const &amp; /*other*/ ) {}
 <a name="75"><span class="lineNum">      75 </span>            : </a>
 <span class="lineNum">      76 </span>            :       public:
-<span class="lineNum">      77 </span><span class="lineCov">      20044 :         static T &amp; getInstance()</span>
+<span class="lineNum">      77 </span><span class="lineCov">      10831 :         static T &amp; getInstance()</span>
 <span class="lineNum">      78 </span>            :         {
-<span class="lineNum">      79 </span><span class="lineCov">      20044 :           return create();</span>
+<span class="lineNum">      79 </span><span class="lineCov">      10831 :           return create();</span>
 <span class="lineNum">      80 </span>            :         }
 <span class="lineNum">      81 </span>            : 
 <span class="lineNum">      82 </span>            :       private:
 <span class="lineNum">      83 </span>            :         static T &amp; instance;
 <span class="lineNum">      84 </span>            :     };
 <span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineCov">          8 :     template &lt;class T&gt; T &amp; StaticObject&lt;T&gt;::instance = StaticObject&lt;T&gt;::create();</span>
+<span class="lineNum">      86 </span><span class="lineCov">          4 :     template &lt;class T&gt; T &amp; StaticObject&lt;T&gt;::instance = StaticObject&lt;T&gt;::create();</span>
 <span class="lineNum">      87 </span>            :   } // namespace detail
 <span class="lineNum">      88 </span>            : } // namespace cereal
 <span class="lineNum">      89 </span>            : 

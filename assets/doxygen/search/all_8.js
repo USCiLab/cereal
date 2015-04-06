@@ -1,7 +1,7 @@
 var searchData=
 [
   ['input_20and_20output_20archive_20types',['Input and Output Archive Types',['../group__Archives.html',1,'']]],
-  ['indentchar',['IndentChar',['../classcereal_1_1JSONOutputArchive_1_1Options.html#abf98703312edbd7e053fe71acb737cdf',1,'cereal::JSONOutputArchive::Options']]],
+  ['indentchar',['IndentChar',['../group__Archives.html#gabf98703312edbd7e053fe71acb737cdf',1,'cereal::JSONOutputArchive::Options']]],
   ['init_5fbinding',['init_binding',['../structcereal_1_1detail_1_1init__binding.html',1,'cereal::detail']]],
   ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html',1,'cereal']]],
   ['inputarchive',['InputArchive',['../classcereal_1_1InputArchive.html#a76455fba49795d1676664f634918c580',1,'cereal::InputArchive']]],

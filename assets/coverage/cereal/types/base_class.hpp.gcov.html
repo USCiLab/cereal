@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -134,9 +134,9 @@
 <span class="lineNum">      72 </span>            :     struct base_class : private traits::detail::BaseCastBase
 <a name="73"><span class="lineNum">      73 </span>            :     {</a>
 <span class="lineNum">      74 </span>            :       template&lt;class Derived&gt;
-<span class="lineNum">      75 </span><span class="lineCov">       3200 :         base_class(Derived const * derived) :</span>
-<span class="lineNum">      76 </span><span class="lineCov">       3200 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
-<span class="lineNum">      77 </span><span class="lineCov">       3200 :       { static_assert( std::is_base_of&lt;Base, Derived&gt;::value, &quot;Can only use base_class on a valid base class&quot; ); }</span>
+<span class="lineNum">      75 </span><span class="lineCov">       1600 :         base_class(Derived const * derived) :</span>
+<span class="lineNum">      76 </span><span class="lineCov">       1600 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
+<span class="lineNum">      77 </span><span class="lineCov">       1600 :       { static_assert( std::is_base_of&lt;Base, Derived&gt;::value, &quot;Can only use base_class on a valid base class&quot; ); }</span>
 <span class="lineNum">      78 </span>            : 
 <span class="lineNum">      79 </span>            :         Base * base_ptr;
 <span class="lineNum">      80 </span>            :     };
