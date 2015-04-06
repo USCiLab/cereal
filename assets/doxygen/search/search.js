@@ -14,10 +14,9 @@ var indexSectionsWithContent =
   4: "cdmnsuv",
   5: "depstu",
   6: "fis",
-  7: "mn",
-  8: "cpu",
-  9: "aimsu",
-  10: "c"
+  7: "cpu",
+  8: "aimsu",
+  9: "c"
 };
 
 var indexSectionNames =
@@ -29,10 +28,9 @@ var indexSectionNames =
   4: "variables",
   5: "typedefs",
   6: "enums",
-  7: "enumvalues",
-  8: "defines",
-  9: "groups",
-  10: "pages"
+  7: "defines",
+  8: "groups",
+  9: "pages"
 };
 
 function convertToId(search)
