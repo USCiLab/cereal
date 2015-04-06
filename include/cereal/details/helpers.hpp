@@ -147,6 +147,8 @@ namespace cereal
       static_assert( !std::is_base_of<detail::NameValuePairCore, T>::value,
                      "Cannot pair a name to a NameValuePair" );
 
+      NameValuePair & operator=( NameValuePair const & ) = delete;
+
     public:
       //! Constructs a new NameValuePair
       /*! @param n The name of the pair
@@ -254,6 +256,8 @@ namespace cereal
                                              T,
                                              typename std::decay<T>::type>::type;
 
+      SizeTag & operator=( SizeTag const & ) = delete;
+
     public:
       SizeTag( T && sz ) : size(std::forward<T>(sz)) {}
 
@@ -297,6 +301,8 @@ namespace cereal
     //! Construct a MapItem from a key and a value
     /*! @internal */
     MapItem( Key && key_, Value && value_ ) : key(std::forward<Key>(key_)), value(std::forward<Value>(value_)) {}
+
+    MapItem & operator=( MapItem const & ) = delete;
 
     KeyType key;
     ValueType value;

@@ -403,7 +403,7 @@ namespace cereal
 
       @code{cpp}
       struct MyType {};
-      CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
+      CEREAL_SPECIALIZE_FOR_ARCHIVE( cereal::XMLInputArchive, MyType, cereal::specialization::member_load_save );
       @endcode
 
       @relates specialize

@@ -5,6 +5,13 @@
 #include "rapidjson.h"
 #include <iostream>
 
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable: 4127) // conditional expression is constant
+  #pragma warning(disable: 4512) // assignment operator could not be generated
+  #pragma warning(disable: 4100) // unreferenced formal parameter
+#endif
+
 namespace rapidjson {
 
   //! Wrapper of std::istream for input.
@@ -91,4 +98,8 @@ namespace rapidjson {
 
 } // namespace rapidjson
 
+// On MSVC, restore warnings state
+#ifdef _MSC_VER
+    #pragma warning(pop)
+#endif
 #endif // RAPIDJSON_GENERICSTREAM_H_

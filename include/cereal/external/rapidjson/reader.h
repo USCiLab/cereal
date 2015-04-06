@@ -23,6 +23,7 @@
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4127) // conditional expression is constant
+#pragma warning(disable : 4702) // uncreachable code
 #endif
 
 #ifndef RAPIDJSON_PARSE_ERROR

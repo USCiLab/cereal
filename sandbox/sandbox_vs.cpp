@@ -224,7 +224,7 @@ int main()
   std::cout << cereal::traits::detail::is_specialized_member_load_save<T, Archive>::value << std::endl;
   std::cout << cereal::traits::detail::is_specialized_non_member_serialize<T, Archive>::value << std::endl;
   std::cout << cereal::traits::detail::is_specialized_non_member_load_save<T, Archive>::value << std::endl;
-  std::cout << cereal::traits::detail::is_specialized_error<T, Archive>::value << std::endl;
+  std::cout << cereal::traits::detail::count_specializations<T, Archive>::value << std::endl;
   std::cout << cereal::traits::is_specialized<T, Archive>::value << std::endl;
 
   // array size

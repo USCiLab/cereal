@@ -239,6 +239,8 @@ namespace cereal
       OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
+      OutputArchive & operator=( OutputArchive const & ) = delete;
+
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
@@ -364,11 +366,18 @@ namespace cereal
       }
 
       //! Helper macro that expands the requirements for activating an overload
-      #define PROCESS_IF(name)                                                                   \
-      traits::EnableIf<traits::has_##name<T, ArchiveType>::value,                                \
-                       !traits::has_invalid_output_versioning<T, ArchiveType>::value,            \
-                       (traits::is_specialized_##name<T, ArchiveType>::value ||                  \
-                        traits::is_output_serializable<T, ArchiveType>::value)> = traits::sfinae
+      /*! Requirements:
+            Has the requested serialization function
+            Does not have version and unversioned at the same time
+            Is output serializable AND
+              is specialized for this type of function OR
+              has no specialization at all */
+      #define PROCESS_IF(name)                                                             \
+      traits::EnableIf<traits::has_##name<T, ArchiveType>::value,                          \
+                       !traits::has_invalid_output_versioning<T, ArchiveType>::value,      \
+                       (traits::is_output_serializable<T, ArchiveType>::value &&           \
+                        (traits::is_specialized_##name<T, ArchiveType>::value ||           \
+                         !traits::is_specialized<T, ArchiveType>::value))> = traits::sfinae
 
       //! Member serialization
       template <class T, PROCESS_IF(member_serialize)> inline
@@ -420,7 +429,6 @@ namespace cereal
 
       //! Empty class specialization
       template <class T, traits::EnableIf<(Flags & AllowEmptyClassElision),
-                                          !traits::is_specialized<T, ArchiveType>::value,
                                           !traits::is_output_serializable<T, ArchiveType>::value,
                                           std::is_empty<T>::value> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
@@ -430,11 +438,10 @@ namespace cereal
 
       //! No matching serialization
       /*! Invalid if we have invalid output versioning or
-          we have no specialization, are not output serializable, and either
+          we are not output serializable, and either
           don't allow empty class ellision or allow it but are not serializing an empty class */
       template <class T, traits::EnableIf<traits::has_invalid_output_versioning<T, ArchiveType>::value ||
-                                          (!traits::is_specialized<T, ArchiveType>::value &&
-                                           !traits::is_output_serializable<T, ArchiveType>::value &&
+                                          (!traits::is_output_serializable<T, ArchiveType>::value &&
                                            (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)))> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
       {
@@ -587,6 +594,8 @@ namespace cereal
         itsVersionedTypes()
       { }
 
+      InputArchive & operator=( InputArchive const & ) = delete;
+
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
       template <class ... Types> inline
@@ -725,11 +734,18 @@ namespace cereal
       }
 
       //! Helper macro that expands the requirements for activating an overload
-      #define PROCESS_IF(name)                                                                 \
-      traits::EnableIf<traits::has_##name<T, ArchiveType>::value,                              \
-                       !traits::has_invalid_input_versioning<T, ArchiveType>::value,           \
-                       (traits::is_specialized_##name<T, ArchiveType>::value ||                \
-                        traits::is_input_serializable<T, ArchiveType>::value)> = traits::sfinae
+      /*! Requirements:
+            Has the requested serialization function
+            Does not have version and unversioned at the same time
+            Is input serializable AND
+              is specialized for this type of function OR
+              has no specialization at all */
+      #define PROCESS_IF(name)                                                              \
+      traits::EnableIf<traits::has_##name<T, ArchiveType>::value,                           \
+                       !traits::has_invalid_input_versioning<T, ArchiveType>::value,        \
+                       (traits::is_input_serializable<T, ArchiveType>::value &&             \
+                        (traits::is_specialized_##name<T, ArchiveType>::value ||            \
+                         !traits::is_specialized<T, ArchiveType>::value))> = traits::sfinae
 
       //! Member serialization
       template <class T, PROCESS_IF(member_serialize)> inline
@@ -787,7 +803,6 @@ namespace cereal
 
       //! Empty class specialization
       template <class T, traits::EnableIf<(Flags & AllowEmptyClassElision),
-                                          !traits::is_specialized<T, ArchiveType>::value,
                                           !traits::is_input_serializable<T, ArchiveType>::value,
                                           std::is_empty<T>::value> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
@@ -797,11 +812,10 @@ namespace cereal
 
       //! No matching serialization
       /*! Invalid if we have invalid input versioning or
-          we have no specialization, are not input serializable, and either
+          we are not input serializable, and either
           don't allow empty class ellision or allow it but are not serializing an empty class */
       template <class T, traits::EnableIf<traits::has_invalid_input_versioning<T, ArchiveType>::value ||
-                                          (!traits::is_specialized<T, ArchiveType>::value &&
-                                           !traits::is_input_serializable<T, ArchiveType>::value &&
+                                          (!traits::is_input_serializable<T, ArchiveType>::value &&
                                            (!(Flags & AllowEmptyClassElision) || ((Flags & AllowEmptyClassElision) && !std::is_empty<T>::value)))> = traits::sfinae> inline
       ArchiveType & processImpl(T const &)
       {

@@ -38,16 +38,19 @@ void test_string_basic()
   {
     std::basic_string<char> o_string  = random_basic_string<char>(gen);
     std::basic_string<char> o_string2 = "";
+    std::basic_string<char> o_string3;
 
     std::ostringstream os;
     {
       OArchive oar(os);
       oar(o_string);
       oar(o_string2);
+      oar(o_string3);
     }
 
     std::basic_string<char> i_string;
     std::basic_string<char> i_string2;
+    std::basic_string<char> i_string3;
 
     std::istringstream is(os.str());
     {
@@ -55,10 +58,12 @@ void test_string_basic()
 
       iar(i_string);
       iar(i_string2);
+      iar(i_string3);
     }
 
     BOOST_CHECK_EQUAL(i_string, o_string);
     BOOST_CHECK_EQUAL(i_string2, o_string2);
+    BOOST_CHECK_EQUAL(i_string3, o_string3);
   }
 }
 
@@ -148,7 +153,6 @@ void test_ws_in_out(Out const & o_value_with_ws)
 
 namespace boost
 {
-
   void save( cereal::XMLOutputArchive & ar, boost::string_ref const & str )
   {
     ar.saveValue( str );

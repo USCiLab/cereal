@@ -38,6 +38,8 @@ void test_tuple()
   for(int ii=0; ii<100; ++ii)
   {
     auto o_podtuple = std::make_tuple( rng(), rng(), rng(), rng() );
+    auto o_podtuple11 = std::make_tuple( rng(), rng(), rng(), rng(), rng(), rng(),
+                                         rng(), rng(), rng(), rng(), rng() );
     auto o_isertuple = std::make_tuple( StructInternalSerialize( rng(), rng() ),
         StructInternalSerialize( rng(), rng() ),
         StructInternalSerialize( rng(), rng() ),
@@ -60,34 +62,38 @@ void test_tuple()
       OArchive oar(os);
 
       oar(o_podtuple);
+      oar(o_podtuple11);
       oar(o_isertuple);
       oar(o_ispltuple);
       oar(o_esertuple);
       oar(o_espltuple);
     }
 
-    decltype( o_podtuple  ) i_podtuple;
-    decltype( o_isertuple ) i_isertuple;
-    decltype( o_ispltuple ) i_ispltuple;
-    decltype( o_esertuple ) i_esertuple;
-    decltype( o_espltuple ) i_espltuple;
+    decltype( o_podtuple   ) i_podtuple;
+    decltype( o_podtuple11 ) i_podtuple11;
+    decltype( o_isertuple  ) i_isertuple;
+    decltype( o_ispltuple  ) i_ispltuple;
+    decltype( o_esertuple  ) i_esertuple;
+    decltype( o_espltuple  ) i_espltuple;
 
     std::istringstream is(os.str());
     {
       IArchive iar(is);
 
       iar(i_podtuple);
+      iar(i_podtuple11);
       iar(i_isertuple);
       iar(i_ispltuple);
       iar(i_esertuple);
       iar(i_espltuple);
     }
 
-    BOOST_CHECK_EQUAL( i_podtuple == o_podtuple, true );
-    BOOST_CHECK_EQUAL( i_isertuple == o_isertuple, true );
-    BOOST_CHECK_EQUAL( i_ispltuple == o_ispltuple, true );
-    BOOST_CHECK_EQUAL( i_esertuple == o_esertuple, true );
-    BOOST_CHECK_EQUAL( i_espltuple == o_espltuple, true );
+    BOOST_CHECK_EQUAL( i_podtuple   == o_podtuple,   true );
+    BOOST_CHECK_EQUAL( i_podtuple11 == o_podtuple11, true );
+    BOOST_CHECK_EQUAL( i_isertuple  == o_isertuple,  true );
+    BOOST_CHECK_EQUAL( i_ispltuple  == o_ispltuple,  true );
+    BOOST_CHECK_EQUAL( i_esertuple  == o_esertuple,  true );
+    BOOST_CHECK_EQUAL( i_espltuple  == o_espltuple,  true );
   }
 }
 

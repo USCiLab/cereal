@@ -233,9 +233,12 @@ namespace cereal
         itsOS << value << std::ends;
 
         const auto strValue = itsOS.str();
-        // if there is the first or the last character in string is whitespace then add xml:space attribute
-        // the last character has index length-2 because there is \0 character at end added with std::ends
-        if( !strValue.empty() && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[strValue.length() - 2] ) ) )
+
+        // If the first or last character is a whitespace, add xml:space attribute
+        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty' 
+        // string has a length of 1 or lower
+        const auto len = strValue.length();
+        if ( len > 1 && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[len - 2] ) ) )
         {
           itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "xml:space", "preserve" ) );
         }
@@ -510,13 +513,13 @@ namespace cereal
       //! Load an int8_t from the current top node (ensures we parse entire number)
       void loadValue( int8_t & value )
       {
-        int32_t val; loadValue( val ); value = val;
+        int32_t val; loadValue( val ); value = static_cast<int8_t>( val );
       }
 
       //! Load a uint8_t from the current top node (ensures we parse entire number)
       void loadValue( uint8_t & value )
       {
-        uint32_t val; loadValue( val ); value = val;
+        uint32_t val; loadValue( val ); value = static_cast<uint8_t>( val );
       }
 
       //! Loads a type best represented as an unsigned long from the current top node

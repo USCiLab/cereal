@@ -580,7 +580,7 @@ namespace cereal
       {
         search();
 
-        val = itsIteratorStack.back().value().GetInt();
+        val = static_cast<T>( itsIteratorStack.back().value().GetInt() );
         ++itsIteratorStack.back();
       }
 
@@ -592,7 +592,7 @@ namespace cereal
       {
         search();
 
-        val = itsIteratorStack.back().value().GetUint();
+        val = static_cast<T>( itsIteratorStack.back().value().GetUint() );
         ++itsIteratorStack.back();
       }
 

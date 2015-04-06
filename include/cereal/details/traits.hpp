@@ -885,54 +885,6 @@ namespace cereal
       (has_non_member_versioned_load<T, InputArchive>::value && has_non_member_versioned_save<T, OutputArchive>::value)> {};
 
     // ######################################################################
-    namespace detail
-    {
-      template <class T, class OutputArchive>
-      struct count_output_serializers : std::integral_constant<int,
-        has_member_save<T, OutputArchive>::value +
-        has_non_member_save<T, OutputArchive>::value +
-        has_member_serialize<T, OutputArchive>::value +
-        has_non_member_serialize<T, OutputArchive>::value +
-        has_member_save_minimal<T, OutputArchive>::value +
-        has_non_member_save_minimal<T, OutputArchive>::value +
-        /*-versioned---------------------------------------------------------*/
-        has_member_versioned_save<T, OutputArchive>::value +
-        has_non_member_versioned_save<T, OutputArchive>::value +
-        has_member_versioned_serialize<T, OutputArchive>::value +
-        has_non_member_versioned_serialize<T, OutputArchive>::value +
-        has_member_versioned_save_minimal<T, OutputArchive>::value +
-        has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
-    }
-
-    template <class T, class OutputArchive>
-    struct is_output_serializable : std::integral_constant<bool,
-      detail::count_output_serializers<T, OutputArchive>::value == 1> {};
-
-    // ######################################################################
-    namespace detail
-    {
-      template <class T, class InputArchive>
-      struct count_input_serializers : std::integral_constant<int,
-        has_member_load<T, InputArchive>::value +
-        has_non_member_load<T, InputArchive>::value +
-        has_member_serialize<T, InputArchive>::value +
-        has_non_member_serialize<T, InputArchive>::value +
-        has_member_load_minimal<T, InputArchive>::value +
-        has_non_member_load_minimal<T, InputArchive>::value +
-        /*-versioned---------------------------------------------------------*/
-        has_member_versioned_load<T, InputArchive>::value +
-        has_non_member_versioned_load<T, InputArchive>::value +
-        has_member_versioned_serialize<T, InputArchive>::value +
-        has_non_member_versioned_serialize<T, InputArchive>::value +
-        has_member_versioned_load_minimal<T, InputArchive>::value +
-        has_non_member_versioned_load_minimal<T, InputArchive>::value> {};
-    }
-
-    template <class T, class InputArchive>
-    struct is_input_serializable : std::integral_constant<bool,
-      detail::count_input_serializers<T, InputArchive>::value == 1> {};
-
-    // ######################################################################
     template <class T, class OutputArchive>
     struct has_invalid_output_versioning : std::integral_constant<bool,
       (has_member_versioned_save<T, OutputArchive>::value && has_member_save<T, OutputArchive>::value) ||
@@ -970,15 +922,15 @@ namespace cereal
 
       #undef CEREAL_MAKE_IS_SPECIALIZED_IMPL
 
-      //! Considered an error if specialization exists for more than one type
+      //! Number of specializations detected
       template <class T, class A>
-      struct is_specialized_error : std::integral_constant<bool,
-        (is_specialized_member_serialize<T, A>::value +
-         is_specialized_member_load_save<T, A>::value +
-         is_specialized_member_load_save_minimal<T, A>::value +
-         is_specialized_non_member_serialize<T, A>::value +
-         is_specialized_non_member_load_save<T, A>::value +
-         is_specialized_non_member_load_save_minimal<T, A>::value) <= 1> {};
+      struct count_specializations : std::integral_constant<int,
+        is_specialized_member_serialize<T, A>::value +
+        is_specialized_member_load_save<T, A>::value +
+        is_specialized_member_load_save_minimal<T, A>::value +
+        is_specialized_non_member_serialize<T, A>::value +
+        is_specialized_non_member_load_save<T, A>::value +
+        is_specialized_non_member_load_save_minimal<T, A>::value> {};
     } // namespace detail
 
     //! Check if any specialization exists for a type
@@ -991,7 +943,7 @@ namespace cereal
       detail::is_specialized_non_member_load_save<T, A>::value ||
       detail::is_specialized_non_member_load_save_minimal<T, A>::value>
     {
-      static_assert(detail::is_specialized_error<T, A>::value, "More than one explicit specialization detected for type.");
+      static_assert(detail::count_specializations<T, A>::value <= 1, "More than one explicit specialization detected for type.");
     };
 
     //! Create the static assertion for some specialization
@@ -1055,6 +1007,60 @@ namespace cereal
         has_non_member_versioned_load_minimal<T, InputArchive>::value) &&
        !(is_specialized_member_serialize<T, InputArchive>::value ||
          is_specialized_member_load<T, InputArchive>::value))> {};
+
+    // ######################################################################
+    namespace detail
+    {
+      //! The number of output serialization functions available
+      /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
+      template <class T, class OutputArchive>
+      struct count_output_serializers : std::integral_constant<int,
+        count_specializations<T, OutputArchive>::value ? count_specializations<T, OutputArchive>::value :
+        has_member_save<T, OutputArchive>::value +
+        has_non_member_save<T, OutputArchive>::value +
+        has_member_serialize<T, OutputArchive>::value +
+        has_non_member_serialize<T, OutputArchive>::value +
+        has_member_save_minimal<T, OutputArchive>::value +
+        has_non_member_save_minimal<T, OutputArchive>::value +
+        /*-versioned---------------------------------------------------------*/
+        has_member_versioned_save<T, OutputArchive>::value +
+        has_non_member_versioned_save<T, OutputArchive>::value +
+        has_member_versioned_serialize<T, OutputArchive>::value +
+        has_non_member_versioned_serialize<T, OutputArchive>::value +
+        has_member_versioned_save_minimal<T, OutputArchive>::value +
+        has_non_member_versioned_save_minimal<T, OutputArchive>::value> {};
+    }
+
+    template <class T, class OutputArchive>
+    struct is_output_serializable : std::integral_constant<bool,
+      detail::count_output_serializers<T, OutputArchive>::value == 1> {};
+
+    // ######################################################################
+    namespace detail
+    {
+      //! The number of input serialization functions available
+      /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
+      template <class T, class InputArchive>
+      struct count_input_serializers : std::integral_constant<int,
+        count_specializations<T, InputArchive>::value ? count_specializations<T, InputArchive>::value :
+        has_member_load<T, InputArchive>::value +
+        has_non_member_load<T, InputArchive>::value +
+        has_member_serialize<T, InputArchive>::value +
+        has_non_member_serialize<T, InputArchive>::value +
+        has_member_load_minimal<T, InputArchive>::value +
+        has_non_member_load_minimal<T, InputArchive>::value +
+        /*-versioned---------------------------------------------------------*/
+        has_member_versioned_load<T, InputArchive>::value +
+        has_non_member_versioned_load<T, InputArchive>::value +
+        has_member_versioned_serialize<T, InputArchive>::value +
+        has_non_member_versioned_serialize<T, InputArchive>::value +
+        has_member_versioned_load_minimal<T, InputArchive>::value +
+        has_non_member_versioned_load_minimal<T, InputArchive>::value> {};
+    }
+
+    template <class T, class InputArchive>
+    struct is_input_serializable : std::integral_constant<bool,
+      detail::count_input_serializers<T, InputArchive>::value == 1> {};
 
     // ######################################################################
     // Base Class Support

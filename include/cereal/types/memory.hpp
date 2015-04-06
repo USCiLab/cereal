@@ -46,6 +46,8 @@ namespace cereal
     {
       PtrWrapper(T && p) : ptr(std::forward<T>(p)) {}
       T & ptr;
+
+      PtrWrapper & operator=( PtrWrapper const & ) = delete;
     };
 
     //! Make a PtrWrapper
