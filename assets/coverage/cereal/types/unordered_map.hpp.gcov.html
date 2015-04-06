@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">160</td>
@@ -101,62 +101,62 @@
 <span class="lineNum">      39 </span>            :   {
 <a name="40"><span class="lineNum">      40 </span>            :     //! @internal</a>
 <span class="lineNum">      41 </span>            :     template &lt;class Archive, class MapT&gt; inline
-<span class="lineNum">      42 </span><span class="lineCov">       8000 :     void save( Archive &amp; ar, MapT const &amp; map )</span>
+<span class="lineNum">      42 </span><span class="lineCov">       4000 :     void save( Archive &amp; ar, MapT const &amp; map )</span>
 <span class="lineNum">      43 </span>            :     {
-<span class="lineNum">      44 </span><span class="lineCov">       8000 :       ar( make_size_tag( static_cast&lt;size_type&gt;(map.size()) ) );</span>
+<span class="lineNum">      44 </span><span class="lineCov">       4000 :       ar( make_size_tag( static_cast&lt;size_type&gt;(map.size()) ) );</span>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">    1193994 :       for( const auto &amp; i : map )</span>
-<span class="lineNum">      47 </span><span class="lineCov">    1185994 :         ar( make_map_item(i.first, i.second) );</span>
-<span class="lineNum">      48 </span><span class="lineCov">       8000 :     }</span>
+<span class="lineNum">      46 </span><span class="lineCov">     597077 :       for( const auto &amp; i : map )</span>
+<span class="lineNum">      47 </span><span class="lineCov">     593077 :         ar( make_map_item(i.first, i.second) );</span>
+<span class="lineNum">      48 </span><span class="lineCov">       4000 :     }</span>
 <span class="lineNum">      49 </span>            : 
 <a name="50"><span class="lineNum">      50 </span>            :     //! @internal</a>
 <span class="lineNum">      51 </span>            :     template &lt;class Archive, class MapT&gt; inline
-<span class="lineNum">      52 </span><span class="lineCov">       8000 :     void load( Archive &amp; ar, MapT &amp; map )</span>
+<span class="lineNum">      52 </span><span class="lineCov">       4000 :     void load( Archive &amp; ar, MapT &amp; map )</span>
 <span class="lineNum">      53 </span>            :     {
 <span class="lineNum">      54 </span>            :       size_type size;
-<span class="lineNum">      55 </span><span class="lineCov">       8000 :       ar( make_size_tag( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">       4000 :       ar( make_size_tag( size ) );</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">       8000 :       map.clear();</span>
-<span class="lineNum">      58 </span><span class="lineCov">       8000 :       map.reserve( static_cast&lt;std::size_t&gt;( size ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">       4000 :       map.clear();</span>
+<span class="lineNum">      58 </span><span class="lineCov">       4000 :       map.reserve( static_cast&lt;std::size_t&gt;( size ) );</span>
 <span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineCov">    1193994 :       for( size_type i = 0; i &lt; size; ++i )</span>
+<span class="lineNum">      60 </span><span class="lineCov">     597077 :       for( size_type i = 0; i &lt; size; ++i )</span>
 <span class="lineNum">      61 </span>            :       {
-<span class="lineNum">      62 </span><span class="lineCov">     240000 :         typename MapT::key_type key;</span>
-<span class="lineNum">      63 </span><span class="lineCov">     945994 :         typename MapT::mapped_type value;</span>
+<span class="lineNum">      62 </span><span class="lineCov">     119999 :         typename MapT::key_type key;</span>
+<span class="lineNum">      63 </span><span class="lineCov">     473078 :         typename MapT::mapped_type value;</span>
 <span class="lineNum">      64 </span>            : 
-<span class="lineNum">      65 </span><span class="lineCov">    1185994 :         ar( make_map_item(key, value) );</span>
-<span class="lineNum">      66 </span><span class="lineCov">    1185994 :         map.emplace( std::move( key ), std::move( value ) );</span>
+<span class="lineNum">      65 </span><span class="lineCov">     593077 :         ar( make_map_item(key, value) );</span>
+<span class="lineNum">      66 </span><span class="lineCov">     593077 :         map.emplace( std::move( key ), std::move( value ) );</span>
 <span class="lineNum">      67 </span>            :       }
-<span class="lineNum">      68 </span><span class="lineCov">       8000 :     }</span>
+<span class="lineNum">      68 </span><span class="lineCov">       4000 :     }</span>
 <span class="lineNum">      69 </span>            :   }
 <span class="lineNum">      70 </span>            : 
 <a name="71"><span class="lineNum">      71 </span>            :   //! Saving for std::unordered_map</a>
 <span class="lineNum">      72 </span>            :   template &lt;class Archive, class K, class T, class H, class KE, class A&gt; inline
-<span class="lineNum">      73 </span><span class="lineCov">       4000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_map&lt;K, T, H, KE, A&gt; const &amp; unordered_map )</span>
+<span class="lineNum">      73 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_map&lt;K, T, H, KE, A&gt; const &amp; unordered_map )</span>
 <span class="lineNum">      74 </span>            :   {
-<span class="lineNum">      75 </span><span class="lineCov">       4000 :     unordered_map_detail::save( ar, unordered_map );</span>
-<span class="lineNum">      76 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">      75 </span><span class="lineCov">       2000 :     unordered_map_detail::save( ar, unordered_map );</span>
+<span class="lineNum">      76 </span><span class="lineCov">       2000 :   }</span>
 <span class="lineNum">      77 </span>            : 
 <a name="78"><span class="lineNum">      78 </span>            :   //! Loading for std::unordered_map</a>
 <span class="lineNum">      79 </span>            :   template &lt;class Archive, class K, class T, class H, class KE, class A&gt; inline
-<span class="lineNum">      80 </span><span class="lineCov">       4000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_map&lt;K, T, H, KE, A&gt; &amp; unordered_map )</span>
+<span class="lineNum">      80 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_map&lt;K, T, H, KE, A&gt; &amp; unordered_map )</span>
 <span class="lineNum">      81 </span>            :   {
-<span class="lineNum">      82 </span><span class="lineCov">       4000 :     unordered_map_detail::load( ar, unordered_map );</span>
-<span class="lineNum">      83 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">      82 </span><span class="lineCov">       2000 :     unordered_map_detail::load( ar, unordered_map );</span>
+<span class="lineNum">      83 </span><span class="lineCov">       2000 :   }</span>
 <span class="lineNum">      84 </span>            : 
 <a name="85"><span class="lineNum">      85 </span>            :   //! Saving for std::unordered_multimap</a>
 <span class="lineNum">      86 </span>            :   template &lt;class Archive, class K, class T, class H, class KE, class A&gt; inline
-<span class="lineNum">      87 </span><span class="lineCov">       4000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_multimap&lt;K, T, H, KE, A&gt; const &amp; unordered_multimap )</span>
+<span class="lineNum">      87 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_multimap&lt;K, T, H, KE, A&gt; const &amp; unordered_multimap )</span>
 <span class="lineNum">      88 </span>            :   {
-<span class="lineNum">      89 </span><span class="lineCov">       4000 :     unordered_map_detail::save( ar, unordered_multimap );</span>
-<span class="lineNum">      90 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">      89 </span><span class="lineCov">       2000 :     unordered_map_detail::save( ar, unordered_multimap );</span>
+<span class="lineNum">      90 </span><span class="lineCov">       2000 :   }</span>
 <span class="lineNum">      91 </span>            : 
 <a name="92"><span class="lineNum">      92 </span>            :   //! Loading for std::unordered_multimap</a>
 <span class="lineNum">      93 </span>            :   template &lt;class Archive, class K, class T, class H, class KE, class A&gt; inline
-<span class="lineNum">      94 </span><span class="lineCov">       4000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_multimap&lt;K, T, H, KE, A&gt; &amp; unordered_multimap )</span>
+<span class="lineNum">      94 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_multimap&lt;K, T, H, KE, A&gt; &amp; unordered_multimap )</span>
 <span class="lineNum">      95 </span>            :   {
-<span class="lineNum">      96 </span><span class="lineCov">       4000 :     unordered_map_detail::load( ar, unordered_multimap );</span>
-<span class="lineNum">      97 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">      96 </span><span class="lineCov">       2000 :     unordered_map_detail::load( ar, unordered_multimap );</span>
+<span class="lineNum">      97 </span><span class="lineCov">       2000 :   }</span>
 <span class="lineNum">      98 </span>            : } // namespace cereal
 <span class="lineNum">      99 </span>            : 
 <span class="lineNum">     100 </span>            : #endif // CEREAL_TYPES_UNORDERED_MAP_HPP_

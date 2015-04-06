@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-01-19 12:21:46</td>
+            <td class="headerValue">2015-04-06 10:34:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">12</td>
@@ -168,7 +168,7 @@
 <span class="lineNum">     106 </span>            :       @tparam UserData The type to give the archive access to
 <a name="107"><span class="lineNum">     107 </span>            :       @tparam Archive The archive to wrap */</a>
 <span class="lineNum">     108 </span>            :   template &lt;class UserData, class Archive&gt;
-<span class="lineNum">     109 </span><span class="lineCov">        800 :   class UserDataAdapter : public Archive</span>
+<span class="lineNum">     109 </span><span class="lineCov">        400 :   class UserDataAdapter : public Archive</span>
 <span class="lineNum">     110 </span>            :   {
 <span class="lineNum">     111 </span>            :     public:
 <span class="lineNum">     112 </span>            :       //! Construct the archive with some user data struct
@@ -179,10 +179,10 @@
 <span class="lineNum">     117 </span>            :           @tparam Args The arguments to pass to the constructor of
 <a name="118"><span class="lineNum">     118 </span>            :                        the archive. */</a>
 <span class="lineNum">     119 </span>            :       template &lt;class ... Args&gt;
-<span class="lineNum">     120 </span><span class="lineCov">        800 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
-<span class="lineNum">     121 </span><span class="lineCov">        800 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
-<span class="lineNum">     122 </span><span class="lineCov">        800 :         userdata( ud )</span>
-<span class="lineNum">     123 </span><span class="lineCov">        800 :       { }</span>
+<span class="lineNum">     120 </span><span class="lineCov">        400 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
+<span class="lineNum">     121 </span><span class="lineCov">        400 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
+<span class="lineNum">     122 </span><span class="lineCov">        400 :         userdata( ud )</span>
+<span class="lineNum">     123 </span><span class="lineCov">        400 :       { }</span>
 <span class="lineNum">     124 </span>            : 
 <a name="125"><span class="lineNum">     125 </span>            :     private:</a>
 <span class="lineNum">     126 </span>            :       //! Overload the rtti function to enable dynamic_cast
@@ -208,15 +208,15 @@
 <span class="lineNum">     146 </span>            :       @throws Exception if the archive this is used upon is not wrapped with
 <a name="147"><span class="lineNum">     147 </span>            :                         UserDataAdapter. */</a>
 <span class="lineNum">     148 </span>            :   template &lt;class UserData, class Archive&gt;
-<span class="lineNum">     149 </span><span class="lineCov">       1600 :   UserData &amp; get_user_data( Archive &amp; ar )</span>
+<span class="lineNum">     149 </span><span class="lineCov">        800 :   UserData &amp; get_user_data( Archive &amp; ar )</span>
 <span class="lineNum">     150 </span>            :   {
 <span class="lineNum">     151 </span>            :     try
 <span class="lineNum">     152 </span>            :     {
-<span class="lineNum">     153 </span><span class="lineCov">       1600 :       return dynamic_cast&lt;UserDataAdapter&lt;UserData, Archive&gt; &amp;&gt;( ar ).userdata;</span>
+<span class="lineNum">     153 </span><span class="lineCov">        800 :       return dynamic_cast&lt;UserDataAdapter&lt;UserData, Archive&gt; &amp;&gt;( ar ).userdata;</span>
 <span class="lineNum">     154 </span>            :     }
-<span class="lineNum">     155 </span><span class="lineCov">        800 :     catch( std::bad_cast const &amp; )</span>
+<span class="lineNum">     155 </span><span class="lineCov">        400 :     catch( std::bad_cast const &amp; )</span>
 <span class="lineNum">     156 </span>            :     {
-<span class="lineNum">     157 </span><span class="lineCov">        800 :       throw ::cereal::Exception(&quot;Attempting to get user data from archive not wrapped in UserDataAdapter&quot;);</span>
+<span class="lineNum">     157 </span><span class="lineCov">        400 :       throw ::cereal::Exception(&quot;Attempting to get user data from archive not wrapped in UserDataAdapter&quot;);</span>
 <span class="lineNum">     158 </span>            :     }
 <span class="lineNum">     159 </span>            :   }
 <span class="lineNum">     160 </span>            :   #endif // CEREAL_FUTURE_EXPERIMENTAL
