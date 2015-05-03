@@ -37,67 +37,53 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace cereal
 {
-	/* Implementation note
-	Since valarray can only contain arithmetic types, pointer or other valarrays we need to define serialization for all the cases mentioned
-	Following implementation in valarray.hpp we get serialization for std::valarray arithmetic values directly and all other cases implemented as calls
-	for underlying serialization of every valarray element. */
-
-	//! Saving for std::valarray arithmetic types
-	//! using binary serialization, if supported
+	//! Saving for std::valarray arithmetic types, using binary serialization, if supported
 	template <class Archive, class T> inline
-		typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>::value
-		&& std::is_arithmetic<T>::value, void>::type
-		CEREAL_SAVE_FUNCTION_NAME(Archive & ar, std::valarray<T> const & valarray)
+  typename std::enable_if<traits::is_output_serializable<BinaryData<T>, Archive>::value
+                          && std::is_arithmetic<T>::value, void>::type
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::valarray<T> const & valarray )
 	{
-			size_type valarraySize = static_cast<size_type>(valarray.size()); //get valarray size
-			ar(make_size_tag(valarraySize)); // save number of elements
-			if (valarraySize > 0) { // save data if it's not empty
-				ar(binary_data(&valarray[0], static_cast<size_t>(valarraySize) * sizeof(T))); // &valarray[0] applicable since std::valarray guaranteed to be stored contignously
-			}
-		}
+    ar( make_size_tag( static_cast<size_type>(valarray.size()) ) ); // number of elements
+    ar( binary_data( &valarray[0], valarray.size() * sizeof(T) ) ); // &valarray[0] ok since guaranteed contiguous
+  }
 
-	//! Loading for std::valarray arithmetic types
-	//! using binary serialization, if supported
+	//! Loading for std::valarray arithmetic types, using binary serialization, if supported
 	template <class Archive, class T> inline
-		typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>::value
-		&& std::is_arithmetic<T>::value, void>::type
-		CEREAL_LOAD_FUNCTION_NAME(Archive & ar, std::valarray<T> & valarray)
-	{
-			size_type valarraySize;
-			ar(make_size_tag(valarraySize));
+  typename std::enable_if<traits::is_input_serializable<BinaryData<T>, Archive>::value
+                          && std::is_arithmetic<T>::value, void>::type
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::valarray<T> & valarray )
+  {
+    size_type valarraySize;
+    ar( make_size_tag( valarraySize ) );
 
-			valarray.resize(static_cast<std::size_t>(valarraySize));
-			if (valarraySize > 0) { // load data if it's not empty
-				ar( binary_data(&valarray[0], static_cast<std::size_t>(valarraySize) * sizeof(T)) );
-			}
-		}
+    valarray.resize( static_cast<std::size_t>( valarraySize ) );
+    ar( binary_data( &valarray[0], static_cast<std::size_t>( valarraySize ) * sizeof(T) ) );
+  }
 
 	//! Saving for std::valarray all other types
 	template <class Archive, class T> inline
-		typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>::value
-		|| !std::is_arithmetic<T>::value, void>::type
-		CEREAL_SAVE_FUNCTION_NAME(Archive & ar, std::valarray<T> const & valarray)
+  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>::value
+                          || !std::is_arithmetic<T>::value, void>::type
+  CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::valarray<T> const & valarray )
 	{
-			ar(make_size_tag(static_cast<size_type>(valarray.size()))); // number of elements
-			for (auto const & i : valarray)
-				ar(i);
-		}
+    ar( make_size_tag( static_cast<size_type>(valarray.size()) ) ); // number of elements
+    for(auto && v : valarray)
+      ar(v);
+  }
 
 	//! Loading for std::valarray all other types
 	template <class Archive, class T> inline
-		typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
-		|| !std::is_arithmetic<T>::value, void>::type
-		CEREAL_LOAD_FUNCTION_NAME(Archive & ar, std::valarray<T> & valarray)
+  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
+                          || !std::is_arithmetic<T>::value, void>::type
+  CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::valarray<T> & valarray )
 	{
-			size_type valarraySize;
-			ar(make_size_tag(valarraySize));
+    size_type valarraySize;
+    ar( make_size_tag( valarraySize ) );
 
-			valarray.resize(static_cast<size_t>(valarraySize));
-			if (valarraySize > 0) { // load data if it's not empty
-				for (auto & i : valarray)
-					ar(i);
-			}
-		}
+    valarray.resize( static_cast<size_t>( valarraySize ) );
+    for(auto && v : valarray)
+      ar(v);
+  }
 } // namespace cereal
 
 #endif // CEREAL_TYPES_VALARRAY_HPP_
