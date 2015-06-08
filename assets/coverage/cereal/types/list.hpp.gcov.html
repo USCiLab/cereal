@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-04-06 10:34:47</td>
+            <td class="headerValue">2015-06-08 11:03:01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">40</td>
@@ -99,26 +99,26 @@
 <span class="lineNum">      37 </span>            : {
 <a name="38"><span class="lineNum">      38 </span>            :   //! Saving for std::list</a>
 <span class="lineNum">      39 </span>            :   template &lt;class Archive, class T, class A&gt; inline
-<span class="lineNum">      40 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::list&lt;T, A&gt; const &amp; list )</span>
+<span class="lineNum">      40 </span><span class="lineCov">       6000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::list&lt;T, A&gt; const &amp; list )</span>
 <span class="lineNum">      41 </span>            :   {
-<span class="lineNum">      42 </span><span class="lineCov">       2000 :     ar( make_size_tag( static_cast&lt;size_type&gt;(list.size()) ) );</span>
+<span class="lineNum">      42 </span><span class="lineCov">       6000 :     ar( make_size_tag( static_cast&lt;size_type&gt;(list.size()) ) );</span>
 <span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineCov">     202000 :     for( auto const &amp; i : list )</span>
-<span class="lineNum">      45 </span><span class="lineCov">     200000 :       ar( i );</span>
-<span class="lineNum">      46 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">     606000 :     for( auto const &amp; i : list )</span>
+<span class="lineNum">      45 </span><span class="lineCov">     600000 :       ar( i );</span>
+<span class="lineNum">      46 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <a name="48"><span class="lineNum">      48 </span>            :   //! Loading for std::list</a>
 <span class="lineNum">      49 </span>            :   template &lt;class Archive, class T, class A&gt; inline
-<span class="lineNum">      50 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::list&lt;T, A&gt; &amp; list )</span>
+<span class="lineNum">      50 </span><span class="lineCov">       6000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::list&lt;T, A&gt; &amp; list )</span>
 <span class="lineNum">      51 </span>            :   {
 <span class="lineNum">      52 </span>            :     size_type size;
-<span class="lineNum">      53 </span><span class="lineCov">       2000 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      53 </span><span class="lineCov">       6000 :     ar( make_size_tag( size ) );</span>
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">       2000 :     list.resize( static_cast&lt;size_t&gt;( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">       6000 :     list.resize( static_cast&lt;size_t&gt;( size ) );</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">     202000 :     for( auto &amp; i : list )</span>
-<span class="lineNum">      58 </span><span class="lineCov">     200000 :       ar( i );</span>
-<span class="lineNum">      59 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      57 </span><span class="lineCov">     606000 :     for( auto &amp; i : list )</span>
+<span class="lineNum">      58 </span><span class="lineCov">     600000 :       ar( i );</span>
+<span class="lineNum">      59 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      60 </span>            : } // namespace cereal
 <span class="lineNum">      61 </span>            : 
 <span class="lineNum">      62 </span>            : #endif // CEREAL_TYPES_LIST_HPP_

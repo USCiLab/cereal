@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-04-06 10:34:47</td>
+            <td class="headerValue">2015-06-08 11:03:01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">24</td>
@@ -98,21 +98,21 @@
 <span class="lineNum">      36 </span>            : {
 <a name="37"><span class="lineNum">      37 </span>            :   //! Serializing (save) for std::complex</a>
 <span class="lineNum">      38 </span>            :   template &lt;class Archive, class T&gt; inline
-<span class="lineNum">      39 </span><span class="lineCov">       1200 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::complex&lt;T&gt; const &amp; comp )</span>
+<span class="lineNum">      39 </span><span class="lineCov">       3600 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::complex&lt;T&gt; const &amp; comp )</span>
 <span class="lineNum">      40 </span>            :   {
-<span class="lineNum">      41 </span><span class="lineCov">       3300 :     ar( CEREAL_NVP_(&quot;real&quot;, comp.real()),</span>
-<span class="lineNum">      42 </span><span class="lineCov">       4500 :         CEREAL_NVP_(&quot;imag&quot;, comp.imag()) );</span>
-<span class="lineNum">      43 </span><span class="lineCov">       1200 :   }</span>
+<span class="lineNum">      41 </span><span class="lineCov">       9900 :     ar( CEREAL_NVP_(&quot;real&quot;, comp.real()),</span>
+<span class="lineNum">      42 </span><span class="lineCov">      13500 :         CEREAL_NVP_(&quot;imag&quot;, comp.imag()) );</span>
+<span class="lineNum">      43 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">      44 </span>            : 
 <a name="45"><span class="lineNum">      45 </span>            :   //! Serializing (load) for std::complex</a>
 <span class="lineNum">      46 </span>            :   template &lt;class Archive, class T&gt; inline
-<span class="lineNum">      47 </span><span class="lineCov">       1200 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::complex&lt;T&gt; &amp; bits )</span>
+<span class="lineNum">      47 </span><span class="lineCov">       3600 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::complex&lt;T&gt; &amp; bits )</span>
 <span class="lineNum">      48 </span>            :   {
 <span class="lineNum">      49 </span>            :     T real, imag;
-<span class="lineNum">      50 </span><span class="lineCov">       1500 :     ar( CEREAL_NVP_(&quot;real&quot;, real),</span>
-<span class="lineNum">      51 </span><span class="lineCov">       2400 :         CEREAL_NVP_(&quot;imag&quot;, imag) );</span>
-<span class="lineNum">      52 </span><span class="lineCov">       1200 :     bits = {real, imag};</span>
-<span class="lineNum">      53 </span><span class="lineCov">       1200 :   }</span>
+<span class="lineNum">      50 </span><span class="lineCov">       4500 :     ar( CEREAL_NVP_(&quot;real&quot;, real),</span>
+<span class="lineNum">      51 </span><span class="lineCov">       7200 :         CEREAL_NVP_(&quot;imag&quot;, imag) );</span>
+<span class="lineNum">      52 </span><span class="lineCov">       3600 :     bits = {real, imag};</span>
+<span class="lineNum">      53 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">      54 </span>            : } // namespace cereal
 <span class="lineNum">      55 </span>            : 
 <span class="lineNum">      56 </span>            : #endif // CEREAL_TYPES_COMPLEX_HPP_
