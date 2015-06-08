@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-04-06 10:34:47</td>
+            <td class="headerValue">2015-06-08 11:03:01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">46</td>
@@ -1150,7 +1150,7 @@
 <span class="lineNum">    1088 </span>            :     namespace detail
 <a name="1089"><span class="lineNum">    1089 </span>            :     {</a>
 <span class="lineNum">    1090 </span>            :       //! Common base type for base class casting
-<span class="lineNum">    1091 </span><span class="lineCov">       1600 :       struct BaseCastBase {};</span>
+<span class="lineNum">    1091 </span><span class="lineCov">       4800 :       struct BaseCastBase {};</span>
 <span class="lineNum">    1092 </span>            : 
 <span class="lineNum">    1093 </span>            :       template &lt;class&gt;
 <span class="lineNum">    1094 </span>            :       struct get_base_class;
@@ -1325,7 +1325,7 @@
 <span class="lineNum">    1263 </span>            :     //! Type traits only struct used to mark an archive as human readable (text based)
 <a name="1264"><span class="lineNum">    1264 </span>            :     /*! Archives that wish to identify as text based/human readable should inherit from</a>
 <span class="lineNum">    1265 </span>            :         this struct */
-<span class="lineNum">    1266 </span><span class="lineCov">      13910 :     struct TextArchive {};</span>
+<span class="lineNum">    1266 </span><span class="lineCov">      42130 :     struct TextArchive {};</span>
 <span class="lineNum">    1267 </span>            : 
 <span class="lineNum">    1268 </span>            :     //! Checks if an archive is a text archive (human readable)
 <span class="lineNum">    1269 </span>            :     template &lt;class A&gt;
@@ -1360,26 +1360,26 @@
 <span class="lineNum">    1298 </span>            :                      &quot;  ar( a ) \n &quot;
 <a name="1299"><span class="lineNum">    1299 </span>            :                      &quot;  construct( a ); \n &quot;</a>
 <span class="lineNum">    1300 </span>            :                      &quot;} \n\n&quot; );
-<span class="lineNum">    1301 </span><span class="lineCov">      82404 :       static T * load_andor_construct()</span>
-<span class="lineNum">    1302 </span><span class="lineCov">      82404 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
+<span class="lineNum">    1301 </span><span class="lineCov">     247212 :       static T * load_andor_construct()</span>
+<span class="lineNum">    1302 </span><span class="lineCov">     247212 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
 <span class="lineNum">    1303 </span>            :     };
 <span class="lineNum">    1304 </span>            : 
 <span class="lineNum">    1305 </span>            :     template &lt;class T, class A&gt;
 <a name="1306"><span class="lineNum">    1306 </span>            :     struct Construct&lt;T, A, true, false&gt;</a>
 <span class="lineNum">    1307 </span>            :     {
-<span class="lineNum">    1308 </span><span class="lineCov">       3200 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1308 </span><span class="lineCov">       9600 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1309 </span>            :       {
-<span class="lineNum">    1310 </span><span class="lineCov">       3200 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
-<span class="lineNum">    1311 </span><span class="lineCov">       2800 :       }</span>
+<span class="lineNum">    1310 </span><span class="lineCov">       9600 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
+<span class="lineNum">    1311 </span><span class="lineCov">       8400 :       }</span>
 <span class="lineNum">    1312 </span>            :     };
 <span class="lineNum">    1313 </span>            : 
 <span class="lineNum">    1314 </span>            :     template &lt;class T, class A&gt;
 <a name="1315"><span class="lineNum">    1315 </span>            :     struct Construct&lt;T, A, false, true&gt;</a>
 <span class="lineNum">    1316 </span>            :     {
-<span class="lineNum">    1317 </span><span class="lineCov">        800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1317 </span><span class="lineCov">       2400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1318 </span>            :       {
-<span class="lineNum">    1319 </span><span class="lineCov">        800 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
-<span class="lineNum">    1320 </span><span class="lineCov">        800 :       }</span>
+<span class="lineNum">    1319 </span><span class="lineCov">       2400 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
+<span class="lineNum">    1320 </span><span class="lineCov">       2400 :       }</span>
 <span class="lineNum">    1321 </span>            :     };
 <span class="lineNum">    1322 </span>            :   } // namespace detail
 <span class="lineNum">    1323 </span>            : } // namespace cereal

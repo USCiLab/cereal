@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-04-06 10:34:47</td>
+            <td class="headerValue">2015-06-08 11:03:01</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">160</td>
@@ -101,61 +101,61 @@
 <span class="lineNum">      39 </span>            :   {
 <a name="40"><span class="lineNum">      40 </span>            :     //! @internal</a>
 <span class="lineNum">      41 </span>            :     template &lt;class Archive, class SetT&gt; inline
-<span class="lineNum">      42 </span><span class="lineCov">       4000 :     void save( Archive &amp; ar, SetT const &amp; set )</span>
+<span class="lineNum">      42 </span><span class="lineCov">      12000 :     void save( Archive &amp; ar, SetT const &amp; set )</span>
 <span class="lineNum">      43 </span>            :     {
-<span class="lineNum">      44 </span><span class="lineCov">       4000 :       ar( make_size_tag( static_cast&lt;size_type&gt;(set.size()) ) );</span>
+<span class="lineNum">      44 </span><span class="lineCov">      12000 :       ar( make_size_tag( static_cast&lt;size_type&gt;(set.size()) ) );</span>
 <span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span><span class="lineCov">     604000 :       for( const auto &amp; i : set )</span>
-<span class="lineNum">      47 </span><span class="lineCov">     600000 :         ar( i );</span>
-<span class="lineNum">      48 </span><span class="lineCov">       4000 :     }</span>
+<span class="lineNum">      46 </span><span class="lineCov">    1812000 :       for( const auto &amp; i : set )</span>
+<span class="lineNum">      47 </span><span class="lineCov">    1800000 :         ar( i );</span>
+<span class="lineNum">      48 </span><span class="lineCov">      12000 :     }</span>
 <span class="lineNum">      49 </span>            : 
 <a name="50"><span class="lineNum">      50 </span>            :     //! @internal</a>
 <span class="lineNum">      51 </span>            :     template &lt;class Archive, class SetT&gt; inline
-<span class="lineNum">      52 </span><span class="lineCov">       4000 :     void load( Archive &amp; ar, SetT &amp; set )</span>
+<span class="lineNum">      52 </span><span class="lineCov">      12000 :     void load( Archive &amp; ar, SetT &amp; set )</span>
 <span class="lineNum">      53 </span>            :     {
 <span class="lineNum">      54 </span>            :       size_type size;
-<span class="lineNum">      55 </span><span class="lineCov">       4000 :       ar( make_size_tag( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">      12000 :       ar( make_size_tag( size ) );</span>
 <span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span><span class="lineCov">       4000 :       set.clear();</span>
-<span class="lineNum">      58 </span><span class="lineCov">       4000 :       set.reserve( static_cast&lt;std::size_t&gt;( size ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">      12000 :       set.clear();</span>
+<span class="lineNum">      58 </span><span class="lineCov">      12000 :       set.reserve( static_cast&lt;std::size_t&gt;( size ) );</span>
 <span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineCov">     604000 :       for( size_type i = 0; i &lt; size; ++i )</span>
+<span class="lineNum">      60 </span><span class="lineCov">    1812000 :       for( size_type i = 0; i &lt; size; ++i )</span>
 <span class="lineNum">      61 </span>            :       {
-<span class="lineNum">      62 </span><span class="lineCov">     480000 :         typename SetT::key_type key;</span>
+<span class="lineNum">      62 </span><span class="lineCov">    1440000 :         typename SetT::key_type key;</span>
 <span class="lineNum">      63 </span>            : 
-<span class="lineNum">      64 </span><span class="lineCov">     600000 :         ar( key );</span>
-<span class="lineNum">      65 </span><span class="lineCov">     600000 :         set.emplace( std::move( key ) );</span>
+<span class="lineNum">      64 </span><span class="lineCov">    1800000 :         ar( key );</span>
+<span class="lineNum">      65 </span><span class="lineCov">    1800000 :         set.emplace( std::move( key ) );</span>
 <span class="lineNum">      66 </span>            :       }
-<span class="lineNum">      67 </span><span class="lineCov">       4000 :     }</span>
+<span class="lineNum">      67 </span><span class="lineCov">      12000 :     }</span>
 <span class="lineNum">      68 </span>            :   }
 <span class="lineNum">      69 </span>            : 
 <a name="70"><span class="lineNum">      70 </span>            :   //! Saving for std::unordered_set</a>
 <span class="lineNum">      71 </span>            :   template &lt;class Archive, class K, class H, class KE, class A&gt; inline
-<span class="lineNum">      72 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_set&lt;K, H, KE, A&gt; const &amp; unordered_set )</span>
+<span class="lineNum">      72 </span><span class="lineCov">       6000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_set&lt;K, H, KE, A&gt; const &amp; unordered_set )</span>
 <span class="lineNum">      73 </span>            :   {
-<span class="lineNum">      74 </span><span class="lineCov">       2000 :     unordered_set_detail::save( ar, unordered_set );</span>
-<span class="lineNum">      75 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      74 </span><span class="lineCov">       6000 :     unordered_set_detail::save( ar, unordered_set );</span>
+<span class="lineNum">      75 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      76 </span>            : 
 <a name="77"><span class="lineNum">      77 </span>            :   //! Loading for std::unordered_set</a>
 <span class="lineNum">      78 </span>            :   template &lt;class Archive, class K, class H, class KE, class A&gt; inline
-<span class="lineNum">      79 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_set&lt;K, H, KE, A&gt; &amp; unordered_set )</span>
+<span class="lineNum">      79 </span><span class="lineCov">       6000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_set&lt;K, H, KE, A&gt; &amp; unordered_set )</span>
 <span class="lineNum">      80 </span>            :   {
-<span class="lineNum">      81 </span><span class="lineCov">       2000 :     unordered_set_detail::load( ar, unordered_set );</span>
-<span class="lineNum">      82 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      81 </span><span class="lineCov">       6000 :     unordered_set_detail::load( ar, unordered_set );</span>
+<span class="lineNum">      82 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      83 </span>            : 
 <a name="84"><span class="lineNum">      84 </span>            :   //! Saving for std::unordered_multiset</a>
 <span class="lineNum">      85 </span>            :   template &lt;class Archive, class K, class H, class KE, class A&gt; inline
-<span class="lineNum">      86 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_multiset&lt;K, H, KE, A&gt; const &amp; unordered_multiset )</span>
+<span class="lineNum">      86 </span><span class="lineCov">       6000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unordered_multiset&lt;K, H, KE, A&gt; const &amp; unordered_multiset )</span>
 <span class="lineNum">      87 </span>            :   {
-<span class="lineNum">      88 </span><span class="lineCov">       2000 :     unordered_set_detail::save( ar, unordered_multiset );</span>
-<span class="lineNum">      89 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      88 </span><span class="lineCov">       6000 :     unordered_set_detail::save( ar, unordered_multiset );</span>
+<span class="lineNum">      89 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      90 </span>            : 
 <a name="91"><span class="lineNum">      91 </span>            :   //! Loading for std::unordered_multiset</a>
 <span class="lineNum">      92 </span>            :   template &lt;class Archive, class K, class H, class KE, class A&gt; inline
-<span class="lineNum">      93 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_multiset&lt;K, H, KE, A&gt; &amp; unordered_multiset )</span>
+<span class="lineNum">      93 </span><span class="lineCov">       6000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unordered_multiset&lt;K, H, KE, A&gt; &amp; unordered_multiset )</span>
 <span class="lineNum">      94 </span>            :   {
-<span class="lineNum">      95 </span><span class="lineCov">       2000 :     unordered_set_detail::load( ar, unordered_multiset );</span>
-<span class="lineNum">      96 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      95 </span><span class="lineCov">       6000 :     unordered_set_detail::load( ar, unordered_multiset );</span>
+<span class="lineNum">      96 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">      97 </span>            : } // namespace cereal
 <span class="lineNum">      98 </span>            : 
 <span class="lineNum">      99 </span>            : #endif // CEREAL_TYPES_UNORDERED_SET_HPP_
