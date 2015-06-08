@@ -52,6 +52,7 @@
     <ClCompile Include="..\..\unittests\unordered_set.cpp" />
     <ClCompile Include="..\..\unittests\user_data_adapters.cpp" />
     <ClCompile Include="..\..\unittests\vector.cpp" />
+    <ClCompile Include="..\..\unittests\valarray.cpp" />
     <ClCompile Include="..\..\unittests\versioning.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

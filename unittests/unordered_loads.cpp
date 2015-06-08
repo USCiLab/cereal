@@ -30,6 +30,7 @@
 struct unordered_naming
 {
   int x;
+  int xx;
   int y;
   int z;
 
@@ -38,7 +39,8 @@ struct unordered_naming
   {
     ar( CEREAL_NVP(x),
         CEREAL_NVP(z),
-        CEREAL_NVP(y) );
+        CEREAL_NVP(y),
+        CEREAL_NVP(xx) );
   }
 
   template <class Archive>
@@ -46,18 +48,19 @@ struct unordered_naming
   {
     ar( x,
         CEREAL_NVP(y),
-        CEREAL_NVP(z) );
+        CEREAL_NVP(z),
+        CEREAL_NVP(xx) );
   }
 
   bool operator==( unordered_naming const & other ) const
   {
-    return x == other.x && y == other.y && z == other.z;
+    return x == other.x && xx == other.xx && y == other.y && z == other.z;
   }
 };
 
 std::ostream& operator<<(std::ostream& os, unordered_naming const & s)
 {
-  os << "[x: " << s.x << " y: " << s.y << " z: " << s.z << "]";
+  os << "[x: " << s.x << " xx: " << s.xx << " y: " << s.y << " z: " << s.z << "]";
   return os;
 }
 
@@ -92,6 +95,7 @@ void test_unordered_loads()
     std::pair<float, unordered_naming> o_un7;
     o_un7.first = rngF();
     o_un7.second.x = rngI();
+    o_un7.second.xx = rngI();
     o_un7.second.y = rngI();
     o_un7.second.z = rngI();
 
