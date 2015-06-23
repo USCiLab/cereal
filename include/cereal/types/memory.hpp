@@ -271,7 +271,7 @@ namespace cereal
       ptr.reset( reinterpret_cast<T *>( new ST() ),
           [=]( T * t )
           {
-            if( valid )
+            if( *valid )
               t->~T();
 
             delete reinterpret_cast<ST *>( t );
