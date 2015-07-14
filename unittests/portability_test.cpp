@@ -31,6 +31,8 @@
 #include <cereal/types/map.hpp>
 #include <cereal/types/vector.hpp>
 
+#include <map>
+
 #include <fstream>
 #include <iostream>
 
