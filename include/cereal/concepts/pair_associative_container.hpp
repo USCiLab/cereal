@@ -1,7 +1,7 @@
 /*! \file pair_associative_container.hpp
     \brief Support for the PairAssociativeContainer refinement of the
     AssociativeContainer concept.
-    \ingroup STLSupport */
+    \ingroup TypeConcepts */
 /*
   Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
