@@ -73,7 +73,7 @@ namespace cereal
   void save( Archive & ar, std::map<std::string, std::string, C, A> const & map )
   {
     for( const auto & i : map )
-      ar( cereal::make_nvp<Archive>( i.first, i.second ) );
+      ar( cereal::make_nvp( i.first, i.second ) );
   }
 
   //! Loading for std::map<std::string, std::string> for text based archives
