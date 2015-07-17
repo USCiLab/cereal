@@ -86,8 +86,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">unordered_map.hpp File Reference<div class="ingroups"><a class="el" href="group__TypeSupport.html">Support for Serializing Various Types</a> &raquo; <a class="el" href="group__STLSupport.html">Standard Library Support</a></div></div>  </div>
 </div><!--header-->
@@ -95,49 +93,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Support for types found in &lt;unordered_map&gt;  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="pair__associative__container_8hpp_source.html">cereal/concepts/pair_associative_container.hpp</a>&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 </div>
 <p><a href="unordered__map_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:aa8fc56c20cd596f478f3d4016d981797"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa8fc56c20cd596f478f3d4016d981797"></a>
-template&lt;class Archive , class MapT &gt; </td></tr>
-<tr class="memitem:aa8fc56c20cd596f478f3d4016d981797"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::unordered_map_detail::save</b> (Archive &amp;ar, MapT const &amp;map)</td></tr>
-<tr class="separator:aa8fc56c20cd596f478f3d4016d981797"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76aff5b488f87c960de5a350bf1592ad"><td class="memTemplParams" colspan="2"><a class="anchor" id="a76aff5b488f87c960de5a350bf1592ad"></a>
-template&lt;class Archive , class MapT &gt; </td></tr>
-<tr class="memitem:a76aff5b488f87c960de5a350bf1592ad"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::unordered_map_detail::load</b> (Archive &amp;ar, MapT &amp;map)</td></tr>
-<tr class="separator:a76aff5b488f87c960de5a350bf1592ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94adc23d737bc81f0de71f06f44c67ee"><td class="memTemplParams" colspan="2"><a class="anchor" id="a94adc23d737bc81f0de71f06f44c67ee"></a>
-template&lt;class Archive , class K , class T , class H , class KE , class A &gt; </td></tr>
-<tr class="memitem:a94adc23d737bc81f0de71f06f44c67ee"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::unordered_map&lt; K, T, H, KE, A &gt; const &amp;unordered_map)</td></tr>
-<tr class="memdesc:a94adc23d737bc81f0de71f06f44c67ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::unordered_map. <br /></td></tr>
-<tr class="separator:a94adc23d737bc81f0de71f06f44c67ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fe82c812ef74ccb7faae7dc446701f4"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2fe82c812ef74ccb7faae7dc446701f4"></a>
-template&lt;class Archive , class K , class T , class H , class KE , class A &gt; </td></tr>
-<tr class="memitem:a2fe82c812ef74ccb7faae7dc446701f4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::unordered_map&lt; K, T, H, KE, A &gt; &amp;unordered_map)</td></tr>
-<tr class="memdesc:a2fe82c812ef74ccb7faae7dc446701f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::unordered_map. <br /></td></tr>
-<tr class="separator:a2fe82c812ef74ccb7faae7dc446701f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4227705e53f000c07adeb97cf3414031"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4227705e53f000c07adeb97cf3414031"></a>
-template&lt;class Archive , class K , class T , class H , class KE , class A &gt; </td></tr>
-<tr class="memitem:a4227705e53f000c07adeb97cf3414031"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::unordered_multimap&lt; K, T, H, KE, A &gt; const &amp;unordered_multimap)</td></tr>
-<tr class="memdesc:a4227705e53f000c07adeb97cf3414031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::unordered_multimap. <br /></td></tr>
-<tr class="separator:a4227705e53f000c07adeb97cf3414031"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12ebfe71fa7ea2f865ed38f860e7f36f"><td class="memTemplParams" colspan="2"><a class="anchor" id="a12ebfe71fa7ea2f865ed38f860e7f36f"></a>
-template&lt;class Archive , class K , class T , class H , class KE , class A &gt; </td></tr>
-<tr class="memitem:a12ebfe71fa7ea2f865ed38f860e7f36f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::unordered_multimap&lt; K, T, H, KE, A &gt; &amp;unordered_multimap)</td></tr>
-<tr class="memdesc:a12ebfe71fa7ea2f865ed38f860e7f36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::unordered_multimap. <br /></td></tr>
-<tr class="separator:a12ebfe71fa7ea2f865ed38f860e7f36f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;unordered_map&gt; </p>
 </div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 10:57:26 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 17 2015 10:52:57 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

@@ -86,8 +86,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">map.hpp File Reference<div class="ingroups"><a class="el" href="group__TypeSupport.html">Support for Serializing Various Types</a> &raquo; <a class="el" href="group__STLSupport.html">Standard Library Support</a></div></div>  </div>
 </div><!--header-->
@@ -95,47 +93,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Support for types found in &lt;map&gt;  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="pair__associative__container_8hpp_source.html">cereal/concepts/pair_associative_container.hpp</a>&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 </div>
 <p><a href="map_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:aca5e3d8917d78685de13da56b4f1f528"><td class="memTemplParams" colspan="2"><a class="anchor" id="aca5e3d8917d78685de13da56b4f1f528"></a>
-template&lt;class Archive , class MapT &gt; </td></tr>
-<tr class="memitem:aca5e3d8917d78685de13da56b4f1f528"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::map_detail::save</b> (Archive &amp;ar, MapT const &amp;map)</td></tr>
-<tr class="separator:aca5e3d8917d78685de13da56b4f1f528"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae09a1d2fe1b523fe78abb00f1bf2b0dc"><td class="memTemplParams" colspan="2"><a class="anchor" id="ae09a1d2fe1b523fe78abb00f1bf2b0dc"></a>
-template&lt;class Archive , class MapT &gt; </td></tr>
-<tr class="memitem:ae09a1d2fe1b523fe78abb00f1bf2b0dc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::map_detail::load</b> (Archive &amp;ar, MapT &amp;map)</td></tr>
-<tr class="separator:ae09a1d2fe1b523fe78abb00f1bf2b0dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a615784fa70afa4525b84dbb36524dd87"><td class="memTemplParams" colspan="2"><a class="anchor" id="a615784fa70afa4525b84dbb36524dd87"></a>
-template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
-<tr class="memitem:a615784fa70afa4525b84dbb36524dd87"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::map&lt; K, T, C, A &gt; const &amp;map)</td></tr>
-<tr class="memdesc:a615784fa70afa4525b84dbb36524dd87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::map. <br /></td></tr>
-<tr class="separator:a615784fa70afa4525b84dbb36524dd87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b7e22a36c1478fa264ca0da982b18e2"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1b7e22a36c1478fa264ca0da982b18e2"></a>
-template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
-<tr class="memitem:a1b7e22a36c1478fa264ca0da982b18e2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::map&lt; K, T, C, A &gt; &amp;map)</td></tr>
-<tr class="memdesc:a1b7e22a36c1478fa264ca0da982b18e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::map. <br /></td></tr>
-<tr class="separator:a1b7e22a36c1478fa264ca0da982b18e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba38fd63818d607ce2831c3e98ffda10"><td class="memTemplParams" colspan="2">template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
-<tr class="memitem:aba38fd63818d607ce2831c3e98ffda10"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_SAVE_FUNCTION_NAME</b> (Archive &amp;ar, std::multimap&lt; K, T, C, A &gt; const &amp;multimap)</td></tr>
-<tr class="memdesc:aba38fd63818d607ce2831c3e98ffda10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for std::multimap.  <a href="#aba38fd63818d607ce2831c3e98ffda10">More...</a><br /></td></tr>
-<tr class="separator:aba38fd63818d607ce2831c3e98ffda10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad54eb70040703f659ce86155dbafc7ac"><td class="memTemplParams" colspan="2">template&lt;class Archive , class K , class T , class C , class A &gt; </td></tr>
-<tr class="memitem:ad54eb70040703f659ce86155dbafc7ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::CEREAL_LOAD_FUNCTION_NAME</b> (Archive &amp;ar, std::multimap&lt; K, T, C, A &gt; &amp;multimap)</td></tr>
-<tr class="memdesc:ad54eb70040703f659ce86155dbafc7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for std::multimap.  <a href="#ad54eb70040703f659ce86155dbafc7ac">More...</a><br /></td></tr>
-<tr class="separator:ad54eb70040703f659ce86155dbafc7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for types found in &lt;map&gt; </p>
 </div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 10:57:26 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 17 2015 10:52:57 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
