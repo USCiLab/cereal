@@ -155,6 +155,8 @@ namespace cereal
       {
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
+        else if (itsNodeStack.top() == NodeType::InArray)
+          itsWriter.EndArray();
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
