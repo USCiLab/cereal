@@ -605,9 +605,9 @@ namespace cereal
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_();   ++itsIteratorStack.back(); }
+      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
-      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
+      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
       void loadValue(uint64_t & val)    { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - float overload
