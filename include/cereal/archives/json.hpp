@@ -222,7 +222,7 @@ namespace cereal
       }
 
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
+      void saveValue(bool b)                { itsWriter.Bool_(b);                                                        }
       //! Saves an int to the current node
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
