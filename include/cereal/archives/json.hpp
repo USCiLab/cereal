@@ -237,6 +237,8 @@ namespace cereal
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+      //! Saves a nullptr to the current node
+      void saveValue(std::nullptr_t)        { itsWriter.Null_();                                                         }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -614,6 +616,8 @@ namespace cereal
       void loadValue(double & val)      { search(); val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
+      //! Loads a nullptr from the current node
+      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull_()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
@@ -796,6 +800,30 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for arithmetic types for JSON archives
+  inline
+  void prologue( JSONOutputArchive & ar, std::nullptr_t const & )
+  {
+    ar.writeName();
+  }
+
+  //! Prologue for arithmetic types for JSON archives
+  inline
+  void prologue( JSONInputArchive &, std::nullptr_t const & )
+  { }
+
+  // ######################################################################
+  //! Epilogue for arithmetic types for JSON archives
+  inline
+  void epilogue( JSONOutputArchive &, std::nullptr_t const & )
+  { }
+
+  //! Epilogue for arithmetic types for JSON archives
+  inline
+  void epilogue( JSONInputArchive &, std::nullptr_t const & )
+  { }
+
+  // ######################################################################
+  //! Prologue for arithmetic types for JSON archives
   template <class T, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
   void prologue( JSONOutputArchive & ar, T const & )
   {
@@ -858,6 +886,20 @@ namespace cereal
   {
     ar.setNextName( t.name );
     ar( t.value );
+  }
+
+  //! Saving for nullptr to JSON
+  inline
+  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, std::nullptr_t const & t)
+  {
+    ar.saveValue( t );
+  }
+
+  //! Loading arithmetic from JSON
+  inline
+  void CEREAL_LOAD_FUNCTION_NAME(JSONInputArchive & ar, std::nullptr_t & t)
+  {
+    ar.loadValue( t );
   }
 
   //! Saving for arithmetic to JSON
