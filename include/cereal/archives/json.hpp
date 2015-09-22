@@ -414,7 +414,10 @@ namespace cereal
         itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
-        itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
+        if (itsDocument.IsArray())
+          itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
+        else
+          itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
 
       //! Loads some binary data, encoded as a base64 string
@@ -685,7 +688,10 @@ namespace cereal
       //! Loads the size for a SizeTag
       void loadSize(size_type & size)
       {
-        size = (itsIteratorStack.rbegin() + 1)->value().Size();
+        if (itsIteratorStack.size() == 1)
+          size = itsDocument.Size();
+        else
+          size = (itsIteratorStack.rbegin() + 1)->value().Size();
       }
 
       //! @}
