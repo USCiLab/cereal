@@ -235,7 +235,7 @@ namespace cereal
         const auto strValue = itsOS.str();
 
         // If the first or last character is a whitespace, add xml:space attribute
-        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty' 
+        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty'
         // string has a length of 1 or lower
         const auto len = strValue.length();
         if ( len > 1 && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[len - 2] ) ) )
@@ -482,7 +482,7 @@ namespace cereal
       //! will return @c nullptr if the node does not have a name
       const char * getNodeName() const
       {
-        return itsNodes.top().node->name();
+        return itsNodes.top().getChildName();
       }
 
       //! Sets the name for the next node created with startNode
@@ -701,10 +701,16 @@ namespace cereal
           return nullptr;
         }
 
+        //! Returns the actual name of the next child node, if it exists
+        const char * getChildName() const
+        {
+          return child ? child->name() : nullptr;
+        }
+
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
         size_t size;                  //!< The remaining number of children for this node
-        const char * name;            //!< The NVP name for next next child node
+        const char * name;            //!< The NVP name for next child node
       }; // NodeInfo
 
       //! @}
