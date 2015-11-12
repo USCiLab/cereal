@@ -299,7 +299,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;      ptr.reset( reinterpret_cast&lt;T *&gt;( <span class="keyword">new</span> ST() ),</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;          [=]( T * t )</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;          {</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="keywordflow">if</span>( valid )</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="keywordflow">if</span>( *valid )</div>
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;              t-&gt;~T();</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;</div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keyword">delete</span> <span class="keyword">reinterpret_cast&lt;</span>ST *<span class="keyword">&gt;</span>( t );</div>
@@ -430,7 +430,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 10:57:26 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 17 2015 10:59:40 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
