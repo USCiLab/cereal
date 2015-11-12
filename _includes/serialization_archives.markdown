@@ -198,7 +198,7 @@ int main()
   cereal::XMLOutputArchive archive( std::cout );
 
   int arr[] = {-1, 95, 3};
-  archive.saveBinaryValue( xxx, sizeof(int) * 3, "some_optional_name" );
+  archive.saveBinaryValue( arr, sizeof(int) * 3, "some_optional_name" );
 }
 ```
 
