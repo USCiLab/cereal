@@ -7,12 +7,16 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -g -Wextra -Wshadow -pedantic ${CM
 
 include_directories(./include)
 
+option(cereal_build_tests "Build all of Cereal's own tests." OFF)
+
 find_package(Boost COMPONENTS serialization unit_test_framework)
 
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
-  enable_testing()
-  add_subdirectory(unittests)
+  if (cereal_build_tests)
+    enable_testing()
+    add_subdirectory(unittests)
+  endif()
 endif(Boost_FOUND)
 
 add_subdirectory(sandbox)
