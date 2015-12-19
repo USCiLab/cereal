@@ -293,6 +293,7 @@ namespace cereal
     }
 
     std::type_info const & ptrinfo = typeid(*ptr.get());
+    static std::type_info const & tinfo = typeid(T);
     // ptrinfo can never be equal to T info since we can't have an instance
     // of an abstract object
     //  this implies we need to do the lookup
@@ -303,7 +304,7 @@ namespace cereal
     if(binding == bindingMap.end())
       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
-    binding->second.shared_ptr(&ar, ptr.get());
+    binding->second.shared_ptr(&ar, ptr.get(), tinfo);
   }
 
   //! Saving std::shared_ptr for polymorphic types, not abstract
@@ -338,7 +339,7 @@ namespace cereal
     if(binding == bindingMap.end())
       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
-    binding->second.shared_ptr(&ar, ptr.get());
+    binding->second.shared_ptr(&ar, ptr.get(), tinfo);
   }
 
   //! Loading std::shared_ptr for polymorphic types
@@ -391,6 +392,7 @@ namespace cereal
     }
 
     std::type_info const & ptrinfo = typeid(*ptr.get());
+    static std::type_info const & tinfo = typeid(T);
     // ptrinfo can never be equal to T info since we can't have an instance
     // of an abstract object
     //  this implies we need to do the lookup
@@ -401,7 +403,7 @@ namespace cereal
     if(binding == bindingMap.end())
       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
-    binding->second.unique_ptr(&ar, ptr.get());
+    binding->second.unique_ptr(&ar, ptr.get(), tinfo);
   }
 
   //! Saving std::unique_ptr for polymorphic types, not abstract
@@ -436,7 +438,7 @@ namespace cereal
     if(binding == bindingMap.end())
       UNREGISTERED_POLYMORPHIC_EXCEPTION(save, cereal::util::demangle(ptrinfo.name()))
 
-    binding->second.unique_ptr(&ar, ptr.get());
+    binding->second.unique_ptr(&ar, ptr.get(), tinfo);
   }
 
   //! Loading std::unique_ptr, case when user provides load_and_construct for polymorphic types

@@ -31,6 +31,7 @@
 #define CEREAL_TYPES_BASE_CLASS_HPP_
 
 #include <cereal/details/traits.hpp>
+#include <cereal/details/polymorphic_impl_fwd.hpp>
 
 namespace cereal
 {
@@ -74,7 +75,10 @@ namespace cereal
       template<class Derived>
         base_class(Derived const * derived) :
           base_ptr(const_cast<Base*>(static_cast<Base const *>(derived)))
-      { static_assert( std::is_base_of<Base, Derived>::value, "Can only use base_class on a valid base class" ); }
+      {
+        static_assert( std::is_base_of<Base, Derived>::value, "Can only use base_class on a valid base class" );
+        detail::RegisterPolymorphicCaster<Base, Derived>::bind();
+      }
 
         Base * base_ptr;
     };
