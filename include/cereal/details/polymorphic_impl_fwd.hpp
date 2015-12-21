@@ -42,6 +42,9 @@
    implementation.
 */
 
+#ifndef CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
+#define CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
+
 namespace cereal
 {
   namespace detail
@@ -50,5 +53,12 @@ namespace cereal
     struct RegisterPolymorphicCaster;
 
     struct PolymorphicCasters;
+
+    namespace { struct polymorphic_relation_tag {}; }
+
+    template <class Base, class Derived, class tag = polymorphic_relation_tag>
+    struct PolymorphicRelation;
   } // namespace detail
 } // namespace cereal
+
+#endif // CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
