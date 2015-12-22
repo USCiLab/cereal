@@ -234,7 +234,7 @@ namespace cereal
 
         auto strValue = itsOS.str();
 
-        // itsOS.str() may contains data from previous calls after the first '\0' that was just inserted 
+        // itsOS.str() may contain data from previous calls after the first '\0' that was just inserted
         // and this data is counted in the length call. We make sure to remove that section so that the
         // whitespace validation is done properly
         strValue.resize(std::strlen(strValue.c_str()));
