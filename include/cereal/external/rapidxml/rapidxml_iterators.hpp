@@ -1,5 +1,5 @@
-#ifndef RAPIDXML_ITERATORS_HPP_INCLUDED
-#define RAPIDXML_ITERATORS_HPP_INCLUDED
+#ifndef CEREAL_RAPIDXML_ITERATORS_HPP_INCLUDED
+#define CEREAL_RAPIDXML_ITERATORS_HPP_INCLUDED
 
 // Copyright (C) 2006, 2009 Marcin Kalicinski
 // Version 1.13
@@ -7,6 +7,7 @@
 
 #include "rapidxml.hpp"
 
+namespace cereal {
 namespace rapidxml
 {
 
@@ -169,5 +170,6 @@ namespace rapidxml
     };
 
 }
+} // namespace cereal
 
 #endif
