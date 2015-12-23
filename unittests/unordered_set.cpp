@@ -85,27 +85,27 @@ void test_unordered_set()
 
     for(auto const & p : i_podunordered_set)
     {
-      BOOST_CHECK_EQUAL(o_podunordered_set.count(p), 1);
+      BOOST_CHECK_EQUAL(o_podunordered_set.count(p), 1lu);
     }
 
     for(auto const & p : i_iserunordered_set)
     {
-      BOOST_CHECK_EQUAL(o_iserunordered_set.count(p), 1);
+      BOOST_CHECK_EQUAL(o_iserunordered_set.count(p), 1lu);
     }
 
     for(auto const & p : i_isplunordered_set)
     {
-      BOOST_CHECK_EQUAL(o_isplunordered_set.count(p), 1);
+      BOOST_CHECK_EQUAL(o_isplunordered_set.count(p), 1lu);
     }
 
     for(auto const & p : i_eserunordered_set)
     {
-      BOOST_CHECK_EQUAL(o_eserunordered_set.count(p), 1);
+      BOOST_CHECK_EQUAL(o_eserunordered_set.count(p), 1lu);
     }
 
     for(auto const & p : i_esplunordered_set)
     {
-      BOOST_CHECK_EQUAL(o_esplunordered_set.count(p), 1);
+      BOOST_CHECK_EQUAL(o_esplunordered_set.count(p), 1lu);
     }
   }
 }

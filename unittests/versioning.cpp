@@ -164,22 +164,22 @@ void test_versioning()
     }
 
     BOOST_CHECK_EQUAL(o_MS.x, i_MS.x);
-    BOOST_CHECK_EQUAL(i_MS.v, 0);
+    BOOST_CHECK_EQUAL(i_MS.v, 0u);
     BOOST_CHECK_EQUAL(o_MSP.x, i_MSP.x);
-    BOOST_CHECK_EQUAL(i_MSP.v, 33);
+    BOOST_CHECK_EQUAL(i_MSP.v, 33u);
     BOOST_CHECK_EQUAL(o_NMS.x, i_NMS.x);
-    BOOST_CHECK_EQUAL(i_NMS.v, 66);
+    BOOST_CHECK_EQUAL(i_NMS.v, 66u);
     BOOST_CHECK_CLOSE(o_NMSP.x, i_NMSP.x, 1e-5);
-    BOOST_CHECK_EQUAL(i_NMSP.v, 99);
+    BOOST_CHECK_EQUAL(i_NMSP.v, 99u);
 
     BOOST_CHECK_EQUAL(o_MS2.x, i_MS2.x);
-    BOOST_CHECK_EQUAL(i_MS2.v, 0);
+    BOOST_CHECK_EQUAL(i_MS2.v, 0u);
     BOOST_CHECK_EQUAL(o_MSP2.x, i_MSP2.x);
-    BOOST_CHECK_EQUAL(i_MSP2.v, 33);
+    BOOST_CHECK_EQUAL(i_MSP2.v, 33u);
     BOOST_CHECK_EQUAL(o_NMS2.x, i_NMS2.x);
-    BOOST_CHECK_EQUAL(i_NMS2.v, 66);
+    BOOST_CHECK_EQUAL(i_NMS2.v, 66u);
     BOOST_CHECK_CLOSE(o_NMSP2.x, i_NMSP2.x, 1e-5);
-    BOOST_CHECK_EQUAL(i_NMSP2.v, 99);
+    BOOST_CHECK_EQUAL(i_NMSP2.v, 99u);
     }
 }
 
