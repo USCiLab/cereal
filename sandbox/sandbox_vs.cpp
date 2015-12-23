@@ -144,6 +144,7 @@ struct C
 };
 
 CEREAL_REGISTER_TYPE(B)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(A, B)
 
 class MemberMinimal
 {

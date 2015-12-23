@@ -49,14 +49,15 @@ namespace cereal
 {
   namespace detail
   {
+    //! Forward declaration, see polymorphic_impl.hpp for more information
     template <class Base, class Derived>
     struct RegisterPolymorphicCaster;
 
+    //! Forward declaration, see polymorphic_impl.hpp for more information
     struct PolymorphicCasters;
 
-    namespace { struct polymorphic_relation_tag {}; }
-
-    template <class Base, class Derived, class tag = polymorphic_relation_tag>
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    template <class Base, class Derived>
     struct PolymorphicRelation;
   } // namespace detail
 } // namespace cereal

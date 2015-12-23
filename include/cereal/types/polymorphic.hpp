@@ -115,7 +115,7 @@
 
     The Derived class should be the most derived type that will be serialized,
     and the Base type any possible base that has not been covered under a base
-    class serialization
+    class serialization that will be used to store a Derived pointer.
 
     Placement of this is the same as for CEREAL_REGISTER_TYPE. */
 #define CEREAL_REGISTER_POLYMORPHIC_RELATION(Base, Derived)                     \
