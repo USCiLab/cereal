@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <common.hpp>
-
 #define BOOST_TEST_MODULE Cereal
+#include <common.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/test/included/unit_test.hpp>

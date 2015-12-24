@@ -86,8 +86,7 @@ namespace cereal
         This is necessary so that cereal can properly cast between polymorphic types
         even though void pointers are used, which normally have no type information.
         Runtime type information is used instead to index a compile-time made mapping
-        that can perform the proper cast.
-        */
+        that can perform the proper cast. */
     struct PolymorphicCaster
     {
       //! Downcasts to the proper derived type
@@ -193,8 +192,6 @@ namespace cereal
           auto lbd = derivedMap.lower_bound(derivedKey);
           derivedMap.insert( lbd, { std::move(derivedKey), this } );
         }
-
-        std::cerr << "Made a mapping for " << cereal::util::demangledName<Base>() << " and " << cereal::util::demangledName<Derived>() << std::endl;
       }
 
       //! Performs the proper downcast with the templated types
