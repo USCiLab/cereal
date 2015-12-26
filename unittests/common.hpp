@@ -55,6 +55,8 @@
 #include <limits>
 #include <random>
 
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 105900
 #include <boost/test/tools/detail/print_helper.hpp>
 
 namespace boost
@@ -73,7 +75,12 @@ namespace boost
       };
     }
   }
+}
 
+#endif // appropriate boost version
+
+namespace boost
+{
   template<class F, class S> inline
   ::std::ostream & operator<<(::std::ostream & os, ::std::pair<F, S> const & p)
   {
