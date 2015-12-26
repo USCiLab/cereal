@@ -118,7 +118,7 @@ namespace cereal
           registered caster. If no matching caster exists, calls the exception function.
 
           The returned PolymorphicCaster is capable of upcasting or downcasting between the two types. */
-      template <class F>
+      template <class F> inline
       static PolymorphicCaster const * lookup( std::type_info const & baseInfo, std::type_info const & derivedInfo, F && exceptionFunc )
       {
         // First phase of lookup - match base type info
