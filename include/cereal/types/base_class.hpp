@@ -37,8 +37,9 @@ namespace cereal
 {
   namespace base_class_detail
   {
-	//! Used to register polymorphic relations and avoid the need to include
-	//! polymorphic.hpp when no polymorphism is used
+    //! Used to register polymorphic relations and avoid the need to include
+    //! polymorphic.hpp when no polymorphism is used
+    /*! @internal */
     template <class Base, class Derived, bool IsPolymorphic = std::is_polymorphic<Base>::value>
     struct RegisterPolymorphicBaseClass
     {
@@ -46,6 +47,8 @@ namespace cereal
       { }
     };
 
+    //! Polymorphic version
+    /*! @internal */
     template <class Base, class Derived>
     struct RegisterPolymorphicBaseClass<Base, Derived, true>
     {
