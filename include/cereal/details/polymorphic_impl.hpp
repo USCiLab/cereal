@@ -38,8 +38,9 @@
 
    (C) Copyright 2006 David Abrahams - http://www.boost.org.
 
-   See /boost/serialization/export.hpp and /boost/archive/detail/register_archive.hpp for their
-   implementation.
+   See /boost/serialization/export.hpp, /boost/archive/detail/register_archive.hpp,
+   and /boost/serialization/void_cast.hpp for their implementation. Additional details
+   found in other files split across serialization and archive.
 */
 #ifndef CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
 #define CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
@@ -77,25 +78,33 @@ namespace cereal
   namespace detail
   {
     //! Base type for polymorphic void casting
+    /*! Contains functions for casting between registered base and derived types.
+
+        This is necessary so that cereal can properly cast between polymorphic types
+        even though void pointers are used, which normally have no type information.
+        Runtime type information is used instead to index a compile-time made mapping
+        that can perform the proper cast.
+
+        This class will be allocated as a StaticObject and only referenced by pointer,
+        allowing a templated derived version of it to define strongly typed functions
+        that cast between registered base and derived types. */
     struct PolymorphicCaster
     {
-      //! Casts to the proper derived type
-      /*! This should be overrriden in derived types, which can
-          be templated to allow the proper base derived type
-          paring to be used, while allowing generic access
-          through a void pointer. */
+      //! Downcasts to the proper derived type
       virtual void const * downcast( void const * const ptr ) const = 0;
+      //! Upcast to proper base type
       virtual void * upcast( void * const ptr ) const = 0;
+      //! Upcast to proper base type, shared_ptr version
       virtual std::shared_ptr<void> upcast( std::shared_ptr<void> const & ptr ) const = 0;
     };
 
+    //! Holds registered mappings between base and derived types for casting
+    /*! This will be allocated as a StaticObject and holds a map containing
+        all registered mappings between base and derived types. */
     struct PolymorphicCasters
     {
-      //! Maps a derived type index to a polymorphic caster
-      using PolymorphicCasterMap = std::map<std::type_index, PolymorphicCaster const*>;
-
-      //! Maps from base type index to derived mapping
-      std::map<std::type_index, PolymorphicCasterMap> map;
+      //! Maps from base type index to a map from derived type index to caster
+      std::map<std::type_index, std::map<std::type_index, PolymorphicCaster const*>> map;
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -105,7 +114,11 @@ namespace cereal
                                 "Alternatively, manually register the association with XXX.");
 
       //! Gets the mapping object that can perform the upcast or downcast
-      template <class F>
+      /*! Uses the type info from the base and derived class to find the matching
+          registered caster. If no matching caster exists, calls the exception function.
+
+          The returned PolymorphicCaster is capable of upcasting or downcasting between the two types. */
+      template <class F> inline
       static PolymorphicCaster const * lookup( std::type_info const & baseInfo, std::type_info const & derivedInfo, F && exceptionFunc )
       {
         // First phase of lookup - match base type info
@@ -125,7 +138,7 @@ namespace cereal
       }
 
       //! Performs a downcast to the derived type using a registered mapping
-      template <class Derived>
+      template <class Derived> inline
       static const Derived * downcast( const void * const dptr, std::type_info const & baseInfo )
       {
         auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );
@@ -135,7 +148,7 @@ namespace cereal
       //! Performs an upcast to the registered base type using the given a derived type
       /*! The return is untyped because the final casting to the base type must happen in the polymorphic
           serialization function, where the type is known at compile time */
-      template <class Derived>
+      template <class Derived> inline
       static void * upcast( Derived * const dptr, std::type_info const & baseInfo )
       {
         auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
@@ -143,7 +156,7 @@ namespace cereal
       }
 
       //! Upcasts for shared pointers
-      template <class Derived>
+      template <class Derived> inline
       static std::shared_ptr<void> upcast( std::shared_ptr<Derived> const & dptr, std::type_info const & baseInfo )
       {
         auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
@@ -153,12 +166,14 @@ namespace cereal
       #undef UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION
     };
 
+    //! Strongly typed derivation of PolymorphicCaster
     template <class Base, class Derived>
     struct PolymorphicVirtualCaster : PolymorphicCaster
     {
       //! Inserts an entry in the polymorphic casting map for this pairing
-      /*! This creates all possible paths from Base to Derived in the mapping
-          given currently registered pairings */
+      /*! Creates an explicit mapping between Base and Derived in both upwards and
+          downwards directions, allowing void pointers to either to be properly cast
+          assuming dynamic type information is available */
       PolymorphicVirtualCaster()
       {
         auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
@@ -171,8 +186,6 @@ namespace cereal
           auto lbd = derivedMap.lower_bound(derivedKey);
           derivedMap.insert( lbd, { std::move(derivedKey), this } );
         }
-
-        std::cerr << "Made a mapping for " << cereal::util::demangledName<Base>() << " and " << cereal::util::demangledName<Derived>() << std::endl;
       }
 
       //! Performs the proper downcast with the templated types
@@ -181,17 +194,26 @@ namespace cereal
         return dynamic_cast<Derived const*>( static_cast<Base const*>( ptr ) );
       }
 
+      //! Performs the proper upcast with the templated types
       void * upcast( void * const ptr ) const override
       {
         return dynamic_cast<Base*>( static_cast<Derived*>( ptr ) );
       }
 
+      //! Performs the proper upcast with the templated types (shared_ptr version)
       std::shared_ptr<void> upcast( std::shared_ptr<void> const & ptr ) const override
       {
         return std::dynamic_pointer_cast<Base>( std::static_pointer_cast<Derived>( ptr ) );
       }
     };
 
+    //! Registers a polymorphic casting relation between a Base and Derived type
+    /*! Registering a relation allows cereal to properly cast between the two types
+        given runtime type information and void pointers.
+
+        Registration happens automatically via cereal::base_class and cereal::virtual_base_class
+        instantiations. For cases where neither is called, see the CEREAL_REGISTER_POLYMORPHIC_RELATION
+        macro */
     template <class Base, class Derived>
     struct RegisterPolymorphicCaster
     {
@@ -203,6 +225,8 @@ namespace cereal
       static PolymorphicCaster const * bind( std::false_type /* is_polymorphic<Base> */ )
       { return nullptr; }
 
+      //! Performs registration (binding) between Base and Derived
+      /*! If the type is not polymorphic, nothing will happen */
       static PolymorphicCaster const * bind()
       { return bind( typename std::is_polymorphic<Base>::type() ); }
     };
@@ -306,7 +330,6 @@ namespace cereal
             ar( CEREAL_NVP_("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
             dptr = PolymorphicCasters::template upcast<T>( ptr, baseInfo );
-            //dptr = ptr;
           };
 
         serializers.unique_ptr =
@@ -317,7 +340,6 @@ namespace cereal
 
             ar( CEREAL_NVP_("ptr_wrapper", ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
 
-            //dptr.reset(ptr.release());
             dptr.reset( PolymorphicCasters::template upcast<T>( ptr.release(), baseInfo ));
           };
 

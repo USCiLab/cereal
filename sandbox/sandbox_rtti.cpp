@@ -97,7 +97,9 @@ struct YourType : public Base
       ar( x );
     }
 };
+
 CEREAL_REGISTER_TYPE(YourType)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(Base, YourType)
 
 struct OurBase
 {
