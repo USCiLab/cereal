@@ -42,3 +42,4 @@ out.xml
 cereal_version.out
 xml_ordering.out
 build
+/out/
