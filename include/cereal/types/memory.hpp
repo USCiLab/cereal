@@ -271,7 +271,7 @@ namespace cereal
       ptr.reset( reinterpret_cast<T *>( new ST() ),
           [=]( T * t )
           {
-            if( valid )
+            if( *valid )
               t->~T();
 
             delete reinterpret_cast<ST *>( t );
@@ -388,5 +388,8 @@ namespace cereal
     }
   }
 } // namespace cereal
+
+// automatically include polymorphic support
+#include <cereal/types/polymorphic.hpp>
 
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_

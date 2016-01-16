@@ -232,19 +232,22 @@ namespace cereal
         itsOS.clear(); itsOS.seekp( 0, std::ios::beg );
         itsOS << value << std::ends;
 
-        const auto strValue = itsOS.str();
+        auto strValue = itsOS.str();
+
+        // itsOS.str() may contain data from previous calls after the first '\0' that was just inserted
+        // and this data is counted in the length call. We make sure to remove that section so that the
+        // whitespace validation is done properly
+        strValue.resize(std::strlen(strValue.c_str()));
 
         // If the first or last character is a whitespace, add xml:space attribute
-        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty' 
-        // string has a length of 1 or lower
         const auto len = strValue.length();
-        if ( len > 1 && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[len - 2] ) ) )
+        if ( len > 0 && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[len - 1] ) ) )
         {
           itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "xml:space", "preserve" ) );
         }
 
         // allocate strings for all of the data in the XML object
-        auto dataPtr = itsXML.allocate_string( itsOS.str().c_str(), itsOS.str().length() + 1 );
+        auto dataPtr = itsXML.allocate_string(strValue.c_str(), strValue.length() + 1 );
 
         // insert into the XML
         itsNodes.top().node->append_node( itsXML.allocate_node( rapidxml::node_data, nullptr, dataPtr ) );
@@ -482,7 +485,7 @@ namespace cereal
       //! will return @c nullptr if the node does not have a name
       const char * getNodeName() const
       {
-        return itsNodes.top().node->name();
+        return itsNodes.top().getChildName();
       }
 
       //! Sets the name for the next node created with startNode
@@ -701,10 +704,16 @@ namespace cereal
           return nullptr;
         }
 
+        //! Returns the actual name of the next child node, if it exists
+        const char * getChildName() const
+        {
+          return child ? child->name() : nullptr;
+        }
+
         rapidxml::xml_node<> * node;  //!< A pointer to this node
         rapidxml::xml_node<> * child; //!< A pointer to its current child
         size_t size;                  //!< The remaining number of children for this node
-        const char * name;            //!< The NVP name for next next child node
+        const char * name;            //!< The NVP name for next child node
       }; // NodeInfo
 
       //! @}

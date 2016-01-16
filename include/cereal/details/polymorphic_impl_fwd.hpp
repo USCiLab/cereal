@@ -1,6 +1,6 @@
-/*! \file unordered_map.hpp
-    \brief Support for types found in \<unordered_map\>
-    \ingroup STLSupport */
+/*! \file polymorphic_impl_fwd.hpp
+    \brief Internal polymorphism support forward declarations
+    \ingroup Internal */
 /*
   Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -27,10 +27,39 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_UNORDERED_MAP_HPP_
-#define CEREAL_TYPES_UNORDERED_MAP_HPP_
 
-#include <cereal/concepts/pair_associative_container.hpp>
-#include <unordered_map>
+/* This code is heavily inspired by the boost serialization implementation by the following authors
 
-#endif // CEREAL_TYPES_UNORDERED_MAP_HPP_
+   (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
+   Use, modification and distribution is subject to the Boost Software
+   License, Version 1.0. (See http://www.boost.org/LICENSE_1_0.txt)
+
+    See http://www.boost.org for updates, documentation, and revision history.
+
+   (C) Copyright 2006 David Abrahams - http://www.boost.org.
+
+   See /boost/serialization/export.hpp and /boost/archive/detail/register_archive.hpp for their
+   implementation.
+*/
+
+#ifndef CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
+#define CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
+
+namespace cereal
+{
+  namespace detail
+  {
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    template <class Base, class Derived>
+    struct RegisterPolymorphicCaster;
+
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    struct PolymorphicCasters;
+
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    template <class Base, class Derived>
+    struct PolymorphicRelation;
+  } // namespace detail
+} // namespace cereal
+
+#endif // CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_

@@ -359,6 +359,7 @@ namespace cereal
 }
 
 CEREAL_REGISTER_TYPE(SpecializedMSplitPolymorphic)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BogusBasePolymorphic, SpecializedMSplitPolymorphic)
 
 template <class IArchive, class OArchive>
 void test_structs_specialized()

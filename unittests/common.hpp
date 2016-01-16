@@ -55,6 +55,30 @@
 #include <limits>
 #include <random>
 
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 105900
+#include <boost/test/tools/detail/print_helper.hpp>
+
+namespace boost
+{
+  namespace test_tools
+  {
+    namespace tt_detail
+    {
+      template <class F, class S>
+      struct print_log_value< ::std::pair<F, S> >
+      {
+        void operator()(::std::ostream & os, ::std::pair<F, S> const & p )
+        {
+          os << "([" << p.first << "], [" << p.second << "])";
+        }
+      };
+    }
+  }
+}
+
+#endif // appropriate boost version
+
 namespace boost
 {
   template<class F, class S> inline
@@ -64,7 +88,6 @@ namespace boost
     return os;
   }
 }
-
 
 namespace cereal
 {
