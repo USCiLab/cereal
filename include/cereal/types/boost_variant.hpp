@@ -171,7 +171,6 @@ namespace cereal
     std::string type_name;
     ar( CEREAL_NVP_("type", type_name) );
 
-    std::cout << "type_name: " << type_name << std::endl;
     auto itr = std::find(variant.names.begin(), variant.names.end(), type_name);
 
 
@@ -179,7 +178,6 @@ namespace cereal
         throw Exception("Invalid 'type' selector when deserializing named boost::variant");
 
     auto which = itr - variant.names.begin();
-    std::cout << "which: " << which << std::endl;
 
     variant_detail::load_variant<0, boost::variant<VariantTypes...>, VariantTypes...>(ar, which, variant.var_ref);
   }
