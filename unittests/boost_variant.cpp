@@ -60,7 +60,7 @@ void test_boost_variant()
   }
 
   BOOST_CHECK_EQUAL( boost::get<int>(i_bv1), boost::get<int>(o_bv1) );
-  BOOST_CHECK_EQUAL( boost::get<double>(i_bv2), boost::get<double>(o_bv2) );
+  BOOST_CHECK_CLOSE( boost::get<double>(i_bv2), boost::get<double>(o_bv2), 1e-5 );
   BOOST_CHECK_EQUAL( boost::get<std::string>(i_bv3), boost::get<std::string>(o_bv3) );
 }
 
