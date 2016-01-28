@@ -41,9 +41,7 @@ namespace cereal
     /*! @internal */
     enum class type : uint8_t
     {
-      ulong,
-      ullong,
-      string
+      bits
     };
   }
 
@@ -51,25 +49,27 @@ namespace cereal
   template <class Archive, size_t N> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::bitset<N> const & bits )
   {
-    try
+    ar( CEREAL_NVP_("type", bitset_detail::type::bits) );
+    char chunk = 0;
+    size_t bit;
+    int bitmask = 0x80;
+    for ( bit = 0; bit < N; bit++ )
     {
-      auto const b = bits.to_ulong();
-      ar( CEREAL_NVP_("type", bitset_detail::type::ulong) );
-      ar( CEREAL_NVP_("data", b) );
+      if (bits[bit]) {
+        chunk |= bitmask;
+      }
+      bitmask >>= 1;
+      if (bitmask == 0) {
+        // Save chunk, reset bitmask
+        ar (chunk);
+        chunk = 0;
+        bitmask = 0x80;
+      }
     }
-    catch( std::overflow_error const & )
-    {
-      try
-      {
-        auto const b = bits.to_ullong();
-        ar( CEREAL_NVP_("type", bitset_detail::type::ullong) );
-        ar( CEREAL_NVP_("data", b) );
-      }
-      catch( std::overflow_error const & )
-      {
-        ar( CEREAL_NVP_("type", bitset_detail::type::string) );
-        ar( CEREAL_NVP_("data", bits.to_string()) );
-      }
+    if (bitmask != 0x80) {
+      // Get the reminder if we didn't end in whole byte,
+      // bitmask 0x80 means that chunk has unsaved data
+      ar(chunk);
     }
   }
 
@@ -82,25 +82,23 @@ namespace cereal
 
     switch( t )
     {
-      case bitset_detail::type::ulong:
+      case bitset_detail::type::bits:
       {
-        unsigned long b;
-        ar( CEREAL_NVP_("data", b) );
-        bits = std::bitset<N>( b );
-        break;
-      }
-      case bitset_detail::type::ullong:
-      {
-        unsigned long long b;
-        ar( CEREAL_NVP_("data", b) );
-        bits = std::bitset<N>( b );
-        break;
-      }
-      case bitset_detail::type::string:
-      {
-        std::string b;
-        ar( CEREAL_NVP_("data", b) );
-        bits = std::bitset<N>( b );
+        char chunk = 0;
+        size_t bit;
+        int bitmask = 0;
+        for ( bit = 0; bit < N; bit++ )
+        {
+          if (bitmask == 0x0)
+          {
+            ar( chunk );
+            bitmask = 0x80;
+          }
+          if (chunk & bitmask) {
+            bits[bit] = 1;
+          }
+          bitmask >>= 1;
+        }
         break;
       }
       default:
