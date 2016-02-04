@@ -127,7 +127,7 @@ void save(Archive & archive,
 }
 
 template<class Archive>
-void load(Archive & archive)
+void load(Archive & archive,
           MyClass & m)
 {
   archive( m.x, m.y, m.z ); 
@@ -170,7 +170,7 @@ This also works with split save/load functions.
 ### Minimal split serialization
 
 In addition to supporting the normal load/save split serialization functions, cereal also supports
-`minimal_load` and `minimal_save` serialization functions.  These serialization functions follow the same rules as the
+`load_minimal` and `save_minimal` serialization functions.  These serialization functions follow the same rules as the
 others (you may only have one type of serialization per archive-type pair) but have a slightly different interface and
 can change output behavior.
 
