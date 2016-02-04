@@ -9,7 +9,7 @@ cereal supports serializing smart pointers to polymorphic base classes and will 
 
 If you want to serialize some data through pointers to base types:
 
-1. Include `<cereal/types/polymorphic.hpp>`
+1. Include `<cereal/types/polymorphic.hpp>` (automatically included with `<cereal/types/memory.hpp>`)
 2. Include all of the archives you want to be able to use with your class (`<cereal/archives/*.hpp`)
 3. Read the documentation below to understand your decision for step 4 (no TLDR for this one!)
 4. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro in either the header file in which the type is declared or the source
