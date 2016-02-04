@@ -67,7 +67,10 @@ class SomeData
     friend class boost::serialization::access;
 
     // xCEREAL supports class versioning although it is considered
-    // optional in xCEREAL
+    // optional in xCEREAL. 
+    //
+    // Note that the second parameter is changed from const unsigned int to 
+    // const std::uint32_t
     template <class Archive>
     void save( Archive & ar, std::uint32_t const version ) const
     {
