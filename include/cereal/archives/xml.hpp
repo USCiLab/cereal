@@ -68,7 +68,7 @@ namespace cereal
   //! An output archive designed to save data to XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data it serializes before outputting it to its stream upon destruction.
-      The envisioned way of using this archive is in an RAII fashion, letting
+      This archive should be used in an RAII fashion, letting
       the automatic destruction of the object cause the flush to its stream.
 
       XML archives provides a human readable output but at decreased
@@ -336,6 +336,9 @@ namespace cereal
   //! An output archive designed to load data from XML
   /*! This archive uses RapidXML to build an in memory XML tree of the
       data in the stream it is given before loading any types serialized.
+
+      As with the output XML archive, the preferred way to use this archive is in
+      an RAII fashion, ensuring its destruction after all data has been read.
 
       Input XML should have been produced by the XMLOutputArchive.  Data can
       only be added to dynamically sized containers - the input archive will

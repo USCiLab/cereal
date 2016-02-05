@@ -67,6 +67,9 @@ namespace cereal
       JSON archives provides a human readable output but at decreased
       performance (both in time and space) compared to binary archives.
 
+      JSON archives are only guaranteed to finish flushing their contents
+      upon destruction and should thus be used in an RAII fashion.
+
       JSON benefits greatly from name-value pairs, which if present, will
       name the nodes in the output.  If these are not present, each level
       of the output will be given an automatically generated delimited name.
@@ -356,6 +359,9 @@ namespace cereal
   // ######################################################################
   //! An input archive designed to load data from JSON
   /*! This archive uses RapidJSON to read in a JSON archive.
+
+      As with the output JSON archive, the preferred way to use this archive is in
+      an RAII fashion, ensuring its destruction after all data has been read.
 
       Input JSON should have been produced by the JSONOutputArchive.  Data can
       only be added to dynamically sized containers (marked by JSON arrays) -
