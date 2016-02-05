@@ -68,7 +68,6 @@ namespace cereal
       #endif // NOT CEREAL_OLDER_GCC
     }
   }
-
 } // namespace cereal
 
 #endif // CEREAL_CONCEPTS_PAIR_ASSOCIATIVE_CONTAINER_HPP_
