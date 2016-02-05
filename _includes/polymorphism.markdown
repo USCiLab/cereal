@@ -21,7 +21,13 @@ If you want to serialize some data through pointers to base types:
 
 When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type. Doxygen documentation for these macros can be found [here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
 
-It is not necessary to register base classes.  When writing the object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
+While it is not necessary to register base classes, cereal must have a serialization path from derived to base type.
+Normally this is handled automatically if you serialize a base type with either `cereal::base_type` or
+`cereal::virtual_base_type`. In situations where neither of these is performed, cereal will need to be explicitly told
+about the relationship between base and derived type, using the `CEREAL_REGISTER_POLYMORPHIC_RELATION` macro, detailed
+[here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
+
+When writing your polymorphic object to an archive, cereal will prefix your data with portable type information which is used to locate the proper serialization methods again when the archive is loaded.
 
 Registration can be done from either a header file or from a source file, though there are important caveats for each,
 as detailed below.
@@ -93,6 +99,10 @@ CEREAL_REGISTER_TYPE(DerivedClassOne);
 CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
 
 // Note that there is no need to register the base class, only derived classes
+//  However, since we did not use cereal::base_class, we need to clarify
+//  the relationship (more on this later)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClassOne)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, EmbarrassingDerivedClass)
 
 ```
 
@@ -251,6 +261,10 @@ CEREAL_REGISTER_TYPE(DerivedClassOne);
 CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
 
 // Note that there is no need to register the base class, only derived classes
+//  However, since we did not use cereal::base_class, we need to clarify
+//  the relationship (more on this later)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClassOne)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, EmbarrassingDerivedClass)
 
 // Potentially necessary if no explicit reference
 // to objects in myclasses.cpp will take place
@@ -298,6 +312,72 @@ int main()
   return 0;
 }
 ```
+
+### Ensuring a path exists from derived to base type
+
+As mentioned earlier, cereal does not require that the base type itself is registered; only derived classes that are
+used need to be registered. However, cereal still needs to know how to properly convert between derived and base types.
+Normally, cereal can determine this automatically if your derived class serializes the base class:
+
+```cpp
+struct Base
+{
+  virtual void foo() = 0;
+  int x;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( x );
+  }
+};
+
+struct DerivedOne: Base
+{
+  void foo() {}
+
+  double y;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( cereal::base_class<Base>(this), y );
+  }
+};
+
+CEREAL_REGISTER_TYPE(DerivedOne)
+```
+
+With the above example, the `base_class` usage lets cereal automatically deduce that `DerivedOne` is related to `Base`.
+Cereal requires that all possible base classes that are actually used to store a pointer have a well defined path from
+the derived class. If cereal cannot detect this automatically via `base_class` serializations, or if you have a
+situation where there is no reason to serialize the base class (e.g. it is pure virtual), you must use a macro to
+disambiguate for cereal:
+
+```cpp
+struct EmptyBase
+{
+  virtual void foo() = 0;
+};
+
+struct DerivedTwo: EmptyBase
+{
+  void foo() {}
+
+  double y;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( y );
+  }
+};
+
+CEREAL_REGISTER_TYPE(DerivedTwo)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(EmptyBase, DerivedTwo)
+```
+
+See the [doxygen]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html) for more information.
 
 ---
 
