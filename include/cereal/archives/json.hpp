@@ -158,6 +158,8 @@ namespace cereal
       {
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
+        else if (itsNodeStack.top() == NodeType::InArray)
+          itsWriter.EndArray();
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
@@ -223,7 +225,7 @@ namespace cereal
       }
 
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                         }
+      void saveValue(bool b)                { itsWriter.Bool_(b);                                                        }
       //! Saves an int to the current node
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
@@ -238,6 +240,8 @@ namespace cereal
       void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
+      //! Saves a nullptr to the current node
+      void saveValue(std::nullptr_t)        { itsWriter.Null_();                                                         }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -416,7 +420,10 @@ namespace cereal
         itsReadStream(stream)
       {
         itsDocument.ParseStream<0>(itsReadStream);
-        itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
+        if (itsDocument.IsArray())
+          itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
+        else
+          itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
 
       //! Loads some binary data, encoded as a base64 string
@@ -607,9 +614,9 @@ namespace cereal
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_();   ++itsIteratorStack.back(); }
+      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
-      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64();  ++itsIteratorStack.back(); }
+      void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
       void loadValue(uint64_t & val)    { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - float overload
@@ -618,6 +625,8 @@ namespace cereal
       void loadValue(double & val)      { search(); val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
+      //! Loads a nullptr from the current node
+      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull_()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
@@ -642,7 +651,7 @@ namespace cereal
       template <class T> inline
       typename std::enable_if<sizeof(T) == sizeof(std::uint64_t) && !std::is_signed<T>::value, void>::type
       loadLong(T & lu){ loadValue( reinterpret_cast<std::uint64_t&>( lu ) ); }
-            
+
     public:
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
@@ -685,7 +694,10 @@ namespace cereal
       //! Loads the size for a SizeTag
       void loadSize(size_type & size)
       {
-        size = (itsIteratorStack.rbegin() + 1)->value().Size();
+        if (itsIteratorStack.size() == 1)
+          size = itsDocument.Size();
+        else
+          size = (itsIteratorStack.rbegin() + 1)->value().Size();
       }
 
       //! @}
@@ -800,6 +812,30 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for arithmetic types for JSON archives
+  inline
+  void prologue( JSONOutputArchive & ar, std::nullptr_t const & )
+  {
+    ar.writeName();
+  }
+
+  //! Prologue for arithmetic types for JSON archives
+  inline
+  void prologue( JSONInputArchive &, std::nullptr_t const & )
+  { }
+
+  // ######################################################################
+  //! Epilogue for arithmetic types for JSON archives
+  inline
+  void epilogue( JSONOutputArchive &, std::nullptr_t const & )
+  { }
+
+  //! Epilogue for arithmetic types for JSON archives
+  inline
+  void epilogue( JSONInputArchive &, std::nullptr_t const & )
+  { }
+
+  // ######################################################################
+  //! Prologue for arithmetic types for JSON archives
   template <class T, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
   void prologue( JSONOutputArchive & ar, T const & )
   {
@@ -862,6 +898,20 @@ namespace cereal
   {
     ar.setNextName( t.name );
     ar( t.value );
+  }
+
+  //! Saving for nullptr to JSON
+  inline
+  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, std::nullptr_t const & t)
+  {
+    ar.saveValue( t );
+  }
+
+  //! Loading arithmetic from JSON
+  inline
+  void CEREAL_LOAD_FUNCTION_NAME(JSONInputArchive & ar, std::nullptr_t & t)
+  {
+    ar.loadValue( t );
   }
 
   //! Saving for arithmetic to JSON
