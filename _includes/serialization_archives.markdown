@@ -17,7 +17,8 @@ Archives decide how to output or interpret data that is being serialized.  For t
 
 cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
 
-The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  Archives are only guaranteed to have flushed their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
+<span class="label label-warning">Important!</span>
+The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  **Archives are only guaranteed to have finished flushing their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction**.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
 
 ```cpp
 #include <cereal/archives/xml.hpp>

@@ -83,7 +83,7 @@ int main()
 
     MyData m1, m2, m3;
     oarchive(m1, m2, m3); // Write the data to the archive
-  }
+  } // archive goes out of scope, ensuring all contents are flushed
 
   {
     cereal::BinaryInputArchive iarchive(ss); // Create an input archive
@@ -93,6 +93,10 @@ int main()
   }
 }
 ```
+<span class="label label-warning">Important!</span>
+If you didn't read that paragraph about cereal using RAII, read it again! Some archives in cereal can only safely finish
+flushing their contents upon their destruction. Make sure, especially for output serialization, that your archive is
+automatically destroyed when you are finished with it.
 
 ### Naming values
 
