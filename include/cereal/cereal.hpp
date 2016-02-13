@@ -250,6 +250,23 @@ namespace cereal
         return *self;
       }
 
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
+      }
+
       /*! @name Boost Transition Layer
           Functionality that mirrors the syntax for Boost.  This is useful if you are transitioning
           a large project from Boost to cereal.  The preferred interface for cereal is using operator(). */
@@ -480,7 +497,7 @@ namespace cereal
           detail::StaticObject<detail::Versions>::getInstance().find( hash, detail::Version<T>::version );
 
         if( insertResult.second ) // insertion took place, serialize the version number
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          process( make_nvp("cereal_class_version", version) );
 
         return version;
       }
@@ -603,6 +620,23 @@ namespace cereal
       {
         process( std::forward<Types>( args )... );
         return *self;
+      }
+
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
       }
 
       /*! @name Boost Transition Layer
@@ -857,7 +891,7 @@ namespace cereal
         {
           std::uint32_t version;
 
-          process( make_nvp<ArchiveType>("cereal_class_version", version) );
+          process( make_nvp("cereal_class_version", version) );
           itsVersionedTypes.emplace_hint( lookupResult, hash, version );
 
           return version;

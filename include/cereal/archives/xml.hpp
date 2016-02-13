@@ -165,6 +165,23 @@ namespace cereal
         itsXML.clear();
       }
 
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
+      }
+
       //! Saves some binary data, encoded as a base64 string, with an optional name
       /*! This can be called directly by users and it will automatically create a child node for
           the current XML node, populate it with a base64 encoded string, and optionally name
@@ -235,7 +252,7 @@ namespace cereal
         const auto strValue = itsOS.str();
 
         // If the first or last character is a whitespace, add xml:space attribute
-        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty' 
+        // the string always contains a '\0' added by std::ends, so the last character is at len-2 and an 'empty'
         // string has a length of 1 or lower
         const auto len = strValue.length();
         if ( len > 1 && ( xml_detail::isWhitespace( strValue[0] ) || xml_detail::isWhitespace( strValue[len - 2] ) ) )
@@ -404,6 +421,23 @@ namespace cereal
           throw Exception("Could not detect cereal root node - likely due to empty or invalid input");
         else
           itsNodes.emplace( root );
+      }
+
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
       }
 
       //! Loads some binary data, encoded as a base64 string, optionally specified by some name
