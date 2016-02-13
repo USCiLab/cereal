@@ -162,6 +162,23 @@ namespace cereal
           itsWriter.EndArray();
       }
 
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
+      }
+
       //! Saves some binary data, encoded as a base64 string, with an optional name
       /*! This will create a new node, optionally named, and insert a value that consists of
           the data encoded as a base64 string */
@@ -550,6 +567,23 @@ namespace cereal
       }
 
     public:
+      // ######################################################################
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( std::string const & name, T && value )
+      {
+        return {name.c_str(), std::forward<T>(value)};
+      }
+
+      //! Creates a name value pair
+      /*! @relates NameValuePair */
+      template <class T> static inline
+      NameValuePair<T> make_nvp( const char * name, T && value )
+      {
+        return {name, std::forward<T>(value)};
+      }
+
       //! Starts a new node, going into its proper iterator
       /*! This places an iterator for the next node to be parsed onto the iterator stack.  If the next
           node is an array, this will be a value iterator, otherwise it will be a member iterator.
