@@ -303,9 +303,26 @@ protected:
     }
 
     bool WriteDouble(double d) {
-        if (internal::Double(d).IsNanOrInf())
+        if (internal::Double(d).IsNanOrInf()) {
+            if (internal::Double(d).IsNan()) {
+                PutReserve(*os_, 3);
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('n'));
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('a'));
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('n'));
+            } else {
+                if (internal::Double(d).Sign()) {
+                    PutReserve(*os_, 4);
+                    PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('-'));
+                } else {
+                    PutReserve(*os_, 3);
+                }
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('i'));
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('n'));
+                PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>('f'));
+            }
             return false;
-        
+        }
+
         char buffer[25];
         char* end = internal::dtoa(d, buffer, maxDecimalPlaces_);
         PutReserve(*os_, static_cast<size_t>(end - buffer));

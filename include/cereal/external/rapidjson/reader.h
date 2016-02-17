@@ -17,6 +17,8 @@
 
 /*! \file reader.h */
 
+#include <limits>
+
 #include "allocators.h"
 #include "stream.h"
 #include "internal/meta.h"
@@ -598,12 +600,16 @@ private:
     }
 
     template<unsigned parseFlags, typename InputStream, typename Handler>
-    void ParseNull(InputStream& is, Handler& handler) {
+    void ParseNullOrNan(InputStream& is, Handler& handler) {
         RAPIDJSON_ASSERT(is.Peek() == 'n');
         is.Take();
 
         if (RAPIDJSON_LIKELY(Consume(is, 'u') && Consume(is, 'l') && Consume(is, 'l'))) {
             if (RAPIDJSON_UNLIKELY(!handler.Null()))
+                RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
+        }
+        else if (Consume(is, 'a') && Consume(is, 'n')) {
+            if (RAPIDJSON_UNLIKELY(!handler.Double( std::numeric_limits<double>::quiet_NaN() )))
                 RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
         }
         else
@@ -1055,6 +1061,12 @@ private:
                     significandDigit++;
                 }
         }
+        else if (RAPIDJSON_UNLIKELY(Consume(s, 'i')) && Consume(s, 'n') && Consume(s, 'f')) {
+            double inf = std::numeric_limits<double>::infinity();
+            if (RAPIDJSON_UNLIKELY(!handler.Double(minus ? -inf : inf)))
+                RAPIDJSON_PARSE_ERROR(kParseErrorTermination, startOffset);
+            return;
+        }
         else
             RAPIDJSON_PARSE_ERROR(kParseErrorValueInvalid, s.Tell());
 
@@ -1220,12 +1232,12 @@ private:
     template<unsigned parseFlags, typename InputStream, typename Handler>
     void ParseValue(InputStream& is, Handler& handler) {
         switch (is.Peek()) {
-            case 'n': ParseNull  <parseFlags>(is, handler); break;
-            case 't': ParseTrue  <parseFlags>(is, handler); break;
-            case 'f': ParseFalse <parseFlags>(is, handler); break;
-            case '"': ParseString<parseFlags>(is, handler); break;
-            case '{': ParseObject<parseFlags>(is, handler); break;
-            case '[': ParseArray <parseFlags>(is, handler); break;
+            case 'n': ParseNullOrNan  <parseFlags>(is, handler); break;
+            case 't': ParseTrue       <parseFlags>(is, handler); break;
+            case 'f': ParseFalse      <parseFlags>(is, handler); break;
+            case '"': ParseString     <parseFlags>(is, handler); break;
+            case '{': ParseObject     <parseFlags>(is, handler); break;
+            case '[': ParseArray      <parseFlags>(is, handler); break;
             default : 
                       ParseNumber<parseFlags>(is, handler);
                       break;
