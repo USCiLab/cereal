@@ -2,7 +2,7 @@
     \brief Support for types found in \<functional\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2016, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@
 #ifndef CEREAL_TYPES_FUNCTIONAL_HPP_
 #define CEREAL_TYPES_FUNCTIONAL_HPP_
 
-#include <cereal/details/helpers.hpp>
 #include <functional>
 
 namespace cereal
