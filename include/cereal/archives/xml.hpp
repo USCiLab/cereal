@@ -531,6 +531,7 @@ namespace cereal
       //! Loads a type best represented as an unsigned long from the current top node
       template <class T, traits::EnableIf<std::is_unsigned<T>::value,
                                           !std::is_same<T, bool>::value,
+                                          !std::is_same<T, char>::value,
                                           !std::is_same<T, unsigned char>::value,
                                           sizeof(T) < sizeof(long long)> = traits::sfinae> inline
       void loadValue( T & value )

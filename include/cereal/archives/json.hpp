@@ -656,14 +656,14 @@ namespace cereal
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, long>::value &&
-                              !std::is_same<T, std::int32_t>::value &&
+                              sizeof(T) >= sizeof(std::int64_t) &&
                               !std::is_same<T, std::int64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
 
       //! Serialize an unsigned long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::uint32_t>::value &&
+                              sizeof(T) >= sizeof(std::uint64_t) &&
                               !std::is_same<T, std::uint64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
       #endif // _MSC_VER
