@@ -35,6 +35,8 @@
 
 // The default container for queue is deque, so let's include that too
 #include <cereal/types/deque.hpp>
+// The default comparator for queue is less
+#include <cereal/types/functional.hpp>
 
 namespace cereal
 {

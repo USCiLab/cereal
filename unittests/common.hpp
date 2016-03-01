@@ -90,13 +90,6 @@ namespace boost
   }
 }
 
-namespace cereal
-{
-  template <class Archive, class T> inline
-    void serialize( Archive &, std::less<T> & )
-    { }
-}
-
 template<class T> inline
 typename std::enable_if<std::is_floating_point<T>::value, T>::type
 random_value(std::mt19937 & gen)
