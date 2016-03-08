@@ -119,7 +119,7 @@ namespace cereal
       // typedefs for parent type and storage type
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
       using ParentType = std::enable_shared_from_this<BaseType>;
-      using StorageType = typename std::aligned_storage<sizeof(ParentType)>::type;
+      using StorageType = typename std::aligned_storage<sizeof(ParentType), alignof(ParentType)>::type;
 
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
@@ -259,7 +259,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
-      using ST = typename std::aligned_storage<sizeof(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -347,7 +347,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
