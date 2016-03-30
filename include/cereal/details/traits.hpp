@@ -263,7 +263,6 @@ namespace cereal
     CEREAL_MAKE_HAS_NON_MEMBER_TEST(versioned_load, CEREAL_LOAD_FUNCTION_NAME, CEREAL_MAKE_VERSIONED_TEST);
 
     // ######################################################################
-
     #undef CEREAL_MAKE_HAS_NON_MEMBER_TEST
     #undef CEREAL_MAKE_HAS_MEMBER_TEST
 
