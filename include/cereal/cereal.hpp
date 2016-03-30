@@ -839,6 +839,9 @@ namespace cereal
         return *self;
       }
 
+      //! Befriend for versioning in load_and_construct
+      template <class A, class B, bool C, bool D, bool E, bool F> friend struct detail::Construct;
+
       //! Registers a class version with the archive and serializes it if necessary
       /*! If this is the first time this class has been serialized, we will record its
           version number and serialize that.
