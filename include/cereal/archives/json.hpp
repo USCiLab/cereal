@@ -47,7 +47,8 @@ namespace cereal
 #endif // RAPIDJSON_ASSERT
 
 #include <cereal/external/rapidjson/prettywriter.h>
-#include <cereal/external/rapidjson/genericstream.h>
+#include <cereal/external/rapidjson/istreamwrapper.h>
+#include <cereal/external/rapidjson/ostreamwrapper.h>
 #include <cereal/external/rapidjson/reader.h>
 #include <cereal/external/rapidjson/document.h>
 #include <cereal/external/base64.hpp>
@@ -92,7 +93,7 @@ namespace cereal
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
-    typedef rapidjson::GenericWriteStream WriteStream;
+    typedef rapidjson::OStreamWrapper WriteStream;
     typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
 
     public:
@@ -120,11 +121,11 @@ namespace cereal
           };
 
           //! Specify specific options for the JSONOutputArchive
-          /*! @param precision The precision used for floating point numbers
+          /*! @param precision The maximum number of decimal places at which to truncate the output for floating point numbers 
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+          explicit Options( int precision = 324,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4 ) :
             itsPrecision( precision ),
@@ -145,10 +146,11 @@ namespace cereal
       JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream, options.itsPrecision),
+        itsWriter(itsWriteStream),
         itsNextName(nullptr)
       {
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
+	itsWriter.SetMaxDecimalPlaces(options.itsPrecision);
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
@@ -225,7 +227,7 @@ namespace cereal
       }
 
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                        }
+      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
       //! Saves an int to the current node
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
@@ -241,7 +243,7 @@ namespace cereal
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
       //! Saves a nullptr to the current node
-      void saveValue(std::nullptr_t)        { itsWriter.Null_();                                                         }
+      void saveValue(std::nullptr_t)        { itsWriter.Null();                                                          }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -401,7 +403,7 @@ namespace cereal
   class JSONInputArchive : public InputArchive<JSONInputArchive>, public traits::TextArchive
   {
     private:
-      typedef rapidjson::GenericReadStream ReadStream;
+      typedef rapidjson::IStreamWrapper ReadStream;
       typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
       typedef JSONValue::ConstMemberIterator MemberIterator;
       typedef JSONValue::ConstValueIterator ValueIterator;
@@ -419,7 +421,7 @@ namespace cereal
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        itsDocument.ParseStream<0>(itsReadStream);
+        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag>(itsReadStream);
         if (itsDocument.IsArray())
           itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
         else
@@ -460,7 +462,7 @@ namespace cereal
       class Iterator
       {
         public:
-          Iterator() : itsIndex( 0 ), itsType(Null_) {}
+          Iterator() : itsIndex( 0 ), itsType(Null) {}
 
           Iterator(MemberIterator begin, MemberIterator end) :
             itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
@@ -521,7 +523,7 @@ namespace cereal
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
           size_t itsIndex;                                 //!< The current index of this iterator
-          enum Type {Value, Member, Null_} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
+          enum Type {Value, Member, Null} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
       };
 
       //! Searches for the expectedName node if it doesn't match the actualName
@@ -614,7 +616,7 @@ namespace cereal
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_(); ++itsIteratorStack.back(); }
+      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
       void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
@@ -626,7 +628,7 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
-      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull_()); ++itsIteratorStack.back(); }
+      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
