@@ -41,14 +41,14 @@ namespace cereal
 }
 
 // Override rapidjson assertions to throw exceptions by default
-#ifndef RAPIDJSON_ASSERT
-#define RAPIDJSON_ASSERT(x) if(!(x)){ \
+#ifndef CEREAL_RAPIDJSON_ASSERT
+#define CEREAL_RAPIDJSON_ASSERT(x) if(!(x)){ \
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
 #include <cereal/external/rapidjson/prettywriter.h>
-#include <cereal/external/rapidjson/genericstream.h>
-#include <cereal/external/rapidjson/reader.h>
+#include <cereal/external/rapidjson/ostreamwrapper.h>
+#include <cereal/external/rapidjson/istreamwrapper.h>
 #include <cereal/external/rapidjson/document.h>
 #include <cereal/external/base64.hpp>
 
@@ -62,7 +62,7 @@ namespace cereal
 {
   // ######################################################################
   //! An output archive designed to save data to JSON
-  /*! This archive uses RapidJSON to build serialie data to JSON.
+  /*! This archive uses RapidJSON to build serialize data to JSON.
 
       JSON archives provides a human readable output but at decreased
       performance (both in time and space) compared to binary archives.
@@ -92,8 +92,8 @@ namespace cereal
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
-    typedef rapidjson::GenericWriteStream WriteStream;
-    typedef rapidjson::PrettyWriter<WriteStream> JSONWriter;
+    using WriteStream = rapidjson::OStreamWrapper;
+    using JSONWriter = rapidjson::PrettyWriter<WriteStream>;
 
     public:
       /*! @name Common Functionality
@@ -145,9 +145,10 @@ namespace cereal
       JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream, options.itsPrecision),
+        itsWriter(itsWriteStream),
         itsNextName(nullptr)
       {
+        itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
@@ -225,7 +226,7 @@ namespace cereal
       }
 
       //! Saves a bool to the current node
-      void saveValue(bool b)                { itsWriter.Bool_(b);                                                        }
+      void saveValue(bool b)                { itsWriter.Bool(b);                                                         }
       //! Saves an int to the current node
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
@@ -241,7 +242,7 @@ namespace cereal
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
       //! Saves a nullptr to the current node
-      void saveValue(std::nullptr_t)        { itsWriter.Null_();                                                         }
+      void saveValue(std::nullptr_t)        { itsWriter.Null();                                                          }
 
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
@@ -401,7 +402,7 @@ namespace cereal
   class JSONInputArchive : public InputArchive<JSONInputArchive>, public traits::TextArchive
   {
     private:
-      typedef rapidjson::GenericReadStream ReadStream;
+      using ReadStream = rapidjson::IStreamWrapper;
       typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
       typedef JSONValue::ConstMemberIterator MemberIterator;
       typedef JSONValue::ConstValueIterator ValueIterator;
@@ -614,7 +615,7 @@ namespace cereal
       }
 
       //! Loads a value from the current node - bool overload
-      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool_(); ++itsIteratorStack.back(); }
+      void loadValue(bool & val)        { search(); val = itsIteratorStack.back().value().GetBool(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - int64 overload
       void loadValue(int64_t & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - uint64 overload
@@ -626,7 +627,7 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
-      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull_()); ++itsIteratorStack.back(); }
+      void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
