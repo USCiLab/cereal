@@ -29,6 +29,7 @@
 
 #include <cereal/types/memory.hpp>
 #include <cereal/types/array.hpp>
+#include <cereal/types/atomic.hpp>
 #include <cereal/types/valarray.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/deque.hpp>
