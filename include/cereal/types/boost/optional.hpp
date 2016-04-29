@@ -1,4 +1,4 @@
-/*! \file boost_optional.hpp
+/*! \file boost/optional.hpp
 \brief Support for boost::optional
 \ingroup OtherTypes */
 /*

@@ -48,6 +48,7 @@
 #include <cereal/types/chrono.hpp>
 #include <cereal/types/polymorphic.hpp>
 
+#include <cereal/types/boost/chrono.hpp>
 #include <cereal/types/boost/circular_buffer.hpp>
 #include <cereal/types/boost/compressed_pair.hpp>
 #include <cereal/types/boost/dynamic_bitset.hpp>

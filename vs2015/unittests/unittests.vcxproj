@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\unittests\array.cpp" />
     <ClCompile Include="..\..\unittests\basic_string.cpp" />
     <ClCompile Include="..\..\unittests\bitset.cpp" />
+    <ClCompile Include="..\..\unittests\boost\boost_chrono.cpp" />
     <ClCompile Include="..\..\unittests\boost\circular_buffer.cpp" />
     <ClCompile Include="..\..\unittests\boost\compressed_pair.cpp" />
     <ClCompile Include="..\..\unittests\boost\dynamic_bitset.cpp" />
