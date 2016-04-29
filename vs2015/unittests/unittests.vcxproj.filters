@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Source Files\boost">
-      <UniqueIdentifier>{c8bd94a1-d353-4f00-9c2d-a8062a0a5a8a}</UniqueIdentifier>
+      <UniqueIdentifier>{fb50112f-42d9-4b5b-ad6d-f264f6aa7ebd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +126,9 @@
     <ClCompile Include="..\..\unittests\user_data_adapters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\boost_chrono.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\unittests\boost\circular_buffer.cpp">
       <Filter>Source Files\boost</Filter>
     </ClCompile>
@@ -139,9 +142,6 @@
       <Filter>Source Files\boost</Filter>
     </ClCompile>
     <ClCompile Include="..\..\unittests\boost\optional.cpp">
-      <Filter>Source Files\boost</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\unittests\boost\boost_chrono.cpp">
       <Filter>Source Files\boost</Filter>
     </ClCompile>
     <ClCompile Include="..\..\unittests\boost\units.cpp">
