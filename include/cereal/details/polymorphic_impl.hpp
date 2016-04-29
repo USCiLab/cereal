@@ -195,16 +195,12 @@ namespace cereal
         auto baseKey = std::type_index(typeid(Base));
         auto lb = baseMap.lower_bound(baseKey);
 
-        std::cout << "Base mapping inserted for " << util::demangledName<Base>() << std::endl;
-
         {
           auto & derivedMap = baseMap.insert( lb, {baseKey, {}} )->second;
           auto derivedKey = std::type_index(typeid(Derived));
           auto lbd = derivedMap.lower_bound(derivedKey);
           auto & derivedVec = derivedMap.insert( lbd, { std::move(derivedKey), {}} )->second;
           derivedVec.push_back( this );
-
-          std::cout << "  Derived mapping inserted for " << util::demangledName<Derived>() << std::endl;
         }
 
         // Find all chainable unregistered relations
