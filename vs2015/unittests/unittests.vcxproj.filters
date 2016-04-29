@@ -144,5 +144,8 @@
     <ClCompile Include="..\..\unittests\boost\boost_chrono.cpp">
       <Filter>Source Files\boost</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\units.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

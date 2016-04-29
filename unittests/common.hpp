@@ -54,6 +54,7 @@
 #include <cereal/types/boost/dynamic_bitset.hpp>
 #include <cereal/types/boost/filesystem.hpp>
 #include <cereal/types/boost/optional.hpp>
+#include <cereal/types/boost/units.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/portable_binary.hpp>

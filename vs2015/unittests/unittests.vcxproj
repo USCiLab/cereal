@@ -28,6 +28,7 @@
     <ClCompile Include="..\..\unittests\boost\dynamic_bitset.cpp" />
     <ClCompile Include="..\..\unittests\boost\filesystem.cpp" />
     <ClCompile Include="..\..\unittests\boost\optional.cpp" />
+    <ClCompile Include="..\..\unittests\boost\units.cpp" />
     <ClCompile Include="..\..\unittests\chrono.cpp" />
     <ClCompile Include="..\..\unittests\complex.cpp" />
     <ClCompile Include="..\..\unittests\deque.cpp" />
