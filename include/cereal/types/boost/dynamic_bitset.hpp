@@ -89,7 +89,7 @@ namespace cereal
       case boost_dynamic_bitset_detail::type::ulong:
       {
          unsigned long b;
-         ::boost::dynamic_bitset<Block>::size_type sz;
+         typename ::boost::dynamic_bitset<Block>::size_type sz;
          ar(CEREAL_NVP_("size", sz));
          ar(CEREAL_NVP_("data", b));
          bits = ::boost::dynamic_bitset<>(sz, b);

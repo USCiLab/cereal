@@ -69,7 +69,7 @@ namespace cereal
    template <class Archive> inline
       void load(Archive & ar, ::boost::filesystem::filesystem_error  & err)
    {
-		system::error_code ec;
+		::boost::system::error_code ec;
 		std::string what;
 		::boost::filesystem::path  p1,p2;
 		ar( CEREAL_NVP_("ec",  ec));
