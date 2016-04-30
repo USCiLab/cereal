@@ -122,7 +122,6 @@ struct PolyDerivedD : PolyBaseB, PolyBaseC
 };
 
 CEREAL_REGISTER_TYPE(PolyDerivedD)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(PolyBaseA, PolyDerivedD)
 
 struct PolyBase
 {
