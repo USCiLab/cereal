@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <iostream>
 #include <cstdint>
+#include <functional>
 
 #include <cereal/macros.hpp>
 #include <cereal/details/helpers.hpp>
@@ -203,11 +204,14 @@ namespace cereal
     private:
       template <class A, class B> friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;
 
-      construct( T * p ) : itsPtr( p ), itsValid( false ) {}
+      construct( T * p ) : itsPtr( p ), itsEnableSharedRestoreFunction( [](){} ), itsValid( false ) {}
+      construct( T * p, std::function<void()> enableSharedFunc ) : // g++4.7 ice with default lambda to std func
+        itsPtr( p ), itsEnableSharedRestoreFunction( enableSharedFunc ), itsValid( false ) {}
       construct( construct const & ) = delete;
       construct & operator=( construct const & ) = delete;
 
       T * itsPtr;
+      std::function<void()> itsEnableSharedRestoreFunction;
       bool itsValid;
   };
 
@@ -436,6 +440,7 @@ namespace cereal
       throw Exception("Attempting to construct an already initialized object");
 
     ::cereal::access::construct( itsPtr, std::forward<Args>( args )... );
+    itsEnableSharedRestoreFunction();
     itsValid = true;
   }
 } // namespace cereal
