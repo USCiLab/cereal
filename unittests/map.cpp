@@ -28,9 +28,11 @@
 #include <boost/test/unit_test.hpp>
 #include <utility>
 
+#ifdef _MSC_VER
 typedef  std::pair<const std::string, int>       str_int_map_type;
 BOOST_TEST_DONT_PRINT_LOG_VALUE(StructBase)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(str_int_map_type)
+#endif
 
 template<typename T1, typename T2>
 inline std::ostream& operator<<(std::ostream& os, std::pair<T1,T2> const & p)
