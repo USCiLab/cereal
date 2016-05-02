@@ -199,7 +199,27 @@ void test_boost_filesystem()
 
 }
 
-
+/// * * * * Cereal XML and JSON archives don't currently support wstring/wchar (Issue #95) * * * *
+// When they do, we can use this:
+////template <class IArchive, class OArchive>
+//struct test_boost_filesystem
+//{
+//   template <typename ArchiveSet>
+//   void operator()(ArchiveSet x)
+//   {
+//      BOOST_LOG_TRIVIAL(debug) << "\n...Starting test_boost_filesystem for " << typeid(ArchiveSet).name();
+//
+//      test_boost_filesystem_path<typename ArchiveSet::iarchive, typename ArchiveSet::oarchive>();
+//      test_boost_filesystem_file_status<typename ArchiveSet::iarchive, typename ArchiveSet::oarchive>();
+//      test_boost_filesystem_directory_entry<typename ArchiveSet::iarchive, typename ArchiveSet::oarchive>();
+//
+//   }
+//};
+//
+//BOOST_AUTO_TEST_CASE(all_archives_boost_filesystem)
+//{
+//   boost::mpl::for_each<archive_type_list>(test_boost_filesystem());
+//}
 BOOST_AUTO_TEST_CASE(binary_filesystem)
 {
    test_boost_filesystem<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();

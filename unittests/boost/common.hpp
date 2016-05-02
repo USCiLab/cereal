@@ -30,6 +30,31 @@
 // Pull in all the standard unit test header info
 #include "../common.hpp"
 
+// Group archive types that go together
+template <typename outArchiveType, typename inArchiveType, typename outStream, typename inStream>
+struct archiveTypes
+{
+   typedef typename outArchiveType  oarchive;
+   typedef typename inArchiveType   iarchive;
+   typedef typename outStream       ostream;
+   typedef typename inStream        istream;
+};
+
+typedef archiveTypes<cereal::BinaryOutputArchive         , cereal::BinaryInputArchive        , std::ostringstream, std::istringstream>    cereal_binary;
+typedef archiveTypes<cereal::JSONOutputArchive           , cereal::JSONInputArchive          , std::ostringstream, std::istringstream>    cereal_JSON;
+typedef archiveTypes<cereal::PortableBinaryOutputArchive , cereal::PortableBinaryInputArchive, std::ostringstream, std::istringstream>    cereal_portable_binary;
+typedef archiveTypes<cereal::XMLOutputArchive            , cereal::XMLInputArchive           , std::ostringstream, std::istringstream>    cereal_XML;
+
+typedef boost::mpl::list<
+   cereal_binary
+   , cereal_JSON
+   , cereal_portable_binary
+   , cereal_XML
+> archive_type_list;
+
+#include <boost/log/trivial.hpp>    // for logging
+#include <boost/mpl/for_each.hpp>   // to loop through the archive sets
+
 #include <cereal/types/boost/chrono.hpp>
 #include <cereal/types/boost/circular_buffer.hpp>
 #include <cereal/types/boost/compressed_pair.hpp>

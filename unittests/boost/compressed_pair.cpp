@@ -27,83 +27,94 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
-template <class IArchive, class OArchive>
-void test_boost_compressed_pair()
+//template <class IArchive, class OArchive>
+struct test_boost_compressed_pair
 {
-   std::random_device rd;
-   std::mt19937 gen(rd());
-
-   auto rng = [&](){ return random_value<int>(gen); };
-
-   for (int ii = 0; ii<100; ++ii)
+   template <typename ArchiveSet>
+   void operator()(ArchiveSet x)
    {
-      boost::compressed_pair<int, int> o_podpair = { rng(), rng() };
-      boost::compressed_pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = { { rng(), rng() }, { rng(), rng() } };
-      boost::compressed_pair<StructInternalSplit, StructInternalSplit> o_isplpair = { { rng(), rng() }, { rng(), rng() } };
-      boost::compressed_pair<StructExternalSerialize, StructExternalSerialize> o_eserpair = { { rng(), rng() }, { rng(), rng() } };
-      boost::compressed_pair<StructExternalSplit, StructExternalSplit> o_esplpair = { { rng(), rng() }, { rng(), rng() } };
+      BOOST_LOG_TRIVIAL(debug) << "\n...Starting test_boost_compressed_pair for " << typeid(ArchiveSet).name();
 
-      std::ostringstream os;
+      std::random_device rd;
+      std::mt19937 gen(rd());
+
+      auto rng = [&]() { return random_value<int>(gen); };
+
+      for (int ii = 0; ii < 100; ++ii)
       {
-         OArchive oar(os);
+         boost::compressed_pair<int, int> o_podpair = { rng(), rng() };
+         boost::compressed_pair<StructInternalSerialize, StructInternalSerialize> o_iserpair = { { rng(), rng() }, { rng(), rng() } };
+         boost::compressed_pair<StructInternalSplit, StructInternalSplit> o_isplpair = { { rng(), rng() }, { rng(), rng() } };
+         boost::compressed_pair<StructExternalSerialize, StructExternalSerialize> o_eserpair = { { rng(), rng() }, { rng(), rng() } };
+         boost::compressed_pair<StructExternalSplit, StructExternalSplit> o_esplpair = { { rng(), rng() }, { rng(), rng() } };
 
-         oar(o_podpair);
-         oar(o_iserpair);
-         oar(o_isplpair);
-         oar(o_eserpair);
-         oar(o_esplpair);
+         typename ArchiveSet::ostream os; //  std::ostringstream os;
+         {
+            typename ArchiveSet::oarchive oar(os); //  OArchive oar(os);
+
+            oar(o_podpair);
+            oar(o_iserpair);
+            oar(o_isplpair);
+            oar(o_eserpair);
+            oar(o_esplpair);
+         }
+
+         boost::compressed_pair<int, int> i_podpair;
+         boost::compressed_pair<StructInternalSerialize, StructInternalSerialize> i_iserpair;
+         boost::compressed_pair<StructInternalSplit, StructInternalSplit> i_isplpair;
+         boost::compressed_pair<StructExternalSerialize, StructExternalSerialize> i_eserpair;
+         boost::compressed_pair<StructExternalSplit, StructExternalSplit> i_esplpair;
+
+         typename ArchiveSet::istream is(os.str()); //  ::istringstream is(os.str());
+         {
+            typename ArchiveSet::iarchive iar(is); //  IArchive iar(is);
+
+            iar(i_podpair);
+            iar(i_iserpair);
+            iar(i_isplpair);
+            iar(i_eserpair);
+            iar(i_esplpair);
+         }
+
+         BOOST_CHECK_EQUAL(i_podpair.first(), o_podpair.first());
+         BOOST_CHECK_EQUAL(i_podpair.second(), o_podpair.second());
+
+         BOOST_CHECK_EQUAL(i_iserpair.first(), o_iserpair.first());
+         BOOST_CHECK_EQUAL(i_iserpair.second(), o_iserpair.second());
+
+         BOOST_CHECK_EQUAL(i_isplpair.first(), o_isplpair.first());
+         BOOST_CHECK_EQUAL(i_isplpair.second(), o_isplpair.second());
+
+         BOOST_CHECK_EQUAL(i_eserpair.first(), o_eserpair.first());
+         BOOST_CHECK_EQUAL(i_eserpair.second(), o_eserpair.second());
+
+         BOOST_CHECK_EQUAL(i_esplpair.first(), o_esplpair.first());
+         BOOST_CHECK_EQUAL(i_esplpair.second(), o_esplpair.second());
       }
-
-      boost::compressed_pair<int, int> i_podpair;
-      boost::compressed_pair<StructInternalSerialize, StructInternalSerialize> i_iserpair;
-      boost::compressed_pair<StructInternalSplit, StructInternalSplit> i_isplpair;
-      boost::compressed_pair<StructExternalSerialize, StructExternalSerialize> i_eserpair;
-      boost::compressed_pair<StructExternalSplit, StructExternalSplit> i_esplpair;
-
-      std::istringstream is(os.str());
-      {
-         IArchive iar(is);
-
-         iar(i_podpair);
-         iar(i_iserpair);
-         iar(i_isplpair);
-         iar(i_eserpair);
-         iar(i_esplpair);
-      }
-
-      BOOST_CHECK_EQUAL(i_podpair.first(), o_podpair.first());
-      BOOST_CHECK_EQUAL(i_podpair.second(), o_podpair.second());
-
-      BOOST_CHECK_EQUAL(i_iserpair.first(), o_iserpair.first());
-      BOOST_CHECK_EQUAL(i_iserpair.second(), o_iserpair.second());
-
-      BOOST_CHECK_EQUAL(i_isplpair.first(), o_isplpair.first());
-      BOOST_CHECK_EQUAL(i_isplpair.second(), o_isplpair.second());
-
-      BOOST_CHECK_EQUAL(i_eserpair.first(), o_eserpair.first());
-      BOOST_CHECK_EQUAL(i_eserpair.second(), o_eserpair.second());
-
-      BOOST_CHECK_EQUAL(i_esplpair.first(), o_esplpair.first());
-      BOOST_CHECK_EQUAL(i_esplpair.second(), o_esplpair.second());
    }
+};
+
+BOOST_AUTO_TEST_CASE(all_archives_boost_compressed_pair)
+{
+   boost::mpl::for_each<archive_type_list>(test_boost_compressed_pair());
 }
 
-BOOST_AUTO_TEST_CASE(binary_boost_compressed_pair)
-{
-   test_boost_compressed_pair<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE(portable_binary_boost_compressed_pair)
-{
-   test_boost_compressed_pair<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE(xml_boost_compressed_pair)
-{
-   test_boost_compressed_pair<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-BOOST_AUTO_TEST_CASE(json_boost_compressed_pair)
-{
-   test_boost_compressed_pair<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+//BOOST_AUTO_TEST_CASE(binary_boost_compressed_pair)
+//{
+//   test_boost_compressed_pair<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE(portable_binary_boost_compressed_pair)
+//{
+//   test_boost_compressed_pair<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE(xml_boost_compressed_pair)
+//{
+//   test_boost_compressed_pair<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+//}
+//BOOST_AUTO_TEST_CASE(json_boost_compressed_pair)
+//{
+//   test_boost_compressed_pair<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+//}
 

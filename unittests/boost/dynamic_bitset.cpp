@@ -27,68 +27,79 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
-template <class IArchive, class OArchive>
-void test_boost_dynamic_bitset()
+//template <class IArchive, class OArchive>
+struct test_boost_dynamic_bitset
 {
-   std::random_device rd;
-   std::mt19937 gen(rd());
-
-   auto rng32 = [&](){ return random_binary_string<32>(gen); };
-   auto rng65 = [&](){ return random_binary_string<65>(gen); };
-   auto rng256 = [&](){ return random_binary_string<256>(gen); };
-
-   for (int ii = 0; ii<100; ++ii)
+   template <typename ArchiveSet>
+   void operator()(ArchiveSet x)
    {
-      boost::dynamic_bitset<> o_bit32(rng32());
-      boost::dynamic_bitset<> o_bit65(rng65());
-      boost::dynamic_bitset<> o_bit256(rng256());
+      BOOST_LOG_TRIVIAL(debug) << "\n...Starting test_boost_dynamic_bitset for " << typeid(ArchiveSet).name();
+      std::random_device rd;
+      std::mt19937 gen(rd());
 
-      std::ostringstream os;
+      auto rng32 = [&]() { return random_binary_string<32>(gen); };
+      auto rng65 = [&]() { return random_binary_string<65>(gen); };
+      auto rng256 = [&]() { return random_binary_string<256>(gen); };
+
+      for (int ii = 0; ii < 100; ++ii)
       {
-         OArchive oar(os);
+         boost::dynamic_bitset<> o_bit32(rng32());
+         boost::dynamic_bitset<> o_bit65(rng65());
+         boost::dynamic_bitset<> o_bit256(rng256());
 
-         oar(o_bit32);
-         oar(o_bit65);
-         oar(o_bit256);
+         typename ArchiveSet::ostream os; //  std::ostringstream os;
+         {
+            typename ArchiveSet::oarchive oar(os); //  OArchive oar(os);
+
+            oar(o_bit32);
+            oar(o_bit65);
+            oar(o_bit256);
+         }
+
+         boost::dynamic_bitset<>  i_bit32;
+         boost::dynamic_bitset<>  i_bit65;
+         boost::dynamic_bitset<>    i_bit256;
+
+         typename ArchiveSet::istream is(os.str()); //  ::istringstream is(os.str());
+         {
+            typename ArchiveSet::iarchive iar(is); //  IArchive iar(is);
+
+            iar(i_bit32);
+            iar(i_bit65);
+            iar(i_bit256);
+         }
+
+         BOOST_CHECK_EQUAL(o_bit32, i_bit32);
+         BOOST_CHECK_EQUAL(o_bit65, i_bit65);
+         BOOST_CHECK_EQUAL(o_bit256, i_bit256);
       }
-
-      boost::dynamic_bitset<>  i_bit32;
-      boost::dynamic_bitset<>  i_bit65;
-      boost::dynamic_bitset<>    i_bit256;
-
-      std::istringstream is(os.str());
-      {
-         IArchive iar(is);
-
-         iar(i_bit32);
-         iar(i_bit65);
-         iar(i_bit256);
-      }
-
-      BOOST_CHECK_EQUAL(o_bit32, i_bit32);
-      BOOST_CHECK_EQUAL(o_bit65, i_bit65);
-      BOOST_CHECK_EQUAL(o_bit256, i_bit256);
    }
+};
+
+BOOST_AUTO_TEST_CASE(all_archives_boost_dynamic_bitset)
+{
+   boost::mpl::for_each<archive_type_list>(test_boost_dynamic_bitset());
 }
 
-BOOST_AUTO_TEST_CASE(binary_boost_dynamic_bitset)
-{
-   test_boost_dynamic_bitset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
-}
 
-BOOST_AUTO_TEST_CASE(portable_binary_boost_dynamic_bitset)
-{
-   test_boost_dynamic_bitset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE(xml_boost_dynamic_bitset)
-{
-   test_boost_dynamic_bitset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE(json_boost_dynamic_bitset)
-{
-   test_boost_dynamic_bitset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+//BOOST_AUTO_TEST_CASE(binary_boost_dynamic_bitset)
+//{
+//   test_boost_dynamic_bitset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE(portable_binary_boost_dynamic_bitset)
+//{
+//   test_boost_dynamic_bitset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE(xml_boost_dynamic_bitset)
+//{
+//   test_boost_dynamic_bitset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE(json_boost_dynamic_bitset)
+//{
+//   test_boost_dynamic_bitset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+//}
 
 

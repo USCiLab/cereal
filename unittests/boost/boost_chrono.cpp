@@ -27,97 +27,108 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
-template <class IArchive, class OArchive>
-void test_boost_chrono()
+//template <class IArchive, class OArchive>
+struct test_boost_chrono
 {
-  for(int ii=0; ii<100; ++ii)
-  {
-    auto o_timePoint1 = boost::chrono::system_clock::now();
-    #ifndef CEREAL_OLDER_GCC
-    auto o_timePoint2 = boost::chrono::steady_clock::now();
-    #endif // CEREAL_OLDER_GCC
-    auto o_timePoint3 = boost::chrono::high_resolution_clock::now();
+   template <typename ArchiveSet>
+   void operator()(ArchiveSet x)
+   {
+      BOOST_LOG_TRIVIAL(debug) << "\n...Starting test_boost_chrono for " << typeid(ArchiveSet).name();
 
-    auto o_duration1 = boost::chrono::system_clock::now() - o_timePoint1;
-    #ifndef CEREAL_OLDER_GCC
-    auto o_duration2 = boost::chrono::steady_clock::now() - o_timePoint2;
-    #endif // CEREAL_OLDER_GCC
-    auto o_duration3 = boost::chrono::high_resolution_clock::now() - o_timePoint3;
+      for (int ii = 0; ii < 100; ++ii)
+      {
+         auto o_timePoint1 = boost::chrono::system_clock::now();
+#ifndef CEREAL_OLDER_GCC
+         auto o_timePoint2 = boost::chrono::steady_clock::now();
+#endif // CEREAL_OLDER_GCC
+         auto o_timePoint3 = boost::chrono::high_resolution_clock::now();
 
-    std::ostringstream os;
-    {
-      OArchive oar(os);
+         auto o_duration1 = boost::chrono::system_clock::now() - o_timePoint1;
+#ifndef CEREAL_OLDER_GCC
+         auto o_duration2 = boost::chrono::steady_clock::now() - o_timePoint2;
+#endif // CEREAL_OLDER_GCC
+         auto o_duration3 = boost::chrono::high_resolution_clock::now() - o_timePoint3;
 
-      oar(o_timePoint1);
-      #ifndef CEREAL_OLDER_GCC
-      oar(o_timePoint2);
-      #endif // CEREAL_OLDER_GCC
-      oar(o_timePoint3);
-      oar(o_duration1);
-      #ifndef CEREAL_OLDER_GCC
-      oar(o_duration2);
-      #endif // CEREAL_OLDER_GCC
-      oar(o_duration3);
-    }
+         typename ArchiveSet::ostream os; //  std::ostringstream os;
+         {
+            typename ArchiveSet::oarchive oar(os); //  OArchive oar(os);
 
-    decltype(o_timePoint1) i_timePoint1;
-    #ifndef CEREAL_OLDER_GCC
-    decltype(o_timePoint2) i_timePoint2;
-    #endif // CEREAL_OLDER_GCC
-    decltype(o_timePoint3) i_timePoint3;
-    decltype(o_duration1) i_duration1;
-    #ifndef CEREAL_OLDER_GCC
-    decltype(o_duration2) i_duration2;
-    #endif // CEREAL_OLDER_GCC
-    decltype(o_duration3) i_duration3;
+            oar(o_timePoint1);
+#ifndef CEREAL_OLDER_GCC
+            oar(o_timePoint2);
+#endif // CEREAL_OLDER_GCC
+            oar(o_timePoint3);
+            oar(o_duration1);
+#ifndef CEREAL_OLDER_GCC
+            oar(o_duration2);
+#endif // CEREAL_OLDER_GCC
+            oar(o_duration3);
+         }
 
-    std::istringstream is(os.str());
-    {
-      IArchive iar(is);
+         decltype(o_timePoint1) i_timePoint1;
+#ifndef CEREAL_OLDER_GCC
+         decltype(o_timePoint2) i_timePoint2;
+#endif // CEREAL_OLDER_GCC
+         decltype(o_timePoint3) i_timePoint3;
+         decltype(o_duration1) i_duration1;
+#ifndef CEREAL_OLDER_GCC
+         decltype(o_duration2) i_duration2;
+#endif // CEREAL_OLDER_GCC
+         decltype(o_duration3) i_duration3;
 
-      iar(i_timePoint1);
-      #ifndef CEREAL_OLDER_GCC
-      iar(i_timePoint2);
-      #endif // CEREAL_OLDER_GCC
-      iar(i_timePoint3);
-      iar(i_duration1);
-      #ifndef CEREAL_OLDER_GCC
-      iar(i_duration2);
-      #endif // CEREAL_OLDER_GCC
-      iar(i_duration3);
-    }
+         typename ArchiveSet::istream is(os.str()); //  ::istringstream is(os.str());
+         {
+            typename ArchiveSet::iarchive iar(is); //  IArchive iar(is);
 
-    BOOST_CHECK( o_timePoint1 == i_timePoint1 );
-    #ifndef CEREAL_OLDER_GCC
-    BOOST_CHECK( o_timePoint2 == i_timePoint2 );
-    #endif // CEREAL_OLDER_GCC
-    BOOST_CHECK( o_timePoint3 == i_timePoint3 );
-    BOOST_CHECK( o_duration1 == i_duration1 );
-    #ifndef CEREAL_OLDER_GCC
-    BOOST_CHECK( o_duration2 == i_duration2 );
-    #endif // CEREAL_OLDER_GCC
-    BOOST_CHECK( o_duration3 == i_duration3 );
-  }
+            iar(i_timePoint1);
+#ifndef CEREAL_OLDER_GCC
+            iar(i_timePoint2);
+#endif // CEREAL_OLDER_GCC
+            iar(i_timePoint3);
+            iar(i_duration1);
+#ifndef CEREAL_OLDER_GCC
+            iar(i_duration2);
+#endif // CEREAL_OLDER_GCC
+            iar(i_duration3);
+         }
+
+         BOOST_CHECK(o_timePoint1 == i_timePoint1);
+#ifndef CEREAL_OLDER_GCC
+         BOOST_CHECK(o_timePoint2 == i_timePoint2);
+#endif // CEREAL_OLDER_GCC
+         BOOST_CHECK(o_timePoint3 == i_timePoint3);
+         BOOST_CHECK(o_duration1 == i_duration1);
+#ifndef CEREAL_OLDER_GCC
+         BOOST_CHECK(o_duration2 == i_duration2);
+#endif // CEREAL_OLDER_GCC
+         BOOST_CHECK(o_duration3 == i_duration3);
+      }
+   }
+};
+
+BOOST_AUTO_TEST_CASE(all_archives_boost_chrono)
+{
+   boost::mpl::for_each<archive_type_list>(test_boost_chrono());
 }
 
-BOOST_AUTO_TEST_CASE( binary_boost_chrono )
-{
-   test_boost_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE( portable_binary_boost_chrono )
-{
-   test_boost_chrono<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE( xml_boost_chrono )
-{
-   test_boost_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-BOOST_AUTO_TEST_CASE( json_boost_chrono )
-{
-   test_boost_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+//BOOST_AUTO_TEST_CASE( binary_boost_chrono )
+//{
+//   test_boost_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE( portable_binary_boost_chrono )
+//{
+//   test_boost_chrono<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE( xml_boost_chrono )
+//{
+//   test_boost_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+//}
+//
+//BOOST_AUTO_TEST_CASE( json_boost_chrono )
+//{
+//   test_boost_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+//}
 
 
