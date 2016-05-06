@@ -225,16 +225,26 @@ namespace cereal
     /* The rtti virtual function only exists to enable an archive to
        be used in a polymorphic fashion, if necessary.  See the
        archive adapters for an example of this */
-    class OutputArchiveBase { private: virtual void rtti(){} };
-    class InputArchiveBase { private: virtual void rtti(){} };
+  class OutputArchiveBase {
+  public:
+    virtual ~OutputArchiveBase() noexcept = default;
+  private:
+    virtual void rtti() {}
+  };
+  class InputArchiveBase {
+  public:
+    virtual ~InputArchiveBase() noexcept = default;
+  private:
+    virtual void rtti() {}
+  };
 
-    // forward decls for polymorphic support
-    template <class Archive, class T> struct polymorphic_serialization_support;
-    struct adl_tag;
+  // forward decls for polymorphic support
+  template <class Archive, class T> struct polymorphic_serialization_support;
+  struct adl_tag;
 
-    // used during saving pointers
-    static const int32_t msb_32bit  = 0x80000000;
-    static const int32_t msb2_32bit = 0x40000000;
+  // used during saving pointers
+  static const int32_t msb_32bit = 0x80000000;
+  static const int32_t msb2_32bit = 0x40000000;
   }
 
   // ######################################################################
