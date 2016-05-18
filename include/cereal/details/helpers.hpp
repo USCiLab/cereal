@@ -225,16 +225,38 @@ namespace cereal
     /* The rtti virtual function only exists to enable an archive to
        be used in a polymorphic fashion, if necessary.  See the
        archive adapters for an example of this */
-    class OutputArchiveBase { private: virtual void rtti(){} };
-    class InputArchiveBase { private: virtual void rtti(){} };
+  class OutputArchiveBase {
+  public:
+    OutputArchiveBase() = default;
+    OutputArchiveBase(const OutputArchiveBase &) = default;
+    OutputArchiveBase &operator=(const OutputArchiveBase &) = default;
+    OutputArchiveBase(OutputArchiveBase &&) noexcept = default;
+    OutputArchiveBase &operator=(OutputArchiveBase &&) noexcept = default;
+    virtual ~OutputArchiveBase() noexcept = default;
 
-    // forward decls for polymorphic support
-    template <class Archive, class T> struct polymorphic_serialization_support;
-    struct adl_tag;
+  private:
+    virtual void rtti() {}
+  };
+  class InputArchiveBase {
+  public:
+    InputArchiveBase() = default;
+    InputArchiveBase(const InputArchiveBase &) = default;
+    InputArchiveBase &operator=(const InputArchiveBase &) = default;
+    InputArchiveBase(InputArchiveBase &&) noexcept = default;
+    InputArchiveBase &operator=(InputArchiveBase &&) noexcept = default;
+    virtual ~InputArchiveBase() noexcept = default;
 
-    // used during saving pointers
-    static const int32_t msb_32bit  = 0x80000000;
-    static const int32_t msb2_32bit = 0x40000000;
+  private:
+    virtual void rtti() {}
+  };
+
+  // forward decls for polymorphic support
+  template <class Archive, class T> struct polymorphic_serialization_support;
+  struct adl_tag;
+
+  // used during saving pointers
+  static const int32_t msb_32bit = 0x80000000;
+  static const int32_t msb2_32bit = 0x40000000;
   }
 
   // ######################################################################
