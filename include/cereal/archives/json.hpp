@@ -108,7 +108,7 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -124,7 +124,7 @@ namespace cereal
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = std::numeric_limits<double>::max_digits10,
+          explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4 ) :
             itsPrecision( precision ),
@@ -420,7 +420,7 @@ namespace cereal
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        itsDocument.ParseStream<0>(itsReadStream);
+        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag>(itsReadStream);
         if (itsDocument.IsArray())
           itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
         else

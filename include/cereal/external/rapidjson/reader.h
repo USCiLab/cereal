@@ -23,6 +23,7 @@
 #include "internal/meta.h"
 #include "internal/stack.h"
 #include "internal/strtod.h"
+#include <limits>
 
 #if defined(CEREAL_RAPIDJSON_SIMD) && defined(_MSC_VER)
 #include <intrin.h>
@@ -699,12 +700,16 @@ private:
     }
 
     template<unsigned parseFlags, typename InputStream, typename Handler>
-    void ParseNull(InputStream& is, Handler& handler) {
+    void ParseNullOrNan(InputStream& is, Handler& handler) {
         CEREAL_RAPIDJSON_ASSERT(is.Peek() == 'n');
         is.Take();
 
         if (CEREAL_RAPIDJSON_LIKELY(Consume(is, 'u') && Consume(is, 'l') && Consume(is, 'l'))) {
             if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Null()))
+                CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
+        }
+        else if (Consume(is, 'a') && Consume(is, 'n')) {
+            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Double( std::numeric_limits<double>::quiet_NaN() )))
                 CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
         }
         else
@@ -1093,7 +1098,7 @@ private:
     class NumberStream<InputStream, true, false> : public NumberStream<InputStream, false, false> {
         typedef NumberStream<InputStream, false, false> Base;
     public:
-        NumberStream(GenericReader& reader, InputStream& is) : Base(reader, is), stackStream(reader.stack_) {}
+        NumberStream(GenericReader& reader, InputStream& s) : Base(reader, s), stackStream(reader.stack_) {}
         ~NumberStream() {}
 
         CEREAL_RAPIDJSON_FORCEINLINE Ch TakePush() {
@@ -1177,6 +1182,12 @@ private:
                     i = i * 10 + static_cast<unsigned>(s.TakePush() - '0');
                     significandDigit++;
                 }
+        }
+        else if (CEREAL_RAPIDJSON_UNLIKELY(Consume(s, 'i')) && Consume(s, 'n') && Consume(s, 'f')) {
+            double inf = std::numeric_limits<double>::infinity();
+            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Double(minus ? -inf : inf)))
+                CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, startOffset);
+            return;
         }
         else
             CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorValueInvalid, s.Tell());
@@ -1369,7 +1380,7 @@ private:
     template<unsigned parseFlags, typename InputStream, typename Handler>
     void ParseValue(InputStream& is, Handler& handler) {
         switch (is.Peek()) {
-            case 'n': ParseNull  <parseFlags>(is, handler); break;
+            case 'n': ParseNullOrNan<parseFlags>(is, handler); break;
             case 't': ParseTrue  <parseFlags>(is, handler); break;
             case 'f': ParseFalse <parseFlags>(is, handler); break;
             case '"': ParseString<parseFlags>(is, handler); break;

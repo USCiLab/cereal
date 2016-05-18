@@ -225,8 +225,29 @@ namespace cereal
     /* The rtti virtual function only exists to enable an archive to
        be used in a polymorphic fashion, if necessary.  See the
        archive adapters for an example of this */
-    class OutputArchiveBase { private: virtual void rtti(){} };
-    class InputArchiveBase { private: virtual void rtti(){} };
+    class OutputArchiveBase
+    {
+      public:
+        OutputArchiveBase() = default;
+        OutputArchiveBase( OutputArchiveBase && ) noexcept = default;
+        OutputArchiveBase & operator=( OutputArchiveBase && ) noexcept = default;
+        virtual ~OutputArchiveBase() noexcept = default;
+
+      private:
+        virtual void rtti() {}
+    };
+
+    class InputArchiveBase
+    {
+      public:
+        InputArchiveBase() = default;
+        InputArchiveBase( InputArchiveBase && ) noexcept = default;
+        InputArchiveBase & operator=( InputArchiveBase && ) noexcept = default;
+        virtual ~InputArchiveBase() noexcept = default;
+
+      private:
+        virtual void rtti() {}
+    };
 
     // forward decls for polymorphic support
     template <class Archive, class T> struct polymorphic_serialization_support;
