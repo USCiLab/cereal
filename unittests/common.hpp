@@ -47,6 +47,7 @@
 #include <cereal/types/complex.hpp>
 #include <cereal/types/chrono.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <cereal/types/intrusive_ptr.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/portable_binary.hpp>
