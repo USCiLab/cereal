@@ -40,6 +40,26 @@
 #include <cereal/macros.hpp>
 #include <cereal/details/static_object.hpp>
 
+// Checking for noexcept support
+#if !defined(HAS_NOEXCEPT)
+#if defined(__clang__)
+#if __has_feature(cxx_noexcept)
+#define HAS_NOEXCEPT
+#endif
+#else // NOT clang
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) && __GNUC__ * 10 + __GNUC_MINOR__ >= 46 || \
+    defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 190023026
+#define HAS_NOEXCEPT
+#endif // end GCC/MSVC check
+#endif // end NOT clang block
+
+#ifdef HAS_NOEXCEPT
+#define NOEXCEPT noexcept
+#else
+#define NOEXCEPT
+#endif // end HAS_NOEXCEPT
+#endif // end !defined(HAS_NOEXCEPT)
+
 namespace cereal
 {
   // ######################################################################
@@ -229,9 +249,9 @@ namespace cereal
     {
       public:
         OutputArchiveBase() = default;
-        OutputArchiveBase( OutputArchiveBase && ) noexcept = default;
-        OutputArchiveBase & operator=( OutputArchiveBase && ) noexcept = default;
-        virtual ~OutputArchiveBase() noexcept = default;
+        OutputArchiveBase( OutputArchiveBase && ) NOEXCEPT {}
+		OutputArchiveBase & operator=( OutputArchiveBase && ) NOEXCEPT {}
+        virtual ~OutputArchiveBase() NOEXCEPT = default;
 
       private:
         virtual void rtti() {}
@@ -241,9 +261,9 @@ namespace cereal
     {
       public:
         InputArchiveBase() = default;
-        InputArchiveBase( InputArchiveBase && ) noexcept = default;
-        InputArchiveBase & operator=( InputArchiveBase && ) noexcept = default;
-        virtual ~InputArchiveBase() noexcept = default;
+		InputArchiveBase( InputArchiveBase && ) NOEXCEPT {}
+		InputArchiveBase & operator=( InputArchiveBase && ) NOEXCEPT {}
+        virtual ~InputArchiveBase() NOEXCEPT = default;
 
       private:
         virtual void rtti() {}
