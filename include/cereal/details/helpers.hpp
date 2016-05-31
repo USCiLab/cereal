@@ -250,7 +250,7 @@ namespace cereal
       public:
         OutputArchiveBase() = default;
         OutputArchiveBase( OutputArchiveBase && ) NOEXCEPT {}
-        OutputArchiveBase & operator=( OutputArchiveBase && ) NOEXCEPT {}
+        OutputArchiveBase & operator=( OutputArchiveBase && ) NOEXCEPT { return *this; }
         virtual ~OutputArchiveBase() NOEXCEPT = default;
 
       private:
@@ -262,7 +262,7 @@ namespace cereal
       public:
         InputArchiveBase() = default;
         InputArchiveBase( InputArchiveBase && ) NOEXCEPT {}
-        InputArchiveBase & operator=( InputArchiveBase && ) NOEXCEPT {}
+        InputArchiveBase & operator=( InputArchiveBase && ) NOEXCEPT { return *this; }
         virtual ~InputArchiveBase() NOEXCEPT = default;
 
       private:
