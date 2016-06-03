@@ -3,16 +3,17 @@
 //  cereal_test
 //
 //  Created by Joseph Laurino on 6/3/16.
-//  Copyright © 2016 Joseph Laurino. All rights reserved.
 //
-
+//  cereal docs
+//      http://uscilab.github.io/cereal/
+//
 //  StackOverflow:
 //      how to properly add include paths in xcode
 //      http://stackoverflow.com/questions/14134064/how-to-set-include-path-in-xcode-project
 //
 //      how to get fstream to work in xcode environment
 //      http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
-
+//
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/json.hpp>
