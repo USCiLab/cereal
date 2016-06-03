@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cereal_test/main.cpp"
-            timestampString = "486664717.418067"
+            timestampString = "486665709.781203"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "main()"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "test_binary()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cereal_test/main.cpp"
-            timestampString = "486664717.418067"
+            timestampString = "486665709.781203"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "main()"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "test_binary()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
