@@ -6,12 +6,12 @@
 //  Copyright © 2016 Joseph Laurino. All rights reserved.
 //
 
-// StackOverflow:
-//  how to properly add include paths in xcode
-//  http://stackoverflow.com/questions/14134064/how-to-set-include-path-in-xcode-project
+//  StackOverflow:
+//      how to properly add include paths in xcode
+//      http://stackoverflow.com/questions/14134064/how-to-set-include-path-in-xcode-project
 //
-//  how to get fstream to work in xcode environment
-//  http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
+//      how to get fstream to work in xcode environment
+//      http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/portable_binary.hpp>
@@ -81,6 +81,16 @@ void test_binary()
     }
 }
 
+void printJson(string filename)
+{
+    std::ifstream is(filename);
+    
+    std::string temp;
+    while(std::getline(is, temp)) {
+        cout << temp << endl;
+    }
+}
+
 
 void test_json()
 {
@@ -101,6 +111,9 @@ void test_json()
                 cereal::make_nvp("this name is way better", d) ); // specify a name of your choosing
     }
     
+    cout << "json data serialized" << endl;
+    printJson("data.json");
+    
     {
         std::ifstream is("data.json");
         cereal::JSONInputArchive archive(is);
@@ -111,9 +124,9 @@ void test_json()
         
         archive( m1, someInt, d ); // NVPs not strictly necessary when loading
         
-        cout << "json data read" << endl;
+        cout << "json data deserialized" << endl;
         m1.print("m1: ");
-        cout << someInt << " " << d << std::endl;
+        cout << "someInt: " << someInt << endl << "d: " << d << std::endl;
         // but could be used (even out of order)
     }
 }
