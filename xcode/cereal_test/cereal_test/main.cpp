@@ -21,19 +21,32 @@
 #include <iostream>
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
-
 
 struct MyData
 {
     int x, y, z;
+    
+    MyData()
+    {
+        x = rand() % 100 + 1;
+        y = rand() % 100 + 100;
+        z = rand() % 100 + 200;
+    }
     
     // This method lets cereal know which data members to serialize
     template<class Archive>
     void serialize(Archive & archive)
     {
         archive( x, y, z ); // serialize things by passing them to the archive
+    }
+    
+    void print(string info)
+    {
+        cout << info << x << ", " << y << ", " << z << std::endl;
     }
 };
 
@@ -45,10 +58,12 @@ void test_binary()
         cereal::BinaryOutputArchive oarchive(os); // Create an output archive
         
         MyData m1, m2, m3;
-        m1.x = 101;
-        m2.x = 202;
-        m3.x = 303;
         oarchive(m1, m2, m3); // Write the data to the archive
+        
+        cout << "data serialized" << endl;
+        m1.print("m1: ");
+        m2.print("m2: ");
+        m3.print("m3: ");
     }
     
     {
@@ -59,7 +74,10 @@ void test_binary()
         MyData m1, m2, m3;
         iarchive(m1, m2, m3); // Read the data from the archive
         
-        cout << m1.x << " " << m2.x << " " << m3.x << std::endl;
+        cout << "data deserialized" << endl;
+        m1.print("m1: ");
+        m2.print("m2: ");
+        m3.print("m3: ");
     }
 }
 
@@ -93,7 +111,9 @@ void test_json()
         
         archive( m1, someInt, d ); // NVPs not strictly necessary when loading
         
-        cout << m1.x << " " << someInt << " " << d << std::endl;
+        cout << "json data read" << endl;
+        m1.print("m1: ");
+        cout << someInt << " " << d << std::endl;
         // but could be used (even out of order)
     }
 }
@@ -101,6 +121,8 @@ void test_json()
 
 int main()
 {
+    srand (time(NULL));
+    
     test_binary();
     test_json();
     
