@@ -1,24 +1,27 @@
 {
     "m1": {
+        "name": "hello",
         "x": 100,
-        "y": 128,
-        "z": 251,
+        "y": 113,
+        "z": 293,
         "children": [
             {
                 "ptr_wrapper": {
                     "id": 2147483649,
                     "data": {
-                        "x": 2,
-                        "y": 134,
-                        "z": 296,
+                        "name": "world",
+                        "x": 63,
+                        "y": 150,
+                        "z": 212,
                         "children": [
                             {
                                 "ptr_wrapper": {
                                     "id": 2147483650,
                                     "data": {
-                                        "x": 27,
-                                        "y": 114,
-                                        "z": 229,
+                                        "name": "temp_name",
+                                        "x": 48,
+                                        "y": 150,
+                                        "z": 244,
                                         "children": []
                                     }
                                 }
@@ -31,9 +34,10 @@
                 "ptr_wrapper": {
                     "id": 2147483651,
                     "data": {
-                        "x": 96,
-                        "y": 113,
-                        "z": 234,
+                        "name": "temp_name",
+                        "x": 46,
+                        "y": 196,
+                        "z": 222,
                         "children": []
                     }
                 }

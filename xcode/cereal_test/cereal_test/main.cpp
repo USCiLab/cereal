@@ -33,6 +33,7 @@
 #include <time.h>
 #include <memory>
 #include <vector>
+#include <string>
 
 using namespace std;
 using namespace cereal;
@@ -40,11 +41,13 @@ using namespace cereal;
 // ------------------------------------------------------------------
 struct MyData
 {
+    string name;
     int x, y, z;
     vector<shared_ptr<MyData>> children;
     
     MyData()
     {
+        name = "temp_name";
         x = rand() % 100 + 1;
         y = rand() % 100 + 100;
         z = rand() % 100 + 200;
@@ -54,12 +57,12 @@ struct MyData
     template<class Archive>
     void serialize(Archive & archive)
     {
-        archive( CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(z), CEREAL_NVP(children) ); // serialize things by passing them to the archive
+        archive( CEREAL_NVP(name), CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(z), CEREAL_NVP(children) ); // serialize things by passing them to the archive
     }
     
     void print(string info, int level)
     {
-        cout << info << x << ", " << y << ", " << z << std::endl;
+        cout << info << name << " " <<  x << ", " << y << ", " << z << std::endl;
         for (auto &child : children)
         {
             for(int i = 0; i < level; i++)
@@ -119,7 +122,11 @@ void test_json()
         
         MyData m1;
         
+        m1.name = "hello";
+        
         shared_ptr<MyData> m1Child = make_shared<MyData>();
+        m1Child->name = "world";
+        
         m1Child->children.push_back(make_shared<MyData>());
         
         m1.children.push_back(m1Child);
