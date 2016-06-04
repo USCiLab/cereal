@@ -57,12 +57,14 @@ struct MyData
         archive( CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(z), CEREAL_NVP(children) ); // serialize things by passing them to the archive
     }
     
-    void print(string info)
+    void print(string info, int level)
     {
         cout << info << x << ", " << y << ", " << z << std::endl;
         for (auto &child : children)
         {
-            child->print("child: ");
+            for(int i = 0; i < level; i++)
+                cout << "\t";
+            child->print("child: ", level+1);
         }
     }
 };
@@ -70,6 +72,7 @@ struct MyData
 // ------------------------------------------------------------------
 void test_binary()
 {
+    cout << "test_binary" << endl;
     {
         ofstream os("data.bin");
         BinaryOutputArchive oarchive(os); // Create an output archive
@@ -78,9 +81,9 @@ void test_binary()
         oarchive(m1, m2, m3); // Write the data to the archive
         
         cout << "data serialized" << endl;
-        m1.print("m1: ");
-        m2.print("m2: ");
-        m3.print("m3: ");
+        m1.print("m1: ", 0);
+        m2.print("m2: ", 0);
+        m3.print("m3: ", 0);
     }
     
     {
@@ -91,9 +94,9 @@ void test_binary()
         iarchive(m1, m2, m3); // Read the data from the archive
         
         cout << "data deserialized" << endl;
-        m1.print("m1: ");
-        m2.print("m2: ");
-        m3.print("m3: ");
+        m1.print("m1: ", 0);
+        m2.print("m2: ", 0);
+        m3.print("m3: ", 0);
     }
 }
 // ------------------------------------------------------------------
@@ -109,13 +112,17 @@ void printJson(string filename)
 // ------------------------------------------------------------------
 void test_json()
 {
+    cout << "test_json" << endl;
     {
         ofstream os("data.json");
         JSONOutputArchive archive(os);
         
         MyData m1;
         
-        m1.children.push_back(make_shared<MyData>());
+        shared_ptr<MyData> m1Child = make_shared<MyData>();
+        m1Child->children.push_back(make_shared<MyData>());
+        
+        m1.children.push_back(m1Child);
         m1.children.push_back(make_shared<MyData>());
         
         int someInt;
@@ -144,7 +151,7 @@ void test_json()
         archive( m1, someInt, d ); // NVPs not strictly necessary when loading
         
         cout << "json data deserialized" << endl;
-        m1.print("m1: ");
+        m1.print("m1: ", 0);
         cout << "someInt: " << someInt << endl << "d: " << d << std::endl;
     }
 }
