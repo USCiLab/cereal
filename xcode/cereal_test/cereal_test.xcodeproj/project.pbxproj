@@ -209,7 +209,7 @@
 		CE31005F1D01DE1600598CC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-I/Users/josephlaurino/Desktop/Dev/cereal/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../include";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -217,7 +217,7 @@
 		CE3100601D01DE1600598CC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-I/Users/josephlaurino/Desktop/Dev/cereal/include";
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../include";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
