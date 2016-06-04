@@ -15,21 +15,33 @@
 //      http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
 //
 #include <cereal/archives/binary.hpp>
+#include <cereal/types/memory.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/archives/binary.hpp>
+
+// type support -- needed for serializing std types
+#include <cereal/types/map.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/complex.hpp>
+
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <memory>
+#include <vector>
 
 using namespace std;
+using namespace cereal;
 
+// ------------------------------------------------------------------
 struct MyData
 {
     int x, y, z;
+    vector<shared_ptr<MyData>> children;
     
     MyData()
     {
@@ -42,21 +54,25 @@ struct MyData
     template<class Archive>
     void serialize(Archive & archive)
     {
-        archive( x, y, z ); // serialize things by passing them to the archive
+        archive( CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(z), CEREAL_NVP(children) ); // serialize things by passing them to the archive
     }
     
     void print(string info)
     {
         cout << info << x << ", " << y << ", " << z << std::endl;
+        for (auto &child : children)
+        {
+            child->print("child: ");
+        }
     }
 };
 
-
+// ------------------------------------------------------------------
 void test_binary()
 {
     {
-        std::ofstream os("data.bin");
-        cereal::BinaryOutputArchive oarchive(os); // Create an output archive
+        ofstream os("data.bin");
+        BinaryOutputArchive oarchive(os); // Create an output archive
         
         MyData m1, m2, m3;
         oarchive(m1, m2, m3); // Write the data to the archive
@@ -68,9 +84,8 @@ void test_binary()
     }
     
     {
-        std::ifstream is("data.bin");
-
-        cereal::BinaryInputArchive iarchive(is); // Create an input archive
+        ifstream is("data.bin");
+        BinaryInputArchive iarchive(is); // Create an input archive
         
         MyData m1, m2, m3;
         iarchive(m1, m2, m3); // Read the data from the archive
@@ -81,7 +96,7 @@ void test_binary()
         m3.print("m3: ");
     }
 }
-
+// ------------------------------------------------------------------
 void printJson(string filename)
 {
     std::ifstream is(filename);
@@ -91,15 +106,18 @@ void printJson(string filename)
         cout << temp << endl;
     }
 }
-
-
+// ------------------------------------------------------------------
 void test_json()
 {
     {
-        std::ofstream os("data.json");
-        cereal::JSONOutputArchive archive(os);
+        ofstream os("data.json");
+        JSONOutputArchive archive(os);
         
         MyData m1;
+        
+        m1.children.push_back(make_shared<MyData>());
+        m1.children.push_back(make_shared<MyData>());
+        
         int someInt;
         double d;
         
@@ -107,17 +125,17 @@ void test_json()
         someInt = 200;
         d = 3.14;
         
-        archive( CEREAL_NVP(m1), // Names the output the same as the variable name
-                someInt,        // No NVP - cereal will automatically generate an enumerated name
-                cereal::make_nvp("this name is way better", d) ); // specify a name of your choosing
+        archive(CEREAL_NVP(m1),         // Names the output the same as the variable name
+                someInt,                // No NVP - cereal will automatically generate an enumerated name
+                make_nvp("PI", d) );    // specify a name of your choosing
     }
     
     cout << "json data serialized" << endl;
     printJson("data.json");
     
     {
-        std::ifstream is("data.json");
-        cereal::JSONInputArchive archive(is);
+        ifstream is("data.json");
+        JSONInputArchive archive(is);
         
         MyData m1;
         int someInt;
@@ -128,11 +146,9 @@ void test_json()
         cout << "json data deserialized" << endl;
         m1.print("m1: ");
         cout << "someInt: " << someInt << endl << "d: " << d << std::endl;
-        // but could be used (even out of order)
     }
 }
-
-
+// ------------------------------------------------------------------
 int main()
 {
     srand (time(NULL));

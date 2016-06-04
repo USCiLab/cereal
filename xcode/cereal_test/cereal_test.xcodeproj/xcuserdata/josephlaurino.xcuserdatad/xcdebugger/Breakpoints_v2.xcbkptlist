@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cereal_test/main.cpp"
-            timestampString = "486669527.353925"
+            timestampString = "486703651.478238"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "test_binary()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,13 +26,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cereal_test/main.cpp"
-            timestampString = "486669527.353925"
+            timestampString = "486703651.478238"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
             landmarkName = "test_binary()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "cereal_test/main.cpp"
+            timestampString = "486703651.478238"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
