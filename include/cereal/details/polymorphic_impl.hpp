@@ -92,6 +92,13 @@ namespace cereal
         that cast between registered base and derived types. */
     struct PolymorphicCaster
     {
+      PolymorphicCaster() = default;
+      PolymorphicCaster(const PolymorphicCaster&) = default;
+      PolymorphicCaster& operator=(const PolymorphicCaster&) = default;
+      PolymorphicCaster(PolymorphicCaster&&) noexcept = default;
+      PolymorphicCaster& operator=(PolymorphicCaster&&) noexcept = default;
+      virtual ~PolymorphicCaster() noexcept = default;
+
       //! Downcasts to the proper derived type
       virtual void const * downcast( void const * const ptr ) const = 0;
       //! Upcast to proper base type
