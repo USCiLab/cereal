@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE31005B1D01DE1600598CC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE31005A1D01DE1600598CC6 /* main.cpp */; };
+		CE6693101D06BFDC00408509 /* readme.md in Sources */ = {isa = PBXBuildFile; fileRef = CE66930F1D06BFDC00408509 /* readme.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		CE3100571D01DE1600598CC6 /* cereal_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cereal_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE31005A1D01DE1600598CC6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		CE66930F1D06BFDC00408509 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../../readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				CE31005A1D01DE1600598CC6 /* main.cpp */,
+				CE66930F1D06BFDC00408509 /* readme.md */,
 			);
 			path = cereal_test;
 			sourceTree = "<group>";
@@ -118,6 +121,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE6693101D06BFDC00408509 /* readme.md in Sources */,
 				CE31005B1D01DE1600598CC6 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

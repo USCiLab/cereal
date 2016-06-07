@@ -8,10 +8,10 @@
 //      http://uscilab.github.io/cereal/
 //
 //  StackOverflow:
-//      how to properly add include paths in xcode
+//      how to properly add include paths in xcode?
 //      use $(SRCROOT) like so $(SRCROOT)/../../include in Header Search Paths under Build Settings
 //
-//      how to get fstream to work in xcode environment
+//      how to get fstream to work in xcode environment?
 //      http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
 //
 #include <cereal/archives/binary.hpp>
