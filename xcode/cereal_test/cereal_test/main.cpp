@@ -9,7 +9,7 @@
 //
 //  StackOverflow:
 //      how to properly add include paths in xcode
-//      http://stackoverflow.com/questions/14134064/how-to-set-include-path-in-xcode-project
+//      use $(SRCROOT) like so $(SRCROOT)/../../include in Header Search Paths under Build Settings
 //
 //      how to get fstream to work in xcode environment
 //      http://stackoverflow.com/questions/16779149/c-program-in-xcode-not-outputting-simple-text-file-using-outfile
@@ -137,7 +137,7 @@ void test_json()
         
         m1.x = 100;
         someInt = 200;
-        d = 3.14;
+        d = M_PI;
         
         archive(CEREAL_NVP(m1),         // Names the output the same as the variable name
                 someInt,                // No NVP - cereal will automatically generate an enumerated name
@@ -172,5 +172,6 @@ int main()
     
     return 0;
 }
+
 
 
