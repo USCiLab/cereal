@@ -93,11 +93,11 @@ namespace cereal
     struct PolymorphicCaster
     {
       PolymorphicCaster() = default;
-      PolymorphicCaster(const PolymorphicCaster&) = default;
-      PolymorphicCaster& operator=(const PolymorphicCaster&) = default;
-      PolymorphicCaster(PolymorphicCaster&&) noexcept = default;
-      PolymorphicCaster& operator=(PolymorphicCaster&&) noexcept = default;
-      virtual ~PolymorphicCaster() noexcept = default;
+      PolymorphicCaster( const PolymorphicCaster & ) = default;
+      PolymorphicCaster & operator=( const PolymorphicCaster & ) = default;
+      PolymorphicCaster( PolymorphicCaster && ) CEREAL_NOEXCEPT {}
+      PolymorphicCaster & operator=( PolymorphicCaster && ) CEREAL_NOEXCEPT { return *this; }
+      virtual ~PolymorphicCaster() CEREAL_NOEXCEPT = default;
 
       //! Downcasts to the proper derived type
       virtual void const * downcast( void const * const ptr ) const = 0;
