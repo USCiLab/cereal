@@ -42,3 +42,27 @@ out.xml
 cereal_version.out
 xml_ordering.out
 build
+
+#xcode
+
+#####
+# OS X temporary files that should never be committed
+#
+# c.f. http://www.westwind.com/reference/os-x/invisibles.html
+.DS_Store
+
+# c.f. http://www.westwind.com/reference/os-x/invisibles.html
+.Trashes
+
+# c.f. http://www.westwind.com/reference/os-x/invisibles.html
+*.swp
+
+#
+#
+# OPTION 1: ---------------------------------
+#     throw away ALL personal settings (including custom schemes!
+#     - unless they are "shared")
+# As per build/ and DerivedData/, this ought to have a trailing slash
+#
+# NB: this is exclusive with OPTION 2 below
+xcuserdata/
