@@ -23,6 +23,11 @@ CEREAL_RAPIDJSON_DIAG_OFF(unreachable-code)
 CEREAL_RAPIDJSON_DIAG_OFF(missing-noreturn)
 #endif
 
+#ifdef _MSC_VER
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF( 4127 ) // ignore assert(false) for triggering exception
+#endif
+
 CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 
 //! Represents an in-memory input byte stream.
@@ -64,7 +69,7 @@ struct MemoryStream {
 
 CEREAL_RAPIDJSON_NAMESPACE_END
 
-#ifdef __clang__
+#if defined(__clang__) || defined(_MSC_VER)
 CEREAL_RAPIDJSON_DIAG_POP
 #endif
 

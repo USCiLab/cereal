@@ -23,6 +23,7 @@ CEREAL_RAPIDJSON_DIAG_OFF(padded)
 #ifdef _MSC_VER
 CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(4351) // new behavior: elements of array 'array' will be default initialized
+CEREAL_RAPIDJSON_DIAG_OFF(4127) // ignore assert(false) for triggering exception
 #endif
 
 CEREAL_RAPIDJSON_NAMESPACE_BEGIN
