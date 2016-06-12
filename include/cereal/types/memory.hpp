@@ -36,9 +36,9 @@
 
 // Work around MSVC not having alignof
 #if defined(_MSC_VER) && _MSC_VER < 1900
-#define ALIGNOF __alignof
+#define CEREAL_ALIGNOF __alignof
 #else // not MSVC 2013 or older
-#define ALIGNOF alignof
+#define CEREAL_ALIGNOF alignof
 #endif // end MSVC check
 
 namespace cereal
@@ -135,7 +135,7 @@ namespace cereal
       // typedefs for parent type and storage type
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
       using ParentType = std::enable_shared_from_this<BaseType>;
-      using StorageType = typename std::aligned_storage<sizeof(ParentType), ALIGNOF(ParentType)>::type;
+      using StorageType = typename std::aligned_storage<sizeof(ParentType), CEREAL_ALIGNOF(ParentType)>::type;
       
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
@@ -288,7 +288,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
-      using ST = typename std::aligned_storage<sizeof(T), ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -376,7 +376,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T), ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
@@ -421,5 +421,5 @@ namespace cereal
 // automatically include polymorphic support
 #include <cereal/types/polymorphic.hpp>
 
-#undef ALIGNOF
+#undef CEREAL_ALIGNOF
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_
