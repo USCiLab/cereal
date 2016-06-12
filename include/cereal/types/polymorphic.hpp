@@ -178,7 +178,7 @@
   } } /* end namespaces */
 
 #ifdef _MSC_VER
-#undef CONSTEXPR
+#undef STATIC_CONSTEXPR
 #endif
 
 namespace cereal
