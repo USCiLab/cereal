@@ -96,6 +96,10 @@ void test_endian_serialization( typename IArchive::Options const & iOptions, typ
     float    o_float  = random_value<float>(gen);
     double   o_double = random_value<double>(gen);
 
+    std::vector<int32_t> o_vector(100);
+    for(auto & elem : o_vector)
+      elem = random_value<uint32_t>(gen);
+
     std::ostringstream os;
     {
       OArchive oar(os, oOptions);
@@ -110,6 +114,9 @@ void test_endian_serialization( typename IArchive::Options const & iOptions, typ
       oar(o_int64);
       oar(o_float);
       oar(o_double);
+      // We can't test vector directly here since we are artificially interfering with the endianness,
+      // which can result in the size being incorrect
+      oar(cereal::binary_data( o_vector.data(), static_cast<std::size_t>( o_vector.size() * sizeof(int32_t) ) ));
     }
 
     bool     i_bool   = false;
@@ -123,6 +130,7 @@ void test_endian_serialization( typename IArchive::Options const & iOptions, typ
     int64_t  i_int64  = 0;
     float    i_float  = 0;
     double   i_double = 0;
+    std::vector<int32_t> i_vector(100);
 
     std::istringstream is(os.str());
     {
@@ -138,15 +146,20 @@ void test_endian_serialization( typename IArchive::Options const & iOptions, typ
       iar(i_int64);
       iar(i_float);
       iar(i_double);
+      iar(cereal::binary_data( i_vector.data(), static_cast<std::size_t>( i_vector.size() * sizeof(int32_t) ) ));
     }
 
     // Convert to big endian if we expect to read big and didn't start big
     if( cereal::portable_binary_detail::is_little_endian() ^ inputLittleEndian ) // Convert to little endian if
     {
       CEREAL_TEST_SWAP_OUTPUT
+      for( auto & val : o_vector )
+        swapBytes(val);
     }
 
     CEREAL_TEST_CHECK_EQUAL
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(i_vector.begin(), i_vector.end(), o_vector.begin(), o_vector.end());
   }
 }
 

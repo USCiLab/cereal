@@ -132,8 +132,11 @@ namespace cereal
         std::size_t writtenSize = 0;
 
         if( itsConvertEndianness )
-          for( std::size_t i = 0; i < DataSize; ++i )
-            writtenSize += static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - i - 1, 1 ) );
+        {
+          for( std::size_t i = 0; i < size; i += DataSize )
+            for( std::size_t j = 0; j < DataSize; ++j )
+              writtenSize += static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - j - 1 + i, 1 ) );
+        }
         else
           writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
 
@@ -242,7 +245,7 @@ namespace cereal
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
           for( std::size_t i = 0; i < size; i += DataSize )
-            portable_binary_detail::swap_bytes<DataSize>( ptr );
+            portable_binary_detail::swap_bytes<DataSize>( ptr + i );
         }
       }
 
