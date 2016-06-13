@@ -146,7 +146,7 @@ namespace cereal
 
     private:
       std::ostream & itsStream;
-      const bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon saving
+      const uint8_t itsConvertEndianness; //!< If set to true, we will need to swap bytes upon saving
   };
 
   // ######################################################################
@@ -222,7 +222,7 @@ namespace cereal
         itsStream(stream),
         itsConvertEndianness( false )
       {
-        bool streamLittleEndian;
+        uint8_t streamLittleEndian;
         this->operator()( streamLittleEndian );
         itsConvertEndianness = options.is_little_endian() ^ streamLittleEndian;
       }
@@ -251,7 +251,7 @@ namespace cereal
 
     private:
       std::istream & itsStream;
-      bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
+      uint8_t itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
   };
 
   // ######################################################################
