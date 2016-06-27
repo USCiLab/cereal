@@ -39,6 +39,13 @@
 #include <cstdint>
 #include <functional>
 
+// Allow a custom implementation of std::to_string, std::stol, and other
+// functions. As an example for when this is needed: GCC in Android NDK
+// does not implement std::to_string.
+#if defined(CEREAL_IMPLEMENT_TO_STRING)
+#   include <cereal/external/to_string.hpp>
+#endif // defined(CEREAL_IMPLEMENT_TO_STRING)
+
 #include <cereal/macros.hpp>
 #include <cereal/details/traits.hpp>
 #include <cereal/details/helpers.hpp>
