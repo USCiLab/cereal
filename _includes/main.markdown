@@ -2,7 +2,7 @@
 xCEREAL - A C++11 library for serialization
 ==========================================
 
-<img class="media-object pull-right" src="{{ site.baseurl }}/assets/img/cerealboxside.png"></img>
+<img class="media-object pull-right" src="{{ site.baseurl }}/assets/img/cerealboxside.png">
 
 cereal is a header-only C++11 serialization library.  cereal takes arbitrary
 data types and reversibly turns them into different representations, such as
@@ -10,10 +10,8 @@ compact binary encodings, XML, or JSON.  cereal was designed to be fast,
 light-weight, and easy to extend - it has no external dependencies and can be
 easily bundled with other code or used standalone.
 
-<!--
-<span class="label label-inverse">1.1.0 is here!</span>
-We are pleased to announce that [cereal v1.1.0](https://github.com/USCiLab/cereal/releases/tag/v1.1.0) is available!
--->
+<span class="label label-inverse">1.2.0 is here!</span>
+We are pleased to announce that [cereal v1.2.0](https://github.com/USCiLab/cereal/releases/tag/v1.2.0) is available!
 
 ---
 
@@ -23,13 +21,13 @@ Serialization support for pretty much every type in the [standard library](http:
 
 ### xCEREAL works on a wide range of C++11 compliant compilers
 
-cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal has been confirmed to work on g++ 4.7.3, clang++ 3.3, and MSVC 2013 (or newer).  It may work on older versions, but there is no emphasis on supporting them.  cereal works under both libstdc++ and libc++ when compiling with g++ or clang++.
+cereal uses features new to C++11 and requires a fairly compliant C++ compiler to work properly.  cereal officially supports g++ 4.7.3, clang++ 3.3, and MSVC 2013 (or newer).  It may work on older versions or other compilers such as ICC, but there is no emphasis on supporting them.  cereal works under both libstdc++ and libc++ when compiling with g++ or clang++.
 
 ---
 
 ## xCEREAL is fast and compact
 
-In simple performance tests, cereal is usually faster than Boost's serialization library and produces binary representations that take up less space, especially for smaller objects.  cereal uses some of the fastest [XML](http://rapidxml.sourceforge.net/) and [JSON](https://code.google.com/p/rapidjson/) parsers and generators available in C++.  The source code for cereal is considerably easier to understand and extend than that of Boost.
+In simple performance tests, cereal is usually faster than Boost's serialization library (as well as [many others](https://github.com/thekvs/cpp-serializers)) and produces binary representations that take up less space, especially for smaller objects.  cereal uses some of the fastest [XML](http://rapidxml.sourceforge.net/) and [JSON](http://rapidjson.org) parsers and generators available in C++.  The source code for cereal is considerably easier to understand and extend than that of Boost. 
 
 ### xCEREAL is extensible
 
