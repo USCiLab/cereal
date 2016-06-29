@@ -619,7 +619,6 @@ namespace cereal
       #endif // _MSC_VER
     };
 
-//#if defined(_WINDLL)
     // instantiate implementation
     template <class Archive, class T>
     CEREAL_DLL_EXPORT void polymorphic_serialization_support<Archive,T>::instantiate()
@@ -632,7 +631,6 @@ namespace cereal
                                           std::is_base_of<detail::InputArchiveBase, Archive>::value &&
                                           traits::is_input_serializable<T, Archive>::value>{} );
     }
-//#endif
 
     //! Begins the binding process of a type to all registered archives
     /*! Archives need to be registered prior to this struct being instantiated via
