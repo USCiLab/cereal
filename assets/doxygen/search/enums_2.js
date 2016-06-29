@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['specialization',['specialization',['../group__Access.html#gac28bb730353e53b3066cc679e63bb108',1,'cereal::specialize']]]
+  ['indentchar',['IndentChar',['../classcereal_1_1JSONOutputArchive_1_1Options.html#abf98703312edbd7e053fe71acb737cdf',1,'cereal::JSONOutputArchive::Options::IndentChar()'],['../classcereal_1_1JSONOutputArchive_1_1Options.html#abf98703312edbd7e053fe71acb737cdf',1,'cereal::JSONOutputArchive::Options::IndentChar()']]]
 ];

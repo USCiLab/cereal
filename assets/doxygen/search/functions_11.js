@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['xmlinputarchive',['XMLInputArchive',['../classcereal_1_1XMLInputArchive.html#ab641ded4033d8e998e41dd002ece9184',1,'cereal::XMLInputArchive']]],
-  ['xmloutputarchive',['XMLOutputArchive',['../classcereal_1_1XMLOutputArchive.html#a38f4d3926118a014c72a56b1d7547dac',1,'cereal::XMLOutputArchive']]]
+  ['writemetadata',['writeMetadata',['../structcereal_1_1detail_1_1OutputBindingCreator.html#aa8421ea2f60481abd46f3fd59ab3680a',1,'cereal::detail::OutputBindingCreator']]],
+  ['writename',['writeName',['../classcereal_1_1JSONOutputArchive.html#a5014cca0214e98b2d93be821a9e1ce36',1,'cereal::JSONOutputArchive::writeName()'],['../classcereal_1_1JSONOutputArchive.html#a5014cca0214e98b2d93be821a9e1ce36',1,'cereal::JSONOutputArchive::writeName()']]]
 ];

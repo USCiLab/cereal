@@ -1,4 +1,4 @@
-/* The standard CSS for doxygen 1.8.8 */
+/* The standard CSS for doxygen 1.8.11 */
 
 body, table, div, p, dl {
 	font: 400 14px/22px Roboto,sans-serif;
@@ -206,6 +206,11 @@ div.line {
 	transition-duration: 0.5s;
 }
 
+div.line:after {
+    content:"\000A";
+    white-space: pre;
+}
+
 div.line.glow {
 	background-color: cyan;
 	box-shadow: 0 0 10px cyan;
@@ -227,7 +232,7 @@ span.lineno a:hover {
 	background-color: #C8C8C8;
 }
 
-div.ah {
+div.ah, span.ah {
 	background-color: black;
 	font-weight: bold;
 	color: #ffffff;
@@ -242,7 +247,16 @@ div.ah {
 	-webkit-box-shadow: 2px 2px 3px #999;
 	-moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 2px;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#000),color-stop(0.3, #444));
-	background-image: -moz-linear-gradient(center top, #eee 0%, #444 40%, #000);
+	background-image: -moz-linear-gradient(center top, #eee 0%, #444 40%, #000 110%);
+}
+
+div.classindex ul {
+        list-style: none;
+        padding-left: 0;
+}
+
+div.classindex span.ai {
+        display: inline-block;
 }
 
 div.groupHeader {
@@ -773,7 +787,7 @@ div.directory {
     width: 24px;
     height: 18px;
     margin-bottom: 4px;
-    background-image:url('ftv2folderopen.png');
+    background-image:url('folderopen.png');
     background-position: 0px -4px;
     background-repeat: repeat-y;
     vertical-align:top;
@@ -784,7 +798,7 @@ div.directory {
     width: 24px;
     height: 18px;
     margin-bottom: 4px;
-    background-image:url('ftv2folderclosed.png');
+    background-image:url('folderclosed.png');
     background-position: 0px -4px;
     background-repeat: repeat-y;
     vertical-align:top;
@@ -795,7 +809,7 @@ div.directory {
     width: 24px;
     height: 18px;
     margin-bottom: 4px;
-    background-image:url('ftv2doc.png');
+    background-image:url('doc.png');
     background-position: 0px -4px;
     background-repeat: repeat-y;
     vertical-align:top;
@@ -821,6 +835,10 @@ div.dynheader {
 address {
 	font-style: normal;
 	color: #2A3D61;
+}
+
+table.doxtable caption {
+	caption-side: top;
 }
 
 table.doxtable {
@@ -988,6 +1006,18 @@ div.summary a
 	white-space: nowrap;
 }
 
+table.classindex
+{
+        margin: 10px;
+        white-space: nowrap;
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 94%;
+        border: 0;
+        border-spacing: 0; 
+        padding: 0;
+}
+
 div.ingroups
 {
 	font-size: 8pt;
@@ -1099,6 +1129,11 @@ dl.section dd {
 	border: 0px none;
 }
  
+#projectalign
+{
+        vertical-align: middle;
+}
+
 #projectname
 {
 	font: 300% Tahoma, Arial,sans-serif;
@@ -1182,7 +1217,7 @@ div.toc {
         border-radius: 7px 7px 7px 7px;
         float: right;
         height: auto;
-        margin: 0 20px 10px 10px;
+        margin: 0 8px 10px 10px;
         width: 200px;
 }
 
