@@ -122,6 +122,26 @@ namespace cereal
                                 "Make sure you either serialize the base class at some point via cereal::base_class or cereal::virtual_base_class.\n"                          \
                                 "Alternatively, manually register the association with CEREAL_REGISTER_POLYMORPHIC_RELATION.");
 
+      //! Checks if the mapping object that can perform the upcast or downcast
+      /*! Uses the type index from the base and derived class to find the matching
+          registered caster. If no matching caster exists, returns false. */
+      static bool exists( std::type_index const & baseIndex, std::type_index const & derivedIndex )
+      {
+        // First phase of lookup - match base type index
+        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto baseIter = baseMap.find( baseIndex );
+        if (baseIter == baseMap.end())
+          return false;
+
+        // Second phase - find a match from base to derived
+        auto & derivedMap = baseIter->second;
+        auto derivedIter = derivedMap.find( derivedIndex );
+        if (derivedIter == derivedMap.end())
+          return false;
+
+        return true;
+      }
+
       //! Gets the mapping object that can perform the upcast or downcast
       /*! Uses the type index from the base and derived class to find the matching
           registered caster. If no matching caster exists, calls the exception function.
@@ -141,7 +161,7 @@ namespace cereal
         auto derivedIter = derivedMap.find( derivedIndex );
         if( derivedIter == derivedMap.end() )
           exceptionFunc();
-
+        
         return derivedIter->second;
       }
 
@@ -215,9 +235,9 @@ namespace cereal
         {
           auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
           {
-            bool exists = true;
-            auto const & mapping = PolymorphicCasters::lookup( baseInfo, derivedInfo, [&](){ exists = false; } );
-            return std::make_pair( exists, exists ? mapping : std::vector<PolymorphicCaster const *>{} );
+            const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
+            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) : 
+                                                    std::vector<PolymorphicCaster const *>{} );
           };
 
           for( auto baseIt : baseMap )
@@ -599,6 +619,7 @@ namespace cereal
       #endif // _MSC_VER
     };
 
+//#if defined(_WINDLL)
     // instantiate implementation
     template <class Archive, class T>
     CEREAL_DLL_EXPORT void polymorphic_serialization_support<Archive,T>::instantiate()
@@ -611,6 +632,7 @@ namespace cereal
                                           std::is_base_of<detail::InputArchiveBase, Archive>::value &&
                                           traits::is_input_serializable<T, Archive>::value>{} );
     }
+//#endif
 
     //! Begins the binding process of a type to all registered archives
     /*! Archives need to be registered prior to this struct being instantiated via

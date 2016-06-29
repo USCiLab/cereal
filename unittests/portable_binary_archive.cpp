@@ -77,7 +77,7 @@ inline void swapBytes( T & t )
 
 // Last parameter exists to keep everything hidden in options
 template <class IArchive, class OArchive>
-void test_endian_serialization( typename IArchive::Options const & iOptions, typename OArchive::Options const & oOptions, const bool inputLittleEndian )
+void test_endian_serialization( typename IArchive::Options const & iOptions, typename OArchive::Options const & oOptions, const std::uint8_t inputLittleEndian )
 {
   std::random_device rd;
   std::mt19937 gen(rd());
