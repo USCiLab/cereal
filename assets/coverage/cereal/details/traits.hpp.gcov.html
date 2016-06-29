@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">10</td>
-            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntry">34</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-06-08 11:03:01</td>
+            <td class="headerValue">2016-06-29 15:15:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">46</td>
-            <td class="headerCovTableEntry">50</td>
-            <td class="headerCovTableEntryHi">92.0 %</td>
+            <td class="headerCovTableEntry">106</td>
+            <td class="headerCovTableEntry">114</td>
+            <td class="headerCovTableEntryHi">93.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -931,460 +931,524 @@
 <span class="lineNum">     869 </span>            :     #undef CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST
 <span class="lineNum">     870 </span>            : 
 <span class="lineNum">     871 </span>            :     // ######################################################################
-<span class="lineNum">     872 </span>            :     // End of serialization existence tests
-<span class="lineNum">     873 </span>            :     #undef CEREAL_MAKE_VERSIONED_TEST
-<span class="lineNum">     874 </span>            : 
-<span class="lineNum">     875 </span>            :     // ######################################################################
-<span class="lineNum">     876 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
-<span class="lineNum">     877 </span>            :     struct has_member_split : std::integral_constant&lt;bool,
-<span class="lineNum">     878 </span>            :       (has_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     879 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
-<span class="lineNum">     880 </span>            : 
-<span class="lineNum">     881 </span>            :     // ######################################################################
-<span class="lineNum">     882 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
-<span class="lineNum">     883 </span>            :     struct has_non_member_split : std::integral_constant&lt;bool,
-<span class="lineNum">     884 </span>            :       (has_non_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     885 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
-<span class="lineNum">     886 </span>            : 
-<span class="lineNum">     887 </span>            :     // ######################################################################
-<span class="lineNum">     888 </span>            :     template &lt;class T, class OutputArchive&gt;
-<span class="lineNum">     889 </span>            :     struct has_invalid_output_versioning : std::integral_constant&lt;bool,
-<span class="lineNum">     890 </span>            :       (has_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     891 </span>            :       (has_non_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     892 </span>            :       (has_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     893 </span>            :       (has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     894 </span>            :       (has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save_minimal&lt;T, OutputArchive&gt;::value) ||
-<span class="lineNum">     895 </span>            :       (has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp;  has_non_member_save_minimal&lt;T, OutputArchive&gt;::value)&gt; {};
-<span class="lineNum">     896 </span>            : 
-<span class="lineNum">     897 </span>            :     // ######################################################################
-<span class="lineNum">     898 </span>            :     template &lt;class T, class InputArchive&gt;
-<span class="lineNum">     899 </span>            :     struct has_invalid_input_versioning : std::integral_constant&lt;bool,
-<span class="lineNum">     900 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load&lt;T, InputArchive&gt;::value) ||
-<span class="lineNum">     901 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_load&lt;T, InputArchive&gt;::value) ||
-<span class="lineNum">     902 </span>            :       (has_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, InputArchive&gt;::value) ||
-<span class="lineNum">     903 </span>            :       (has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, InputArchive&gt;::value) ||
-<span class="lineNum">     904 </span>            :       (has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load_minimal&lt;T, InputArchive&gt;::value) ||
-<span class="lineNum">     905 </span>            :       (has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp;  has_non_member_load_minimal&lt;T, InputArchive&gt;::value)&gt; {};
-<span class="lineNum">     906 </span>            : 
-<span class="lineNum">     907 </span>            :     // ######################################################################
-<span class="lineNum">     908 </span>            :     namespace detail
-<span class="lineNum">     909 </span>            :     {
-<span class="lineNum">     910 </span>            :       //! Create a test for a cereal::specialization entry
-<span class="lineNum">     911 </span>            :       #define CEREAL_MAKE_IS_SPECIALIZED_IMPL(name)                                          \
-<span class="lineNum">     912 </span>            :       template &lt;class T, class A&gt;                                                            \
-<span class="lineNum">     913 </span>            :       struct is_specialized_##name : std::integral_constant&lt;bool,                            \
-<span class="lineNum">     914 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::name&gt;&gt;::value&gt; {}
-<span class="lineNum">     915 </span>            : 
-<span class="lineNum">     916 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_serialize);
-<span class="lineNum">     917 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save);
-<span class="lineNum">     918 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save_minimal);
-<span class="lineNum">     919 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_serialize);
-<span class="lineNum">     920 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save);
-<span class="lineNum">     921 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save_minimal);
-<span class="lineNum">     922 </span>            : 
-<span class="lineNum">     923 </span>            :       #undef CEREAL_MAKE_IS_SPECIALIZED_IMPL
+<span class="lineNum">     872 </span>            :     //! Member load and construct check
+<span class="lineNum">     873 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     874 </span>            :     struct has_member_load_and_construct : std::integral_constant&lt;bool,
+<span class="lineNum">     875 </span>            :       std::is_same&lt;decltype( access::load_and_construct&lt;T&gt;( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;() ) ), void&gt;::value&gt;
+<span class="lineNum">     876 </span>            :     { };
+<span class="lineNum">     877 </span>            : 
+<span class="lineNum">     878 </span>            :     // ######################################################################
+<span class="lineNum">     879 </span>            :     //! Member load and construct check (versioned)
+<span class="lineNum">     880 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     881 </span>            :     struct has_member_versioned_load_and_construct : std::integral_constant&lt;bool,
+<span class="lineNum">     882 </span>            :       std::is_same&lt;decltype( access::load_and_construct&lt;T&gt;( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;(), 0 ) ), void&gt;::value&gt;
+<span class="lineNum">     883 </span>            :     { };
+<span class="lineNum">     884 </span>            : 
+<span class="lineNum">     885 </span>            :     // ######################################################################
+<span class="lineNum">     886 </span>            :     //! Creates a test for whether a non-member load_and_construct specialization exists
+<span class="lineNum">     887 </span>            :     /*! This creates a class derived from std::integral_constant that will be true if
+<span class="lineNum">     888 </span>            :         the type has the proper non-member function for the given archive. */
+<span class="lineNum">     889 </span>            :     #define CEREAL_MAKE_HAS_NON_MEMBER_LOAD_AND_CONSTRUCT_TEST(test_name, versioned)                                            \
+<span class="lineNum">     890 </span>            :     namespace detail                                                                                                            \
+<span class="lineNum">     891 </span>            :     {                                                                                                                           \
+<span class="lineNum">     892 </span>            :       template &lt;class T, class A&gt;                                                                                               \
+<span class="lineNum">     893 </span>            :       struct has_non_member_##test_name##_impl                                                                                  \
+<span class="lineNum">     894 </span>            :       {                                                                                                                         \
+<span class="lineNum">     895 </span>            :         template &lt;class TT, class AA&gt;                                                                                           \
+<span class="lineNum">     896 </span>            :         static auto test(int) -&gt; decltype( LoadAndConstruct&lt;TT&gt;::load_and_construct(                                            \
+<span class="lineNum">     897 </span>            :                                            std::declval&lt;AA&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;TT&gt;&amp;&gt;() versioned ), yes());  \
+<span class="lineNum">     898 </span>            :         template &lt;class, class&gt;                                                                                                 \
+<span class="lineNum">     899 </span>            :         static no test( ... );                                                                                                  \
+<span class="lineNum">     900 </span>            :         static const bool value = std::is_same&lt;decltype( test&lt;T, A&gt;( 0 ) ), yes&gt;::value;                                        \
+<span class="lineNum">     901 </span>            :       };                                                                                                                        \
+<span class="lineNum">     902 </span>            :     } /* end namespace detail */                                                                                                \
+<span class="lineNum">     903 </span>            :     template &lt;class T, class A&gt;                                                                                                 \
+<span class="lineNum">     904 </span>            :     struct has_non_member_##test_name : std::integral_constant&lt;bool, detail::has_non_member_##test_name##_impl&lt;T, A&gt;::value&gt; {};
+<span class="lineNum">     905 </span>            : 
+<span class="lineNum">     906 </span>            :     // ######################################################################
+<span class="lineNum">     907 </span>            :     //! Non member load and construct check
+<span class="lineNum">     908 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_LOAD_AND_CONSTRUCT_TEST(load_and_construct, )
+<span class="lineNum">     909 </span>            : 
+<span class="lineNum">     910 </span>            :     // ######################################################################
+<span class="lineNum">     911 </span>            :     //! Non member load and construct check (versioned)
+<span class="lineNum">     912 </span>            :     CEREAL_MAKE_HAS_NON_MEMBER_LOAD_AND_CONSTRUCT_TEST(versioned_load_and_construct, CEREAL_MAKE_VERSIONED_TEST)
+<span class="lineNum">     913 </span>            : 
+<span class="lineNum">     914 </span>            :     // ######################################################################
+<span class="lineNum">     915 </span>            :     //! Has either a member or non member load and construct
+<span class="lineNum">     916 </span>            :     template&lt;typename T, typename A&gt;
+<span class="lineNum">     917 </span>            :     struct has_load_and_construct : std::integral_constant&lt;bool,
+<span class="lineNum">     918 </span>            :       has_member_load_and_construct&lt;T, A&gt;::value || has_non_member_load_and_construct&lt;T, A&gt;::value ||
+<span class="lineNum">     919 </span>            :       has_member_versioned_load_and_construct&lt;T, A&gt;::value || has_non_member_versioned_load_and_construct&lt;T, A&gt;::value&gt;
+<span class="lineNum">     920 </span>            :     { };
+<span class="lineNum">     921 </span>            : 
+<span class="lineNum">     922 </span>            :     // ######################################################################
+<span class="lineNum">     923 </span>            :     #undef CEREAL_MAKE_HAS_NON_MEMBER_LOAD_AND_CONSTRUCT_TEST
 <span class="lineNum">     924 </span>            : 
-<span class="lineNum">     925 </span>            :       //! Number of specializations detected
-<span class="lineNum">     926 </span>            :       template &lt;class T, class A&gt;
-<span class="lineNum">     927 </span>            :       struct count_specializations : std::integral_constant&lt;int,
-<span class="lineNum">     928 </span>            :         is_specialized_member_serialize&lt;T, A&gt;::value +
-<span class="lineNum">     929 </span>            :         is_specialized_member_load_save&lt;T, A&gt;::value +
-<span class="lineNum">     930 </span>            :         is_specialized_member_load_save_minimal&lt;T, A&gt;::value +
-<span class="lineNum">     931 </span>            :         is_specialized_non_member_serialize&lt;T, A&gt;::value +
-<span class="lineNum">     932 </span>            :         is_specialized_non_member_load_save&lt;T, A&gt;::value +
-<span class="lineNum">     933 </span>            :         is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt; {};
-<span class="lineNum">     934 </span>            :     } // namespace detail
-<span class="lineNum">     935 </span>            : 
-<span class="lineNum">     936 </span>            :     //! Check if any specialization exists for a type
-<span class="lineNum">     937 </span>            :     template &lt;class T, class A&gt;
-<span class="lineNum">     938 </span>            :     struct is_specialized : std::integral_constant&lt;bool,
-<span class="lineNum">     939 </span>            :       detail::is_specialized_member_serialize&lt;T, A&gt;::value ||
-<span class="lineNum">     940 </span>            :       detail::is_specialized_member_load_save&lt;T, A&gt;::value ||
-<span class="lineNum">     941 </span>            :       detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value ||
-<span class="lineNum">     942 </span>            :       detail::is_specialized_non_member_serialize&lt;T, A&gt;::value ||
-<span class="lineNum">     943 </span>            :       detail::is_specialized_non_member_load_save&lt;T, A&gt;::value ||
-<span class="lineNum">     944 </span>            :       detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt;
-<span class="lineNum">     945 </span>            :     {
-<span class="lineNum">     946 </span>            :       static_assert(detail::count_specializations&lt;T, A&gt;::value &lt;= 1, &quot;More than one explicit specialization detected for type.&quot;);
-<span class="lineNum">     947 </span>            :     };
-<span class="lineNum">     948 </span>            : 
-<span class="lineNum">     949 </span>            :     //! Create the static assertion for some specialization
-<span class="lineNum">     950 </span>            :     /*! This assertion will fail if the type is indeed specialized and does not have the appropriate
-<span class="lineNum">     951 </span>            :         type of serialization functions */
-<span class="lineNum">     952 </span>            :     #define CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, print_name, spec_name)                      \
-<span class="lineNum">     953 </span>            :     static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value &amp;&amp;           \
-<span class="lineNum">     954 </span>            :                    (has_##name&lt;T, A&gt;::value || has_##versioned_name&lt;T, A&gt;::value))                              \
-<span class="lineNum">     955 </span>            :                    || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value),        \
-<span class="lineNum">     956 </span>            :                    &quot;cereal detected &quot; #print_name &quot; specialization but no &quot; #print_name &quot; serialize function&quot; )
-<span class="lineNum">     957 </span>            : 
-<span class="lineNum">     958 </span>            :     //! Generates a test for specialization for versioned and unversioned functions
-<span class="lineNum">     959 </span>            :     /*! This creates checks that can be queried to see if a given type of serialization function
-<span class="lineNum">     960 </span>            :         has been specialized for this type */
-<span class="lineNum">     961 </span>            :     #define CEREAL_MAKE_IS_SPECIALIZED(name, versioned_name, spec_name)                     \
-<span class="lineNum">     962 </span>            :     template &lt;class T, class A&gt;                                                             \
-<span class="lineNum">     963 </span>            :     struct is_specialized_##name : std::integral_constant&lt;bool,                             \
-<span class="lineNum">     964 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \
-<span class="lineNum">     965 </span>            :     { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, name, spec_name); };          \
-<span class="lineNum">     966 </span>            :     template &lt;class T, class A&gt;                                                             \
-<span class="lineNum">     967 </span>            :     struct is_specialized_##versioned_name : std::integral_constant&lt;bool,                   \
-<span class="lineNum">     968 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \
-<span class="lineNum">     969 </span>            :     { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, versioned_name, spec_name); }
-<span class="lineNum">     970 </span>            : 
-<span class="lineNum">     971 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_serialize, member_versioned_serialize, member_serialize);
-<span class="lineNum">     972 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_serialize, non_member_versioned_serialize, non_member_serialize);
-<span class="lineNum">     973 </span>            : 
-<span class="lineNum">     974 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_save, member_versioned_save, member_load_save);
-<span class="lineNum">     975 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_save, non_member_versioned_save, non_member_load_save);
-<span class="lineNum">     976 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_load, member_versioned_load, member_load_save);
-<span class="lineNum">     977 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_load, non_member_versioned_load, non_member_load_save);
+<span class="lineNum">     925 </span>            :     // ######################################################################
+<span class="lineNum">     926 </span>            :     // End of serialization existence tests
+<span class="lineNum">     927 </span>            :     #undef CEREAL_MAKE_VERSIONED_TEST
+<span class="lineNum">     928 </span>            : 
+<span class="lineNum">     929 </span>            :     // ######################################################################
+<span class="lineNum">     930 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     931 </span>            :     struct has_member_split : std::integral_constant&lt;bool,
+<span class="lineNum">     932 </span>            :       (has_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     933 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     934 </span>            : 
+<span class="lineNum">     935 </span>            :     // ######################################################################
+<span class="lineNum">     936 </span>            :     template &lt;class T, class InputArchive, class OutputArchive&gt;
+<span class="lineNum">     937 </span>            :     struct has_non_member_split : std::integral_constant&lt;bool,
+<span class="lineNum">     938 </span>            :       (has_non_member_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     939 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_versioned_save&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     940 </span>            : 
+<span class="lineNum">     941 </span>            :     // ######################################################################
+<span class="lineNum">     942 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">     943 </span>            :     struct has_invalid_output_versioning : std::integral_constant&lt;bool,
+<span class="lineNum">     944 </span>            :       (has_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     945 </span>            :       (has_non_member_versioned_save&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_save&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     946 </span>            :       (has_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     947 </span>            :       (has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     948 </span>            :       (has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp; has_member_save_minimal&lt;T, OutputArchive&gt;::value) ||
+<span class="lineNum">     949 </span>            :       (has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value &amp;&amp;  has_non_member_save_minimal&lt;T, OutputArchive&gt;::value)&gt; {};
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span>            :     // ######################################################################
+<span class="lineNum">     952 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">     953 </span>            :     struct has_invalid_input_versioning : std::integral_constant&lt;bool,
+<span class="lineNum">     954 </span>            :       (has_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     955 </span>            :       (has_non_member_versioned_load&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_load&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     956 </span>            :       (has_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_member_serialize&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     957 </span>            :       (has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value &amp;&amp; has_non_member_serialize&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     958 </span>            :       (has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp; has_member_load_minimal&lt;T, InputArchive&gt;::value) ||
+<span class="lineNum">     959 </span>            :       (has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value &amp;&amp;  has_non_member_load_minimal&lt;T, InputArchive&gt;::value)&gt; {};
+<span class="lineNum">     960 </span>            : 
+<span class="lineNum">     961 </span>            :     // ######################################################################
+<span class="lineNum">     962 </span>            :     namespace detail
+<span class="lineNum">     963 </span>            :     {
+<span class="lineNum">     964 </span>            :       //! Create a test for a cereal::specialization entry
+<span class="lineNum">     965 </span>            :       #define CEREAL_MAKE_IS_SPECIALIZED_IMPL(name)                                          \
+<span class="lineNum">     966 </span>            :       template &lt;class T, class A&gt;                                                            \
+<span class="lineNum">     967 </span>            :       struct is_specialized_##name : std::integral_constant&lt;bool,                            \
+<span class="lineNum">     968 </span>            :         !std::is_base_of&lt;std::false_type, specialize&lt;A, T, specialization::name&gt;&gt;::value&gt; {}
+<span class="lineNum">     969 </span>            : 
+<span class="lineNum">     970 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_serialize);
+<span class="lineNum">     971 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save);
+<span class="lineNum">     972 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(member_load_save_minimal);
+<span class="lineNum">     973 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_serialize);
+<span class="lineNum">     974 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save);
+<span class="lineNum">     975 </span>            :       CEREAL_MAKE_IS_SPECIALIZED_IMPL(non_member_load_save_minimal);
+<span class="lineNum">     976 </span>            : 
+<span class="lineNum">     977 </span>            :       #undef CEREAL_MAKE_IS_SPECIALIZED_IMPL
 <span class="lineNum">     978 </span>            : 
-<span class="lineNum">     979 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_save_minimal, member_versioned_save_minimal, member_load_save_minimal);
-<span class="lineNum">     980 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_save_minimal, non_member_versioned_save_minimal, non_member_load_save_minimal);
-<span class="lineNum">     981 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_load_minimal, member_versioned_load_minimal, member_load_save_minimal);
-<span class="lineNum">     982 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_load_minimal, non_member_versioned_load_minimal, non_member_load_save_minimal);
-<span class="lineNum">     983 </span>            : 
-<span class="lineNum">     984 </span>            :     #undef CEREAL_MAKE_IS_SPECIALIZED_ASSERT
-<span class="lineNum">     985 </span>            :     #undef CEREAL_MAKE_IS_SPECIALIZED
-<span class="lineNum">     986 </span>            : 
-<span class="lineNum">     987 </span>            :     // ######################################################################
-<span class="lineNum">     988 </span>            :     // detects if a type has any active minimal output serialization
-<span class="lineNum">     989 </span>            :     template &lt;class T, class OutputArchive&gt;
-<span class="lineNum">     990 </span>            :     struct has_minimal_output_serialization : std::integral_constant&lt;bool,
-<span class="lineNum">     991 </span>            :       is_specialized_member_save_minimal&lt;T, OutputArchive&gt;::value ||
-<span class="lineNum">     992 </span>            :       ((has_member_save_minimal&lt;T, OutputArchive&gt;::value ||
-<span class="lineNum">     993 </span>            :         has_non_member_save_minimal&lt;T, OutputArchive&gt;::value ||
-<span class="lineNum">     994 </span>            :         has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value ||
-<span class="lineNum">     995 </span>            :         has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value) &amp;&amp;
-<span class="lineNum">     996 </span>            :        !(is_specialized_member_serialize&lt;T, OutputArchive&gt;::value ||
-<span class="lineNum">     997 </span>            :          is_specialized_member_save&lt;T, OutputArchive&gt;::value))&gt; {};
-<span class="lineNum">     998 </span>            : 
-<span class="lineNum">     999 </span>            :     // ######################################################################
-<span class="lineNum">    1000 </span>            :     // detects if a type has any active minimal input serialization
-<span class="lineNum">    1001 </span>            :     template &lt;class T, class InputArchive&gt;
-<span class="lineNum">    1002 </span>            :     struct has_minimal_input_serialization : std::integral_constant&lt;bool,
-<span class="lineNum">    1003 </span>            :       is_specialized_member_load_minimal&lt;T, InputArchive&gt;::value ||
-<span class="lineNum">    1004 </span>            :       ((has_member_load_minimal&lt;T, InputArchive&gt;::value ||
-<span class="lineNum">    1005 </span>            :         has_non_member_load_minimal&lt;T, InputArchive&gt;::value ||
-<span class="lineNum">    1006 </span>            :         has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value ||
-<span class="lineNum">    1007 </span>            :         has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value) &amp;&amp;
-<span class="lineNum">    1008 </span>            :        !(is_specialized_member_serialize&lt;T, InputArchive&gt;::value ||
-<span class="lineNum">    1009 </span>            :          is_specialized_member_load&lt;T, InputArchive&gt;::value))&gt; {};
-<span class="lineNum">    1010 </span>            : 
-<span class="lineNum">    1011 </span>            :     // ######################################################################
-<span class="lineNum">    1012 </span>            :     namespace detail
-<span class="lineNum">    1013 </span>            :     {
-<span class="lineNum">    1014 </span>            :       //! The number of output serialization functions available
-<span class="lineNum">    1015 </span>            :       /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
-<span class="lineNum">    1016 </span>            :       template &lt;class T, class OutputArchive&gt;
-<span class="lineNum">    1017 </span>            :       struct count_output_serializers : std::integral_constant&lt;int,
-<span class="lineNum">    1018 </span>            :         count_specializations&lt;T, OutputArchive&gt;::value ? count_specializations&lt;T, OutputArchive&gt;::value :
-<span class="lineNum">    1019 </span>            :         has_member_save&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1020 </span>            :         has_non_member_save&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1021 </span>            :         has_member_serialize&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1022 </span>            :         has_non_member_serialize&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1023 </span>            :         has_member_save_minimal&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1024 </span>            :         has_non_member_save_minimal&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1025 </span>            :         /*-versioned---------------------------------------------------------*/
-<span class="lineNum">    1026 </span>            :         has_member_versioned_save&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1027 </span>            :         has_non_member_versioned_save&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1028 </span>            :         has_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1029 </span>            :         has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1030 </span>            :         has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value +
-<span class="lineNum">    1031 </span>            :         has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value&gt; {};
-<span class="lineNum">    1032 </span>            :     }
-<span class="lineNum">    1033 </span>            : 
-<span class="lineNum">    1034 </span>            :     template &lt;class T, class OutputArchive&gt;
-<span class="lineNum">    1035 </span>            :     struct is_output_serializable : std::integral_constant&lt;bool,
-<span class="lineNum">    1036 </span>            :       detail::count_output_serializers&lt;T, OutputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">     979 </span>            :       //! Number of specializations detected
+<span class="lineNum">     980 </span>            :       template &lt;class T, class A&gt;
+<span class="lineNum">     981 </span>            :       struct count_specializations : std::integral_constant&lt;int,
+<span class="lineNum">     982 </span>            :         is_specialized_member_serialize&lt;T, A&gt;::value +
+<span class="lineNum">     983 </span>            :         is_specialized_member_load_save&lt;T, A&gt;::value +
+<span class="lineNum">     984 </span>            :         is_specialized_member_load_save_minimal&lt;T, A&gt;::value +
+<span class="lineNum">     985 </span>            :         is_specialized_non_member_serialize&lt;T, A&gt;::value +
+<span class="lineNum">     986 </span>            :         is_specialized_non_member_load_save&lt;T, A&gt;::value +
+<span class="lineNum">     987 </span>            :         is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt; {};
+<span class="lineNum">     988 </span>            :     } // namespace detail
+<span class="lineNum">     989 </span>            : 
+<span class="lineNum">     990 </span>            :     //! Check if any specialization exists for a type
+<span class="lineNum">     991 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">     992 </span>            :     struct is_specialized : std::integral_constant&lt;bool,
+<span class="lineNum">     993 </span>            :       detail::is_specialized_member_serialize&lt;T, A&gt;::value ||
+<span class="lineNum">     994 </span>            :       detail::is_specialized_member_load_save&lt;T, A&gt;::value ||
+<span class="lineNum">     995 </span>            :       detail::is_specialized_member_load_save_minimal&lt;T, A&gt;::value ||
+<span class="lineNum">     996 </span>            :       detail::is_specialized_non_member_serialize&lt;T, A&gt;::value ||
+<span class="lineNum">     997 </span>            :       detail::is_specialized_non_member_load_save&lt;T, A&gt;::value ||
+<span class="lineNum">     998 </span>            :       detail::is_specialized_non_member_load_save_minimal&lt;T, A&gt;::value&gt;
+<span class="lineNum">     999 </span>            :     {
+<span class="lineNum">    1000 </span>            :       static_assert(detail::count_specializations&lt;T, A&gt;::value &lt;= 1, &quot;More than one explicit specialization detected for type.&quot;);
+<span class="lineNum">    1001 </span>            :     };
+<span class="lineNum">    1002 </span>            : 
+<span class="lineNum">    1003 </span>            :     //! Create the static assertion for some specialization
+<span class="lineNum">    1004 </span>            :     /*! This assertion will fail if the type is indeed specialized and does not have the appropriate
+<span class="lineNum">    1005 </span>            :         type of serialization functions */
+<span class="lineNum">    1006 </span>            :     #define CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, print_name, spec_name)                      \
+<span class="lineNum">    1007 </span>            :     static_assert( (is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value &amp;&amp;           \
+<span class="lineNum">    1008 </span>            :                    (has_##name&lt;T, A&gt;::value || has_##versioned_name&lt;T, A&gt;::value))                              \
+<span class="lineNum">    1009 </span>            :                    || !(is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value),        \
+<span class="lineNum">    1010 </span>            :                    &quot;cereal detected &quot; #print_name &quot; specialization but no &quot; #print_name &quot; serialize function&quot; )
+<span class="lineNum">    1011 </span>            : 
+<span class="lineNum">    1012 </span>            :     //! Generates a test for specialization for versioned and unversioned functions
+<span class="lineNum">    1013 </span>            :     /*! This creates checks that can be queried to see if a given type of serialization function
+<span class="lineNum">    1014 </span>            :         has been specialized for this type */
+<span class="lineNum">    1015 </span>            :     #define CEREAL_MAKE_IS_SPECIALIZED(name, versioned_name, spec_name)                     \
+<span class="lineNum">    1016 </span>            :     template &lt;class T, class A&gt;                                                             \
+<span class="lineNum">    1017 </span>            :     struct is_specialized_##name : std::integral_constant&lt;bool,                             \
+<span class="lineNum">    1018 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \
+<span class="lineNum">    1019 </span>            :     { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, name, spec_name); };          \
+<span class="lineNum">    1020 </span>            :     template &lt;class T, class A&gt;                                                             \
+<span class="lineNum">    1021 </span>            :     struct is_specialized_##versioned_name : std::integral_constant&lt;bool,                   \
+<span class="lineNum">    1022 </span>            :       is_specialized&lt;T, A&gt;::value &amp;&amp; detail::is_specialized_##spec_name&lt;T, A&gt;::value&gt;       \
+<span class="lineNum">    1023 </span>            :     { CEREAL_MAKE_IS_SPECIALIZED_ASSERT(name, versioned_name, versioned_name, spec_name); }
+<span class="lineNum">    1024 </span>            : 
+<span class="lineNum">    1025 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_serialize, member_versioned_serialize, member_serialize);
+<span class="lineNum">    1026 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_serialize, non_member_versioned_serialize, non_member_serialize);
+<span class="lineNum">    1027 </span>            : 
+<span class="lineNum">    1028 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_save, member_versioned_save, member_load_save);
+<span class="lineNum">    1029 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_save, non_member_versioned_save, non_member_load_save);
+<span class="lineNum">    1030 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_load, member_versioned_load, member_load_save);
+<span class="lineNum">    1031 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_load, non_member_versioned_load, non_member_load_save);
+<span class="lineNum">    1032 </span>            : 
+<span class="lineNum">    1033 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_save_minimal, member_versioned_save_minimal, member_load_save_minimal);
+<span class="lineNum">    1034 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_save_minimal, non_member_versioned_save_minimal, non_member_load_save_minimal);
+<span class="lineNum">    1035 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(member_load_minimal, member_versioned_load_minimal, member_load_save_minimal);
+<span class="lineNum">    1036 </span>            :     CEREAL_MAKE_IS_SPECIALIZED(non_member_load_minimal, non_member_versioned_load_minimal, non_member_load_save_minimal);
 <span class="lineNum">    1037 </span>            : 
-<span class="lineNum">    1038 </span>            :     // ######################################################################
-<span class="lineNum">    1039 </span>            :     namespace detail
-<span class="lineNum">    1040 </span>            :     {
-<span class="lineNum">    1041 </span>            :       //! The number of input serialization functions available
-<span class="lineNum">    1042 </span>            :       /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
-<span class="lineNum">    1043 </span>            :       template &lt;class T, class InputArchive&gt;
-<span class="lineNum">    1044 </span>            :       struct count_input_serializers : std::integral_constant&lt;int,
-<span class="lineNum">    1045 </span>            :         count_specializations&lt;T, InputArchive&gt;::value ? count_specializations&lt;T, InputArchive&gt;::value :
-<span class="lineNum">    1046 </span>            :         has_member_load&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1047 </span>            :         has_non_member_load&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1048 </span>            :         has_member_serialize&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1049 </span>            :         has_non_member_serialize&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1050 </span>            :         has_member_load_minimal&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1051 </span>            :         has_non_member_load_minimal&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1052 </span>            :         /*-versioned---------------------------------------------------------*/
-<span class="lineNum">    1053 </span>            :         has_member_versioned_load&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1054 </span>            :         has_non_member_versioned_load&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1055 </span>            :         has_member_versioned_serialize&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1056 </span>            :         has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1057 </span>            :         has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value +
-<span class="lineNum">    1058 </span>            :         has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value&gt; {};
-<span class="lineNum">    1059 </span>            :     }
-<span class="lineNum">    1060 </span>            : 
-<span class="lineNum">    1061 </span>            :     template &lt;class T, class InputArchive&gt;
-<span class="lineNum">    1062 </span>            :     struct is_input_serializable : std::integral_constant&lt;bool,
-<span class="lineNum">    1063 </span>            :       detail::count_input_serializers&lt;T, InputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">    1038 </span>            :     #undef CEREAL_MAKE_IS_SPECIALIZED_ASSERT
+<span class="lineNum">    1039 </span>            :     #undef CEREAL_MAKE_IS_SPECIALIZED
+<span class="lineNum">    1040 </span>            : 
+<span class="lineNum">    1041 </span>            :     // ######################################################################
+<span class="lineNum">    1042 </span>            :     // detects if a type has any active minimal output serialization
+<span class="lineNum">    1043 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">    1044 </span>            :     struct has_minimal_output_serialization : std::integral_constant&lt;bool,
+<span class="lineNum">    1045 </span>            :       is_specialized_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1046 </span>            :       ((has_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1047 </span>            :         has_non_member_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1048 </span>            :         has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1049 </span>            :         has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value) &amp;&amp;
+<span class="lineNum">    1050 </span>            :        !(is_specialized_member_serialize&lt;T, OutputArchive&gt;::value ||
+<span class="lineNum">    1051 </span>            :          is_specialized_member_save&lt;T, OutputArchive&gt;::value))&gt; {};
+<span class="lineNum">    1052 </span>            : 
+<span class="lineNum">    1053 </span>            :     // ######################################################################
+<span class="lineNum">    1054 </span>            :     // detects if a type has any active minimal input serialization
+<span class="lineNum">    1055 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">    1056 </span>            :     struct has_minimal_input_serialization : std::integral_constant&lt;bool,
+<span class="lineNum">    1057 </span>            :       is_specialized_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1058 </span>            :       ((has_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1059 </span>            :         has_non_member_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1060 </span>            :         has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1061 </span>            :         has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value) &amp;&amp;
+<span class="lineNum">    1062 </span>            :        !(is_specialized_member_serialize&lt;T, InputArchive&gt;::value ||
+<span class="lineNum">    1063 </span>            :          is_specialized_member_load&lt;T, InputArchive&gt;::value))&gt; {};
 <span class="lineNum">    1064 </span>            : 
 <span class="lineNum">    1065 </span>            :     // ######################################################################
-<span class="lineNum">    1066 </span>            :     // Base Class Support
-<span class="lineNum">    1067 </span>            :     namespace detail
-<span class="lineNum">    1068 </span>            :     {
-<span class="lineNum">    1069 </span>            :       struct base_class_id
-<span class="lineNum">    1070 </span>            :       {
-<span class="lineNum">    1071 </span>            :         template&lt;class T&gt;
-<span class="lineNum">    1072 </span>            :           base_class_id(T const * const t) :
-<span class="lineNum">    1073 </span>            :           type(typeid(T)),
-<span class="lineNum">    1074 </span>            :           ptr(t),
-<span class="lineNum">    1075 </span>            :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))
-<span class="lineNum">    1076 </span>            :           { }
-<span class="lineNum">    1077 </span>            : 
-<span class="lineNum">    1078 </span>            :           bool operator==(base_class_id const &amp; other) const
-<span class="lineNum">    1079 </span>            :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }
-<span class="lineNum">    1080 </span>            : 
-<span class="lineNum">    1081 </span>            :           std::type_index type;
-<span class="lineNum">    1082 </span>            :           void const * ptr;
-<span class="lineNum">    1083 </span>            :           size_t hash;
-<span class="lineNum">    1084 </span>            :       };
-<span class="lineNum">    1085 </span>            :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };
-<span class="lineNum">    1086 </span>            :     } // namespace detail
+<span class="lineNum">    1066 </span>            :     namespace detail
+<span class="lineNum">    1067 </span>            :     {
+<span class="lineNum">    1068 </span>            :       //! The number of output serialization functions available
+<span class="lineNum">    1069 </span>            :       /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
+<span class="lineNum">    1070 </span>            :       template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">    1071 </span>            :       struct count_output_serializers : std::integral_constant&lt;int,
+<span class="lineNum">    1072 </span>            :         count_specializations&lt;T, OutputArchive&gt;::value ? count_specializations&lt;T, OutputArchive&gt;::value :
+<span class="lineNum">    1073 </span>            :         has_member_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1074 </span>            :         has_non_member_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1075 </span>            :         has_member_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1076 </span>            :         has_non_member_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1077 </span>            :         has_member_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1078 </span>            :         has_non_member_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1079 </span>            :         /*-versioned---------------------------------------------------------*/
+<span class="lineNum">    1080 </span>            :         has_member_versioned_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1081 </span>            :         has_non_member_versioned_save&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1082 </span>            :         has_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1083 </span>            :         has_non_member_versioned_serialize&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1084 </span>            :         has_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value +
+<span class="lineNum">    1085 </span>            :         has_non_member_versioned_save_minimal&lt;T, OutputArchive&gt;::value&gt; {};
+<span class="lineNum">    1086 </span>            :     }
 <span class="lineNum">    1087 </span>            : 
-<span class="lineNum">    1088 </span>            :     namespace detail
-<a name="1089"><span class="lineNum">    1089 </span>            :     {</a>
-<span class="lineNum">    1090 </span>            :       //! Common base type for base class casting
-<span class="lineNum">    1091 </span><span class="lineCov">       4800 :       struct BaseCastBase {};</span>
-<span class="lineNum">    1092 </span>            : 
-<span class="lineNum">    1093 </span>            :       template &lt;class&gt;
-<span class="lineNum">    1094 </span>            :       struct get_base_class;
-<span class="lineNum">    1095 </span>            : 
-<span class="lineNum">    1096 </span>            :       template &lt;template&lt;typename&gt; class Cast, class Base&gt;
-<span class="lineNum">    1097 </span>            :       struct get_base_class&lt;Cast&lt;Base&gt;&gt;
-<span class="lineNum">    1098 </span>            :       {
-<span class="lineNum">    1099 </span>            :         using type = Base;
-<span class="lineNum">    1100 </span>            :       };
-<span class="lineNum">    1101 </span>            : 
-<span class="lineNum">    1102 </span>            :       //! Base class cast, behave as the test
-<span class="lineNum">    1103 </span>            :       template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive,
-<span class="lineNum">    1104 </span>            :                 bool IsBaseCast = std::is_base_of&lt;BaseCastBase, Cast&gt;::value&gt;
-<span class="lineNum">    1105 </span>            :       struct has_minimal_base_class_serialization_impl : Test&lt;typename get_base_class&lt;Cast&gt;::type, Archive&gt;
-<span class="lineNum">    1106 </span>            :       { };
-<span class="lineNum">    1107 </span>            : 
-<span class="lineNum">    1108 </span>            :       //! Not a base class cast
-<span class="lineNum">    1109 </span>            :       template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive&gt;
-<span class="lineNum">    1110 </span>            :       struct has_minimal_base_class_serialization_impl&lt;Cast,Test, Archive, false&gt; : std::false_type
-<span class="lineNum">    1111 </span>            :       { };
-<span class="lineNum">    1112 </span>            :     }
-<span class="lineNum">    1113 </span>            : 
-<span class="lineNum">    1114 </span>            :     //! Checks to see if the base class used in a cast has a minimal serialization
-<span class="lineNum">    1115 </span>            :     /*! @tparam Cast Either base_class or virtual_base_class wrapped type
-<span class="lineNum">    1116 </span>            :         @tparam Test A has_minimal test (for either input or output)
-<span class="lineNum">    1117 </span>            :         @tparam Archive The archive to use with the test */
-<span class="lineNum">    1118 </span>            :     template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive&gt;
-<span class="lineNum">    1119 </span>            :     struct has_minimal_base_class_serialization : detail::has_minimal_base_class_serialization_impl&lt;Cast, Test, Archive&gt;
-<span class="lineNum">    1120 </span>            :     { };
-<span class="lineNum">    1121 </span>            : 
-<span class="lineNum">    1122 </span>            : 
-<span class="lineNum">    1123 </span>            :     // ######################################################################
-<span class="lineNum">    1124 </span>            :     namespace detail
-<span class="lineNum">    1125 </span>            :     {
-<span class="lineNum">    1126 </span>            :       struct shared_from_this_wrapper
-<span class="lineNum">    1127 </span>            :       {
-<span class="lineNum">    1128 </span>            :         template &lt;class U&gt;
-<span class="lineNum">    1129 </span>            :         static auto check( U const &amp; t ) -&gt; decltype( ::cereal::access::shared_from_this(t), std::true_type() );
-<span class="lineNum">    1130 </span>            : 
-<span class="lineNum">    1131 </span>            :         static auto check( ... ) -&gt; decltype( std::false_type() );
-<span class="lineNum">    1132 </span>            : 
-<span class="lineNum">    1133 </span>            :         template &lt;class U&gt;
-<span class="lineNum">    1134 </span>            :         static auto get( U const &amp; t ) -&gt; decltype( t.shared_from_this() );
-<span class="lineNum">    1135 </span>            :       };
-<span class="lineNum">    1136 </span>            :     }
-<span class="lineNum">    1137 </span>            : 
-<span class="lineNum">    1138 </span>            :     //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
-<span class="lineNum">    1139 </span>            :     template&lt;class T&gt;
-<span class="lineNum">    1140 </span>            :     struct has_shared_from_this : decltype(detail::shared_from_this_wrapper::check(std::declval&lt;T&gt;()))
-<span class="lineNum">    1141 </span>            :     { };
-<span class="lineNum">    1142 </span>            : 
-<span class="lineNum">    1143 </span>            :     //! Get the type of the base class of T which inherited from std::enable_shared_from_this
-<span class="lineNum">    1144 </span>            :     template &lt;class T&gt;
-<span class="lineNum">    1145 </span>            :     struct get_shared_from_this_base
-<span class="lineNum">    1146 </span>            :     {
-<span class="lineNum">    1147 </span>            :       private:
-<span class="lineNum">    1148 </span>            :         using PtrType = decltype(detail::shared_from_this_wrapper::get(std::declval&lt;T&gt;()));
-<span class="lineNum">    1149 </span>            :       public:
-<span class="lineNum">    1150 </span>            :         //! The type of the base of T that inherited from std::enable_shared_from_this
-<span class="lineNum">    1151 </span>            :         using type = typename std::decay&lt;typename PtrType::element_type&gt;::type;
-<span class="lineNum">    1152 </span>            :     };
-<span class="lineNum">    1153 </span>            : 
-<span class="lineNum">    1154 </span>            :     // ######################################################################
-<span class="lineNum">    1155 </span>            :     //! Extracts the true type from something possibly wrapped in a cereal NoConvert
-<span class="lineNum">    1156 </span>            :     /*! Internally cereal uses some wrapper classes to test the validity of non-member
-<span class="lineNum">    1157 </span>            :         minimal load and save functions.  This can interfere with user type traits on
-<span class="lineNum">    1158 </span>            :         templated load and save minimal functions.  To get to the correct underlying type,
-<span class="lineNum">    1159 </span>            :         users should use strip_minimal when performing any enable_if type type trait checks.
-<span class="lineNum">    1160 </span>            : 
-<span class="lineNum">    1161 </span>            :         See the enum serialization in types/common.hpp for an example of using this */
-<span class="lineNum">    1162 </span>            :     template &lt;class T, bool IsCerealMinimalTrait = std::is_base_of&lt;detail::NoConvertBase, T&gt;::value&gt;
-<span class="lineNum">    1163 </span>            :     struct strip_minimal
-<span class="lineNum">    1164 </span>            :     {
-<span class="lineNum">    1165 </span>            :       using type = T;
-<span class="lineNum">    1166 </span>            :     };
+<span class="lineNum">    1088 </span>            :     template &lt;class T, class OutputArchive&gt;
+<span class="lineNum">    1089 </span>            :     struct is_output_serializable : std::integral_constant&lt;bool,
+<span class="lineNum">    1090 </span>            :       detail::count_output_serializers&lt;T, OutputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">    1091 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">    1092 </span>            :     // ######################################################################
+<span class="lineNum">    1093 </span>            :     namespace detail
+<span class="lineNum">    1094 </span>            :     {
+<span class="lineNum">    1095 </span>            :       //! The number of input serialization functions available
+<span class="lineNum">    1096 </span>            :       /*! If specialization is being used, we'll count only those; otherwise we'll count everything */
+<span class="lineNum">    1097 </span>            :       template &lt;class T, class InputArchive&gt;
+<span class="lineNum">    1098 </span>            :       struct count_input_serializers : std::integral_constant&lt;int,
+<span class="lineNum">    1099 </span>            :         count_specializations&lt;T, InputArchive&gt;::value ? count_specializations&lt;T, InputArchive&gt;::value :
+<span class="lineNum">    1100 </span>            :         has_member_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1101 </span>            :         has_non_member_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1102 </span>            :         has_member_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1103 </span>            :         has_non_member_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1104 </span>            :         has_member_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1105 </span>            :         has_non_member_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1106 </span>            :         /*-versioned---------------------------------------------------------*/
+<span class="lineNum">    1107 </span>            :         has_member_versioned_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1108 </span>            :         has_non_member_versioned_load&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1109 </span>            :         has_member_versioned_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1110 </span>            :         has_non_member_versioned_serialize&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1111 </span>            :         has_member_versioned_load_minimal&lt;T, InputArchive&gt;::value +
+<span class="lineNum">    1112 </span>            :         has_non_member_versioned_load_minimal&lt;T, InputArchive&gt;::value&gt; {};
+<span class="lineNum">    1113 </span>            :     }
+<span class="lineNum">    1114 </span>            : 
+<span class="lineNum">    1115 </span>            :     template &lt;class T, class InputArchive&gt;
+<span class="lineNum">    1116 </span>            :     struct is_input_serializable : std::integral_constant&lt;bool,
+<span class="lineNum">    1117 </span>            :       detail::count_input_serializers&lt;T, InputArchive&gt;::value == 1&gt; {};
+<span class="lineNum">    1118 </span>            : 
+<span class="lineNum">    1119 </span>            :     // ######################################################################
+<span class="lineNum">    1120 </span>            :     // Base Class Support
+<span class="lineNum">    1121 </span>            :     namespace detail
+<span class="lineNum">    1122 </span>            :     {
+<span class="lineNum">    1123 </span>            :       struct base_class_id
+<a name="1124"><span class="lineNum">    1124 </span>            :       {</a>
+<span class="lineNum">    1125 </span>            :         template&lt;class T&gt;
+<span class="lineNum">    1126 </span><span class="lineCov">       3200 :           base_class_id(T const * const t) :</span>
+<span class="lineNum">    1127 </span>            :           type(typeid(T)),
+<span class="lineNum">    1128 </span>            :           ptr(t),
+<span class="lineNum">    1129 </span><span class="lineCov">       3200 :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))</span>
+<a name="1130"><span class="lineNum">    1130 </span><span class="lineCov">       3200 :           { }</span></a>
+<span class="lineNum">    1131 </span>            : 
+<span class="lineNum">    1132 </span><span class="lineCov">       1600 :           bool operator==(base_class_id const &amp; other) const</span>
+<span class="lineNum">    1133 </span><span class="lineCov">       1600 :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }</span>
+<span class="lineNum">    1134 </span>            : 
+<span class="lineNum">    1135 </span>            :           std::type_index type;
+<span class="lineNum">    1136 </span>            :           void const * ptr;
+<a name="1137"><span class="lineNum">    1137 </span>            :           size_t hash;</a>
+<span class="lineNum">    1138 </span>            :       };
+<span class="lineNum">    1139 </span><span class="lineCov">      33924 :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };</span>
+<span class="lineNum">    1140 </span>            :     } // namespace detail
+<span class="lineNum">    1141 </span>            : 
+<span class="lineNum">    1142 </span>            :     namespace detail
+<a name="1143"><span class="lineNum">    1143 </span>            :     {</a>
+<span class="lineNum">    1144 </span>            :       //! Common base type for base class casting
+<span class="lineNum">    1145 </span><span class="lineCov">       8000 :       struct BaseCastBase {};</span>
+<span class="lineNum">    1146 </span>            : 
+<span class="lineNum">    1147 </span>            :       template &lt;class&gt;
+<span class="lineNum">    1148 </span>            :       struct get_base_class;
+<span class="lineNum">    1149 </span>            : 
+<span class="lineNum">    1150 </span>            :       template &lt;template&lt;typename&gt; class Cast, class Base&gt;
+<span class="lineNum">    1151 </span>            :       struct get_base_class&lt;Cast&lt;Base&gt;&gt;
+<span class="lineNum">    1152 </span>            :       {
+<span class="lineNum">    1153 </span>            :         using type = Base;
+<span class="lineNum">    1154 </span>            :       };
+<span class="lineNum">    1155 </span>            : 
+<span class="lineNum">    1156 </span>            :       //! Base class cast, behave as the test
+<span class="lineNum">    1157 </span>            :       template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive,
+<span class="lineNum">    1158 </span>            :                 bool IsBaseCast = std::is_base_of&lt;BaseCastBase, Cast&gt;::value&gt;
+<span class="lineNum">    1159 </span>            :       struct has_minimal_base_class_serialization_impl : Test&lt;typename get_base_class&lt;Cast&gt;::type, Archive&gt;
+<span class="lineNum">    1160 </span>            :       { };
+<span class="lineNum">    1161 </span>            : 
+<span class="lineNum">    1162 </span>            :       //! Not a base class cast
+<span class="lineNum">    1163 </span>            :       template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive&gt;
+<span class="lineNum">    1164 </span>            :       struct has_minimal_base_class_serialization_impl&lt;Cast,Test, Archive, false&gt; : std::false_type
+<span class="lineNum">    1165 </span>            :       { };
+<span class="lineNum">    1166 </span>            :     }
 <span class="lineNum">    1167 </span>            : 
-<span class="lineNum">    1168 </span>            :     //! Specialization for types wrapped in a NoConvert
-<span class="lineNum">    1169 </span>            :     template &lt;class T&gt;
-<span class="lineNum">    1170 </span>            :     struct strip_minimal&lt;T, true&gt;
-<span class="lineNum">    1171 </span>            :     {
-<span class="lineNum">    1172 </span>            :       using type = typename T::type;
-<span class="lineNum">    1173 </span>            :     };
-<span class="lineNum">    1174 </span>            : 
-<span class="lineNum">    1175 </span>            :     // ######################################################################
-<span class="lineNum">    1176 </span>            :     //! Member load and construct check
-<span class="lineNum">    1177 </span>            :     template&lt;typename T, typename A&gt;
-<span class="lineNum">    1178 </span>            :     struct has_member_load_and_construct : std::integral_constant&lt;bool,
-<span class="lineNum">    1179 </span>            :       std::is_same&lt;decltype( access::load_and_construct&lt;T&gt;( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;() ) ), void&gt;::value&gt;
-<span class="lineNum">    1180 </span>            :     { };
-<span class="lineNum">    1181 </span>            : 
-<span class="lineNum">    1182 </span>            :     // ######################################################################
-<span class="lineNum">    1183 </span>            :     //! Non member load and construct check
-<span class="lineNum">    1184 </span>            :     template&lt;typename T, typename A&gt;
-<span class="lineNum">    1185 </span>            :     struct has_non_member_load_and_construct : std::integral_constant&lt;bool,
-<span class="lineNum">    1186 </span>            :       std::is_same&lt;decltype( LoadAndConstruct&lt;T&gt;::load_and_construct( std::declval&lt;A&amp;&gt;(), std::declval&lt; ::cereal::construct&lt;T&gt;&amp;&gt;() ) ), void&gt;::value&gt;
-<span class="lineNum">    1187 </span>            :     { };
-<span class="lineNum">    1188 </span>            : 
-<span class="lineNum">    1189 </span>            :     // ######################################################################
-<span class="lineNum">    1190 </span>            :     //! Has either a member or non member allocate
-<span class="lineNum">    1191 </span>            :     template&lt;typename T, typename A&gt;
-<span class="lineNum">    1192 </span>            :     struct has_load_and_construct : std::integral_constant&lt;bool,
-<span class="lineNum">    1193 </span>            :       has_member_load_and_construct&lt;T, A&gt;::value || has_non_member_load_and_construct&lt;T, A&gt;::value&gt;
-<span class="lineNum">    1194 </span>            :     { };
-<span class="lineNum">    1195 </span>            : 
-<span class="lineNum">    1196 </span>            :     // ######################################################################
-<span class="lineNum">    1197 </span>            :     //! Determines whether the class T can be default constructed by cereal::access
+<span class="lineNum">    1168 </span>            :     //! Checks to see if the base class used in a cast has a minimal serialization
+<span class="lineNum">    1169 </span>            :     /*! @tparam Cast Either base_class or virtual_base_class wrapped type
+<span class="lineNum">    1170 </span>            :         @tparam Test A has_minimal test (for either input or output)
+<span class="lineNum">    1171 </span>            :         @tparam Archive The archive to use with the test */
+<span class="lineNum">    1172 </span>            :     template &lt;class Cast, template&lt;class, class&gt; class Test, class Archive&gt;
+<span class="lineNum">    1173 </span>            :     struct has_minimal_base_class_serialization : detail::has_minimal_base_class_serialization_impl&lt;Cast, Test, Archive&gt;
+<span class="lineNum">    1174 </span>            :     { };
+<span class="lineNum">    1175 </span>            : 
+<span class="lineNum">    1176 </span>            : 
+<span class="lineNum">    1177 </span>            :     // ######################################################################
+<span class="lineNum">    1178 </span>            :     namespace detail
+<span class="lineNum">    1179 </span>            :     {
+<span class="lineNum">    1180 </span>            :       struct shared_from_this_wrapper
+<span class="lineNum">    1181 </span>            :       {
+<span class="lineNum">    1182 </span>            :         template &lt;class U&gt;
+<span class="lineNum">    1183 </span>            :         static auto check( U const &amp; t ) -&gt; decltype( ::cereal::access::shared_from_this(t), std::true_type() );
+<span class="lineNum">    1184 </span>            : 
+<span class="lineNum">    1185 </span>            :         static auto check( ... ) -&gt; decltype( std::false_type() );
+<span class="lineNum">    1186 </span>            : 
+<span class="lineNum">    1187 </span>            :         template &lt;class U&gt;
+<span class="lineNum">    1188 </span>            :         static auto get( U const &amp; t ) -&gt; decltype( t.shared_from_this() );
+<span class="lineNum">    1189 </span>            :       };
+<span class="lineNum">    1190 </span>            :     }
+<span class="lineNum">    1191 </span>            : 
+<span class="lineNum">    1192 </span>            :     //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
+<span class="lineNum">    1193 </span>            :     template&lt;class T&gt;
+<span class="lineNum">    1194 </span>            :     struct has_shared_from_this : decltype(detail::shared_from_this_wrapper::check(std::declval&lt;T&gt;()))
+<span class="lineNum">    1195 </span>            :     { };
+<span class="lineNum">    1196 </span>            : 
+<span class="lineNum">    1197 </span>            :     //! Get the type of the base class of T which inherited from std::enable_shared_from_this
 <span class="lineNum">    1198 </span>            :     template &lt;class T&gt;
-<span class="lineNum">    1199 </span>            :     struct is_default_constructible
+<span class="lineNum">    1199 </span>            :     struct get_shared_from_this_base
 <span class="lineNum">    1200 </span>            :     {
-<span class="lineNum">    1201 </span>            :       #ifdef CEREAL_OLDER_GCC
-<span class="lineNum">    1202 </span>            :       template &lt;class TT, class SFINAE = void&gt;
-<span class="lineNum">    1203 </span>            :       struct test : no {};
-<span class="lineNum">    1204 </span>            :       template &lt;class TT&gt;
-<span class="lineNum">    1205 </span>            :       struct test&lt;TT, typename detail::Void&lt; decltype( cereal::access::construct&lt;TT&gt;() ) &gt;::type&gt; : yes {};
-<span class="lineNum">    1206 </span>            :       static const bool value = test&lt;T&gt;();
-<span class="lineNum">    1207 </span>            :       #else // NOT CEREAL_OLDER_GCC =========================================
-<span class="lineNum">    1208 </span>            :       template &lt;class TT&gt;
-<span class="lineNum">    1209 </span>            :       static auto test(int) -&gt; decltype( cereal::access::construct&lt;TT&gt;(), yes());
-<span class="lineNum">    1210 </span>            :       template &lt;class&gt;
-<span class="lineNum">    1211 </span>            :       static no test(...);
-<span class="lineNum">    1212 </span>            :       static const bool value = std::is_same&lt;decltype(test&lt;T&gt;(0)), yes&gt;::value;
-<span class="lineNum">    1213 </span>            :       #endif // NOT CEREAL_OLDER_GCC
-<span class="lineNum">    1214 </span>            :     };
-<span class="lineNum">    1215 </span>            : 
-<span class="lineNum">    1216 </span>            :     // ######################################################################
-<span class="lineNum">    1217 </span>            :     namespace detail
+<span class="lineNum">    1201 </span>            :       private:
+<span class="lineNum">    1202 </span>            :         using PtrType = decltype(detail::shared_from_this_wrapper::get(std::declval&lt;T&gt;()));
+<span class="lineNum">    1203 </span>            :       public:
+<span class="lineNum">    1204 </span>            :         //! The type of the base of T that inherited from std::enable_shared_from_this
+<span class="lineNum">    1205 </span>            :         using type = typename std::decay&lt;typename PtrType::element_type&gt;::type;
+<span class="lineNum">    1206 </span>            :     };
+<span class="lineNum">    1207 </span>            : 
+<span class="lineNum">    1208 </span>            :     // ######################################################################
+<span class="lineNum">    1209 </span>            :     //! Extracts the true type from something possibly wrapped in a cereal NoConvert
+<span class="lineNum">    1210 </span>            :     /*! Internally cereal uses some wrapper classes to test the validity of non-member
+<span class="lineNum">    1211 </span>            :         minimal load and save functions.  This can interfere with user type traits on
+<span class="lineNum">    1212 </span>            :         templated load and save minimal functions.  To get to the correct underlying type,
+<span class="lineNum">    1213 </span>            :         users should use strip_minimal when performing any enable_if type type trait checks.
+<span class="lineNum">    1214 </span>            : 
+<span class="lineNum">    1215 </span>            :         See the enum serialization in types/common.hpp for an example of using this */
+<span class="lineNum">    1216 </span>            :     template &lt;class T, bool IsCerealMinimalTrait = std::is_base_of&lt;detail::NoConvertBase, T&gt;::value&gt;
+<span class="lineNum">    1217 </span>            :     struct strip_minimal
 <span class="lineNum">    1218 </span>            :     {
-<span class="lineNum">    1219 </span>            :       //! Removes all qualifiers and minimal wrappers from an archive
-<span class="lineNum">    1220 </span>            :       template &lt;class A&gt;
-<span class="lineNum">    1221 </span>            :       using decay_archive = typename std::decay&lt;typename strip_minimal&lt;A&gt;::type&gt;::type;
-<span class="lineNum">    1222 </span>            :     }
-<span class="lineNum">    1223 </span>            : 
-<span class="lineNum">    1224 </span>            :     //! Checks if the provided archive type is equal to some cereal archive type
-<span class="lineNum">    1225 </span>            :     /*! This automatically does things such as std::decay and removing any other wrappers that may be
-<span class="lineNum">    1226 </span>            :         on the Archive template parameter.
-<span class="lineNum">    1227 </span>            : 
-<span class="lineNum">    1228 </span>            :         Example use:
-<span class="lineNum">    1229 </span>            :         @code{cpp}
-<span class="lineNum">    1230 </span>            :         // example use to disable a serialization function
-<span class="lineNum">    1231 </span>            :         template &lt;class Archive, EnableIf&lt;cereal::traits::is_same_archive&lt;Archive, cereal::BinaryOutputArchive&gt;::value&gt; = sfinae&gt;
-<span class="lineNum">    1232 </span>            :         void save( Archive &amp; ar, MyType const &amp; mt );
-<span class="lineNum">    1233 </span>            :         @endcode */
-<span class="lineNum">    1234 </span>            :     template &lt;class ArchiveT, class CerealArchiveT&gt;
-<span class="lineNum">    1235 </span>            :     struct is_same_archive : std::integral_constant&lt;bool,
-<span class="lineNum">    1236 </span>            :       std::is_same&lt;detail::decay_archive&lt;ArchiveT&gt;, CerealArchiveT&gt;::value&gt;
-<span class="lineNum">    1237 </span>            :     { };
-<span class="lineNum">    1238 </span>            : 
-<span class="lineNum">    1239 </span>            :     // ######################################################################
-<span class="lineNum">    1240 </span>            :     //! A macro to use to restrict which types of archives your function will work for.
-<span class="lineNum">    1241 </span>            :     /*! This requires you to have a template class parameter named Archive and replaces the void return
-<span class="lineNum">    1242 </span>            :         type for your function.
-<span class="lineNum">    1243 </span>            : 
-<span class="lineNum">    1244 </span>            :         INTYPE refers to the input archive type you wish to restrict on.
-<span class="lineNum">    1245 </span>            :         OUTTYPE refers to the output archive type you wish to restrict on.
-<span class="lineNum">    1246 </span>            : 
-<span class="lineNum">    1247 </span>            :         For example, if we want to limit a serialize to only work with binary serialization:
+<span class="lineNum">    1219 </span>            :       using type = T;
+<span class="lineNum">    1220 </span>            :     };
+<span class="lineNum">    1221 </span>            : 
+<span class="lineNum">    1222 </span>            :     //! Specialization for types wrapped in a NoConvert
+<span class="lineNum">    1223 </span>            :     template &lt;class T&gt;
+<span class="lineNum">    1224 </span>            :     struct strip_minimal&lt;T, true&gt;
+<span class="lineNum">    1225 </span>            :     {
+<span class="lineNum">    1226 </span>            :       using type = typename T::type;
+<span class="lineNum">    1227 </span>            :     };
+<span class="lineNum">    1228 </span>            : 
+<span class="lineNum">    1229 </span>            :     // ######################################################################
+<span class="lineNum">    1230 </span>            :     //! Determines whether the class T can be default constructed by cereal::access
+<span class="lineNum">    1231 </span>            :     template &lt;class T&gt;
+<span class="lineNum">    1232 </span>            :     struct is_default_constructible
+<span class="lineNum">    1233 </span>            :     {
+<span class="lineNum">    1234 </span>            :       #ifdef CEREAL_OLDER_GCC
+<span class="lineNum">    1235 </span>            :       template &lt;class TT, class SFINAE = void&gt;
+<span class="lineNum">    1236 </span>            :       struct test : no {};
+<span class="lineNum">    1237 </span>            :       template &lt;class TT&gt;
+<span class="lineNum">    1238 </span>            :       struct test&lt;TT, typename detail::Void&lt; decltype( cereal::access::construct&lt;TT&gt;() ) &gt;::type&gt; : yes {};
+<span class="lineNum">    1239 </span>            :       static const bool value = test&lt;T&gt;();
+<span class="lineNum">    1240 </span>            :       #else // NOT CEREAL_OLDER_GCC =========================================
+<span class="lineNum">    1241 </span>            :       template &lt;class TT&gt;
+<span class="lineNum">    1242 </span>            :       static auto test(int) -&gt; decltype( cereal::access::construct&lt;TT&gt;(), yes());
+<span class="lineNum">    1243 </span>            :       template &lt;class&gt;
+<span class="lineNum">    1244 </span>            :       static no test(...);
+<span class="lineNum">    1245 </span>            :       static const bool value = std::is_same&lt;decltype(test&lt;T&gt;(0)), yes&gt;::value;
+<span class="lineNum">    1246 </span>            :       #endif // NOT CEREAL_OLDER_GCC
+<span class="lineNum">    1247 </span>            :     };
 <span class="lineNum">    1248 </span>            : 
-<span class="lineNum">    1249 </span>            :         @code{.cpp}
-<span class="lineNum">    1250 </span>            :         template &lt;class Archive&gt;
-<span class="lineNum">    1251 </span>            :         CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
-<span class="lineNum">    1252 </span>            :         serialize( Archive &amp; ar, MyCoolType &amp; m )
-<span class="lineNum">    1253 </span>            :         {
-<span class="lineNum">    1254 </span>            :           ar &amp; m;
-<span class="lineNum">    1255 </span>            :         }
-<span class="lineNum">    1256 </span>            :         @endcode
-<span class="lineNum">    1257 </span>            : 
-<span class="lineNum">    1258 </span>            :         If you need to do more restrictions in your enable_if, you will need to do this by hand.
-<span class="lineNum">    1259 </span>            :      */
-<span class="lineNum">    1260 </span>            :     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
-<span class="lineNum">    1261 </span>            :     typename std::enable_if&lt;cereal::traits::is_same_archive&lt;Archive, INTYPE&gt;::value || cereal::traits::is_same_archive&lt;Archive, OUTTYPE&gt;::value, void&gt;::type
-<span class="lineNum">    1262 </span>            : 
-<span class="lineNum">    1263 </span>            :     //! Type traits only struct used to mark an archive as human readable (text based)
-<a name="1264"><span class="lineNum">    1264 </span>            :     /*! Archives that wish to identify as text based/human readable should inherit from</a>
-<span class="lineNum">    1265 </span>            :         this struct */
-<span class="lineNum">    1266 </span><span class="lineCov">      42130 :     struct TextArchive {};</span>
-<span class="lineNum">    1267 </span>            : 
-<span class="lineNum">    1268 </span>            :     //! Checks if an archive is a text archive (human readable)
-<span class="lineNum">    1269 </span>            :     template &lt;class A&gt;
-<span class="lineNum">    1270 </span>            :     struct is_text_archive : std::integral_constant&lt;bool,
-<span class="lineNum">    1271 </span>            :       std::is_base_of&lt;TextArchive, detail::decay_archive&lt;A&gt;&gt;::value&gt;
-<span class="lineNum">    1272 </span>            :     { };
-<span class="lineNum">    1273 </span>            :   } // namespace traits
-<span class="lineNum">    1274 </span>            : 
-<span class="lineNum">    1275 </span>            :   // ######################################################################
-<span class="lineNum">    1276 </span>            :   namespace detail
-<span class="lineNum">    1277 </span>            :   {
-<span class="lineNum">    1278 </span>            :     template &lt;class T, class A, bool Member = traits::has_member_load_and_construct&lt;T, A&gt;::value, bool NonMember = traits::has_non_member_load_and_construct&lt;T, A&gt;::value&gt;
-<span class="lineNum">    1279 </span>            :     struct Construct
-<span class="lineNum">    1280 </span>            :     {
-<span class="lineNum">    1281 </span>            :       static_assert( cereal::traits::detail::delay_static_assert&lt;T&gt;::value,
-<span class="lineNum">    1282 </span>            :         &quot;Cereal detected both member and non member load_and_construct functions!&quot; );
-<span class="lineNum">    1283 </span>            :       static T * load_andor_construct( A &amp; /*ar*/, construct&lt;T&gt; &amp; /*construct*/ )
-<span class="lineNum">    1284 </span>            :       { return nullptr; }
-<span class="lineNum">    1285 </span>            :     };
-<span class="lineNum">    1286 </span>            : 
-<span class="lineNum">    1287 </span>            :     template &lt;class T, class A&gt;
-<span class="lineNum">    1288 </span>            :     struct Construct&lt;T, A, false, false&gt;
-<span class="lineNum">    1289 </span>            :     {
-<span class="lineNum">    1290 </span>            :       static_assert( ::cereal::traits::is_default_constructible&lt;T&gt;::value,
-<span class="lineNum">    1291 </span>            :                      &quot;Trying to serialize a an object with no default constructor. \n\n &quot;
-<span class="lineNum">    1292 </span>            :                      &quot;Types must either be default constructible or define either a member or non member Construct function. \n &quot;
-<span class="lineNum">    1293 </span>            :                      &quot;Construct functions generally have the signature: \n\n &quot;
-<span class="lineNum">    1294 </span>            :                      &quot;template &lt;class Archive&gt; \n &quot;
-<span class="lineNum">    1295 </span>            :                      &quot;static void load_and_construct(Archive &amp; ar, cereal::construct&lt;T&gt; &amp; construct) \n &quot;
-<span class="lineNum">    1296 </span>            :                      &quot;{ \n &quot;
-<span class="lineNum">    1297 </span>            :                      &quot;  var a; \n &quot;
-<span class="lineNum">    1298 </span>            :                      &quot;  ar( a ) \n &quot;
-<a name="1299"><span class="lineNum">    1299 </span>            :                      &quot;  construct( a ); \n &quot;</a>
-<span class="lineNum">    1300 </span>            :                      &quot;} \n\n&quot; );
-<span class="lineNum">    1301 </span><span class="lineCov">     247212 :       static T * load_andor_construct()</span>
-<span class="lineNum">    1302 </span><span class="lineCov">     247212 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
-<span class="lineNum">    1303 </span>            :     };
-<span class="lineNum">    1304 </span>            : 
-<span class="lineNum">    1305 </span>            :     template &lt;class T, class A&gt;
-<a name="1306"><span class="lineNum">    1306 </span>            :     struct Construct&lt;T, A, true, false&gt;</a>
-<span class="lineNum">    1307 </span>            :     {
-<span class="lineNum">    1308 </span><span class="lineCov">       9600 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
-<span class="lineNum">    1309 </span>            :       {
-<span class="lineNum">    1310 </span><span class="lineCov">       9600 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
-<span class="lineNum">    1311 </span><span class="lineCov">       8400 :       }</span>
-<span class="lineNum">    1312 </span>            :     };
-<span class="lineNum">    1313 </span>            : 
-<span class="lineNum">    1314 </span>            :     template &lt;class T, class A&gt;
-<a name="1315"><span class="lineNum">    1315 </span>            :     struct Construct&lt;T, A, false, true&gt;</a>
-<span class="lineNum">    1316 </span>            :     {
-<span class="lineNum">    1317 </span><span class="lineCov">       2400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
-<span class="lineNum">    1318 </span>            :       {
-<span class="lineNum">    1319 </span><span class="lineCov">       2400 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
-<span class="lineNum">    1320 </span><span class="lineCov">       2400 :       }</span>
-<span class="lineNum">    1321 </span>            :     };
-<span class="lineNum">    1322 </span>            :   } // namespace detail
-<span class="lineNum">    1323 </span>            : } // namespace cereal
-<span class="lineNum">    1324 </span>            : 
-<span class="lineNum">    1325 </span>            : #endif // CEREAL_DETAILS_TRAITS_HPP_
+<span class="lineNum">    1249 </span>            :     // ######################################################################
+<span class="lineNum">    1250 </span>            :     namespace detail
+<span class="lineNum">    1251 </span>            :     {
+<span class="lineNum">    1252 </span>            :       //! Removes all qualifiers and minimal wrappers from an archive
+<span class="lineNum">    1253 </span>            :       template &lt;class A&gt;
+<span class="lineNum">    1254 </span>            :       using decay_archive = typename std::decay&lt;typename strip_minimal&lt;A&gt;::type&gt;::type;
+<span class="lineNum">    1255 </span>            :     }
+<span class="lineNum">    1256 </span>            : 
+<span class="lineNum">    1257 </span>            :     //! Checks if the provided archive type is equal to some cereal archive type
+<span class="lineNum">    1258 </span>            :     /*! This automatically does things such as std::decay and removing any other wrappers that may be
+<span class="lineNum">    1259 </span>            :         on the Archive template parameter.
+<span class="lineNum">    1260 </span>            : 
+<span class="lineNum">    1261 </span>            :         Example use:
+<span class="lineNum">    1262 </span>            :         @code{cpp}
+<span class="lineNum">    1263 </span>            :         // example use to disable a serialization function
+<span class="lineNum">    1264 </span>            :         template &lt;class Archive, EnableIf&lt;cereal::traits::is_same_archive&lt;Archive, cereal::BinaryOutputArchive&gt;::value&gt; = sfinae&gt;
+<span class="lineNum">    1265 </span>            :         void save( Archive &amp; ar, MyType const &amp; mt );
+<span class="lineNum">    1266 </span><span class="lineCov">      27820 :         @endcode */</span>
+<span class="lineNum">    1267 </span>            :     template &lt;class ArchiveT, class CerealArchiveT&gt;
+<span class="lineNum">    1268 </span>            :     struct is_same_archive : std::integral_constant&lt;bool,
+<span class="lineNum">    1269 </span>            :       std::is_same&lt;detail::decay_archive&lt;ArchiveT&gt;, CerealArchiveT&gt;::value&gt;
+<span class="lineNum">    1270 </span>            :     { };
+<span class="lineNum">    1271 </span>            : 
+<span class="lineNum">    1272 </span>            :     // ######################################################################
+<span class="lineNum">    1273 </span>            :     //! A macro to use to restrict which types of archives your function will work for.
+<span class="lineNum">    1274 </span>            :     /*! This requires you to have a template class parameter named Archive and replaces the void return
+<span class="lineNum">    1275 </span>            :         type for your function.
+<span class="lineNum">    1276 </span>            : 
+<span class="lineNum">    1277 </span>            :         INTYPE refers to the input archive type you wish to restrict on.
+<span class="lineNum">    1278 </span>            :         OUTTYPE refers to the output archive type you wish to restrict on.
+<span class="lineNum">    1279 </span>            : 
+<span class="lineNum">    1280 </span>            :         For example, if we want to limit a serialize to only work with binary serialization:
+<span class="lineNum">    1281 </span>            : 
+<span class="lineNum">    1282 </span>            :         @code{.cpp}
+<span class="lineNum">    1283 </span>            :         template &lt;class Archive&gt;
+<span class="lineNum">    1284 </span>            :         CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
+<span class="lineNum">    1285 </span>            :         serialize( Archive &amp; ar, MyCoolType &amp; m )
+<span class="lineNum">    1286 </span>            :         {
+<span class="lineNum">    1287 </span>            :           ar &amp; m;
+<span class="lineNum">    1288 </span>            :         }
+<span class="lineNum">    1289 </span>            :         @endcode
+<span class="lineNum">    1290 </span>            : 
+<span class="lineNum">    1291 </span>            :         If you need to do more restrictions in your enable_if, you will need to do this by hand.
+<span class="lineNum">    1292 </span>            :      */
+<span class="lineNum">    1293 </span>            :     #define CEREAL_ARCHIVE_RESTRICT(INTYPE, OUTTYPE) \
+<span class="lineNum">    1294 </span>            :     typename std::enable_if&lt;cereal::traits::is_same_archive&lt;Archive, INTYPE&gt;::value || cereal::traits::is_same_archive&lt;Archive, OUTTYPE&gt;::value, void&gt;::type
+<span class="lineNum">    1295 </span>            : 
+<span class="lineNum">    1296 </span>            :     //! Type traits only struct used to mark an archive as human readable (text based)
+<a name="1297"><span class="lineNum">    1297 </span>            :     /*! Archives that wish to identify as text based/human readable should inherit from</a>
+<span class="lineNum">    1298 </span>            :         this struct */
+<a name="1299"><span class="lineNum">    1299 </span><span class="lineCov">      14316 :     struct TextArchive {};</span></a>
+<span class="lineNum">    1300 </span>            : 
+<span class="lineNum">    1301 </span><span class="lineCov">     164808 :     //! Checks if an archive is a text archive (human readable)</span>
+<span class="lineNum">    1302 </span><span class="lineCov">     164808 :     template &lt;class A&gt;</span>
+<span class="lineNum">    1303 </span>            :     struct is_text_archive : std::integral_constant&lt;bool,
+<span class="lineNum">    1304 </span>            :       std::is_base_of&lt;TextArchive, detail::decay_archive&lt;A&gt;&gt;::value&gt;
+<span class="lineNum">    1305 </span>            :     { };
+<a name="1306"><span class="lineNum">    1306 </span>            :   } // namespace traits</a>
+<span class="lineNum">    1307 </span>            : 
+<span class="lineNum">    1308 </span><span class="lineCov">       6400 :   // ######################################################################</span>
+<span class="lineNum">    1309 </span>            :   namespace detail
+<span class="lineNum">    1310 </span><span class="lineCov">       6400 :   {</span>
+<span class="lineNum">    1311 </span><span class="lineCov">       5600 :     template &lt;class T, class A,</span>
+<span class="lineNum">    1312 </span>            :               bool Member = traits::has_member_load_and_construct&lt;T, A&gt;::value,
+<span class="lineNum">    1313 </span>            :               bool MemberVersioned = traits::has_member_versioned_load_and_construct&lt;T, A&gt;::value,
+<span class="lineNum">    1314 </span>            :               bool NonMember = traits::has_non_member_load_and_construct&lt;T, A&gt;::value,
+<a name="1315"><span class="lineNum">    1315 </span>            :               bool NonMemberVersioned = traits::has_non_member_versioned_load_and_construct&lt;T, A&gt;::value&gt;</a>
+<span class="lineNum">    1316 </span>            :     struct Construct
+<span class="lineNum">    1317 </span><span class="lineCov">       1600 :     {</span>
+<span class="lineNum">    1318 </span>            :       static_assert( cereal::traits::detail::delay_static_assert&lt;T&gt;::value,
+<span class="lineNum">    1319 </span><span class="lineCov">       1600 :         &quot;cereal found more than one compatible load_and_construct function for the provided type and archive combination. \n\n &quot;</span>
+<span class="lineNum">    1320 </span><span class="lineCov">       1600 :         &quot;Types must either have a member load_and_construct function or a non-member specialization of LoadAndConstruct (you may not mix these). \n &quot;</span>
+<span class="lineNum">    1321 </span>            :         &quot;In addition, you may not mix versioned with non-versioned load_and_construct functions. \n\n &quot; );
+<span class="lineNum">    1322 </span>            :       static T * load_andor_construct( A &amp; /*ar*/, construct&lt;T&gt; &amp; /*construct*/ )
+<span class="lineNum">    1323 </span>            :       { return nullptr; }
+<span class="lineNum">    1324 </span>            :     };
+<span class="lineNum">    1325 </span>            : 
+<span class="lineNum">    1326 </span>            :     // no load and construct case
+<span class="lineNum">    1327 </span>            :     template &lt;class T, class A&gt;
+<span class="lineNum">    1328 </span>            :     struct Construct&lt;T, A, false, false, false, false&gt;
+<span class="lineNum">    1329 </span>            :     {
+<span class="lineNum">    1330 </span>            :       static_assert( ::cereal::traits::is_default_constructible&lt;T&gt;::value,
+<span class="lineNum">    1331 </span>            :                      &quot;Trying to serialize a an object with no default constructor. \n\n &quot;
+<span class="lineNum">    1332 </span>            :                      &quot;Types must either be default constructible or define either a member or non member Construct function. \n &quot;
+<span class="lineNum">    1333 </span>            :                      &quot;Construct functions generally have the signature: \n\n &quot;
+<span class="lineNum">    1334 </span>            :                      &quot;template &lt;class Archive&gt; \n &quot;
+<span class="lineNum">    1335 </span>            :                      &quot;static void load_and_construct(Archive &amp; ar, cereal::construct&lt;T&gt; &amp; construct) \n &quot;
+<span class="lineNum">    1336 </span>            :                      &quot;{ \n &quot;
+<span class="lineNum">    1337 </span>            :                      &quot;  var a; \n &quot;
+<span class="lineNum">    1338 </span>            :                      &quot;  ar( a ) \n &quot;
+<a name="1339"><span class="lineNum">    1339 </span>            :                      &quot;  construct( a ); \n &quot;</a>
+<span class="lineNum">    1340 </span>            :                      &quot;} \n\n&quot; );
+<span class="lineNum">    1341 </span><span class="lineCov">      83204 :       static T * load_andor_construct()</span>
+<span class="lineNum">    1342 </span><span class="lineCov">      83204 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
+<span class="lineNum">    1343 </span>            :     };
+<span class="lineNum">    1344 </span>            : 
+<span class="lineNum">    1345 </span>            :     // member non-versioned
+<span class="lineNum">    1346 </span>            :     template &lt;class T, class A&gt;
+<a name="1347"><span class="lineNum">    1347 </span>            :     struct Construct&lt;T, A, true, false, false, false&gt;</a>
+<span class="lineNum">    1348 </span>            :     {
+<span class="lineNum">    1349 </span><span class="lineCov">       3200 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1350 </span>            :       {
+<span class="lineNum">    1351 </span><span class="lineCov">       3200 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
+<span class="lineNum">    1352 </span><span class="lineCov">       2800 :       }</span>
+<span class="lineNum">    1353 </span>            :     };
+<span class="lineNum">    1354 </span>            : 
+<span class="lineNum">    1355 </span>            :     // member versioned
+<span class="lineNum">    1356 </span>            :     template &lt;class T, class A&gt;
+<a name="1357"><span class="lineNum">    1357 </span>            :     struct Construct&lt;T, A, false, true, false, false&gt;</a>
+<span class="lineNum">    1358 </span>            :     {
+<span class="lineNum">    1359 </span><span class="lineCov">        400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1360 </span>            :       {
+<span class="lineNum">    1361 </span><span class="lineCov">        400 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">    1362 </span><span class="lineCov">        400 :         access::load_and_construct&lt;T&gt;( ar, construct, version );</span>
+<span class="lineNum">    1363 </span><span class="lineCov">        400 :       }</span>
+<span class="lineNum">    1364 </span>            :     };
+<span class="lineNum">    1365 </span>            : 
+<span class="lineNum">    1366 </span>            :     // non-member non-versioned
+<span class="lineNum">    1367 </span>            :     template &lt;class T, class A&gt;
+<a name="1368"><span class="lineNum">    1368 </span>            :     struct Construct&lt;T, A, false, false, true, false&gt;</a>
+<span class="lineNum">    1369 </span>            :     {
+<span class="lineNum">    1370 </span><span class="lineCov">        800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1371 </span>            :       {
+<span class="lineNum">    1372 </span><span class="lineCov">        800 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
+<span class="lineNum">    1373 </span><span class="lineCov">        800 :       }</span>
+<span class="lineNum">    1374 </span>            :     };
+<span class="lineNum">    1375 </span>            : 
+<span class="lineNum">    1376 </span>            :     // non-member versioned
+<span class="lineNum">    1377 </span>            :     template &lt;class T, class A&gt;
+<a name="1378"><span class="lineNum">    1378 </span>            :     struct Construct&lt;T, A, false, false, false, true&gt;</a>
+<span class="lineNum">    1379 </span>            :     {
+<span class="lineNum">    1380 </span><span class="lineCov">        400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1381 </span>            :       {
+<span class="lineNum">    1382 </span><span class="lineCov">        400 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">    1383 </span><span class="lineCov">        400 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct, version );</span>
+<span class="lineNum">    1384 </span><span class="lineCov">        400 :       }</span>
+<span class="lineNum">    1385 </span>            :     };
+<span class="lineNum">    1386 </span>            :   } // namespace detail
+<span class="lineNum">    1387 </span>            : } // namespace cereal
+<span class="lineNum">    1388 </span>            : 
+<span class="lineNum">    1389 </span>            : #endif // CEREAL_DETAILS_TRAITS_HPP_
 </pre>
       </td>
     </tr>
@@ -1393,7 +1457,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
   </table>
   <br>
 
