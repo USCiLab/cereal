@@ -14,12 +14,13 @@ If you want to serialize some data through pointers to base types:
 3. Read the documentation below to understand your decision for step 4 (no TLDR for this one!)
 4. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro in either the header file in which the type is declared or the source
    file in which it is defined
+5. You may also need to use `CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClass)`, detailed below.
 
 ---
 
 ## Registering Polymorphic Types
 
-When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)] (http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type. Doxygen documentation for these macros can be found [here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
+When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)](http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type. Doxygen documentation for these macros can be found [here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
 
 While it is not necessary to register base classes, cereal must have a serialization path from derived to base type.
 Normally this is handled automatically if you serialize a base type with either `cereal::base_type` or
@@ -51,7 +52,7 @@ under any situation.
 #### Header registration example
 
 ##### myclasses.hpp
-``` {cpp}
+```cpp
 // Include the polymorphic serialization and registration mechanisms
 #include <cereal/types/polymorphic.hpp>
 
@@ -103,12 +104,10 @@ CEREAL_REGISTER_TYPE_WITH_NAME(EmbarrassingDerivedClass, "DerivedClassTwo");
 //  the relationship (more on this later)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClassOne)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, EmbarrassingDerivedClass)
-
 ```
 
 ##### myclasses.cpp
-``` {cpp}
-
+```cpp
 #include "myclasses.hpp"
 #include <iostream>
 
@@ -125,7 +124,7 @@ void EmbarrassingDerivedClass::sayType()
 ```
 
 ##### main.cpp
-``` {cpp}
+```cpp
 // any archives included prior to 'myclasses.hpp' 
 // would also apply to the registration
 #include "myclasses.hpp"
@@ -167,7 +166,6 @@ int main()
 }
 ```
 
-
 ### Registering from a source file
 
 Registration can also be done within a source file.  The same expectation of including appropriate archives beforehand
@@ -189,7 +187,7 @@ registration will not properly occur outside of the DLL.  This issue is not pres
 ### Registration Example
 
 ##### myclasses.hpp
-``` {cpp}
+```cpp
  // A pure virtual base class
 struct BaseClass
 {
@@ -228,8 +226,8 @@ struct EmbarrassingDerivedClass : public BaseClass
 ```
 
 ##### myclasses.cpp
-``` {cpp}
 
+```cpp
 #include "myclasses.hpp"
 #include <iostream>
 
@@ -273,7 +271,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, EmbarrassingDerivedClass)
 ```
 
 ##### main.cpp
-``` {cpp}
+```cpp
 #include "myclasses.hpp"
 
 #include <cereal/archives/xml.hpp>
@@ -382,7 +380,9 @@ See the [doxygen]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html) for m
 ---
 
 <a name="register_archive"></a>
+
 ## Registering Archives
+
 In order for an archive to be used with polymorphic types, it must be registered with the `CEREAL_REGISTER_ARCHIVE` macro.  This is only important if you design a custom archive and wish for it to support polymorphism.  This is already done for all archives that come with cereal.  You can read more about this macro in the [doxygen documentation]({{ site.baseurl }}/assets/doxygen/group__Internal.html#ga80fe42796f7a4d6132ade9cb632cb1d1).
 
 ```cpp
