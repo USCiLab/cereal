@@ -102,7 +102,7 @@ struct PolyDerivedD : PolyBaseB, PolyBaseC
 {
   PolyDerivedD() {}
   PolyDerivedD( std::string const & zz, double yy, int xx, long ww ) :
-    PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
+    PolyBaseAA( ww ), PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
   std::string z;
 
   template <class Archive>
@@ -258,6 +258,7 @@ void test_polymorphic()
 
     std::shared_ptr<PolyBaseA> o_sharedA = std::make_shared<PolyDerivedD>( random_basic_string<char>(gen),
                                                                            rngD(), rngI(), rngL() );
+
     std::weak_ptr<PolyBaseA>   o_weakA = o_sharedA;
     std::unique_ptr<PolyBaseA> o_uniqueA( new PolyDerivedD( random_basic_string<char>(gen),
                                                             rngD(), rngI(), rngL() ) );
