@@ -14,7 +14,7 @@ If you want to serialize some data through pointers to base types:
 3. Read the documentation below to understand your decision for step 4 (no TLDR for this one!)
 4. Use the `CEREAL_REGISTER_TYPE(YourClassName)` macro in either the header file in which the type is declared or the source
    file in which it is defined
-5. You may also need to use `CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClass)`, detailed below.
+5. You may also need to use `CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseClass, DerivedClass)`, [detailed below](#poly_relation).
 
 ---
 
@@ -310,6 +310,7 @@ int main()
   return 0;
 }
 ```
+<a name="poly_relation"></a>
 
 ### Ensuring a path exists from derived to base type
 
