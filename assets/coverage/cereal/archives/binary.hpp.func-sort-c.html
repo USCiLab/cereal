@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-06-08 11:03:01</td>
+            <td class="headerValue">2016-06-29 15:15:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">49</td>
-            <td class="headerCovTableEntry">49</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntry">51</td>
+            <td class="headerCovTableEntryHi">96.1 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -60,27 +60,15 @@
       <td width="20%" class="tableHead">Hit count <span class="tableHeadSort"><img src="../../glass.png" width=10 height=14 alt="Sort by hit count" title="Sort by hit count" border=0></span></td>
     </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;char&gt;::value, void&gt;::type cereal::load&lt;char&gt;(cereal::BinaryInputArchive&amp;, char&amp;)</a></td>
-              <td class="coverFnHi">300</td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#84">cereal::BinaryInputArchive::~BinaryInputArchive()</a></td>
+              <td class="coverFnLo">0</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;char&gt;::value, void&gt;::type cereal::save&lt;char&gt;(cereal::BinaryOutputArchive&amp;, char const&amp;)</a></td>
-              <td class="coverFnHi">300</td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#49">cereal::BinaryOutputArchive::~BinaryOutputArchive()</a></td>
+              <td class="coverFnLo">0</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;long long&gt;::value, void&gt;::type cereal::load&lt;long long&gt;(cereal::BinaryInputArchive&amp;, long long&amp;)</a></td>
-              <td class="coverFnHi">300</td>
-            </tr>
-    <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;long long&gt;::value, void&gt;::type cereal::save&lt;long long&gt;(cereal::BinaryOutputArchive&amp;, long long const&amp;)</a></td>
-              <td class="coverFnHi">300</td>
-            </tr>
-    <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned long long&gt;::value, void&gt;::type cereal::load&lt;unsigned long long&gt;(cereal::BinaryInputArchive&amp;, unsigned long long&amp;)</a></td>
-              <td class="coverFnHi">300</td>
-            </tr>
-    <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned long long&gt;::value, void&gt;::type cereal::save&lt;unsigned long long&gt;(cereal::BinaryOutputArchive&amp;, unsigned long long const&amp;)</a></td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#150">void cereal::load&lt;char32_t*&gt;(cereal::BinaryInputArchive&amp;, cereal::BinaryData&lt;char32_t*&gt;&amp;)</a></td>
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
@@ -88,15 +76,19 @@
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#150">void cereal::load&lt;char32_t*&gt;(cereal::BinaryInputArchive&amp;, cereal::BinaryData&lt;char32_t*&gt;&amp;)</a></td>
-              <td class="coverFnHi">300</td>
-            </tr>
-    <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#150">void cereal::load&lt;wchar_t*&gt;(cereal::BinaryInputArchive&amp;, cereal::BinaryData&lt;wchar_t*&gt;&amp;)</a></td>
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#143">void cereal::save&lt;char16_t const*&gt;(cereal::BinaryOutputArchive&amp;, cereal::BinaryData&lt;char16_t const*&gt; const&amp;)</a></td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;char&gt;::value, void&gt;::type cereal::load&lt;char&gt;(cereal::BinaryInputArchive&amp;, char&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;long long&gt;::value, void&gt;::type cereal::load&lt;long long&gt;(cereal::BinaryInputArchive&amp;, long long&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned long long&gt;::value, void&gt;::type cereal::load&lt;unsigned long long&gt;(cereal::BinaryInputArchive&amp;, unsigned long long&amp;)</a></td>
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
@@ -104,7 +96,23 @@
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#143">void cereal::save&lt;char16_t const*&gt;(cereal::BinaryOutputArchive&amp;, cereal::BinaryData&lt;char16_t const*&gt; const&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#143">void cereal::save&lt;wchar_t const*&gt;(cereal::BinaryOutputArchive&amp;, cereal::BinaryData&lt;wchar_t const*&gt; const&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;char&gt;::value, void&gt;::type cereal::save&lt;char&gt;(cereal::BinaryOutputArchive&amp;, char const&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;long long&gt;::value, void&gt;::type cereal::save&lt;long long&gt;(cereal::BinaryOutputArchive&amp;, long long const&amp;)</a></td>
+              <td class="coverFnHi">300</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned long long&gt;::value, void&gt;::type cereal::save&lt;unsigned long long&gt;(cereal::BinaryOutputArchive&amp;, unsigned long long const&amp;)</a></td>
               <td class="coverFnHi">300</td>
             </tr>
     <tr>
@@ -124,11 +132,11 @@
               <td class="coverFnHi">1000</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#136">std::enable_if&lt;cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryInputArchive&gt;::value||cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryOutputArchive&gt;::value, void&gt;::type cereal::serialize&lt;cereal::BinaryOutputArchive, unsigned long const&amp;&gt;(cereal::BinaryOutputArchive&amp;, cereal::SizeTag&lt;unsigned long const&amp;&gt;&amp;)</a></td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;float&gt;::value, void&gt;::type cereal::load&lt;float&gt;(cereal::BinaryInputArchive&amp;, float&amp;)</a></td>
               <td class="coverFnHi">1500</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;float&gt;::value, void&gt;::type cereal::load&lt;float&gt;(cereal::BinaryInputArchive&amp;, float&amp;)</a></td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#136">std::enable_if&lt;cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryInputArchive&gt;::value||cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryOutputArchive&gt;::value, void&gt;::type cereal::serialize&lt;cereal::BinaryOutputArchive, unsigned long const&amp;&gt;(cereal::BinaryOutputArchive&amp;, cereal::SizeTag&lt;unsigned long const&amp;&gt;&amp;)</a></td>
               <td class="coverFnHi">1500</td>
             </tr>
     <tr>
@@ -136,36 +144,36 @@
               <td class="coverFnHi">1800</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;double&gt;::value, void&gt;::type cereal::load&lt;double&gt;(cereal::BinaryInputArchive&amp;, double&amp;)</a></td>
-              <td class="coverFnHi">2400</td>
-            </tr>
-    <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;long&gt;::value, void&gt;::type cereal::load&lt;long&gt;(cereal::BinaryInputArchive&amp;, long&amp;)</a></td>
-              <td class="coverFnHi">2400</td>
+              <td class="coverFnHi">2600</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;double&gt;::value, void&gt;::type cereal::save&lt;double&gt;(cereal::BinaryOutputArchive&amp;, double const&amp;)</a></td>
-              <td class="coverFnHi">2700</td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;double&gt;::value, void&gt;::type cereal::load&lt;double&gt;(cereal::BinaryInputArchive&amp;, double&amp;)</a></td>
+              <td class="coverFnHi">2601</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;long&gt;::value, void&gt;::type cereal::save&lt;long&gt;(cereal::BinaryOutputArchive&amp;, long const&amp;)</a></td>
-              <td class="coverFnHi">2700</td>
+              <td class="coverFnHi">2900</td>
+            </tr>
+    <tr>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;double&gt;::value, void&gt;::type cereal::save&lt;double&gt;(cereal::BinaryOutputArchive&amp;, double const&amp;)</a></td>
+              <td class="coverFnHi">2901</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#88">cereal::BinaryInputArchive::BinaryInputArchive(std::basic_istream&lt;char, std::char_traits&lt;char&gt; &gt;&amp;)</a></td>
-              <td class="coverFnHi">10303</td>
+              <td class="coverFnHi">10304</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#84">cereal::BinaryInputArchive::~BinaryInputArchive()</a></td>
-              <td class="coverFnHi">10303</td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#84">cereal::BinaryInputArchive::~BinaryInputArchive().2</a></td>
+              <td class="coverFnHi">10304</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#55">cereal::BinaryOutputArchive::BinaryOutputArchive(std::basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;&amp;)</a></td>
-              <td class="coverFnHi">10303</td>
+              <td class="coverFnHi">10304</td>
             </tr>
     <tr>
-              <td class="coverFn"><a href="binary.hpp.gcov.html#49">cereal::BinaryOutputArchive::~BinaryOutputArchive()</a></td>
-              <td class="coverFnHi">10303</td>
+              <td class="coverFn"><a href="binary.hpp.gcov.html#49">cereal::BinaryOutputArchive::~BinaryOutputArchive().2</a></td>
+              <td class="coverFnHi">10304</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;bool&gt;::value, void&gt;::type cereal::load&lt;bool&gt;(cereal::BinaryInputArchive&amp;, bool&amp;)</a></td>
@@ -177,7 +185,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned short&gt;::value, void&gt;::type cereal::load&lt;unsigned short&gt;(cereal::BinaryInputArchive&amp;, unsigned short&amp;)</a></td>
-              <td class="coverFnHi">60255</td>
+              <td class="coverFnHi">60250</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;short&gt;::value, void&gt;::type cereal::load&lt;short&gt;(cereal::BinaryInputArchive&amp;, short&amp;)</a></td>
@@ -185,7 +193,7 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned short&gt;::value, void&gt;::type cereal::save&lt;unsigned short&gt;(cereal::BinaryOutputArchive&amp;, unsigned short const&amp;)</a></td>
-              <td class="coverFnHi">60555</td>
+              <td class="coverFnHi">60550</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;short&gt;::value, void&gt;::type cereal::save&lt;short&gt;(cereal::BinaryOutputArchive&amp;, short const&amp;)</a></td>
@@ -193,74 +201,74 @@
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned char&gt;::value, void&gt;::type cereal::load&lt;unsigned char&gt;(cereal::BinaryInputArchive&amp;, unsigned char&amp;)</a></td>
-              <td class="coverFnHi">93600</td>
+              <td class="coverFnHi">104700</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned char&gt;::value, void&gt;::type cereal::save&lt;unsigned char&gt;(cereal::BinaryOutputArchive&amp;, unsigned char const&amp;)</a></td>
-              <td class="coverFnHi">93600</td>
+              <td class="coverFnHi">104700</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;signed char&gt;::value, void&gt;::type cereal::load&lt;signed char&gt;(cereal::BinaryInputArchive&amp;, signed char&amp;)</a></td>
-              <td class="coverFnHi">170103</td>
+              <td class="coverFnHi">170058</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;signed char&gt;::value, void&gt;::type cereal::save&lt;signed char&gt;(cereal::BinaryOutputArchive&amp;, signed char const&amp;)</a></td>
-              <td class="coverFnHi">170403</td>
+              <td class="coverFnHi">170358</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#150">void cereal::load&lt;char*&gt;(cereal::BinaryInputArchive&amp;, cereal::BinaryData&lt;char*&gt;&amp;)</a></td>
-              <td class="coverFnHi">181935</td>
+              <td class="coverFnHi">182091</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#143">void cereal::save&lt;char const*&gt;(cereal::BinaryOutputArchive&amp;, cereal::BinaryData&lt;char const*&gt; const&amp;)</a></td>
-              <td class="coverFnHi">181935</td>
+              <td class="coverFnHi">182091</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#136">std::enable_if&lt;cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryInputArchive&gt;::value||cereal::traits::is_same_archive&lt;cereal::BinaryOutputArchive, cereal::BinaryOutputArchive&gt;::value, void&gt;::type cereal::serialize&lt;cereal::BinaryOutputArchive, unsigned long&gt;(cereal::BinaryOutputArchive&amp;, cereal::SizeTag&lt;unsigned long&gt;&amp;)</a></td>
-              <td class="coverFnHi">209135</td>
+              <td class="coverFnHi">209291</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#136">std::enable_if&lt;cereal::traits::is_same_archive&lt;cereal::BinaryInputArchive, cereal::BinaryInputArchive&gt;::value||cereal::traits::is_same_archive&lt;cereal::BinaryInputArchive, cereal::BinaryOutputArchive&gt;::value, void&gt;::type cereal::serialize&lt;cereal::BinaryInputArchive, unsigned long&amp;&gt;(cereal::BinaryInputArchive&amp;, cereal::SizeTag&lt;unsigned long&amp;&gt;&amp;)</a></td>
-              <td class="coverFnHi">210635</td>
+              <td class="coverFnHi">210791</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned long&gt;::value, void&gt;::type cereal::load&lt;unsigned long&gt;(cereal::BinaryInputArchive&amp;, unsigned long&amp;)</a></td>
-              <td class="coverFnHi">214700</td>
+              <td class="coverFnHi">214701</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned long&gt;::value, void&gt;::type cereal::save&lt;unsigned long&gt;(cereal::BinaryOutputArchive&amp;, unsigned long const&amp;)</a></td>
-              <td class="coverFnHi">215000</td>
+              <td class="coverFnHi">215001</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;unsigned int&gt;::value, void&gt;::type cereal::load&lt;unsigned int&gt;(cereal::BinaryInputArchive&amp;, unsigned int&amp;)</a></td>
-              <td class="coverFnHi">221103</td>
+              <td class="coverFnHi">222003</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;unsigned int&gt;::value, void&gt;::type cereal::save&lt;unsigned int&gt;(cereal::BinaryOutputArchive&amp;, unsigned int const&amp;)</a></td>
-              <td class="coverFnHi">221403</td>
+              <td class="coverFnHi">222303</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#120">std::enable_if&lt;std::is_arithmetic&lt;int&gt;::value, void&gt;::type cereal::load&lt;int&gt;(cereal::BinaryInputArchive&amp;, int&amp;)</a></td>
-              <td class="coverFnHi">6301319</td>
+              <td class="coverFnHi">6301623</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#112">std::enable_if&lt;std::is_arithmetic&lt;int&gt;::value, void&gt;::type cereal::save&lt;int&gt;(cereal::BinaryOutputArchive&amp;, int const&amp;)</a></td>
-              <td class="coverFnHi">6301319</td>
+              <td class="coverFnHi">6301623</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#94">cereal::BinaryInputArchive::loadBinary(void*, unsigned long)</a></td>
-              <td class="coverFnHi">7345115</td>
+              <td class="coverFnHi">7357927</td>
             </tr>
     <tr>
               <td class="coverFn"><a href="binary.hpp.gcov.html#61">cereal::BinaryOutputArchive::saveBinary(void const*, unsigned long)</a></td>
-              <td class="coverFnHi">7348115</td>
+              <td class="coverFnHi">7360927</td>
             </tr>
   </table>
   <br>
   </center>
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
   </table>
   <br>
 

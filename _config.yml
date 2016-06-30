@@ -1,8 +1,7 @@
-auto: true
-pygments: true
+highlighter: rouge
 permalink: /:title
 
-markdown:      redcarpet
+markdown:      kramdown
 markdown_ext:  markdown,mkd,mkdn,md
 textile_ext:   textile
 

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['indentchar',['IndentChar',['../group__Archives.html#gabf98703312edbd7e053fe71acb737cdf',1,'cereal::JSONOutputArchive::Options']]]
+  ['flags',['Flags',['../group__Internal.html#ga95185aa9f39e4ac382bb6631beb68a67',1,'cereal']]]
 ];

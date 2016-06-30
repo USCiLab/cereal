@@ -2,7 +2,7 @@ Quick Start
 ===========
 
 This is a quick guide to get cereal up and running in a matter of minutes.  The only prerequisite for running cereal is
-a modern C++11 compliant compiler, such as GCC 4.7.3, clang 3.3, or MSVC 2013.  Older versions might work, but we can't guarantee
+a modern C++11 compliant compiler, such as GCC 4.7.3, clang 3.3, MSVC 2013, or newer.  Older versions might work, but we can't guarantee
 it.
 
 ---
@@ -19,7 +19,7 @@ version from [Github](https://github.com/USCiLab/cereal) or use the download lin
 cereal needs to know which data members to serialize in your classes.  Let it know by implementing a `serialize` method
 in your class:
 
-```{cpp}
+```cpp
 struct MyClass
 {
   int x, y, z;
@@ -45,15 +45,12 @@ to write anything yourself.
 
 ## Choose an archive
 
-cereal currently supports three basic archive types: 
-[binary] (serialization_archives.html#binary_archive) (also available in a [portable]
-(serialization_archives.html#portable_binary_archive) version), 
-[XML] (serialization_archives.html#xml_archive), and 
-[JSON] (serialization_archives.html#json_archive).  These archives are the middlemen between your code and your
-serialized data - they handle the reading and writing for you.  XML and JSON archives are human readable but lack the
-performance (both space and time) of the binary archive.  You can read all about these archives in the [archives
-section](serialization_archives.html)
-of the documentation.
+cereal currently supports three basic archive types: [binary](serialization_archives.html#binary_archive) (also
+available in a [portable](serialization_archives.html#portable_binary_archive) version),
+[XML](serialization_archives.html#xml_archive), and [JSON](serialization_archives.html#json_archive).  These archives
+are the middlemen between your code and your serialized data - they handle the reading and writing for you.  XML and
+JSON archives are human readable but lack the performance (both space and time) of the binary archive.  You can read all
+about these archives in the [archives section](serialization_archives.html) of the documentation.
 
 Include your preferred archive with one of:
 
@@ -70,7 +67,7 @@ Create a cereal archive and send the data you want to serialize to it.  Archives
 manner and are guaranteed to flush their contents only on destruction (though it may happen earlier).  Archives
 generally take either an [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) or an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) object in their constructor:
 
-```{cpp}
+```cpp
 #include <cereal/archives/binary.hpp>
 #include <sstream>
 
@@ -83,7 +80,7 @@ int main()
 
     MyData m1, m2, m3;
     oarchive(m1, m2, m3); // Write the data to the archive
-  }
+  } // archive goes out of scope, ensuring all contents are flushed
 
   {
     cereal::BinaryInputArchive iarchive(ss); // Create an input archive
@@ -93,13 +90,17 @@ int main()
   }
 }
 ```
+<span class="label label-warning">Important!</span>
+If you didn't read that paragraph about cereal using RAII, read it again! Some archives in cereal can only safely finish
+flushing their contents upon their destruction. Make sure, especially for output serialization, that your archive is
+automatically destroyed when you are finished with it.
 
 ### Naming values
 
 cereal also supports name-value pairs, which lets you attach names to the objects it serializes.  This is only truly
 useful if you choose to use a human readable archive format such as XML or JSON:
 
-```{cpp}
+```cpp
 #include <cereal/archives/xml.hpp>
 #include <fstream>
 

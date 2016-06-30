@@ -146,7 +146,7 @@ External serialization functions should be placed either in the same namespace a
 Serialization functions can be placed under access control to be protected or private.  cereal will need access to them,
 and can be given access by befriending `cereal::access`, defined in `<cereal/access.hpp>`:
 
-```{cpp}
+```cpp
 #include <cereal/access.hpp>
 
 class MyCoolClass
@@ -167,6 +167,7 @@ class MyCoolClass
 This also works with split save/load functions.
 
 <a name="minimal"></a>
+
 ### Minimal split serialization
 
 In addition to supporting the normal load/save split serialization functions, cereal also supports
@@ -297,11 +298,13 @@ If you are using template metaprogramming on your minimal serialization function
 [archive specialization]({{ site.baseurl }}/archive_specialization.html#strip_minimal) documentation useful.
 
 <a name="versioning"></a>
+
 ### Explicit versioning
 
 cereal supports adding explicit versioning information for types, much like Boost class versioning.
 This is optional in cereal and by default is not used for any type.  You can choose to use versioning by adding
 an additional parameter to your serialization functions (regardless of which serialization style you are using), a `const std::uint32_t`, typically named `version`.
+
 
 This parameter will always be given the appropriate version number by cereal.  When saving data, cereal looks for an
 explicit version which you can specify with the `CEREAL_CLASS_VERSION` macro (see the [doxygen docs]({{ site.baseurl }}/assets/doxygen/group__Utility.html) for detailed information).  This macro takes a type and a version
@@ -314,13 +317,16 @@ When performing loads, cereal will load versioning information if your serializa
 not use a versioned serialization function to create the archive you are loading from, your data will be corrupted and your program will likely crash.  This
 loaded version number will be supplied via the version parameter you add to your serialization functions.
 
+<span class="label label-warning">Important!</span> Data serialized without versioning cannot be loaded by a versioned
+serialization function (and vice versa).
+
 <span class="label label-warning">Important!</span> If you choose to use versioning, you must ensure that all serialization functions for a type support the versioning
 parameter (both your load and save must have it in the case of split serialization).
 
 Here is a small example of adding versioning to both an internal serialize function as well as an externally split
 load/save pair:
 
-```{cpp}
+```cpp
 #include <cereal/cereal.hpp>
 
 struct MyCoolClass
@@ -360,12 +366,13 @@ CEREAL_CLASS_VERSION( MyCoolClass, 32 );
 ```
 
 <a name="inheritance"></a>
+
 ### Inheritance
 
 Serialization functions, like any other function, will be inherited by derived classes.  Depending on the serialization
 method you have chosen to employ, this can cause some ambiguities that cereal is not happy with:
 
-```{cpp}
+```cpp
 #include <iostream>
 #include <cereal/archives/binary.hpp>
 
@@ -404,7 +411,7 @@ Even if `serialize` was made `private` in the base class, cereal may still have 
 the derived class because of a friend declaration to `cereal::access`, resulting in the same error.  The solution to this
 error is to provide an explicit disambiguation for cereal:
 
-```{cpp}
+```cpp
 #include <cereal/access.hpp>
 
 namespace cereal

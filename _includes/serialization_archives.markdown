@@ -17,7 +17,8 @@ Archives decide how to output or interpret data that is being serialized.  For t
 
 cereal archives operate on either an [`std::ostream`](http://en.cppreference.com/w/cpp/io/basic_ostream) or [`std::istream`](http://en.cppreference.com/w/cpp/io/basic_istream) object.  These can be files, in-memory streams, or even things like standard in and out (though the latter two may not make much sense).
 
-The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  Archives are only guaranteed to have flushed their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
+<span class="label label-warning">Important!</span>
+The preferred way for working with archives is in an [RAII](http://en.wikipedia.org/wiki/RAII) fashion.  **Archives are only guaranteed to have finished flushing their contents when they are destroyed, so some archives (e.g. XML) will not output anything until their destruction**.  The best way to go about using archives is to let scoping automatically destroy archive objects when you are finished with them:
 
 ```cpp
 #include <cereal/archives/xml.hpp>
@@ -110,6 +111,7 @@ XML can optionally output complete demangled type information as an attribute an
 The XML serialization is powered by [RapidXML](http://rapidxml.sourceforge.net/).
 
 <a name="outoforder"></a>
+
 ### Out of order loading
 
 The default behavior for all archives is to sequentially load data in the order in which it appears.
@@ -123,7 +125,7 @@ sequentially from that location until forced to search for another name via an N
 
 Consider the following XML:
 
-```{xml}
+```xml
 <?xml version="1.0"?>
 <cereal>
   <var1>4</var1>
@@ -139,7 +141,7 @@ Consider the following XML:
 
 The following code shows how it could be loaded in an out of order fashion:
 
-```{cpp}
+```cpp
 #include <cereal/archives/xml.hpp>
 #include <iostream>
 
@@ -185,11 +187,12 @@ cereal's default behavior is to load in the order data is presented in an archiv
 out of order, cereal will immediately revert to this behavior starting at the node you caused it to jump to.
 
 <a name="binaryoutput"></a>
+
 ### Binary output
 
 XML archives also support explicit binary input/output, which will encode the data as a [base64](http://en.wikipedia.org/wiki/Base64) string:
 
-```{cpp}
+```cpp
 #include <cereal/archives/xml.hpp>
 #include <iostream>
 
@@ -269,7 +272,7 @@ deduct data from them.
 <span class="label label-info">Serializing numeric types with JSON:</span>
 All numeric types are serialized as numbers except for large types such as long long, unsigned long long, and long double, which are serialized as strings.  In JSON, numbers will not have surrounding quotes, while the string representations of the larger types will be surrounded with double quotes.
 
-The JSON serialization is powered by [rapidjson](http://code.google.com/p/rapidjson/).
+The JSON serialization is powered by [rapidjson](http://rapidjson.org).
 
 ### Out of order loading
 

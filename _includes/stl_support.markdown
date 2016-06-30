@@ -17,7 +17,7 @@ support (e.g. `<cereal/types/vector.hpp>`. See the [doxygen docs]({{ site.baseur
 To use a type found in the standard library, just include the proper header from `#include <cereal/types/xxxx.hpp>` and
 serialize data as you normally would:
 
-```{cpp}
+```cpp
 // type support
 #include <cereal/types/map.hpp>
 #include <cereal/types/vector.hpp>
@@ -68,7 +68,7 @@ int main()
 
 which will produce the following JSON:
 
-```{json}
+```json
 {
     "best data ever": {
         "data": [

@@ -67,16 +67,19 @@ class SomeData
     friend class boost::serialization::access;
 
     // xCEREAL supports class versioning although it is considered
-    // optional in xCEREAL
+    // optional in xCEREAL. 
+    //
+    // Note that the second parameter is changed from const unsigned int to 
+    // const std::uint32_t
     template <class Archive>
-    void save( Archive & ar, const unsigned int version ) const
+    void save( Archive & ar, std::uint32_t const version ) const
     {
       // xCEREAL supports Boost style syntax until you can change it
       ar << a << b;
     }
 
     template <class Archive>
-    void load( Archive & ar, const unsigned int version )
+    void load( Archive & ar, std::uint32_t const version )
     {
       ar >> a;
       ar >> b;
@@ -106,7 +109,7 @@ struct MyType
   SomeData s;
 
   template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
+  void serialize( Archive & ar, std::uint32_t const version )
   {
     ar & x & y; // the & operator is valid in xCEREAL but not the preferred interface
     ar & s;
@@ -141,8 +144,8 @@ In Boost, if you use a split load/save pairing, you must use the `BOOST_MEMBER_S
 
 If you befriend `boost::serialization::access`, that must change to `cereal::access`, defined in `<cereal/access.hpp>`.
 
-In cereal, class versioning is an exception and not the rule, so most serialization functions will ommit the `const
-unsigned int` secondary parameter.  However, keeping this parameter is completely supported by cereal and detailed
+In cereal, class versioning is an exception and not the rule, so most serialization functions will ommit the `std::uint32_t
+ const` secondary parameter.  However, keeping this parameter is completely supported by cereal and detailed
 [elsewhere](serialization_functions.html#versioning).  The macro `BOOST_CLASS_VERSION` has an equivalent called `CEREAL_CLASS_VERSION`.  Many other features have very similar
 names or similar functionality, but will not always be the same.  It is highly recommended you consult the detailed
 doxygen documentation on any feature that is unknown to you.
@@ -167,13 +170,13 @@ class SomeData
     // xCEREAL supports class versioning although it is considered
     // optional in xCEREAL
     template <class Archive>
-    void save( Archive & ar, const unsigned int version ) const
+    void save( Archive & ar, std::uint32_t const version ) const
     {
       ar( a, b ); // operator() is the preferred way of interfacing the archive
     }
 
     template <class Archive>
-    void load( Archive & ar, const unsigned int version )
+    void load( Archive & ar, std::uint32_t const version )
     {
       ar( a, b );
     }
@@ -190,7 +193,7 @@ struct MyType
   SomeData s;
 
   template <class Archive>
-  void serialize( Archive & ar, const unsigned int version )
+  void serialize( Archive & ar, std::uint32_t const version )
   {
     ar( x, y );
     ar( s );
