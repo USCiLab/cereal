@@ -34,6 +34,13 @@
 #include <memory>
 #include <cstring>
 
+// Work around MSVC not having alignof
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#define CEREAL_ALIGNOF __alignof
+#else // not MSVC 2013 or older
+#define CEREAL_ALIGNOF alignof
+#endif // end MSVC check
+
 namespace cereal
 {
   namespace memory_detail
@@ -67,6 +74,12 @@ namespace cereal
     {
       LoadAndConstructLoadWrapper( T * ptr ) :
         construct( ptr )
+      { }
+
+      //! Constructor for embedding an early call for restoring shared_from_this
+      template <class F>
+      LoadAndConstructLoadWrapper( T * ptr, F && sharedFromThisFunc ) :
+        construct( ptr, sharedFromThisFunc )
       { }
 
       inline void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar )
@@ -108,8 +121,11 @@ namespace cereal
         }
         @endcode
 
-        This is designed to be used in an RAII fashion - it will save state on construction
-        and restore it on destruction.
+        When possible, this is designed to be used in an RAII fashion - it will save state on
+        construction and restore it on destruction. The restore can be done at an earlier time
+        (e.g. after construct() is called in load_and_construct) in which case the destructor will
+        do nothing. Performing the restore immediately following construct() allows a user to call
+        shared_from_this within their load_and_construct function.
 
         @tparam T Type pointed to by shared_ptr
         @internal */
@@ -119,27 +135,39 @@ namespace cereal
       // typedefs for parent type and storage type
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
       using ParentType = std::enable_shared_from_this<BaseType>;
-      using StorageType = typename std::aligned_storage<sizeof(ParentType)>::type;
-
+      using StorageType = typename std::aligned_storage<sizeof(ParentType), CEREAL_ALIGNOF(ParentType)>::type;
+      
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
         /*! @param ptr The raw pointer held by the shared_ptr */
         inline EnableSharedStateHelper( T * ptr ) :
           itsPtr( static_cast<ParentType *>( ptr ) ),
-          itsState()
+          itsState(),
+          itsRestored( false )
         {
           std::memcpy( &itsState, itsPtr, sizeof(ParentType) );
         }
 
-        //! Restores the state of the held pointer
+        //! Restores the state of the held pointer (can only be done once)
+        inline void restore()
+        {
+          if( !itsRestored )
+          {
+            std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+            itsRestored = true;
+          }
+        }
+
+        //! Restores the state of the held pointer if not done previously
         inline ~EnableSharedStateHelper()
         {
-          std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+          restore();
         }
 
       private:
         ParentType * itsPtr;
         StorageType itsState;
+        bool itsRestored;
     }; // end EnableSharedStateHelper
 
     //! Performs loading and construction for a shared pointer that is derived from
@@ -150,10 +178,11 @@ namespace cereal
     template <class Archive, class T> inline
     void loadAndConstructSharedPtr( Archive & ar, T * ptr, std::true_type /* has_shared_from_this */ )
     {
-      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr );
       memory_detail::EnableSharedStateHelper<T> state( ptr );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( ptr, [&](){ state.restore(); } );
 
-      // let the user perform their initialization
+      // let the user perform their initialization, shared state will be restored as soon as construct()
+      // is called
       ar( CEREAL_NVP_("data", loadWrapper) );
     }
 
@@ -259,7 +288,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
-      using ST = typename std::aligned_storage<sizeof(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -271,7 +300,7 @@ namespace cereal
       ptr.reset( reinterpret_cast<T *>( new ST() ),
           [=]( T * t )
           {
-            if( valid )
+            if( *valid )
               t->~T();
 
             delete reinterpret_cast<ST *>( t );
@@ -347,7 +376,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
@@ -389,4 +418,8 @@ namespace cereal
   }
 } // namespace cereal
 
+// automatically include polymorphic support
+#include <cereal/types/polymorphic.hpp>
+
+#undef CEREAL_ALIGNOF
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_

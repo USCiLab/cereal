@@ -225,3 +225,47 @@ BOOST_AUTO_TEST_CASE( xml_char_issue109 )
     test_ws_in_out<cereal::XMLInputArchive, cereal::XMLOutputArchive>( char( chars[i] ) );
   }
 }
+
+template <class IArchive, class OArchive, class Out, size_t Nb, class In = Out>
+void test_ws_in_out_array(Out const (&o_a_value_with_ws)[Nb])
+{
+    std::ostringstream os;
+    {
+        OArchive oar(os);
+        for (const auto& o_value_with_ws : o_a_value_with_ws)
+        {
+            oar(o_value_with_ws);
+        }
+    }
+
+    In i_a_value_with_ws[Nb];
+
+    std::istringstream is(os.str());
+    {
+        IArchive iar(is);
+        for (In& i_value_with_ws : i_a_value_with_ws)
+        {
+            iar(i_value_with_ws);
+        }
+    }
+
+    for (size_t uiIndex = 0; uiIndex < Nb; ++uiIndex)
+    {
+        BOOST_CHECK_EQUAL(i_a_value_with_ws[uiIndex], o_a_value_with_ws[uiIndex]);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(xml_string_issue_consecutive_calls)
+{
+    std::string strings[] = {
+        "some text",
+        " some text",
+        " some text ",
+        "Long text without ws at the end",
+        "some text ",
+        " some text",
+        " some text ",
+    };
+
+    test_ws_in_out_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>(strings);
+}

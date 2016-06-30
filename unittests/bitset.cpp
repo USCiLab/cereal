@@ -36,12 +36,14 @@ void test_bitset()
   auto rng32  = [&](){ return random_binary_string<32>( gen ); };
   auto rng65  = [&](){ return random_binary_string<65>( gen ); };
   auto rng256 = [&](){ return random_binary_string<256>( gen ); };
+  auto rng512 = [&](){ return random_binary_string<512>( gen ); };
 
   for(int ii=0; ii<100; ++ii)
   {
     std::bitset<32> o_bit32( rng32() );
     std::bitset<65> o_bit65( rng65() );
     std::bitset<256> o_bit256( rng256() );
+    std::bitset<512> o_bit512( rng512() );
 
     std::ostringstream os;
     {
@@ -50,11 +52,13 @@ void test_bitset()
       oar(o_bit32);
       oar(o_bit65);
       oar(o_bit256);
+      oar(o_bit512);
     }
 
     std::bitset<32>  i_bit32;
     std::bitset<65>  i_bit65;
     std::bitset<256> i_bit256;
+    std::bitset<512> i_bit512;
 
     std::istringstream is(os.str());
     {
@@ -63,11 +67,13 @@ void test_bitset()
       iar(i_bit32);
       iar(i_bit65);
       iar(i_bit256);
+      iar(i_bit512);
     }
 
     BOOST_CHECK_EQUAL( o_bit32, i_bit32 );
     BOOST_CHECK_EQUAL( o_bit65, i_bit65 );
     BOOST_CHECK_EQUAL( o_bit256, i_bit256 );
+    BOOST_CHECK_EQUAL( o_bit512, i_bit512 );
   }
 }
 

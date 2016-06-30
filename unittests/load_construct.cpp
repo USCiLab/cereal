@@ -55,6 +55,38 @@ std::ostream& operator<<(std::ostream& os, OneLA const & s)
   return os;
 }
 
+struct OneLAVersioned
+{
+  OneLAVersioned( int xx ) : x( xx ), v() {}
+  OneLAVersioned( int xx, int vv ) : x( xx ), v( vv ) {}
+
+  int x;
+  std::uint32_t v;
+
+  template <class Archive>
+  void serialize( Archive & ar, const std::uint32_t version )
+  { ar( x ); v = version; }
+
+  template <class Archive>
+  static void load_and_construct( Archive & ar, cereal::construct<OneLAVersioned> & construct, const std::uint32_t version )
+  {
+    int xx;
+    ar( xx );
+    construct( xx, version );
+  }
+
+  bool operator==( OneLAVersioned const & other ) const
+  { return x == other.x; }
+};
+
+std::ostream& operator<<(std::ostream& os, OneLAVersioned const & s)
+{
+  os << "[" << s.x << "]";
+  return os;
+}
+
+CEREAL_CLASS_VERSION( OneLAVersioned, 13 )
+
 struct TwoLA
 {
   TwoLA( int xx ) : x( xx ) {}
@@ -89,6 +121,45 @@ namespace cereal
     }
   };
 }
+
+struct TwoLAVersioned
+{
+  TwoLAVersioned( int xx ) : x( xx ), v() {}
+  TwoLAVersioned( int xx, int vv ) : x( xx ), v( vv ) {}
+
+  int x;
+  std::uint32_t v;
+
+  template <class Archive>
+  void serialize( Archive & ar, const std::uint32_t version )
+  { ar( x ); v = version; }
+
+  bool operator==( TwoLAVersioned const & other ) const
+  { return x == other.x; }
+};
+
+std::ostream& operator<<(std::ostream& os, TwoLAVersioned const & s)
+{
+  os << "[" << s.x << "]";
+  return os;
+}
+
+namespace cereal
+{
+  template <>
+  struct LoadAndConstruct<TwoLAVersioned>
+  {
+    template <class Archive>
+    static void load_and_construct( Archive & ar, cereal::construct<TwoLAVersioned> & construct, const std::uint32_t version )
+    {
+      int xx;
+      ar( xx );
+      construct( xx, version );
+    }
+  };
+}
+
+CEREAL_CLASS_VERSION( TwoLAVersioned, 1 )
 
 struct ThreeLA : std::enable_shared_from_this<ThreeLA>
 {
@@ -131,6 +202,8 @@ void test_memory_load_construct()
     std::unique_ptr<OneLA> o_unique1( new OneLA( random_value<int>(gen) ) );
     std::unique_ptr<TwoLA> o_unique2( new TwoLA( random_value<int>(gen) ) );
     auto o_shared3 = std::make_shared<ThreeLA>( random_value<int>(gen) );
+    auto o_shared1v = std::make_shared<OneLAVersioned>( random_value<int>(gen) );
+    auto o_shared2v = std::make_shared<TwoLAVersioned>( random_value<int>(gen) );
 
     std::ostringstream os;
     {
@@ -141,6 +214,8 @@ void test_memory_load_construct()
       oar( o_unique1 );
       oar( o_unique2 );
       oar( o_shared3 );
+      oar( o_shared1v );
+      oar( o_shared2v );
     }
 
     o_shared3->shared_from_this(); // tests github issue #68
@@ -150,6 +225,8 @@ void test_memory_load_construct()
     decltype(o_unique1) i_unique1;
     decltype(o_unique2) i_unique2;
     decltype(o_shared3) i_shared3;
+    decltype(o_shared1v) i_shared1v;
+    decltype(o_shared2v) i_shared2v;
 
     std::istringstream is(os.str());
     {
@@ -160,6 +237,8 @@ void test_memory_load_construct()
       iar( i_unique1 );
       iar( i_unique2 );
       iar( i_shared3 );
+      iar( i_shared1v );
+      iar( i_shared2v );
     }
 
     BOOST_CHECK_EQUAL( *o_shared1, *i_shared1 );
@@ -167,6 +246,10 @@ void test_memory_load_construct()
     BOOST_CHECK_EQUAL( *o_unique1, *i_unique1 );
     BOOST_CHECK_EQUAL( *o_unique2, *i_unique2 );
     BOOST_CHECK_EQUAL( *o_shared3, *i_shared3 );
+    BOOST_CHECK_EQUAL( *o_shared1v, *i_shared1v );
+    BOOST_CHECK_EQUAL(i_shared1v->v, 13u);
+    BOOST_CHECK_EQUAL( *o_shared2v, *i_shared2v );
+    BOOST_CHECK_EQUAL(i_shared2v->v, 1u);
 
     auto i_shared3_2 = i_shared3->shared_from_this();
     BOOST_CHECK_EQUAL( *o_shared3, *i_shared3_2 );

@@ -27,6 +27,102 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
+struct PolyBaseA
+{
+  virtual void foo() = 0;
+  virtual ~PolyBaseA() {}
+};
+
+struct PolyBaseAA : PolyBaseA
+{
+  PolyBaseAA() {}
+  PolyBaseAA( long ww ) : w(ww) {}
+  long w;
+
+  void foo() {}
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( w );
+  }
+
+  static void doesNothing()
+  {
+    cereal::detail::RegisterPolymorphicCaster<PolyBaseA, PolyBaseAA>::bind();
+  }
+
+  bool operator==( PolyBaseAA const & other ) const
+  {
+    return w == other.w;
+  }
+};
+
+struct PolyBaseB : virtual PolyBaseAA
+{
+  PolyBaseB() {}
+  PolyBaseB( int xx, long ww ) : PolyBaseAA(ww), x(xx) {}
+  int x;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( cereal::virtual_base_class<PolyBaseAA>( this ) );
+    ar( x );
+  }
+
+  bool operator==( PolyBaseB const & other ) const
+  {
+    return PolyBaseAA::operator==( other ) &&
+           x == other.x;
+  }
+};
+
+struct PolyBaseC : virtual PolyBaseAA
+{
+  PolyBaseC() {}
+  PolyBaseC( double yy, long ww ) : PolyBaseAA(ww), y(yy) {}
+  double y;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( cereal::virtual_base_class<PolyBaseAA>( this ) );
+    ar( y );
+  }
+
+  bool operator==( PolyBaseC const & other ) const
+  {
+    return PolyBaseAA::operator==( other ) &&
+           std::abs(y - other.y) < 1e-5;
+  }
+};
+
+struct PolyDerivedD : PolyBaseB, PolyBaseC
+{
+  PolyDerivedD() {}
+  PolyDerivedD( std::string const & zz, double yy, int xx, long ww ) :
+    PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
+  std::string z;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( cereal::base_class<PolyBaseB>( this ) );
+    ar( cereal::base_class<PolyBaseC>( this ) );
+    ar( z );
+  }
+
+  bool operator==( PolyDerivedD const & other ) const
+  {
+    return PolyBaseB::operator==( other ) &&
+           PolyBaseC::operator==( other ) &&
+           z == other.z;
+  }
+};
+
+CEREAL_REGISTER_TYPE(PolyDerivedD)
+
 struct PolyBase
 {
   PolyBase() {}
@@ -72,6 +168,8 @@ struct PolyDerived : PolyBase
   void foo() {}
 };
 
+CEREAL_REGISTER_TYPE(PolyDerived)
+
 struct PolyLA : std::enable_shared_from_this<PolyLA>
 {
   virtual void foo() = 0;
@@ -116,6 +214,9 @@ struct PolyDerivedLA : public PolyLA
   }
 };
 
+CEREAL_REGISTER_TYPE(PolyDerivedLA)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(PolyLA, PolyDerivedLA)
+
 std::ostream& operator<<(std::ostream& os, PolyDerivedLA const & s)
 {
     os << "[x: " << s.x << "] ";
@@ -130,8 +231,12 @@ std::ostream& operator<<(std::ostream& os, PolyDerived const & s)
     return os;
 }
 
-CEREAL_REGISTER_TYPE(PolyDerived)
-CEREAL_REGISTER_TYPE(PolyDerivedLA)
+std::ostream& operator<<(std::ostream& os, PolyDerivedD const & s)
+{
+    os << "[w: " << s.w << " x: " << s.x << " y: " << s.y << " z: " << s.z << "]";
+    return os;
+}
+
 
 template <class IArchive, class OArchive>
 void test_polymorphic()
@@ -141,6 +246,7 @@ void test_polymorphic()
 
   auto rngB = [&](){ return random_value<int>( gen ) % 2 == 0; };
   auto rngI = [&](){ return random_value<int>( gen ); };
+  auto rngL = [&](){ return random_value<long>( gen ); };
   auto rngF = [&](){ return random_value<float>( gen ); };
   auto rngD = [&](){ return random_value<double>( gen ); };
 
@@ -149,6 +255,12 @@ void test_polymorphic()
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
     std::weak_ptr<PolyBase>   o_weak = o_shared;
     std::unique_ptr<PolyBase> o_unique( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
+
+    std::shared_ptr<PolyBaseA> o_sharedA = std::make_shared<PolyDerivedD>( random_basic_string<char>(gen),
+                                                                           rngD(), rngI(), rngL() );
+    std::weak_ptr<PolyBaseA>   o_weakA = o_sharedA;
+    std::unique_ptr<PolyBaseA> o_uniqueA( new PolyDerivedD( random_basic_string<char>(gen),
+                                                            rngD(), rngI(), rngL() ) );
 
     auto pda = std::make_shared<PolyDerivedLA>( rngI() );
     pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
@@ -160,12 +272,19 @@ void test_polymorphic()
 
       oar( o_shared, o_weak, o_unique );
       oar( o_sharedLA );
+
+      oar( o_sharedA, o_weakA, o_uniqueA );
     }
 
     decltype(o_shared) i_shared;
     decltype(o_weak) i_weak;
     decltype(o_unique) i_unique;
+
     decltype(o_sharedLA) i_sharedLA;
+
+    decltype(o_sharedA) i_sharedA;
+    decltype(o_weakA) i_weakA;
+    decltype(o_uniqueA) i_uniqueA;
 
     std::istringstream is(os.str());
     {
@@ -173,6 +292,7 @@ void test_polymorphic()
 
       iar( i_shared, i_weak, i_unique );
       iar( i_sharedLA );
+      iar( i_sharedA, i_weakA, i_uniqueA );
     }
 
     auto i_locked = i_weak.lock();
@@ -180,13 +300,23 @@ void test_polymorphic()
 
     auto i_sharedLA2 = i_sharedLA->shared_from_this();
 
+    auto i_lockedA = i_weakA.lock();
+    auto o_lockedA = o_weakA.lock();
+
     BOOST_CHECK_EQUAL(i_shared.get(), i_locked.get());
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)o_shared.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)i_locked.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_locked.get()), *((PolyDerived*)o_locked.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_unique.get()), *((PolyDerived*)o_unique.get()));
+
     BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA.get()), *((PolyDerivedLA*)o_sharedLA.get()));
     BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA2.get()), *((PolyDerivedLA*)o_sharedLA.get()));
+
+    BOOST_CHECK_EQUAL(i_sharedA.get(), i_lockedA.get());
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedD*>(i_sharedA.get()), *dynamic_cast<PolyDerivedD*>(o_sharedA.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedD*>(i_sharedA.get()), *dynamic_cast<PolyDerivedD*>(i_lockedA.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedD*>(i_lockedA.get()), *dynamic_cast<PolyDerivedD*>(o_lockedA.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedD*>(i_uniqueA.get()), *dynamic_cast<PolyDerivedD*>(o_uniqueA.get()));
   }
 }
 

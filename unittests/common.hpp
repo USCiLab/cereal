@@ -47,6 +47,7 @@
 #include <cereal/types/complex.hpp>
 #include <cereal/types/chrono.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <cereal/types/boost_variant.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/portable_binary.hpp>
@@ -54,6 +55,30 @@
 #include <cereal/archives/json.hpp>
 #include <limits>
 #include <random>
+
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 105900
+#include <boost/test/tools/detail/print_helper.hpp>
+
+namespace boost
+{
+  namespace test_tools
+  {
+    namespace tt_detail
+    {
+      template <class F, class S>
+      struct print_log_value< ::std::pair<F, S> >
+      {
+        void operator()(::std::ostream & os, ::std::pair<F, S> const & p )
+        {
+          os << "([" << p.first << "], [" << p.second << "])";
+        }
+      };
+    }
+  }
+}
+
+#endif // appropriate boost version
 
 namespace boost
 {
@@ -63,14 +88,6 @@ namespace boost
     os << "([" << p.first << "], [" << p.second << "])";
     return os;
   }
-}
-
-
-namespace cereal
-{
-  template <class Archive, class T> inline
-    void serialize( Archive &, std::less<T> & )
-    { }
 }
 
 template<class T> inline
