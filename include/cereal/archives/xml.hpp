@@ -837,8 +837,13 @@ namespace cereal
   template <class T> inline
   void CEREAL_LOAD_FUNCTION_NAME( XMLInputArchive & ar, NameValuePair<T> & t )
   {
-    ar.setNextName( t.name );
-    ar( t.value );
+    try {
+      ar.setNextName( t.name );
+      ar( t.value );
+    }
+    catch (std::exception const & e) {
+      throw Exception("XML Parsing for NVP (" + std::string(searchName) + ") failed. Error: " + e.what());
+    }
   }
 
   // ######################################################################
