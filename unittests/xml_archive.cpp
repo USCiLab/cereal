@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE( xml_rootnodename )
 
     std::ostringstream os;
     {
-      cereal::XMLOutputArchive oar(os, cereal::XMLOutputArchive::Options(std::numeric_limits<double>::max_digits10, true, false, "xmlroot");
+      cereal::XMLOutputArchive oar(os, cereal::XMLOutputArchive::Options(std::numeric_limits<double>::max_digits10, true, false, "xmlroot"));
       int32_t i_int32 = 42;
       oar(CEREAL_NVP(i_int32));
     }
