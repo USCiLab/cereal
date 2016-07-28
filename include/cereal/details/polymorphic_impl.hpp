@@ -223,7 +223,9 @@ namespace cereal
       PolymorphicVirtualCaster()
       {
         auto polymorphicCasters = StaticObject<PolymorphicCasters>::getInstance();
+        #ifdef CEREAL_THREAD_SAFE
         std::unique_lock<std::mutex> lock(polymorphicCasters.mapMutex);
+        #endif
         auto & baseMap = polymorphicCasters.map;
         auto baseKey = std::type_index(typeid(Base));
         auto lb = baseMap.lower_bound(baseKey);

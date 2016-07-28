@@ -396,11 +396,15 @@ namespace cereal
     {
       std::unordered_map<std::size_t, std::uint32_t> mapping;
 
+      #ifdef CEREAL_THREAD_SAFE
       std::mutex mutex;
+      #endif
 
       std::uint32_t find( std::size_t hash, std::uint32_t version )
       {
+        #ifdef CEREAL_THREAD_SAFE
         std::unique_lock<std::mutex> lock(mutex);
+        #endif
         const auto result = mapping.emplace( hash, version );
         return result.first->second;
       }
