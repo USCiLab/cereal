@@ -117,7 +117,9 @@ namespace cereal
     {
       //! Maps from base type index to a map from derived type index to caster
       std::map<std::type_index, std::map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
+      #ifdef CEREAL_THREAD_SAFE
       std::mutex mapMutex;
+      #endif
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
