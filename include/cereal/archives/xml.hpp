@@ -845,7 +845,7 @@ namespace cereal
       ar( t.value );
     }
     catch (std::exception const & e) {
-      throw Exception("XML Parsing for NVP (" + std::string(searchName) + ") failed. Error: " + e.what());
+      throw Exception("XML Parsing for NVP (" + std::string( t.name ) + ") failed. Error: " + e.what());
     }
   }
 

@@ -902,7 +902,7 @@ namespace cereal
       ar( t.value );
     } 
     catch (std::exception const & e) {
-      throw Exception("JSON Parsing for NVP (" + std::string(searchName) + ") failed. Error: " + e.what());
+      throw Exception("JSON Parsing for NVP (" + std::string( t.name ) + ") failed. Error: " + e.what());
     }
   }
 
