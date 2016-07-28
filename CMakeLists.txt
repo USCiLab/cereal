@@ -6,6 +6,11 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE li
     option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
 endif()
 
+option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
+if(${THREAD_SAFE})
+    add_definitions(-DCEREAL_THREAD_SAFE)
+endif()
+
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "-Wall -Werror -g -Wextra -Wshadow -pedantic ${CMAKE_CXX_FLAGS}")
     if(CMAKE_VERSION VERSION_LESS 3.1)

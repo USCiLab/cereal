@@ -36,6 +36,9 @@
 #include <memory>
 #include <unordered_map>
 #include <stdexcept>
+#ifdef CEREAL_THREAD_SAFE
+#include <mutex>
+#endif
 
 #include <cereal/macros.hpp>
 #include <cereal/details/static_object.hpp>
@@ -393,8 +396,11 @@ namespace cereal
     {
       std::unordered_map<std::size_t, std::uint32_t> mapping;
 
+      std::mutex mutex;
+
       std::uint32_t find( std::size_t hash, std::uint32_t version )
       {
+        std::unique_lock<std::mutex> lock(mutex);
         const auto result = mapping.emplace( hash, version );
         return result.first->second;
       }

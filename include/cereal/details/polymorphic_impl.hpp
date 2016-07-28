@@ -52,6 +52,9 @@
 #include <functional>
 #include <typeindex>
 #include <map>
+#ifdef CEREAL_THREAD_SAFE
+#include <mutex>
+#endif
 
 //! Binds a polymorhic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
@@ -114,6 +117,7 @@ namespace cereal
     {
       //! Maps from base type index to a map from derived type index to caster
       std::map<std::type_index, std::map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
+      std::mutex mapMutex;
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -218,7 +222,9 @@ namespace cereal
           assuming dynamic type information is available */
       PolymorphicVirtualCaster()
       {
-        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto polymorphicCasters = StaticObject<PolymorphicCasters>::getInstance();
+        std::unique_lock<std::mutex> lock(polymorphicCasters.mapMutex);
+        auto & baseMap = polymorphicCasters.map;
         auto baseKey = std::type_index(typeid(Base));
         auto lb = baseMap.lower_bound(baseKey);
 
