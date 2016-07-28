@@ -224,7 +224,7 @@ namespace cereal
           assuming dynamic type information is available */
       PolymorphicVirtualCaster()
       {
-        auto polymorphicCasters = StaticObject<PolymorphicCasters>::getInstance();
+        auto & polymorphicCasters = StaticObject<PolymorphicCasters>::getInstance();
         #ifdef CEREAL_THREAD_SAFE
         std::unique_lock<std::mutex> lock(polymorphicCasters.mapMutex);
         #endif
