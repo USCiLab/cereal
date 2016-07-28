@@ -116,16 +116,19 @@ namespace cereal
               @param outputType Whether to output the type of each serialized object as an attribute */
           explicit Options( int precision = std::numeric_limits<double>::max_digits10,
                             bool indent = true,
-                            bool outputType = false ) :
+                            bool outputType = false,
+                            const char * rootName = xml_detail::CEREAL_XML_STRING ) :
             itsPrecision( precision ),
             itsIndent( indent ),
-            itsOutputType( outputType ) { }
+            itsOutputType( outputType ),
+            itsRootName( rootName ) { }
 
         private:
           friend class XMLOutputArchive;
           int itsPrecision;
           bool itsIndent;
           bool itsOutputType;
+          const char * itsRootName;
       };
 
       //! Construct, outputting to the provided stream upon destruction
@@ -146,7 +149,7 @@ namespace cereal
         itsXML.append_node( node );
 
         // allocate root node
-        auto root = itsXML.allocate_node( rapidxml::node_element, xml_detail::CEREAL_XML_STRING );
+        auto root = itsXML.allocate_node( rapidxml::node_element, options.itsRootName );
         itsXML.append_node( root );
         itsNodes.emplace( root );
 
@@ -383,7 +386,7 @@ namespace cereal
           as serialization starts
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
-      XMLInputArchive( std::istream & stream ) :
+      XMLInputArchive( std::istream & stream, const char * rootName = xml_detail::CEREAL_XML_STRING ) :
         InputArchive<XMLInputArchive>( this ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
@@ -405,7 +408,7 @@ namespace cereal
         }
 
         // Parse the root
-        auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
+        auto root = itsXML.first_node( rootName );
         if( root == nullptr )
           throw Exception("Could not detect cereal root node - likely due to empty or invalid input");
         else
