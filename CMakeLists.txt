@@ -7,7 +7,7 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE li
 endif()
 
 option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
-if(${THREAD_SAFE})
+if(THREAD_SAFE)
     add_definitions(-DCEREAL_THREAD_SAFE)
 endif()
 
