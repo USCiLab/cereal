@@ -125,6 +125,8 @@ namespace cereal
         this->operator()( options.is_little_endian() );
       }
 
+      ~PortableBinaryOutputArchive() CEREAL_NOEXCEPT = default;
+
       //! Writes size bytes of data to the output stream
       template <std::size_t DataSize> inline
       void saveBinary( const void * data, std::size_t size )
@@ -226,6 +228,8 @@ namespace cereal
         this->operator()( streamLittleEndian );
         itsConvertEndianness = options.is_little_endian() ^ streamLittleEndian;
       }
+
+      ~PortableBinaryInputArchive() CEREAL_NOEXCEPT = default;
 
       //! Reads size bytes of data from the input stream
       /*! @param data The data to save
