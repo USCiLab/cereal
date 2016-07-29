@@ -29,6 +29,7 @@ foreach(TEST_SOURCE ${TESTS})
     add_executable(${TEST_TARGET} ${TEST_SOURCE})
     set_target_properties(${TEST_TARGET} PROPERTIES COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${TEST_TARGET}")
     target_link_libraries(${TEST_TARGET} ${Boost_LIBRARIES})
+    target_link_libraries(${TEST_TARGET} ${CEREAL_THREAD_LIBS})
     add_test("${TEST_TARGET}" "${TEST_TARGET}")
 
     # TODO: This won't work right now, because we would need a 32-bit boost
@@ -73,6 +74,7 @@ foreach(TEST_SOURCE ${TESTS})
     set_target_properties(${COVERAGE_TARGET} PROPERTIES LINK_FLAGS "-coverage")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/coverage")
     target_link_libraries(${COVERAGE_TARGET} ${Boost_LIBRARIES})
+    target_link_libraries(${COVERAGE_TARGET} ${CEREAL_THREAD_LIBS})
   endif()
 endforeach()
 

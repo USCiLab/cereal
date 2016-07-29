@@ -212,7 +212,7 @@ namespace cereal
       else
         name = ar.getPolymorphicName(nameid);
 
-      auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
+      auto const & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
 
       auto binding = bindingMap.find(name);
       if(binding == bindingMap.end())
@@ -315,7 +315,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -350,7 +350,7 @@ namespace cereal
       return;
     }
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -414,7 +414,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -449,7 +449,7 @@ namespace cereal
       return;
     }
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
