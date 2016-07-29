@@ -26,9 +26,9 @@ The preferred way for working with archives is in an [RAII](http://en.wikipedia.
 
 {
   std::ofstream file( "out.xml" );
-  cereal::XMLOutputArchive archive( os ); // depending on the archive type, data may be
-                                          // output to the stream as it is serialized, or
-                                          // only on destruction
+  cereal::XMLOutputArchive archive( file ); // depending on the archive type, data may be
+                                            // output to the stream as it is serialized, or
+                                            // only on destruction
   archive( some_data, more_data, data_galore );
 } // when archive goes out of scope it is guaranteed to have flushed its
   // contents to its stream
