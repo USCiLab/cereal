@@ -52,9 +52,6 @@
 #include <functional>
 #include <typeindex>
 #include <map>
-#ifdef CEREAL_THREAD_SAFE
-#include <mutex>
-#endif
 
 //! Binds a polymorhic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
@@ -117,9 +114,6 @@ namespace cereal
     {
       //! Maps from base type index to a map from derived type index to caster
       std::map<std::type_index, std::map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
-      #ifdef CEREAL_THREAD_SAFE
-      std::mutex mapMutex;
-      #endif
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -134,7 +128,7 @@ namespace cereal
       static bool exists( std::type_index const & baseIndex, std::type_index const & derivedIndex )
       {
         // First phase of lookup - match base type index
-        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseIter = baseMap.find( baseIndex );
         if (baseIter == baseMap.end())
           return false;
@@ -157,7 +151,7 @@ namespace cereal
       static std::vector<PolymorphicCaster const *> const & lookup( std::type_index const & baseIndex, std::type_index const & derivedIndex, F && exceptionFunc )
       {
         // First phase of lookup - match base type index
-        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseIter = baseMap.find( baseIndex );
         if( baseIter == baseMap.end() )
           exceptionFunc();
@@ -167,7 +161,7 @@ namespace cereal
         auto derivedIter = derivedMap.find( derivedIndex );
         if( derivedIter == derivedMap.end() )
           exceptionFunc();
-        
+
         return derivedIter->second;
       }
 
@@ -224,11 +218,8 @@ namespace cereal
           assuming dynamic type information is available */
       PolymorphicVirtualCaster()
       {
-        auto & polymorphicCasters = StaticObject<PolymorphicCasters>::getInstance();
-        #ifdef CEREAL_THREAD_SAFE
-        std::unique_lock<std::mutex> lock(polymorphicCasters.mapMutex);
-        #endif
-        auto & baseMap = polymorphicCasters.map;
+        const auto lock = StaticObject<PolymorphicCasters>::lock();
+        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseKey = std::type_index(typeid(Base));
         auto lb = baseMap.lower_bound(baseKey);
 
@@ -246,7 +237,7 @@ namespace cereal
           auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
           {
             const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
-            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) : 
+            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
                                                     std::vector<PolymorphicCaster const *>{} );
           };
 
@@ -419,6 +410,7 @@ namespace cereal
       InputBindingCreator()
       {
         auto & map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
+        auto lock = StaticObject<InputBindingMap<Archive>>::lock();
         auto key = std::string(binding_name<T>::name());
         auto lb = map.lower_bound(key);
 

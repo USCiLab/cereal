@@ -27,6 +27,11 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
+#if CEREAL_THREAD_SAFE
+#include <future>
+static std::mutex boostTestMutex;
+#endif
+
 namespace Nested
 {
   struct NestedClass
@@ -163,6 +168,10 @@ void test_versioning()
       iar( i_NMSP2 );
     }
 
+    #if CEREAL_THREAD_SAFE
+    std::lock_guard<std::mutex> lock( boostTestMutex );
+    #endif
+
     BOOST_CHECK_EQUAL(o_MS.x, i_MS.x);
     BOOST_CHECK_EQUAL(i_MS.v, 0u);
     BOOST_CHECK_EQUAL(o_MSP.x, i_MSP.x);
@@ -203,3 +212,39 @@ BOOST_AUTO_TEST_CASE( json_versioning )
   test_versioning<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+#if CEREAL_THREAD_SAFE
+template <class IArchive, class OArchive>
+void test_versioning_threading()
+{
+  std::vector<std::future<bool>> pool;
+  for( size_t i = 0; i < 100; ++i )
+    pool.emplace_back( std::async( std::launch::async,
+                                   [](){ test_versioning<IArchive, OArchive>(); return true; } ) );
+
+  for( auto & future : pool )
+    future.wait();
+
+  for( auto & future : pool )
+    BOOST_CHECK( future.get() == true );
+}
+
+BOOST_AUTO_TEST_CASE( binary_versioning_threading )
+{
+  test_versioning_threading<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_versioning_threading )
+{
+  test_versioning_threading<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_versioning_threading )
+{
+  test_versioning_threading<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_versioning_threading )
+{
+  test_versioning_threading<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+#endif // CEREAL_THREAD_SAFE

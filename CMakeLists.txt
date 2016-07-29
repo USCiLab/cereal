@@ -8,7 +8,10 @@ endif()
 
 option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
 if(THREAD_SAFE)
-    add_definitions(-DCEREAL_THREAD_SAFE)
+    add_definitions(-DCEREAL_THREAD_SAFE=1)
+    set(CEREAL_THREAD_LIBS "pthread")
+else()
+    set(CEREAL_THREAD_LIBS "")
 endif()
 
 if(NOT MSVC)

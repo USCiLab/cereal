@@ -28,6 +28,12 @@
 #ifndef CEREAL_DETAILS_STATIC_OBJECT_HPP_
 #define CEREAL_DETAILS_STATIC_OBJECT_HPP_
 
+#include <cereal/macros.hpp>
+
+#if CEREAL_THREAD_SAFE
+#include <mutex>
+#endif
+
 //! Prevent link optimization from removing non-referenced static objects
 /*! Especially for polymorphic support, we create static objects which
     may not ever be explicitly referenced.  Most linkers will detect this
@@ -79,11 +85,47 @@ namespace cereal
           return create();
         }
 
+        //! A class that acts like std::lock_guard
+        class LockGuard
+        {
+          #if CEREAL_THREAD_SAFE
+          public:
+            LockGuard(std::mutex & m) : lock(m) {}
+          private:
+            std::unique_lock<std::mutex> lock;
+          #else
+          public:
+            ~LockGuard() CEREAL_NOEXCEPT {} // prevents variable not used
+          #endif
+        };
+
+        //! Attempts to lock this static object for the current scope
+        /*! @note This function is a no-op if cereal is not compiled with
+                  thread safety enabled (CEREAL_THREAD_SAFE = 1).
+
+            This function returns an object that holds a lock for
+            this StaticObject that will release its lock upon destruction. This
+            call will block until the lock is available. */
+        static LockGuard lock()
+        {
+          #if CEREAL_THREAD_SAFE
+          return LockGuard{instanceMutex};
+          #else
+          return LockGuard{};
+          #endif
+        }
+
       private:
         static T & instance;
+        #if CEREAL_THREAD_SAFE
+        static std::mutex instanceMutex;
+        #endif
     };
 
     template <class T> T & StaticObject<T>::instance = StaticObject<T>::create();
+    #if CEREAL_THREAD_SAFE
+    template <class T> std::mutex StaticObject<T>::instanceMutex;
+    #endif
   } // namespace detail
 } // namespace cereal
 

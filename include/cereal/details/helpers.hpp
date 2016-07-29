@@ -36,36 +36,9 @@
 #include <memory>
 #include <unordered_map>
 #include <stdexcept>
-#ifdef CEREAL_THREAD_SAFE
-#include <mutex>
-#endif
 
 #include <cereal/macros.hpp>
 #include <cereal/details/static_object.hpp>
-
-//! Defines the CEREAL_NOEXCEPT macro to use instead of noexcept
-/*! If a compiler we support does not support noexcept, this macro
-    will detect this and define CEREAL_NOEXCEPT as a no-op */
-#if !defined(CEREAL_HAS_NOEXCEPT)
-  #if defined(__clang__)
-    #if __has_feature(cxx_noexcept)
-      #define CEREAL_HAS_NOEXCEPT
-    #endif
-  #else // NOT clang
-    #if defined(__GXX_EXPERIMENTAL_CXX0X__) && __GNUC__ * 10 + __GNUC_MINOR__ >= 46 || \
-        defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 190023026
-      #define CEREAL_HAS_NOEXCEPT
-    #endif // end GCC/MSVC check
-  #endif // end NOT clang block
-
-  #ifndef CEREAL_NOEXCEPT
-    #ifdef CEREAL_HAS_NOEXCEPT
-      #define CEREAL_NOEXCEPT noexcept
-    #else
-      #define CEREAL_NOEXCEPT
-    #endif // end CEREAL_HAS_NOEXCEPT
-  #endif // end !defined(CEREAL_HAS_NOEXCEPT)
-#endif // ifndef CEREAL_NOEXCEPT
 
 namespace cereal
 {
@@ -396,15 +369,8 @@ namespace cereal
     {
       std::unordered_map<std::size_t, std::uint32_t> mapping;
 
-      #ifdef CEREAL_THREAD_SAFE
-      std::mutex mutex;
-      #endif
-
       std::uint32_t find( std::size_t hash, std::uint32_t version )
       {
-        #ifdef CEREAL_THREAD_SAFE
-        std::unique_lock<std::mutex> lock(mutex);
-        #endif
         const auto result = mapping.emplace( hash, version );
         return result.first->second;
       }
