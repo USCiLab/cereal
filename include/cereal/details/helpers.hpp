@@ -229,9 +229,9 @@ namespace cereal
     {
       public:
         OutputArchiveBase() = default;
-        OutputArchiveBase( OutputArchiveBase && ) noexcept = default;
-        OutputArchiveBase & operator=( OutputArchiveBase && ) noexcept = default;
-        virtual ~OutputArchiveBase() noexcept = default;
+        OutputArchiveBase( OutputArchiveBase && ) CEREAL_NOEXCEPT {}
+        OutputArchiveBase & operator=( OutputArchiveBase && ) CEREAL_NOEXCEPT { return *this; }
+        virtual ~OutputArchiveBase() CEREAL_NOEXCEPT = default;
 
       private:
         virtual void rtti() {}
@@ -241,9 +241,9 @@ namespace cereal
     {
       public:
         InputArchiveBase() = default;
-        InputArchiveBase( InputArchiveBase && ) noexcept = default;
-        InputArchiveBase & operator=( InputArchiveBase && ) noexcept = default;
-        virtual ~InputArchiveBase() noexcept = default;
+        InputArchiveBase( InputArchiveBase && ) CEREAL_NOEXCEPT {}
+        InputArchiveBase & operator=( InputArchiveBase && ) CEREAL_NOEXCEPT { return *this; }
+        virtual ~InputArchiveBase() CEREAL_NOEXCEPT = default;
 
       private:
         virtual void rtti() {}

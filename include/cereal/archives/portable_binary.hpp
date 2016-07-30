@@ -39,7 +39,7 @@ namespace cereal
   {
     //! Returns true if the current machine is little endian
     /*! @ingroup Internal */
-    inline bool is_little_endian()
+    inline std::uint8_t is_little_endian()
     {
       static std::int32_t test = 1;
       return *reinterpret_cast<std::int8_t*>( &test ) == 1;
@@ -106,7 +106,7 @@ namespace cereal
           { return portable_binary_detail::is_little_endian() ? Endianness::little : Endianness::big; }
 
           //! Checks if Options is set for little endian
-          inline bool is_little_endian() const
+          inline std::uint8_t is_little_endian() const
           { return itsOutputEndianness == Endianness::little; }
 
           friend class PortableBinaryOutputArchive;
@@ -125,6 +125,8 @@ namespace cereal
         this->operator()( options.is_little_endian() );
       }
 
+      ~PortableBinaryOutputArchive() CEREAL_NOEXCEPT = default;
+
       //! Writes size bytes of data to the output stream
       template <std::size_t DataSize> inline
       void saveBinary( const void * data, std::size_t size )
@@ -132,8 +134,11 @@ namespace cereal
         std::size_t writtenSize = 0;
 
         if( itsConvertEndianness )
-          for( std::size_t i = 0; i < DataSize; ++i )
-            writtenSize += static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - i - 1, 1 ) );
+        {
+          for( std::size_t i = 0; i < size; i += DataSize )
+            for( std::size_t j = 0; j < DataSize; ++j )
+              writtenSize += static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - j - 1 + i, 1 ) );
+        }
         else
           writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
 
@@ -143,7 +148,7 @@ namespace cereal
 
     private:
       std::ostream & itsStream;
-      const bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon saving
+      const uint8_t itsConvertEndianness; //!< If set to true, we will need to swap bytes upon saving
   };
 
   // ######################################################################
@@ -203,7 +208,7 @@ namespace cereal
           { return portable_binary_detail::is_little_endian() ? Endianness::little : Endianness::big; }
 
           //! Checks if Options is set for little endian
-          inline bool is_little_endian() const
+          inline std::uint8_t is_little_endian() const
           { return itsInputEndianness == Endianness::little; }
 
           friend class PortableBinaryInputArchive;
@@ -219,10 +224,12 @@ namespace cereal
         itsStream(stream),
         itsConvertEndianness( false )
       {
-        bool streamLittleEndian;
+        uint8_t streamLittleEndian;
         this->operator()( streamLittleEndian );
         itsConvertEndianness = options.is_little_endian() ^ streamLittleEndian;
       }
+
+      ~PortableBinaryInputArchive() CEREAL_NOEXCEPT = default;
 
       //! Reads size bytes of data from the input stream
       /*! @param data The data to save
@@ -242,13 +249,13 @@ namespace cereal
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
           for( std::size_t i = 0; i < size; i += DataSize )
-            portable_binary_detail::swap_bytes<DataSize>( ptr );
+            portable_binary_detail::swap_bytes<DataSize>( ptr + i );
         }
       }
 
     private:
       std::istream & itsStream;
-      bool itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
+      uint8_t itsConvertEndianness; //!< If set to true, we will need to swap bytes upon loading
   };
 
   // ######################################################################

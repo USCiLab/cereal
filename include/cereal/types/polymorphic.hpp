@@ -39,9 +39,9 @@
 #include <cereal/details/polymorphic_impl.hpp>
 
 #ifdef _MSC_VER
-#define STATIC_CONSTEXPR static
+#define CEREAL_STATIC_CONSTEXPR static
 #else
-#define STATIC_CONSTEXPR static constexpr
+#define CEREAL_STATIC_CONSTEXPR static constexpr
 #endif
 
 //! Registers a derived polymorphic type with cereal
@@ -79,15 +79,15 @@
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
-#define CEREAL_REGISTER_TYPE(...)                                 \
-  namespace cereal {                                              \
-  namespace detail {                                              \
-  template <>                                                     \
-  struct binding_name<__VA_ARGS__>                                \
-  {                                                               \
-    STATIC_CONSTEXPR char const * name() { return #__VA_ARGS__; } \
-  };                                                              \
-  } } /* end namespaces */                                        \
+#define CEREAL_REGISTER_TYPE(...)                                        \
+  namespace cereal {                                                     \
+  namespace detail {                                                     \
+  template <>                                                            \
+  struct binding_name<__VA_ARGS__>                                       \
+  {                                                                      \
+    CEREAL_STATIC_CONSTEXPR char const * name() { return #__VA_ARGS__; } \
+  };                                                                     \
+  } } /* end namespaces */                                               \
   CEREAL_BIND_TO_ARCHIVES(__VA_ARGS__)
 
 //! Registers a polymorphic type with cereal, giving it a
@@ -96,13 +96,13 @@
     CEREAL_REGISTER_TYPE (the name of the type) may not be
     suitable.  This macro allows any name to be associated
     with the type.  The name should be unique */
-#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)              \
-  namespace cereal {                                         \
-  namespace detail {                                         \
-  template <>                                                \
-  struct binding_name<T>                                     \
-  { STATIC_CONSTEXPR char const * name() { return Name; } }; \
-  } } /* end namespaces */                                   \
+#define CEREAL_REGISTER_TYPE_WITH_NAME(T, Name)                     \
+  namespace cereal {                                                \
+  namespace detail {                                                \
+  template <>                                                       \
+  struct binding_name<T>                                            \
+  { CEREAL_STATIC_CONSTEXPR char const * name() { return Name; } }; \
+  } } /* end namespaces */                                          \
   CEREAL_BIND_TO_ARCHIVES(T)
 
 //! Registers the base-derived relationship for a polymorphic type
@@ -177,10 +177,6 @@
     }                                                   \
   } } /* end namespaces */
 
-#ifdef _MSC_VER
-#undef CONSTEXPR
-#endif
-
 namespace cereal
 {
   namespace polymorphic_detail
@@ -216,7 +212,7 @@ namespace cereal
       else
         name = ar.getPolymorphicName(nameid);
 
-      auto & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
+      auto const & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
 
       auto binding = bindingMap.find(name);
       if(binding == bindingMap.end())
@@ -319,7 +315,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -354,7 +350,7 @@ namespace cereal
       return;
     }
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -418,7 +414,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -453,7 +449,7 @@ namespace cereal
       return;
     }
 
-    auto & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())

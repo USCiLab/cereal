@@ -92,6 +92,13 @@ namespace cereal
         that cast between registered base and derived types. */
     struct PolymorphicCaster
     {
+      PolymorphicCaster() = default;
+      PolymorphicCaster( const PolymorphicCaster & ) = default;
+      PolymorphicCaster & operator=( const PolymorphicCaster & ) = default;
+      PolymorphicCaster( PolymorphicCaster && ) CEREAL_NOEXCEPT {}
+      PolymorphicCaster & operator=( PolymorphicCaster && ) CEREAL_NOEXCEPT { return *this; }
+      virtual ~PolymorphicCaster() CEREAL_NOEXCEPT = default;
+
       //! Downcasts to the proper derived type
       virtual void const * downcast( void const * const ptr ) const = 0;
       //! Upcast to proper base type
@@ -115,6 +122,26 @@ namespace cereal
                                 "Make sure you either serialize the base class at some point via cereal::base_class or cereal::virtual_base_class.\n"                          \
                                 "Alternatively, manually register the association with CEREAL_REGISTER_POLYMORPHIC_RELATION.");
 
+      //! Checks if the mapping object that can perform the upcast or downcast
+      /*! Uses the type index from the base and derived class to find the matching
+          registered caster. If no matching caster exists, returns false. */
+      static bool exists( std::type_index const & baseIndex, std::type_index const & derivedIndex )
+      {
+        // First phase of lookup - match base type index
+        auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto baseIter = baseMap.find( baseIndex );
+        if (baseIter == baseMap.end())
+          return false;
+
+        // Second phase - find a match from base to derived
+        auto & derivedMap = baseIter->second;
+        auto derivedIter = derivedMap.find( derivedIndex );
+        if (derivedIter == derivedMap.end())
+          return false;
+
+        return true;
+      }
+
       //! Gets the mapping object that can perform the upcast or downcast
       /*! Uses the type index from the base and derived class to find the matching
           registered caster. If no matching caster exists, calls the exception function.
@@ -124,7 +151,7 @@ namespace cereal
       static std::vector<PolymorphicCaster const *> const & lookup( std::type_index const & baseIndex, std::type_index const & derivedIndex, F && exceptionFunc )
       {
         // First phase of lookup - match base type index
-        auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
+        auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseIter = baseMap.find( baseIndex );
         if( baseIter == baseMap.end() )
           exceptionFunc();
@@ -191,6 +218,7 @@ namespace cereal
           assuming dynamic type information is available */
       PolymorphicVirtualCaster()
       {
+        const auto lock = StaticObject<PolymorphicCasters>::lock();
         auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseKey = std::type_index(typeid(Base));
         auto lb = baseMap.lower_bound(baseKey);
@@ -208,9 +236,9 @@ namespace cereal
         {
           auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
           {
-            bool exists = true;
-            auto const & mapping = PolymorphicCasters::lookup( baseInfo, derivedInfo, [&](){ exists = false; } );
-            return std::make_pair( exists, exists ? mapping : std::vector<PolymorphicCaster const *>{} );
+            const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
+            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
+                                                    std::vector<PolymorphicCaster const *>{} );
           };
 
           for( auto baseIt : baseMap )
@@ -382,6 +410,7 @@ namespace cereal
       InputBindingCreator()
       {
         auto & map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
+        auto lock = StaticObject<InputBindingMap<Archive>>::lock();
         auto key = std::string(binding_name<T>::name());
         auto lb = map.lower_bound(key);
 

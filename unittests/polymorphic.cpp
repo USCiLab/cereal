@@ -27,6 +27,11 @@
 #include "common.hpp"
 #include <boost/test/unit_test.hpp>
 
+#if CEREAL_THREAD_SAFE
+#include <future>
+static std::mutex boostTestMutex;
+#endif
+
 struct PolyBaseA
 {
   virtual void foo() = 0;
@@ -102,7 +107,7 @@ struct PolyDerivedD : PolyBaseB, PolyBaseC
 {
   PolyDerivedD() {}
   PolyDerivedD( std::string const & zz, double yy, int xx, long ww ) :
-    PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
+    PolyBaseAA( ww ), PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
   std::string z;
 
   template <class Archive>
@@ -237,7 +242,6 @@ std::ostream& operator<<(std::ostream& os, PolyDerivedD const & s)
     return os;
 }
 
-
 template <class IArchive, class OArchive>
 void test_polymorphic()
 {
@@ -258,6 +262,7 @@ void test_polymorphic()
 
     std::shared_ptr<PolyBaseA> o_sharedA = std::make_shared<PolyDerivedD>( random_basic_string<char>(gen),
                                                                            rngD(), rngI(), rngL() );
+
     std::weak_ptr<PolyBaseA>   o_weakA = o_sharedA;
     std::unique_ptr<PolyBaseA> o_uniqueA( new PolyDerivedD( random_basic_string<char>(gen),
                                                             rngD(), rngI(), rngL() ) );
@@ -303,6 +308,10 @@ void test_polymorphic()
     auto i_lockedA = i_weakA.lock();
     auto o_lockedA = o_weakA.lock();
 
+    #if CEREAL_THREAD_SAFE
+    std::lock_guard<std::mutex> lock( boostTestMutex );
+    #endif
+
     BOOST_CHECK_EQUAL(i_shared.get(), i_locked.get());
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)o_shared.get()));
     BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)i_locked.get()));
@@ -340,3 +349,39 @@ BOOST_AUTO_TEST_CASE( json_polymorphic )
   test_polymorphic<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+#if CEREAL_THREAD_SAFE
+template <class IArchive, class OArchive>
+void test_polymorphic_threading()
+{
+  std::vector<std::future<bool>> pool;
+  for( size_t i = 0; i < 100; ++i )
+    pool.emplace_back( std::async( std::launch::async,
+                                   [](){ test_polymorphic<IArchive, OArchive>(); return true; } ) );
+
+  for( auto & future : pool )
+    future.wait();
+
+  for( auto & future : pool )
+    BOOST_CHECK( future.get() == true );
+}
+
+BOOST_AUTO_TEST_CASE( binary_polymorphic_threading )
+{
+  test_polymorphic_threading<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( portable_binary_polymorphic_threading )
+{
+  test_polymorphic_threading<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( xml_polymorphic_threading )
+{
+  test_polymorphic_threading<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+BOOST_AUTO_TEST_CASE( json_polymorphic_threading )
+{
+  test_polymorphic_threading<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+#endif // CEREAL_THREAD_SAFE
