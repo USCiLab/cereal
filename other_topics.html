@@ -1,0 +1,9 @@
+---
+layout: default
+title: Other Topics
+---
+
+{% capture other_topics %}
+  {% include other_topics.markdown %}
+{% endcapture %}
+{{ other_topics | markdownify }}
