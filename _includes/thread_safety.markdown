@@ -15,7 +15,7 @@ If you want to be thread safe:
 
 ---
 
-## Using xCEREAL safely with threads
+## Using Threads Safely
 
 cereal can be used safely with threads with minimal limitations. The most important limitation to be aware of is that
 individual serialization archives are not designed to be accessed simultaneously from multiple threads. cereal expects that access
