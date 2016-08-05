@@ -19,13 +19,6 @@
 #include "pointer.h"
 #include <cmath> // abs, floor
 
-#ifdef __clang__
-CEREAL_RAPIDJSON_DIAG_PUSH
-CEREAL_RAPIDJSON_DIAG_OFF(weak-vtables)
-CEREAL_RAPIDJSON_DIAG_OFF(exit-time-destructors)
-CEREAL_RAPIDJSON_DIAG_OFF(c++98-compat-pedantic)
-#endif
-
 #if !defined(CEREAL_RAPIDJSON_SCHEMA_USE_INTERNALREGEX)
 #define CEREAL_RAPIDJSON_SCHEMA_USE_INTERNALREGEX 1
 #else
@@ -58,18 +51,20 @@ CEREAL_RAPIDJSON_DIAG_OFF(c++98-compat-pedantic)
 #include "stringbuffer.h"
 #endif
 
-#if defined(__GNUC__)
 CEREAL_RAPIDJSON_DIAG_PUSH
+
+#if defined(__GNUC__)
 CEREAL_RAPIDJSON_DIAG_OFF(effc++)
 #endif
 
 #ifdef __clang__
-CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(weak-vtables)
+CEREAL_RAPIDJSON_DIAG_OFF(exit-time-destructors)
+CEREAL_RAPIDJSON_DIAG_OFF(c++98-compat-pedantic)
 CEREAL_RAPIDJSON_DIAG_OFF(variadic-macros)
 #endif
 
 #ifdef _MSC_VER
-CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(4512) // assignment operator could not be generated
 #endif
 
@@ -413,9 +408,11 @@ public:
                 }
             }
 
-        AssignIfExist(allOf_, *schemaDocument, p, value, GetAllOfString(), document);
-        AssignIfExist(anyOf_, *schemaDocument, p, value, GetAnyOfString(), document);
-        AssignIfExist(oneOf_, *schemaDocument, p, value, GetOneOfString(), document);
+        if (schemaDocument) {
+            AssignIfExist(allOf_, *schemaDocument, p, value, GetAllOfString(), document);
+            AssignIfExist(anyOf_, *schemaDocument, p, value, GetAnyOfString(), document);
+            AssignIfExist(oneOf_, *schemaDocument, p, value, GetOneOfString(), document);
+        }
 
         if (const ValueType* v = GetMember(value, GetNotString())) {
             schemaDocument->CreateSchema(&not_, p.Append(GetNotString(), allocator_), *v, document);
@@ -578,7 +575,9 @@ public:
     }
 
     ~Schema() {
-        allocator_->Free(enum_);
+        if (allocator_) {
+            allocator_->Free(enum_);
+        }
         if (properties_) {
             for (SizeType i = 0; i < propertyCount_; i++)
                 properties_[i].~Property();
@@ -1339,7 +1338,7 @@ public:
         \param remoteProvider An optional remote schema document provider for resolving remote reference. Can be null.
         \param allocator An optional allocator instance for allocating memory. Can be null.
     */
-    GenericSchemaDocument(const ValueType& document, IRemoteSchemaDocumentProviderType* remoteProvider = 0, Allocator* allocator = 0) CEREAL_RAPIDJSON_NOEXCEPT : 
+    explicit GenericSchemaDocument(const ValueType& document, IRemoteSchemaDocumentProviderType* remoteProvider = 0, Allocator* allocator = 0) :
         remoteProvider_(remoteProvider),
         allocator_(allocator),
         ownAllocator_(),
@@ -2002,17 +2001,6 @@ private:
 };
 
 CEREAL_RAPIDJSON_NAMESPACE_END
-
-#if defined(__GNUC__)
 CEREAL_RAPIDJSON_DIAG_POP
-#endif
-
-#ifdef __clang__
-CEREAL_RAPIDJSON_DIAG_POP
-#endif
-
-#ifdef _MSC_VER
-CEREAL_RAPIDJSON_DIAG_POP
-#endif
 
 #endif // CEREAL_RAPIDJSON_SCHEMA_H_

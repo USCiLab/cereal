@@ -12,6 +12,9 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+#ifndef CEREAL_RAPIDJSON_OSTREAMWRAPPER_H_
+#define CEREAL_RAPIDJSON_OSTREAMWRAPPER_H_
+
 #include "stream.h"
 #include <iosfwd>
 
@@ -74,3 +77,5 @@ CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
 CEREAL_RAPIDJSON_NAMESPACE_END
+
+#endif // CEREAL_RAPIDJSON_OSTREAMWRAPPER_H_
