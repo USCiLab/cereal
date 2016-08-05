@@ -46,6 +46,10 @@ namespace cereal
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
+// Enable support for parsing of nan, inf, -inf
+#define CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS kWriteNanAndInfFlag
+#define CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
+
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/ostreamwrapper.h>
 #include <cereal/external/rapidjson/istreamwrapper.h>
@@ -420,7 +424,7 @@ namespace cereal
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag>(itsReadStream);
+        itsDocument.ParseStream<>(itsReadStream);
         if (itsDocument.IsArray())
           itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
         else
