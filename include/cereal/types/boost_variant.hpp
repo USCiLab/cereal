@@ -31,8 +31,14 @@
 #define CEREAL_TYPES_BOOST_VARIANT_HPP_
 
 #include <cereal/cereal.hpp>
+#include <array>
+#include <algorithm>
+
 #include <boost/variant.hpp>
 #include <boost/mpl/size.hpp>
+#include <boost/type_index.hpp>
+#include <boost/preprocessor/variadic/elem.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 namespace cereal
 {
@@ -76,7 +82,47 @@ namespace cereal
         load_variant<N+1, Variant, T...>(ar, target, variant);
     }
 
+    template<typename ...T>
+    struct named_variant
+	{
+    	std::array<std::string, sizeof...(T)> names;
+    	boost::variant<T...> & var_ref;
+	};
+    template<typename ...T>
+    struct named_variant_const
+	{
+    	std::array<std::string, sizeof...(T)> names;
+    	const boost::variant<T...> & var_ref;
+	};
+    template<typename T>
+    using string_alias = std::string; //to be used with the variadic parameter list of the variant.
+
+    template<typename ...Args>
+    named_variant<Args...> make_named_variant(boost::variant<Args...> & var, const string_alias<Args> &... names)
+	{
+    	return named_variant<Args...> {.names = {names...}, .var_ref= var};
+	}
+    template<typename ...Args>
+	named_variant_const<Args...> make_named_variant(const boost::variant<Args...> & var, const string_alias<Args> &... names)
+	{
+		return named_variant_const<Args...> {.names = {names...}, .var_ref= var};
+	}
+    template<typename ...Args>
+    named_variant<Args...> make_named_variant(boost::variant<Args...> & v)
+	{
+    	return make_named_variant(v, boost::typeindex::type_id<Args>().pretty_name()...);
+	}
+    template<typename ...Args>
+    named_variant_const<Args...> make_named_variant(const boost::variant<Args...> & v)
+	{
+		return make_named_variant(v, boost::typeindex::type_id<Args>().pretty_name()...);
+	}
+
+
+
   } // namespace variant_detail
+
+  using variant_detail::make_named_variant;
 
   //! Saving for boost::variant
   template <class Archive, typename VariantType1, typename... VariantTypes> inline
@@ -101,6 +147,47 @@ namespace cereal
 
     variant_detail::load_variant<0, boost::variant<VariantType1, VariantTypes...>, VariantType1, VariantTypes...>(ar, which, variant);
   }
+
+  template <class Archive, typename... VariantTypes> inline
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, variant_detail::named_variant_const<VariantTypes...> const & variant )
+  {
+    ar( CEREAL_NVP_("type", variant.names[variant.which()]) );
+    variant_detail::variant_save_visitor<Archive> visitor(ar);
+    variant.var_ref.apply_visitor(visitor);
+  }
+
+  template <class Archive, typename... VariantTypes> inline
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, variant_detail::named_variant<VariantTypes...> const & variant )
+  {
+    ar( CEREAL_NVP_("type", variant.names[variant.var_ref.which()]) );
+    variant_detail::variant_save_visitor<Archive> visitor(ar);
+    variant.var_ref.apply_visitor(visitor);
+  }
+
+  //! Loading for boost::variant
+  template <class Archive, typename... VariantTypes> inline
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, variant_detail::named_variant<VariantTypes...> const & variant )
+  {
+    std::string type_name;
+    ar( CEREAL_NVP_("type", type_name) );
+
+    auto itr = std::find(variant.names.begin(), variant.names.end(), type_name);
+
+
+    if (itr == variant.names.end())
+        throw Exception("Invalid 'type' selector when deserializing named boost::variant");
+
+    auto which = itr - variant.names.begin();
+
+    variant_detail::load_variant<0, boost::variant<VariantTypes...>, VariantTypes...>(ar, which, variant.var_ref);
+  }
+
+
+
 } // namespace cereal
+
+#define CEREAL_NVP_NAMED_VARIANT(Args...) ::cereal::make_nvp(BOOST_PP_STRINGIZE(BOOST_PP_VARIADIC_ELEM(0, Args)) ,::cereal::variant_detail::make_named_variant(Args))
+#define CEREAL_NVP_NAMED_VARIANT_(Name, Args...) ::cereal::make_nvp(Name ,::cereal::variant_detail::make_named_variant(Args))
+
 
 #endif // CEREAL_TYPES_BOOST_VARIANT_HPP_
