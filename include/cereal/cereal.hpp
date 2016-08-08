@@ -65,6 +65,39 @@ namespace cereal
     return {name, std::forward<T>(value)};
   }
 
+  template <class T>
+  OptionalNameValuePair<T> make_optional_nvp(std::string const& name, T&& value)
+  {
+     static std::remove_reference_t<T> const defaultValue{};
+     return{name.c_str(), std::forward<T>(value), defaultValue};
+  }
+
+  template <class T, class V>
+  OptionalNameValuePair<T> make_optional_nvp(std::string const& name, T&& value,
+     V const& defaultValue)
+  {
+     return{name.c_str(), std::forward<T>(value), defaultValue};
+  }
+
+  template <class T>
+  OptionalNameValuePair<T> make_optional_nvp(char const* name, T&& value)
+  {
+     static std::remove_reference_t<T> const defaultValue{};
+     return{name, std::forward<T>(value), defaultValue};
+  }
+
+  template <class T, class V>
+  OptionalNameValuePair<T> make_optional_nvp(char const* name, T&& value,
+     V const& defaultValue)
+  {
+     return{name, std::forward<T>(value), defaultValue};
+  }
+
+  //! Creates a name value pair for the variable T with the same name as the variable
+  /*! @relates NameValuePair
+      @ingroup Utility */
+  #define CEREAL_OPTIONAL_NVP(T, ...) ::cereal::make_optional_nvp(#T, T, __VA_ARGS__)
+
   //! Creates a name value pair for the variable T with the same name as the variable
   /*! @relates NameValuePair
       @ingroup Utility */
