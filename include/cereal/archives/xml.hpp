@@ -759,6 +759,30 @@ namespace cereal
   { }
 
   // ######################################################################
+  //! Prologue for NVPs for XML output archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T> inline
+     void prologue(XMLOutputArchive &, OptionalNameValuePair<T> const &)
+  { }
+
+  //! Prologue for NVPs for XML input archives
+  template <class T> inline
+     void prologue(XMLInputArchive &, OptionalNameValuePair<T> const &)
+  { }
+
+  // ######################################################################
+  //! Epilogue for NVPs for XML output archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T> inline
+     void epilogue(XMLOutputArchive &, OptionalNameValuePair<T> const &)
+  { }
+
+  //! Epilogue for NVPs for XML input archives
+  template <class T> inline
+     void epilogue(XMLInputArchive &, OptionalNameValuePair<T> const &)
+  { }
+
+  // ######################################################################
   //! Prologue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
   template <class T> inline
