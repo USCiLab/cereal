@@ -43,6 +43,7 @@ CEREAL_RAPIDJSON_DIAG_OFF(4702)  // unreachable code
 
 #ifdef __clang__
 CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(old-style-cast)
 CEREAL_RAPIDJSON_DIAG_OFF(padded)
 CEREAL_RAPIDJSON_DIAG_OFF(switch-enum)
 #endif
@@ -151,6 +152,7 @@ enum ParseFlag {
     kParseCommentsFlag = 32,        //!< Allow one-line (//) and multi-line (/**/) comments.
     kParseNumbersAsStringsFlag = 64,    //!< Parse all numbers (ints/doubles) as strings.
     kParseTrailingCommasFlag = 128, //!< Allow trailing commas at the end of objects and arrays.
+    kParseNanAndInfFlag = 256,      //!< Allow parsing NaN, Inf, Infinity, -Inf and -Infinity as doubles.
     kParseDefaultFlags = CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS  //!< Default parse flags. Can be customized by defining CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS
 };
 
@@ -700,16 +702,12 @@ private:
     }
 
     template<unsigned parseFlags, typename InputStream, typename Handler>
-    void ParseNullOrNan(InputStream& is, Handler& handler) {
+    void ParseNull(InputStream& is, Handler& handler) {
         CEREAL_RAPIDJSON_ASSERT(is.Peek() == 'n');
         is.Take();
 
         if (CEREAL_RAPIDJSON_LIKELY(Consume(is, 'u') && Consume(is, 'l') && Consume(is, 'l'))) {
             if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Null()))
-                CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
-        }
-        else if (Consume(is, 'a') && Consume(is, 'n')) {
-            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Double( std::numeric_limits<double>::quiet_NaN() )))
                 CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, is.Tell());
         }
         else
@@ -1142,6 +1140,8 @@ private:
                 (parseFlags & kParseInsituFlag) == 0> s(*this, copy.s);
 
         size_t startOffset = s.Tell();
+        double d = 0.0;
+        bool useNanOrInf = false;
 
         // Parse minus
         bool minus = Consume(s, '-');
@@ -1183,18 +1183,26 @@ private:
                     significandDigit++;
                 }
         }
-        else if (CEREAL_RAPIDJSON_UNLIKELY(Consume(s, 'i')) && Consume(s, 'n') && Consume(s, 'f')) {
-            double inf = std::numeric_limits<double>::infinity();
-            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Double(minus ? -inf : inf)))
-                CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorTermination, startOffset);
-            return;
+        // Parse NaN or Infinity here
+        else if ((parseFlags & kParseNanAndInfFlag) && CEREAL_RAPIDJSON_LIKELY((s.Peek() == 'I' || s.Peek() == 'N'))) {
+            useNanOrInf = true;
+            if (CEREAL_RAPIDJSON_LIKELY(Consume(s, 'N') && Consume(s, 'a') && Consume(s, 'N'))) {
+                d = std::numeric_limits<double>::quiet_NaN();
+            }
+            else if (CEREAL_RAPIDJSON_LIKELY(Consume(s, 'I') && Consume(s, 'n') && Consume(s, 'f'))) {
+                d = (minus ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity());
+                if (CEREAL_RAPIDJSON_UNLIKELY(s.Peek() == 'i' && !(Consume(s, 'i') && Consume(s, 'n')
+                                                            && Consume(s, 'i') && Consume(s, 't') && Consume(s, 'y'))))
+                    CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorValueInvalid, s.Tell());
+            }
+            else
+                CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorValueInvalid, s.Tell());
         }
         else
             CEREAL_RAPIDJSON_PARSE_ERROR(kParseErrorValueInvalid, s.Tell());
 
         // Parse 64bit int
         bool useDouble = false;
-        double d = 0.0;
         if (use64bit) {
             if (minus)
                 while (CEREAL_RAPIDJSON_LIKELY(s.Peek() >= '0' && s.Peek() <= '9')) {
@@ -1357,6 +1365,9 @@ private:
 
                cont = handler.Double(minus ? -d : d);
            }
+           else if (useNanOrInf) {
+               cont = handler.Double(d);
+           }
            else {
                if (use64bit) {
                    if (minus)
@@ -1380,7 +1391,7 @@ private:
     template<unsigned parseFlags, typename InputStream, typename Handler>
     void ParseValue(InputStream& is, Handler& handler) {
         switch (is.Peek()) {
-            case 'n': ParseNullOrNan<parseFlags>(is, handler); break;
+            case 'n': ParseNull  <parseFlags>(is, handler); break;
             case 't': ParseTrue  <parseFlags>(is, handler); break;
             case 'f': ParseFalse <parseFlags>(is, handler); break;
             case '"': ParseString<parseFlags>(is, handler); break;

@@ -46,6 +46,10 @@ namespace cereal
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
+// Enable support for parsing of nan, inf, -inf
+#define CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS kWriteNanAndInfFlag
+#define CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
+
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/ostreamwrapper.h>
 #include <cereal/external/rapidjson/istreamwrapper.h>
@@ -155,7 +159,7 @@ namespace cereal
       }
 
       //! Destructor, flushes the JSON
-      ~JSONOutputArchive()
+      ~JSONOutputArchive() CEREAL_NOEXCEPT
       {
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
@@ -420,12 +424,14 @@ namespace cereal
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag>(itsReadStream);
+        itsDocument.ParseStream<>(itsReadStream);
         if (itsDocument.IsArray())
           itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
         else
           itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
+
+      ~JSONInputArchive() CEREAL_NOEXCEPT = default;
 
       //! Loads some binary data, encoded as a base64 string
       /*! This will automatically start and finish a node to load the data, and can be called directly by
