@@ -23,7 +23,7 @@ var searchData=
   ['cereal_5fmake_5fis_5fspecialized_5fassert',['CEREAL_MAKE_IS_SPECIALIZED_ASSERT',['../traits_8hpp.html#a7e6519141d71272bbe5db25d01d175ad',1,'traits.hpp']]],
   ['cereal_5fmake_5fis_5fspecialized_5fimpl',['CEREAL_MAKE_IS_SPECIALIZED_IMPL',['../traits_8hpp.html#a33ec65e257576ae208d6a71cf01c4258',1,'traits.hpp']]],
   ['cereal_5fmake_5fversioned_5ftest',['CEREAL_MAKE_VERSIONED_TEST',['../traits_8hpp.html#a8638d8b3af51cf4f6bed0ed2dae54928',1,'traits.hpp']]],
-  ['cereal_5fnoexcept',['CEREAL_NOEXCEPT',['../helpers_8hpp.html#a6c37b2307b83bbe2a3de58d78a2b8c0b',1,'helpers.hpp']]],
+  ['cereal_5fnoexcept',['CEREAL_NOEXCEPT',['../macros_8hpp.html#a6c37b2307b83bbe2a3de58d78a2b8c0b',1,'macros.hpp']]],
   ['cereal_5fnvp_5f',['CEREAL_NVP_',['../helpers_8hpp.html#a45c4798e6de29f0f970b658771a4fbf0',1,'helpers.hpp']]],
   ['cereal_5fregister_5fdynamic_5finit',['CEREAL_REGISTER_DYNAMIC_INIT',['../polymorphic_8hpp.html#a01ebe0f840ac20c307f64622384e4dae',1,'polymorphic.hpp']]],
   ['cereal_5fregister_5fpolymorphic_5frelation',['CEREAL_REGISTER_POLYMORPHIC_RELATION',['../polymorphic_8hpp.html#a5d730928a52a379ad0d6f2dcdee07953',1,'polymorphic.hpp']]],
@@ -33,5 +33,6 @@ var searchData=
   ['cereal_5fsave_5fminimal_5ffunction_5fname',['CEREAL_SAVE_MINIMAL_FUNCTION_NAME',['../macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e',1,'macros.hpp']]],
   ['cereal_5fserialize_5ffunction_5fname',['CEREAL_SERIALIZE_FUNCTION_NAME',['../macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a',1,'macros.hpp']]],
   ['cereal_5fsetup_5farchive_5ftraits',['CEREAL_SETUP_ARCHIVE_TRAITS',['../traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666',1,'traits.hpp']]],
+  ['cereal_5fthread_5fsafe',['CEREAL_THREAD_SAFE',['../macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35',1,'macros.hpp']]],
   ['cereal_5fxml_5fstring_5fvalue',['CEREAL_XML_STRING_VALUE',['../xml_8hpp.html#a44505fe952f8c1f6fef02efc4d7cfefa',1,'xml.hpp']]]
 ];

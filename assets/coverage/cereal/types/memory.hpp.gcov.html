@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-29 15:15:18</td>
+            <td class="headerValue">2016-08-10 11:21:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">606</td>
@@ -106,48 +106,48 @@
 <span class="lineNum">      44 </span>            : namespace cereal
 <span class="lineNum">      45 </span>            : {
 <span class="lineNum">      46 </span>            :   namespace memory_detail
-<span class="lineNum">      47 </span><span class="lineCov">     356016 :   {</span>
+<span class="lineNum">      47 </span><span class="lineCov">     178008 :   {</span>
 <span class="lineNum">      48 </span>            :     //! A wrapper class to notify cereal that it is ok to serialize the contained pointer
 <span class="lineNum">      49 </span>            :     /*! This mechanism allows us to intercept and properly handle polymorphic pointers
 <span class="lineNum">      50 </span>            :         @internal */
 <span class="lineNum">      51 </span>            :     template&lt;class T&gt;
 <a name="52"><span class="lineNum">      52 </span>            :     struct PtrWrapper</a>
 <span class="lineNum">      53 </span>            :     {
-<span class="lineNum">      54 </span><span class="lineCov">     182008 :       PtrWrapper(T &amp;&amp; p) : ptr(std::forward&lt;T&gt;(p)) {}</span>
+<span class="lineNum">      54 </span><span class="lineCov">     546024 :       PtrWrapper(T &amp;&amp; p) : ptr(std::forward&lt;T&gt;(p)) {}</span>
 <span class="lineNum">      55 </span>            :       T &amp; ptr;
-<span class="lineNum">      56 </span><span class="lineCov">     356016 : </span>
+<span class="lineNum">      56 </span><span class="lineCov">     178008 : </span>
 <span class="lineNum">      57 </span>            :       PtrWrapper &amp; operator=( PtrWrapper const &amp; ) = delete;
-<span class="lineNum">      58 </span><span class="lineCov">     356016 :     };</span>
+<span class="lineNum">      58 </span><span class="lineCov">     178008 :     };</span>
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            :     //! Make a PtrWrapper
 <a name="61"><span class="lineNum">      61 </span>            :     /*! @internal */</a>
 <span class="lineNum">      62 </span>            :     template&lt;class T&gt; inline
-<span class="lineNum">      63 </span><span class="lineCov">     182008 :     PtrWrapper&lt;T&gt; make_ptr_wrapper(T &amp;&amp; t)</span>
+<span class="lineNum">      63 </span><span class="lineCov">     546024 :     PtrWrapper&lt;T&gt; make_ptr_wrapper(T &amp;&amp; t)</span>
 <span class="lineNum">      64 </span>            :     {
-<span class="lineNum">      65 </span><span class="lineCov">     182008 :       return {std::forward&lt;T&gt;(t)};</span>
+<span class="lineNum">      65 </span><span class="lineCov">     546024 :       return {std::forward&lt;T&gt;(t)};</span>
 <a name="66"><span class="lineNum">      66 </span>            :     }</a>
 <span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span><span class="lineCov">       8000 :     //! A struct that acts as a wrapper around calling load_andor_construct</span>
-<span class="lineNum">      69 </span><span class="lineCov">       8000 :     /*! The purpose of this is to allow a load_and_construct call to properly enter into the</span>
-<span class="lineNum">      70 </span><span class="lineCov">       8000 :         'data' NVP of the ptr_wrapper</span>
+<span class="lineNum">      68 </span><span class="lineCov">       4000 :     //! A struct that acts as a wrapper around calling load_andor_construct</span>
+<span class="lineNum">      69 </span><span class="lineCov">       4000 :     /*! The purpose of this is to allow a load_and_construct call to properly enter into the</span>
+<span class="lineNum">      70 </span><span class="lineCov">       4000 :         'data' NVP of the ptr_wrapper</span>
 <a name="71"><span class="lineNum">      71 </span>            :         @internal */</a>
-<span class="lineNum">      72 </span><span class="lineCov">       8000 :     template &lt;class Archive, class T&gt;</span>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">       4800 :     struct LoadAndConstructLoadWrapper</span></a>
-<span class="lineNum">      74 </span><span class="lineCov">       8000 :     {</span>
-<span class="lineNum">      75 </span><span class="lineCov">      10800 :       LoadAndConstructLoadWrapper( T * ptr ) :</span>
-<span class="lineNum">      76 </span><span class="lineCov">       3600 :         construct( ptr )</span>
-<span class="lineNum">      77 </span><span class="lineCov">       3600 :       { }</span>
+<span class="lineNum">      72 </span><span class="lineCov">       4000 :     template &lt;class Archive, class T&gt;</span>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">      14400 :     struct LoadAndConstructLoadWrapper</span></a>
+<span class="lineNum">      74 </span><span class="lineCov">       4000 :     {</span>
+<span class="lineNum">      75 </span><span class="lineCov">      14400 :       LoadAndConstructLoadWrapper( T * ptr ) :</span>
+<span class="lineNum">      76 </span><span class="lineCov">      10800 :         construct( ptr )</span>
+<span class="lineNum">      77 </span><span class="lineCov">      10800 :       { }</span>
 <span class="lineNum">      78 </span>            : 
 <a name="79"><span class="lineNum">      79 </span>            :       //! Constructor for embedding an early call for restoring shared_from_this</a>
 <span class="lineNum">      80 </span>            :       template &lt;class F&gt;
-<span class="lineNum">      81 </span><span class="lineCov">       1200 :       LoadAndConstructLoadWrapper( T * ptr, F &amp;&amp; sharedFromThisFunc ) :</span>
-<span class="lineNum">      82 </span><span class="lineCov">       1200 :         construct( ptr, sharedFromThisFunc )</span>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">       1200 :       { }</span></a>
+<span class="lineNum">      81 </span><span class="lineCov">       3600 :       LoadAndConstructLoadWrapper( T * ptr, F &amp;&amp; sharedFromThisFunc ) :</span>
+<span class="lineNum">      82 </span><span class="lineCov">       3600 :         construct( ptr, sharedFromThisFunc )</span>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">       3600 :       { }</span></a>
 <span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">       4800 :       inline void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar )</span>
+<span class="lineNum">      85 </span><span class="lineCov">      14400 :       inline void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar )</span>
 <span class="lineNum">      86 </span>            :       {
-<span class="lineNum">      87 </span><span class="lineCov">       4800 :         ::cereal::detail::Construct&lt;T, Archive&gt;::load_andor_construct( ar, construct );</span>
-<span class="lineNum">      88 </span><span class="lineCov">       4400 :       }</span>
+<span class="lineNum">      87 </span><span class="lineCov">      14400 :         ::cereal::detail::Construct&lt;T, Archive&gt;::load_andor_construct( ar, construct );</span>
+<span class="lineNum">      88 </span><span class="lineCov">      13200 :       }</span>
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span>            :       ::cereal::construct&lt;T&gt; construct;
 <span class="lineNum">      91 </span>            :     };
@@ -186,298 +186,298 @@
 <span class="lineNum">     124 </span>            :         When possible, this is designed to be used in an RAII fashion - it will save state on
 <span class="lineNum">     125 </span>            :         construction and restore it on destruction. The restore can be done at an earlier time
 <span class="lineNum">     126 </span>            :         (e.g. after construct() is called in load_and_construct) in which case the destructor will
-<span class="lineNum">     127 </span><span class="lineCov">       4000 :         do nothing. Performing the restore immediately following construct() allows a user to call</span>
+<span class="lineNum">     127 </span><span class="lineCov">       2000 :         do nothing. Performing the restore immediately following construct() allows a user to call</span>
 <span class="lineNum">     128 </span>            :         shared_from_this within their load_and_construct function.
-<span class="lineNum">     129 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     129 </span><span class="lineCov">       2000 : </span>
 <span class="lineNum">     130 </span>            :         @tparam T Type pointed to by shared_ptr
-<span class="lineNum">     131 </span><span class="lineCov">       4000 :         @internal */</span>
-<span class="lineNum">     132 </span><span class="lineCov">       4000 :     template &lt;class T&gt;</span>
+<span class="lineNum">     131 </span><span class="lineCov">       2000 :         @internal */</span>
+<span class="lineNum">     132 </span><span class="lineCov">       2000 :     template &lt;class T&gt;</span>
 <span class="lineNum">     133 </span>            :     class EnableSharedStateHelper
 <span class="lineNum">     134 </span>            :     {
-<span class="lineNum">     135 </span><span class="lineCov">       4000 :       // typedefs for parent type and storage type</span>
+<span class="lineNum">     135 </span><span class="lineCov">       2000 :       // typedefs for parent type and storage type</span>
 <span class="lineNum">     136 </span>            :       using BaseType = typename ::cereal::traits::get_shared_from_this_base&lt;T&gt;::type;
-<span class="lineNum">     137 </span><span class="lineCov">       4000 :       using ParentType = std::enable_shared_from_this&lt;BaseType&gt;;</span>
-<span class="lineNum">     138 </span><span class="lineCov">       4000 :       using StorageType = typename std::aligned_storage&lt;sizeof(ParentType), CEREAL_ALIGNOF(ParentType)&gt;::type;</span>
+<span class="lineNum">     137 </span><span class="lineCov">       2000 :       using ParentType = std::enable_shared_from_this&lt;BaseType&gt;;</span>
+<span class="lineNum">     138 </span><span class="lineCov">       2000 :       using StorageType = typename std::aligned_storage&lt;sizeof(ParentType), CEREAL_ALIGNOF(ParentType)&gt;::type;</span>
 <span class="lineNum">     139 </span>            :       
 <span class="lineNum">     140 </span>            :       public:
 <a name="141"><span class="lineNum">     141 </span>            :         //! Saves the state of some type inheriting from enable_shared_from_this</a>
 <span class="lineNum">     142 </span>            :         /*! @param ptr The raw pointer held by the shared_ptr */
-<span class="lineNum">     143 </span><span class="lineCov">       2000 :         inline EnableSharedStateHelper( T * ptr ) :</span>
+<span class="lineNum">     143 </span><span class="lineCov">       6000 :         inline EnableSharedStateHelper( T * ptr ) :</span>
 <span class="lineNum">     144 </span>            :           itsPtr( static_cast&lt;ParentType *&gt;( ptr ) ),
 <span class="lineNum">     145 </span>            :           itsState(),
-<span class="lineNum">     146 </span><span class="lineCov">       2000 :           itsRestored( false )</span>
+<span class="lineNum">     146 </span><span class="lineCov">       6000 :           itsRestored( false )</span>
 <span class="lineNum">     147 </span>            :         {
-<span class="lineNum">     148 </span><span class="lineCov">       2000 :           std::memcpy( &amp;itsState, itsPtr, sizeof(ParentType) );</span>
-<span class="lineNum">     149 </span><span class="lineCov">       2000 :         }</span>
+<span class="lineNum">     148 </span><span class="lineCov">       6000 :           std::memcpy( &amp;itsState, itsPtr, sizeof(ParentType) );</span>
+<span class="lineNum">     149 </span><span class="lineCov">       6000 :         }</span>
 <a name="150"><span class="lineNum">     150 </span>            : </a>
-<span class="lineNum">     151 </span><span class="lineCov">       2400 :         //! Restores the state of the held pointer (can only be done once)</span>
-<span class="lineNum">     152 </span><span class="lineCov">       3200 :         inline void restore()</span>
-<span class="lineNum">     153 </span><span class="lineCov">       2400 :         {</span>
-<span class="lineNum">     154 </span><span class="lineCov">       5600 :           if( !itsRestored )</span>
+<span class="lineNum">     151 </span><span class="lineCov">       1200 :         //! Restores the state of the held pointer (can only be done once)</span>
+<span class="lineNum">     152 </span><span class="lineCov">       9600 :         inline void restore()</span>
+<span class="lineNum">     153 </span><span class="lineCov">       1200 :         {</span>
+<span class="lineNum">     154 </span><span class="lineCov">      10800 :           if( !itsRestored )</span>
 <span class="lineNum">     155 </span>            :           {
-<span class="lineNum">     156 </span><span class="lineCov">       2000 :             std::memcpy( itsPtr, &amp;itsState, sizeof(ParentType) );</span>
-<span class="lineNum">     157 </span><span class="lineCov">       4400 :             itsRestored = true;</span>
-<span class="lineNum">     158 </span><span class="lineCov">       2400 :           }</span>
-<span class="lineNum">     159 </span><span class="lineCov">       3200 :         }</span>
+<span class="lineNum">     156 </span><span class="lineCov">       6000 :             std::memcpy( itsPtr, &amp;itsState, sizeof(ParentType) );</span>
+<span class="lineNum">     157 </span><span class="lineCov">       7200 :             itsRestored = true;</span>
+<span class="lineNum">     158 </span><span class="lineCov">       1200 :           }</span>
+<span class="lineNum">     159 </span><span class="lineCov">       9600 :         }</span>
 <a name="160"><span class="lineNum">     160 </span>            : </a>
 <span class="lineNum">     161 </span>            :         //! Restores the state of the held pointer if not done previously
-<span class="lineNum">     162 </span><span class="lineCov">       2000 :         inline ~EnableSharedStateHelper()</span>
+<span class="lineNum">     162 </span><span class="lineCov">       6000 :         inline ~EnableSharedStateHelper()</span>
 <span class="lineNum">     163 </span>            :         {
-<span class="lineNum">     164 </span><span class="lineCov">       2000 :           restore();</span>
-<span class="lineNum">     165 </span><span class="lineCov">       2000 :         }</span>
+<span class="lineNum">     164 </span><span class="lineCov">       6000 :           restore();</span>
+<span class="lineNum">     165 </span><span class="lineCov">       6000 :         }</span>
 <span class="lineNum">     166 </span>            : 
 <span class="lineNum">     167 </span>            :       private:
 <span class="lineNum">     168 </span>            :         ParentType * itsPtr;
-<span class="lineNum">     169 </span><span class="lineCov">       2400 :         StorageType itsState;</span>
+<span class="lineNum">     169 </span><span class="lineCov">       1200 :         StorageType itsState;</span>
 <span class="lineNum">     170 </span>            :         bool itsRestored;
-<span class="lineNum">     171 </span><span class="lineCov">       2400 :     }; // end EnableSharedStateHelper</span>
-<span class="lineNum">     172 </span><span class="lineCov">       2400 : </span>
-<span class="lineNum">     173 </span><span class="lineCov">       2400 :     //! Performs loading and construction for a shared pointer that is derived from</span>
+<span class="lineNum">     171 </span><span class="lineCov">       1200 :     }; // end EnableSharedStateHelper</span>
+<span class="lineNum">     172 </span><span class="lineCov">       1200 : </span>
+<span class="lineNum">     173 </span><span class="lineCov">       1200 :     //! Performs loading and construction for a shared pointer that is derived from</span>
 <span class="lineNum">     174 </span>            :     //! std::enable_shared_from_this
 <span class="lineNum">     175 </span>            :     /*! @param ar The archive
 <span class="lineNum">     176 </span>            :         @param ptr Raw pointer held by the shared_ptr
 <a name="177"><span class="lineNum">     177 </span>            :         @internal */</a>
 <span class="lineNum">     178 </span>            :     template &lt;class Archive, class T&gt; inline
-<span class="lineNum">     179 </span><span class="lineCov">      90008 :     void loadAndConstructSharedPtr( Archive &amp; ar, T * ptr, std::true_type /* has_shared_from_this */ )</span>
+<span class="lineNum">     179 </span><span class="lineCov">      48004 :     void loadAndConstructSharedPtr( Archive &amp; ar, T * ptr, std::true_type /* has_shared_from_this */ )</span>
 <a name="180"><span class="lineNum">     180 </span>            :     {</a>
-<span class="lineNum">     181 </span><span class="lineCov">      91208 :       memory_detail::EnableSharedStateHelper&lt;T&gt; state( ptr );</span>
-<span class="lineNum">     182 </span><span class="lineCov">      92408 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( ptr, [&amp;](){ state.restore(); } );</span>
+<span class="lineNum">     181 </span><span class="lineCov">      51604 :       memory_detail::EnableSharedStateHelper&lt;T&gt; state( ptr );</span>
+<span class="lineNum">     182 </span><span class="lineCov">      55204 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( ptr, [&amp;](){ state.restore(); } );</span>
 <span class="lineNum">     183 </span>            : 
 <span class="lineNum">     184 </span>            :       // let the user perform their initialization, shared state will be restored as soon as construct()
 <span class="lineNum">     185 </span>            :       // is called
-<span class="lineNum">     186 </span><span class="lineCov">       1200 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
-<span class="lineNum">     187 </span><span class="lineCov">      90008 :     }</span>
+<span class="lineNum">     186 </span><span class="lineCov">       3600 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
+<span class="lineNum">     187 </span><span class="lineCov">      48004 :     }</span>
 <span class="lineNum">     188 </span>            : 
-<span class="lineNum">     189 </span><span class="lineCov">      88808 :     //! Performs loading and construction for a shared pointer that is NOT derived from</span>
-<span class="lineNum">     190 </span><span class="lineCov">      88808 :     //! std::enable_shared_from_this</span>
+<span class="lineNum">     189 </span><span class="lineCov">      44404 :     //! Performs loading and construction for a shared pointer that is NOT derived from</span>
+<span class="lineNum">     190 </span><span class="lineCov">      44404 :     //! std::enable_shared_from_this</span>
 <span class="lineNum">     191 </span>            :     /*! This is the typical case, where we simply pass the load wrapper to the
 <span class="lineNum">     192 </span>            :         archive.
 <span class="lineNum">     193 </span>            : 
 <span class="lineNum">     194 </span>            :         @param ar The archive
-<span class="lineNum">     195 </span><span class="lineCov">       1600 :         @param ptr Raw pointer held by the shared_ptr</span>
+<span class="lineNum">     195 </span><span class="lineCov">        800 :         @param ptr Raw pointer held by the shared_ptr</span>
 <a name="196"><span class="lineNum">     196 </span>            :         @internal */</a>
-<span class="lineNum">     197 </span><span class="lineCov">       1600 :     template &lt;class Archive, class T&gt; inline</span>
-<span class="lineNum">     198 </span><span class="lineCov">       3600 :     void loadAndConstructSharedPtr( Archive &amp; ar, T * ptr, std::false_type /* has_shared_from_this */ )</span>
-<span class="lineNum">     199 </span><span class="lineCov">       1600 :     {</span>
-<span class="lineNum">     200 </span><span class="lineCov">       4000 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( ptr );</span>
-<span class="lineNum">     201 </span><span class="lineCov">       2000 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
-<span class="lineNum">     202 </span><span class="lineCov">       2000 :     }</span>
+<span class="lineNum">     197 </span><span class="lineCov">        800 :     template &lt;class Archive, class T&gt; inline</span>
+<span class="lineNum">     198 </span><span class="lineCov">       6800 :     void loadAndConstructSharedPtr( Archive &amp; ar, T * ptr, std::false_type /* has_shared_from_this */ )</span>
+<span class="lineNum">     199 </span><span class="lineCov">        800 :     {</span>
+<span class="lineNum">     200 </span><span class="lineCov">      12000 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( ptr );</span>
+<span class="lineNum">     201 </span><span class="lineCov">       6000 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
+<span class="lineNum">     202 </span><span class="lineCov">       6000 :     }</span>
 <span class="lineNum">     203 </span>            :   } // end namespace memory_detail
-<span class="lineNum">     204 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     204 </span><span class="lineCov">        800 : </span>
 <span class="lineNum">     205 </span>            :   //! Saving std::shared_ptr for non polymorphic types
-<a name="206"><span class="lineNum">     206 </span><span class="lineCov">       1600 :   template &lt;class Archive, class T&gt; inline</span></a>
-<span class="lineNum">     207 </span><span class="lineCov">       1600 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
-<span class="lineNum">     208 </span><span class="lineCov">      46804 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )</span>
-<span class="lineNum">     209 </span><span class="lineCov">       1600 :   {</span>
-<span class="lineNum">     210 </span><span class="lineCov">      45204 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
-<span class="lineNum">     211 </span><span class="lineCov">      45204 :   }</span>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">        800 :   template &lt;class Archive, class T&gt; inline</span></a>
+<span class="lineNum">     207 </span><span class="lineCov">        800 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
+<span class="lineNum">     208 </span><span class="lineCov">     136412 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; const &amp; ptr )</span>
+<span class="lineNum">     209 </span><span class="lineCov">        800 :   {</span>
+<span class="lineNum">     210 </span><span class="lineCov">     135612 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
+<span class="lineNum">     211 </span><span class="lineCov">     135612 :   }</span>
 <span class="lineNum">     212 </span>            : 
 <span class="lineNum">     213 </span>            :   //! Loading std::shared_ptr, case when no user load and construct for non polymorphic types
-<a name="214"><span class="lineNum">     214 </span><span class="lineCov">      82400 :   template &lt;class Archive, class T&gt; inline</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">      41200 :   template &lt;class Archive, class T&gt; inline</span></a>
 <span class="lineNum">     215 </span>            :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     216 </span><span class="lineCov">     127604 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr )</span>
-<span class="lineNum">     217 </span><span class="lineCov">      82400 :   {</span>
-<span class="lineNum">     218 </span><span class="lineCov">      45204 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
-<span class="lineNum">     219 </span><span class="lineCov">      45204 :   }</span>
+<span class="lineNum">     216 </span><span class="lineCov">     176812 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::shared_ptr&lt;T&gt; &amp; ptr )</span>
+<span class="lineNum">     217 </span><span class="lineCov">      41200 :   {</span>
+<span class="lineNum">     218 </span><span class="lineCov">     135612 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
+<span class="lineNum">     219 </span><span class="lineCov">     135612 :   }</span>
 <span class="lineNum">     220 </span>            : 
 <span class="lineNum">     221 </span>            :   //! Saving std::weak_ptr for non polymorphic types
-<a name="222"><span class="lineNum">     222 </span><span class="lineCov">      83200 :   template &lt;class Archive, class T&gt; inline</span></a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">      41600 :   template &lt;class Archive, class T&gt; inline</span></a>
 <span class="lineNum">     223 </span>            :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     224 </span><span class="lineCov">      84800 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; const &amp; ptr )</span>
-<span class="lineNum">     225 </span><span class="lineCov">      82400 :   {</span>
-<span class="lineNum">     226 </span><span class="lineCov">       1600 :     auto const sptr = ptr.lock();</span>
-<span class="lineNum">     227 </span><span class="lineCov">        800 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( sptr )) );</span>
-<span class="lineNum">     228 </span><span class="lineCov">        800 :   }</span>
+<span class="lineNum">     224 </span><span class="lineCov">      44400 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; const &amp; ptr )</span>
+<span class="lineNum">     225 </span><span class="lineCov">      41200 :   {</span>
+<span class="lineNum">     226 </span><span class="lineCov">       4800 :     auto const sptr = ptr.lock();</span>
+<span class="lineNum">     227 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( sptr )) );</span>
+<span class="lineNum">     228 </span><span class="lineCov">       2400 :   }</span>
 <span class="lineNum">     229 </span>            : 
 <span class="lineNum">     230 </span>            :   //! Loading std::weak_ptr for non polymorphic types
 <a name="231"><span class="lineNum">     231 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     232 </span>            :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     233 </span><span class="lineCov">      95208 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; &amp; ptr )</span>
+<span class="lineNum">     233 </span><span class="lineCov">      49604 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::weak_ptr&lt;T&gt; &amp; ptr )</span>
 <span class="lineNum">     234 </span>            :   {
-<span class="lineNum">     235 </span><span class="lineCov">      96008 :     std::shared_ptr&lt;T&gt; sptr;</span>
-<span class="lineNum">     236 </span><span class="lineCov">        800 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( sptr )) );</span>
-<span class="lineNum">     237 </span><span class="lineCov">      95208 :     ptr = sptr;</span>
-<span class="lineNum">     238 </span><span class="lineCov">      95208 :   }</span>
+<span class="lineNum">     235 </span><span class="lineCov">      52004 :     std::shared_ptr&lt;T&gt; sptr;</span>
+<span class="lineNum">     236 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( sptr )) );</span>
+<span class="lineNum">     237 </span><span class="lineCov">      49604 :     ptr = sptr;</span>
+<span class="lineNum">     238 </span><span class="lineCov">      49604 :   }</span>
 <span class="lineNum">     239 </span>            : 
-<span class="lineNum">     240 </span><span class="lineCov">      94408 :   //! Saving std::unique_ptr for non polymorphic types</span>
+<span class="lineNum">     240 </span><span class="lineCov">      47204 :   //! Saving std::unique_ptr for non polymorphic types</span>
 <a name="241"><span class="lineNum">     241 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
-<span class="lineNum">     242 </span><span class="lineCov">      88808 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
-<span class="lineNum">     243 </span><span class="lineCov">      41200 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )</span>
-<span class="lineNum">     244 </span><span class="lineCov">      94408 :   {</span>
-<span class="lineNum">     245 </span><span class="lineCov">      41200 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
-<span class="lineNum">     246 </span><span class="lineCov">      41200 :   }</span>
+<span class="lineNum">     242 </span><span class="lineCov">      44404 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
+<span class="lineNum">     243 </span><span class="lineCov">     123600 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; const &amp; ptr )</span>
+<span class="lineNum">     244 </span><span class="lineCov">      47204 :   {</span>
+<span class="lineNum">     245 </span><span class="lineCov">     123600 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
+<span class="lineNum">     246 </span><span class="lineCov">     123600 :   }</span>
 <span class="lineNum">     247 </span>            : 
 <span class="lineNum">     248 </span>            :   //! Loading std::unique_ptr, case when user provides load_and_construct for non polymorphic types
 <a name="249"><span class="lineNum">     249 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
-<span class="lineNum">     250 </span><span class="lineCov">       5600 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
-<span class="lineNum">     251 </span><span class="lineCov">      41600 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr )</span>
-<span class="lineNum">     252 </span><span class="lineCov">       5600 :   {</span>
-<span class="lineNum">     253 </span><span class="lineCov">      42000 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
-<span class="lineNum">     254 </span><span class="lineCov">      41200 :   }</span>
+<span class="lineNum">     250 </span><span class="lineCov">       2800 :   typename std::enable_if&lt;!std::is_polymorphic&lt;T&gt;::value, void&gt;::type</span>
+<span class="lineNum">     251 </span><span class="lineCov">     124800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::unique_ptr&lt;T, D&gt; &amp; ptr )</span>
+<span class="lineNum">     252 </span><span class="lineCov">       2800 :   {</span>
+<span class="lineNum">     253 </span><span class="lineCov">     126000 :     ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( ptr )) );</span>
+<span class="lineNum">     254 </span><span class="lineCov">     123600 :   }</span>
 <span class="lineNum">     255 </span>            : 
-<span class="lineNum">     256 </span><span class="lineCov">       5600 :   // ######################################################################</span>
+<span class="lineNum">     256 </span><span class="lineCov">       2800 :   // ######################################################################</span>
 <span class="lineNum">     257 </span>            :   // Pointer wrapper implementations follow below
-<span class="lineNum">     258 </span><span class="lineCov">       5600 : </span>
+<span class="lineNum">     258 </span><span class="lineCov">       2800 : </span>
 <span class="lineNum">     259 </span>            :   //! Saving std::shared_ptr (wrapper implementation)
 <a name="260"><span class="lineNum">     260 </span>            :   /*! @internal */</a>
 <span class="lineNum">     261 </span>            :   template &lt;class Archive, class T&gt; inline
-<span class="lineNum">     262 </span><span class="lineCov">      48804 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; const &amp;&gt; const &amp; wrapper )</span>
+<span class="lineNum">     262 </span><span class="lineCov">     146412 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; const &amp;&gt; const &amp; wrapper )</span>
 <span class="lineNum">     263 </span>            :   {
-<span class="lineNum">     264 </span><span class="lineCov">      48804 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     264 </span><span class="lineCov">     146412 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     265 </span>            : 
-<span class="lineNum">     266 </span><span class="lineCov">      48804 :     uint32_t id = ar.registerSharedPointer( ptr.get() );</span>
-<span class="lineNum">     267 </span><span class="lineCov">      53604 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
+<span class="lineNum">     266 </span><span class="lineCov">     146412 :     uint32_t id = ar.registerSharedPointer( ptr.get() );</span>
+<span class="lineNum">     267 </span><span class="lineCov">     148812 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
 <span class="lineNum">     268 </span>            : 
-<span class="lineNum">     269 </span><span class="lineCov">      48804 :     if( id &amp; detail::msb_32bit )</span>
+<span class="lineNum">     269 </span><span class="lineCov">     146412 :     if( id &amp; detail::msb_32bit )</span>
 <span class="lineNum">     270 </span>            :     {
-<span class="lineNum">     271 </span><span class="lineCov">      50404 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
-<span class="lineNum">     272 </span><span class="lineCov">      67200 :     }</span>
-<span class="lineNum">     273 </span><span class="lineCov">      48804 :   }</span>
-<span class="lineNum">     274 </span><span class="lineCov">       4800 : </span>
-<span class="lineNum">     275 </span><span class="lineCov">       3200 :   //! Loading std::shared_ptr, case when user load and construct (wrapper implementation)</span>
+<span class="lineNum">     271 </span><span class="lineCov">     139212 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
+<span class="lineNum">     272 </span><span class="lineCov">      33600 :     }</span>
+<span class="lineNum">     273 </span><span class="lineCov">     146412 :   }</span>
+<span class="lineNum">     274 </span><span class="lineCov">       2400 : </span>
+<span class="lineNum">     275 </span><span class="lineCov">       1600 :   //! Loading std::shared_ptr, case when user load and construct (wrapper implementation)</span>
 <span class="lineNum">     276 </span>            :   /*! @internal */
-<a name="277"><span class="lineNum">     277 </span><span class="lineCov">       4800 :   template &lt;class Archive, class T&gt; inline</span></a>
-<span class="lineNum">     278 </span><span class="lineCov">       4800 :   typename std::enable_if&lt;traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type</span>
-<span class="lineNum">     279 </span><span class="lineCov">       3600 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; &amp;&gt; &amp; wrapper )</span>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">       2400 :   template &lt;class Archive, class T&gt; inline</span></a>
+<span class="lineNum">     278 </span><span class="lineCov">       2400 :   typename std::enable_if&lt;traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type</span>
+<span class="lineNum">     279 </span><span class="lineCov">      10800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; &amp;&gt; &amp; wrapper )</span>
 <span class="lineNum">     280 </span>            :   {
-<span class="lineNum">     281 </span><span class="lineCov">       8400 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     281 </span><span class="lineCov">      13200 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     282 </span>            : 
 <span class="lineNum">     283 </span>            :     uint32_t id;
-<span class="lineNum">     284 </span><span class="lineCov">       4800 : </span>
-<span class="lineNum">     285 </span><span class="lineCov">       3600 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
+<span class="lineNum">     284 </span><span class="lineCov">       2400 : </span>
+<span class="lineNum">     285 </span><span class="lineCov">      10800 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
 <span class="lineNum">     286 </span>            : 
-<span class="lineNum">     287 </span><span class="lineCov">       8400 :     if( id &amp; detail::msb_32bit )</span>
+<span class="lineNum">     287 </span><span class="lineCov">      13200 :     if( id &amp; detail::msb_32bit )</span>
 <span class="lineNum">     288 </span>            :     {
 <span class="lineNum">     289 </span>            :       // Storage type for the pointer - since we can't default construct this type,
-<span class="lineNum">     290 </span><span class="lineCov">        800 :       // we'll allocate it using std::aligned_storage and use a custom deleter</span>
-<span class="lineNum">     291 </span><span class="lineCov">       5600 :       using ST = typename std::aligned_storage&lt;sizeof(T), CEREAL_ALIGNOF(T)&gt;::type;</span>
+<span class="lineNum">     290 </span><span class="lineCov">        400 :       // we'll allocate it using std::aligned_storage and use a custom deleter</span>
+<span class="lineNum">     291 </span><span class="lineCov">       2800 :       using ST = typename std::aligned_storage&lt;sizeof(T), CEREAL_ALIGNOF(T)&gt;::type;</span>
 <span class="lineNum">     292 </span>            : 
 <span class="lineNum">     293 </span>            :       // Valid flag - set to true once construction finishes
 <span class="lineNum">     294 </span>            :       //  This prevents us from calling the destructor on
 <span class="lineNum">     295 </span>            :       //  uninitialized data.
-<span class="lineNum">     296 </span><span class="lineCov">       6400 :       auto valid = std::make_shared&lt;bool&gt;( false );</span>
-<span class="lineNum">     297 </span><span class="lineCov">      88808 : </span>
+<span class="lineNum">     296 </span><span class="lineCov">      19200 :       auto valid = std::make_shared&lt;bool&gt;( false );</span>
+<span class="lineNum">     297 </span><span class="lineCov">      44404 : </span>
 <span class="lineNum">     298 </span>            :       // Allocate our storage, which we will treat as
-<a name="299"><span class="lineNum">     299 </span><span class="lineCov">      88808 :       //  uninitialized until initialized with placement new</span></a>
-<span class="lineNum">     300 </span><span class="lineCov">       3200 :       ptr.reset( reinterpret_cast&lt;T *&gt;( new ST() ),</span>
-<span class="lineNum">     301 </span><span class="lineCov">      44800 :           [=]( T * t )</span>
+<a name="299"><span class="lineNum">     299 </span><span class="lineCov">      44404 :       //  uninitialized until initialized with placement new</span></a>
+<span class="lineNum">     300 </span><span class="lineCov">       9600 :       ptr.reset( reinterpret_cast&lt;T *&gt;( new ST() ),</span>
+<span class="lineNum">     301 </span><span class="lineCov">     134400 :           [=]( T * t )</span>
 <span class="lineNum">     302 </span>            :           {
-<span class="lineNum">     303 </span><span class="lineCov">      92008 :             if( *valid )</span>
-<span class="lineNum">     304 </span><span class="lineCov">       1600 :               t-&gt;~T();</span>
-<span class="lineNum">     305 </span><span class="lineCov">      88808 : </span>
-<span class="lineNum">     306 </span><span class="lineCov">       3200 :             delete reinterpret_cast&lt;ST *&gt;( t );</span>
-<span class="lineNum">     307 </span><span class="lineCov">      87208 :           } );</span>
-<span class="lineNum">     308 </span><span class="lineCov">      84008 : </span>
-<span class="lineNum">     309 </span><span class="lineCov">      84008 :       // Register the pointer</span>
-<span class="lineNum">     310 </span><span class="lineCov">       3200 :       ar.registerSharedPointer( id, ptr );</span>
+<span class="lineNum">     303 </span><span class="lineCov">      54004 :             if( *valid )</span>
+<span class="lineNum">     304 </span><span class="lineCov">       4800 :               t-&gt;~T();</span>
+<span class="lineNum">     305 </span><span class="lineCov">      44404 : </span>
+<span class="lineNum">     306 </span><span class="lineCov">       9600 :             delete reinterpret_cast&lt;ST *&gt;( t );</span>
+<span class="lineNum">     307 </span><span class="lineCov">      51604 :           } );</span>
+<span class="lineNum">     308 </span><span class="lineCov">      42004 : </span>
+<span class="lineNum">     309 </span><span class="lineCov">      42004 :       // Register the pointer</span>
+<span class="lineNum">     310 </span><span class="lineCov">       9600 :       ar.registerSharedPointer( id, ptr );</span>
 <span class="lineNum">     311 </span>            : 
-<span class="lineNum">     312 </span><span class="lineCov">       4800 :       // Perform the actual loading and allocation</span>
-<span class="lineNum">     313 </span><span class="lineCov">      92008 :       memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this&lt;T&gt;::type() );</span>
+<span class="lineNum">     312 </span><span class="lineCov">       2400 :       // Perform the actual loading and allocation</span>
+<span class="lineNum">     313 </span><span class="lineCov">      54004 :       memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this&lt;T&gt;::type() );</span>
 <span class="lineNum">     314 </span>            : 
 <span class="lineNum">     315 </span>            :       // Mark pointer as valid (initialized)
-<span class="lineNum">     316 </span><span class="lineCov">       3200 :       *valid = true;</span>
+<span class="lineNum">     316 </span><span class="lineCov">       9600 :       *valid = true;</span>
 <span class="lineNum">     317 </span>            :     }
-<span class="lineNum">     318 </span><span class="lineCov">      83200 :     else</span>
-<span class="lineNum">     319 </span><span class="lineCov">        400 :       ptr = std::static_pointer_cast&lt;T&gt;(ar.getSharedPointer(id));</span>
-<span class="lineNum">     320 </span><span class="lineCov">      86800 :   }</span>
+<span class="lineNum">     318 </span><span class="lineCov">      41600 :     else</span>
+<span class="lineNum">     319 </span><span class="lineCov">       1200 :       ptr = std::static_pointer_cast&lt;T&gt;(ar.getSharedPointer(id));</span>
+<span class="lineNum">     320 </span><span class="lineCov">      52400 :   }</span>
 <span class="lineNum">     321 </span>            : 
 <span class="lineNum">     322 </span>            :   //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
 <span class="lineNum">     323 </span>            :   /*! @internal */
 <a name="324"><span class="lineNum">     324 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     325 </span>            :   typename std::enable_if&lt;!traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type
-<span class="lineNum">     326 </span><span class="lineCov">     128404 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; &amp;&gt; &amp; wrapper )</span>
+<span class="lineNum">     326 </span><span class="lineCov">     177212 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::shared_ptr&lt;T&gt; &amp;&gt; &amp; wrapper )</span>
 <span class="lineNum">     327 </span><span class="lineNoCov">          0 :   {</span>
-<span class="lineNum">     328 </span><span class="lineCov">      45204 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     328 </span><span class="lineCov">     135612 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     329 </span>            : 
-<span class="lineNum">     330 </span><span class="lineCov">      83200 :     uint32_t id;</span>
-<span class="lineNum">     331 </span><span class="lineCov">      83200 : </span>
-<span class="lineNum">     332 </span><span class="lineCov">      45204 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
-<span class="lineNum">     333 </span><span class="lineCov">      83200 : </span>
-<span class="lineNum">     334 </span><span class="lineCov">      45204 :     if( id &amp; detail::msb_32bit )</span>
+<span class="lineNum">     330 </span><span class="lineCov">      41600 :     uint32_t id;</span>
+<span class="lineNum">     331 </span><span class="lineCov">      41600 : </span>
+<span class="lineNum">     332 </span><span class="lineCov">     135612 :     ar( CEREAL_NVP_(&quot;id&quot;, id) );</span>
+<span class="lineNum">     333 </span><span class="lineCov">      41600 : </span>
+<span class="lineNum">     334 </span><span class="lineCov">     135612 :     if( id &amp; detail::msb_32bit )</span>
 <span class="lineNum">     335 </span>            :     {
-<span class="lineNum">     336 </span><span class="lineCov">      42404 :       ptr.reset( detail::Construct&lt;T, Archive&gt;::load_andor_construct() );</span>
-<span class="lineNum">     337 </span><span class="lineCov">      42404 :       ar.registerSharedPointer( id, ptr );</span>
-<span class="lineNum">     338 </span><span class="lineCov">      42404 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
-<span class="lineNum">     339 </span><span class="lineCov">       3200 :     }</span>
+<span class="lineNum">     336 </span><span class="lineCov">     127212 :       ptr.reset( detail::Construct&lt;T, Archive&gt;::load_andor_construct() );</span>
+<span class="lineNum">     337 </span><span class="lineCov">     127212 :       ar.registerSharedPointer( id, ptr );</span>
+<span class="lineNum">     338 </span><span class="lineCov">     127212 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
+<span class="lineNum">     339 </span><span class="lineCov">       1600 :     }</span>
 <span class="lineNum">     340 </span>            :     else
-<span class="lineNum">     341 </span><span class="lineCov">       2800 :       ptr = std::static_pointer_cast&lt;T&gt;(ar.getSharedPointer(id));</span>
-<span class="lineNum">     342 </span><span class="lineCov">      48404 :   }</span>
+<span class="lineNum">     341 </span><span class="lineCov">       8400 :       ptr = std::static_pointer_cast&lt;T&gt;(ar.getSharedPointer(id));</span>
+<span class="lineNum">     342 </span><span class="lineCov">     137212 :   }</span>
 <span class="lineNum">     343 </span>            : 
-<span class="lineNum">     344 </span><span class="lineCov">       3200 :   //! Saving std::unique_ptr (wrapper implementation)</span>
+<span class="lineNum">     344 </span><span class="lineCov">       1600 :   //! Saving std::unique_ptr (wrapper implementation)</span>
 <a name="345"><span class="lineNum">     345 </span>            :   /*! @internal */</a>
-<span class="lineNum">     346 </span><span class="lineCov">       3200 :   template &lt;class Archive, class T, class D&gt; inline</span>
-<span class="lineNum">     347 </span><span class="lineCov">      42000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; const &amp;&gt; const &amp; wrapper )</span>
+<span class="lineNum">     346 </span><span class="lineCov">       1600 :   template &lt;class Archive, class T, class D&gt; inline</span>
+<span class="lineNum">     347 </span><span class="lineCov">     126000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; const &amp;&gt; const &amp; wrapper )</span>
 <span class="lineNum">     348 </span>            :   {
-<span class="lineNum">     349 </span><span class="lineCov">      42000 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     349 </span><span class="lineCov">     126000 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     350 </span>            : 
 <span class="lineNum">     351 </span>            :     // unique_ptr get one byte of metadata which signifies whether they were a nullptr
 <span class="lineNum">     352 </span>            :     // 0 == nullptr
 <span class="lineNum">     353 </span>            :     // 1 == not null
-<span class="lineNum">     354 </span><span class="lineCov">       3200 : </span>
-<span class="lineNum">     355 </span><span class="lineCov">      42000 :     if( !ptr )</span>
+<span class="lineNum">     354 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     355 </span><span class="lineCov">     126000 :     if( !ptr )</span>
 <span class="lineNum">     356 </span><span class="lineNoCov">          0 :       ar( CEREAL_NVP_(&quot;valid&quot;, uint8_t(0)) );</span>
-<span class="lineNum">     357 </span><span class="lineCov">       3200 :     else</span>
+<span class="lineNum">     357 </span><span class="lineCov">       1600 :     else</span>
 <span class="lineNum">     358 </span>            :     {
-<span class="lineNum">     359 </span><span class="lineCov">      42000 :       ar( CEREAL_NVP_(&quot;valid&quot;, uint8_t(1)) );</span>
-<span class="lineNum">     360 </span><span class="lineCov">      45800 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
+<span class="lineNum">     359 </span><span class="lineCov">     126000 :       ar( CEREAL_NVP_(&quot;valid&quot;, uint8_t(1)) );</span>
+<span class="lineNum">     360 </span><span class="lineCov">     127900 :       ar( CEREAL_NVP_(&quot;data&quot;, *ptr) );</span>
 <span class="lineNum">     361 </span>            :     }
-<span class="lineNum">     362 </span><span class="lineCov">      42000 :   }</span>
-<span class="lineNum">     363 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">     362 </span><span class="lineCov">     126000 :   }</span>
+<span class="lineNum">     363 </span><span class="lineCov">       1600 : </span>
 <span class="lineNum">     364 </span>            :   //! Loading std::unique_ptr, case when user provides load_and_construct (wrapper implementation)
 <span class="lineNum">     365 </span>            :   /*! @internal */
 <a name="366"><span class="lineNum">     366 </span><span class="lineNoCov">          0 :   template &lt;class Archive, class T, class D&gt; inline</span></a>
-<span class="lineNum">     367 </span><span class="lineCov">       2400 :   typename std::enable_if&lt;traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type</span>
-<span class="lineNum">     368 </span><span class="lineCov">       1600 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; &amp;&gt; &amp; wrapper )</span>
+<span class="lineNum">     367 </span><span class="lineCov">       1200 :   typename std::enable_if&lt;traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type</span>
+<span class="lineNum">     368 </span><span class="lineCov">       4800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; &amp;&gt; &amp; wrapper )</span>
 <span class="lineNum">     369 </span>            :   {
 <span class="lineNum">     370 </span>            :     uint8_t isValid;
-<span class="lineNum">     371 </span><span class="lineCov">       1600 :     ar( CEREAL_NVP_(&quot;valid&quot;, isValid) );</span>
+<span class="lineNum">     371 </span><span class="lineCov">       4800 :     ar( CEREAL_NVP_(&quot;valid&quot;, isValid) );</span>
 <span class="lineNum">     372 </span>            : 
-<span class="lineNum">     373 </span><span class="lineCov">      82400 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     373 </span><span class="lineCov">      45200 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     374 </span>            : 
-<span class="lineNum">     375 </span><span class="lineCov">       1600 :     if( isValid )</span>
-<span class="lineNum">     376 </span><span class="lineCov">      80800 :     {</span>
+<span class="lineNum">     375 </span><span class="lineCov">       4800 :     if( isValid )</span>
+<span class="lineNum">     376 </span><span class="lineCov">      40400 :     {</span>
 <span class="lineNum">     377 </span>            :       // Storage type for the pointer - since we can't default construct this type,
-<span class="lineNum">     378 </span><span class="lineCov">      80800 :       // we'll allocate it using std::aligned_storage</span>
+<span class="lineNum">     378 </span><span class="lineCov">      40400 :       // we'll allocate it using std::aligned_storage</span>
 <span class="lineNum">     379 </span>            :       using ST = typename std::aligned_storage&lt;sizeof(T), CEREAL_ALIGNOF(T)&gt;::type;
-<span class="lineNum">     380 </span><span class="lineCov">      80800 : </span>
+<span class="lineNum">     380 </span><span class="lineCov">      40400 : </span>
 <span class="lineNum">     381 </span>            :       // Allocate storage - note the ST type so that deleter is correct if
-<span class="lineNum">     382 </span><span class="lineCov">      80800 :       //                    an exception is thrown before we are initialized</span>
-<span class="lineNum">     383 </span><span class="lineCov">      84000 :       std::unique_ptr&lt;ST&gt; stPtr( new ST() );</span>
+<span class="lineNum">     382 </span><span class="lineCov">      40400 :       //                    an exception is thrown before we are initialized</span>
+<span class="lineNum">     383 </span><span class="lineCov">      50000 :       std::unique_ptr&lt;ST&gt; stPtr( new ST() );</span>
 <span class="lineNum">     384 </span>            : 
 <span class="lineNum">     385 </span>            :       // Use wrapper to enter into &quot;data&quot; nvp of ptr_wrapper
-<span class="lineNum">     386 </span><span class="lineCov">       3200 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( reinterpret_cast&lt;T *&gt;( stPtr.get() ) );</span>
+<span class="lineNum">     386 </span><span class="lineCov">       9600 :       memory_detail::LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper( reinterpret_cast&lt;T *&gt;( stPtr.get() ) );</span>
 <span class="lineNum">     387 </span><span class="lineNoCov">          0 : </span>
 <span class="lineNum">     388 </span>            :       // Initialize storage
-<span class="lineNum">     389 </span><span class="lineCov">      82700 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
+<span class="lineNum">     389 </span><span class="lineCov">      46100 :       ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
 <span class="lineNum">     390 </span>            : 
 <span class="lineNum">     391 </span>            :       // Transfer ownership to correct unique_ptr type
-<span class="lineNum">     392 </span><span class="lineCov">       1200 :       ptr.reset( reinterpret_cast&lt;T *&gt;( stPtr.release() ) );</span>
+<span class="lineNum">     392 </span><span class="lineCov">       3600 :       ptr.reset( reinterpret_cast&lt;T *&gt;( stPtr.release() ) );</span>
 <span class="lineNum">     393 </span>            :     }
 <span class="lineNum">     394 </span>            :     else
 <span class="lineNum">     395 </span><span class="lineNoCov">          0 :       ptr.reset( nullptr );</span>
-<span class="lineNum">     396 </span><span class="lineCov">       1200 :   }</span>
+<span class="lineNum">     396 </span><span class="lineCov">       3600 :   }</span>
 <span class="lineNum">     397 </span>            : 
 <span class="lineNum">     398 </span>            :   //! Loading std::unique_ptr, case when no load_and_construct (wrapper implementation)
 <span class="lineNum">     399 </span>            :   /*! @internal */
 <a name="400"><span class="lineNum">     400 </span>            :   template &lt;class Archive, class T, class D&gt; inline</a>
 <span class="lineNum">     401 </span>            :   typename std::enable_if&lt;!traits::has_load_and_construct&lt;T, Archive&gt;::value, void&gt;::type
-<span class="lineNum">     402 </span><span class="lineCov">      40800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; &amp;&gt; &amp; wrapper )</span>
+<span class="lineNum">     402 </span><span class="lineCov">     122400 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, memory_detail::PtrWrapper&lt;std::unique_ptr&lt;T, D&gt; &amp;&gt; &amp; wrapper )</span>
 <span class="lineNum">     403 </span>            :   {
 <span class="lineNum">     404 </span>            :     uint8_t isValid;
-<span class="lineNum">     405 </span><span class="lineCov">      40800 :     ar( CEREAL_NVP_(&quot;valid&quot;, isValid) );</span>
+<span class="lineNum">     405 </span><span class="lineCov">     122400 :     ar( CEREAL_NVP_(&quot;valid&quot;, isValid) );</span>
 <span class="lineNum">     406 </span>            : 
-<span class="lineNum">     407 </span><span class="lineCov">      40800 :     auto &amp; ptr = wrapper.ptr;</span>
+<span class="lineNum">     407 </span><span class="lineCov">     122400 :     auto &amp; ptr = wrapper.ptr;</span>
 <span class="lineNum">     408 </span>            : 
-<span class="lineNum">     409 </span><span class="lineCov">      40800 :     if( isValid )</span>
+<span class="lineNum">     409 </span><span class="lineCov">     122400 :     if( isValid )</span>
 <span class="lineNum">     410 </span>            :     {
-<span class="lineNum">     411 </span><span class="lineCov">      40800 :       ptr.reset( detail::Construct&lt;T, Archive&gt;::load_andor_construct() );</span>
-<span class="lineNum">     412 </span><span class="lineCov">      40800 :       ar( CEREAL_NVP_( &quot;data&quot;, *ptr ) );</span>
+<span class="lineNum">     411 </span><span class="lineCov">     122400 :       ptr.reset( detail::Construct&lt;T, Archive&gt;::load_andor_construct() );</span>
+<span class="lineNum">     412 </span><span class="lineCov">     122400 :       ar( CEREAL_NVP_( &quot;data&quot;, *ptr ) );</span>
 <span class="lineNum">     413 </span>            :     }
 <span class="lineNum">     414 </span>            :     else
 <span class="lineNum">     415 </span>            :     {
 <span class="lineNum">     416 </span><span class="lineNoCov">          0 :       ptr.reset( nullptr );</span>
 <span class="lineNum">     417 </span>            :     }
-<span class="lineNum">     418 </span><span class="lineCov">      40800 :   }</span>
+<span class="lineNum">     418 </span><span class="lineCov">     122400 :   }</span>
 <span class="lineNum">     419 </span>            : } // namespace cereal
 <span class="lineNum">     420 </span>            : 
 <span class="lineNum">     421 </span>            : // automatically include polymorphic support

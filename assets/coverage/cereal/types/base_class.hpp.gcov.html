@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-29 15:15:18</td>
+            <td class="headerValue">2016-08-10 11:21:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -114,8 +114,8 @@
 <span class="lineNum">      52 </span>            :     template &lt;class Base, class Derived&gt;
 <a name="53"><span class="lineNum">      53 </span>            :     struct RegisterPolymorphicBaseClass&lt;Base, Derived, true&gt;</a>
 <span class="lineNum">      54 </span>            :     {
-<span class="lineNum">      55 </span><span class="lineCov">       8000 :       static void bind()</span>
-<span class="lineNum">      56 </span><span class="lineCov">       8000 :       { detail::RegisterPolymorphicCaster&lt;Base, Derived&gt;::bind(); }</span>
+<span class="lineNum">      55 </span><span class="lineCov">      24000 :       static void bind()</span>
+<span class="lineNum">      56 </span><span class="lineCov">      24000 :       { detail::RegisterPolymorphicCaster&lt;Base, Derived&gt;::bind(); }</span>
 <span class="lineNum">      57 </span>            :     };
 <span class="lineNum">      58 </span>            :   }
 <span class="lineNum">      59 </span>            : 
@@ -134,9 +134,9 @@
 <span class="lineNum">      72 </span>            :       {
 <span class="lineNum">      73 </span>            :         int x;
 <span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span><span class="lineCov">       3200 :         virtual void foo() = 0;</span>
-<span class="lineNum">      76 </span><span class="lineCov">       3200 : </span>
-<span class="lineNum">      77 </span><span class="lineCov">       3200 :         template &lt;class Archive&gt;</span>
+<span class="lineNum">      75 </span><span class="lineCov">       1600 :         virtual void foo() = 0;</span>
+<span class="lineNum">      76 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">      77 </span><span class="lineCov">       1600 :         template &lt;class Archive&gt;</span>
 <span class="lineNum">      78 </span>            :         void serialize( Archive &amp; ar )
 <span class="lineNum">      79 </span>            :         {
 <span class="lineNum">      80 </span>            :           ar( x );
@@ -161,12 +161,12 @@
 <span class="lineNum">      99 </span>            :     struct base_class : private traits::detail::BaseCastBase
 <a name="100"><span class="lineNum">     100 </span>            :     {</a>
 <span class="lineNum">     101 </span>            :       template&lt;class Derived&gt;
-<span class="lineNum">     102 </span><span class="lineCov">       4800 :         base_class(Derived const * derived) :</span>
-<span class="lineNum">     103 </span><span class="lineCov">       4800 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
+<span class="lineNum">     102 </span><span class="lineCov">      14400 :         base_class(Derived const * derived) :</span>
+<span class="lineNum">     103 </span><span class="lineCov">      14400 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
 <span class="lineNum">     104 </span>            :       {
 <span class="lineNum">     105 </span>            :         static_assert( std::is_base_of&lt;Base, Derived&gt;::value, &quot;Can only use base_class on a valid base class&quot; );
-<span class="lineNum">     106 </span><span class="lineCov">       4800 :         base_class_detail::RegisterPolymorphicBaseClass&lt;Base, Derived&gt;::bind();</span>
-<span class="lineNum">     107 </span><span class="lineCov">       4800 :       }</span>
+<span class="lineNum">     106 </span><span class="lineCov">      14400 :         base_class_detail::RegisterPolymorphicBaseClass&lt;Base, Derived&gt;::bind();</span>
+<span class="lineNum">     107 </span><span class="lineCov">      14400 :       }</span>
 <span class="lineNum">     108 </span>            : 
 <span class="lineNum">     109 </span>            :         Base * base_ptr;
 <span class="lineNum">     110 </span>            :     };
@@ -248,12 +248,12 @@
 <span class="lineNum">     186 </span>            :     struct virtual_base_class : private traits::detail::BaseCastBase
 <a name="187"><span class="lineNum">     187 </span>            :     {</a>
 <span class="lineNum">     188 </span>            :       template&lt;class Derived&gt;
-<span class="lineNum">     189 </span><span class="lineCov">       3200 :         virtual_base_class(Derived const * derived) :</span>
-<span class="lineNum">     190 </span><span class="lineCov">       3200 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
+<span class="lineNum">     189 </span><span class="lineCov">       9600 :         virtual_base_class(Derived const * derived) :</span>
+<span class="lineNum">     190 </span><span class="lineCov">       9600 :           base_ptr(const_cast&lt;Base*&gt;(static_cast&lt;Base const *&gt;(derived)))</span>
 <span class="lineNum">     191 </span>            :       {
 <span class="lineNum">     192 </span>            :         static_assert( std::is_base_of&lt;Base, Derived&gt;::value, &quot;Can only use virtual_base_class on a valid base class&quot; );
-<span class="lineNum">     193 </span><span class="lineCov">       3200 :         base_class_detail::RegisterPolymorphicBaseClass&lt;Base, Derived&gt;::bind();</span>
-<span class="lineNum">     194 </span><span class="lineCov">       3200 :       }</span>
+<span class="lineNum">     193 </span><span class="lineCov">       9600 :         base_class_detail::RegisterPolymorphicBaseClass&lt;Base, Derived&gt;::bind();</span>
+<span class="lineNum">     194 </span><span class="lineCov">       9600 :       }</span>
 <span class="lineNum">     195 </span>            : 
 <span class="lineNum">     196 </span>            :         Base * base_ptr;
 <span class="lineNum">     197 </span>            :     };

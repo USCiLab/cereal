@@ -10,9 +10,6 @@ compact binary encodings, XML, or JSON.  cereal was designed to be fast,
 light-weight, and easy to extend - it has no external dependencies and can be
 easily bundled with other code or used standalone.
 
-<span class="label label-inverse">1.2.0 is here!</span>
-We are pleased to announce that [cereal v1.2.0](https://github.com/USCiLab/cereal/releases/tag/v1.2.0) is available!
-
 ---
 
 ## xCEREAL comes with full support for C++11

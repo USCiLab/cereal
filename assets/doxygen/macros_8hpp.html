@@ -101,6 +101,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a89aa4dfbafa0236d0da6aa7bec573f35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35">CEREAL_THREAD_SAFE</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:a89aa4dfbafa0236d0da6aa7bec573f35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether cereal should be compiled for a threaded environment.  <a href="#a89aa4dfbafa0236d0da6aa7bec573f35">More...</a><br /></td></tr>
+<tr class="separator:a89aa4dfbafa0236d0da6aa7bec573f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6b40d3472fa3d7f2148657c5bd6a07a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a">CEREAL_SERIALIZE_FUNCTION_NAME</a>&#160;&#160;&#160;serialize</td></tr>
 <tr class="memdesc:ad6b40d3472fa3d7f2148657c5bd6a07a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The serialization/deserialization function name to search for.  <a href="#ad6b40d3472fa3d7f2148657c5bd6a07a">More...</a><br /></td></tr>
 <tr class="separator:ad6b40d3472fa3d7f2148657c5bd6a07a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,6 +119,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ac018dce5e1c47d8948842e8eaa08815e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e">CEREAL_SAVE_MINIMAL_FUNCTION_NAME</a>&#160;&#160;&#160;save_minimal</td></tr>
 <tr class="memdesc:ac018dce5e1c47d8948842e8eaa08815e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The serialization (save_minimal) function name to search for.  <a href="#ac018dce5e1c47d8948842e8eaa08815e">More...</a><br /></td></tr>
 <tr class="separator:ac018dce5e1c47d8948842e8eaa08815e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#a6c37b2307b83bbe2a3de58d78a2b8c0b">CEREAL_NOEXCEPT</a></td></tr>
+<tr class="memdesc:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the CEREAL_NOEXCEPT macro to use instead of noexcept.  <a href="#a6c37b2307b83bbe2a3de58d78a2b8c0b">More...</a><br /></td></tr>
+<tr class="separator:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Preprocessor macros that can customise the cereal library. </p>
@@ -150,6 +156,21 @@ Macros</h2></td></tr>
 
 <p>The deserialization (load_minimal) function name to search for. </p>
 <p>You can define <code>CEREAL_LOAD_MINIMAL_FUNCTION_NAME</code> to be different assuming you do so before this file is included. </p>
+
+</div>
+</div>
+<a class="anchor" id="a6c37b2307b83bbe2a3de58d78a2b8c0b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_NOEXCEPT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Defines the CEREAL_NOEXCEPT macro to use instead of noexcept. </p>
+<p>If a compiler we support does not support noexcept, this macro will detect this and define CEREAL_NOEXCEPT as a no-op </p>
 
 </div>
 </div>
@@ -198,11 +219,27 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a89aa4dfbafa0236d0da6aa7bec573f35"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_THREAD_SAFE&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether cereal should be compiled for a threaded environment. </p>
+<p>This macro causes cereal to use mutexes to control access to global internal state in a thread safe manner.</p>
+<p>Note that even with this enabled you must still ensure that archives are accessed by only one thread at a time; it is safe to use multiple archives in paralel, but not to access one archive from many places simultaneously. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 29 2016 15:11:19 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 10 2016 11:22:37 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
