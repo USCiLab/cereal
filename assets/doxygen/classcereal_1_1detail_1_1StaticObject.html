@@ -90,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classcereal_1_1detail_1_1StaticObject-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -102,11 +103,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><code>#include &lt;<a class="el" href="static__object_8hpp_source.html">/lab/shane/workspace/cereal/include/cereal/details/static_object.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1detail_1_1StaticObject_1_1LockGuard.html">LockGuard</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class that acts like std::lock_guard.  <a href="classcereal_1_1detail_1_1StaticObject_1_1LockGuard.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1a4d850c72186ebd3cea034390a9586"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1a4d850c72186ebd3cea034390a9586"></a>
 static T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
 <tr class="separator:aa1a4d850c72186ebd3cea034390a9586"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec75ae3fd5f5ad79132a368f984b385f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcereal_1_1detail_1_1StaticObject_1_1LockGuard.html">LockGuard</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1detail_1_1StaticObject.html#aec75ae3fd5f5ad79132a368f984b385f">lock</a> ()</td></tr>
+<tr class="memdesc:aec75ae3fd5f5ad79132a368f984b385f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to lock this static object for the current scope.  <a href="#aec75ae3fd5f5ad79132a368f984b385f">More...</a><br /></td></tr>
+<tr class="separator:aec75ae3fd5f5ad79132a368f984b385f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T&gt;<br />
@@ -114,14 +124,44 @@ class cereal::detail::StaticObject&lt; T &gt;</h3>
 
 <p>A static, pre-execution object. </p>
 <p>This class will create a single copy (singleton) of some type and ensures that merely referencing this type will cause it to be instantiated and initialized pre-execution. For example, this is used heavily in the polymorphic pointer serialization mechanisms to bind various archive types with different polymorphic classes </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aec75ae3fd5f5ad79132a368f984b385f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classcereal_1_1detail_1_1StaticObject_1_1LockGuard.html">LockGuard</a> <a class="el" href="classcereal_1_1detail_1_1StaticObject.html">cereal::detail::StaticObject</a>&lt; T &gt;::lock </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Attempts to lock this static object for the current scope. </p>
+<dl class="section note"><dt>Note</dt><dd>This function is a no-op if cereal is not compiled with thread safety enabled (CEREAL_THREAD_SAFE = 1).</dd></dl>
+<p>This function returns an object that holds a lock for this <a class="el" href="classcereal_1_1detail_1_1StaticObject.html" title="A static, pre-execution object. ">StaticObject</a> that will release its lock upon destruction. This call will block until the lock is available. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/lab/shane/workspace/cereal/include/cereal/details/<a class="el" href="static__object_8hpp_source.html">static_object.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 29 2016 15:11:19 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 10 2016 11:22:38 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
