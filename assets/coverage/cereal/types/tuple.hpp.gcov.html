@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-29 15:15:18</td>
+            <td class="headerValue">2016-08-10 11:21:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">603</td>
@@ -146,7 +146,7 @@
 <span class="lineNum">      84 </span>            :     struct tuple_element_name
 <a name="85"><span class="lineNum">      85 </span>            :     {</a>
 <span class="lineNum">      86 </span>            :       using type = typename to_string_impl&lt;T/10, T%10&gt;::type;
-<span class="lineNum">      87 </span><span class="lineCov">      74400 :       static const typename type::arr_type c_str(){ return type::str; };</span>
+<span class="lineNum">      87 </span><span class="lineCov">      99200 :       static const typename type::arr_type c_str(){ return type::str; };</span>
 <span class="lineNum">      88 </span>            :     };
 <span class="lineNum">      89 </span>            : 
 <span class="lineNum">      90 </span>            :     // unwinds a tuple to save it
@@ -155,12 +155,12 @@
 <span class="lineNum">      93 </span>            :     struct serialize
 <a name="94"><span class="lineNum">      94 </span>            :     {</a>
 <span class="lineNum">      95 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">      96 </span><span class="lineCov">      74400 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">      96 </span><span class="lineCov">      99200 :       static void apply( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
 <span class="lineNum">      97 </span>            :       {
-<span class="lineNum">      98 </span><span class="lineCov">      74400 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">      98 </span><span class="lineCov">      99200 :         serialize&lt;Height - 1&gt;::template apply( ar, tuple );</span>
 <span class="lineNum">      99 </span><span class="lineCov">     124000 :         ar( CEREAL_NVP_(tuple_element_name&lt;Height - 1&gt;::c_str(),</span>
-<span class="lineNum">     100 </span><span class="lineCov">      86800 :             std::get&lt;Height - 1&gt;( tuple )) );</span>
-<span class="lineNum">     101 </span><span class="lineCov">      74400 :       }</span>
+<span class="lineNum">     100 </span><span class="lineCov">      43400 :             std::get&lt;Height - 1&gt;( tuple )) );</span>
+<span class="lineNum">     101 </span><span class="lineCov">      99200 :       }</span>
 <span class="lineNum">     102 </span>            :     };
 <span class="lineNum">     103 </span>            : 
 <span class="lineNum">     104 </span>            :     // Zero height specialization - nothing to do here
@@ -169,17 +169,17 @@
 <span class="lineNum">     107 </span>            :     struct serialize&lt;0&gt;
 <a name="108"><span class="lineNum">     108 </span>            :     {</a>
 <span class="lineNum">     109 </span>            :       template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">     110 </span><span class="lineCov">      14400 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
-<span class="lineNum">     111 </span><span class="lineCov">      14400 :       { }</span>
+<span class="lineNum">     110 </span><span class="lineCov">      19200 :       static void apply( Archive &amp;, std::tuple&lt;Types...&gt; &amp; )</span>
+<span class="lineNum">     111 </span><span class="lineCov">      19200 :       { }</span>
 <span class="lineNum">     112 </span>            :     };
 <span class="lineNum">     113 </span>            :   }
 <span class="lineNum">     114 </span>            : 
 <a name="115"><span class="lineNum">     115 </span>            :   //! Serializing for std::tuple</a>
 <span class="lineNum">     116 </span>            :   template &lt;class Archive, class ... Types&gt; inline
-<span class="lineNum">     117 </span><span class="lineCov">      14400 :   void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
+<span class="lineNum">     117 </span><span class="lineCov">      19200 :   void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar, std::tuple&lt;Types...&gt; &amp; tuple )</span>
 <span class="lineNum">     118 </span>            :   {
-<span class="lineNum">     119 </span><span class="lineCov">      14400 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
-<span class="lineNum">     120 </span><span class="lineCov">      14400 :   }</span>
+<span class="lineNum">     119 </span><span class="lineCov">      19200 :     tuple_detail::serialize&lt;std::tuple_size&lt;std::tuple&lt;Types...&gt;&gt;::value&gt;::template apply( ar, tuple );</span>
+<span class="lineNum">     120 </span><span class="lineCov">      19200 :   }</span>
 <span class="lineNum">     121 </span>            : } // namespace cereal
 <span class="lineNum">     122 </span>            : 
 <span class="lineNum">     123 </span>            : #endif // CEREAL_TYPES_TUPLE_HPP_

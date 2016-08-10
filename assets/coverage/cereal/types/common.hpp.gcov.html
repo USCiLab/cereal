@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-29 15:15:18</td>
+            <td class="headerValue">2016-08-10 11:21:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">8</td>
@@ -154,19 +154,19 @@
 <span class="lineNum">      92 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="93"><span class="lineNum">      93 </span>            :   typename std::enable_if&lt;common_detail::is_enum&lt;T&gt;::value,</a>
 <span class="lineNum">      94 </span>            :                           typename common_detail::is_enum&lt;T&gt;::base_type&gt;::type
-<span class="lineNum">      95 </span><span class="lineCov">       4000 :   CEREAL_SAVE_MINIMAL_FUNCTION_NAME( Archive const &amp;, T const &amp; t )</span>
+<span class="lineNum">      95 </span><span class="lineCov">       6000 :   CEREAL_SAVE_MINIMAL_FUNCTION_NAME( Archive const &amp;, T const &amp; t )</span>
 <span class="lineNum">      96 </span>            :   {
-<span class="lineNum">      97 </span><span class="lineCov">       4000 :     return static_cast&lt;typename common_detail::is_enum&lt;T&gt;::base_type&gt;(t);</span>
+<span class="lineNum">      97 </span><span class="lineCov">       6000 :     return static_cast&lt;typename common_detail::is_enum&lt;T&gt;::base_type&gt;(t);</span>
 <span class="lineNum">      98 </span>            :   }
 <span class="lineNum">      99 </span>            : 
 <span class="lineNum">     100 </span>            :   //! Loading for enum types
 <a name="101"><span class="lineNum">     101 </span>            :   template &lt;class Archive, class T&gt; inline</a>
 <span class="lineNum">     102 </span>            :   typename std::enable_if&lt;common_detail::is_enum&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     103 </span><span class="lineCov">       4000 :   CEREAL_LOAD_MINIMAL_FUNCTION_NAME( Archive const &amp;, T &amp;&amp; t,</span>
+<span class="lineNum">     103 </span><span class="lineCov">       6000 :   CEREAL_LOAD_MINIMAL_FUNCTION_NAME( Archive const &amp;, T &amp;&amp; t,</span>
 <span class="lineNum">     104 </span>            :                                      typename common_detail::is_enum&lt;T&gt;::base_type const &amp; value )
 <span class="lineNum">     105 </span>            :   {
-<span class="lineNum">     106 </span><span class="lineCov">       4000 :     t = reinterpret_cast&lt;typename common_detail::is_enum&lt;T&gt;::type const &amp;&gt;( value );</span>
-<span class="lineNum">     107 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">     106 </span><span class="lineCov">       6000 :     t = reinterpret_cast&lt;typename common_detail::is_enum&lt;T&gt;::type const &amp;&gt;( value );</span>
+<span class="lineNum">     107 </span><span class="lineCov">       6000 :   }</span>
 <span class="lineNum">     108 </span>            : 
 <span class="lineNum">     109 </span>            :   //! Serialization for raw pointers
 <span class="lineNum">     110 </span>            :   /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */

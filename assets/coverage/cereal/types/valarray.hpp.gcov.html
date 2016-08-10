@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-29 15:15:18</td>
+            <td class="headerValue">2016-08-10 11:21:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">40</td>
@@ -103,49 +103,49 @@
 <span class="lineNum">      41 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="42"><span class="lineNum">      42 </span>            :   typename std::enable_if&lt;traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value</a>
 <span class="lineNum">      43 </span>            :                           &amp;&amp; std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">      44 </span><span class="lineCov">        200 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; const &amp; valarray )</span>
+<span class="lineNum">      44 </span><span class="lineCov">        600 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; const &amp; valarray )</span>
 <span class="lineNum">      45 </span>            :   {
-<span class="lineNum">      46 </span><span class="lineCov">        200 :     ar( make_size_tag( static_cast&lt;size_type&gt;(valarray.size()) ) ); // number of elements</span>
-<span class="lineNum">      47 </span><span class="lineCov">        200 :     ar( binary_data( &amp;valarray[0], valarray.size() * sizeof(T) ) ); // &amp;valarray[0] ok since guaranteed contiguous</span>
-<span class="lineNum">      48 </span><span class="lineCov">        200 :   }</span>
+<span class="lineNum">      46 </span><span class="lineCov">        600 :     ar( make_size_tag( static_cast&lt;size_type&gt;(valarray.size()) ) ); // number of elements</span>
+<span class="lineNum">      47 </span><span class="lineCov">        600 :     ar( binary_data( &amp;valarray[0], valarray.size() * sizeof(T) ) ); // &amp;valarray[0] ok since guaranteed contiguous</span>
+<span class="lineNum">      48 </span><span class="lineCov">        600 :   }</span>
 <span class="lineNum">      49 </span>            : 
 <span class="lineNum">      50 </span>            :   //! Loading for std::valarray arithmetic types, using binary serialization, if supported
 <span class="lineNum">      51 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="52"><span class="lineNum">      52 </span>            :   typename std::enable_if&lt;traits::is_input_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value</a>
 <span class="lineNum">      53 </span>            :                           &amp;&amp; std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">      54 </span><span class="lineCov">        200 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; &amp; valarray )</span>
+<span class="lineNum">      54 </span><span class="lineCov">        600 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; &amp; valarray )</span>
 <span class="lineNum">      55 </span>            :   {
 <span class="lineNum">      56 </span>            :     size_type valarraySize;
-<span class="lineNum">      57 </span><span class="lineCov">        200 :     ar( make_size_tag( valarraySize ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">        600 :     ar( make_size_tag( valarraySize ) );</span>
 <span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span><span class="lineCov">        200 :     valarray.resize( static_cast&lt;std::size_t&gt;( valarraySize ) );</span>
-<span class="lineNum">      60 </span><span class="lineCov">        200 :     ar( binary_data( &amp;valarray[0], static_cast&lt;std::size_t&gt;( valarraySize ) * sizeof(T) ) );</span>
-<span class="lineNum">      61 </span><span class="lineCov">        200 :   }</span>
+<span class="lineNum">      59 </span><span class="lineCov">        600 :     valarray.resize( static_cast&lt;std::size_t&gt;( valarraySize ) );</span>
+<span class="lineNum">      60 </span><span class="lineCov">        600 :     ar( binary_data( &amp;valarray[0], static_cast&lt;std::size_t&gt;( valarraySize ) * sizeof(T) ) );</span>
+<span class="lineNum">      61 </span><span class="lineCov">        600 :   }</span>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            :   //! Saving for std::valarray all other types
 <span class="lineNum">      64 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="65"><span class="lineNum">      65 </span>            :   typename std::enable_if&lt;!traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value</a>
 <span class="lineNum">      66 </span>            :                           || !std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">      67 </span><span class="lineCov">       1800 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; const &amp; valarray )</span>
+<span class="lineNum">      67 </span><span class="lineCov">       5400 :   CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; const &amp; valarray )</span>
 <span class="lineNum">      68 </span>            :   {
-<span class="lineNum">      69 </span><span class="lineCov">       1800 :     ar( make_size_tag( static_cast&lt;size_type&gt;(valarray.size()) ) ); // number of elements</span>
-<span class="lineNum">      70 </span><span class="lineCov">     181800 :     for(auto &amp;&amp; v : valarray)</span>
-<span class="lineNum">      71 </span><span class="lineCov">     180000 :       ar(v);</span>
-<span class="lineNum">      72 </span><span class="lineCov">       1800 :   }</span>
+<span class="lineNum">      69 </span><span class="lineCov">       5400 :     ar( make_size_tag( static_cast&lt;size_type&gt;(valarray.size()) ) ); // number of elements</span>
+<span class="lineNum">      70 </span><span class="lineCov">     545400 :     for(auto &amp;&amp; v : valarray)</span>
+<span class="lineNum">      71 </span><span class="lineCov">     540000 :       ar(v);</span>
+<span class="lineNum">      72 </span><span class="lineCov">       5400 :   }</span>
 <span class="lineNum">      73 </span>            : 
 <span class="lineNum">      74 </span>            :   //! Loading for std::valarray all other types
 <span class="lineNum">      75 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="76"><span class="lineNum">      76 </span>            :   typename std::enable_if&lt;!traits::is_input_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value</a>
 <span class="lineNum">      77 </span>            :                           || !std::is_arithmetic&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">      78 </span><span class="lineCov">       1800 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; &amp; valarray )</span>
+<span class="lineNum">      78 </span><span class="lineCov">       5400 :   CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::valarray&lt;T&gt; &amp; valarray )</span>
 <span class="lineNum">      79 </span>            :   {
 <span class="lineNum">      80 </span>            :     size_type valarraySize;
-<span class="lineNum">      81 </span><span class="lineCov">       1800 :     ar( make_size_tag( valarraySize ) );</span>
+<span class="lineNum">      81 </span><span class="lineCov">       5400 :     ar( make_size_tag( valarraySize ) );</span>
 <span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">       1800 :     valarray.resize( static_cast&lt;size_t&gt;( valarraySize ) );</span>
-<span class="lineNum">      84 </span><span class="lineCov">     181800 :     for(auto &amp;&amp; v : valarray)</span>
-<span class="lineNum">      85 </span><span class="lineCov">     180000 :       ar(v);</span>
-<span class="lineNum">      86 </span><span class="lineCov">       1800 :   }</span>
+<span class="lineNum">      83 </span><span class="lineCov">       5400 :     valarray.resize( static_cast&lt;size_t&gt;( valarraySize ) );</span>
+<span class="lineNum">      84 </span><span class="lineCov">     545400 :     for(auto &amp;&amp; v : valarray)</span>
+<span class="lineNum">      85 </span><span class="lineCov">     540000 :       ar(v);</span>
+<span class="lineNum">      86 </span><span class="lineCov">       5400 :   }</span>
 <span class="lineNum">      87 </span>            : } // namespace cereal
 <span class="lineNum">      88 </span>            : 
 <span class="lineNum">      89 </span>            : #endif // CEREAL_TYPES_VALARRAY_HPP_
