@@ -11,7 +11,8 @@ If you want to be thread safe:
 
 1. Ensure that archives are accessed by only one thread at a time.
 2. If you will be accessing separate archives simultaneously, ensure `CEREAL_THREAD_SAFE` is defined and non-zero before
-   any cereal headers are included, or modify its default value in `<cereal/macros.hpp>`.
+   any cereal headers are included, or modify its default value in [`<cereal/macros.hpp>`]({{ site.baseurl
+}}/assets/doxygen/macros_8hpp.html).
 
 ---
 
@@ -39,8 +40,9 @@ perform no locking. If you have the need to access distinct archives simultaneou
 // etc
 ```
 
-This macro can be found in `<cereal/macros.hpp>` and is detailed in the [doxygen documentation]({{ site.baseurl
-}}/assets/doxygen/polymorphic_8hpp.html).  Defining `CEREAL_THREAD_SAFE=1` will cause cereal to perform locking on
+This macro can be found in [`<cereal/macros.hpp>`]({{ site.baseurl
+}}/assets/doxygen/macros_8hpp.html) and is detailed in the [doxygen documentation]({{ site.baseurl
+}}/assets/doxygen/macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35).  Defining `CEREAL_THREAD_SAFE=1` will cause cereal to perform locking on
 certain global objects used during polymorphism and versioning serialization. This will come with the performance
 penalties associated with locking a mutex.
 
