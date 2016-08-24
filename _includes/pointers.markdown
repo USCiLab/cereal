@@ -45,13 +45,17 @@ struct MyType
     ar( myX );
   }
 
-  // We could define load_and_construct internally
+  // We could define load_and_construct internally:
+  //template <class Archive>
   //static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
   //{
   //  int x;
   //  ar( x );
   //  construct( x );
   //}
+
+  // if you require serialization versioning, simply add a const std::uint32_t as the final parameter, e.g.:
+  // load_and_construct( Archive & ar, cereal::construct<MyType> & construct, std::uint32_t const version )
 };
 
 // Provide a specialization for LoadAndConstruct for your type
@@ -66,6 +70,9 @@ namespace cereal
     //
     // More advanced functionality is available using construct, such as accessing
     // class members, which is detailed in the doxygen docs.
+    //
+    // As with the internal load_and_construct, versioning can be supported by adding an
+    // additional final parameter: const std::uint32_t version
     template <class Archive>
     static void load_and_construct( Archive & ar, cereal::construct<MyType> & construct )
     {
@@ -78,6 +85,8 @@ namespace cereal
 
 Implementing either of the `load_and_construct` styles will allow you to serialize smart pointers to a type without a
 default constructor.
+
+Serialization versioning for `load_and_construct` behaves the same way as it does for standard [serialization functions]({{ site.baseurl }}/serialization_functions.html#versioning).
 
 ### Implementation notes
 
