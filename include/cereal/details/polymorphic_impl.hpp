@@ -232,7 +232,7 @@ namespace cereal
         }
 
         // Find all chainable unregistered relations
-        std::map<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>> unregisteredRelations;
+        std::multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>> unregisteredRelations;
         {
           auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
           {
