@@ -23,8 +23,8 @@ If you want to serialize some data through pointers to base types:
 When serializing a polymorphic base class pointer, cereal uses [Run-Time Type Information (RTTI)](http://en.wikipedia.org/wiki/Run-time_type_information) to determine the true type of the object at the location stored in the pointer. This type information is then used to look up the proper serialization methods in a map which will have been initialized at pre-execution time. Setting up these function maps is done by calling one of two macros (`CEREAL_REGISTER_TYPE` or `CEREAL_REGISTER_TYPE_WITH_NAME`) for each derived type. Doxygen documentation for these macros can be found [here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
 
 While it is not necessary to register base classes, cereal must have a serialization path from derived to base type.
-Normally this is handled automatically if you serialize a base type with either `cereal::base_type` or
-`cereal::virtual_base_type`. In situations where neither of these is performed, cereal will need to be explicitly told
+Normally this is handled automatically if you serialize a base type with either `cereal::base_class` or
+`cereal::virtual_base_class`. In situations where neither of these is performed, cereal will need to be explicitly told
 about the relationship between base and derived type, using the `CEREAL_REGISTER_POLYMORPHIC_RELATION` macro, detailed
 [here]({{ site.baseurl }}/assets/doxygen/polymorphic_8hpp.html).
 
