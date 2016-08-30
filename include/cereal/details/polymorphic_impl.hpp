@@ -232,57 +232,67 @@ namespace cereal
         }
 
         // Find all chainable unregistered relations
-        std::multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>> unregisteredRelations;
         {
-          auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
+          using Relations = std::multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
+          auto findChainableRelations = [&baseMap]() -> Relations
           {
-            const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
-            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
-                                                    std::vector<PolymorphicCaster const *>{} );
-          };
-
-          for( auto baseIt : baseMap )
-            for( auto derivedIt : baseIt.second )
+            auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
             {
-              for( auto otherBaseIt : baseMap )
+              const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
+              return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
+                                                      std::vector<PolymorphicCaster const *>{} );
+            };
+
+            Relations unregisteredRelations;
+            for( auto baseIt : baseMap )
+              for( auto derivedIt : baseIt.second )
               {
-                if( baseIt.first == otherBaseIt.first ) // only interested in chained relations
-                  continue;
-
-                // Check if there exists a mapping otherBase -> base -> derived that is shorter than
-                // any existing otherBase -> derived direct mapping
-                auto otherBaseItToDerived = checkRelation( otherBaseIt.first, derivedIt.first );
-                auto baseToDerived        = checkRelation( baseIt.first,      derivedIt.first );
-                auto otherBaseToBase      = checkRelation( otherBaseIt.first, baseIt.first );
-
-                const size_t newLength = otherBaseToBase.second.size() + baseToDerived.second.size();
-                const bool isShorterOrFirstPath = !otherBaseItToDerived.first || (newLength < derivedIt.second.size());
-
-                if( isShorterOrFirstPath &&
-                    baseToDerived.first  &&
-                    otherBaseToBase.first )
+                for( auto otherBaseIt : baseMap )
                 {
-                  std::vector<PolymorphicCaster const *> path = otherBaseToBase.second;
-                  path.insert( path.end(), baseToDerived.second.begin(), baseToDerived.second.end() );
+                  if( baseIt.first == otherBaseIt.first ) // only interested in chained relations
+                    continue;
 
-                 #ifdef CEREAL_OLDER_GCC
-                 unregisteredRelations.insert( std::make_pair(otherBaseIt.first,
-                                               std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)}) );
-                 #else // NOT CEREAL_OLDER_GCC
-                 unregisteredRelations.emplace( otherBaseIt.first,
-                                                std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)} );
-                 #endif // NOT CEREAL_OLDER_GCC
-                }
-              } // end otherBaseIt
-            } // end derivedIt
+                  // Check if there exists a mapping otherBase -> base -> derived that is shorter than
+                  // any existing otherBase -> derived direct mapping
+                  auto otherBaseItToDerived = checkRelation( otherBaseIt.first, derivedIt.first );
+                  auto baseToDerived        = checkRelation( baseIt.first,      derivedIt.first );
+                  auto otherBaseToBase      = checkRelation( otherBaseIt.first, baseIt.first );
+
+                  const size_t newLength = otherBaseToBase.second.size() + baseToDerived.second.size();
+                  const bool isShorterOrFirstPath = !otherBaseItToDerived.first || (newLength < derivedIt.second.size());
+
+                  if( isShorterOrFirstPath &&
+                      baseToDerived.first  &&
+                      otherBaseToBase.first )
+                  {
+                    std::vector<PolymorphicCaster const *> path = otherBaseToBase.second;
+                    path.insert( path.end(), baseToDerived.second.begin(), baseToDerived.second.end() );
+
+                   #ifdef CEREAL_OLDER_GCC
+                   unregisteredRelations.insert( std::make_pair(otherBaseIt.first,
+                                                 std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)}) );
+                   #else // NOT CEREAL_OLDER_GCC
+                   unregisteredRelations.emplace( otherBaseIt.first,
+                                                  std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)} );
+                   #endif // NOT CEREAL_OLDER_GCC
+                  }
+                } // end otherBaseIt
+              } // end derivedIt
+            return unregisteredRelations;
+          }; // end findChainableRelations
+
+          Relations unregisteredRelations;
+          do
+          {
+            unregisteredRelations = findChainableRelations();
+            // Insert chained relations
+            for( auto it : unregisteredRelations )
+            {
+              auto & derivedMap = baseMap.find( it.first )->second;
+              derivedMap[it.second.first] = it.second.second;
+            }
+          } while ( !unregisteredRelations.empty() );
         } // end chain lookup
-
-        // Insert chained relations
-        for( auto it : unregisteredRelations )
-        {
-          auto & derivedMap = baseMap.find( it.first )->second;
-          derivedMap[it.second.first] = it.second.second;
-        }
       }
 
       //! Performs the proper downcast with the templated types
