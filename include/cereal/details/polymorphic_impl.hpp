@@ -244,10 +244,10 @@ namespace cereal
             };
 
             Relations unregisteredRelations;
-            for( auto baseIt : baseMap )
-              for( auto derivedIt : baseIt.second )
+            for( auto const & baseIt : baseMap )
+              for( auto const & derivedIt : baseIt.second )
               {
-                for( auto otherBaseIt : baseMap )
+                for( auto const & otherBaseIt : baseMap )
                 {
                   if( baseIt.first == otherBaseIt.first ) // only interested in chained relations
                     continue;
@@ -286,7 +286,7 @@ namespace cereal
           {
             unregisteredRelations = findChainableRelations();
             // Insert chained relations
-            for( auto it : unregisteredRelations )
+            for( auto const & it : unregisteredRelations )
             {
               auto & derivedMap = baseMap.find( it.first )->second;
               derivedMap[it.second.first] = it.second.second;
