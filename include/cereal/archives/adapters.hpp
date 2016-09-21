@@ -30,7 +30,7 @@
 #ifndef CEREAL_ARCHIVES_ADAPTERS_HPP_
 #define CEREAL_ARCHIVES_ADAPTERS_HPP_
 
-#include <cereal/details/helpers.hpp>
+#include "cereal/details/helpers.hpp"
 #include <utility>
 
 namespace cereal

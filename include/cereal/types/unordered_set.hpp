@@ -30,7 +30,7 @@
 #ifndef CEREAL_TYPES_UNORDERED_SET_HPP_
 #define CEREAL_TYPES_UNORDERED_SET_HPP_
 
-#include <cereal/cereal.hpp>
+#include "cereal/cereal.hpp"
 #include <unordered_set>
 
 namespace cereal
