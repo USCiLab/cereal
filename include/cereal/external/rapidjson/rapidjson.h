@@ -1,5 +1,5 @@
 // Tencent is pleased to support the open source community by making RapidJSON available.
-//
+// 
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
 //
 // Licensed under the MIT License (the "License"); you may not use this file except
@@ -7,9 +7,9 @@
 //
 // http://opensource.org/licenses/MIT
 //
-// Unless required by applicable law or agreed to in writing, software distributed
-// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-// CONDITIONS OF ANY KIND, either express or implied. See the License for the
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
 #ifndef CEREAL_RAPIDJSON_CEREAL_RAPIDJSON_H_
@@ -17,7 +17,7 @@
 
 /*!\file rapidjson.h
     \brief common definitions and configuration
-
+    
     \see CEREAL_RAPIDJSON_CONFIG
  */
 
@@ -110,13 +110,13 @@
     \see CEREAL_RAPIDJSON_NAMESPACE
 */
 #ifndef CEREAL_RAPIDJSON_NAMESPACE
-#define CEREAL_RAPIDJSON_NAMESPACE cereal::rapidjson
+#define CEREAL_RAPIDJSON_NAMESPACE rapidjson
 #endif
 #ifndef CEREAL_RAPIDJSON_NAMESPACE_BEGIN
-#define CEREAL_RAPIDJSON_NAMESPACE_BEGIN namespace cereal { namespace rapidjson {
+#define CEREAL_RAPIDJSON_NAMESPACE_BEGIN namespace CEREAL_RAPIDJSON_NAMESPACE {
 #endif
 #ifndef CEREAL_RAPIDJSON_NAMESPACE_END
-#define CEREAL_RAPIDJSON_NAMESPACE_END } }
+#define CEREAL_RAPIDJSON_NAMESPACE_END }
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@
 #  elif defined(CEREAL_RAPIDJSON_DOXYGEN_RUNNING)
 #    define CEREAL_RAPIDJSON_ENDIAN
 #  else
-#    error Unknown machine endianess detected. User needs to define CEREAL_RAPIDJSON_ENDIAN.
+#    error Unknown machine endianess detected. User needs to define CEREAL_RAPIDJSON_ENDIAN.   
 #  endif
 #endif // CEREAL_RAPIDJSON_ENDIAN
 
@@ -250,7 +250,7 @@
 
 //! Whether using 64-bit architecture
 #ifndef CEREAL_RAPIDJSON_64BIT
-#if defined(__LP64__) || defined(_WIN64) || defined(__EMSCRIPTEN__)
+#if defined(__LP64__) || (defined(__x86_64__) && defined(__ILP32__)) || defined(_WIN64) || defined(__EMSCRIPTEN__)
 #define CEREAL_RAPIDJSON_64BIT 1
 #else
 #define CEREAL_RAPIDJSON_64BIT 0
@@ -423,7 +423,7 @@ CEREAL_RAPIDJSON_NAMESPACE_END
 #if defined(__GNUC__)
 #define CEREAL_RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
 #else
-#define CEREAL_RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE
+#define CEREAL_RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE 
 #endif
 #ifndef __clang__
 //!@endcond
@@ -474,7 +474,7 @@ CEREAL_RAPIDJSON_NAMESPACE_END
 
 //!@cond CEREAL_RAPIDJSON_HIDDEN_FROM_DOXYGEN
 
-#define CEREAL_RAPIDJSON_MULTILINEMACRO_BEGIN do {
+#define CEREAL_RAPIDJSON_MULTILINEMACRO_BEGIN do {  
 #define CEREAL_RAPIDJSON_MULTILINEMACRO_END \
 } while((void)0, 0)
 
@@ -529,8 +529,12 @@ CEREAL_RAPIDJSON_NAMESPACE_END
 
 #ifndef CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS
 #if defined(__clang__)
-#define CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS __has_feature(cxx_rvalue_references) && \
+#if __has_feature(cxx_rvalue_references) && \
     (defined(_LIBCPP_VERSION) || defined(__GLIBCXX__) && __GLIBCXX__ >= 20080306)
+#define CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS 1
+#else
+#define CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS 0
+#endif
 #elif (defined(CEREAL_RAPIDJSON_GNUC) && (CEREAL_RAPIDJSON_GNUC >= CEREAL_RAPIDJSON_VERSION_CODE(4,3,0)) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
       (defined(_MSC_VER) && _MSC_VER >= 1600)
 
@@ -601,7 +605,7 @@ enum Type {
     kFalseType = 1,     //!< false
     kTrueType = 2,      //!< true
     kObjectType = 3,    //!< object
-    kArrayType = 4,     //!< array
+    kArrayType = 4,     //!< array 
     kStringType = 5,    //!< string
     kNumberType = 6     //!< number
 };
