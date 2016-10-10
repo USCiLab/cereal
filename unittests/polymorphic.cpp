@@ -42,6 +42,7 @@ struct PolyBaseAA : PolyBaseA
 {
   PolyBaseAA() {}
   PolyBaseAA( long ww ) : w(ww) {}
+  virtual ~PolyBaseAA() {}
   long w;
 
   void foo() {}
@@ -67,6 +68,7 @@ struct PolyBaseB : virtual PolyBaseAA
 {
   PolyBaseB() {}
   PolyBaseB( int xx, long ww ) : PolyBaseAA(ww), x(xx) {}
+  virtual ~PolyBaseB() {}
   int x;
 
   template <class Archive>
@@ -87,6 +89,7 @@ struct PolyBaseC : virtual PolyBaseAA
 {
   PolyBaseC() {}
   PolyBaseC( double yy, long ww ) : PolyBaseAA(ww), y(yy) {}
+  virtual ~PolyBaseC() {}
   double y;
 
   template <class Archive>
@@ -108,6 +111,7 @@ struct PolyDerivedD : PolyBaseB, PolyBaseC
   PolyDerivedD() {}
   PolyDerivedD( std::string const & zz, double yy, int xx, long ww ) :
     PolyBaseAA( ww ), PolyBaseB( xx, ww ), PolyBaseC( yy, ww ), z(zz) {}
+  virtual ~PolyDerivedD() {}
   std::string z;
 
   template <class Archive>
@@ -132,6 +136,7 @@ struct PolyBase
 {
   PolyBase() {}
   PolyBase( int xx, float yy ) : x(xx), y(yy) {}
+  virtual ~PolyBase() {}
   int x;
   float y;
 
@@ -154,6 +159,7 @@ struct PolyDerived : PolyBase
   PolyDerived() {}
   PolyDerived( int xx, float yy, bool aa, double bb ) :
     PolyBase( xx, yy ), a(aa), b(bb) {}
+  virtual ~PolyDerived() {}
 
   bool a;
   double b;
@@ -177,12 +183,15 @@ CEREAL_REGISTER_TYPE(PolyDerived)
 
 struct PolyLA : std::enable_shared_from_this<PolyLA>
 {
+  PolyLA() {}
+  virtual ~PolyLA() {}
   virtual void foo() = 0;
 };
 
 struct PolyDerivedLA : public PolyLA
 {
   PolyDerivedLA( int xx ) : x( xx ) { }
+  virtual ~PolyDerivedLA() {}
 
   int x;
   std::vector<std::shared_ptr<PolyLA>> vec;
