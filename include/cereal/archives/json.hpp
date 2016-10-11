@@ -29,8 +29,8 @@
 #ifndef CEREAL_ARCHIVES_JSON_HPP_
 #define CEREAL_ARCHIVES_JSON_HPP_
 
-#include <cereal/cereal.hpp>
-#include <cereal/details/util.hpp>
+#include "cereal/cereal.hpp"
+#include "cereal/details/util.hpp"
 
 namespace cereal
 {
@@ -50,11 +50,11 @@ namespace cereal
 #define CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS kWriteNanAndInfFlag
 #define CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
 
-#include <cereal/external/rapidjson/prettywriter.h>
-#include <cereal/external/rapidjson/ostreamwrapper.h>
-#include <cereal/external/rapidjson/istreamwrapper.h>
-#include <cereal/external/rapidjson/document.h>
-#include <cereal/external/base64.hpp>
+#include "cereal/external/rapidjson/prettywriter.h"
+#include "cereal/external/rapidjson/ostreamwrapper.h"
+#include "cereal/external/rapidjson/istreamwrapper.h"
+#include "cereal/external/rapidjson/document.h"
+#include "cereal/external/base64.hpp"
 
 #include <limits>
 #include <sstream>
