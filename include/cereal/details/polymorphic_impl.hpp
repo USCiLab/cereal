@@ -233,7 +233,7 @@ namespace cereal
 
         // Find all chainable unregistered relations
         {
-          using Relations = std::multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
+          using Relations = std::map<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
           auto findChainableRelations = [&baseMap]() -> Relations
           {
             auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
@@ -268,13 +268,26 @@ namespace cereal
                     std::vector<PolymorphicCaster const *> path = otherBaseToBase.second;
                     path.insert( path.end(), baseToDerived.second.begin(), baseToDerived.second.end() );
 
-                   #ifdef CEREAL_OLDER_GCC
-                   unregisteredRelations.insert( std::make_pair(otherBaseIt.first,
-                                                 std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)}) );
-                   #else // NOT CEREAL_OLDER_GCC
-                   unregisteredRelations.emplace( otherBaseIt.first,
-                                                  std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)} );
-                   #endif // NOT CEREAL_OLDER_GCC
+                    // Check to see if we have a previous uncommitted path in unregisteredRelations
+                    // that is shorter. If so, ignore this path
+                    auto hint = unregisteredRelations.find( otherBaseIt.first );
+                    const bool uncommittedExists = hint != unregisteredRelations.end();
+                    if( uncommittedExists && (hint->second.second.size() <= newLength) )
+                      continue;
+
+                    auto newPath = std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)};
+
+                    // Insert the new path if it doesn't exist, otherwise this will just lookup where to do the
+                    // replacement
+                    #ifdef CEREAL_OLDER_GCC
+                    auto old = unregisteredRelations.insert( hint, std::make_pair(otherBaseIt.first, newPath) );
+                    #else // NOT CEREAL_OLDER_GCC
+                    auto old = unregisteredRelations.emplace_hint( hint, otherBaseIt.first, newPath );
+                    #endif // NOT CEREAL_OLDER_GCC
+
+                    // If there was an uncommitted path, we need to perform a replacement
+                    if( uncommittedExists )
+                      old->second = newPath;
                   }
                 } // end otherBaseIt
               } // end derivedIt
