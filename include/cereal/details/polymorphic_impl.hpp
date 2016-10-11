@@ -232,57 +232,80 @@ namespace cereal
         }
 
         // Find all chainable unregistered relations
-        std::map<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>> unregisteredRelations;
         {
-          auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
+          using Relations = std::map<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
+          auto findChainableRelations = [&baseMap]() -> Relations
           {
-            const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
-            return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
-                                                    std::vector<PolymorphicCaster const *>{} );
-          };
-
-          for( auto baseIt : baseMap )
-            for( auto derivedIt : baseIt.second )
+            auto checkRelation = [](std::type_index const & baseInfo, std::type_index const & derivedInfo)
             {
-              for( auto otherBaseIt : baseMap )
+              const bool exists = PolymorphicCasters::exists( baseInfo, derivedInfo );
+              return std::make_pair( exists, exists ? PolymorphicCasters::lookup( baseInfo, derivedInfo, [](){} ) :
+                                                      std::vector<PolymorphicCaster const *>{} );
+            };
+
+            Relations unregisteredRelations;
+            for( auto const & baseIt : baseMap )
+              for( auto const & derivedIt : baseIt.second )
               {
-                if( baseIt.first == otherBaseIt.first ) // only interested in chained relations
-                  continue;
-
-                // Check if there exists a mapping otherBase -> base -> derived that is shorter than
-                // any existing otherBase -> derived direct mapping
-                auto otherBaseItToDerived = checkRelation( otherBaseIt.first, derivedIt.first );
-                auto baseToDerived        = checkRelation( baseIt.first,      derivedIt.first );
-                auto otherBaseToBase      = checkRelation( otherBaseIt.first, baseIt.first );
-
-                const size_t newLength = otherBaseToBase.second.size() + baseToDerived.second.size();
-                const bool isShorterOrFirstPath = !otherBaseItToDerived.first || (newLength < derivedIt.second.size());
-
-                if( isShorterOrFirstPath &&
-                    baseToDerived.first  &&
-                    otherBaseToBase.first )
+                for( auto const & otherBaseIt : baseMap )
                 {
-                  std::vector<PolymorphicCaster const *> path = otherBaseToBase.second;
-                  path.insert( path.end(), baseToDerived.second.begin(), baseToDerived.second.end() );
+                  if( baseIt.first == otherBaseIt.first ) // only interested in chained relations
+                    continue;
 
-                 #ifdef CEREAL_OLDER_GCC
-                 unregisteredRelations.insert( std::make_pair(otherBaseIt.first,
-                                               std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)}) );
-                 #else // NOT CEREAL_OLDER_GCC
-                 unregisteredRelations.emplace( otherBaseIt.first,
-                                                std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)} );
-                 #endif // NOT CEREAL_OLDER_GCC
-                }
-              } // end otherBaseIt
-            } // end derivedIt
+                  // Check if there exists a mapping otherBase -> base -> derived that is shorter than
+                  // any existing otherBase -> derived direct mapping
+                  auto otherBaseItToDerived = checkRelation( otherBaseIt.first, derivedIt.first );
+                  auto baseToDerived        = checkRelation( baseIt.first,      derivedIt.first );
+                  auto otherBaseToBase      = checkRelation( otherBaseIt.first, baseIt.first );
+
+                  const size_t newLength = otherBaseToBase.second.size() + baseToDerived.second.size();
+                  const bool isShorterOrFirstPath = !otherBaseItToDerived.first || (newLength < derivedIt.second.size());
+
+                  if( isShorterOrFirstPath &&
+                      baseToDerived.first  &&
+                      otherBaseToBase.first )
+                  {
+                    std::vector<PolymorphicCaster const *> path = otherBaseToBase.second;
+                    path.insert( path.end(), baseToDerived.second.begin(), baseToDerived.second.end() );
+
+                    // Check to see if we have a previous uncommitted path in unregisteredRelations
+                    // that is shorter. If so, ignore this path
+                    auto hint = unregisteredRelations.find( otherBaseIt.first );
+                    const bool uncommittedExists = hint != unregisteredRelations.end();
+                    if( uncommittedExists && (hint->second.second.size() <= newLength) )
+                      continue;
+
+                    auto newPath = std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{derivedIt.first, std::move(path)};
+
+                    // Insert the new path if it doesn't exist, otherwise this will just lookup where to do the
+                    // replacement
+                    #ifdef CEREAL_OLDER_GCC
+                    auto old = unregisteredRelations.insert( hint, std::make_pair(otherBaseIt.first, newPath) );
+                    #else // NOT CEREAL_OLDER_GCC
+                    auto old = unregisteredRelations.emplace_hint( hint, otherBaseIt.first, newPath );
+                    #endif // NOT CEREAL_OLDER_GCC
+
+                    // If there was an uncommitted path, we need to perform a replacement
+                    if( uncommittedExists )
+                      old->second = newPath;
+                  }
+                } // end otherBaseIt
+              } // end derivedIt
+            return unregisteredRelations;
+          }; // end findChainableRelations
+
+          Relations unregisteredRelations;
+          do
+          {
+            unregisteredRelations = findChainableRelations();
+            // Insert chained relations
+            for( auto const & it : unregisteredRelations )
+            {
+              auto & derivedMap = baseMap.find( it.first )->second;
+              derivedMap[it.second.first] = it.second.second;
+            }
+          } while ( !unregisteredRelations.empty() );
         } // end chain lookup
-
-        // Insert chained relations
-        for( auto it : unregisteredRelations )
-        {
-          auto & derivedMap = baseMap.find( it.first )->second;
-          derivedMap[it.second.first] = it.second.second;
-        }
       }
 
       //! Performs the proper downcast with the templated types
