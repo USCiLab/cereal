@@ -30,7 +30,7 @@
 #ifndef CEREAL_TYPES_TUPLE_HPP_
 #define CEREAL_TYPES_TUPLE_HPP_
 
-#include <cereal/cereal.hpp>
+#include "cereal/cereal.hpp"
 #include <tuple>
 
 namespace cereal
