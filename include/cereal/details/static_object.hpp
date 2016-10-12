@@ -73,7 +73,7 @@ namespace cereal
         static T & create()
         {
           static T t;
-          instantiate(t);
+          instantiate(instance);
           return t;
         }
 
@@ -115,8 +115,11 @@ namespace cereal
           return LockGuard{};
           #endif
         }
-
+      private:
+        static T & instance;
     };
+
+    template <class T> T & StaticObject<T>::instance = StaticObject<T>::create();
 
   } // namespace detail
 } // namespace cereal
