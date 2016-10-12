@@ -109,7 +109,7 @@ namespace cereal
         static LockGuard lock()
         {
           #if CEREAL_THREAD_SAFE
-          std::mutex instanceMutex;
+          static std::mutex instanceMutex;
           return LockGuard{instanceMutex};
           #else
           return LockGuard{};
