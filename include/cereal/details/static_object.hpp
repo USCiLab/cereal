@@ -115,6 +115,7 @@ namespace cereal
           return LockGuard{};
           #endif
         }
+
       private:
         static T & instance;
     };
