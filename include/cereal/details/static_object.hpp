@@ -109,6 +109,7 @@ namespace cereal
         static LockGuard lock()
         {
           #if CEREAL_THREAD_SAFE
+          static std::mutex instanceMutex;
           return LockGuard{instanceMutex};
           #else
           return LockGuard{};
@@ -117,15 +118,9 @@ namespace cereal
 
       private:
         static T & instance;
-        #if CEREAL_THREAD_SAFE
-        static std::mutex instanceMutex;
-        #endif
     };
 
     template <class T> T & StaticObject<T>::instance = StaticObject<T>::create();
-    #if CEREAL_THREAD_SAFE
-    template <class T> std::mutex StaticObject<T>::instanceMutex;
-    #endif
   } // namespace detail
 } // namespace cereal
 
