@@ -56,11 +56,6 @@
 #include <set>
 #include <stack>
 
-#include "cereal/types/map.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/types/string.hpp"
-#include "cereal/archives/json.hpp" // DEBUG
-
 //! Binds a polymorhic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
@@ -82,26 +77,6 @@
 
 namespace cereal
 {
-  template <class Archive> inline
-  std::string save_minimal( Archive const &, std::type_index const & t )
-  {
-    return util::demangle( t.name() );
-  }
-
-  template <class Archive> inline
-  void load_minimal( Archive const &, std::type_index & t, std::string const & s )
-  {
-  }
-
-  namespace detail
-  {
-    struct PolymorphicCaster;
-  }
-
-  template <class Archive> inline
-  void serialize( Archive &, detail::PolymorphicCaster const * )
-  { }
-
   /* Polymorphic casting support */
   namespace detail
   {
@@ -201,8 +176,6 @@ namespace cereal
       {
         auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );
 
-        std::cerr << "------- DOWNCAST " << util::demangle(baseInfo.name()) << "->" << util::demangledName<Derived>() << std::endl;
-
         for( auto const * map : mapping )
           dptr = map->downcast( dptr );
 
@@ -217,8 +190,6 @@ namespace cereal
       {
         auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
 
-        std::cerr << "------- UPCAST " << util::demangle(baseInfo.name()) << "->" << util::demangledName<Derived>() << std::endl;
-
         void * uptr = dptr;
         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )
           uptr = (*mIter)->upcast( uptr );
@@ -231,8 +202,6 @@ namespace cereal
       static std::shared_ptr<void> upcast( std::shared_ptr<Derived> const & dptr, std::type_info const & baseInfo )
       {
         auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
-
-        std::cerr << "------- SPTR UPCAST " << util::demangle(baseInfo.name()) << "->" << util::demangledName<Derived>() << std::endl;
 
         std::shared_ptr<void> uptr = dptr;
         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )
@@ -248,17 +217,6 @@ namespace cereal
     template <class Base, class Derived>
     struct PolymorphicVirtualCaster : PolymorphicCaster
     {
-      template <class T>
-      static void print( std::string const & msg, T const & t )
-      {
-        std::cerr << msg << std::endl;
-        {
-          cereal::JSONOutputArchive ar(std::cerr);
-          ar(t);
-        }
-        std::cerr << std::endl;
-      }
-
       //! Inserts an entry in the polymorphic casting map for this pairing
       /*! Creates an explicit mapping between Base and Derived in both upwards and
           downwards directions, allowing void pointers to either to be properly cast
@@ -280,16 +238,9 @@ namespace cereal
           derivedVec.push_back( this );
         }
 
-        auto str = [](std::type_index t){ return util::demangle(t.name()); };
-
-        std::cerr << "Register relation " << str(baseKey) << "->" << str(derivedKey) << std::endl;
-
         // Insert reverse relation Derived->Base
         auto & reverseMap = StaticObject<PolymorphicCasters>::getInstance().reverseMap;
         reverseMap.emplace( derivedKey, baseKey );
-
-        print( "baseMap", baseMap );
-        print( "reverseMap", reverseMap );
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
@@ -330,11 +281,6 @@ namespace cereal
             const auto parent = parentStack.top();
             parentStack.pop();
 
-            std::cerr << "Processing " << str(parent) << std::endl;
-            print( "parent stack", parentStack );
-            print( "dirty set", dirtySet );
-            print( "processed set", processedParents );
-
             // Update paths to all children marked dirty
             for( auto const & childPair : baseMap[parent] )
             {
@@ -342,8 +288,6 @@ namespace cereal
               if( dirtySet.count( child ) && baseMap.count( child ) )
               {
                 auto parentChildPath = checkRelation( parent, child );
-
-                std::cerr << "Child has childreN? " << baseMap.count(child) << std::endl;
 
                 // Search all paths from the child to its own children (finalChild),
                 // looking for a shorter parth from parent to finalChild
@@ -381,8 +325,6 @@ namespace cereal
                     // If there was an uncommitted path, we need to perform a replacement
                     if( uncommittedExists )
                       old->second = newPath;
-
-                    std::cerr << "New relation " << str(parent) << "->" << str(finalChild) << ", child: " << str(child) << std::endl;
                   }
                 } // end loop over child's children
               } // end if dirty and child has children
@@ -394,8 +336,6 @@ namespace cereal
               auto & derivedMap = baseMap.find( it.first )->second;
               derivedMap[it.second.first] = it.second.second;
               reverseMap.emplace( it.second.first, it.first );
-
-              std::cerr << "Chained relation" << str(it.first) << "->" << str(it.second.first) << std::endl;
             }
 
             // Mark current parent as modified
@@ -419,21 +359,18 @@ namespace cereal
       //! Performs the proper downcast with the templated types
       void const * downcast( void const * const ptr ) const override
       {
-        std::cerr << "DOWNCAST " << util::demangledName<Base>() << "->" << util::demangledName<Derived>() << std::endl;
         return dynamic_cast<Derived const*>( static_cast<Base const*>( ptr ) );
       }
 
       //! Performs the proper upcast with the templated types
       void * upcast( void * const ptr ) const override
       {
-        std::cerr << "UPCAST " << util::demangledName<Derived>() << "->" << util::demangledName<Base>() << std::endl;
         return dynamic_cast<Base*>( static_cast<Derived*>( ptr ) );
       }
 
       //! Performs the proper upcast with the templated types (shared_ptr version)
       std::shared_ptr<void> upcast( std::shared_ptr<void> const & ptr ) const override
       {
-        std::cerr << "SPTR UPCAST " << util::demangledName<Derived>() << "->" << util::demangledName<Base>() << std::endl;
         return std::dynamic_pointer_cast<Base>( std::static_pointer_cast<Derived>( ptr ) );
       }
     };
