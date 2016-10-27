@@ -240,7 +240,7 @@ namespace cereal
 
         // Insert reverse relation Derived->Base
         auto & reverseMap = StaticObject<PolymorphicCasters>::getInstance().reverseMap;
-        reverseMap.emplace( derivedKey, baseKey );
+        reverseMap.insert( {derivedKey, baseKey} );
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
@@ -335,7 +335,7 @@ namespace cereal
             {
               auto & derivedMap = baseMap.find( it.first )->second;
               derivedMap[it.second.first] = it.second.second;
-              reverseMap.emplace( it.second.first, it.first );
+              reverseMap.insert( {it.second.first, it.first} );
             }
 
             // Mark current parent as modified
