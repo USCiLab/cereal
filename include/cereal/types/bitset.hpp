@@ -160,6 +160,8 @@ namespace cereal
 
           if( chunk & mask )
             bits[i] = 1;
+          else
+            bits[i] = 0;
 
           mask >>= 1;
         }
