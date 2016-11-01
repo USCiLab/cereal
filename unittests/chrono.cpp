@@ -27,6 +27,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "chrono.hpp"
 
+TEST_SUITE("chrono");
+
 TEST_CASE("binary_chrono")
 {
   test_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
@@ -46,3 +48,5 @@ TEST_CASE("json_chrono")
 {
   test_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+TEST_SUITE_END();

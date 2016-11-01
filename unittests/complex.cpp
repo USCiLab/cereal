@@ -27,6 +27,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "complex.hpp"
 
+TEST_SUITE("complex")
+
 TEST_CASE("binary_complex")
 {
   test_complex<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
@@ -46,3 +48,5 @@ TEST_CASE("json_complex")
 {
   test_complex<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
+
+TEST_SUITE_END();
