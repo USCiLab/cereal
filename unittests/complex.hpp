@@ -24,25 +24,54 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "chrono.hpp"
+#ifndef CEREAL_TEST_COMPLEX_H_
+#define CEREAL_TEST_COMPLEX_H_
+#include "common.hpp"
 
-TEST_CASE("binary_chrono")
+template <class IArchive, class OArchive> inline
+void test_complex()
 {
-  test_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  auto rngF = [&](){ return random_value<float>(gen); };
+  auto rngD = [&](){ return random_value<double>(gen); };
+  auto rngLD = [&](){ return random_value<long double>(gen); };
+
+  for(int ii=0; ii<100; ++ii)
+  {
+    std::complex<float> o_float( rngF(), rngF() );
+    std::complex<double> o_double( rngD(), rngD() );
+    std::complex<long double> o_ldouble( rngLD(), rngLD() );
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+
+      oar(o_float);
+      oar(o_double);
+      oar(o_ldouble);
+    }
+
+    std::complex<float> i_float;
+    std::complex<double> i_double;
+    std::complex<long double> i_ldouble;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_float);
+      iar(i_double);
+      iar(i_ldouble);
+    }
+
+    CHECK_EQ( o_float, i_float );
+    CHECK_EQ( o_double.real(), doctest::Approx(i_double.real()).epsilon(1e-5) );
+    CHECK_EQ( o_double.imag(), doctest::Approx(i_double.imag()).epsilon(1e-5) );
+    CHECK_EQ( o_ldouble.real(), doctest::Approx(i_ldouble.real()).epsilon(1e-5) );
+    CHECK_EQ( o_ldouble.imag(), doctest::Approx(i_ldouble.imag()).epsilon(1e-5) );
+  }
 }
 
-TEST_CASE("portable_binary_chrono")
-{
-  test_chrono<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-TEST_CASE("xml_chrono")
-{
-  test_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-TEST_CASE("json_chrono")
-{
-  test_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+#endif // CEREAL_TEST_COMPLEX_H_

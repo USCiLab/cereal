@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2015, Kyle Fleming
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -24,25 +24,47 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "chrono.hpp"
+#ifndef CEREAL_TEST_BOOST_VARIANT_H_
+#define CEREAL_TEST_BOOST_VARIANT_H_
 
-TEST_CASE("binary_chrono")
+#include "common.hpp"
+#include <cereal/types/boost_variant.hpp>
+
+template <class IArchive, class OArchive> inline
+void test_boost_variant()
 {
-  test_chrono<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  boost::variant<int, double, std::string> o_bv1 = random_value<int>(gen);
+  boost::variant<int, double, std::string> o_bv2 = random_value<double>(gen);
+  boost::variant<int, double, std::string> o_bv3 = random_basic_string<char>(gen);
+
+  std::ostringstream os;
+  {
+    OArchive oar(os);
+
+    oar(o_bv1);
+    oar(o_bv2);
+    oar(o_bv3);
+  }
+
+  decltype(o_bv1) i_bv1;
+  decltype(o_bv2) i_bv2;
+  decltype(o_bv3) i_bv3;
+
+  std::istringstream is(os.str());
+  {
+    IArchive iar(is);
+
+    iar(i_bv1);
+    iar(i_bv2);
+    iar(i_bv3);
+  }
+
+  CHECK_EQ( boost::get<int>(i_bv1), boost::get<int>(o_bv1) );
+  CHECK_EQ( boost::get<double>(i_bv2), doctest::Approx(boost::get<double>(o_bv2)).epsilon(1e-5) );
+  CHECK_EQ( boost::get<std::string>(i_bv3), boost::get<std::string>(o_bv3) );
 }
 
-TEST_CASE("portable_binary_chrono")
-{
-  test_chrono<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-TEST_CASE("xml_chrono")
-{
-  test_chrono<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-TEST_CASE("json_chrono")
-{
-  test_chrono<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
+#endif // CEREAL_TEST_BOOST_VARIANT_H_
