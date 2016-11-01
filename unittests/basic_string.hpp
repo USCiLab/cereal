@@ -61,9 +61,9 @@ void test_string_basic()
       iar(i_string3);
     }
 
-    CHECK(i_string == o_string);
-    CHECK(i_string2 == o_string2);
-    CHECK(i_string3 == o_string3);
+    CHECK_EQ(i_string, o_string);
+    CHECK_EQ(i_string2, o_string2);
+    CHECK_EQ(i_string3, o_string3);
   }
 }
 
@@ -104,7 +104,7 @@ void test_string_all()
       iar(i_u32string);
     }
 
-    CHECK(i_string == o_string);
+    CHECK_EQ(i_string, o_string);
     check_collection( i_wstring, o_wstring );
     check_collection( i_u16string, o_u16string );
     check_collection( i_u32string, o_u32string );

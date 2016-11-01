@@ -75,12 +75,12 @@ void test_bitset()
       iar(i_bit32_low);
     }
 
-    CHECK( o_bit32 == i_bit32 );
-    CHECK( o_bit65 == i_bit65 );
-    CHECK( o_bit256 == i_bit256 );
-    CHECK( o_bit512 == i_bit512 );
+    CHECK_EQ( o_bit32, i_bit32 );
+    CHECK_EQ( o_bit65, i_bit65 );
+    CHECK_EQ( o_bit256, i_bit256 );
+    CHECK_EQ( o_bit512, i_bit512 );
 
-    CHECK( o_bit32_low == i_bit32_low );
+    CHECK_EQ( o_bit32_low, i_bit32_low );
   }
 }
 

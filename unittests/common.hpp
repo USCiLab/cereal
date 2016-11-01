@@ -77,10 +77,10 @@ void check_collection( T const & a, T const & b )
   auto bIter = std::begin(b);
   auto bEnd  = std::end(b);
 
-  CHECK( std::distance(aIter, aEnd) == std::distance(bIter, bEnd) );
+  CHECK_EQ( std::distance(aIter, aEnd), std::distance(bIter, bEnd) );
 
   for( ; aIter != aEnd; ++aIter, ++bIter )
-    CHECK( *aIter == *bIter );
+    CHECK_EQ( *aIter, *bIter );
 }
 
 // Random Number Generation ===============================================
