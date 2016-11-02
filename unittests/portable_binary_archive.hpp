@@ -24,38 +24,50 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "portable_binary_archive.hpp"
+#ifndef CEREAL_TEST_PORTABLE_BINARY_ARCHIVE_H_
+#define CEREAL_TEST_PORTABLE_BINARY_ARCHIVE_H_
+#include "common.hpp"
 
-TEST_SUITE("portable_binary_archive");
+#include <cmath>
 
-#ifdef _MSC_VER
-TEST_CASE("util")
-{
-  CHECK_EQ( cereal::util::demangledName<mynamespace::MyCustomClass>(), "struct mynamespace::MyCustomClass" );
-}
-#else
-TEST_CASE("util")
-{
-  CHECK_EQ( cereal::util::demangledName<mynamespace::MyCustomClass>(), "mynamespace::MyCustomClass" );
-}
-#endif
+namespace mynamespace { struct MyCustomClass {}; }
 
-TEST_CASE("portable_binary_archive_endian_conversions")
+template <class T>
+inline void swapBytes( T & t )
 {
-  // (last parameter is whether we load as little endian)
-  test_endian_serialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>(
-      cereal::PortableBinaryInputArchive::Options::BigEndian(), cereal::PortableBinaryOutputArchive::Options::BigEndian(), false );
-  test_endian_serialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>(
-      cereal::PortableBinaryInputArchive::Options::LittleEndian(), cereal::PortableBinaryOutputArchive::Options::BigEndian(), true );
-  test_endian_serialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>(
-      cereal::PortableBinaryInputArchive::Options::BigEndian(), cereal::PortableBinaryOutputArchive::Options::LittleEndian(), false );
-  test_endian_serialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>(
-      cereal::PortableBinaryInputArchive::Options::LittleEndian(), cereal::PortableBinaryOutputArchive::Options::LittleEndian(), true );
+  cereal::portable_binary_detail::swap_bytes<sizeof(T)>( reinterpret_cast<std::uint8_t*>(&t) );
 }
 
-// Tests the default behavior to swap bytes to current machine's endianness
-TEST_CASE("portable_binary_archive_default_behavior")
+// swaps all output data
+#define CEREAL_TEST_SWAP_OUTPUT \
+    swapBytes(o_bool);          \
+    swapBytes(o_uint8);         \
+    swapBytes(o_int8);          \
+    swapBytes(o_uint16);        \
+    swapBytes(o_int16);         \
+    swapBytes(o_uint32);        \
+    swapBytes(o_int32);         \
+    swapBytes(o_uint64);        \
+    swapBytes(o_int64);         \
+    swapBytes(o_float);         \
+    swapBytes(o_double);
+
+#define CEREAL_TEST_CHECK_EQUAL                 \
+    CHECK_EQ(i_bool   , o_bool);                \
+    CHECK_EQ(i_uint8  , o_uint8);               \
+    CHECK_EQ(i_int8   , o_int8);                \
+    CHECK_EQ(i_uint16 , o_uint16);              \
+    CHECK_EQ(i_int16  , o_int16);               \
+    CHECK_EQ(i_uint32 , o_uint32);              \
+    CHECK_EQ(i_int32  , o_int32);               \
+    CHECK_EQ(i_uint64 , o_uint64);              \
+    CHECK_EQ(i_int64  , o_int64);               \
+    if( !std::isnan(i_float) && !std::isnan(o_float) ) CHECK_EQ(i_float , doctest::Approx(o_float).epsilon(1e-5)); \
+    if( !std::isnan(i_float) && !std::isnan(o_float) ) CHECK_EQ(i_double, doctest::Approx(o_double).epsilon(1e-5));
+
+// Last parameter exists to keep everything hidden in options
+template <class IArchive, class OArchive> inline
+void test_endian_serialization( typename IArchive::Options const & iOptions, typename OArchive::Options const & oOptions, const std::uint8_t inputLittleEndian )
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -74,15 +86,13 @@ TEST_CASE("portable_binary_archive_default_behavior")
     float    o_float  = random_value<float>(gen);
     double   o_double = random_value<double>(gen);
 
-    // swap the bytes on all of the data
-    CEREAL_TEST_SWAP_OUTPUT
+    std::vector<int32_t> o_vector(100);
+    for(auto & elem : o_vector)
+      elem = random_value<uint32_t>(gen);
 
     std::ostringstream os;
     {
-      cereal::BinaryOutputArchive oar(os);
-      // manually insert incorrect endian encoding
-      oar(!cereal::portable_binary_detail::is_little_endian());
-
+      OArchive oar(os, oOptions);
       oar(o_bool);
       oar(o_uint8);
       oar(o_int8);
@@ -94,10 +104,10 @@ TEST_CASE("portable_binary_archive_default_behavior")
       oar(o_int64);
       oar(o_float);
       oar(o_double);
+      // We can't test vector directly here since we are artificially interfering with the endianness,
+      // which can result in the size being incorrect
+      oar(cereal::binary_data( o_vector.data(), static_cast<std::size_t>( o_vector.size() * sizeof(int32_t) ) ));
     }
-
-    // swap back to original values
-    CEREAL_TEST_SWAP_OUTPUT
 
     bool     i_bool   = false;
     uint8_t  i_uint8  = 0;
@@ -110,10 +120,11 @@ TEST_CASE("portable_binary_archive_default_behavior")
     int64_t  i_int64  = 0;
     float    i_float  = 0;
     double   i_double = 0;
+    std::vector<int32_t> i_vector(100);
 
     std::istringstream is(os.str());
     {
-      cereal::PortableBinaryInputArchive iar(is);
+      IArchive iar(is, iOptions);
       iar(i_bool);
       iar(i_uint8);
       iar(i_int8);
@@ -125,10 +136,21 @@ TEST_CASE("portable_binary_archive_default_behavior")
       iar(i_int64);
       iar(i_float);
       iar(i_double);
+      iar(cereal::binary_data( i_vector.data(), static_cast<std::size_t>( i_vector.size() * sizeof(int32_t) ) ));
+    }
+
+    // Convert to big endian if we expect to read big and didn't start big
+    if( cereal::portable_binary_detail::is_little_endian() ^ inputLittleEndian ) // Convert to little endian if
+    {
+      CEREAL_TEST_SWAP_OUTPUT
+      for( auto & val : o_vector )
+        swapBytes(val);
     }
 
     CEREAL_TEST_CHECK_EQUAL
+
+    check_collection(i_vector, o_vector);
   }
 }
 
-TEST_SUITE_END();
+#endif // CEREAL_TEST_PORTABLE_BINARY_ARCHIVE_H_
