@@ -1,6 +1,6 @@
 file(GLOB TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
-# A semi-colon separated list of test sources that should not be automatically built with boost unit test
+# A semi-colon separated list of test sources that should not be automatically built with doctest 
 set(SPECIAL_TESTS "portability_test.cpp")
 
 # Build the portability test only if we are on a 64-bit machine (void* is 8 bytes)
@@ -15,7 +15,7 @@ if((${CMAKE_SIZEOF_VOID_P} EQUAL 8) AND (NOT SKIP_PORTABILITY_TEST))
 
 endif()
 
-# Build all of the non-special tests and link against the boost unit test framework
+# Build all of the non-special tests
 foreach(TEST_SOURCE ${TESTS})
 
   string(REPLACE ".cpp" "" TEST_TARGET "${TEST_SOURCE}")
@@ -27,21 +27,16 @@ foreach(TEST_SOURCE ${TESTS})
   if(IS_SPECIAL_TEST EQUAL -1)
 
     add_executable(${TEST_TARGET} ${TEST_SOURCE})
-    set_target_properties(${TEST_TARGET} PROPERTIES COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${TEST_TARGET}")
-    target_link_libraries(${TEST_TARGET} ${Boost_LIBRARIES})
     target_link_libraries(${TEST_TARGET} ${CEREAL_THREAD_LIBS})
     add_test("${TEST_TARGET}" "${TEST_TARGET}")
 
-    # TODO: This won't work right now, because we would need a 32-bit boost
-    ## If we are on a 64-bit machine, create an extra 32-bit version of the test
-    #if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-    #  add_executable(${TEST_TARGET}_32 ${TEST_SOURCE})
-    #  set_target_properties(${TEST_TARGET}_32 PROPERTIES
-    #    COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${TEST_TARGET}"
-    #    COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
-    #  target_link_libraries(${TEST_TARGET}_32 ${Boost_LIBRARIES})
-    #  add_test("${TEST_TARGET}_32" "${TEST_TARGET}_32")
-    #endif()
+    # If we are on a 64-bit machine, create an extra 32-bit version of the test if portability testing is enabled
+    if((${CMAKE_SIZEOF_VOID_P} EQUAL 8) AND (NOT SKIP_PORTABILITY_TEST))
+      add_executable(${TEST_TARGET}_32 ${TEST_SOURCE})
+      set_target_properties(${TEST_TARGET}_32 PROPERTIES
+        COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+      add_test("${TEST_TARGET}_32" "${TEST_TARGET}_32")
+    endif()
 
   endif()
 
@@ -69,11 +64,9 @@ foreach(TEST_SOURCE ${TESTS})
     add_dependencies(coverage ${COVERAGE_TARGET})
 
     add_executable(${COVERAGE_TARGET} EXCLUDE_FROM_ALL ${TEST_SOURCE})
-    set_target_properties(${COVERAGE_TARGET} PROPERTIES COMPILE_DEFINITIONS "BOOST_TEST_DYN_LINK;BOOST_TEST_MODULE=${COVERAGE_TARGET}")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES COMPILE_FLAGS "-coverage")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES LINK_FLAGS "-coverage")
     set_target_properties(${COVERAGE_TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/coverage")
-    target_link_libraries(${COVERAGE_TARGET} ${Boost_LIBRARIES})
     target_link_libraries(${COVERAGE_TARGET} ${CEREAL_THREAD_LIBS})
   endif()
 endforeach()

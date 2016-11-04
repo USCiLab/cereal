@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6.2)
 project (cereal)
 
-option(SKIP_PORTABILITY_TEST "Skip portability tests" OFF)
+option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
     option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
 endif()
@@ -49,13 +49,15 @@ endif()
 
 include_directories(./include)
 
-find_package(Boost COMPONENTS serialization unit_test_framework)
+# Boost serialization for performance sandbox
+find_package(Boost COMPONENTS serialization)
 
 if(Boost_FOUND)
   include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-  enable_testing()
-  add_subdirectory(unittests)
 endif(Boost_FOUND)
+  
+enable_testing()
+add_subdirectory(unittests)
 
 add_subdirectory(sandbox)
 
