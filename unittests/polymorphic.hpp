@@ -30,7 +30,6 @@
 
 #if CEREAL_THREAD_SAFE
 #include <future>
-static std::mutex boostTestMutex;
 #endif
 
 struct PolyBaseA
@@ -258,6 +257,10 @@ void test_polymorphic()
   std::random_device rd;
   std::mt19937 gen(rd());
 
+  #if CEREAL_THREAD_SAFE
+  static std::mutex testMutex;
+  #endif
+
   auto rngB = [&](){ return random_value<int>( gen ) % 2 == 0; };
   auto rngI = [&](){ return random_value<int>( gen ); };
   auto rngL = [&](){ return random_value<long>( gen ); };
@@ -319,7 +322,7 @@ void test_polymorphic()
     auto o_lockedA = o_weakA.lock();
 
     #if CEREAL_THREAD_SAFE
-    std::lock_guard<std::mutex> lock( boostTestMutex );
+    std::lock_guard<std::mutex> lock( testMutex );
     #endif
 
     CHECK_EQ(i_shared.get(), i_locked.get());

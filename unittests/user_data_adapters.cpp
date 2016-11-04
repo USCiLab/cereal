@@ -24,114 +24,29 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "common.hpp"
-#define CEREAL_FUTURE_EXPERIMENTAL
-#include <cereal/archives/adapters.hpp>
-#include <boost/test/unit_test.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "user_data_adapters.hpp"
 
-struct SomeStruct {};
+TEST_SUITE("user_data_adapters");
 
-struct UserData
-{
-  UserData( SomeStruct * pp, SomeStruct & r ) :
-    p(pp), ref(r) {}
-
-  SomeStruct * p;
-  std::reference_wrapper<SomeStruct> ref;
-};
-
-struct UserStruct
-{
-  UserStruct( std::int32_t i,
-              SomeStruct * pointer,
-              SomeStruct & reference ) :
-    i32( i ),
-    p( pointer ),
-    ref( reference )
-  { }
-
-  UserStruct & operator=( UserStruct const & ) = delete;
-
-  std::int32_t i32;
-  SomeStruct const * p;
-  SomeStruct & ref;
-
-  template <class Archive>
-  void serialize( Archive & ar )
-  {
-    ar( i32 );
-  }
-
-  template <class Archive>
-  static void load_and_construct( Archive & ar, cereal::construct<UserStruct> & construct )
-  {
-    std::int32_t ii;
-    ar( ii );
-    auto & data = cereal::get_user_data<UserData>( ar );
-    construct( ii, data.p, data.ref.get() );
-  }
-};
-
-template <class IArchive, class OArchive>
-void test_user_data_adapters()
-{
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  auto rng = [&](){ return random_value<int>(gen); };
-
-  for(int ii=0; ii<100; ++ii)
-  {
-    SomeStruct ss;
-    std::unique_ptr<UserStruct> o_ptr( new UserStruct( rng(), &ss, ss ) );
-
-    std::ostringstream os;
-    {
-      OArchive oar(os);
-
-      oar(o_ptr);
-    }
-
-    decltype( o_ptr  ) i_ptr;
-
-    std::istringstream is(os.str());
-    {
-      UserData ud(&ss, ss);
-      cereal::UserDataAdapter<UserData, IArchive> iar(ud, is);
-
-      iar(i_ptr);
-    }
-
-    BOOST_CHECK_EQUAL( i_ptr->p == o_ptr->p, true );
-    BOOST_CHECK_EQUAL( std::addressof(i_ptr->ref) == std::addressof(o_ptr->ref), true );
-    BOOST_CHECK_EQUAL( i_ptr->i32, o_ptr->i32 );
-
-    std::istringstream bad_is(os.str());
-    {
-      IArchive iar(bad_is);
-
-      BOOST_CHECK_THROW( iar(i_ptr), ::cereal::Exception );
-    }
-  }
-}
-
-BOOST_AUTO_TEST_CASE( binary_user_data_adapters )
+TEST_CASE("binary_user_data_adapters")
 {
   test_user_data_adapters<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( portable_binary_user_data_adapters )
+TEST_CASE("portable_binary_user_data_adapters")
 {
   test_user_data_adapters<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( xml_user_data_adapters )
+TEST_CASE("xml_user_data_adapters")
 {
   test_user_data_adapters<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-BOOST_AUTO_TEST_CASE( json_user_data_adapters )
+TEST_CASE("json_user_data_adapters")
 {
   test_user_data_adapters<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+TEST_SUITE_END();
