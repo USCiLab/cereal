@@ -251,4 +251,4 @@ void test_structs_minimal()
   }
 }
 
-#endif // CEREAL_TEST_STACK_H_
+#endif // CEREAL_TEST_STRUCTS_MINIMAL_H_
