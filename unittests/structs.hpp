@@ -24,29 +24,45 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "structs.hpp"
+#ifndef CEREAL_TEST_STRUCTS_H_
+#define CEREAL_TEST_STRUCTS_H_
+#include "common.hpp"
 
-TEST_SUITE("structs");
-
-TEST_CASE("binary_structs")
+template <class IArchive, class OArchive> inline
+void test_structs()
 {
-  test_structs<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for(int ii=0; ii<100; ++ii)
+  {
+    StructInternalSerialize o_iser = { random_value<int>(gen), random_value<int>(gen) };
+    StructInternalSplit     o_ispl = { random_value<int>(gen), random_value<int>(gen) };
+    StructExternalSerialize o_eser = { random_value<int>(gen), random_value<int>(gen) };
+    StructExternalSplit     o_espl = { random_value<int>(gen), random_value<int>(gen) };
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar( o_iser, o_ispl, o_eser, o_espl);
+    }
+
+    StructInternalSerialize i_iser;
+    StructInternalSplit     i_ispl;
+    StructExternalSerialize i_eser;
+    StructExternalSplit     i_espl;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+      iar( i_iser, i_ispl, i_eser, i_espl);
+    }
+
+    CHECK_EQ(i_iser, o_iser);
+    CHECK_EQ(i_ispl, o_ispl);
+    CHECK_EQ(i_eser, o_eser);
+    CHECK_EQ(i_espl, o_espl);
+  }
 }
 
-TEST_CASE("portable_binary_structs")
-{
-  test_structs<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-TEST_CASE("xml_structs")
-{
-  test_structs<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-TEST_CASE("json_structs")
-{
-  test_structs<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
-
-TEST_SUITE_END();
+#endif // CEREAL_TEST_STRUCTS_H_
