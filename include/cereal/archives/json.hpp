@@ -97,7 +97,6 @@ namespace cereal
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
     using WriteStream = rapidjson::OStreamWrapper;
-    using JSONWriter = rapidjson::PrettyWriter<WriteStream>;
 
     public:
       /*! @name Common Functionality
@@ -112,7 +111,10 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options( JSONWriter::Writer::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
+
+          //! Default options to output a single line
+          static Options SingleLine(){ return Options( JSONWriter::Writer::kDefaultMaxDecimalPlaces, IndentChar::space, 0, true); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -128,18 +130,72 @@ namespace cereal
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
+          explicit Options( int precision = JSONWriter::Writer::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
-                            unsigned int indentLength = 4 ) :
+                            unsigned int indentLength = 4,
+                            bool singleLine = false) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
-            itsIndentLength( indentLength ) { }
+            itsIndentLength( indentLength ),
+            itsSingleLine( singleLine ) { }
 
         private:
           friend class JSONOutputArchive;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
+          bool itsSingleLine;
+      };
+
+      class JSONWriter
+      {
+        public:
+          using PrettyWriter = rapidjson::PrettyWriter<WriteStream>;
+          using Writer = rapidjson::Writer<WriteStream>;
+
+          explicit JSONWriter(WriteStream &stream, const Options & options) {
+            if ((prettyPrint = !options.itsSingleLine)) {
+              new(&prettyWriter) PrettyWriter{stream};
+              prettyWriter.SetIndent(options.itsIndentChar, options.itsIndentLength);
+              prettyWriter.SetMaxDecimalPlaces( options.itsPrecision );
+            } else {
+              new(&writer) Writer{stream};
+              writer.SetMaxDecimalPlaces( options.itsPrecision );
+            }
+          }
+
+          ~JSONWriter() {
+            if (prettyPrint)
+              prettyWriter.~PrettyWriter();
+            else
+              writer.~Writer();
+          }
+
+          bool Bool(bool b)         { return prettyPrint ? prettyWriter.Bool(b)     : writer.Bool(b); }
+          bool Int(int i)           { return prettyPrint ? prettyWriter.Int(i)      : writer.Int(i); }
+          bool Uint(unsigned u)     { return prettyPrint ? prettyWriter.Uint(u)     : writer.Uint(u); }
+          bool Int64(int64_t i64)   { return prettyPrint ? prettyWriter.Int64(i64)  : writer.Int64(i64); }
+          bool Uint64(uint64_t u64) { return prettyPrint ? prettyWriter.Uint64(u64) : writer.Uint64(u64); }
+          bool Double(double d)     { return prettyPrint ? prettyWriter.Double(d)   : writer.Double(d); }
+          bool Null()               { return prettyPrint ? prettyWriter.Null()      : writer.Null(); }
+
+          bool String(const char* str, unsigned length) { return prettyPrint ? prettyWriter.String(str, length)
+                                                                             : writer.String(str, length); }
+          bool String(const char* str)                  { return prettyPrint ? prettyWriter.String(str)
+                                                                             : writer.String(str); }
+
+          bool StartArray()     { return prettyPrint ? prettyWriter.StartArray() : writer.StartArray(); }
+          bool EndArray()       { return prettyPrint ? prettyWriter.EndArray()   : writer.EndArray(); }
+
+          bool StartObject()    { return prettyPrint ? prettyWriter.StartObject() : writer.StartObject(); }
+          bool EndObject()      { return prettyPrint ? prettyWriter.EndObject()   : writer.EndObject(); }
+
+        private:
+          bool prettyPrint;
+          union {
+            Writer writer;
+            PrettyWriter prettyWriter;
+          };
       };
 
       //! Construct, outputting to the provided stream
@@ -149,11 +205,9 @@ namespace cereal
       JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
-        itsWriter(itsWriteStream),
+        itsWriter(itsWriteStream, options),
         itsNextName(nullptr)
       {
-        itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
-        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
