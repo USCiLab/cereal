@@ -471,11 +471,17 @@ namespace cereal
 
           Iterator(MemberIterator begin, MemberIterator end) :
             itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
-          { }
+          {
+            if( std::distance( begin, end ) == 0 )
+              itsType = Null_;
+          }
 
           Iterator(ValueIterator begin, ValueIterator end) :
             itsValueItBegin(begin), itsValueItEnd(end), itsIndex(0), itsType(Value)
-          { }
+          {
+            if( std::distance( begin, end ) == 0 )
+              itsType = Null_;
+          }
 
           //! Advance to the next node
           Iterator & operator++()
@@ -491,7 +497,7 @@ namespace cereal
             {
               case Value : return itsValueItBegin[itsIndex];
               case Member: return itsMemberItBegin[itsIndex].value;
-              default: throw cereal::Exception("Invalid Iterator Type!");
+              default: throw cereal::Exception("JSONInputArchive internal error: null or empty iterator to object or array!");
             }
           }
 
@@ -528,7 +534,7 @@ namespace cereal
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
           size_t itsIndex;                                 //!< The current index of this iterator
-          enum Type {Value, Member, Null_} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
+          enum Type {Value, Member, Null_} itsType;        //!< Whether this holds values (array) or members (objects) or nothing
       };
 
       //! Searches for the expectedName node if it doesn't match the actualName
@@ -713,7 +719,7 @@ namespace cereal
       const char * itsNextName;               //!< Next name set by NVP
       ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
-	  CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument;        //!< Rapidjson document
+      CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument; //!< Rapidjson document
   };
 
   // ######################################################################
