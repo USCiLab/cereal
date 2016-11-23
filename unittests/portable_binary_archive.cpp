@@ -72,7 +72,7 @@ inline void swapBytes( T & t )
     BOOST_CHECK_EQUAL(i_int32  , o_int32);               \
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);              \
     BOOST_CHECK_EQUAL(i_int64  , o_int64);               \
-    if( !std::isnan(i_float) && !std::isnan(o_float) ) BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5); \
+    if( !std::isnan(i_float) && !std::isnan(o_float) ) BOOST_CHECK_CLOSE(i_float  , o_float,  static_cast<float>(1e-5)); \
     if( !std::isnan(i_float) && !std::isnan(o_float) ) BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
 
 // Last parameter exists to keep everything hidden in options
