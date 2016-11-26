@@ -630,7 +630,7 @@ namespace cereal
           from boost, you can check this value within a member or external serialize function
           (i.e., Archive::is_loading::value) to enable behavior specific to loading, until 
           you can transition to split save/load or save_minimal/load_minimal functions */
-.      using is_loading = std::true_type;
+      using is_loading = std::true_type;
 
       //! Indicates this archive is not intended for saving
       /*! This ensures compatibility with boost archive types.  If you are transitioning
