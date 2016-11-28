@@ -322,13 +322,13 @@ void test_polymorphic()
     #endif
 
     BOOST_CHECK_EQUAL(i_shared.get(), i_locked.get());
-    BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)o_shared.get()));
-    BOOST_CHECK_EQUAL(*((PolyDerived*)i_shared.get()), *((PolyDerived*)i_locked.get()));
-    BOOST_CHECK_EQUAL(*((PolyDerived*)i_locked.get()), *((PolyDerived*)o_locked.get()));
-    BOOST_CHECK_EQUAL(*((PolyDerived*)i_unique.get()), *((PolyDerived*)o_unique.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerived*>(i_shared.get()), *dynamic_cast<PolyDerived*>(o_shared.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerived*>(i_shared.get()), *dynamic_cast<PolyDerived*>(i_locked.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerived*>(i_locked.get()), *dynamic_cast<PolyDerived*>(o_locked.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerived*>(i_unique.get()), *dynamic_cast<PolyDerived*>(o_unique.get()));
 
-    BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA.get()), *((PolyDerivedLA*)o_sharedLA.get()));
-    BOOST_CHECK_EQUAL(*((PolyDerivedLA*)i_sharedLA2.get()), *((PolyDerivedLA*)o_sharedLA.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedLA*>(i_sharedLA.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
+    BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedLA*>(i_sharedLA2.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
 
     BOOST_CHECK_EQUAL(i_sharedA.get(), i_lockedA.get());
     BOOST_CHECK_EQUAL(*dynamic_cast<PolyDerivedD*>(i_sharedA.get()), *dynamic_cast<PolyDerivedD*>(o_sharedA.get()));

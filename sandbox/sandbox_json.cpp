@@ -320,13 +320,13 @@ enum Bla
 template <class Archive>
 void save( Archive & ar, Bla const & b )
 {
-  ar( (const int &)b );
+  ar( static_cast<const int &>(b) );
 }
 
 template <class Archive>
 void load( Archive & ar, Bla & b )
 {
-  ar( (int&)b );
+  ar( static_cast<int&>(b) );
 }
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES( Bla, cereal::specialization::non_member_load_save )

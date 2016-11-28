@@ -441,7 +441,7 @@ void test_structs_specialized()
     BOOST_CHECK(i_ispl.x == o_ispl.x);
     BOOST_CHECK(i_isplv.x == o_isplv.x);
 
-    BOOST_CHECK_EQUAL(((SpecializedMSplitPolymorphic*)i_shared_ispl.get())->x, ((SpecializedMSplitPolymorphic*)o_shared_ispl.get())->x);
+    BOOST_CHECK_EQUAL(dynamic_cast<SpecializedMSplitPolymorphic*>(i_shared_ispl.get())->x, dynamic_cast<SpecializedMSplitPolymorphic*>(o_shared_ispl.get())->x);
 
     BOOST_CHECK(i_isplm.x == o_isplm.x);
     BOOST_CHECK(i_isplvm.x == o_isplvm.x);

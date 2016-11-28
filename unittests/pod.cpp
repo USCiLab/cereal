@@ -132,7 +132,7 @@ void test_pod()
     BOOST_CHECK_EQUAL(i_int32  , o_int32);
     BOOST_CHECK_EQUAL(i_uint64 , o_uint64);
     BOOST_CHECK_EQUAL(i_int64  , o_int64);
-    BOOST_CHECK_CLOSE(i_float  , o_float,  (float)1e-5);
+    BOOST_CHECK_CLOSE(i_float  , o_float,  1e-5F);
     BOOST_CHECK_CLOSE(i_double , o_double, 1e-5);
 
     BOOST_CHECK_CLOSE(i_long_double, o_long_double, 1e-5);
