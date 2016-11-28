@@ -15,7 +15,7 @@ else()
 endif()
 
 if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "-Wall -g -Wextra -Wshadow -pedantic ${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "-Wall -g -Wextra -Wshadow -pedantic -Wold-style-cast ${CMAKE_CXX_FLAGS}")
     option(WITH_WERROR "Compile with '-Werror' C++ compiler flag" ON)
     if(WITH_WERROR)
         set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
