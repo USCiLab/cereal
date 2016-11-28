@@ -76,11 +76,9 @@ namespace cereal
 
         while((i++ < 3))
           ret += '=';
-
       }
 
       return ret;
-
     }
 
     inline std::string decode(std::string const& encoded_string) {
