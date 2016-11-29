@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -12,6 +12,9 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\boost">
+      <UniqueIdentifier>{eb71a831-cc02-4b11-8961-4376aeb5c17f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +114,7 @@
     <ClCompile Include="..\..\unittests\vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-     <ClCompile Include="..\..\unittests\valarray.cpp">
+    <ClCompile Include="..\..\unittests\valarray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\unittests\versioning.cpp">
@@ -123,5 +126,31 @@
     <ClCompile Include="..\..\unittests\user_data_adapters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\boost_chrono.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\circular_buffer.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\compressed_pair.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\dynamic_bitset.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\filesystem.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\optional.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\unittests\boost\units.cpp">
+      <Filter>Source Files\boost</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\unittests\boost\common.hpp">
+      <Filter>Source Files\boost</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
