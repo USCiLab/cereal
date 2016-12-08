@@ -32,6 +32,7 @@
 
 #include <typeinfo>
 #include <string>
+#include <cstdlib>
 
 #ifdef _MSC_VER
 namespace cereal
