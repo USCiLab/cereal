@@ -10,5 +10,8 @@ include_directories(sandbox_shared_lib)
 
 if(Boost_FOUND)
   add_executable(performance performance.cpp)
+  if(MSVC)
+    set_target_properties(performance PROPERTIES COMPILE_DEFINITIONS "BOOST_SERIALIZATION_DYN_LINK")
+  endif()
   target_link_libraries(performance ${Boost_LIBRARIES})
 endif(Boost_FOUND)
