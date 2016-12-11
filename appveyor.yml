@@ -13,6 +13,7 @@ environment:
   matrix:
     - VS_VERSION_MAJOR: 12
     - VS_VERSION_MAJOR: 14
+      BOOST_ROOT: C:\Libraries\boost_1_59_0
 
 platform:
   - Win32
