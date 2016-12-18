@@ -1,5 +1,7 @@
 # can use variables like {build} and {branch}
 version: 1.2.{build}
+pull_requests:
+  do_not_increment_build_number: true
 
 branches:
   only:
