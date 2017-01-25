@@ -11,7 +11,7 @@ addons:
     packages:
       - 'g++-multilib'
       - 'libboost-serialization-dev'
-      - 'libboost-test-dev'
+#      - 'libboost-test-dev'
 
 compiler:
   - gcc
