@@ -69,8 +69,8 @@ void test_complex()
     CHECK_EQ( o_float, i_float );
     CHECK_EQ( o_double.real(), doctest::Approx(i_double.real()).epsilon(1e-5) );
     CHECK_EQ( o_double.imag(), doctest::Approx(i_double.imag()).epsilon(1e-5) );
-    CHECK_EQ( o_ldouble.real(), doctest::Approx(i_ldouble.real()).epsilon(1e-5) );
-    CHECK_EQ( o_ldouble.imag(), doctest::Approx(i_ldouble.imag()).epsilon(1e-5) );
+    CHECK_EQ( o_ldouble.real(), doctest::Approx(i_ldouble.real()).epsilon(1e-5L) );
+    CHECK_EQ( o_ldouble.imag(), doctest::Approx(i_ldouble.imag()).epsilon(1e-5L) );
   }
 }
 
