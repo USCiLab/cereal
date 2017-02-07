@@ -53,16 +53,13 @@ struct PolyBaseAA : PolyBaseA
     ar( w );
   }
 
-  static void doesNothing()
-  {
-    cereal::detail::RegisterPolymorphicCaster<PolyBaseA, PolyBaseAA>::bind();
-  }
-
   bool operator==( PolyBaseAA const & other ) const
   {
     return w == other.w;
   }
 };
+
+CEREAL_REGISTER_POLYMORPHIC_RELATION(PolyBaseA, PolyBaseAA)
 
 struct PolyBaseB : virtual PolyBaseAA
 {
@@ -131,9 +128,6 @@ struct PolyDerivedD : PolyBaseB, PolyBaseC
 };
 
 CEREAL_REGISTER_TYPE(PolyDerivedD)
-#ifdef _MSC_VER
-CEREAL_REGISTER_POLYMORPHIC_RELATION(PolyBaseA, PolyDerivedD)
-#endif
 
 struct PolyBase
 {
