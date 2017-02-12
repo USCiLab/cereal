@@ -307,7 +307,12 @@ namespace cereal
 
                     // Check to see if we have a previous uncommitted path in unregisteredRelations
                     // that is shorter. If so, ignore this path
-                    auto hint = unregisteredRelations.find( parent );
+                    auto hintRange = unregisteredRelations.equal_range( parent );
+                    auto hint = hintRange.first;
+                    for( ; hint != hintRange.second; ++hint )
+                      if( hint->second.first == finalChild )
+                        break;
+
                     const bool uncommittedExists = hint != unregisteredRelations.end();
                     if( uncommittedExists && (hint->second.second.size() <= newLength) )
                       continue;
