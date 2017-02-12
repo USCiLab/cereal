@@ -37,11 +37,11 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-08-10 11:21:00</td>
+            <td class="headerValue">2017-02-12 13:57:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">32</td>
-            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntry">16</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -92,7 +92,7 @@
 <span class="lineNum">      30 </span>            : #ifndef CEREAL_TYPES_STRING_HPP_
 <span class="lineNum">      31 </span>            : #define CEREAL_TYPES_STRING_HPP_
 <span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span>            : #include &lt;cereal/cereal.hpp&gt;
+<span class="lineNum">      33 </span>            : #include &quot;cereal/cereal.hpp&quot;
 <span class="lineNum">      34 </span>            : #include &lt;string&gt;
 <span class="lineNum">      35 </span>            : 
 <span class="lineNum">      36 </span>            : namespace cereal
@@ -100,23 +100,23 @@
 <span class="lineNum">      38 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="39"><span class="lineNum">      39 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      40 </span>            :   typename std::enable_if&lt;traits::is_output_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;::value, void&gt;::type
-<span class="lineNum">      41 </span><span class="lineCov">     488506 :   CEREAL_SAVE_FUNCTION_NAME(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
+<span class="lineNum">      41 </span><span class="lineCov">     122202 :   CEREAL_SAVE_FUNCTION_NAME(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; const &amp; str)</span>
 <span class="lineNum">      42 </span>            :   {
 <span class="lineNum">      43 </span>            :     // Save number of chars + the data
-<span class="lineNum">      44 </span><span class="lineCov">     488506 :     ar( make_size_tag( static_cast&lt;size_type&gt;(str.size()) ) );</span>
-<span class="lineNum">      45 </span><span class="lineCov">     488506 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
-<span class="lineNum">      46 </span><span class="lineCov">     488506 :   }</span>
+<span class="lineNum">      44 </span><span class="lineCov">     122202 :     ar( make_size_tag( static_cast&lt;size_type&gt;(str.size()) ) );</span>
+<span class="lineNum">      45 </span><span class="lineCov">     122202 :     ar( binary_data( str.data(), str.size() * sizeof(CharT) ) );</span>
+<span class="lineNum">      46 </span><span class="lineCov">     122202 :   }</span>
 <span class="lineNum">      47 </span>            : 
 <span class="lineNum">      48 </span>            :   //! Serialization for basic_string types, if binary data is supported
 <a name="49"><span class="lineNum">      49 </span>            :   template&lt;class Archive, class CharT, class Traits, class Alloc&gt; inline</a>
 <span class="lineNum">      50 </span>            :   typename std::enable_if&lt;traits::is_input_serializable&lt;BinaryData&lt;CharT&gt;, Archive&gt;::value, void&gt;::type
-<span class="lineNum">      51 </span><span class="lineCov">     488506 :   CEREAL_LOAD_FUNCTION_NAME(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
+<span class="lineNum">      51 </span><span class="lineCov">     122202 :   CEREAL_LOAD_FUNCTION_NAME(Archive &amp; ar, std::basic_string&lt;CharT, Traits, Alloc&gt; &amp; str)</span>
 <span class="lineNum">      52 </span>            :   {
 <span class="lineNum">      53 </span>            :     size_type size;
-<span class="lineNum">      54 </span><span class="lineCov">     488506 :     ar( make_size_tag( size ) );</span>
-<span class="lineNum">      55 </span><span class="lineCov">     488506 :     str.resize(static_cast&lt;std::size_t&gt;(size));</span>
-<span class="lineNum">      56 </span><span class="lineCov">     488506 :     ar( binary_data( const_cast&lt;CharT *&gt;( str.data() ), static_cast&lt;std::size_t&gt;(size) * sizeof(CharT) ) );</span>
-<span class="lineNum">      57 </span><span class="lineCov">     488506 :   }</span>
+<span class="lineNum">      54 </span><span class="lineCov">     122202 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      55 </span><span class="lineCov">     122202 :     str.resize(static_cast&lt;std::size_t&gt;(size));</span>
+<span class="lineNum">      56 </span><span class="lineCov">     122202 :     ar( binary_data( const_cast&lt;CharT *&gt;( str.data() ), static_cast&lt;std::size_t&gt;(size) * sizeof(CharT) ) );</span>
+<span class="lineNum">      57 </span><span class="lineCov">     122202 :   }</span>
 <span class="lineNum">      58 </span>            : } // namespace cereal
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            : #endif // CEREAL_TYPES_STRING_HPP_
@@ -129,7 +129,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 

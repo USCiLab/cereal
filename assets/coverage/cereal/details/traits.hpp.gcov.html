@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">34</td>
-            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">24</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-08-10 11:21:00</td>
+            <td class="headerValue">2017-02-12 13:57:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">106</td>
-            <td class="headerCovTableEntry">114</td>
-            <td class="headerCovTableEntryHi">93.0 %</td>
+            <td class="headerCovTableEntry">62</td>
+            <td class="headerCovTableEntry">66</td>
+            <td class="headerCovTableEntryHi">93.9 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -101,8 +101,8 @@
 <span class="lineNum">      39 </span>            : #include &lt;type_traits&gt;
 <span class="lineNum">      40 </span>            : #include &lt;typeindex&gt;
 <span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            : #include &lt;cereal/macros.hpp&gt;
-<span class="lineNum">      43 </span>            : #include &lt;cereal/access.hpp&gt;
+<span class="lineNum">      42 </span>            : #include &quot;cereal/macros.hpp&quot;
+<span class="lineNum">      43 </span>            : #include &quot;cereal/access.hpp&quot;
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : namespace cereal
 <span class="lineNum">      46 </span>            : {
@@ -1150,7 +1150,7 @@
 <span class="lineNum">    1088 </span>            :     template &lt;class T, class OutputArchive&gt;
 <span class="lineNum">    1089 </span>            :     struct is_output_serializable : std::integral_constant&lt;bool,
 <span class="lineNum">    1090 </span>            :       detail::count_output_serializers&lt;T, OutputArchive&gt;::value == 1&gt; {};
-<span class="lineNum">    1091 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">    1091 </span>            : 
 <span class="lineNum">    1092 </span>            :     // ######################################################################
 <span class="lineNum">    1093 </span>            :     namespace detail
 <span class="lineNum">    1094 </span>            :     {
@@ -1185,26 +1185,26 @@
 <span class="lineNum">    1123 </span>            :       struct base_class_id
 <a name="1124"><span class="lineNum">    1124 </span>            :       {</a>
 <span class="lineNum">    1125 </span>            :         template&lt;class T&gt;
-<span class="lineNum">    1126 </span><span class="lineCov">       9600 :           base_class_id(T const * const t) :</span>
+<span class="lineNum">    1126 </span><span class="lineCov">       3200 :           base_class_id(T const * const t) :</span>
 <span class="lineNum">    1127 </span>            :           type(typeid(T)),
 <span class="lineNum">    1128 </span>            :           ptr(t),
-<span class="lineNum">    1129 </span><span class="lineCov">       9600 :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))</span>
-<a name="1130"><span class="lineNum">    1130 </span><span class="lineCov">       9600 :           { }</span></a>
+<span class="lineNum">    1129 </span><span class="lineCov">       3200 :           hash(std::hash&lt;std::type_index&gt;()(typeid(T)) ^ (std::hash&lt;void const *&gt;()(t) &lt;&lt; 1))</span>
+<a name="1130"><span class="lineNum">    1130 </span><span class="lineCov">       3200 :           { }</span></a>
 <span class="lineNum">    1131 </span>            : 
-<span class="lineNum">    1132 </span><span class="lineCov">       4800 :           bool operator==(base_class_id const &amp; other) const</span>
-<span class="lineNum">    1133 </span><span class="lineCov">       4800 :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }</span>
+<span class="lineNum">    1132 </span><span class="lineCov">       1600 :           bool operator==(base_class_id const &amp; other) const</span>
+<span class="lineNum">    1133 </span><span class="lineCov">       1600 :           { return (type == other.type) &amp;&amp; (ptr == other.ptr); }</span>
 <span class="lineNum">    1134 </span>            : 
 <span class="lineNum">    1135 </span>            :           std::type_index type;
 <span class="lineNum">    1136 </span>            :           void const * ptr;
 <a name="1137"><span class="lineNum">    1137 </span>            :           size_t hash;</a>
 <span class="lineNum">    1138 </span>            :       };
-<span class="lineNum">    1139 </span><span class="lineCov">     101772 :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };</span>
+<span class="lineNum">    1139 </span><span class="lineCov">      33904 :       struct base_class_id_hash { size_t operator()(base_class_id const &amp; id) const { return id.hash; }  };</span>
 <span class="lineNum">    1140 </span>            :     } // namespace detail
 <span class="lineNum">    1141 </span>            : 
 <span class="lineNum">    1142 </span>            :     namespace detail
 <a name="1143"><span class="lineNum">    1143 </span>            :     {</a>
 <span class="lineNum">    1144 </span>            :       //! Common base type for base class casting
-<span class="lineNum">    1145 </span><span class="lineCov">      24000 :       struct BaseCastBase {};</span>
+<span class="lineNum">    1145 </span><span class="lineCov">       8000 :       struct BaseCastBase {};</span>
 <span class="lineNum">    1146 </span>            : 
 <span class="lineNum">    1147 </span>            :       template &lt;class&gt;
 <span class="lineNum">    1148 </span>            :       struct get_base_class;
@@ -1242,9 +1242,9 @@
 <span class="lineNum">    1180 </span>            :       struct shared_from_this_wrapper
 <span class="lineNum">    1181 </span>            :       {
 <span class="lineNum">    1182 </span>            :         template &lt;class U&gt;
-<span class="lineNum">    1183 </span>            :         static auto check( U const &amp; t ) -&gt; decltype( ::cereal::access::shared_from_this(t), std::true_type() );
+<span class="lineNum">    1183 </span>            :         static auto (check)( U const &amp; t ) -&gt; decltype( ::cereal::access::shared_from_this(t), std::true_type() );
 <span class="lineNum">    1184 </span>            : 
-<span class="lineNum">    1185 </span>            :         static auto check( ... ) -&gt; decltype( std::false_type() );
+<span class="lineNum">    1185 </span>            :         static auto (check)( ... ) -&gt; decltype( std::false_type() );
 <span class="lineNum">    1186 </span>            : 
 <span class="lineNum">    1187 </span>            :         template &lt;class U&gt;
 <span class="lineNum">    1188 </span>            :         static auto get( U const &amp; t ) -&gt; decltype( t.shared_from_this() );
@@ -1253,7 +1253,7 @@
 <span class="lineNum">    1191 </span>            : 
 <span class="lineNum">    1192 </span>            :     //! Determine if T or any base class of T has inherited from std::enable_shared_from_this
 <span class="lineNum">    1193 </span>            :     template&lt;class T&gt;
-<span class="lineNum">    1194 </span>            :     struct has_shared_from_this : decltype(detail::shared_from_this_wrapper::check(std::declval&lt;T&gt;()))
+<span class="lineNum">    1194 </span>            :     struct has_shared_from_this : decltype((detail::shared_from_this_wrapper::check)(std::declval&lt;T&gt;()))
 <span class="lineNum">    1195 </span>            :     { };
 <span class="lineNum">    1196 </span>            : 
 <span class="lineNum">    1197 </span>            :     //! Get the type of the base class of T which inherited from std::enable_shared_from_this
@@ -1325,7 +1325,7 @@
 <span class="lineNum">    1263 </span>            :         // example use to disable a serialization function
 <span class="lineNum">    1264 </span>            :         template &lt;class Archive, EnableIf&lt;cereal::traits::is_same_archive&lt;Archive, cereal::BinaryOutputArchive&gt;::value&gt; = sfinae&gt;
 <span class="lineNum">    1265 </span>            :         void save( Archive &amp; ar, MyType const &amp; mt );
-<span class="lineNum">    1266 </span><span class="lineCov">      13910 :         @endcode */</span>
+<span class="lineNum">    1266 </span>            :         @endcode */
 <span class="lineNum">    1267 </span>            :     template &lt;class ArchiveT, class CerealArchiveT&gt;
 <span class="lineNum">    1268 </span>            :     struct is_same_archive : std::integral_constant&lt;bool,
 <span class="lineNum">    1269 </span>            :       std::is_same&lt;detail::decay_archive&lt;ArchiveT&gt;, CerealArchiveT&gt;::value&gt;
@@ -1358,28 +1358,28 @@
 <span class="lineNum">    1296 </span>            :     //! Type traits only struct used to mark an archive as human readable (text based)
 <a name="1297"><span class="lineNum">    1297 </span>            :     /*! Archives that wish to identify as text based/human readable should inherit from</a>
 <span class="lineNum">    1298 </span>            :         this struct */
-<a name="1299"><span class="lineNum">    1299 </span><span class="lineCov">      42948 :     struct TextArchive {};</span></a>
+<span class="lineNum">    1299 </span><span class="lineCov">      14296 :     struct TextArchive {};</span>
 <span class="lineNum">    1300 </span>            : 
-<span class="lineNum">    1301 </span><span class="lineCov">      82404 :     //! Checks if an archive is a text archive (human readable)</span>
-<span class="lineNum">    1302 </span><span class="lineCov">      82404 :     template &lt;class A&gt;</span>
+<span class="lineNum">    1301 </span>            :     //! Checks if an archive is a text archive (human readable)
+<span class="lineNum">    1302 </span>            :     template &lt;class A&gt;
 <span class="lineNum">    1303 </span>            :     struct is_text_archive : std::integral_constant&lt;bool,
 <span class="lineNum">    1304 </span>            :       std::is_base_of&lt;TextArchive, detail::decay_archive&lt;A&gt;&gt;::value&gt;
 <span class="lineNum">    1305 </span>            :     { };
-<a name="1306"><span class="lineNum">    1306 </span>            :   } // namespace traits</a>
+<span class="lineNum">    1306 </span>            :   } // namespace traits
 <span class="lineNum">    1307 </span>            : 
-<span class="lineNum">    1308 </span><span class="lineCov">       3200 :   // ######################################################################</span>
+<span class="lineNum">    1308 </span>            :   // ######################################################################
 <span class="lineNum">    1309 </span>            :   namespace detail
-<span class="lineNum">    1310 </span><span class="lineCov">       3200 :   {</span>
-<span class="lineNum">    1311 </span><span class="lineCov">       2800 :     template &lt;class T, class A,</span>
+<span class="lineNum">    1310 </span>            :   {
+<span class="lineNum">    1311 </span>            :     template &lt;class T, class A,
 <span class="lineNum">    1312 </span>            :               bool Member = traits::has_member_load_and_construct&lt;T, A&gt;::value,
 <span class="lineNum">    1313 </span>            :               bool MemberVersioned = traits::has_member_versioned_load_and_construct&lt;T, A&gt;::value,
 <span class="lineNum">    1314 </span>            :               bool NonMember = traits::has_non_member_load_and_construct&lt;T, A&gt;::value,
-<a name="1315"><span class="lineNum">    1315 </span>            :               bool NonMemberVersioned = traits::has_non_member_versioned_load_and_construct&lt;T, A&gt;::value&gt;</a>
+<span class="lineNum">    1315 </span>            :               bool NonMemberVersioned = traits::has_non_member_versioned_load_and_construct&lt;T, A&gt;::value&gt;
 <span class="lineNum">    1316 </span>            :     struct Construct
-<span class="lineNum">    1317 </span><span class="lineCov">        800 :     {</span>
+<span class="lineNum">    1317 </span>            :     {
 <span class="lineNum">    1318 </span>            :       static_assert( cereal::traits::detail::delay_static_assert&lt;T&gt;::value,
-<span class="lineNum">    1319 </span><span class="lineCov">        800 :         &quot;cereal found more than one compatible load_and_construct function for the provided type and archive combination. \n\n &quot;</span>
-<span class="lineNum">    1320 </span><span class="lineCov">        800 :         &quot;Types must either have a member load_and_construct function or a non-member specialization of LoadAndConstruct (you may not mix these). \n &quot;</span>
+<span class="lineNum">    1319 </span>            :         &quot;cereal found more than one compatible load_and_construct function for the provided type and archive combination. \n\n &quot;
+<span class="lineNum">    1320 </span>            :         &quot;Types must either have a member load_and_construct function or a non-member specialization of LoadAndConstruct (you may not mix these). \n &quot;
 <span class="lineNum">    1321 </span>            :         &quot;In addition, you may not mix versioned with non-versioned load_and_construct functions. \n\n &quot; );
 <span class="lineNum">    1322 </span>            :       static T * load_andor_construct( A &amp; /*ar*/, construct&lt;T&gt; &amp; /*construct*/ )
 <span class="lineNum">    1323 </span>            :       { return nullptr; }
@@ -1400,50 +1400,50 @@
 <span class="lineNum">    1338 </span>            :                      &quot;  ar( a ) \n &quot;
 <a name="1339"><span class="lineNum">    1339 </span>            :                      &quot;  construct( a ); \n &quot;</a>
 <span class="lineNum">    1340 </span>            :                      &quot;} \n\n&quot; );
-<span class="lineNum">    1341 </span><span class="lineCov">     249612 :       static T * load_andor_construct()</span>
-<span class="lineNum">    1342 </span><span class="lineCov">     249612 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
+<span class="lineNum">    1341 </span><span class="lineCov">      83204 :       static T * load_andor_construct()</span>
+<span class="lineNum">    1342 </span><span class="lineCov">      83204 :       { return ::cereal::access::construct&lt;T&gt;(); }</span>
 <span class="lineNum">    1343 </span>            :     };
 <span class="lineNum">    1344 </span>            : 
 <span class="lineNum">    1345 </span>            :     // member non-versioned
 <span class="lineNum">    1346 </span>            :     template &lt;class T, class A&gt;
 <a name="1347"><span class="lineNum">    1347 </span>            :     struct Construct&lt;T, A, true, false, false, false&gt;</a>
 <span class="lineNum">    1348 </span>            :     {
-<span class="lineNum">    1349 </span><span class="lineCov">       9600 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1349 </span><span class="lineCov">       3200 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1350 </span>            :       {
-<span class="lineNum">    1351 </span><span class="lineCov">       9600 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
-<span class="lineNum">    1352 </span><span class="lineCov">       8400 :       }</span>
+<span class="lineNum">    1351 </span><span class="lineCov">       3200 :         access::load_and_construct&lt;T&gt;( ar, construct );</span>
+<span class="lineNum">    1352 </span><span class="lineCov">       2800 :       }</span>
 <span class="lineNum">    1353 </span>            :     };
 <span class="lineNum">    1354 </span>            : 
 <span class="lineNum">    1355 </span>            :     // member versioned
 <span class="lineNum">    1356 </span>            :     template &lt;class T, class A&gt;
 <a name="1357"><span class="lineNum">    1357 </span>            :     struct Construct&lt;T, A, false, true, false, false&gt;</a>
 <span class="lineNum">    1358 </span>            :     {
-<span class="lineNum">    1359 </span><span class="lineCov">       1200 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1359 </span><span class="lineCov">        400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1360 </span>            :       {
-<span class="lineNum">    1361 </span><span class="lineCov">       1200 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">    1362 </span><span class="lineCov">       1200 :         access::load_and_construct&lt;T&gt;( ar, construct, version );</span>
-<span class="lineNum">    1363 </span><span class="lineCov">       1200 :       }</span>
+<span class="lineNum">    1361 </span><span class="lineCov">        400 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">    1362 </span><span class="lineCov">        400 :         access::load_and_construct&lt;T&gt;( ar, construct, version );</span>
+<span class="lineNum">    1363 </span><span class="lineCov">        400 :       }</span>
 <span class="lineNum">    1364 </span>            :     };
 <span class="lineNum">    1365 </span>            : 
 <span class="lineNum">    1366 </span>            :     // non-member non-versioned
 <span class="lineNum">    1367 </span>            :     template &lt;class T, class A&gt;
 <a name="1368"><span class="lineNum">    1368 </span>            :     struct Construct&lt;T, A, false, false, true, false&gt;</a>
 <span class="lineNum">    1369 </span>            :     {
-<span class="lineNum">    1370 </span><span class="lineCov">       2400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1370 </span><span class="lineCov">        800 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1371 </span>            :       {
-<span class="lineNum">    1372 </span><span class="lineCov">       2400 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
-<span class="lineNum">    1373 </span><span class="lineCov">       2400 :       }</span>
+<span class="lineNum">    1372 </span><span class="lineCov">        800 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct );</span>
+<span class="lineNum">    1373 </span><span class="lineCov">        800 :       }</span>
 <span class="lineNum">    1374 </span>            :     };
 <span class="lineNum">    1375 </span>            : 
 <span class="lineNum">    1376 </span>            :     // non-member versioned
 <span class="lineNum">    1377 </span>            :     template &lt;class T, class A&gt;
 <a name="1378"><span class="lineNum">    1378 </span>            :     struct Construct&lt;T, A, false, false, false, true&gt;</a>
 <span class="lineNum">    1379 </span>            :     {
-<span class="lineNum">    1380 </span><span class="lineCov">       1200 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
+<span class="lineNum">    1380 </span><span class="lineCov">        400 :       static void load_andor_construct( A &amp; ar, construct&lt;T&gt; &amp; construct )</span>
 <span class="lineNum">    1381 </span>            :       {
-<span class="lineNum">    1382 </span><span class="lineCov">       1200 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
-<span class="lineNum">    1383 </span><span class="lineCov">       1200 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct, version );</span>
-<span class="lineNum">    1384 </span><span class="lineCov">       1200 :       }</span>
+<span class="lineNum">    1382 </span><span class="lineCov">        400 :         const auto version = ar.template loadClassVersion&lt;T&gt;();</span>
+<span class="lineNum">    1383 </span><span class="lineCov">        400 :         LoadAndConstruct&lt;T&gt;::load_and_construct( ar, construct, version );</span>
+<span class="lineNum">    1384 </span><span class="lineCov">        400 :       }</span>
 <span class="lineNum">    1385 </span>            :     };
 <span class="lineNum">    1386 </span>            :   } // namespace detail
 <span class="lineNum">    1387 </span>            : } // namespace cereal
@@ -1457,7 +1457,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 
