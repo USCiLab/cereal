@@ -1,49 +1,38 @@
 language: cpp
+dist: trusty
+sudo: false
+group: beta
+
+addons:
+  apt:
+    sources:
+      - 'ubuntu-toolchain-r-test'
+      - 'boost-latest'
+    packages:
+      - 'g++-multilib'
+      - 'libboost-serialization-dev'
+#      - 'libboost-test-dev'
 
 compiler:
-  # TODO: Clang is currently giving issues
-  #- clang
   - gcc
 
-before_install:
-  # Always install g++4.8.1
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  
-  # Install recent version of Boost
-  - sudo add-apt-repository -y ppa:boost-latest/ppa 
+matrix:
+  include:
+    - os: linux
+      compiler: clang
+      env: CMAKE_OPTIONS="-DSKIP_PORTABILITY_TEST=ON"
 
-  # clang 3.3
-  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+    # TODO: Add an entry for valgrind
+    #  after_script: make valgrind
 
-  - sudo apt-get update -qq
-
-install: 
-  - sudo apt-get install cmake
-  - sudo apt-get install libboost1.54-all-dev
-
-  # Always install valgrind
-  - sudo apt-get install valgrind
-
-  # Always install g++4.8.1
-  - sudo apt-get install -qq g++-4.8
-  - sudo apt-get install -qq g++-4.8-multilib
-  - if [ "$CXX" = "g++" ]; then export CMAKE_CXX_COMPILER="g++-4.8"; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
-
-  # clang 3.3
-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.3; fi
-  - if [ "$CXX" == "clang++" ]; then export CMAKE_CXX_COMPILER="clang++-3.3"; fi
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.3"; fi
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
 
 script:
-  - mkdir build 
-  - cd build 
-  - cmake .. 
-  - make
-
-after_script:
-  - ctest .
-  # - make valgrind
+  - mkdir build && cd build
+  - cmake ${CMAKE_OPTIONS} .. && make -j4
+  - ctest . --output-on-failure
 
 branches:
   only:

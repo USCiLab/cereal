@@ -8,18 +8,18 @@ set -e
 tempdir=`mktemp -d`
 branch=`git rev-parse --abbrev-ref HEAD`
 
-cp -r @CMAKE_CURRENT_BINARY_DIR@/doc/html/ ${tempdir}
+cp -r @PROJECT_BINARY_DIR@/doc/html/ ${tempdir}
 
 git stash
 git checkout gh-pages-develop
 
-rm -rf @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen
-mkdir @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen
-cp -r ${tempdir}/html/* @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen/
+rm -rf @PROJECT_SOURCE_DIR@/assets/doxygen
+mkdir @PROJECT_SOURCE_DIR@/assets/doxygen
+cp -r ${tempdir}/html/* @PROJECT_SOURCE_DIR@/assets/doxygen/
 
 rm -rf ${tempdir}
 
-git commit @CMAKE_CURRENT_SOURCE_DIR@/assets/doxygen
+git commit @PROJECT_SOURCE_DIR@/assets/doxygen
 
 git checkout ${branch}
 git stash apply

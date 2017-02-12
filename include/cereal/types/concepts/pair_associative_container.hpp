@@ -31,7 +31,7 @@
 #ifndef CEREAL_CONCEPTS_PAIR_ASSOCIATIVE_CONTAINER_HPP_
 #define CEREAL_CONCEPTS_PAIR_ASSOCIATIVE_CONTAINER_HPP_
 
-#include <cereal/cereal.hpp>
+#include "cereal/cereal.hpp"
 
 namespace cereal
 {

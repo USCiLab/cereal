@@ -30,11 +30,11 @@
 #ifndef CEREAL_TYPES_STACK_HPP_
 #define CEREAL_TYPES_STACK_HPP_
 
-#include <cereal/cereal.hpp>
+#include "cereal/cereal.hpp"
 #include <stack>
 
 // The default container for stack is deque, so let's include that too
-#include <cereal/types/deque.hpp>
+#include "cereal/types/deque.hpp"
 
 namespace cereal
 {

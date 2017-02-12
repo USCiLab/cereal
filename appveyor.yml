@@ -1,0 +1,35 @@
+# can use variables like {build} and {branch}
+version: 1.2.{build}
+pull_requests:
+  do_not_increment_build_number: true
+
+branches:
+  only:
+    - develop
+
+configuration:
+  - Debug
+  - Release
+
+environment:
+  matrix:
+    - VS_VERSION_MAJOR: 12
+    - VS_VERSION_MAJOR: 14
+      BOOST_ROOT: C:\Libraries\boost_1_59_0
+
+platform:
+  - Win32
+  - x64
+
+before_build: "scripts\\appveyor.bat"
+
+build:
+  parallel: true
+  project: build/cereal.sln
+  verbosity: minimal
+
+test_script: "scripts\\appveyor.bat test"
+
+artifacts:
+  - path: build\Testing
+  - path: out

@@ -37,8 +37,8 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#include <cereal/macros.hpp>
-#include <cereal/details/static_object.hpp>
+#include "cereal/macros.hpp"
+#include "cereal/details/static_object.hpp"
 
 namespace cereal
 {
@@ -55,8 +55,10 @@ namespace cereal
   //! The size type used by cereal
   /*! To ensure compatability between 32, 64, etc bit machines, we need to use
       a fixed size type instead of size_t, which may vary from machine to
-      machine. */
-  using size_type = uint64_t;
+      machine.
+
+      The default value for CEREAL_SIZE_TYPE is specified in cereal/macros.hpp */
+  using size_type = CEREAL_SIZE_TYPE;
 
   // forward decls
   class BinaryOutputArchive;

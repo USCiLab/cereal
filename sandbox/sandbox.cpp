@@ -651,9 +651,9 @@ int main()
     iar( d1 );
     assert( d1->x == 4 && d1->y == 3 );
     iar( d2 );
-    assert( ((Derived*)d2.get())->x == 5 && ((Derived*)d2.get())->y == 4 );
+    assert( dynamic_cast<Derived*>(d2.get())->x == 5 && dynamic_cast<Derived*>(d2.get())->y == 4 );
     iar( d3 );
-    assert( ((Derived*)d3.get())->x == 6 && ((Derived*)d3.get())->y == 5 );
+    assert( dynamic_cast<Derived*>(d3.get())->x == 6 && dynamic_cast<Derived*>(d3.get())->y == 5 );
   }
 
   {

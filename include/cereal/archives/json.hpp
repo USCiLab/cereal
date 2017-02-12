@@ -29,8 +29,8 @@
 #ifndef CEREAL_ARCHIVES_JSON_HPP_
 #define CEREAL_ARCHIVES_JSON_HPP_
 
-#include <cereal/cereal.hpp>
-#include <cereal/details/util.hpp>
+#include "cereal/cereal.hpp"
+#include "cereal/details/util.hpp"
 
 namespace cereal
 {
@@ -50,11 +50,11 @@ namespace cereal
 #define CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS kWriteNanAndInfFlag
 #define CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
 
-#include <cereal/external/rapidjson/prettywriter.h>
-#include <cereal/external/rapidjson/ostreamwrapper.h>
-#include <cereal/external/rapidjson/istreamwrapper.h>
-#include <cereal/external/rapidjson/document.h>
-#include <cereal/external/base64.hpp>
+#include "cereal/external/rapidjson/prettywriter.h"
+#include "cereal/external/rapidjson/ostreamwrapper.h"
+#include "cereal/external/rapidjson/istreamwrapper.h"
+#include "cereal/external/rapidjson/document.h"
+#include "cereal/external/base64.hpp"
 
 #include <limits>
 #include <sstream>
@@ -96,8 +96,8 @@ namespace cereal
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
-    using WriteStream = rapidjson::OStreamWrapper;
-    using JSONWriter = rapidjson::PrettyWriter<WriteStream>;
+    using WriteStream = CEREAL_RAPIDJSON_NAMESPACE::OStreamWrapper;
+    using JSONWriter = CEREAL_RAPIDJSON_NAMESPACE::PrettyWriter<WriteStream>;
 
     public:
       /*! @name Common Functionality
@@ -242,7 +242,7 @@ namespace cereal
       //! Saves a double to the current node
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       //! Saves a string to the current node
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<rapidjson::SizeType>( s.size() )); }
+      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<CEREAL_RAPIDJSON_NAMESPACE::SizeType>( s.size() )); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
       //! Saves a nullptr to the current node
@@ -406,11 +406,11 @@ namespace cereal
   class JSONInputArchive : public InputArchive<JSONInputArchive>, public traits::TextArchive
   {
     private:
-      using ReadStream = rapidjson::IStreamWrapper;
-      typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
+      using ReadStream = CEREAL_RAPIDJSON_NAMESPACE::IStreamWrapper;
+      typedef CEREAL_RAPIDJSON_NAMESPACE::GenericValue<CEREAL_RAPIDJSON_NAMESPACE::UTF8<>> JSONValue;
       typedef JSONValue::ConstMemberIterator MemberIterator;
       typedef JSONValue::ConstValueIterator ValueIterator;
-      typedef rapidjson::Document::GenericValue GenericValue;
+      typedef CEREAL_RAPIDJSON_NAMESPACE::Document::GenericValue GenericValue;
 
     public:
       /*! @name Common Functionality
@@ -471,11 +471,17 @@ namespace cereal
 
           Iterator(MemberIterator begin, MemberIterator end) :
             itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
-          { }
+          {
+            if( std::distance( begin, end ) == 0 )
+              itsType = Null_;
+          }
 
           Iterator(ValueIterator begin, ValueIterator end) :
             itsValueItBegin(begin), itsValueItEnd(end), itsIndex(0), itsType(Value)
-          { }
+          {
+            if( std::distance( begin, end ) == 0 )
+              itsType = Null_;
+          }
 
           //! Advance to the next node
           Iterator & operator++()
@@ -491,7 +497,7 @@ namespace cereal
             {
               case Value : return itsValueItBegin[itsIndex];
               case Member: return itsMemberItBegin[itsIndex].value;
-              default: throw cereal::Exception("Invalid Iterator Type!");
+              default: throw cereal::Exception("JSONInputArchive internal error: null or empty iterator to object or array!");
             }
           }
 
@@ -528,7 +534,7 @@ namespace cereal
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
           size_t itsIndex;                                 //!< The current index of this iterator
-          enum Type {Value, Member, Null_} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
+          enum Type {Value, Member, Null_} itsType;        //!< Whether this holds values (array) or members (objects) or nothing
       };
 
       //! Searches for the expectedName node if it doesn't match the actualName
@@ -713,7 +719,7 @@ namespace cereal
       const char * itsNextName;               //!< Next name set by NVP
       ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
-      rapidjson::Document itsDocument;        //!< Rapidjson document
+      CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument; //!< Rapidjson document
   };
 
   // ######################################################################
