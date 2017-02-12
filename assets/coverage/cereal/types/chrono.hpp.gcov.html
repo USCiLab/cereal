@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-08-10 11:21:00</td>
+            <td class="headerValue">2017-02-12 13:57:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">24</td>
@@ -98,37 +98,37 @@
 <span class="lineNum">      36 </span>            : {
 <a name="37"><span class="lineNum">      37 </span>            :   //! Saving std::chrono::duration</a>
 <span class="lineNum">      38 </span>            :   template &lt;class Archive, class R, class P&gt; inline
-<span class="lineNum">      39 </span><span class="lineCov">       9600 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; const &amp; dur )</span>
+<span class="lineNum">      39 </span><span class="lineCov">       2400 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; const &amp; dur )</span>
 <span class="lineNum">      40 </span>            :   {
-<span class="lineNum">      41 </span><span class="lineCov">       9600 :     ar( CEREAL_NVP_(&quot;count&quot;, dur.count()) );</span>
-<span class="lineNum">      42 </span><span class="lineCov">       9600 :   }</span>
+<span class="lineNum">      41 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;count&quot;, dur.count()) );</span>
+<span class="lineNum">      42 </span><span class="lineCov">       2400 :   }</span>
 <span class="lineNum">      43 </span>            : 
 <a name="44"><span class="lineNum">      44 </span>            :   //! Loading std::chrono::duration</a>
 <span class="lineNum">      45 </span>            :   template &lt;class Archive, class R, class P&gt; inline
-<span class="lineNum">      46 </span><span class="lineCov">       9600 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; &amp; dur )</span>
+<span class="lineNum">      46 </span><span class="lineCov">       2400 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::chrono::duration&lt;R, P&gt; &amp; dur )</span>
 <span class="lineNum">      47 </span>            :   {
 <span class="lineNum">      48 </span>            :     R count;
-<span class="lineNum">      49 </span><span class="lineCov">       9600 :     ar( CEREAL_NVP_(&quot;count&quot;, count) );</span>
+<span class="lineNum">      49 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;count&quot;, count) );</span>
 <span class="lineNum">      50 </span>            : 
-<span class="lineNum">      51 </span><span class="lineCov">       9600 :     dur = std::chrono::duration&lt;R, P&gt;{count};</span>
-<span class="lineNum">      52 </span><span class="lineCov">       9600 :   }</span>
+<span class="lineNum">      51 </span><span class="lineCov">       2400 :     dur = std::chrono::duration&lt;R, P&gt;{count};</span>
+<span class="lineNum">      52 </span><span class="lineCov">       2400 :   }</span>
 <span class="lineNum">      53 </span>            : 
 <a name="54"><span class="lineNum">      54 </span>            :   //! Saving std::chrono::time_point</a>
 <span class="lineNum">      55 </span>            :   template &lt;class Archive, class C, class D&gt; inline
-<span class="lineNum">      56 </span><span class="lineCov">       4800 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; const &amp; dur )</span>
+<span class="lineNum">      56 </span><span class="lineCov">       1200 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; const &amp; dur )</span>
 <span class="lineNum">      57 </span>            :   {
-<span class="lineNum">      58 </span><span class="lineCov">       4800 :     ar( CEREAL_NVP_(&quot;time_since_epoch&quot;, dur.time_since_epoch()) );</span>
-<span class="lineNum">      59 </span><span class="lineCov">       4800 :   }</span>
+<span class="lineNum">      58 </span><span class="lineCov">       1200 :     ar( CEREAL_NVP_(&quot;time_since_epoch&quot;, dur.time_since_epoch()) );</span>
+<span class="lineNum">      59 </span><span class="lineCov">       1200 :   }</span>
 <span class="lineNum">      60 </span>            : 
 <a name="61"><span class="lineNum">      61 </span>            :   //! Loading std::chrono::time_point</a>
 <span class="lineNum">      62 </span>            :   template &lt;class Archive, class C, class D&gt; inline
-<span class="lineNum">      63 </span><span class="lineCov">       4800 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; &amp; dur )</span>
+<span class="lineNum">      63 </span><span class="lineCov">       1200 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::chrono::time_point&lt;C, D&gt; &amp; dur )</span>
 <span class="lineNum">      64 </span>            :   {
-<span class="lineNum">      65 </span><span class="lineCov">       4800 :     D elapsed;</span>
-<span class="lineNum">      66 </span><span class="lineCov">       4800 :     ar( CEREAL_NVP_(&quot;time_since_epoch&quot;, elapsed) );</span>
+<span class="lineNum">      65 </span><span class="lineCov">       1200 :     D elapsed;</span>
+<span class="lineNum">      66 </span><span class="lineCov">       1200 :     ar( CEREAL_NVP_(&quot;time_since_epoch&quot;, elapsed) );</span>
 <span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span><span class="lineCov">       4800 :     dur = std::chrono::time_point&lt;C, D&gt;{elapsed};</span>
-<span class="lineNum">      69 </span><span class="lineCov">       4800 :   }</span>
+<span class="lineNum">      68 </span><span class="lineCov">       1200 :     dur = std::chrono::time_point&lt;C, D&gt;{elapsed};</span>
+<span class="lineNum">      69 </span><span class="lineCov">       1200 :   }</span>
 <span class="lineNum">      70 </span>            : } // namespace cereal
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            : #endif // CEREAL_TYPES_CHRONO_HPP_
@@ -140,7 +140,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
   </table>
   <br>
 
