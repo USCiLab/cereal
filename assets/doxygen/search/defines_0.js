@@ -33,6 +33,7 @@ var searchData=
   ['cereal_5fsave_5fminimal_5ffunction_5fname',['CEREAL_SAVE_MINIMAL_FUNCTION_NAME',['../macros_8hpp.html#ac018dce5e1c47d8948842e8eaa08815e',1,'macros.hpp']]],
   ['cereal_5fserialize_5ffunction_5fname',['CEREAL_SERIALIZE_FUNCTION_NAME',['../macros_8hpp.html#ad6b40d3472fa3d7f2148657c5bd6a07a',1,'macros.hpp']]],
   ['cereal_5fsetup_5farchive_5ftraits',['CEREAL_SETUP_ARCHIVE_TRAITS',['../traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666',1,'traits.hpp']]],
+  ['cereal_5fsize_5ftype',['CEREAL_SIZE_TYPE',['../macros_8hpp.html#a2ad098b163a5f4829eb00fd7fb0b408d',1,'macros.hpp']]],
   ['cereal_5fthread_5fsafe',['CEREAL_THREAD_SAFE',['../macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35',1,'macros.hpp']]],
   ['cereal_5fxml_5fstring_5fvalue',['CEREAL_XML_STRING_VALUE',['../xml_8hpp.html#a44505fe952f8c1f6fef02efc4d7cfefa',1,'xml.hpp']]]
 ];

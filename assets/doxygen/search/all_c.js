@@ -10,5 +10,5 @@ var searchData=
   ['node',['node',['../structcereal_1_1XMLOutputArchive_1_1NodeInfo.html#a240a9b7d14c064a1c43925a4fd43a6c6',1,'cereal::XMLOutputArchive::NodeInfo::node()'],['../structcereal_1_1XMLInputArchive_1_1NodeInfo.html#a98d18a1207a14f5b3f279f58d82ab9e9',1,'cereal::XMLInputArchive::NodeInfo::node()']]],
   ['nodeinfo',['NodeInfo',['../structcereal_1_1XMLInputArchive_1_1NodeInfo.html',1,'cereal::XMLInputArchive']]],
   ['nodeinfo',['NodeInfo',['../structcereal_1_1XMLOutputArchive_1_1NodeInfo.html',1,'cereal::XMLOutputArchive']]],
-  ['noindent',['NoIndent',['../classcereal_1_1JSONOutputArchive_1_1Options.html#a288d513a2bdbfbe0bdf2573146972432',1,'cereal::JSONOutputArchive::Options::NoIndent()'],['../classcereal_1_1JSONOutputArchive_1_1Options.html#a288d513a2bdbfbe0bdf2573146972432',1,'cereal::JSONOutputArchive::Options::NoIndent()'],['../classcereal_1_1XMLOutputArchive_1_1Options.html#aa8645cec5def24e31f3763a0be2841ef',1,'cereal::XMLOutputArchive::Options::NoIndent()']]]
+  ['noindent',['NoIndent',['../classcereal_1_1JSONOutputArchive_1_1Options.html#a288d513a2bdbfbe0bdf2573146972432',1,'cereal::JSONOutputArchive::Options::NoIndent()'],['../classcereal_1_1XMLOutputArchive_1_1Options.html#aa8645cec5def24e31f3763a0be2841ef',1,'cereal::XMLOutputArchive::Options::NoIndent()']]]
 ];
