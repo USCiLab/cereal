@@ -38,11 +38,31 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <sstream>
 
 #include "cereal/macros.hpp"
 #include "cereal/details/traits.hpp"
 #include "cereal/details/helpers.hpp"
 #include "cereal/types/base_class.hpp"
+
+#define CEREAL_SERIALIZE_MINIMAL_USING_STREAMS(type) \
+  namespace cereal \
+  { \
+    template<typename Archive> \
+    std::string save_minimal(Archive const&, type const& obj) \
+    { \
+      std::ostringstream ss; \
+      ss << obj; \
+      return ss.str(); \
+    } \
+      \
+    template<typename Archive> \
+    void load_minimal(Archive const&, type& obj, std::string const& value) \
+    { \
+      std::istringstream ss{value}; \
+      ss >> obj; \
+    } \
+  }
 
 namespace cereal
 {
