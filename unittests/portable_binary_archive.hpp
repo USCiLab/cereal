@@ -63,7 +63,7 @@ inline void swapBytes( T & t )
     CHECK_EQ(i_uint64 , o_uint64);              \
     CHECK_EQ(i_int64  , o_int64);               \
     if( !std::isnan(i_float) && !std::isnan(o_float) ) CHECK_EQ(i_float , doctest::Approx(o_float).epsilon(1e-5F)); \
-    if( !std::isnan(i_float) && !std::isnan(o_float) ) CHECK_EQ(i_double, doctest::Approx(o_double).epsilon(1e-5));
+    if( !std::isnan(i_double) && !std::isnan(o_double) ) CHECK_EQ(i_double, doctest::Approx(o_double).epsilon(1e-5));
 
 // Last parameter exists to keep everything hidden in options
 template <class IArchive, class OArchive> inline
