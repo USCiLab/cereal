@@ -116,9 +116,9 @@ namespace cereal
     struct PolymorphicCasters
     {
       //! Maps from base type index to a map from derived type index to caster
-      std::map<std::type_index, std::map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
+      std::unordered_map<std::type_index, std::unordered_map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
 
-      std::multimap<std::type_index, std::type_index> reverseMap;
+      std::unordered_multimap<std::type_index, std::type_index> reverseMap;
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -127,24 +127,26 @@ namespace cereal
                                 "Make sure you either serialize the base class at some point via cereal::base_class or cereal::virtual_base_class.\n"                          \
                                 "Alternatively, manually register the association with CEREAL_REGISTER_POLYMORPHIC_RELATION.");
 
-      //! Checks if the mapping object that can perform the upcast or downcast
+      //! Checks if the mapping object that can perform the upcast or downcast exists, and returns it if so
       /*! Uses the type index from the base and derived class to find the matching
-          registered caster. If no matching caster exists, returns false. */
-      static bool exists( std::type_index const & baseIndex, std::type_index const & derivedIndex )
+          registered caster. If no matching caster exists, the bool in the pair will be false and the vector
+          reference should not be used. */
+      static std::pair<bool, std::vector<PolymorphicCaster const *> const &>
+      lookup_if_exists( std::type_index const & baseIndex, std::type_index const & derivedIndex )
       {
         // First phase of lookup - match base type index
         auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseIter = baseMap.find( baseIndex );
         if (baseIter == baseMap.end())
-          return false;
+          return {false, {}};
 
         // Second phase - find a match from base to derived
-        auto & derivedMap = baseIter->second;
+        auto const & derivedMap = baseIter->second;
         auto derivedIter = derivedMap.find( derivedIndex );
         if (derivedIter == derivedMap.end())
-          return false;
+          return {false, {}};
 
-        return true;
+        return {true, derivedIter->second};
       }
 
       //! Gets the mapping object that can perform the upcast or downcast
@@ -162,7 +164,7 @@ namespace cereal
           exceptionFunc();
 
         // Second phase - find a match from base to derived
-        auto & derivedMap = baseIter->second;
+        auto const & derivedMap = baseIter->second;
         auto derivedIter = derivedMap.find( derivedIndex );
         if( derivedIter == derivedMap.end() )
           exceptionFunc();
@@ -229,18 +231,16 @@ namespace cereal
         // First insert the relation Base->Derived
         const auto lock = StaticObject<PolymorphicCasters>::lock();
         auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
-        auto lb = baseMap.lower_bound(baseKey);
 
         {
-          auto & derivedMap = baseMap.insert( lb, {baseKey, {}} )->second;
-          auto lbd = derivedMap.lower_bound(derivedKey);
-          auto & derivedVec = derivedMap.insert( lbd, { std::move(derivedKey), {}} )->second;
+          auto & derivedMap = baseMap.insert( {baseKey, {}} ).first->second;
+          auto & derivedVec = derivedMap.insert( {derivedKey, {}} ).first->second;
           derivedVec.push_back( this );
         }
 
         // Insert reverse relation Derived->Base
         auto & reverseMap = StaticObject<PolymorphicCasters>::getInstance().reverseMap;
-        reverseMap.insert( {derivedKey, baseKey} );
+        reverseMap.emplace( derivedKey, baseKey );
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
@@ -254,28 +254,29 @@ namespace cereal
           // Checks whether there is a path from parent->child and returns a <dist, path> pair
           // dist is set to MAX if the path does not exist
           auto checkRelation = [](std::type_index const & parentInfo, std::type_index const & childInfo) ->
-            std::pair<size_t, std::vector<PolymorphicCaster const *>>
+            std::pair<size_t, std::vector<PolymorphicCaster const *> const &>
           {
-            if( PolymorphicCasters::exists( parentInfo, childInfo ) )
+            auto result = PolymorphicCasters::lookup_if_exists( parentInfo, childInfo );
+            if( result.first )
             {
-              auto const & path = PolymorphicCasters::lookup( parentInfo, childInfo, [](){} );
+              auto const & path = result.second;
               return {path.size(), path};
             }
             else
               return {std::numeric_limits<size_t>::max(), {}};
           };
 
-          std::stack<std::type_index> parentStack;      // Holds the parent nodes to be processed
-          std::set<std::type_index>   dirtySet;         // Marks child nodes that have been changed
-          std::set<std::type_index>   processedParents; // Marks parent nodes that have been processed
+          std::stack<std::type_index>         parentStack;      // Holds the parent nodes to be processed
+          std::unordered_set<std::type_index> dirtySet;         // Marks child nodes that have been changed
+          std::unordered_set<std::type_index> processedParents; // Marks parent nodes that have been processed
 
           // Begin processing the base key and mark derived as dirty
           parentStack.push( baseKey );
-          dirtySet.insert( derivedKey );
+          dirtySet.emplace( derivedKey );
 
           while( !parentStack.empty() )
           {
-            using Relations = std::multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
+            using Relations = std::unordered_multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
             Relations unregisteredRelations; // Defer insertions until after main loop to prevent iterator invalidation
 
             const auto parent = parentStack.top();
@@ -340,7 +341,7 @@ namespace cereal
             {
               auto & derivedMap = baseMap.find( it.first )->second;
               derivedMap[it.second.first] = it.second.second;
-              reverseMap.insert( {it.second.first, it.first} );
+              reverseMap.emplace( it.second.first, it.first );
             }
 
             // Mark current parent as modified
