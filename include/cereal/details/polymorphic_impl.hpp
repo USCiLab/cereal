@@ -118,7 +118,7 @@ namespace cereal
       //! Maps from base type index to a map from derived type index to caster
       std::unordered_map<std::type_index, std::unordered_map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
 
-      std::unordered_multimap<std::type_index, std::type_index> reverseMap;
+      std::multimap<std::type_index, std::type_index> reverseMap;
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -267,12 +267,23 @@ namespace cereal
           };
 
           std::stack<std::type_index>         parentStack;      // Holds the parent nodes to be processed
-          std::unordered_set<std::type_index> dirtySet;         // Marks child nodes that have been changed
+          std::vector<std::type_index> dirtySet;                // Marks child nodes that have been changed
           std::unordered_set<std::type_index> processedParents; // Marks parent nodes that have been processed
+
+          // Checks if a child has been marked dirty
+          auto isDirty = [&](std::type_index const & c)
+          {
+            auto const dirtySetSize = dirtySet.size();
+            for( size_t i = 0; i < dirtySetSize; ++i )
+              if( dirtySet[i] == c )
+                return true;
+
+            return false;
+          };
 
           // Begin processing the base key and mark derived as dirty
           parentStack.push( baseKey );
-          dirtySet.emplace( derivedKey );
+          dirtySet.emplace_back( derivedKey );
 
           while( !parentStack.empty() )
           {
@@ -286,7 +297,7 @@ namespace cereal
             for( auto const & childPair : baseMap[parent] )
             {
               const auto child = childPair.first;
-              if( dirtySet.count( child ) && baseMap.count( child ) )
+              if( isDirty( child ) && baseMap.count( child ) )
               {
                 auto parentChildPath = checkRelation( parent, child );
 
@@ -345,7 +356,7 @@ namespace cereal
             }
 
             // Mark current parent as modified
-            dirtySet.insert( parent );
+            dirtySet.emplace_back( parent );
 
             // Insert all parents of the current parent node that haven't yet been processed
             auto parentRange = reverseMap.equal_range( parent );
