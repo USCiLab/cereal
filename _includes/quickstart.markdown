@@ -116,7 +116,7 @@ int main()
 
     archive( CEREAL_NVP(m1), // Names the output the same as the variable name
              someInt,        // No NVP - xCEREAL will automatically generate an enumerated name
-             cereal::make_nvp("this name is way better", d) ); // specify a name of your choosing
+             cereal::make_nvp("this_name_is_way_better", d) ); // specify a name of your choosing
   }
 
   {
