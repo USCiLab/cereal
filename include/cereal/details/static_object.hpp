@@ -68,12 +68,12 @@ namespace cereal
     {
       private:
         //! Forces instantiation at pre-execution time
-        static void instantiate( T const & ) {}
+        static void instantiate( T const * ) {}
 
         static T & create()
         {
           static T t;
-          instantiate(instance);
+          instantiate(&instance);
           return t;
         }
 
