@@ -160,10 +160,12 @@ namespace cereal
                    only pass r-values in cases where this makes sense, such as the result of some
                    size() call.
           @internal */
-      NameValuePair( char const * n, T && v ) : name(n), value(std::forward<T>(v)) {}
+      NameValuePair( char const * n, T && v ) : name(n), value(std::forward<T>(v)), innerName(nullptr) {}
+      NameValuePair<T>& withInnerName(char const* n) { innerName = n; return *this; }
 
       char const * name;
       Type value;
+      char const * innerName;
   };
 
   //! A specialization of make_nvp<> that simply forwards the value for binary archives
