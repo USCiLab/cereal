@@ -210,7 +210,7 @@ namespace cereal
   {
     //! Internally store the pointer as a void *, keeping const if created with
     //! a const pointer
-    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
+    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<typename std::remove_reference<T>::type>::type>::value,
                                          const void *,
                                          void *>::type;
 
