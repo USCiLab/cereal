@@ -215,6 +215,14 @@ namespace cereal
       #undef UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION
     };
 
+    #ifdef CEREAL_OLDER_GCC
+      #define CEREAL_EMPLACE_MAP(map, key, value)                     \
+      map.insert( std::make_pair(std::move(key), std::move(value)) );
+    #else // NOT CEREAL_OLDER_GCC
+      #define CEREAL_EMPLACE_MAP(map, key, value)                     \
+      map.emplace( key, value );
+    #endif // NOT_CEREAL_OLDER_GCC
+
     //! Strongly typed derivation of PolymorphicCaster
     template <class Base, class Derived>
     struct PolymorphicVirtualCaster : PolymorphicCaster
@@ -240,7 +248,7 @@ namespace cereal
 
         // Insert reverse relation Derived->Base
         auto & reverseMap = StaticObject<PolymorphicCasters>::getInstance().reverseMap;
-        reverseMap.emplace( derivedKey, baseKey );
+        CEREAL_EMPLACE_MAP(reverseMap, derivedKey, baseKey);
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
@@ -352,7 +360,7 @@ namespace cereal
             {
               auto & derivedMap = baseMap.find( it.first )->second;
               derivedMap[it.second.first] = it.second.second;
-              reverseMap.emplace( it.second.first, it.first );
+              CEREAL_EMPLACE_MAP(reverseMap, it.second.first, it.first );
             }
 
             // Mark current parent as modified
@@ -372,6 +380,8 @@ namespace cereal
           } // end loop over parent stack
         } // end chainable relations
       } // end PolymorphicVirtualCaster()
+
+      #undef CEREAL_EMPLACE_MAP
 
       //! Performs the proper downcast with the templated types
       void const * downcast( void const * const ptr ) const override
