@@ -101,33 +101,49 @@ namespace cereal
       //! @{
 
       //! A class containing various advanced options for the XML archive
+      /*! Options can either be directly passed to the constructor, or chained using the
+          modifier functions for an interface analogous to named parameters */
       class Options
       {
         public:
           //! Default options
           static Options Default(){ return Options(); }
 
-          //! Default options with no indentation
-          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
-
           //! Specify specific options for the XMLOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indent Whether to indent each line of XML
-              @param outputType Whether to output the type of each serialized object as an attribute */
+              @param outputType Whether to output the type of each serialized object as an attribute
+              @param sizeAttributes Whether dynamically sized containers output the size=dynamic attribute */
           explicit Options( int precision = std::numeric_limits<double>::max_digits10,
                             bool indent = true,
-                            bool outputType = false ) :
+                            bool outputType = false,
+                            bool sizeAttributes = true ) :
             itsPrecision( precision ),
             itsIndent( indent ),
             itsOutputType( outputType ),
-            itsSizeAttributes(true)
+            itsSizeAttributes( sizeAttributes )
           { }
 
-          Options& NoSizeAttributes()
-          {
-              itsSizeAttributes = false; 
-              return *this;
-          }
+          /*! @name Option Modifiers
+              An interface for setting option settings analogous to named parameters.
+
+              @code{cpp}
+              cereal::XMLOutputArchive ar( myStream,
+                                           cereal::XMLOutputArchive::Options()
+                                           .indent(true)
+                                           .sizeAttributes(false) );
+              @endcode
+              */
+          //! @{
+
+          //! Whether to indent each line of XML
+          Options & indent( bool enable ){ itsIndent = enable; return *this; }
+          //! Whether to output the type of each serialized object as an attribute
+          Options & outputType( bool enable ){ itsOutputType = enable; return *this; }
+          //! Whether dynamically sized containers (e.g. vector) output the size=dynamic attribute
+          Options & sizeAttributes( bool enable ){ itsSizeAttributes = enable; return *this; }
+
+          //! @}
 
         private:
           friend class XMLOutputArchive;
