@@ -101,31 +101,56 @@ namespace cereal
       //! @{
 
       //! A class containing various advanced options for the XML archive
+      /*! Options can either be directly passed to the constructor, or chained using the
+          modifier functions for an interface analogous to named parameters */
       class Options
       {
         public:
           //! Default options
           static Options Default(){ return Options(); }
 
-          //! Default options with no indentation
-          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, false ); }
-
           //! Specify specific options for the XMLOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indent Whether to indent each line of XML
-              @param outputType Whether to output the type of each serialized object as an attribute */
+              @param outputType Whether to output the type of each serialized object as an attribute
+              @param sizeAttributes Whether dynamically sized containers output the size=dynamic attribute */
           explicit Options( int precision = std::numeric_limits<double>::max_digits10,
                             bool indent = true,
-                            bool outputType = false ) :
+                            bool outputType = false,
+                            bool sizeAttributes = true ) :
             itsPrecision( precision ),
             itsIndent( indent ),
-            itsOutputType( outputType ) { }
+            itsOutputType( outputType ),
+            itsSizeAttributes( sizeAttributes )
+          { }
+
+          /*! @name Option Modifiers
+              An interface for setting option settings analogous to named parameters.
+
+              @code{cpp}
+              cereal::XMLOutputArchive ar( myStream,
+                                           cereal::XMLOutputArchive::Options()
+                                           .indent(true)
+                                           .sizeAttributes(false) );
+              @endcode
+              */
+          //! @{
+
+          //! Whether to indent each line of XML
+          Options & indent( bool enable ){ itsIndent = enable; return *this; }
+          //! Whether to output the type of each serialized object as an attribute
+          Options & outputType( bool enable ){ itsOutputType = enable; return *this; }
+          //! Whether dynamically sized containers (e.g. vector) output the size=dynamic attribute
+          Options & sizeAttributes( bool enable ){ itsSizeAttributes = enable; return *this; }
+
+          //! @}
 
         private:
           friend class XMLOutputArchive;
           int itsPrecision;
           bool itsIndent;
           bool itsOutputType;
+          bool itsSizeAttributes;
       };
 
       //! Construct, outputting to the provided stream upon destruction
@@ -137,7 +162,8 @@ namespace cereal
         OutputArchive<XMLOutputArchive>(this),
         itsStream(stream),
         itsOutputType( options.itsOutputType ),
-        itsIndent( options.itsIndent )
+        itsIndent( options.itsIndent ),
+        itsSizeAttributes(options.itsSizeAttributes)
       {
         // rapidxml will delete all allocations when xml_document is cleared
         auto node = itsXML.allocate_node( rapidxml::node_declaration );
@@ -289,6 +315,8 @@ namespace cereal
         itsNodes.top().node->append_attribute( itsXML.allocate_attribute( namePtr, valuePtr ) );
       }
 
+      bool hasSizeAttributes() const { return itsSizeAttributes; }
+
     protected:
       //! A struct that contains metadata about a node
       struct NodeInfo
@@ -330,6 +358,7 @@ namespace cereal
       std::ostringstream itsOS;        //!< Used to format strings internally
       bool itsOutputType;              //!< Controls whether type information is printed
       bool itsIndent;                  //!< Controls whether indenting is used
+      bool itsSizeAttributes;          //!< Controls whether lists have a size attribute
   }; // XMLOutputArchive
 
   // ######################################################################
@@ -764,7 +793,10 @@ namespace cereal
   template <class T> inline
   void prologue( XMLOutputArchive & ar, SizeTag<T> const & )
   {
-    ar.appendAttribute( "size", "dynamic" );
+      if (ar.hasSizeAttributes())
+      {
+          ar.appendAttribute("size", "dynamic");
+      }
   }
 
   template <class T> inline
