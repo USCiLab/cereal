@@ -115,8 +115,10 @@ namespace cereal
         all registered mappings between base and derived types. */
     struct PolymorphicCasters
     {
+      //! Maps from a derived type index to a set of chainable casters
+      using DerivedCasterMap = std::unordered_map<std::type_index, std::vector<PolymorphicCaster const *>>;
       //! Maps from base type index to a map from derived type index to caster
-      std::unordered_map<std::type_index, std::unordered_map<std::type_index, std::vector<PolymorphicCaster const*>>> map;
+      std::unordered_map<std::type_index, DerivedCasterMap> map;
 
       std::multimap<std::type_index, std::type_index> reverseMap;
 
@@ -241,7 +243,7 @@ namespace cereal
         auto & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
 
         {
-          auto & derivedMap = baseMap.insert( {baseKey, {}} ).first->second;
+          auto & derivedMap = baseMap.insert( {baseKey, PolymorphicCasters::DerivedCasterMap{}} ).first->second;
           auto & derivedVec = derivedMap.insert( {derivedKey, {}} ).first->second;
           derivedVec.push_back( this );
         }
