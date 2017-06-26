@@ -136,7 +136,7 @@ namespace cereal
   template <class T>
   class NameValuePair : detail::NameValuePairCore
   {
-    private:
+    protected:
       // If we get passed an array, keep the type as is, otherwise store
       // a reference if we were passed an l value reference, else copy the value
       using Type = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
@@ -166,6 +166,19 @@ namespace cereal
       Type value;
   };
 
+  template<class T>
+  class OptionalNameValuePair : public NameValuePair<T>
+  {
+  public:
+     template<class V>
+     OptionalNameValuePair(char const* name, T&& value, V const& defaultValue_)
+        : NameValuePair<T>(name, std::forward<T>(value))
+        , defaultValue(defaultValue_)
+     {}
+
+     std::remove_reference_t<T> defaultValue{};
+  };
+
   //! A specialization of make_nvp<> that simply forwards the value for binary archives
   /*! @relates NameValuePair
       @internal */
@@ -191,6 +204,19 @@ namespace cereal
   {
     return {name, std::forward<T>(value)};
   }
+
+  ////! A specialization of make_optional_nvp<> that actually creates an nvp for non-binary archives
+  ///*! @relates NameValuePair
+  //@internal */
+  //template<class Archive, class T>
+  //typename
+  //std::enable_if<!std::is_same<Archive, ::cereal::BinaryInputArchive>::value &&
+  //               !std::is_same<Archive, ::cereal::BinaryOutputArchive>::value,
+  //OptionalNameValuePair<T> >::type
+  //make_optional_nvp(const char * name, T && value, T const& defaultValue = T{})
+  //{
+  //   return{name, std::forward<T>(value), defaultValue};
+  //}
 
   //! Convenience for creating a templated NVP
   /*! For use in internal generic typing functions which have an
