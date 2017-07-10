@@ -182,7 +182,7 @@ namespace cereal
           itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
 
         finishNode();
-      };
+      }
 
       //! @}
       /*! @name Internal Functionality
@@ -436,7 +436,7 @@ namespace cereal
         std::memcpy( data, decoded.data(), decoded.size() );
 
         finishNode();
-      };
+      }
 
       //! @}
       /*! @name Internal Functionality
