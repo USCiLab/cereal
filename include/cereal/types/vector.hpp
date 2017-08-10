@@ -60,8 +60,8 @@ namespace cereal
 
   //! Serialization for non-arithmetic vector types
   template <class Archive, class T, class A> inline
-  typename std::enable_if<!traits::is_output_serializable<BinaryData<T>, Archive>::value
-                          || !std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<(!traits::is_output_serializable<BinaryData<T>, Archive>::value
+                          || !std::is_arithmetic<T>::value) && !std::is_same<T, bool>::value, void>::type
   CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::vector<T, A> const & vector )
   {
     ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
@@ -71,8 +71,8 @@ namespace cereal
 
   //! Serialization for non-arithmetic vector types
   template <class Archive, class T, class A> inline
-  typename std::enable_if<!traits::is_input_serializable<BinaryData<T>, Archive>::value
-                          || !std::is_arithmetic<T>::value, void>::type
+  typename std::enable_if<(!traits::is_input_serializable<BinaryData<T>, Archive>::value
+                          || !std::is_arithmetic<T>::value) && !std::is_same<T, bool>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::vector<T, A> & vector )
   {
     size_type size;
@@ -88,7 +88,7 @@ namespace cereal
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::vector<bool, A> const & vector )
   {
     ar( make_size_tag( static_cast<size_type>(vector.size()) ) ); // number of elements
-    for(auto && v : vector)
+    for(const auto v : vector)
       ar( static_cast<bool>(v) );
   }
 
@@ -100,7 +100,7 @@ namespace cereal
     ar( make_size_tag( size ) );
 
     vector.resize( static_cast<std::size_t>( size ) );
-    for(auto && v : vector)
+    for(auto v : vector)
     {
       bool b;
       ar( b );
