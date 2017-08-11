@@ -284,7 +284,6 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      auto ptr = std::const_pointer_cast<typename std::decay<T>::type>(wrapper.ptr);
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
       using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
@@ -296,7 +295,7 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      ptr.reset( reinterpret_cast<T *>( new ST() ),
+      std::shared_ptr<typename std::decay<T>::type> ptr(reinterpret_cast<T *>(new ST()),
           [=]( T * t )
           {
             if( *valid )
@@ -313,7 +312,7 @@ namespace cereal
 
       // Mark pointer as valid (initialized)
       *valid = true;
-      wrapper.ptr = ptr;
+      wrapper.ptr = std::move(ptr);
     }
     else
       wrapper.ptr = std::static_pointer_cast<typename std::decay<T>::type>(ar.getSharedPointer(id));
@@ -331,11 +330,10 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      auto ptr = std::const_pointer_cast<typename std::decay<T>::type>(wrapper.ptr);
-      ptr.reset( detail::Construct<typename std::decay<T>::type, Archive>::load_andor_construct() );
+      std::shared_ptr<typename std::decay<T>::type> ptr( detail::Construct<typename std::decay<T>::type, Archive>::load_andor_construct() );
       ar.registerSharedPointer( id, ptr );
       ar( CEREAL_NVP_("data", *ptr) );
-      wrapper.ptr = ptr;
+      wrapper.ptr = std::move(ptr);
     }
     else
       wrapper.ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
