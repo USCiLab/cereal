@@ -85,7 +85,7 @@ namespace rapidxml
 
         //! Gets human readable description of error.
         //! \return Pointer to null terminated description of the error.
-        virtual const char *what() const noexcept override
+        virtual const char *what() const CEREAL_NOEXCEPT override
         {
             return m_what;
         }
