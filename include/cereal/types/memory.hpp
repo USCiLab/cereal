@@ -372,16 +372,17 @@ namespace cereal
 
     if( isValid )
     {
+      using DecayT = typename std::decay<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(DecayT), CEREAL_ALIGNOF(DecayT)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, DecayT> loadWrapper( reinterpret_cast<DecayT *>( stPtr.get() ) );
 
       // Initialize storage
       ar( CEREAL_NVP_("data", loadWrapper) );
@@ -402,16 +403,16 @@ namespace cereal
     uint8_t isValid;
     ar( CEREAL_NVP_("valid", isValid) );
 
-    auto & ptr = wrapper.ptr;
-
     if( isValid )
     {
-      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
+      using DecayT = typename std::decay<T>::type;
+      std::unique_ptr<DecayT, D> ptr( detail::Construct<DecayT, Archive>::load_andor_construct() );
       ar( CEREAL_NVP_( "data", *ptr ) );
+      wrapper.ptr = std::move(ptr);
     }
     else
     {
-      ptr.reset( nullptr );
+      wrapper.ptr.reset( nullptr );
     }
   }
 } // namespace cereal
