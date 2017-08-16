@@ -45,6 +45,7 @@ void test_memory()
     std::shared_ptr<int> o_nullptr2;
 
     std::unique_ptr<int> o_zptr1(new int(random_value<int>(gen)));
+    std::unique_ptr<const int> o_zptr2(new int(random_value<int>(gen)));
     std::unique_ptr<int> o_nullptr3;
 
     std::ostringstream os;
@@ -55,7 +56,7 @@ void test_memory()
       oar( o_yptr1, o_yptr2 );
       oar( o_nullptr1, o_nullptr2 );
 
-      oar( o_zptr1 );
+      oar( o_zptr1, o_zptr2 );
       oar( o_nullptr3 );
     }
 
@@ -68,6 +69,7 @@ void test_memory()
     std::shared_ptr<int> i_nullptr2;
 
     std::unique_ptr<int> i_zptr1;
+    std::unique_ptr<const int> i_zptr2;
     std::unique_ptr<int> i_nullptr3;
 
     std::istringstream is(os.str());
@@ -78,7 +80,7 @@ void test_memory()
       iar( i_yptr1, i_yptr2 );
       iar( i_nullptr1, i_nullptr2 );
 
-      iar( i_zptr1 );
+      iar( i_zptr1, i_zptr2 );
       iar( i_nullptr3 );
     }
 
@@ -100,6 +102,7 @@ void test_memory()
     CHECK_EQ(*i_xptr3, *o_xptr3);
 
     CHECK_EQ(*i_zptr1, *o_zptr1);
+    CHECK_EQ(*i_zptr2, *o_zptr2);
     CHECK_UNARY_FALSE(i_nullptr3);
   }
 }
