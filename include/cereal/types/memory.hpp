@@ -295,7 +295,7 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      std::shared_ptr<typename std::decay<T>::type> ptr(reinterpret_cast<T *>(new ST()),
+      std::shared_ptr<typename std::remove_const<T>::type> ptr(reinterpret_cast<T *>(new ST()),
           [=]( T * t )
           {
             if( *valid )
@@ -315,7 +315,7 @@ namespace cereal
       wrapper.ptr = std::move(ptr);
     }
     else
-      wrapper.ptr = std::static_pointer_cast<typename std::decay<T>::type>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<typename std::remove_const<T>::type>(ar.getSharedPointer(id));
   }
 
   //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
@@ -330,7 +330,8 @@ namespace cereal
 
     if( id & detail::msb_32bit )
     {
-      std::shared_ptr<typename std::decay<T>::type> ptr( detail::Construct<typename std::decay<T>::type, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::shared_ptr<NonConstT> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar.registerSharedPointer( id, ptr );
       ar( CEREAL_NVP_("data", *ptr) );
       wrapper.ptr = std::move(ptr);
@@ -372,17 +373,17 @@ namespace cereal
 
     if( isValid )
     {
-      using DecayT = typename std::decay<T>::type;
+      using NonConstT = typename std::remove_const<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(DecayT), CEREAL_ALIGNOF(DecayT)>::type;
+      using ST = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndConstructLoadWrapper<Archive, DecayT> loadWrapper( reinterpret_cast<DecayT *>( stPtr.get() ) );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, NonConstT> loadWrapper( reinterpret_cast<NonConstT *>( stPtr.get() ) );
 
       // Initialize storage
       ar( CEREAL_NVP_("data", loadWrapper) );
@@ -405,8 +406,8 @@ namespace cereal
 
     if( isValid )
     {
-      using DecayT = typename std::decay<T>::type;
-      std::unique_ptr<DecayT, D> ptr( detail::Construct<DecayT, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::unique_ptr<NonConstT, D> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar( CEREAL_NVP_( "data", *ptr ) );
       wrapper.ptr = std::move(ptr);
     }
