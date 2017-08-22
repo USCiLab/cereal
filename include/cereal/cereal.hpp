@@ -145,6 +145,14 @@ namespace cereal
   instantiate_polymorphic_binding( T*, Archive*, BindingTag, adl_tag ); \
   } } /* end namespaces */
 
+  //! Helper macro to omit unused warning
+  #if defined(__GNUC__)
+    // GCC / clang don't want the function
+    #define CEREAL_UNUSED_FUNCTION
+  #else
+    #define CEREAL_UNUSED_FUNCTION static void unused() { (void)version; }
+  #endif
+
   // ######################################################################
   //! Defines a class version for some type
   /*! Versioning information is optional and adds some small amount of
@@ -207,7 +215,7 @@ namespace cereal
              std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
         return VERSION_NUMBER;                                                   \
       }                                                                          \
-      static void unused() { (void)version; }                                    \
+      CEREAL_UNUSED_FUNCTION                                                     \
     }; /* end Version */                                                         \
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
