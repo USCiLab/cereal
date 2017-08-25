@@ -145,7 +145,7 @@ void test_defer()
 
     for( auto & node : o_nodes0 )
     {
-      node->relations.resize( 1 );//random_index( 0, 100, gen ) );
+      node->relations.resize( random_index( 0, 100, gen ) );
       for( auto & r : node->relations )
         r = {o_nodes0[random_index(0, o_nodes0.size() - 1, gen)],
              random_value<int>(gen), random_basic_string<char>(gen)};

@@ -12,22 +12,48 @@ addons:
       - 'g++-multilib'
       - 'libboost-serialization-dev'
 #      - 'libboost-test-dev'
-
-compiler:
-  - gcc
-
 matrix:
   include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
     - os: linux
       compiler: clang
       env: CMAKE_OPTIONS="-DSKIP_PORTABILITY_TEST=ON"
 
-    # TODO: Add an entry for valgrind
-    #  after_script: make valgrind
-
     - os: osx
       osx_image: xcode8
       compiler: clang
+    
+    # TODO: Add an entry for valgrind
+    #  after_script: make valgrind
 
 script:
   - mkdir build && cd build
