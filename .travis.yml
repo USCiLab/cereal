@@ -24,7 +24,7 @@ matrix:
             - g++-4.7-multilib
       env:
          - MATRIX_EVAL="CC=gcc-4.7 && CXX=g++-4.7"
-         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.7/\""
+         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.7/32\""
 
     - os: linux
       addons:
@@ -36,7 +36,7 @@ matrix:
             - g++-4.8-multilib
       env:
          - MATRIX_EVAL="CC=gcc-4.8 && CXX=g++-4.8"
-         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.8/\""
+         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.8/32\""
 
     - os: linux
       addons:
@@ -48,7 +48,7 @@ matrix:
             - g++-4.9-multilib
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.9/\""
+         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/4.9/32\""
 
     - os: linux
       addons:
@@ -60,7 +60,7 @@ matrix:
             - g++-5-multilib
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/5/\""
+         - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/5/32\""
 
     - os: linux
       addons:
@@ -72,7 +72,7 @@ matrix:
             - g++-6-multilib
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-        - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/6/\""
+        - CMAKE_OPTIONS="-DTRAVIS_FLAGS=\"-I /usr/include/x86_64-linux-gnu/c++/6/32\""
 
     - os: linux
       compiler: clang
@@ -87,6 +87,7 @@ matrix:
 
 script:
   - mkdir build && cd build
+  - echo ${CMAKE_OPTIONS}
   - cmake ${CMAKE_OPTIONS} .. && make -j4
   - ctest . --output-on-failure
 
