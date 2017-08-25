@@ -11,23 +11,22 @@ addons:
     packages:
       - 'g++-multilib'
       - 'libboost-serialization-dev'
-#      - 'libboost-test-dev'
 matrix:
   include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - gcc-4.7-multilib
-            - g++-4.7-multilib
-            - libc6-dev-i386 
-            - gcc-multilib
-      env:
-         - MATRIX_EVAL="CC=gcc-4.7 && CXX=g++-4.7"
-         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/4.7/32"
-
+#    - os: linux
+#      addons:
+#        apt:
+#          sources:
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - gcc-4.7-multilib
+#            - g++-4.7-multilib
+#            - libc6-dev-i386 
+#            - gcc-multilib
+#      env:
+#         - MATRIX_EVAL="CC=gcc-4.7 && CXX=g++-4.7"
+#         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/4.7/32"
+#
 #    - os: linux
 #      addons:
 #        apt:
