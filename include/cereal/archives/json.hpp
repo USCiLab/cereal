@@ -758,6 +758,31 @@ namespace cereal
   { }
 
   // ######################################################################
+  //! Prologue for deferred data for JSON archives
+  /*! Do nothing for the defer wrapper */
+  template <class T> inline
+  void prologue( JSONOutputArchive &, DeferredData<T> const & )
+  { }
+
+  //! Prologue for deferred data for JSON archives
+  template <class T> inline
+  void prologue( JSONInputArchive &, DeferredData<T> const & )
+  { }
+
+  // ######################################################################
+  //! Epilogue for deferred for JSON archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T> inline
+  void epilogue( JSONOutputArchive &, DeferredData<T> const & )
+  { }
+
+  //! Epilogue for deferred for JSON archives
+  /*! Do nothing for the defer wrapper */
+  template <class T> inline
+  void epilogue( JSONInputArchive &, DeferredData<T> const & )
+  { }
+
+  // ######################################################################
   //! Prologue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON, they just indicate
       that the current node should be made into an array */

@@ -790,6 +790,31 @@ namespace cereal
   { }
 
   // ######################################################################
+  //! Prologue for deferred data for XML archives
+  /*! Do nothing for the defer wrapper */
+  template <class T> inline
+  void prologue( XMLOutputArchive &, DeferredData<T> const & )
+  { }
+
+  //! Prologue for deferred data for XML archives
+  template <class T> inline
+  void prologue( XMLInputArchive &, DeferredData<T> const & )
+  { }
+
+  // ######################################################################
+  //! Epilogue for deferred for XML archives
+  /*! NVPs do not start or finish nodes - they just set up the names */
+  template <class T> inline
+  void epilogue( XMLOutputArchive &, DeferredData<T> const & )
+  { }
+
+  //! Epilogue for deferred for XML archives
+  /*! Do nothing for the defer wrapper */
+  template <class T> inline
+  void epilogue( XMLInputArchive &, DeferredData<T> const & )
+  { }
+
+  // ######################################################################
   //! Prologue for SizeTags for XML output archives
   /*! SizeTags do not start or finish nodes */
   template <class T> inline

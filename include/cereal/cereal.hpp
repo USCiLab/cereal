@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <string>
 #include <memory>
+#include <functional>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -95,6 +96,16 @@ namespace cereal
   SizeTag<T> make_size_tag( T && sz )
   {
     return {std::forward<T>(sz)};
+  }
+
+  // ######################################################################
+  //! Marks data for deferred serialization
+  /*! @relates DeferredData
+      @ingroup Utility */
+  template <class T> inline
+  DeferredData<T> defer( T && value )
+  {
+    return {std::forward<T>(value)};
   }
 
   // ######################################################################
@@ -258,14 +269,14 @@ namespace cereal
       //! Indicates this archive is not intended for loading
       /*! This ensures compatibility with boost archive types.  If you are transitioning
           from boost, you can check this value within a member or external serialize function
-          (i.e., Archive::is_loading::value) to disable behavior specific to loading, until 
+          (i.e., Archive::is_loading::value) to disable behavior specific to loading, until
           you can transition to split save/load or save_minimal/load_minimal functions */
       using is_loading = std::false_type;
 
       //! Indicates this archive is intended for saving
       /*! This ensures compatibility with boost archive types.  If you are transitioning
           from boost, you can check this value within a member or external serialize function
-          (i.e., Archive::is_saving::value) to enable behavior specific to loading, until 
+          (i.e., Archive::is_saving::value) to enable behavior specific to loading, until
           you can transition to split save/load or save_minimal/load_minimal functions */
       using is_saving = std::true_type;
 
@@ -338,6 +349,12 @@ namespace cereal
           return id->second;
       }
 
+      void serializeDeferments()
+      {
+        for( auto & deferment : itsDeferments )
+          deferment();
+      }
+
     private:
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
@@ -376,6 +393,17 @@ namespace cereal
       ArchiveType & processImpl(base_class<T> const & b)
       {
         self->processImpl( *b.base_ptr );
+        return *self;
+      }
+
+      std::vector<std::function<void(void)>> itsDeferments;
+
+      template <class T> inline
+      ArchiveType & processImpl(DeferredData<T> const & d)
+      {
+        std::function<void(void)> deferment( [=](){ self->process( d.value ); } );
+        itsDeferments.emplace_back( std::move(deferment) );
+
         return *self;
       }
 
@@ -628,14 +656,14 @@ namespace cereal
       //! Indicates this archive is intended for loading
       /*! This ensures compatibility with boost archive types.  If you are transitioning
           from boost, you can check this value within a member or external serialize function
-          (i.e., Archive::is_loading::value) to enable behavior specific to loading, until 
+          (i.e., Archive::is_loading::value) to enable behavior specific to loading, until
           you can transition to split save/load or save_minimal/load_minimal functions */
       using is_loading = std::true_type;
 
       //! Indicates this archive is not intended for saving
       /*! This ensures compatibility with boost archive types.  If you are transitioning
           from boost, you can check this value within a member or external serialize function
-          (i.e., Archive::is_saving::value) to disable behavior specific to loading, until 
+          (i.e., Archive::is_saving::value) to disable behavior specific to loading, until
           you can transition to split save/load or save_minimal/load_minimal functions */
       using is_saving = std::false_type;
 
@@ -721,6 +749,12 @@ namespace cereal
         itsPolymorphicTypeMap.insert( {stripped_id, name} );
       }
 
+      void serializeDeferments()
+      {
+        for( auto & deferment : itsDeferments )
+          deferment();
+      }
+
     private:
       //! Serializes data after calling prologue, then calls epilogue
       template <class T> inline
@@ -759,6 +793,17 @@ namespace cereal
       ArchiveType & processImpl(base_class<T> & b)
       {
         self->processImpl( *b.base_ptr );
+        return *self;
+      }
+
+      std::vector<std::function<void(void)>> itsDeferments;
+
+      template <class T> inline
+      ArchiveType & processImpl(DeferredData<T> const & d)
+      {
+        std::function<void(void)> deferment( [=](){ self->process( d.value ); } );
+        itsDeferments.emplace_back( std::move(deferment) );
+
         return *self;
       }
 
