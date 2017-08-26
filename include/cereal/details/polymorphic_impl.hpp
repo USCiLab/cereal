@@ -273,7 +273,7 @@ namespace cereal
               return {path.size(), path};
             }
             else
-              return {std::numeric_limits<size_t>::max(), {}};
+              return {(std::numeric_limits<size_t>::max)(), {}};
           };
 
           std::stack<std::type_index>         parentStack;      // Holds the parent nodes to be processed
