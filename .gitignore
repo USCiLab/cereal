@@ -18,14 +18,16 @@
 *.suo
 *.user
 */x64
-*/Debug*
-*/Release*
+*\Debug*
+*\Release*
 *.log
 *.tlog*
 *.obj
 *.VC.db
 *.VC.VC.opendb
 *.pdb
+*.idb
+*\build_*
 
 # misc files mostly used for testing
 out.txt
