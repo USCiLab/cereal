@@ -68,7 +68,7 @@ namespace cereal
 #include <vector>
 #include <string>
 
-#if defined(__clang__) or (defined(__GNUC__) and __GNUC__ >= 7)
+#if defined(__clang__) || (defined(__GNUC__) && __GNUC__ >= 7)
 CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(implicit-fallthrough)
 #endif
@@ -1014,7 +1014,7 @@ CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
 // tie input and output archives together
 CEREAL_SETUP_ARCHIVE_TRAITS(cereal::JSONInputArchive, cereal::JSONOutputArchive)
 
-#if defined(__clang__) or (defined(__GNUC__) and __GNUC__ >= 7)
+#if defined(__clang__) || (defined(__GNUC__) && __GNUC__ >= 7)
 CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
