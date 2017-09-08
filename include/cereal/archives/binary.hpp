@@ -62,9 +62,9 @@ namespace cereal
       ~BinaryOutputArchive() CEREAL_NOEXCEPT = default;
 
       //! Writes size bytes of data to the output stream
-      void saveBinary( const void * data, std::size_t size )
+      void saveBinary( const void * data, std::streamsize size )
       {
-        auto const writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
+        auto const writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
@@ -97,9 +97,9 @@ namespace cereal
       ~BinaryInputArchive() CEREAL_NOEXCEPT = default;
 
       //! Reads size bytes of data from the input stream
-      void loadBinary( void * const data, std::size_t size )
+      void loadBinary( void * const data, std::streamsize size )
       {
-        auto const readSize = static_cast<std::size_t>( itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size ) );
+        auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
 
         if(readSize != size)
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
@@ -148,14 +148,14 @@ namespace cereal
   template <class T> inline
   void CEREAL_SAVE_FUNCTION_NAME(BinaryOutputArchive & ar, BinaryData<T> const & bd)
   {
-    ar.saveBinary( bd.data, static_cast<std::size_t>( bd.size ) );
+    ar.saveBinary( bd.data, static_cast<std::streamsize>( bd.size ) );
   }
 
   //! Loading binary data
   template <class T> inline
   void CEREAL_LOAD_FUNCTION_NAME(BinaryInputArchive & ar, BinaryData<T> & bd)
   {
-    ar.loadBinary(bd.data, static_cast<std::size_t>(bd.size));
+    ar.loadBinary(bd.data, static_cast<std::streamsize>( bd.size ) );
   }
 } // namespace cereal
 
