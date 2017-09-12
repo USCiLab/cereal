@@ -39,7 +39,7 @@ namespace cereal
   template <class Archive, class T> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::atomic<T> const & a )
   {
-    ar(a.load());
+    ar( CEREAL_NVP_("atomic_data", a.load()) );
   }
 
   //! Serializing (load) for std::atomic
@@ -47,8 +47,8 @@ namespace cereal
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::atomic<T> & a )
   {
     T tmp;
-    ar(tmp);
-    a.store(tmp);
+    ar( CEREAL_NVP_("atomic_data", tmp) );
+    a.store( tmp );
   }
 } // namespace cereal
 
