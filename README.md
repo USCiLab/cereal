@@ -80,6 +80,7 @@ cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-
 * develop : [![Build Status](https://travis-ci.org/USCiLab/cereal.png?branch=develop)](https://travis-ci.org/USCiLab/cereal)
 [![Build status](https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/develop?svg=true)](https://ci.appveyor.com/project/AzothAmmo/cereal/branch/develop)
 
+* [![Coverage Status](https://coveralls.io/repos/github/USCiLab/cereal/badge.svg)](https://coveralls.io/github/USCiLab/cereal)
 ---
 
 Were you looking for the Haskell cereal?  Go <a href="https://github.com/GaloisInc/cereal">here</a>.
