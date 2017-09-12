@@ -1,93 +1,177 @@
 language: cpp
+os: linux
 dist: trusty
 sudo: false
 group: beta
 
 addons:
   apt:
-    sources:
-      - 'ubuntu-toolchain-r-test'
-      - 'boost-latest'
-    packages:
-      - 'g++-multilib'
-      - 'libboost-serialization-dev'
+    sources: &trusty_default_sources
+      - ubuntu-toolchain-r-test
+      - boost-latest
+    packages: &trusty_default_packages
+      - libboost-serialization-dev
+      - libboost-dev
+
 matrix:
   include:
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-4.7-multilib
-#            - g++-4.7-multilib
-#            - libc6-dev-i386 
-#            - gcc-multilib
-#      env:
-#         - MATRIX_EVAL="CC=gcc-4.7 && CXX=g++-4.7"
-#         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/4.7/32"
-#
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-4.8-multilib
-#            - g++-4.8-multilib
-#      env:
-#         - MATRIX_EVAL="CC=gcc-4.8 && CXX=g++-4.8"
-#         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/4.8/32"
-#
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-4.9-multilib
-#            - g++-4.9-multilib
-#      env:
-#         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-#         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/4.9/32"
-#
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-5-multilib
-#            - g++-5-multilib
-#            - gcc-multilib
-#      env:
-#         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-#         - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/5/32"
-#
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-6-multilib
-#            - g++-6-multilib
-#      env:
-#        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-#        - CXX_FLAGS="-I /usr/include/x86_64-linux-gnu/c++/6/32"
 
-    - os: linux
-      compiler: clang
-      env: CMAKE_OPTIONS="-DSKIP_PORTABILITY_TEST=ON"
+    # |---------- LINUX GCC ----------|
+    - compiler: g++-4.7
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.8"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-4.7', *trusty_default_packages]
 
-    - os: osx
+    - compiler: g++-4.8
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.8"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-4.8', *trusty_default_packages]
+         
+    - compiler: g++-4.9
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.9"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-4.9', *trusty_default_packages]
+         
+    - compiler: g++-5
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-5"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-5', *trusty_default_packages]
+                  
+    - compiler: g++-6
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-6"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-6', *trusty_default_packages]
+
+    - compiler: g++-7
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-7"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['g++-7', *trusty_default_packages]
+
+
+    # |---------- LINUX GCC (32-bit) ----------|    
+    - compiler: g++-5
+      env: ["COMPILER=g++-5"]
+      addons:
+        apt:
+          sources: *trusty_default_sources
+          packages: ['gcc-5-multilib', 'g++-5-multilib', 'linux-libc-dev:i386', *trusty_default_packages]
+
+
+    # |---------- LINUX CLANG ----------|
+    - compiler: clang++-3.5
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.5"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-precise-3.5]
+          packages: ['clang-3.5', *trusty_default_packages]
+
+    - compiler: clang++-3.6
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.6"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-precise-3.6]
+          packages: ['clang-3.6', *trusty_default_packages]
+
+    - compiler: clang++-3.7
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.7"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-precise-3.7]
+          packages: ['clang-3.7', *trusty_default_packages]
+
+    - compiler: clang++-3.8
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.8"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-precise-3.8]
+          packages: ['clang-3.8', *trusty_default_packages]
+
+    - compiler: clang++-3.9
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.9"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-precise-3.9]
+          packages: ['clang-3.9', *trusty_default_packages]
+
+    - compiler: clang++-4.0
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-4.0"]
+      addons:
+        apt:
+          sources: [*trusty_default_sources, llvm-toolchain-trusty-4.0]
+          packages: ['clang-4.0', *trusty_default_packages]
+
+    # # - compiler: clang++-5.0
+    # # says missing <type_traits> probably clash between clang and libstdc++
+    #   env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-5.0"]
+    #   addons:
+    #     apt:
+    #       sources: [*trusty_default_sources, llvm-toolchain-trusty-5.0]
+    #       packages: ['clang-5.0', *trusty_default_packages]
+
+
+    # # |---------- LINUX CLANG (libc++) ----------|
+    # Missing <cxxabi.h>, most probably related to clang 3.5
+    # - compiler: clang++
+    #   env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCLANG_USE_LIBCPP=ON'", "COMPILER=clang++"]
+    #   addons:
+    #     apt:
+    #       sources: [*trusty_default_sources]
+    #       packages: ['clang', 'libc++-dev', 'libc++abi-dev', *trusty_default_packages]
+
+
+    # # |---------- LINUX CLANG (32-bit) ----------|
+    # # Doesn't work.
+    # - compiler: clang++
+    #   addons:
+    #     apt:
+    #       sources: [*trusty_default_sources]
+    #       packages: ['clang', 'gcc-multilib', 'g++-multilib', *trusty_default_packages]
+
+
+    # |---------- OSX CLANG ----------|
+    - compiler: clang++
+      os: osx
+      osx_image: xcode7.3
+
+    - compiler: clang++
+      os: osx
       osx_image: xcode8
-      compiler: clang
-    
-    # TODO: Add an entry for valgrind
-    #  after_script: make valgrind
+
+    # # Missing CMake
+    # - compiler: clang++
+    #   os: osx
+    #   osx_image: xcode8.1
+
+    - compiler: clang++
+      os: osx
+      osx_image: xcode8.2
+
+    - compiler: clang++
+      os: osx
+      osx_image: xcode8.3
+
+    - compiler: clang++
+      env: ["CMAKE_OPTIONS='-DWITH_WERROR=OFF'"]
+      os: osx
+      osx_image: xcode9
 
 script:
+  - if [[ "${COMPILERCC}" != "" ]]; then export CC="${COMPILERCC}"; fi
+  - if [[ "${COMPILER}" != "" ]]; then export CXX="${COMPILER}"; fi
+  - $CXX --version
+  - cmake --version
   - mkdir build && cd build
   - cmake ${CMAKE_OPTIONS} .. && make -j4
   - ctest . --output-on-failure

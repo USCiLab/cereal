@@ -29,6 +29,9 @@ CEREAL_RAPIDJSON_DIAG_OFF(implicit-fallthrough)
 #ifdef __GNUC__
 CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(effc++)
+#if __GNUC__ >= 7
+    CEREAL_RAPIDJSON_DIAG_OFF(implicit-fallthrough)
+#endif
 #endif
 
 #ifdef _MSC_VER
@@ -691,6 +694,10 @@ typedef GenericRegex<UTF8<> > Regex;
 CEREAL_RAPIDJSON_NAMESPACE_END
 
 #ifdef __clang__
+CEREAL_RAPIDJSON_DIAG_POP
+#endif
+
+#ifdef __GNUC__
 CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
