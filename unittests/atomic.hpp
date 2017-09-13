@@ -29,62 +29,62 @@
 
 #define MAKE_TEST_HELPER_FUNCS(t)                             \
 bool operator==(t const & l, t const & r)                     \
-{ return l.x == r.x && l.y == r.y; }                          \
+{ return l.x == r.x; }                                        \
 inline std::ostream& operator<<(std::ostream&os, t const & s) \
 {                                                             \
-    os << "[x: " << s.x << " y: " << s.y << "]";              \
+    os << "[x: " << s.x << "]";                               \
     return os;                                                \
 }
 
 struct TrivialISER
 {
-  int32_t x; int32_t y;
+  int x;
 
   template <class Archive>
   void serialize( Archive & ar )
-  { ar( x, y ); }
+  { ar( x ); }
 };
 
 MAKE_TEST_HELPER_FUNCS(TrivialISER)
 
 struct TrivialISPL
 {
-  int32_t x; int32_t y;
+  int x;
 
   template <class Archive>
   void load( Archive & ar )
-  { ar( x, y ); }
+  { ar( x ); }
 
   template <class Archive>
   void save( Archive & ar ) const
-  { ar( x, y ); }
+  { ar( x ); }
 };
 
 MAKE_TEST_HELPER_FUNCS(TrivialISPL)
 
 struct TrivialESER
 {
-  int32_t x; int32_t y;
+  int x;
 };
 
 template <class Archive>
 void serialize( Archive & ar, TrivialESER & t )
-{ ar( t.x, t.y ); }
+{ ar( t.x ); }
 
 MAKE_TEST_HELPER_FUNCS(TrivialESER)
 
 struct TrivialESPL
 {
-  int32_t x; int32_t y;
+  int x;
 };
 
 template <class Archive>
 void load( Archive & ar, TrivialESPL & t )
-{ ar( t.x, t.y ); }
+{ ar( t.x ); }
 
 template <class Archive>
 void save( Archive & ar, TrivialESPL const & t )
-{ ar( t.x, t.y ); }
+{ ar( t.x ); }
 
 MAKE_TEST_HELPER_FUNCS(TrivialESPL)
 #undef MAKE_TEST_HELPER_FUNCS
@@ -104,10 +104,10 @@ void test_atomic()
     std::atomic<long> o_asl(random_value<long>(gen));
     std::atomic<unsigned long long> o_aull(random_value<unsigned long long>(gen));
     std::atomic<double> o_ad(random_value<double>(gen));
-    std::atomic<TrivialISER> o_iser{{random_value<int32_t>(gen), random_value<int32_t>(gen)}};
-    std::atomic<TrivialISPL> o_ispl{{random_value<int32_t>(gen), random_value<int32_t>(gen)}};
-    std::atomic<TrivialESER> o_eser{{random_value<int32_t>(gen), random_value<int32_t>(gen)}};
-    std::atomic<TrivialESPL> o_espl{{random_value<int32_t>(gen), random_value<int32_t>(gen)}};
+    std::atomic<TrivialISER> o_iser{{random_value<int>(gen)}};
+    std::atomic<TrivialISPL> o_ispl{{random_value<int>(gen)}};
+    std::atomic<TrivialESER> o_eser{{random_value<int>(gen)}};
+    std::atomic<TrivialESPL> o_espl{{random_value<int>(gen)}};
 
     std::ostringstream os;
     {
