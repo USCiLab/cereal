@@ -180,8 +180,8 @@ namespace cereal
       {
         auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );
 
-        for( auto const * map : mapping )
-          dptr = map->downcast( dptr );
+        for( auto const * dmap : mapping )
+          dptr = dmap->downcast( dptr );
 
         return static_cast<Derived const *>( dptr );
       }
