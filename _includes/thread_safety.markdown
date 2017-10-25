@@ -33,7 +33,7 @@ perform no locking. If you have the need to access distinct archives simultaneou
 
 ```cpp
 // Before including any xCEREAL header file
-#define CEREAL_THREAD_SAFE = 1
+#define CEREAL_THREAD_SAFE 1
 
 // Now include your xCEREAL headers
 #include <cereal/cereal.hpp> 
