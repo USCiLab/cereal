@@ -1,6 +1,3 @@
-/*! \file optional.hpp
-    \brief Support for std::optional
-    \ingroup STLSupport */
 /*
   Copyright (c) 2017, Juan Pedro Bolivar Puente
   All rights reserved.
@@ -19,7 +16,7 @@
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES AND SHANE GRANT BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,40 +24,34 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_STD_OPTIONAL_
-#define CEREAL_TYPES_STD_OPTIONAL_
 
-#include "cereal/cereal.hpp"
-#include <optional>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "optional.hpp"
 
-namespace cereal {
-  //! Saving for std::optional
-  template <class Archive, typename T> inline
-  void CEREAL_SAVE_FUNCTION_NAME(Archive& ar, const std::optional<T>& optional)
-  {
-    if(optional) {
-      ar(CEREAL_NVP_("nullopt", true));
-    } else {
-      ar(CEREAL_NVP_("nullopt", false),
-         CEREAL_NVP_("value", *optional));
-    }
-  }
+#ifdef CEREAL_HAS_CPP17
 
-  //! Loading for std::optional
-  template <class Archive, typename T> inline
-  void CEREAL_LOAD_FUNCTION_NAME(Archive& ar, std::optional<T>& optional)
-  {
-    bool nullopt;
-    ar(CEREAL_NVP_("nullopt", nullopt));
+TEST_SUITE("std_optional");
 
-    if (nullopt) {
-      optional = std::nullopt;
-    } else {
-      T value;
-      ar(CEREAL_NVP_("value", value));
-      optional = std::move(value);
-    }
-  }
-} // namespace cereal
+TEST_CASE("binary_std_optional")
+{
+  test_std_optional<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
 
-#endif // CEREAL_TYPES_STD_OPTIONAL_
+TEST_CASE("portable_binary_std_optional")
+{
+  test_std_optional<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+TEST_CASE("xml_std_optional")
+{
+  test_std_optional<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+TEST_CASE("json_std_optional")
+{
+  test_std_optional<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
+TEST_SUITE_END();
+
+#endif // CEREAL_HAS_CPP17

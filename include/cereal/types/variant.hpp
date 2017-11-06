@@ -1,6 +1,6 @@
 /*! \file variant.hpp
     \brief Support for std::variant
-    \ingroup OtherTypes */
+    \ingroup STLSupport */
 /*
   Copyright (c) 2014, 2017, Randolph Voorhies, Shane Grant, Juan Pedro
   Bolivar Puente. All rights reserved.

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2017, Juan Pedro Bolivar Puente
+  Copyright (c) 2015, Kyle Fleming, Juan Pedro Bolivar Puente
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,21 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "common.hpp"
+#include "../common.hpp"
 
 #if __cplusplus >= 201703L
 
-#include <cereal/types/optional.hpp>
+#include <cereal/types/variant.hpp>
 
 template <class IArchive, class OArchive> inline
-void test_std_optional()
+void test_std_variant()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  std::optional<int> o_bv1 = random_value<int>(gen);
-  std::optional<double> o_bv2 = random_value<double>(gen);
-  std::optional<std::string> o_bv3 = random_basic_string<char>(gen);
-  std::optional<int> o_bv4 = std::nullopt;
-  std::optional<double> o_bv5 = std::nullopt;
-  std::optional<std::string> o_bv6 = std::nullopt;
+  std::variant<int, double, std::string> o_bv1 = random_value<int>(gen);
+  std::variant<int, double, std::string> o_bv2 = random_value<double>(gen);
+  std::variant<int, double, std::string> o_bv3 = random_basic_string<char>(gen);
 
   std::ostringstream os;
   {
@@ -53,17 +50,11 @@ void test_std_optional()
     oar(o_bv1);
     oar(o_bv2);
     oar(o_bv3);
-    oar(o_bv4);
-    oar(o_bv5);
-    oar(o_bv6);
   }
 
   decltype(o_bv1) i_bv1;
   decltype(o_bv2) i_bv2;
   decltype(o_bv3) i_bv3;
-  decltype(o_bv4) i_bv4;
-  decltype(o_bv5) i_bv5;
-  decltype(o_bv6) i_bv6;
 
   std::istringstream is(os.str());
   {
@@ -74,34 +65,31 @@ void test_std_optional()
     iar(i_bv3);
   }
 
-  CHECK_EQ( *i_bv1, std::get<int>(o_bv1) );
-  CHECK_EQ( *i_bv2, doctest::Approx(std::get<double>(o_bv2)).epsilon(1e-5) );
-  CHECK_EQ( *i_bv3, std::get<std::string>(o_bv3) );
-  CHECK( !i_bv4 );
-  CHECK( !i_bv5 );
-  CHECK( !i_bv6 );
+  CHECK_EQ( std::get<int>(i_bv1), std::get<int>(o_bv1) );
+  CHECK_EQ( std::get<double>(i_bv2), doctest::Approx(std::get<double>(o_bv2)).epsilon(1e-5) );
+  CHECK_EQ( std::get<std::string>(i_bv3), std::get<std::string>(o_bv3) );
 }
 
-TEST_SUITE("std_optional");
+TEST_SUITE("std_variant");
 
-TEST_CASE("binary_std_optional")
+TEST_CASE("binary_std_variant")
 {
-  test_std_optional<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_std_variant<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
-TEST_CASE("portable_binary_std_optional")
+TEST_CASE("portable_binary_std_variant")
 {
-  test_std_optional<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+  test_std_variant<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
-TEST_CASE("xml_std_optional")
+TEST_CASE("xml_std_variant")
 {
-  test_std_optional<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  test_std_variant<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
-TEST_CASE("json_std_optional")
+TEST_CASE("json_std_variant")
 {
-  test_std_optional<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_std_variant<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 TEST_SUITE_END();

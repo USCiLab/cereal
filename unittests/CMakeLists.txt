@@ -87,6 +87,10 @@ if(NOT MSVC)
   endforeach()
 endif(NOT MSVC)
 
+if(CMAKE_CXX_STANDARD GREATER 14)
+  add_subdirectory(cpp17)
+endif()
+
 if(NOT CMAKE_VERSION VERSION_LESS 3.0)
   add_test(test_cmake_config_module ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake-config-module.cmake)
 endif()
