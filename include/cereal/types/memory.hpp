@@ -137,7 +137,7 @@ namespace cereal
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
       using ParentType = std::enable_shared_from_this<BaseType>;
       using StorageType = typename std::aligned_storage<sizeof(ParentType), CEREAL_ALIGNOF(ParentType)>::type;
-      
+
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
         /*! @param ptr The raw pointer held by the shared_ptr */
@@ -296,8 +296,9 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      std::shared_ptr<typename std::remove_const<T>::type> ptr(reinterpret_cast<T *>(new ST()),
-          [=]( T * t )
+      using NonConstT = typename std::remove_const<T>::type;
+      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new ST()),
+          [=]( NonConstT * t )
           {
             if( *valid )
               t->~T();
@@ -309,14 +310,14 @@ namespace cereal
       ar.registerSharedPointer( id, ptr );
 
       // Perform the actual loading and allocation
-      memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<T>::type() );
+      memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<NonConstT>::type() );
 
       // Mark pointer as valid (initialized)
       *valid = true;
       wrapper.ptr = std::move(ptr);
     }
     else
-      wrapper.ptr = std::static_pointer_cast<typename std::remove_const<T>::type>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
