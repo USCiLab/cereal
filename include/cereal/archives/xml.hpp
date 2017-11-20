@@ -110,10 +110,10 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Specify specific options for the XMLOutputArchive
-          /*! @param precision The precision used for floating point numbers
-              @param indent Whether to indent each line of XML
-              @param outputType Whether to output the type of each serialized object as an attribute
-              @param sizeAttributes Whether dynamically sized containers output the size=dynamic attribute */
+          /*! @param precision_ The precision used for floating point numbers
+              @param indent_ Whether to indent each line of XML
+              @param outputType_ Whether to output the type of each serialized object as an attribute
+              @param sizeAttributes_ Whether dynamically sized containers output the size=dynamic attribute */
           explicit Options( int precision_ = std::numeric_limits<double>::max_digits10,
                             bool indent_ = true,
                             bool outputType_ = false,
@@ -210,7 +210,7 @@ namespace cereal
           itsNodes.top().node->append_attribute( itsXML.allocate_attribute( "type", "cereal binary data" ) );
 
         finishNode();
-      };
+      }
 
       //! @}
       /*! @name Internal Functionality
@@ -467,7 +467,7 @@ namespace cereal
         std::memcpy( data, decoded.data(), decoded.size() );
 
         finishNode();
-      };
+      }
 
       //! @}
       /*! @name Internal Functionality

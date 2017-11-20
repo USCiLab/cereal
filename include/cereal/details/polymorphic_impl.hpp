@@ -56,6 +56,14 @@
 #include <set>
 #include <stack>
 
+//! Helper macro to omit unused warning
+#if defined(__GNUC__)
+  // GCC / clang don't want the function
+  #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION
+#else
+  #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION static void unused() { (void)b; }
+#endif
+
 //! Binds a polymorhic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
@@ -67,7 +75,7 @@
     template<>                                                           \
     struct init_binding<__VA_ARGS__> {                                   \
         static bind_to_archives<__VA_ARGS__> const & b;                  \
-        static void unused() { (void)b; }                                \
+        CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
     };                                                                   \
     bind_to_archives<__VA_ARGS__> const & init_binding<__VA_ARGS__>::b = \
         ::cereal::detail::StaticObject<                                  \
