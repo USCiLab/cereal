@@ -286,6 +286,10 @@ void test_polymorphic()
     pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
     std::shared_ptr<PolyLA>   o_sharedLA = pda;
 
+    auto pdaC = std::make_shared<const PolyDerivedLA>( rngI() );
+    pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
+    std::shared_ptr<const PolyLA>   o_sharedLAC = pdaC;
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -295,6 +299,7 @@ void test_polymorphic()
       oar( o_unique, o_uniqueC );
 
       oar( o_sharedLA );
+      oar( o_sharedLAC );
 
       oar( o_sharedA, o_weakA, o_uniqueA );
     }
@@ -309,6 +314,7 @@ void test_polymorphic()
     decltype(o_uniqueC) i_uniqueC;
 
     decltype(o_sharedLA) i_sharedLA;
+    decltype(o_sharedLAC) i_sharedLAC;
 
     decltype(o_sharedA) i_sharedA;
     decltype(o_weakA) i_weakA;
@@ -323,6 +329,8 @@ void test_polymorphic()
       iar( i_unique, i_uniqueC );
 
       iar( i_sharedLA );
+      iar( i_sharedLAC );
+
       iar( i_sharedA, i_weakA, i_uniqueA );
     }
 
@@ -333,6 +341,7 @@ void test_polymorphic()
     auto o_lockedC = o_weakC.lock();
 
     auto i_sharedLA2 = i_sharedLA->shared_from_this();
+    auto i_sharedLA2C = i_sharedLAC->shared_from_this();
 
     auto i_lockedA = i_weakA.lock();
     auto o_lockedA = o_weakA.lock();
@@ -355,6 +364,9 @@ void test_polymorphic()
 
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA2.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
+
+    CHECK_EQ(*dynamic_cast<const PolyDerivedLA*>(i_sharedLAC.get()), *dynamic_cast<const PolyDerivedLA*>(o_sharedLAC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerivedLA*>(i_sharedLA2C.get()), *dynamic_cast<const PolyDerivedLA*>(o_sharedLAC.get()));
 
     CHECK_EQ(i_sharedA.get(), i_lockedA.get());
     CHECK_EQ(*dynamic_cast<PolyDerivedD*>(i_sharedA.get()), *dynamic_cast<PolyDerivedD*>(o_sharedA.get()));
