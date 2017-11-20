@@ -267,8 +267,13 @@ void test_polymorphic()
   for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
+    std::shared_ptr<const PolyBase> o_sharedC = std::make_shared<const PolyDerived>( rngI(), rngF(), rngB(), rngD() );
+
     std::weak_ptr<PolyBase>   o_weak = o_shared;
+    std::weak_ptr<const PolyBase>   o_weakC = o_sharedC;
+
     std::unique_ptr<PolyBase> o_unique( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
+    std::unique_ptr<const PolyBase> o_uniqueC( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
 
     std::shared_ptr<PolyBaseA> o_sharedA = std::make_shared<PolyDerivedD>( random_basic_string<char>(gen),
                                                                            rngD(), rngI(), rngL() );
@@ -285,15 +290,23 @@ void test_polymorphic()
     {
       OArchive oar(os);
 
-      oar( o_shared, o_weak, o_unique );
+      oar( o_shared, o_sharedC );
+      oar( o_weak, o_weakC );
+      oar( o_unique, o_uniqueC );
+
       oar( o_sharedLA );
 
       oar( o_sharedA, o_weakA, o_uniqueA );
     }
 
     decltype(o_shared) i_shared;
+    decltype(o_sharedC) i_sharedC;
+
     decltype(o_weak) i_weak;
+    decltype(o_weakC) i_weakC;
+
     decltype(o_unique) i_unique;
+    decltype(o_uniqueC) i_uniqueC;
 
     decltype(o_sharedLA) i_sharedLA;
 
@@ -305,13 +318,19 @@ void test_polymorphic()
     {
       IArchive iar(is);
 
-      iar( i_shared, i_weak, i_unique );
+      iar( i_shared, i_sharedC );
+      iar( i_weak, i_weakC );
+      iar( i_unique, i_uniqueC );
+
       iar( i_sharedLA );
       iar( i_sharedA, i_weakA, i_uniqueA );
     }
 
     auto i_locked = i_weak.lock();
     auto o_locked = o_weak.lock();
+
+    auto i_lockedC = i_weakC.lock();
+    auto o_lockedC = o_weakC.lock();
 
     auto i_sharedLA2 = i_sharedLA->shared_from_this();
 
@@ -327,6 +346,12 @@ void test_polymorphic()
     CHECK_EQ(*dynamic_cast<PolyDerived*>(i_shared.get()), *dynamic_cast<PolyDerived*>(i_locked.get()));
     CHECK_EQ(*dynamic_cast<PolyDerived*>(i_locked.get()), *dynamic_cast<PolyDerived*>(o_locked.get()));
     CHECK_EQ(*dynamic_cast<PolyDerived*>(i_unique.get()), *dynamic_cast<PolyDerived*>(o_unique.get()));
+
+    CHECK_EQ(i_sharedC.get(), i_lockedC.get());
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_sharedC.get()), *dynamic_cast<const PolyDerived*>(o_sharedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_sharedC.get()), *dynamic_cast<const PolyDerived*>(i_lockedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_lockedC.get()), *dynamic_cast<const PolyDerived*>(o_lockedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_uniqueC.get()), *dynamic_cast<const PolyDerived*>(o_uniqueC.get()));
 
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA2.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
@@ -355,7 +380,6 @@ void test_polymorphic_threading()
     CHECK_UNARY( future.get() );
 }
 #endif // CEREAL_THREAD_SAFE
-
 
 struct Object
 {

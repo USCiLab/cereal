@@ -125,19 +125,24 @@ template <class IArchive, class OArchive> inline
 void test_default_construction()
 {
   auto o_ptr = std::make_shared<TestClass>(1);
+  auto o_ptr2 = std::make_shared<const TestClass>(1);
   std::shared_ptr<TestClass> i_ptr;
+  std::shared_ptr<const TestClass> i_ptr2;
 
   std::ostringstream os;
   {
     OArchive oar(os);
     oar(o_ptr);
+    oar(o_ptr2);
   }
   {
     std::istringstream is(os.str());
     IArchive iar(is);
     iar(i_ptr);
+    iar(i_ptr2);
   }
   CHECK_EQ(o_ptr->x, i_ptr->x);
+  CHECK_EQ(o_ptr2->x, i_ptr2->x);
 }
 
 #endif // CEREAL_TEST_LOAD_CONSTRUCT_H_
