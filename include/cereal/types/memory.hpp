@@ -54,6 +54,7 @@ namespace cereal
       PtrWrapper(T && p) : ptr(std::forward<T>(p)) {}
       T & ptr;
 
+      PtrWrapper( PtrWrapper const & ) = default;
       PtrWrapper & operator=( PtrWrapper const & ) = delete;
     };
 
@@ -278,8 +279,6 @@ namespace cereal
   typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
-    auto & ptr = wrapper.ptr;
-
     uint32_t id;
 
     ar( CEREAL_NVP_("id", id) );
@@ -297,7 +296,7 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      ptr.reset( reinterpret_cast<T *>( new ST() ),
+      std::shared_ptr<typename std::remove_const<T>::type> ptr(reinterpret_cast<T *>(new ST()),
           [=]( T * t )
           {
             if( *valid )
@@ -314,9 +313,10 @@ namespace cereal
 
       // Mark pointer as valid (initialized)
       *valid = true;
+      wrapper.ptr = std::move(ptr);
     }
     else
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<typename std::remove_const<T>::type>(ar.getSharedPointer(id));
   }
 
   //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
@@ -325,20 +325,20 @@ namespace cereal
   typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
-    auto & ptr = wrapper.ptr;
-
     uint32_t id;
 
     ar( CEREAL_NVP_("id", id) );
 
     if( id & detail::msb_32bit )
     {
-      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::shared_ptr<NonConstT> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar.registerSharedPointer( id, ptr );
       ar( CEREAL_NVP_("data", *ptr) );
+      wrapper.ptr = std::move(ptr);
     }
     else
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Saving std::unique_ptr (wrapper implementation)
@@ -374,16 +374,17 @@ namespace cereal
 
     if( isValid )
     {
+      using NonConstT = typename std::remove_const<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, NonConstT> loadWrapper( reinterpret_cast<NonConstT *>( stPtr.get() ) );
 
       // Initialize storage
       ar( CEREAL_NVP_("data", loadWrapper) );
@@ -404,16 +405,16 @@ namespace cereal
     uint8_t isValid;
     ar( CEREAL_NVP_("valid", isValid) );
 
-    auto & ptr = wrapper.ptr;
-
     if( isValid )
     {
-      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::unique_ptr<NonConstT, D> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar( CEREAL_NVP_( "data", *ptr ) );
+      wrapper.ptr = std::move(ptr);
     }
     else
     {
-      ptr.reset( nullptr );
+      wrapper.ptr.reset( nullptr );
     }
   }
 } // namespace cereal

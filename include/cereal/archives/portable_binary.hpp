@@ -128,19 +128,19 @@ namespace cereal
       ~PortableBinaryOutputArchive() CEREAL_NOEXCEPT = default;
 
       //! Writes size bytes of data to the output stream
-      template <std::size_t DataSize> inline
-      void saveBinary( const void * data, std::size_t size )
+      template <std::streamsize DataSize> inline
+      void saveBinary( const void * data, std::streamsize size )
       {
-        std::size_t writtenSize = 0;
+        std::streamsize writtenSize = 0;
 
         if( itsConvertEndianness )
         {
-          for( std::size_t i = 0; i < size; i += DataSize )
-            for( std::size_t j = 0; j < DataSize; ++j )
-              writtenSize += static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - j - 1 + i, 1 ) );
+          for( std::streamsize i = 0; i < size; i += DataSize )
+            for( std::streamsize j = 0; j < DataSize; ++j )
+              writtenSize += itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ) + DataSize - j - 1 + i, 1 );
         }
         else
-          writtenSize = static_cast<std::size_t>( itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size ) );
+          writtenSize = itsStream.rdbuf()->sputn( reinterpret_cast<const char*>( data ), size );
 
         if(writtenSize != size)
           throw Exception("Failed to write " + std::to_string(size) + " bytes to output stream! Wrote " + std::to_string(writtenSize));
@@ -235,11 +235,11 @@ namespace cereal
       /*! @param data The data to save
           @param size The number of bytes in the data
           @tparam DataSize T The size of the actual type of the data elements being loaded */
-      template <std::size_t DataSize> inline
-      void loadBinary( void * const data, std::size_t size )
+      template <std::streamsize DataSize> inline
+      void loadBinary( void * const data, std::streamsize size )
       {
         // load data
-        auto const readSize = static_cast<std::size_t>( itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size ) );
+        auto const readSize = itsStream.rdbuf()->sgetn( reinterpret_cast<char*>( data ), size );
 
         if(readSize != size)
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
@@ -248,7 +248,7 @@ namespace cereal
         if( itsConvertEndianness )
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
-          for( std::size_t i = 0; i < size; i += DataSize )
+          for( std::streamsize i = 0; i < size; i += DataSize )
             portable_binary_detail::swap_bytes<DataSize>( ptr + i );
         }
       }
@@ -308,7 +308,7 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.template saveBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
+    ar.template saveBinary<sizeof(TT)>( bd.data, static_cast<std::streamsize>( bd.size ) );
   }
 
   //! Loading binary data from portable binary
@@ -320,7 +320,7 @@ namespace cereal
                    (std::is_floating_point<TT>::value && std::numeric_limits<TT>::is_iec559),
                    "Portable binary only supports IEEE 754 standardized floating point" );
 
-    ar.template loadBinary<sizeof(TT)>( bd.data, static_cast<std::size_t>( bd.size ) );
+    ar.template loadBinary<sizeof(TT)>( bd.data, static_cast<std::streamsize>( bd.size ) );
   }
 } // namespace cereal
 

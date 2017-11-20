@@ -85,7 +85,7 @@ namespace rapidxml
 
         //! Gets human readable description of error.
         //! \return Pointer to null terminated description of the error.
-        virtual const char *what() const throw()
+        virtual const char *what() const CEREAL_NOEXCEPT override
         {
             return m_what;
         }
@@ -317,7 +317,7 @@ namespace rapidxml
             const Ch *tmp = p;
             while (*tmp)
                 ++tmp;
-            return tmp - p;
+            return static_cast<std::size_t>(tmp - p);
         }
 
         // Compare strings for equality
@@ -387,7 +387,7 @@ namespace rapidxml
     //! If required, you can tweak <code>CEREAL_RAPIDXML_STATIC_POOL_SIZE</code>, <code>CEREAL_RAPIDXML_DYNAMIC_POOL_SIZE</code> and <code>CEREAL_RAPIDXML_ALIGNMENT</code>
     //! to obtain best wasted memory to performance compromise.
     //! To do it, define their values before rapidxml.hpp file is included.
-    //! \param Ch Character type of created nodes.
+    //! \tparam Ch Character type of created nodes.
     template<class Ch = char>
     class memory_pool
     {
@@ -656,7 +656,7 @@ namespace rapidxml
 
     //! Base class for xml_node and xml_attribute implementing common functions:
     //! name(), name_size(), value(), value_size() and parent().
-    //! \param Ch Character type to use
+    //! \tparam Ch Character type to use
     template<class Ch = char>
     class xml_base
     {
@@ -729,7 +729,7 @@ namespace rapidxml
         //! <br><br>
         //! Size of name must be specified separately, because name does not have to be zero terminated.
         //! Use name(const Ch *) function to have the length automatically calculated (string must be zero terminated).
-        //! \param name Name of node to set. Does not have to be zero terminated.
+        //! \param name_ Name of node to set. Does not have to be zero terminated.
         //! \param size Size of name, in characters. This does not include zero terminator, if one is present.
         void name(const Ch *name_, std::size_t size)
         {
@@ -739,7 +739,7 @@ namespace rapidxml
 
         //! Sets name of node to a zero-terminated string.
         //! See also \ref ownership_of_strings and xml_node::name(const Ch *, std::size_t).
-        //! \param name Name of node to set. Must be zero terminated.
+        //! \param name_ Name of node to set. Must be zero terminated.
         void name(const Ch *name_)
         {
             this->name(name_, internal::measure(name_));
@@ -759,7 +759,7 @@ namespace rapidxml
         //! <br><br>
         //! If an element has a child node of type node_data, it will take precedence over element value when printing.
         //! If you want to manipulate data of elements using values, use parser flag rapidxml::parse_no_data_nodes to prevent creation of data nodes by the parser.
-        //! \param value value of node to set. Does not have to be zero terminated.
+        //! \param value_ value of node to set. Does not have to be zero terminated.
         //! \param size Size of value, in characters. This does not include zero terminator, if one is present.
         void value(const Ch *value_, std::size_t size)
         {
@@ -769,7 +769,7 @@ namespace rapidxml
 
         //! Sets value of node to a zero-terminated string.
         //! See also \ref ownership_of_strings and xml_node::value(const Ch *, std::size_t).
-        //! \param value Vame of node to set. Must be zero terminated.
+        //! \param value_ Vame of node to set. Must be zero terminated.
         void value(const Ch *value_)
         {
             this->value(value_, internal::measure(value_));
@@ -806,7 +806,7 @@ namespace rapidxml
     //! Each attribute has name and value strings, which are available through name() and value() functions (inherited from xml_base).
     //! Note that after parse, both name and value of attribute will point to interior of source text used for parsing.
     //! Thus, this text must persist in memory for the lifetime of attribute.
-    //! \param Ch Character type to use.
+    //! \tparam Ch Character type to use.
     template<class Ch = char>
     class xml_attribute: public xml_base<Ch>
     {
@@ -862,8 +862,8 @@ namespace rapidxml
         }
 
         //! Gets next attribute, optionally matching attribute name.
-        //! \param name Name of attribute to find, or 0 to return next attribute regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
-        //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
+        //! \param name_ Name of attribute to find, or 0 to return next attribute regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
+        //! \param name_size_ Size of name, in characters, or 0 to have size calculated automatically from string
         //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
         //! \return Pointer to found attribute, or 0 if not found.
         xml_attribute<Ch> *next_attribute(const Ch *name_ = 0, std::size_t name_size_ = 0, bool case_sensitive = true) const
@@ -898,7 +898,7 @@ namespace rapidxml
     //! <br><br>
     //! Note that after parse, both name and value of node, if any, will point interior of source text used for parsing.
     //! Thus, this text must persist in the memory for the lifetime of node.
-    //! \param Ch Character type to use.
+    //! \tparam Ch Character type to use.
     template<class Ch = char>
     class xml_node: public xml_base<Ch>
     {
@@ -910,7 +910,7 @@ namespace rapidxml
 
         //! Constructs an empty node with the specified type.
         //! Consider using memory_pool of appropriate document to allocate nodes manually.
-        //! \param type Type of node to construct.
+        //! \param type_ Type of node to construct.
         xml_node(node_type type_)
             : m_type(type_)
             , m_first_node(0)
@@ -942,8 +942,8 @@ namespace rapidxml
         }
 
         //! Gets first child node, optionally matching node name.
-        //! \param name Name of child to find, or 0 to return first child regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
-        //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
+        //! \param name_ Name of child to find, or 0 to return first child regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
+        //! \param name_size_ Size of name, in characters, or 0 to have size calculated automatically from string
         //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
         //! \return Pointer to found child, or 0 if not found.
         xml_node<Ch> *first_node(const Ch *name_ = 0, std::size_t name_size_ = 0, bool case_sensitive = true) const
@@ -1010,8 +1010,8 @@ namespace rapidxml
         //! Gets next sibling node, optionally matching node name.
         //! Behaviour is undefined if node has no parent.
         //! Use parent() to test if node has a parent.
-        //! \param name Name of sibling to find, or 0 to return next sibling regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
-        //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
+        //! \param name_ Name of sibling to find, or 0 to return next sibling regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
+        //! \param name_size_ Size of name, in characters, or 0 to have size calculated automatically from string
         //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
         //! \return Pointer to found sibling, or 0 if not found.
         xml_node<Ch> *next_sibling(const Ch *name_ = 0, std::size_t name_size_ = 0, bool case_sensitive = true) const
@@ -1031,8 +1031,8 @@ namespace rapidxml
         }
 
         //! Gets first attribute of node, optionally matching attribute name.
-        //! \param name Name of attribute to find, or 0 to return first attribute regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
-        //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
+        //! \param name_ Name of attribute to find, or 0 to return first attribute regardless of its name; this string doesn't have to be zero-terminated if name_size is non-zero
+        //! \param name_size_ Size of name, in characters, or 0 to have size calculated automatically from string
         //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
         //! \return Pointer to found attribute, or 0 if not found.
         xml_attribute<Ch> *first_attribute(const Ch *name_ = 0, std::size_t name_size_ = 0, bool case_sensitive = true) const
@@ -1074,7 +1074,7 @@ namespace rapidxml
         // Node modification
 
         //! Sets type of node.
-        //! \param type Type of node to set.
+        //! \param type_ Type of node to set.
         void type(node_type type_)
         {
             m_type = type_;
@@ -1366,7 +1366,7 @@ namespace rapidxml
     //! parse() function allocates memory for nodes and attributes by using functions of xml_document,
     //! which are inherited from memory_pool.
     //! To access root node of the document, use the document itself, as if it was an xml_node.
-    //! \param Ch Character type to use.
+    //! \tparam Ch Character type to use.
     template<class Ch = char>
     class xml_document: public xml_node<Ch>, public memory_pool<Ch>
     {
@@ -1527,7 +1527,7 @@ namespace rapidxml
             {
                 // Insert 8-bit ASCII character
                 // Todo: possibly verify that code is less than 256 and use replacement char otherwise?
-                text[0] = static_cast<unsigned char>(code);
+                text[0] = static_cast<Ch>(code);
                 text += 1;
             }
             else
@@ -1535,28 +1535,28 @@ namespace rapidxml
                 // Insert UTF8 sequence
                 if (code < 0x80)    // 1 byte sequence
                 {
-	                text[0] = static_cast<unsigned char>(code);
+	                text[0] = static_cast<Ch>(code);
                     text += 1;
                 }
                 else if (code < 0x800)  // 2 byte sequence
                 {
-	                text[1] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[0] = static_cast<unsigned char>(code | 0xC0);
+	                text[1] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[0] = static_cast<Ch>(code | 0xC0);
                     text += 2;
                 }
 	            else if (code < 0x10000)    // 3 byte sequence
                 {
-	                text[2] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[1] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[0] = static_cast<unsigned char>(code | 0xE0);
+	                text[2] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[1] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[0] = static_cast<Ch>(code | 0xE0);
                     text += 3;
                 }
 	            else if (code < 0x110000)   // 4 byte sequence
                 {
-	                text[3] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[2] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[1] = static_cast<unsigned char>((code | 0x80) & 0xBF); code >>= 6;
-	                text[0] = static_cast<unsigned char>(code | 0xF0);
+	                text[3] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[2] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[1] = static_cast<Ch>((code | 0x80) & 0xBF); code >>= 6;
+	                text[0] = static_cast<Ch>(code | 0xF0);
                     text += 4;
                 }
                 else    // Invalid, only codes up to 0x10FFFF are allowed in Unicode
@@ -1812,7 +1812,7 @@ namespace rapidxml
 
             // Create comment node
             xml_node<Ch> *comment = this->allocate_node(node_comment);
-            comment->value(value_, text - value_);
+            comment->value(value_, static_cast<std::size_t>(text - value_));
 
             // Place zero terminator after comment value
             if (!(Flags & parse_no_string_terminators))
@@ -1871,7 +1871,7 @@ namespace rapidxml
             {
                 // Create a new doctype node
                 xml_node<Ch> *doctype = this->allocate_node(node_doctype);
-                doctype->value(value_, text - value_);
+                doctype->value(value_, static_cast<std::size_t>(text - value_));
 
                 // Place zero terminator after value
                 if (!(Flags & parse_no_string_terminators))
@@ -1903,7 +1903,7 @@ namespace rapidxml
                 skip<node_name_pred, Flags>(text);
                 if (text == name_)
                     CEREAL_RAPIDXML_PARSE_ERROR("expected PI target", text);
-                pi->name(name_, text - name_);
+                pi->name(name_, static_cast<std::size_t>(text - name_));
 
                 // Skip whitespace between pi target and pi
                 skip<whitespace_pred, Flags>(text);
@@ -1920,7 +1920,7 @@ namespace rapidxml
                 }
 
                 // Set pi value (verbatim, no entity expansion or whitespace normalization)
-                pi->value(value_, text - value_);
+                pi->value(value_, static_cast<std::size_t>(text - value_));
 
                 // Place zero terminator after name and value
                 if (!(Flags & parse_no_string_terminators))
@@ -1987,14 +1987,14 @@ namespace rapidxml
             if (!(Flags & parse_no_data_nodes))
             {
                 xml_node<Ch> *data = this->allocate_node(node_data);
-                data->value(value_, end - value_);
+                data->value(value_, static_cast<std::size_t>(end - value_));
                 node->append_node(data);
             }
 
             // Add data to parent node if no data exists yet
             if (!(Flags & parse_no_element_values))
                 if (*node->value() == Ch('\0'))
-                    node->value(value_, end - value_);
+                    node->value(value_, static_cast<std::size_t>(end - value_));
 
             // Place zero terminator after value
             if (!(Flags & parse_no_string_terminators))
@@ -2037,7 +2037,7 @@ namespace rapidxml
 
             // Create new cdata node
             xml_node<Ch> *cdata = this->allocate_node(node_cdata);
-            cdata->value(value_, text - value_);
+            cdata->value(value_, static_cast<std::size_t>(text - value_));
 
             // Place zero terminator after value
             if (!(Flags & parse_no_string_terminators))
@@ -2059,7 +2059,7 @@ namespace rapidxml
             skip<node_name_pred, Flags>(text);
             if (text == name_)
                 CEREAL_RAPIDXML_PARSE_ERROR("expected element name", text);
-            element->name(name_, text - name_);
+            element->name(name_, static_cast<std::size_t>(text - name_));
 
             // Skip whitespace between element name and attributes or >
             skip<whitespace_pred, Flags>(text);
@@ -2216,7 +2216,7 @@ namespace rapidxml
                             // Skip and validate closing tag name
                             Ch *closing_name = text;
                             skip<node_name_pred, Flags>(text);
-                            if (!internal::compare(node->name(), node->name_size(), closing_name, text - closing_name, true))
+                            if (!internal::compare(node->name(), node->name_size(), closing_name, static_cast<std::size_t>(text - closing_name), true))
                                 CEREAL_RAPIDXML_PARSE_ERROR("invalid closing tag name", text);
                         }
                         else
@@ -2232,7 +2232,7 @@ namespace rapidxml
 
                         if (contents_end && contents_end != contents_start)
                         {
-                            node->value(contents_start, contents_end - contents_start);
+                            node->value(contents_start, static_cast<std::size_t>(contents_end - contents_start));
                             node->value()[node->value_size()] = Ch('\0');
                         }
                         return;     // Node closed, finished parsing contents
@@ -2275,7 +2275,7 @@ namespace rapidxml
 
                 // Create new attribute
                 xml_attribute<Ch> *attribute = this->allocate_attribute();
-                attribute->name(name_, text - name_);
+                attribute->name(name_, static_cast<std::size_t>(text - name_));
                 node->append_attribute(attribute);
 
                 // Skip whitespace after attribute name
@@ -2308,7 +2308,7 @@ namespace rapidxml
                     end = skip_and_expand_character_refs<attribute_value_pred<Ch('"')>, attribute_value_pure_pred<Ch('"')>, AttFlags>(text, false);
 
                 // Set attribute value
-                attribute->value(value_, end - value_);
+                attribute->value(value_, static_cast<std::size_t>(end - value_));
 
                 // Make sure that end quote is present
                 if (*text != quote)
