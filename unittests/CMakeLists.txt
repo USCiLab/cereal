@@ -1,10 +1,30 @@
+if (MODE STREQUAL "Coverage")
+  find_program( GCOV_PATH gcov )
+  find_program( LCOV_PATH lcov )
+  if(NOT CMAKE_COMPILER_IS_GNUCXX)
+    message(FATAL_ERROR "Compiler is not gcc Aborting...")
+  endif()
+
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
+  endif()
+
+  link_libraries(gcov)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+
+  add_custom_target(coverage
+    COMMAND ${LCOV_PATH} --no-external -b ../include/cereal/ -q -d .  --capture -o coverage.info
+    COMMAND ${LCOV_PATH} -q -r coverage.info "*external*" -o coverage.info.cleaned
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+endif()
+
 file(GLOB TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 # A semi-colon separated list of test sources that should not be automatically built with doctest 
 set(SPECIAL_TESTS "portability_test.cpp")
 
+# Portability test uses the `TARGET_FILE_DIR` generator expression which is available from CMake 2.8.
 if(CMAKE_VERSION VERSION_LESS 2.8)
-  # Portability test uses the `TARGET_FILE_DIR` generator expression which is available from CMake 2.8.
   set(SKIP_PORTABILITY_TEST ON)
 endif()
 
@@ -20,9 +40,9 @@ if(NOT SKIP_PORTABILITY_TEST)
     add_executable(portability_test64 portability_test.cpp)
 
     add_test(NAME portability_test
-            COMMAND ${CMAKE_COMMAND}
-              -DPORTABILITY_TEST_DIR=$<TARGET_FILE_DIR:portability_test64>
-            -P "${CMAKE_CURRENT_SOURCE_DIR}/run_portability_test.cmake")
+      COMMAND ${CMAKE_COMMAND}
+      -DPORTABILITY_TEST_DIR=$<TARGET_FILE_DIR:portability_test64>
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/run_portability_test.cmake")
 
   elseif(MSVC)
     add_executable(portability_test32 portability_test.cpp)
@@ -51,42 +71,10 @@ foreach(TEST_SOURCE ${TESTS})
         COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
       add_test("${TEST_TARGET}_32" "${TEST_TARGET}_32")
     endif()
-
   endif()
-
 endforeach()
-
-# Add the valgrind target
-if(NOT MSVC)
-  add_custom_target(valgrind
-    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/run_valgrind.sh")
-
-  # Add the coverage target
-  add_custom_target(coverage)
-  add_custom_command(TARGET coverage
-    COMMAND "${CMAKE_SOURCE_DIR}/scripts/updatecoverage.sh" ${CMAKE_SOURCE_DIR}
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/coverage")
-
-  # add tests to coverage
-  foreach(TEST_SOURCE ${TESTS})
-    string(REPLACE ".cpp" "" COVERAGE_TARGET "${TEST_SOURCE}")
-    set(COVERAGE_TARGET "coverage_${COVERAGE_TARGET}")
-
-    # Check to see if our target is listed in "SPECIAL_TESTS"
-    list(FIND SPECIAL_TESTS "${TEST_SOURCE}" IS_SPECIAL_TEST)
-
-    if(IS_SPECIAL_TEST EQUAL -1)
-      add_dependencies(coverage ${COVERAGE_TARGET})
-
-      add_executable(${COVERAGE_TARGET} EXCLUDE_FROM_ALL ${TEST_SOURCE})
-      set_target_properties(${COVERAGE_TARGET} PROPERTIES COMPILE_FLAGS "-coverage")
-      set_target_properties(${COVERAGE_TARGET} PROPERTIES LINK_FLAGS "-coverage")
-      set_target_properties(${COVERAGE_TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/coverage")
-      target_link_libraries(${COVERAGE_TARGET} ${CEREAL_THREAD_LIBS})
-    endif()
-  endforeach()
-endif(NOT MSVC)
 
 if(NOT CMAKE_VERSION VERSION_LESS 3.0)
   add_test(test_cmake_config_module ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake-config-module.cmake)
 endif()
+

@@ -16,6 +16,19 @@ addons:
 matrix:
   include:
 
+    # |---------- Coveralls.io ----------|
+    - os: linux
+      compiler: gcc
+      addons:
+        sources: ['boost-latest']
+        apt:
+          packages: ['lcov', 'libboost-dev', 'libboost-serialization-dev']
+      env: CMAKE_OPTIONS="-DSKIP_PORTABILITY_TEST=ON -DCMAKE_BUILD_TYPE=Debug -DMODE=Coverage"
+      after_success:
+        - make coverage
+        - gem install coveralls-lcov
+        - coveralls-lcov coverage.info.cleaned
+
     # |---------- LINUX GCC ----------|
     - compiler: g++-4.7
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.8"]
