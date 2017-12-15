@@ -61,9 +61,9 @@ void test_std_optional()
   decltype(o_o1) i_o1;
   decltype(o_o2) i_o2;
   decltype(o_o3) i_o3;
-  decltype(o_o4) i_o4;
-  decltype(o_o5) i_o5;
-  decltype(o_o6) i_o6;
+  decltype(o_o4) i_o4{1}; // initialize with non-nullopt
+  decltype(o_o5) i_o5{1.0};
+  decltype(o_o6) i_o6{"1"};
   decltype(o_o7) i_o7;
 
   std::istringstream is(os.str());
@@ -82,9 +82,9 @@ void test_std_optional()
   CHECK_EQ( *i_o1, *o_o1 );
   CHECK_EQ( *i_o2, doctest::Approx(*o_o2).epsilon(1e-5) );
   CHECK_EQ( *i_o3, *o_o3 );
-  CHECK_EQ( *i_o4, *o_o4 );
-  CHECK_EQ( *i_o5, *o_o5 );
-  CHECK_EQ( *i_o6, *o_o6 );
+  CHECK_EQ( i_o4.has_value(), o_o4.has_value() );
+  CHECK_EQ( i_o5.has_value(), o_o5.has_value() );
+  CHECK_EQ( i_o6.has_value(), o_o6.has_value() );
   CHECK_EQ( **i_o7, **o_o7 );
 }
 

@@ -25,7 +25,7 @@ if(NOT MSVC)
   # add tests to coverage
   foreach(TEST_SOURCE ${TESTS})
     string(REPLACE ".cpp" "" COVERAGE_TARGET "${TEST_SOURCE}")
-    set(COVERAGE_TARGET "coverage_${COVERAGE_TARGET}")
+    set(COVERAGE_TARGET "coverage_cpp17_${COVERAGE_TARGET}")
     
     add_dependencies(coverage ${COVERAGE_TARGET})
 
