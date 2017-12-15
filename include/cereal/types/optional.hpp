@@ -38,7 +38,7 @@ namespace cereal {
   template <class Archive, typename T> inline
   void CEREAL_SAVE_FUNCTION_NAME(Archive& ar, const std::optional<T>& optional)
   {
-    if(optional) {
+    if(!optional) {
       ar(CEREAL_NVP_("nullopt", true));
     } else {
       ar(CEREAL_NVP_("nullopt", false),
