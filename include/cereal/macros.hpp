@@ -132,4 +132,15 @@
   #endif // end !defined(CEREAL_HAS_NOEXCEPT)
 #endif // ifndef CEREAL_NOEXCEPT
 
+// ######################################################################
+//! Checks if C++17 is available
+#if __cplusplus >= 201703L
+#define CEREAL_HAS_CPP17
+#endif
+
+//! Checks if C++14 is available
+#if __cplusplus >= 201402L
+#define CEREAL_HAS_CPP14
+#endif
+
 #endif // CEREAL_MACROS_HPP_
