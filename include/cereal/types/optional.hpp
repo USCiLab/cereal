@@ -42,7 +42,7 @@ namespace cereal {
       ar(CEREAL_NVP_("nullopt", true));
     } else {
       ar(CEREAL_NVP_("nullopt", false),
-         CEREAL_NVP_("value", *optional));
+         CEREAL_NVP_("data", *optional));
     }
   }
 
@@ -57,7 +57,7 @@ namespace cereal {
       optional = std::nullopt;
     } else {
       T value;
-      ar(CEREAL_NVP_("value", value));
+      ar(CEREAL_NVP_("data", value));
       optional = std::move(value);
     }
   }
