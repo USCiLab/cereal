@@ -134,7 +134,7 @@
 
 // ######################################################################
 //! Checks if C++17 is available
-#if __cplusplus >= 201703L
+#if __cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L)
 #define CEREAL_HAS_CPP17
 #endif
 
