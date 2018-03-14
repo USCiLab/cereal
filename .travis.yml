@@ -53,7 +53,7 @@ matrix:
           packages: ['g++-6', *trusty_default_packages]
 
     - compiler: g++-7
-      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-7"]
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'", "COMPILER=g++-7"]
       addons:
         apt:
           sources: *trusty_default_sources
