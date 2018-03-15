@@ -81,7 +81,7 @@ namespace cereal
   template <class Archive, typename VariantType1, typename... VariantTypes> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::variant<VariantType1, VariantTypes...> const & variant )
   {
-    std::uint32_t index = variant.index();
+    std::int32_t index = variant.index();
     ar( CEREAL_NVP_("index", index) );
     variant_detail::variant_save_visitor<Archive> visitor(ar);
     std::visit(visitor, variant);
@@ -93,7 +93,7 @@ namespace cereal
   {
     using variant_t = typename std::variant<VariantTypes...>;
 
-    std::uint32_t index;
+    std::int32_t index;
     ar( CEREAL_NVP_("index", index) );
     if(index >= std::variant_size_v<variant_t>)
       throw Exception("Invalid 'index' selector when deserializing std::variant");
