@@ -81,7 +81,7 @@ namespace cereal
   template <class Archive, typename VariantType1, typename... VariantTypes> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::variant<VariantType1, VariantTypes...> const & variant )
   {
-    std::int32_t index = variant.index();
+    std::int32_t index = static_cast<std::int32_t>(variant.index());
     ar( CEREAL_NVP_("index", index) );
     variant_detail::variant_save_visitor<Archive> visitor(ar);
     std::visit(visitor, variant);
