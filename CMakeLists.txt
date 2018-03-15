@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 2.6.2)
 project (cereal)
 
 option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
@@ -14,15 +14,6 @@ else()
     set(CEREAL_THREAD_LIBS "")
 endif()
 
-# Default to C++11
-if(NOT DEFINED CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD STREQUAL "98")
-  set(CMAKE_CXX_STANDARD 11)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
-if(CMAKE_CXX_STANDARD GREATER 14)
-  cmake_minimum_required(VERSION 3.8)
-endif()
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /W3 /WX")
@@ -32,6 +23,21 @@ else()
     if(WITH_WERROR)
         set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
     endif(WITH_WERROR)
+
+    if(CMAKE_VERSION VERSION_LESS 3.1)
+        set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+    else()
+      if(NOT DEFINED CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD STREQUAL "98")
+        set(CMAKE_CXX_STANDARD 11)
+      endif()
+
+      if(CMAKE_CXX_STANDARD GREATER 14)
+        cmake_minimum_required(VERSION 3.8)
+      endif()
+
+      set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    endif()
+
 endif()
 
 if(NOT CMAKE_VERSION VERSION_LESS 3.0)
