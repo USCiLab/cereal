@@ -95,7 +95,7 @@ namespace cereal
 
     std::int32_t index;
     ar( CEREAL_NVP_("index", index) );
-    if(index >= std::variant_size_v<variant_t>)
+    if(index >= static_cast<std::int32_t>(std::variant_size_v<variant_t>))
       throw Exception("Invalid 'index' selector when deserializing std::variant");
 
     variant_detail::load_variant<0, variant_t, VariantTypes...>(ar, index, variant);
