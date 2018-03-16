@@ -67,13 +67,12 @@ namespace cereal
     class CEREAL_DLL_EXPORT StaticObject
     {
       private:
-        //! Forces instantiation at pre-execution time
-        static void instantiate( T const * ) {}
 
         static T & create()
         {
           static T t;
-          instantiate(&instance);
+          //! Forces instantiation at pre-execution time
+          (void)instance;
           return t;
         }
 
