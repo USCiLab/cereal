@@ -167,8 +167,6 @@ namespace cereal
         }
         break;
       }
-      default:
-        throw Exception("Invalid bitset data representation");
     }
   }
 } // namespace cereal
