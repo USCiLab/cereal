@@ -25,11 +25,11 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#ifndef CEREAL_TEST_CPP17_VARIANT_H_
+#define CEREAL_TEST_CPP17_VARIANT_H_
+#include "../common.hpp"
 
-#include "common.hpp"
-
-#if __cplusplus >= 201703L
+#ifdef CEREAL_HAS_CPP17
 
 #include <cereal/types/variant.hpp>
 
@@ -70,28 +70,5 @@ void test_std_variant()
   CHECK_EQ( std::get<std::string>(i_bv3), std::get<std::string>(o_bv3) );
 }
 
-TEST_SUITE("std_variant");
-
-TEST_CASE("binary_std_variant")
-{
-  test_std_variant<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
-}
-
-TEST_CASE("portable_binary_std_variant")
-{
-  test_std_variant<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
-
-TEST_CASE("xml_std_variant")
-{
-  test_std_variant<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-TEST_CASE("json_std_variant")
-{
-  test_std_variant<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
-
-TEST_SUITE_END();
-
-#endif // is c++17
+#endif // CEREAL_HAS_CPP17
+#endif // CEREAL_TEST_CPP17_VARIANT_H_
