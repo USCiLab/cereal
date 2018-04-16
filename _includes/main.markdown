@@ -38,7 +38,7 @@ Trust something other than good faith - we've written a basic set of unit tests 
 
 ## xCEREAL is easy to use
 
-Adding support for cereal is a simple as including a header file and writing a serialization function.  cereal's
+Adding support for cereal is as simple as including a header file and writing a serialization function.  cereal's
 functionality is well documented both conceptually and at the code level.  cereal will do its best to give descriptive static assertions at compile time if you
 make any mistakes along the way.
 
