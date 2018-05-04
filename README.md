@@ -3,6 +3,8 @@ cereal - A C++11 library for serialization
 
 <img src="http://uscilab.github.io/cereal/assets/img/cerealboxside.png" align="right"/><p>cereal is a header-only C++11 serialization library.  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings, XML, or JSON.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.</p>
 
+It is [not thread-safe](https://uscilab.github.io/cereal/assets/doxygen/macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35).
+
 ### cereal has great documentation
 
 Looking for more information on how cereal works and its documentation?  Visit [cereal's web page](http://USCiLab.github.com/cereal) to get the latest information.
