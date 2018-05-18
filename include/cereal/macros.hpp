@@ -143,4 +143,10 @@
 #define CEREAL_HAS_CPP14
 #endif
 
+#ifdef CEREAL_HAS_CPP17
+#define CEREAL_INLINE_VARIABLE inline
+#else
+#define CEREAL_INLINE_VARIABLE
+#endif
+
 #endif // CEREAL_MACROS_HPP_
