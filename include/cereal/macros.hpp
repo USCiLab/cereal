@@ -149,4 +149,10 @@
 #define CEREAL_INLINE_VARIABLE
 #endif
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#define CEREAL_CONSTEXPR constexpr
+#else
+#define CEREAL_CONSTEXPR
+#endif
+
 #endif // CEREAL_MACROS_HPP_
