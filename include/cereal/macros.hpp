@@ -152,7 +152,7 @@
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #define CEREAL_CONSTEXPR constexpr
 #else
-#define CEREAL_CONSTEXPR
+#define CEREAL_CONSTEXPR const
 #endif
 
 #endif // CEREAL_MACROS_HPP_
