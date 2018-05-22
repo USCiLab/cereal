@@ -143,12 +143,6 @@
 #define CEREAL_HAS_CPP14
 #endif
 
-#ifdef CEREAL_HAS_CPP17
-#define CEREAL_INLINE_VARIABLE inline
-#else
-#define CEREAL_INLINE_VARIABLE
-#endif
-
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #define CEREAL_CONSTEXPR constexpr
 #else

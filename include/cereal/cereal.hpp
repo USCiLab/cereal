@@ -240,8 +240,7 @@ namespace cereal
       Version<TYPE>::registerVersion();                                          \
   }                                                                              \
   template <> struct Version<TYPE> {                                             \
-    static CEREAL_INLINE_VARIABLE CEREAL_CONSTEXPR std::uint32_t                 \
-      value{VERSION_NUMBER};                                                     \
+    static CEREAL_CONSTEXPR std::uint32_t value{VERSION_NUMBER};                 \
   };                                                                             \
   } // end namespaces
 
