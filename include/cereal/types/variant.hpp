@@ -100,6 +100,10 @@ namespace cereal
 
     variant_detail::load_variant<0, variant_t, VariantTypes...>(ar, index, variant);
   }
+
+  //! Serializing a std::monostate
+  template <class Archive>
+  void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &, std::monostate const & ) {}
 } // namespace cereal
 
 #endif // CEREAL_TYPES_STD_VARIANT_HPP_
