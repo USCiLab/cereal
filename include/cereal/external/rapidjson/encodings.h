@@ -144,9 +144,9 @@ struct UTF8 {
 
     template <typename InputStream>
     static bool Decode(InputStream& is, unsigned* codepoint) {
-#define COPY() c = is.Take(); *codepoint = (*codepoint << 6) | (static_cast<unsigned char>(c) & 0x3Fu)
-#define TRANS(mask) result &= ((GetRange(static_cast<unsigned char>(c)) & mask) != 0)
-#define TAIL() COPY(); TRANS(0x70)
+#define _CEREAL_COPY() c = is.Take(); *codepoint = (*codepoint << 6) | (static_cast<unsigned char>(c) & 0x3Fu)
+#define _CEREAL_TRANS(mask) result &= ((GetRange(static_cast<unsigned char>(c)) & mask) != 0)
+#define _CEREAL_TAIL() _CEREAL_COPY(); _CEREAL_TRANS(0x70)
         typename InputStream::Ch c = is.Take();
         if (!(c & 0x80)) {
             *codepoint = static_cast<unsigned char>(c);
@@ -161,44 +161,44 @@ struct UTF8 {
         }
         bool result = true;
         switch (type) {
-        case 2: TAIL(); return result;
-        case 3: TAIL(); TAIL(); return result;
-        case 4: COPY(); TRANS(0x50); TAIL(); return result;
-        case 5: COPY(); TRANS(0x10); TAIL(); TAIL(); return result;
-        case 6: TAIL(); TAIL(); TAIL(); return result;
-        case 10: COPY(); TRANS(0x20); TAIL(); return result;
-        case 11: COPY(); TRANS(0x60); TAIL(); TAIL(); return result;
+        case 2: _CEREAL_TAIL(); return result;
+        case 3: _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 4: _CEREAL_COPY(); _CEREAL_TRANS(0x50); _CEREAL_TAIL(); return result;
+        case 5: _CEREAL_COPY(); _CEREAL_TRANS(0x10); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 6: _CEREAL_TAIL(); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 10: _CEREAL_COPY(); _CEREAL_TRANS(0x20); _CEREAL_TAIL(); return result;
+        case 11: _CEREAL_COPY(); _CEREAL_TRANS(0x60); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
         default: return false;
         }
-#undef COPY
-#undef TRANS
-#undef TAIL
+#undef _CEREAL_COPY
+#undef _CEREAL_TRANS
+#undef _CEREAL_TAIL
     }
 
     template <typename InputStream, typename OutputStream>
     static bool Validate(InputStream& is, OutputStream& os) {
-#define COPY() os.Put(c = is.Take())
-#define TRANS(mask) result &= ((GetRange(static_cast<unsigned char>(c)) & mask) != 0)
-#define TAIL() COPY(); TRANS(0x70)
+#define _CEREAL_COPY() os.Put(c = is.Take())
+#define _CEREAL_TRANS(mask) result &= ((GetRange(static_cast<unsigned char>(c)) & mask) != 0)
+#define _CEREAL_TAIL() _CEREAL_COPY(); _CEREAL_TRANS(0x70)
         Ch c;
-        COPY();
+        _CEREAL_COPY();
         if (!(c & 0x80))
             return true;
 
         bool result = true;
         switch (GetRange(static_cast<unsigned char>(c))) {
-        case 2: TAIL(); return result;
-        case 3: TAIL(); TAIL(); return result;
-        case 4: COPY(); TRANS(0x50); TAIL(); return result;
-        case 5: COPY(); TRANS(0x10); TAIL(); TAIL(); return result;
-        case 6: TAIL(); TAIL(); TAIL(); return result;
-        case 10: COPY(); TRANS(0x20); TAIL(); return result;
-        case 11: COPY(); TRANS(0x60); TAIL(); TAIL(); return result;
+        case 2: _CEREAL_TAIL(); return result;
+        case 3: _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 4: _CEREAL_COPY(); _CEREAL_TRANS(0x50); _CEREAL_TAIL(); return result;
+        case 5: _CEREAL_COPY(); _CEREAL_TRANS(0x10); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 6: _CEREAL_TAIL(); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
+        case 10: _CEREAL_COPY(); _CEREAL_TRANS(0x20); _CEREAL_TAIL(); return result;
+        case 11: _CEREAL_COPY(); _CEREAL_TRANS(0x60); _CEREAL_TAIL(); _CEREAL_TAIL(); return result;
         default: return false;
         }
-#undef COPY
-#undef TRANS
-#undef TAIL
+#undef _CEREAL_COPY
+#undef _CEREAL_TRANS
+#undef _CEREAL_TAIL
     }
 
     static unsigned char GetRange(unsigned char c) {
