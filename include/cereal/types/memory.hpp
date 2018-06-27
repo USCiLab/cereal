@@ -154,7 +154,7 @@ namespace cereal
         {
           if( !itsRestored )
           {
-            std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+            std::memcpy( (void*)itsPtr, &itsState, sizeof(ParentType) );
             itsRestored = true;
           }
         }
