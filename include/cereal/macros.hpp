@@ -132,4 +132,11 @@
   #endif // end !defined(CEREAL_HAS_NOEXCEPT)
 #endif // ifndef CEREAL_NOEXCEPT
 
+// Work around MSVC not having alignof
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#define CEREAL_ALIGNOF __alignof
+#else // not MSVC 2013 or older
+#define CEREAL_ALIGNOF alignof
+#endif // end MSVC check
+
 #endif // CEREAL_MACROS_HPP_

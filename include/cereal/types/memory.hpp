@@ -34,13 +34,6 @@
 #include <memory>
 #include <cstring>
 
-// Work around MSVC not having alignof
-#if defined(_MSC_VER) && _MSC_VER < 1900
-#define CEREAL_ALIGNOF __alignof
-#else // not MSVC 2013 or older
-#define CEREAL_ALIGNOF alignof
-#endif // end MSVC check
-
 namespace cereal
 {
   namespace memory_detail
@@ -421,5 +414,4 @@ namespace cereal
 // automatically include polymorphic support
 #include "cereal/types/polymorphic.hpp"
 
-#undef CEREAL_ALIGNOF
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_

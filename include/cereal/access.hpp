@@ -110,6 +110,7 @@ namespace cereal
   // forward decl for construct
   //! @cond PRIVATE_NEVERDEFINED
   namespace memory_detail{ template <class Ar, class T> struct LoadAndConstructLoadWrapper; }
+  namespace variant_detail{ template <class Ar, class T> struct LoadAndConstructLoadWrapper; }
   //! @endcond
 
   //! Used to construct types with no default constructor
@@ -202,7 +203,8 @@ namespace cereal
       }
 
     private:
-      template <class A, class B> friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;
+      template <class Ar, class TT> friend struct ::cereal::memory_detail::LoadAndConstructLoadWrapper;
+      template <class Ar, class TT> friend struct ::cereal::variant_detail::LoadAndConstructLoadWrapper;
 
       construct( T * p ) : itsPtr( p ), itsEnableSharedRestoreFunction( [](){} ), itsValid( false ) {}
       construct( T * p, std::function<void()> enableSharedFunc ) : // g++4.7 ice with default lambda to std func

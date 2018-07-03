@@ -31,8 +31,8 @@
 #define CEREAL_TYPES_BOOST_VARIANT_HPP_
 
 #include "cereal/cereal.hpp"
-#include <boost/variant.hpp>
-#include <boost/mpl/size.hpp>
+#include <boost/variant/variant_fwd.hpp>
+#include <boost/variant/static_visitor.hpp>
 
 namespace cereal
 {
@@ -53,34 +53,58 @@ namespace cereal
       Archive & ar;
     };
 
-    //! @internal
-    template<int N, class Variant, class ... Args, class Archive>
-    typename std::enable_if<N == boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(Archive & /*ar*/, int /*target*/, Variant & /*variant*/)
-    {
-      throw ::cereal::Exception("Error traversing variant during load");
-    }
 
     //! @internal
-    template<int N, class Variant, class H, class ... T, class Archive>
-    typename std::enable_if<N < boost::mpl::size<typename Variant::types>::value, void>::type
-    load_variant(Archive & ar, int target, Variant & variant)
+    template<class T, class Variant, class Archive>
+    typename std::enable_if<std::is_default_constructible<T>::value>::type
+    load_variant(Archive & ar, Variant & variant)
     {
-      if(N == target)
-      {
-        H value;
+        T value;
         ar( CEREAL_NVP_("data", value) );
-        variant = value;
-      }
-      else
-        load_variant<N+1, Variant, T...>(ar, target, variant);
+        variant = std::move(value);
+    }
+
+    template <class Archive, class T>
+    struct LoadAndConstructLoadWrapper
+    {
+        using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+
+        LoadAndConstructLoadWrapper() :
+            construct( reinterpret_cast<T *>( &st ) )
+        { }
+
+        ~LoadAndConstructLoadWrapper()
+        {
+            if (construct.itsValid)
+            {
+                construct->~T();
+            }
+        }
+
+        void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar )
+        {
+            ::cereal::detail::Construct<T, Archive>::load_andor_construct( ar, construct );
+        }
+
+        ST st;
+        ::cereal::construct<T> construct;
+    };
+
+    template<class T, class Variant, class Archive>
+    typename std::enable_if<!std::is_default_constructible<T>::value>::type
+    load_variant(Archive & ar, Variant & variant)
+    {
+        LoadAndConstructLoadWrapper<Archive, T> loadWrapper;
+
+        ar( CEREAL_NVP_("data", loadWrapper) );
+        variant = std::move(*loadWrapper.construct.ptr());
     }
 
   } // namespace variant_detail
 
   //! Saving for boost::variant
-  template <class Archive, typename VariantType1, typename... VariantTypes> inline
-  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, boost::variant<VariantType1, VariantTypes...> const & variant )
+  template <class Archive, typename... VariantTypes> inline
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> const & variant )
   {
     int32_t which = variant.which();
     ar( CEREAL_NVP_("which", which) );
@@ -89,17 +113,19 @@ namespace cereal
   }
 
   //! Loading for boost::variant
-  template <class Archive, typename VariantType1, typename... VariantTypes> inline
-  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, boost::variant<VariantType1, VariantTypes...> & variant )
+  template <class Archive, typename... VariantTypes> inline
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> & variant )
   {
-    typedef typename boost::variant<VariantType1, VariantTypes...>::types types;
-
     int32_t which;
     ar( CEREAL_NVP_("which", which) );
-    if(which >= boost::mpl::size<types>::value)
+
+    using LoadFuncType = void(*)(Archive &, boost::variant<VariantTypes...> &);
+    constexpr LoadFuncType loadFuncArray[] = {&variant_detail::load_variant<VariantTypes>...};
+
+    if(which >= int32_t(sizeof(loadFuncArray)/sizeof(loadFuncArray[0])))
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
 
-    variant_detail::load_variant<0, boost::variant<VariantType1, VariantTypes...>, VariantType1, VariantTypes...>(ar, which, variant);
+    loadFuncArray[which](ar, variant);
   }
 } // namespace cereal
 
