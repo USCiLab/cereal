@@ -194,12 +194,12 @@ namespace cereal
     //! Get an input binding from the given archive by deserializing the type meta data
     /*! @internal */
     template<class Archive> inline
-    typename ::cereal::detail::InputBindingMap<Archive>::Serializers getInputBinding(Archive & ar, std::uint32_t const nameid)
+    typename ::cereal::detail::InputBindingMap::Serializers getInputBinding(Archive & ar, std::uint32_t const nameid)
     {
       // If the nameid is zero, we serialized a null pointer
       if(nameid == 0)
       {
-        typename ::cereal::detail::InputBindingMap<Archive>::Serializers emptySerializers;
+        typename ::cereal::detail::InputBindingMap::Serializers emptySerializers;
         emptySerializers.shared_ptr = [](void*, std::shared_ptr<void> & ptr, std::type_info const &) { ptr.reset(); };
         emptySerializers.unique_ptr = [](void*, std::unique_ptr<void, ::cereal::detail::EmptyDeleter<void>> & ptr, std::type_info const &) { ptr.reset( nullptr ); };
         return emptySerializers;
@@ -214,7 +214,7 @@ namespace cereal
       else
         name = ar.getPolymorphicName(nameid);
 
-      auto const & bindingMap = detail::StaticObject<detail::InputBindingMap<Archive>>::getInstance().map;
+      auto const & bindingMap = detail::StaticObject<detail::InputBindingMap>::getInstance().map<Archive>();
 
       auto binding = bindingMap.find(name);
       if(binding == bindingMap.end())
@@ -317,7 +317,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap>::getInstance().map<Archive>();
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -352,7 +352,7 @@ namespace cereal
       return;
     }
 
-    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap>::getInstance().map<Archive>();
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -416,7 +416,7 @@ namespace cereal
     // of an abstract object
     //  this implies we need to do the lookup
 
-    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap>::getInstance().map<Archive>();
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
@@ -451,7 +451,7 @@ namespace cereal
       return;
     }
 
-    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap<Archive>>::getInstance().map;
+    auto const & bindingMap = detail::StaticObject<detail::OutputBindingMap>::getInstance().map<Archive>();
 
     auto binding = bindingMap.find(std::type_index(ptrinfo));
     if(binding == bindingMap.end())
