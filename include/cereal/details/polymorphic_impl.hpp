@@ -449,7 +449,6 @@ namespace cereal
         type, containing entries for every registered type that describe how to
         properly cast the type to its real type in polymorphic scenarios for
         shared_ptr, weak_ptr, and unique_ptr. */
-    template <class Archive>
     struct OutputBindingMap
     {
       //! A serializer function
@@ -468,7 +467,14 @@ namespace cereal
       };
 
       //! A map of serializers for pointers of all registered types
-      std::map<std::type_index, Serializers> map;
+      using Serializers_map = std::map<std::type_index, Serializers>;
+      //! A map of archive typeid -> map of serializers for given archive
+      using Archives_map = std::map<std::type_index, Serializers_map>;
+      Archives_map archives_map;
+
+      //! Obtain serializers map for given archive
+      template<typename Archive>
+      Serializers_map& map() { return archives_map[typeid(Archive)]; }
     };
 
     //! An empty noop deleter
@@ -479,7 +485,6 @@ namespace cereal
         type, containing entries for every registered type that describe how to
         properly cast the type to its real type in polymorphic scenarios for
         shared_ptr, weak_ptr, and unique_ptr. */
-    template <class Archive>
     struct InputBindingMap
     {
       //! Shared ptr serializer function
@@ -500,7 +505,14 @@ namespace cereal
       };
 
       //! A map of serializers for pointers of all registered types
-      std::map<std::string, Serializers> map;
+      using Serializers_map = std::map<std::string, Serializers>;
+      //! A map of archive typeid -> map of serializers for given archive
+      using Archives_map = std::map<std::type_index, Serializers_map>;
+      Archives_map archives_map;
+
+      //! Obtain serializers map for given archive
+      template<typename Archive>
+      Serializers_map& map() { return archives_map[typeid(Archive)]; }
     };
 
     // forward decls for archives from cereal.hpp
@@ -517,15 +529,15 @@ namespace cereal
       //! Initialize the binding
       InputBindingCreator()
       {
-        auto & map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
-        auto lock = StaticObject<InputBindingMap<Archive>>::lock();
+        auto & map = StaticObject<InputBindingMap>::getInstance().map<Archive>();
+        auto lock = StaticObject<InputBindingMap>::lock();
         auto key = std::string(binding_name<T>::name());
         auto lb = map.lower_bound(key);
 
         if (lb != map.end() && lb->first == key)
           return;
 
-        typename InputBindingMap<Archive>::Serializers serializers;
+        typename InputBindingMap::Serializers serializers;
 
         serializers.shared_ptr =
           [](void * arptr, std::shared_ptr<void> & dptr, std::type_info const & baseInfo)
@@ -637,14 +649,15 @@ namespace cereal
       //! Initialize the binding
       OutputBindingCreator()
       {
-        auto & map = StaticObject<OutputBindingMap<Archive>>::getInstance().map;
+        auto & map = StaticObject<OutputBindingMap>::getInstance().map<Archive>();
+        auto lock = StaticObject<OutputBindingMap>::lock();
         auto key = std::type_index(typeid(T));
         auto lb = map.lower_bound(key);
 
         if (lb != map.end() && lb->first == key)
           return;
 
-        typename OutputBindingMap<Archive>::Serializers serializers;
+        typename OutputBindingMap::Serializers serializers;
 
         serializers.shared_ptr =
           [&](void * arptr, void const * dptr, std::type_info const & baseInfo)
