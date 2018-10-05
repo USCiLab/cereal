@@ -488,7 +488,7 @@ namespace cereal
           }
 
           Iterator(ValueIterator begin, ValueIterator end) :
-            itsValueItBegin(begin), itsValueItEnd(end), itsIndex(0), itsType(Value)
+            itsValueItBegin(begin), itsIndex(0), itsType(Value)
           {
             if( std::distance( begin, end ) == 0 )
               itsType = Null_;
@@ -543,7 +543,7 @@ namespace cereal
 
         private:
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
-          ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
+          ValueIterator itsValueItBegin;                   //!< The value iterator (array)
           size_t itsIndex;                                 //!< The current index of this iterator
           enum Type {Value, Member, Null_} itsType;        //!< Whether this holds values (array) or members (objects) or nothing
       };
