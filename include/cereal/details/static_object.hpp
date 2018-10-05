@@ -48,7 +48,7 @@
 #   define CEREAL_DLL_EXPORT __declspec(dllexport)
 #   define CEREAL_USED
 #else // clang or gcc
-#   define CEREAL_DLL_EXPORT
+#   define CEREAL_DLL_EXPORT __attribute__ ((visibility("default")))
 #   define CEREAL_USED __attribute__ ((__used__))
 #endif
 
