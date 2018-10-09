@@ -164,6 +164,8 @@ namespace cereal
     #define CEREAL_UNUSED_FUNCTION static void unused() { (void)version; }
   #endif
 
+  template <typename T> struct Version;
+
   // ######################################################################
   //! Defines a class version for some type
   /*! Versioning information is optional and adds some small amount of
@@ -212,6 +214,12 @@ namespace cereal
       }
       @endcode
 
+      Having defined CEREAL_CLASS_VERSION for a given type Mytype also defines
+      the constexpr variable Version<Mytype>::value.  This can be used for
+      static_asserts in functions that need to be updated when Mytype is
+      updated.  (It is not constexpr on older MSVC versions that do not support
+      constexpr.)
+
       Interfaces for other forms of serialization functions is similar.  This
       macro should be placed at global scope.
       @ingroup Utility */
@@ -230,7 +238,11 @@ namespace cereal
     }; /* end Version */                                                         \
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
-  } } // end namespaces
+  }                                                                              \
+  template <> struct Version<TYPE> {                                             \
+    static CEREAL_CONSTEXPR std::uint32_t value{VERSION_NUMBER};                 \
+  };                                                                             \
+  } // end namespaces
 
   // ######################################################################
   //! The base output archive class
