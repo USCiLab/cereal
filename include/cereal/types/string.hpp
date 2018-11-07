@@ -50,7 +50,7 @@ namespace cereal
   typename std::enable_if<traits::is_input_serializable<BinaryData<CharT>, Archive>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME(Archive & ar, std::basic_string<CharT, Traits, Alloc> & str)
   {
-    size_type size;
+    size_type size{};
     ar( make_size_tag( size ) );
     str.resize(static_cast<std::size_t>(size));
     ar( binary_data( const_cast<CharT *>( str.data() ), static_cast<std::size_t>(size) * sizeof(CharT) ) );
