@@ -46,9 +46,11 @@
 
 #ifdef _MSC_VER
 #   define CEREAL_DLL_EXPORT __declspec(dllexport)
+#   define CEREAL_VISIBILITY_DEFAULT
 #   define CEREAL_USED
 #else // clang or gcc
 #   define CEREAL_DLL_EXPORT
+#   define CEREAL_VISIBILITY_DEFAULT __attribute__ ((visibility("default")))
 #   define CEREAL_USED __attribute__ ((__used__))
 #endif
 
@@ -70,6 +72,7 @@ namespace cereal
         //! Forces instantiation at pre-execution time
         static void instantiate( T const & ) {}
 
+        CEREAL_VISIBILITY_DEFAULT
         static T & create()
         {
           static T t;
