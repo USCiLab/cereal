@@ -322,6 +322,31 @@ namespace cereal
   };
 
   // ######################################################################
+  //! An empty type to enable argument-dependent lookup (ADL) from templated
+  //! serialization functions
+  /*! This tag is provided by archives in order to allow templated
+      serialization functions to find specific utilities in the cereal
+      namespace without including any cereal headers. A typical use case is:
+
+      @code{.cpp}
+      // no includes required
+      struct MyStruct
+      {
+        int a, b;
+
+        template<class Archive>
+        void serialize(Archive & archive)
+        {
+          archive( make_nvp(archive.cereal_adl(), "a", a),
+                   make_nvp(archive.cereal_adl(), "b", b) );
+        }
+      };
+      @endcode
+
+      @internal */
+  struct AdlTag {};
+
+  // ######################################################################
   //! A wrapper around a key and value for serializing data into maps.
   /*! This class just provides a grouping of keys and values into a struct for
       human readable archives. For example, XML archives will use this wrapper

@@ -30,6 +30,7 @@
 #define CEREAL_CEREAL_HPP_
 
 #include <type_traits>
+#include <utility>
 #include <string>
 #include <memory>
 #include <functional>
@@ -64,6 +65,17 @@ namespace cereal
   NameValuePair<T> make_nvp( const char * name, T && value )
   {
     return {name, std::forward<T>(value)};
+  }
+
+  //! Creates a name value pair. Accepts an empty type as first argument in order to allow for argument-dependent lookup (ADL).
+  /*! @relates NameValuePair
+      @relates AdlTag
+      @ingroup Utility */
+  template <class ... Args> inline
+  auto make_nvp( AdlTag, Args && ... args )
+    -> decltype(make_nvp( std::forward<Args>( args )... ))
+  {
+    return make_nvp( std::forward<Args>( args )... );
   }
 
   //! Creates a name value pair for the variable T with the same name as the variable
@@ -259,6 +271,10 @@ namespace cereal
       { }
 
       OutputArchive & operator=( OutputArchive const & ) = delete;
+
+      //! Provide an empty tag for argument-dependent lookup (ADL) in ::cereal
+      /*! @relates AdlTag */
+      static constexpr AdlTag cereal_adl() { return {}; }
 
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
@@ -645,6 +661,10 @@ namespace cereal
       { }
 
       InputArchive & operator=( InputArchive const & ) = delete;
+
+      //! Provide an empty tag for argument-dependent lookup (ADL) in ::cereal
+      /*! @relates AdlTag */
+      static constexpr AdlTag cereal_adl() { return {}; }
 
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
