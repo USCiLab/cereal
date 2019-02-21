@@ -274,7 +274,7 @@ namespace cereal
 
       //! Provide an empty tag for argument-dependent lookup (ADL) in ::cereal
       /*! @relates AdlTag */
-      static constexpr AdlTag cereal_adl() { return AdlTag{}; }
+      static AdlTag cereal_adl() { return AdlTag{}; }
 
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
@@ -664,7 +664,7 @@ namespace cereal
 
       //! Provide an empty tag for argument-dependent lookup (ADL) in ::cereal
       /*! @relates AdlTag */
-      static constexpr AdlTag cereal_adl() { return AdlTag{}; }
+      static AdlTag cereal_adl() { return AdlTag{}; }
 
       //! Serializes all passed in data
       /*! This is the primary interface for serializing data with an archive */
