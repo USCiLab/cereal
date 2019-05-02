@@ -847,9 +847,6 @@ namespace cereal
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member "        \
             #test_name " and " #save_name " functions. \n "                                                                  \
             "the paramater to " #test_name " must be a constant reference to the type that " #save_name " returns." );       \
-        static_assert( check::const_valid || !check::exists,                                                                 \
-            "cereal detected an invalid serialization type parameter in non-member " #test_name ".  "                        \
-            #test_name " non-member functions must accept their serialization type by non-const reference" );                \
       };                                                                                                                     \
     } /* namespace detail */                                                                                                 \
                                                                                                                              \
