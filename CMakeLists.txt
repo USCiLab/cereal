@@ -59,6 +59,10 @@ endif()
 
 include_directories(./include)
 
+if(NOT CMAKE_VERSION VERSION_LESS 3.12)
+  cmake_policy(VERSION 3.12)
+endif()
+
 # Boost serialization for performance sandbox
 find_package(Boost COMPONENTS serialization)
 

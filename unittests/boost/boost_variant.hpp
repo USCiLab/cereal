@@ -27,7 +27,7 @@
 #ifndef CEREAL_TEST_BOOST_VARIANT_H_
 #define CEREAL_TEST_BOOST_VARIANT_H_
 
-#include "common.hpp"
+#include "../common.hpp"
 #include <cereal/types/boost_variant.hpp>
 
 template <class IArchive, class OArchive> inline
