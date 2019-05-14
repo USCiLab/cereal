@@ -1,3 +1,5 @@
+# Portions of this file based on https://github.com/Microsoft/GSL/blob/master/.travis.yml
+
 language: cpp
 os: linux
 dist: trusty
@@ -6,10 +8,10 @@ group: beta
 
 addons:
   apt:
-    sources: &trusty_default_sources
+    sources: &default_sources
       - ubuntu-toolchain-r-test
       - boost-latest
-    packages: &trusty_default_packages
+    packages: &default_packages
       - libboost-serialization-dev
       - libboost-dev
 
@@ -18,55 +20,65 @@ matrix:
 
     # |---------- LINUX GCC ----------|
     - compiler: g++-4.7
-      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.8"]
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.7"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-4.7', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-4.7', *default_packages]
 
     - compiler: g++-4.8
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.8"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-4.8', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-4.8', *default_packages]
          
     - compiler: g++-4.9
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-4.9"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-4.9', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-4.9', *default_packages]
          
     - compiler: g++-5
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-5"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-5', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-5', *default_packages]
+    
+    - compiler: g++-5
+      name: "g++-5 multilib"
+      env: ["COMPILER=g++-5"]
+      addons:
+        apt:
+          sources: *default_sources
+          packages: ['gcc-multilib g++-5-multilib linux-libc-dev', *default_packages]
                   
     - compiler: g++-6
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=g++-6"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-6', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-6', *default_packages]
 
     - compiler: g++-7
+      name: "g++-7 c++17"
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'", "COMPILER=g++-7"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['g++-7', *trusty_default_packages]
+          sources: *default_sources
+          packages: ['g++-7', *default_packages]
 
-
-    # |---------- LINUX GCC (32-bit) ----------|    
-    - compiler: g++-5
-      env: ["COMPILER=g++-5"]
+    # |---------- LINUX GCC ----------|
+    - dist: xenial
+      compiler: g++-8
+      name: "g++-8 c++17"
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'", "COMPILER=g++-8"]
       addons:
         apt:
-          sources: *trusty_default_sources
-          packages: ['gcc-5-multilib', 'g++-5-multilib', 'linux-libc-dev:i386', *trusty_default_packages]
+            sources: *default_sources
+            packages: ['g++-8', *default_packages]
 
 
     # |---------- LINUX CLANG ----------|
@@ -74,80 +86,109 @@ matrix:
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.5"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-precise-3.5]
-          packages: ['clang-3.5', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-precise-3.5]
+          packages: ['clang-3.5', *default_packages]
 
     - compiler: clang++-3.6
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.6"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-precise-3.6]
-          packages: ['clang-3.6', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-precise-3.6]
+          packages: ['clang-3.6', *default_packages]
 
     - compiler: clang++-3.7
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.7"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-precise-3.7]
-          packages: ['clang-3.7', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-precise-3.7]
+          packages: ['clang-3.7', *default_packages]
 
     - compiler: clang++-3.8
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.8"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-precise-3.8]
-          packages: ['clang-3.8', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-precise-3.8]
+          packages: ['clang-3.8', *default_packages]
 
     - compiler: clang++-3.9
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-3.9"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-precise-3.9]
-          packages: ['clang-3.9', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-precise-3.9]
+          packages: ['clang-3.9', *default_packages]
 
     - compiler: clang++-4.0
       env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-4.0"]
       addons:
         apt:
-          sources: [*trusty_default_sources, llvm-toolchain-trusty-4.0]
-          packages: ['clang-4.0', *trusty_default_packages]
+          sources: [*default_sources, llvm-toolchain-trusty-4.0]
+          packages: ['clang-4.0', 'g++-5', *default_packages]
 
-    # # - compiler: clang++-5.0
-    # # says missing <type_traits> probably clash between clang and libstdc++
-    #   env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-5.0"]
-    #   addons:
-    #     apt:
-    #       sources: [*trusty_default_sources, llvm-toolchain-trusty-5.0]
-    #       packages: ['clang-5.0', *trusty_default_packages]
+    - compiler: clang++-5.0
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON'", "COMPILER=clang++-5.0"]
+      addons: &clang50
+        apt:
+          packages: 
+            - clang-5.0
+            - g++-7
+            - *default_packages
+          sources: 
+            - *default_sources
+            - llvm-toolchain-trusty-5.0
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
 
+    - env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'", "COMPILER=clang++-5.0"]
+      name: "clang++-5.0 c++17"
+      addons: *clang50
 
-    # # |---------- LINUX CLANG (libc++) ----------|
-    # Missing <cxxabi.h>, most probably related to clang 3.5
-    # - compiler: clang++
-    #   env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCLANG_USE_LIBCPP=ON'", "COMPILER=clang++"]
-    #   addons:
-    #     apt:
-    #       sources: [*trusty_default_sources]
-    #       packages: ['clang', 'libc++-dev', 'libc++abi-dev', *trusty_default_packages]
+    - compiler: clang++-7
+      name: "clang++-7 c++17"
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'", "COMPILER=clang++-7"]
+      addons: 
+        apt:
+          packages: 
+            - clang-7
+            - g++-7
+            - *default_packages
+          sources: 
+            - *default_sources
+            - llvm-toolchain-trusty-7
 
+    - compiler: clang++-8
+      name: "clang++-8 c++17 libc++"
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON'", "COMPILER=clang++-8"]
+      addons: 
+        apt:
+          packages: 
+            - clang-8
+            - g++-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - *default_packages
+          sources: 
+            - *default_sources
+            - llvm-toolchain-trusty-8
 
     # # |---------- LINUX CLANG (32-bit) ----------|
     # # Doesn't work.
     # - compiler: clang++
     #   addons:
     #     apt:
-    #       sources: [*trusty_default_sources]
-    #       packages: ['clang', 'gcc-multilib', 'g++-multilib', *trusty_default_packages]
+    #       sources: [*default_sources]
+    #       packages: ['clang', 'gcc-multilib', 'g++-multilib', *default_packages]
 
 
     # |---------- OSX CLANG ----------|
     - compiler: clang++
       os: osx
       osx_image: xcode7.3
+      env: COMPILER=clang++
 
     - compiler: clang++
       os: osx
       osx_image: xcode8
+      env: COMPILER=clang++
 
     # # Missing CMake
     # - compiler: clang++
@@ -157,17 +198,64 @@ matrix:
     - compiler: clang++
       os: osx
       osx_image: xcode8.2
+      env: COMPILER=clang++
 
     - compiler: clang++
       os: osx
       osx_image: xcode8.3
+      env: COMPILER=clang++
 
     - compiler: clang++
       env: ["CMAKE_OPTIONS='-DWITH_WERROR=OFF'"]
       os: osx
       osx_image: xcode9
+      env: COMPILER=clang++
+    
+    - compiler: clang++
+      env: ["CMAKE_OPTIONS='-DWITH_WERROR=OFF'"]
+      os: osx
+      osx_image: xcode10
+      env: COMPILER=clang++
+
+install:
+  # Set the ${CXX} variable properly
+  - export CXX=${COMPILER}
+  - ${CXX} --version
+
+  # Dependencies required by the CI are installed in ${TRAVIS_BUILD_DIR}/deps/
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p "${DEPS_DIR}"
+  - cd "${DEPS_DIR}"
+
+  - JOBS=2
+
+  # [linux]: Install the right version of libc++
+  - |
+    LLVM_INSTALL=${DEPS_DIR}/llvm/install
+    # if in linux and compiler clang and llvm not installed
+    if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX%%+*}" == "clang" && -n "$(ls -A ${LLVM_INSTALL})" ]]; then
+      if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
+      elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
+      elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.1";
+      elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION="3.9.1";
+      fi
+      LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+      LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+      LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+      mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+      travis_retry wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
+      travis_retry wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
+      travis_retry wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
+      (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
+      (cd llvm/build/projects/libcxx && make install -j2)
+      (cd llvm/build/projects/libcxxabi && make install -j2)
+      export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
+      export LDFLAGS="-L ${LLVM_INSTALL}/lib -l c++ -l c++abi"
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib"
+    fi
 
 script:
+  - cd "${TRAVIS_BUILD_DIR}"
   - if [[ "${COMPILERCC}" != "" ]]; then export CC="${COMPILERCC}"; fi
   - if [[ "${COMPILER}" != "" ]]; then export CXX="${COMPILER}"; fi
   - $CXX --version
