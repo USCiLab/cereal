@@ -30,7 +30,7 @@
 #ifndef CEREAL_TYPES_STD_OPTIONAL_
 #define CEREAL_TYPES_STD_OPTIONAL_
 
-#include "cereal/cereal.hpp"
+#include "../cereal.hpp"
 #include <optional>
 
 namespace cereal {
