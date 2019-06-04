@@ -136,18 +136,24 @@
 // ######################################################################
 //! Defines the CEREAL_FALL_THROUGH macro to suppress fall-through warnings
 //! if the compiler supports it.
+
+// Use the C++17 atribute if available
 #if defined __has_cpp_attribute
   #if __has_cpp_attribute(fallthrough)
     #define CEREAL_FALL_THROUGH [[fallthrough]]
-  #else
-    #define CEREAL_FALL_THROUGH
-  #endif
-#else
+  #endif // end __has_cpp_attribute(fallthrough)
+#endif // end defined __has_cpp_attribute
+
+// Otherwise try the non-portable GNU extension
+#ifndef CEREAL_FALL_THROUGH
   #if defined(__GNUC__) && __GNUC__ >= 7
     #define CEREAL_FALL_THROUGH __attribute__ ((fallthrough))
-  #else
-    #define CEREAL_FALL_THROUGH ((void)0)
-  #endif /* __GNUC__ >= 7 */
-#endif // defined_has_cpp_attribute
+  #endif // end __GNUC__ >= 7
+#endif // end !defined CEREAL_FALL_THROUGH
+
+// Otherwise make it a no-op
+#ifndef CEREAL_FALL_THROUGH
+  #define CEREAL_FALL_THROUGH ((void)0)
+#endif // end !defined CEREAL_FALL_THROUGH
 
 #endif // CEREAL_MACROS_HPP_
