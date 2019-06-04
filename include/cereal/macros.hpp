@@ -132,4 +132,22 @@
   #endif // end !defined(CEREAL_HAS_NOEXCEPT)
 #endif // ifndef CEREAL_NOEXCEPT
 
+
+// ######################################################################
+//! Defines the CEREAL_FALL_THROUGH macro to suppress fall-through warnings
+//! if the compiler supports it.
+#if defined __has_cpp_attribute
+  #if __has_cpp_attribute(fallthrough)
+    #define CEREAL_FALL_THROUGH [[fallthrough]]
+  #else
+    #define CEREAL_FALL_THROUGH
+  #endif
+#else
+  #if defined(__GNUC__) && __GNUC__ >= 7
+    #define CEREAL_FALL_THROUGH __attribute__ ((fallthrough))
+  #else
+    #define CEREAL_FALL_THROUGH ((void)0)
+  #endif /* __GNUC__ >= 7 */
+#endif // defined_has_cpp_attribute
+
 #endif // CEREAL_MACROS_HPP_
