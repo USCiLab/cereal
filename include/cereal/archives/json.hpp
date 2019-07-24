@@ -40,6 +40,11 @@ namespace cereal
   { RapidJSONException( const char * what_ ) : Exception( what_ ) {} };
 }
 
+// Inform rapidjson that assert will throw
+#ifndef CEREAL_RAPIDJSON_ASSERT_THROWS
+#define CEREAL_RAPIDJSON_ASSERT_THROWS
+#endif // CEREAL_RAPIDJSON_ASSERT_THROWS
+
 // Override rapidjson assertions to throw exceptions by default
 #ifndef CEREAL_RAPIDJSON_ASSERT
 #define CEREAL_RAPIDJSON_ASSERT(x) if(!(x)){ \
