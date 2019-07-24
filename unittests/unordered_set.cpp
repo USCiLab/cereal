@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "unordered_set.hpp"
 
-TEST_SUITE("unordered_set");
+TEST_SUITE_BEGIN("unordered_set");
 
 TEST_CASE("binary_unordered_set")
 {

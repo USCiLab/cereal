@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "unordered_multimap.hpp"
 
-TEST_SUITE("unordered_multimap");
+TEST_SUITE_BEGIN("unordered_multimap");
 
 TEST_CASE("binary_unordered_multimap")
 {

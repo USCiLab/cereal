@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "atomic.hpp"
 
-TEST_SUITE("atomic");
+TEST_SUITE_BEGIN("atomic");
 
 TEST_CASE("binary_atomic")
 {

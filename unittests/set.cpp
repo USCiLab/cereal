@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "set.hpp"
 
-TEST_SUITE("set");
+TEST_SUITE_BEGIN("set");
 
 TEST_CASE("binary_set")
 {

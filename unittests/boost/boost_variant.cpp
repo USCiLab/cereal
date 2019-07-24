@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "boost_variant.hpp"
 
-TEST_SUITE("boost_variant");
+TEST_SUITE_BEGIN("boost_variant");
 
 TEST_CASE("binary_boost_variant")
 {

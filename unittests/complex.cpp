@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "complex.hpp"
 
-TEST_SUITE("complex");
+TEST_SUITE_BEGIN("complex");
 
 TEST_CASE("binary_complex")
 {

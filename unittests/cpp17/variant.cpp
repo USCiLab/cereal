@@ -30,7 +30,7 @@
 
 #ifdef CEREAL_HAS_CPP17
 
-TEST_SUITE("std_variant");
+TEST_SUITE_BEGIN("std_variant");
 
 TEST_CASE("binary_std_variant")
 {
