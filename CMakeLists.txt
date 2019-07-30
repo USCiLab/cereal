@@ -1,4 +1,7 @@
-cmake_minimum_required (VERSION 2.6.2)
+cmake_minimum_required(VERSION 2.6.2)
+
+cmake_policy(SET CMP0048 NEW)
+
 project (cereal)
 
 option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
@@ -65,7 +68,7 @@ find_package(Boost COMPONENTS serialization)
 if(Boost_FOUND)
   include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND)
-  
+
 enable_testing()
 add_subdirectory(unittests)
 
