@@ -2,6 +2,7 @@ var searchData=
 [
   ['cereal_5farchive_5frestrict',['CEREAL_ARCHIVE_RESTRICT',['../traits_8hpp.html#a29490687675183194498a843f7beeb8b',1,'traits.hpp']]],
   ['cereal_5fbind_5fto_5farchives',['CEREAL_BIND_TO_ARCHIVES',['../polymorphic__impl_8hpp.html#a1287e4a45e8a9ce5d50d65c122d49d5f',1,'polymorphic_impl.hpp']]],
+  ['cereal_5fbind_5fto_5farchives_5funused_5ffunction',['CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION',['../polymorphic__impl_8hpp.html#a447a2becefa10fee587b8cd1d04c7dfc',1,'polymorphic_impl.hpp']]],
   ['cereal_5fdll_5fexport',['CEREAL_DLL_EXPORT',['../static__object_8hpp.html#afde52a096f363ebe6869a9c0f9ef4cbb',1,'static_object.hpp']]],
   ['cereal_5fforce_5fdynamic_5finit',['CEREAL_FORCE_DYNAMIC_INIT',['../polymorphic_8hpp.html#a8e0d5df9830c0ed7c60451cf2f873ff5',1,'polymorphic.hpp']]],
   ['cereal_5fload_5ffunction_5fname',['CEREAL_LOAD_FUNCTION_NAME',['../macros_8hpp.html#a854de4fbe2b80753b27264b7dda740e8',1,'macros.hpp']]],
@@ -35,5 +36,10 @@ var searchData=
   ['cereal_5fsetup_5farchive_5ftraits',['CEREAL_SETUP_ARCHIVE_TRAITS',['../traits_8hpp.html#a039bc7d4a3e8994d3fd7eedf5cae1666',1,'traits.hpp']]],
   ['cereal_5fsize_5ftype',['CEREAL_SIZE_TYPE',['../macros_8hpp.html#a2ad098b163a5f4829eb00fd7fb0b408d',1,'macros.hpp']]],
   ['cereal_5fthread_5fsafe',['CEREAL_THREAD_SAFE',['../macros_8hpp.html#a89aa4dfbafa0236d0da6aa7bec573f35',1,'macros.hpp']]],
+  ['cereal_5funused_5ffunction',['CEREAL_UNUSED_FUNCTION',['../cereal_8hpp.html#ad9c7fcbb092e1279c2babf3c1257e4b6',1,'cereal.hpp']]],
+  ['cereal_5fversion',['CEREAL_VERSION',['../version_8hpp.html#a0e0304b1e14992006ebf53d7bb1a23e3',1,'version.hpp']]],
+  ['cereal_5fversion_5fmajor',['CEREAL_VERSION_MAJOR',['../version_8hpp.html#acd26ddeafaf9585136f16314872b8f3c',1,'version.hpp']]],
+  ['cereal_5fversion_5fminor',['CEREAL_VERSION_MINOR',['../version_8hpp.html#a9b9948b6af1523f4c23e9a5444ed896a',1,'version.hpp']]],
+  ['cereal_5fversion_5fpatch',['CEREAL_VERSION_PATCH',['../version_8hpp.html#a7dfd99f03dc990ea04c1542d2a755464',1,'version.hpp']]],
   ['cereal_5fxml_5fstring_5fvalue',['CEREAL_XML_STRING_VALUE',['../xml_8hpp.html#a44505fe952f8c1f6fef02efc4d7cfefa',1,'xml.hpp']]]
 ];
