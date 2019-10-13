@@ -152,7 +152,8 @@ namespace cereal
         {
           if( !itsRestored )
           {
-            std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+            // void * cast needed when type has no trivial copy-assignment
+            std::memcpy( static_cast<void *>(itsPtr), &itsState, sizeof(ParentType) );
             itsRestored = true;
           }
         }
