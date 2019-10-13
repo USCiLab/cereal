@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">10</td>
-            <td class="headerCovTableEntryHi">90.0 %</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntryHi">96.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-12 20:45:33</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">12</td>
-            <td class="headerCovTableEntry">16</td>
-            <td class="headerCovTableEntryMed">75.0 %</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -166,9 +166,9 @@
 <span class="lineNum">     104 </span>            :       @relates get_user_data
 <span class="lineNum">     105 </span>            : 
 <span class="lineNum">     106 </span>            :       @tparam UserData The type to give the archive access to
-<a name="107"><span class="lineNum">     107 </span>            :       @tparam Archive The archive to wrap */</a>
+<span class="lineNum">     107 </span>            :       @tparam Archive The archive to wrap */
 <span class="lineNum">     108 </span>            :   template &lt;class UserData, class Archive&gt;
-<span class="lineNum">     109 </span><span class="lineCov">        400 :   class UserDataAdapter : public Archive</span>
+<span class="lineNum">     109 </span>            :   class UserDataAdapter : public Archive
 <span class="lineNum">     110 </span>            :   {
 <span class="lineNum">     111 </span>            :     public:
 <span class="lineNum">     112 </span>            :       //! Construct the archive with some user data struct
@@ -179,44 +179,44 @@
 <span class="lineNum">     117 </span>            :           @tparam Args The arguments to pass to the constructor of
 <a name="118"><span class="lineNum">     118 </span>            :                        the archive. */</a>
 <span class="lineNum">     119 </span>            :       template &lt;class ... Args&gt;
-<span class="lineNum">     120 </span><span class="lineCov">        400 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
-<span class="lineNum">     121 </span><span class="lineCov">        400 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
-<span class="lineNum">     122 </span><span class="lineCov">        500 :         userdata( ud )</span>
-<span class="lineNum">     123 </span><span class="lineCov">        400 :       { }</span>
-<span class="lineNum">     124 </span>            : 
-<a name="125"><span class="lineNum">     125 </span>            :     private:</a>
-<span class="lineNum">     126 </span>            :       //! Overload the rtti function to enable dynamic_cast
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :       void rtti() {}</span>
-<span class="lineNum">     128 </span>            :       friend UserData &amp; get_user_data&lt;UserData&gt;( Archive &amp; ar );
-<span class="lineNum">     129 </span>            :       UserData &amp; userdata; //!&lt; The actual user data
-<span class="lineNum">     130 </span>            :   };
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            :   //! Retrieves user data from an archive wrapped by UserDataAdapter
-<span class="lineNum">     133 </span>            :   /*! This will attempt to retrieve the user data associated with
-<span class="lineNum">     134 </span>            :       some archive wrapped by UserDataAdapter.  If this is used on
-<span class="lineNum">     135 </span>            :       an archive that is not wrapped, a run-time exception will occur.
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            :       @note This feature is experimental and may be altered or removed in a future release. See issue #46.
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            :       @note The correct use of this function cannot be enforced at compile
+<span class="lineNum">     120 </span><span class="lineCov">       2000 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
+<span class="lineNum">     121 </span><span class="lineCov">       2000 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
+<span class="lineNum">     122 </span><span class="lineCov">       2500 :         userdata( ud )</span>
+<span class="lineNum">     123 </span><span class="lineCov">       2000 :       { }</span>
+<span class="lineNum">     124 </span><span class="lineCov">        500 : </span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">        500 :     private:</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">        500 :       //! Overload the rtti function to enable dynamic_cast</span>
+<span class="lineNum">     127 </span><span class="lineCov">        500 :       void rtti() {}</span>
+<span class="lineNum">     128 </span><span class="lineCov">        500 :       friend UserData &amp; get_user_data&lt;UserData&gt;( Archive &amp; ar );</span>
+<span class="lineNum">     129 </span><span class="lineCov">        500 :       UserData &amp; userdata; //!&lt; The actual user data</span>
+<span class="lineNum">     130 </span><span class="lineCov">        500 :   };</span>
+<span class="lineNum">     131 </span><span class="lineCov">        500 : </span>
+<span class="lineNum">     132 </span><span class="lineCov">        500 :   //! Retrieves user data from an archive wrapped by UserDataAdapter</span>
+<span class="lineNum">     133 </span><span class="lineCov">        500 :   /*! This will attempt to retrieve the user data associated with</span>
+<span class="lineNum">     134 </span><span class="lineCov">       1000 :       some archive wrapped by UserDataAdapter.  If this is used on</span>
+<span class="lineNum">     135 </span><span class="lineCov">        500 :       an archive that is not wrapped, a run-time exception will occur.</span>
+<span class="lineNum">     136 </span><span class="lineCov">        500 : </span>
+<span class="lineNum">     137 </span><span class="lineCov">        500 :       @note This feature is experimental and may be altered or removed in a future release. See issue #46.</span>
+<span class="lineNum">     138 </span><span class="lineCov">        500 : </span>
+<span class="lineNum">     139 </span><span class="lineCov">        500 :       @note The correct use of this function cannot be enforced at compile</span>
 <span class="lineNum">     140 </span>            :             time.
 <span class="lineNum">     141 </span>            : 
 <span class="lineNum">     142 </span>            :       @relates UserDataAdapter
-<span class="lineNum">     143 </span>            :       @tparam UserData The data struct contained in the archive
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :       @tparam UserData The data struct contained in the archive</span>
 <span class="lineNum">     144 </span>            :       @tparam Archive The archive, which should be wrapped by UserDataAdapter
 <span class="lineNum">     145 </span>            :       @param ar The archive
 <span class="lineNum">     146 </span>            :       @throws Exception if the archive this is used upon is not wrapped with
-<a name="147"><span class="lineNum">     147 </span>            :                         UserDataAdapter. */</a>
+<span class="lineNum">     147 </span>            :                         UserDataAdapter. */
 <span class="lineNum">     148 </span>            :   template &lt;class UserData, class Archive&gt;
-<span class="lineNum">     149 </span><span class="lineCov">        800 :   UserData &amp; get_user_data( Archive &amp; ar )</span>
+<span class="lineNum">     149 </span>            :   UserData &amp; get_user_data( Archive &amp; ar )
 <span class="lineNum">     150 </span>            :   {
 <span class="lineNum">     151 </span>            :     try
 <span class="lineNum">     152 </span>            :     {
-<span class="lineNum">     153 </span><span class="lineCov">        800 :       return dynamic_cast&lt;UserDataAdapter&lt;UserData, Archive&gt; &amp;&gt;( ar ).userdata;</span>
+<span class="lineNum">     153 </span>            :       return dynamic_cast&lt;UserDataAdapter&lt;UserData, Archive&gt; &amp;&gt;( ar ).userdata;
 <span class="lineNum">     154 </span>            :     }
-<span class="lineNum">     155 </span><span class="lineCov">        800 :     catch( std::bad_cast const &amp; )</span>
+<span class="lineNum">     155 </span>            :     catch( std::bad_cast const &amp; )
 <span class="lineNum">     156 </span>            :     {
-<span class="lineNum">     157 </span><span class="lineCov">        400 :       throw ::cereal::Exception(&quot;Attempting to get user data from archive not wrapped in UserDataAdapter&quot;);</span>
+<span class="lineNum">     157 </span>            :       throw ::cereal::Exception(&quot;Attempting to get user data from archive not wrapped in UserDataAdapter&quot;);
 <span class="lineNum">     158 </span>            :     }
 <span class="lineNum">     159 </span>            :   }
 <span class="lineNum">     160 </span>            :   #endif // CEREAL_FUTURE_EXPERIMENTAL
@@ -231,7 +231,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 
