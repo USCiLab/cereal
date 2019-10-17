@@ -426,7 +426,8 @@ namespace cereal
 
 ```
 
-More information can be found by reading the doxygen documentation for `<cereal/access.hpp>` [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1specialize.html).
+More information can be found by reading the doxygen documentation for `<cereal/access.hpp>` [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1specialize.html) 
+as well as for `<cereal/specialize.hpp`> [here]({{ site.baseurl }}/assets/doxygen/structcereal_1_1specialize.html).
 
 ### Default construction
 
