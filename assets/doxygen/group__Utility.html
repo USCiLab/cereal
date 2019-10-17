@@ -107,10 +107,9 @@ template&lt;class T &gt; </td></tr>
 <tr class="memitem:ga4d4b256b14671c8270d06f40e4c4a077"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1SizeTag.html">SizeTag</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__Utility.html#ga4d4b256b14671c8270d06f40e4c4a077">make_size_tag</a> (T &amp;&amp;sz)</td></tr>
 <tr class="memdesc:ga4d4b256b14671c8270d06f40e4c4a077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a size tag from some variable.  <a href="#ga4d4b256b14671c8270d06f40e4c4a077">More...</a><br /></td></tr>
 <tr class="separator:ga4d4b256b14671c8270d06f40e4c4a077"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="memTemplParams" colspan="2"><a id="gafc913c738d15fc5dd7f4a7a20edb5225"></a>
-template&lt;class T &gt; </td></tr>
+<tr class="memitem:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1DeferredData.html">DeferredData</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__Utility.html#gafc913c738d15fc5dd7f4a7a20edb5225">defer</a> (T &amp;&amp;value)</td></tr>
-<tr class="memdesc:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks data for deferred serialization. <br /></td></tr>
+<tr class="memdesc:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks data for deferred serialization.  <a href="#gafc913c738d15fc5dd7f4a7a20edb5225">More...</a><br /></td></tr>
 <tr class="separator:gafc913c738d15fc5dd7f4a7a20edb5225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -141,7 +140,7 @@ template&lt;class T &gt; </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacecereal.html">cereal</a> { <span class="keyword">namespace </span>detail {                                          \</div><div class="line">    template &lt;&gt; <span class="keyword">struct </span>Version&lt;TYPE&gt;                                             \</div><div class="line">    {                                                                            \</div><div class="line">      static <span class="keyword">const</span> std::uint32_t version;                                        \</div><div class="line">      static std::uint32_t registerVersion()                                     \</div><div class="line">      {                                                                          \</div><div class="line">        ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \</div><div class="line">             std::type_index(<span class="keyword">typeid</span>(TYPE)).hash_code(), VERSION_NUMBER );        \</div><div class="line">        return VERSION_NUMBER;                                                   \</div><div class="line">      }                                                                          \</div><div class="line">      CEREAL_UNUSED_FUNCTION                                                     \</div><div class="line">    }; <span class="comment">/* end Version */</span>                                                         \</div><div class="line">    const std::uint32_t Version&lt;TYPE&gt;::version =                                 \</div><div class="line">      Version&lt;TYPE&gt;::registerVersion();                                          \</div><div class="line">  } }</div><div class="ttc" id="namespacecereal_html"><div class="ttname"><a href="namespacecereal.html">cereal</a></div><div class="ttdef"><b>Definition:</b> access.hpp:40</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacecereal.html">cereal</a> { <span class="keyword">namespace </span>detail {                                          \</div><div class="line">    template &lt;&gt; <span class="keyword">struct </span>Version&lt;TYPE&gt;                                             \</div><div class="line">    {                                                                            \</div><div class="line">      static <span class="keyword">const</span> std::uint32_t version;                                        \</div><div class="line">      static std::uint32_t registerVersion()                                     \</div><div class="line">      {                                                                          \</div><div class="line">        ::cereal::detail::StaticObject&lt;Versions&gt;::getInstance().mapping.emplace( \</div><div class="line">             std::type_index(<span class="keyword">typeid</span>(TYPE)).hash_code(), VERSION_NUMBER );        \</div><div class="line">        return VERSION_NUMBER;                                                   \</div><div class="line">      }                                                                          \</div><div class="line">      CEREAL_UNUSED_FUNCTION                                                     \</div><div class="line">    }; <span class="comment">/* end Version */</span>                                                         \</div><div class="line">    const std::uint32_t Version&lt;TYPE&gt;::version =                                 \</div><div class="line">      Version&lt;TYPE&gt;::registerVersion();                                          \</div><div class="line">  } }</div><div class="ttc" id="namespacecereal_html"><div class="ttname"><a href="namespacecereal.html">cereal</a></div><div class="ttdef"><b>Definition:</b> access.hpp:41</div></div>
 </div><!-- fragment -->
 <p>Defines a class version for some type. </p>
 <p>Versioning information is optional and adds some small amount of overhead to serialization. This overhead will occur both in terms of space in the archive (the version information for each class will be stored exactly once) as well as runtime (versioned serialization functions must check to see if they need to load or store version information).</p>
@@ -202,6 +201,38 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="gafc913c738d15fc5dd7f4a7a20edb5225"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafc913c738d15fc5dd7f4a7a20edb5225">&#9670;&nbsp;</a></span>defer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcereal_1_1DeferredData.html">DeferredData</a>&lt; T &gt; defer </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">related</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Marks data for deferred serialization. </p>
+<p>cereal performs a recursive depth-first traversal of data it serializes. When serializing smart pointers to large, nested, or cyclical data structures, it is possible to encounter a stack overflow from excessive recursion when following a chain of pointers.</p>
+<p>Deferment can help in these situations if the data can be serialized separately from the pointers used to traverse the structure. For example, a graph structure can have its nodes serialized before its edges:</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>MyEdge</div><div class="line">{</div><div class="line">  std::shared_ptr&lt;MyNode&gt; connection;</div><div class="line">  <span class="keywordtype">int</span> some_value;</div><div class="line"></div><div class="line">  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div><div class="line">  <span class="keywordtype">void</span> <a class="code" href="functional_8hpp.html#a02f9cfc9a4055c8a49eb050b02cd3357">serialize</a>(Archive &amp; archive)</div><div class="line">  {</div><div class="line">    <span class="comment">// when we serialize an edge, we&#39;ll defer serializing the associated node</span></div><div class="line">    archive( cereal::defer( connection ),</div><div class="line">             some_value );</div><div class="line">  }</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">struct </span>MyGraphStructure</div><div class="line">{</div><div class="line">  std::vector&lt;MyEdge&gt; edges;</div><div class="line">  std::vector&lt;MyNodes&gt; nodes;</div><div class="line"></div><div class="line">  <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div><div class="line">  <span class="keywordtype">void</span> <a class="code" href="functional_8hpp.html#a02f9cfc9a4055c8a49eb050b02cd3357">serialize</a>(Archive &amp; archive)</div><div class="line">  {</div><div class="line">    <span class="comment">// because of the deferment, we ensure all nodes are fully serialized</span></div><div class="line">    <span class="comment">// before any connection pointers to those nodes are serialized</span></div><div class="line">    archive( edges, nodes );</div><div class="line"></div><div class="line">    <span class="comment">// we have to explicitly inform the archive when it is safe to serialize</span></div><div class="line">    <span class="comment">// the deferred data</span></div><div class="line">    archive.serializeDeferments();</div><div class="line">  }</div><div class="line">};</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="ga4d4b256b14671c8270d06f40e4c4a077"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga4d4b256b14671c8270d06f40e4c4a077">&#9670;&nbsp;</a></span>make_size_tag()</h2>
 
@@ -237,7 +268,7 @@ template&lt;class T &gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 12 2019 20:46:20 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 16 2019 23:21:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
