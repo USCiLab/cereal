@@ -143,4 +143,12 @@
 #define CEREAL_HAS_CPP14
 #endif
 
+// ######################################################################
+//! Defines the CEREAL_ALIGNOF macro to use instead of alignof
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#define CEREAL_ALIGNOF __alignof
+#else // not MSVC 2013 or older
+#define CEREAL_ALIGNOF alignof
+#endif // end MSVC check
+
 #endif // CEREAL_MACROS_HPP_
