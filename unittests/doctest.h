@@ -302,7 +302,11 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26444) // Avoid unnamed objects with custom constr
 #define DOCTEST_ALIGNMENT(x)
 #define DOCTEST_NORETURN __declspec(noreturn)
 #ifndef DOCTEST_THREAD_LOCAL
+#if DOCTEST_MSVC < DOCTEST_COMPILER(19, 0, 0)
+#define DOCTEST_THREAD_LOCAL /* not supported */
+#else
 #define DOCTEST_THREAD_LOCAL __declspec(thread)
+#endif // MSVC version
 #endif // THREAD_LOCAL
 #else // MSVC
 #define DOCTEST_NOINLINE __attribute__((noinline))
