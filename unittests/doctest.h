@@ -301,21 +301,21 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26444) // Avoid unnamed objects with custom constr
 #define DOCTEST_UNUSED
 #define DOCTEST_ALIGNMENT(x)
 #define DOCTEST_NORETURN __declspec(noreturn)
-#ifndef DOCTEST_THREAD_LOCAL
 #if DOCTEST_MSVC < DOCTEST_COMPILER(19, 0, 0)
 #define DOCTEST_THREAD_LOCAL /* not supported */
+#define DOCTEST_NOEXCEPT /* not supported */
 #else
 #define DOCTEST_THREAD_LOCAL __declspec(thread)
+#define DOCTEST_NOEXCEPT noexcept
 #endif // MSVC version
-#endif // THREAD_LOCAL
+#define DOCTEST
 #else // MSVC
 #define DOCTEST_NOINLINE __attribute__((noinline))
 #define DOCTEST_UNUSED __attribute__((unused))
 #define DOCTEST_ALIGNMENT(x) __attribute__((aligned(x)))
 #define DOCTEST_NORETURN __attribute__((noreturn))
-#ifndef DOCTEST_THREAD_LOCAL
 #define DOCTEST_THREAD_LOCAL thread_local
-#endif // THREAD_LOCAL
+#define DOCTEST_NOEXCEPT noexcept
 #endif // MSVC
 
 
@@ -4272,8 +4272,8 @@ namespace {
         public:
             ScopedElement( XmlWriter* writer );
 
-            ScopedElement( ScopedElement&& other ) noexcept;
-            ScopedElement& operator=( ScopedElement&& other ) noexcept;
+            ScopedElement( ScopedElement&& other ) DOCTEST_NOEXCEPT;
+            ScopedElement& operator=( ScopedElement&& other ) DOCTEST_NOEXCEPT;
 
             ~ScopedElement();
 
@@ -4490,11 +4490,11 @@ namespace {
     :   m_writer( writer )
     {}
 
-    XmlWriter::ScopedElement::ScopedElement( ScopedElement&& other ) noexcept
+    XmlWriter::ScopedElement::ScopedElement( ScopedElement&& other ) DOCTEST_NOEXCEPT
     :   m_writer( other.m_writer ){
         other.m_writer = nullptr;
     }
-    XmlWriter::ScopedElement& XmlWriter::ScopedElement::operator=( ScopedElement&& other ) noexcept {
+    XmlWriter::ScopedElement& XmlWriter::ScopedElement::operator=( ScopedElement&& other ) DOCTEST_NOEXCEPT {
         if ( m_writer ) {
             m_writer->endElement();
         }
