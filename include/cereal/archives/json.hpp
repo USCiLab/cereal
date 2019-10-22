@@ -209,11 +209,13 @@ namespace cereal
         {
           case NodeType::StartArray:
             itsWriter.StartArray();
+            // fall through
           case NodeType::InArray:
             itsWriter.EndArray();
             break;
           case NodeType::StartObject:
             itsWriter.StartObject();
+            // fall through
           case NodeType::InObject:
             itsWriter.EndObject();
             break;
