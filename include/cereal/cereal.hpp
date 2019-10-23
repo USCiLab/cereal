@@ -312,9 +312,8 @@ namespace cereal
         return *self;
       }
 
-      //! Serializes any data marked for deferment
-      /*! This will cause any data wrapped in DeferredData to be immediately serialized
-          @relates defer */
+      //! Serializes any data marked for deferment using defer
+      /*! This will cause any data wrapped in DeferredData to be immediately serialized */
       void serializeDeferments()
       {
         for( auto & deferment : itsDeferments )
@@ -701,9 +700,8 @@ namespace cereal
         return *self;
       }
 
-      //! Serializes any data marked for deferment
-      /*! This will cause any data wrapped in DeferredData to be immediately serialized
-          @relates defer */
+      //! Serializes any data marked for deferment using defer
+      /*! This will cause any data wrapped in DeferredData to be immediately serialized */
       void serializeDeferments()
       {
         for( auto & deferment : itsDeferments )
