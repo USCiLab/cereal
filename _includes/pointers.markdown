@@ -88,6 +88,71 @@ default constructor.
 
 Serialization versioning for `load_and_construct` behaves the same way as it does for standard [serialization functions]({{ site.baseurl }}/serialization_functions.html#versioning).
 
+### Deferring pointer serialization
+
+cereal performs serialization by performing a recursive depth-first traversal through the serialization functions it processes. 
+In the case of pointers, this means that cereal will explore the pointer, serializes its contents, and then proceed. If
+that pointer then contains another pointer, cereal will follow that one, and so on.
+
+For certain data structures, cereal may trigger a stack overflow if the depth of the traversal is
+excessive. Typically this is only encountered when using smart pointers to data that may include cyclical or extensive chained
+references. An example data structure would be a graph, where nodes are stored independently of edges, which contain
+pointers to nodes.
+
+To help avoid a stack overflow in these situations, cereal offers a feature called [defer]({{ site.baseurl }}/assets/doxygen/group__Utility.html#gafc913c738d15fc5dd7f4a7a20edb5225),
+which causes data to be serialized at a later time of your choosing. This is done by wrapping data with `cereal::defer`
+and using the `serializeDeferments` archive function.
+
+To illustrate the graph example, this could be used to cause the nodes to be fully
+serialized before any of the edges, which would prevent excessive pointer following:
+
+```cpp
+#include <cereal/cereal.hpp> // for defer
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
+struct MyEdge
+{
+  std::shared_ptr<MyNode> connection;
+  int some_value;
+
+  template<class Archive>
+  void serialize(Archive & archive)
+  {
+    // when we serialize an edge, we'll defer serializing the associated node
+    // to avoid extensive recursive serialization
+    archive( cereal::defer( connection ),
+             some_value ); // the non-deferred data will be serialized immediately
+  }
+};
+
+struct MyGraphStructure
+{
+  int some_random_data;
+  std::vector<MyEdge> edges;
+  std::vector<MyNodes> nodes;
+
+  template<class Archive>
+  void serialize(Archive & archive)
+  {
+    // because of the deferment, we ensure all nodes are fully serialized
+    // before any connection pointers to those nodes in any edge are serialized
+    archive( some_random_data, edges, nodes );
+
+    // we have to explicitly inform the archive when it is safe to serialize
+    // the deferred data
+    archive.serializeDeferments();
+  }
+};
+
+```
+
+<span class="label label-warning">Important!</span>
+`defer` requires that the archive informed when to perform serialization of deferred data.
+
+While `defer` offers one possible solution to this problem, it may be possible in other contexts to simply change the
+ordering or structure of the serialization functions to achieve a similar effect. 
+
 ### Implementation notes
 
 If you are a casual user of cereal, there's no need to worry about the details of loading and saving smart pointers.  If you are curious or want a

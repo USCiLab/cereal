@@ -14,11 +14,10 @@ Keep a few things in mind when suggesting or submitting something for considerat
 
 * we strive to keep cereal as light-weight as possible
 * code must be of equal or superior quality to that already in cereal
-* new features must include unit tests and documentation
+* new features must include unit tests and documentation (doxygen and, if warranted, web documentation)
 * code must work on all of our currently supported compilers and environments (and newer versions of them): g++ 4.7.3,
   clang++ 3.3, MSVC 2013, libstdc++, and libc++
 * code should be independent of underlying computer architecture (32 vs 64 bit, little vs big endian)
-* pull requests should be done against the **develop** branch
 
 ### Learning more about cereal
 

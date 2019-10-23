@@ -32,7 +32,7 @@ cereal comes with excellent standard library support as well as binary, XML, and
 
 ### xCEREAL is unit tested
 
-Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/index.html)!) to make sure cereal is doing what it should be doing.  These unit tests require the [Boost unit test framework](http://www.boost.org/doc/libs/1_53_0/libs/test/doc/html/utf.html) to compile.
+Trust something other than good faith - we've written a basic set of unit tests (and even tested [coverage]({{ site.baseurl }}/assets/coverage/index.html)!) to make sure cereal is doing what it should be doing.  
 
 ---
 
