@@ -105,6 +105,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:abef67f45c79d199c690359715905987b inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcereal_1_1BinaryOutputArchive.html">BinaryOutputArchive</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#abef67f45c79d199c690359715905987b">operator()</a> (Types &amp;&amp;... args)</td></tr>
 <tr class="memdesc:abef67f45c79d199c690359715905987b inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes all passed in data.  <a href="classcereal_1_1OutputArchive.html#abef67f45c79d199c690359715905987b">More...</a><br /></td></tr>
 <tr class="separator:abef67f45c79d199c690359715905987b inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0070bbf21d6a02a48d55b8052b90f64 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ac0070bbf21d6a02a48d55b8052b90f64">serializeDeferments</a> ()</td></tr>
+<tr class="memdesc:ac0070bbf21d6a02a48d55b8052b90f64 inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes any data marked for deferment using defer.  <a href="classcereal_1_1OutputArchive.html#ac0070bbf21d6a02a48d55b8052b90f64">More...</a><br /></td></tr>
+<tr class="separator:ac0070bbf21d6a02a48d55b8052b90f64 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3ea2da529d82dd84c49c3a56ff91846 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ac3ea2da529d82dd84c49c3a56ff91846">registerSharedPointer</a> (void const *addr)</td></tr>
 <tr class="memdesc:ac3ea2da529d82dd84c49c3a56ff91846 inherit pub_methods_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a shared pointer with the archive.  <a href="classcereal_1_1OutputArchive.html#ac3ea2da529d82dd84c49c3a56ff91846">More...</a><br /></td></tr>
 <tr class="separator:ac3ea2da529d82dd84c49c3a56ff91846 inherit pub_methods_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,10 +137,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ad48175118ea9b931ef42a74f8efd0389 inherit pub_types_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ad48175118ea9b931ef42a74f8efd0389">is_saving</a> = std::true_type</td></tr>
 <tr class="memdesc:ad48175118ea9b931ef42a74f8efd0389 inherit pub_types_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates this archive is intended for saving.  <a href="classcereal_1_1OutputArchive.html#ad48175118ea9b931ef42a74f8efd0389">More...</a><br /></td></tr>
 <tr class="separator:ad48175118ea9b931ef42a74f8efd0389 inherit pub_types_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header related_classcereal_1_1OutputArchive"><td colspan="2" onclick="javascript:toggleInherit('related_classcereal_1_1OutputArchive')"><img src="closed.png" alt="-"/>&#160;Related Functions inherited from <a class="el" href="classcereal_1_1OutputArchive.html">cereal::OutputArchive&lt; BinaryOutputArchive, AllowEmptyClassElision &gt;</a></td></tr>
-<tr class="memitem:ab0c24042969a3832750d7a937071f91d inherit related_classcereal_1_1OutputArchive"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1OutputArchive.html#ab0c24042969a3832750d7a937071f91d">serializeDeferments</a> ()</td></tr>
-<tr class="memdesc:ab0c24042969a3832750d7a937071f91d inherit related_classcereal_1_1OutputArchive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes any data marked for deferment.  <a href="classcereal_1_1OutputArchive.html#ab0c24042969a3832750d7a937071f91d">More...</a><br /></td></tr>
-<tr class="separator:ab0c24042969a3832750d7a937071f91d inherit related_classcereal_1_1OutputArchive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An output archive designed to save data in a compact binary representation. </p>
@@ -186,7 +185,7 @@ Additional Inherited Members</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 22 2019 19:57:01 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 22 2019 21:37:44 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

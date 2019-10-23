@@ -66,7 +66,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
-<a href="#related">Related Functions</a> &#124;
 <a href="classcereal_1_1InputArchive-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cereal::InputArchive&lt; ArchiveType, Flags &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Internal.html">Internal Functionality</a></div></div>  </div>
@@ -99,6 +98,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a21bf0587ab9749e2afde4bb51d8988ec"><td class="memTemplItemLeft" align="right" valign="top">ArchiveType &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1InputArchive.html#a21bf0587ab9749e2afde4bb51d8988ec">operator()</a> (Types &amp;&amp;... args)</td></tr>
 <tr class="memdesc:a21bf0587ab9749e2afde4bb51d8988ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes all passed in data.  <a href="#a21bf0587ab9749e2afde4bb51d8988ec">More...</a><br /></td></tr>
 <tr class="separator:a21bf0587ab9749e2afde4bb51d8988ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a846b9482bf620966e2fa91921251a307"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1InputArchive.html#a846b9482bf620966e2fa91921251a307">serializeDeferments</a> ()</td></tr>
+<tr class="memdesc:a846b9482bf620966e2fa91921251a307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes any data marked for deferment using defer.  <a href="#a846b9482bf620966e2fa91921251a307">More...</a><br /></td></tr>
+<tr class="separator:a846b9482bf620966e2fa91921251a307"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27251df805e938bd528dd680c2df5a47"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1InputArchive.html#a27251df805e938bd528dd680c2df5a47">getSharedPointer</a> (std::uint32_t const id)</td></tr>
 <tr class="memdesc:a27251df805e938bd528dd680c2df5a47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a shared pointer given a unique key for it.  <a href="#a27251df805e938bd528dd680c2df5a47">More...</a><br /></td></tr>
 <tr class="separator:a27251df805e938bd528dd680c2df5a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -126,14 +128,6 @@ template&lt;class A , class B , bool C, bool D, bool E, bool F&gt; </td></tr>
 <tr class="memitem:a41750b871b4e635565f892e4abfb20b0"><td class="memTemplItemLeft" align="right" valign="top">struct&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcereal_1_1InputArchive.html#a41750b871b4e635565f892e4abfb20b0">detail::Construct</a></td></tr>
 <tr class="memdesc:a41750b871b4e635565f892e4abfb20b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Befriend for versioning in load_and_construct. <br /></td></tr>
 <tr class="separator:a41750b871b4e635565f892e4abfb20b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="related"></a>
-Related Functions</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p>(Note that these are not member functions.) </p>
-</td></tr>
-<tr class="memitem:ab0c24042969a3832750d7a937071f91d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcereal_1_1InputArchive.html#ab0c24042969a3832750d7a937071f91d">serializeDeferments</a> ()</td></tr>
-<tr class="memdesc:ab0c24042969a3832750d7a937071f91d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes any data marked for deferment.  <a href="#ab0c24042969a3832750d7a937071f91d">More...</a><br /></td></tr>
-<tr class="separator:ab0c24042969a3832750d7a937071f91d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Boost Transition Layer</h2></td></tr>
@@ -489,9 +483,8 @@ template&lt;class ArchiveType, std::uint32_t Flags = 0&gt; </div>
 
 </div>
 </div>
-<h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="ab0c24042969a3832750d7a937071f91d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0c24042969a3832750d7a937071f91d">&#9670;&nbsp;</a></span>serializeDeferments()</h2>
+<a id="a846b9482bf620966e2fa91921251a307"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a846b9482bf620966e2fa91921251a307">&#9670;&nbsp;</a></span>serializeDeferments()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -502,7 +495,7 @@ template&lt;class ArchiveType, std::uint32_t Flags = 0&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void serializeDeferments </td>
+          <td class="memname">void <a class="el" href="classcereal_1_1InputArchive.html">cereal::InputArchive</a>&lt; ArchiveType, <a class="el" href="group__Internal.html#ga95185aa9f39e4ac382bb6631beb68a67">Flags</a> &gt;::serializeDeferments </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -510,12 +503,12 @@ template&lt;class ArchiveType, std::uint32_t Flags = 0&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">related</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Serializes any data marked for deferment. </p>
+<p>Serializes any data marked for deferment using defer. </p>
 <p>This will cause any data wrapped in <a class="el" href="classcereal_1_1DeferredData.html" title="A wrapper around data that should be serialized after all non-deferred data. ">DeferredData</a> to be immediately serialized </p>
 
 </div>
@@ -527,7 +520,7 @@ template&lt;class ArchiveType, std::uint32_t Flags = 0&gt; </div>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 22 2019 19:57:01 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 22 2019 21:37:44 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

@@ -101,9 +101,10 @@ pointers to nodes.
 
 To help avoid a stack overflow in these situations, cereal offers a feature called [defer]({{ site.baseurl }}/assets/doxygen/group__Utility.html#gafc913c738d15fc5dd7f4a7a20edb5225),
 which causes data to be serialized at a later time of your choosing. This is done by wrapping data with `cereal::defer`
-and using the `serializeDeferments` archive function.
+and using the `serializeDeferments` archive member function. `serializeDeferments` should be called only once per
+archive instance, typically at the highest level of serialization possible.
 
-To illustrate the graph example, this could be used to cause the nodes to be fully
+To illustrate the graph example, `defer` could be used to cause the nodes to be fully
 serialized before any of the edges, which would prevent excessive pointer following:
 
 ```cpp
@@ -140,7 +141,7 @@ struct MyGraphStructure
     archive( some_random_data, edges, nodes );
 
     // we have to explicitly inform the archive when it is safe to serialize
-    // the deferred data
+    // the deferred data - this should only be called once on the archive
     archive.serializeDeferments();
   }
 };
