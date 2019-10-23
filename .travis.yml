@@ -10,7 +10,7 @@ addons:
   apt:
     sources: &default_sources
       - ubuntu-toolchain-r-test
-      - boost-latest
+      - libboost-latest
     packages: &default_packages
       - libboost-serialization-dev
       - libboost-dev
@@ -157,7 +157,7 @@ matrix:
 
     - compiler: clang++-8
       name: "clang++-8 c++17 libc++"
-      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON'", "COMPILER=clang++-8"]
+      env: ["CMAKE_OPTIONS='-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON -DSKIP_PERFORMANCE_COMPARISON=ON'", "COMPILER=clang++-8"]
       addons: 
         apt:
           packages: 
