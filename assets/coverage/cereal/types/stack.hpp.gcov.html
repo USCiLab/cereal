@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-12 20:45:33</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">45</td>
@@ -104,19 +104,19 @@
 <span class="lineNum">      42 </span>            :   {
 <a name="43"><span class="lineNum">      43 </span>            :     //! Allows access to the protected container in stack</a>
 <span class="lineNum">      44 </span>            :     template &lt;class T, class C&gt; inline
-<span class="lineNum">      45 </span><span class="lineCov">      30000 :     C const &amp; container( std::stack&lt;T, C&gt; const &amp; stack )</span>
+<span class="lineNum">      45 </span><span class="lineCov">      12000 :     C const &amp; container( std::stack&lt;T, C&gt; const &amp; stack )</span>
 <span class="lineNum">      46 </span>            :     {
 <span class="lineNum">      47 </span>            :       struct H : public std::stack&lt;T, C&gt;
 <span class="lineNum">      48 </span>            :       {
-<span class="lineNum">      49 </span><span class="lineCov">      30000 :         static C const &amp; get( std::stack&lt;T, C&gt; const &amp; s )</span>
+<span class="lineNum">      49 </span><span class="lineCov">      12000 :         static C const &amp; get( std::stack&lt;T, C&gt; const &amp; s )</span>
 <span class="lineNum">      50 </span>            :         {
-<span class="lineNum">      51 </span><span class="lineCov">      30000 :           return s.*(&amp;H::c);</span>
+<span class="lineNum">      51 </span><span class="lineCov">      12000 :           return s.*(&amp;H::c);</span>
 <span class="lineNum">      52 </span>            :         }
 <span class="lineNum">      53 </span>            :       };
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">      30000 :       return H::get( stack );</span>
+<span class="lineNum">      55 </span><span class="lineCov">      12000 :       return H::get( stack );</span>
 <span class="lineNum">      56 </span>            :     }
-<span class="lineNum">      57 </span><span class="lineCov">       6000 :   }</span>
+<span class="lineNum">      57 </span><span class="lineCov">       2400 :   }</span>
 <span class="lineNum">      58 </span>            : 
 <a name="59"><span class="lineNum">      59 </span>            :   //! Saving for std::stack</a>
 <span class="lineNum">      60 </span>            :   template &lt;class Archive, class T, class C&gt; inline
@@ -126,9 +126,9 @@
 <span class="lineNum">      64 </span>            :   }
 <span class="lineNum">      65 </span>            : 
 <a name="66"><span class="lineNum">      66 </span>            :   //! Loading for std::stack</a>
-<span class="lineNum">      67 </span><span class="lineCov">       6000 :   template &lt;class Archive, class T, class C&gt; inline</span>
+<span class="lineNum">      67 </span><span class="lineCov">       2400 :   template &lt;class Archive, class T, class C&gt; inline</span>
 <span class="lineNum">      68 </span>            :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::stack&lt;T, C&gt; &amp; stack )
-<span class="lineNum">      69 </span><span class="lineCov">       6000 :   {</span>
+<span class="lineNum">      69 </span><span class="lineCov">       2400 :   {</span>
 <span class="lineNum">      70 </span>            :     C container;
 <span class="lineNum">      71 </span>            :     ar( CEREAL_NVP_(&quot;container&quot;, container) );
 <span class="lineNum">      72 </span>            :     stack = std::stack&lt;T, C&gt;( std::move( container ) );

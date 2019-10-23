@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-12 20:45:33</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">184</td>
@@ -99,40 +99,40 @@
 <span class="lineNum">      37 </span>            : {
 <a name="38"><span class="lineNum">      38 </span>            :   //! Saving for std-like pair associative containers</a>
 <span class="lineNum">      39 </span>            :   template &lt;class Archive, template &lt;typename...&gt; class Map, typename... Args, typename = typename Map&lt;Args...&gt;::mapped_type&gt; inline
-<span class="lineNum">      40 </span><span class="lineCov">      46000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, Map&lt;Args...&gt; const &amp; map )</span>
+<span class="lineNum">      40 </span><span class="lineCov">      18400 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, Map&lt;Args...&gt; const &amp; map )</span>
 <span class="lineNum">      41 </span>            :   {
-<span class="lineNum">      42 </span><span class="lineCov">      46000 :     ar( make_size_tag( static_cast&lt;size_type&gt;(map.size()) ) );</span>
+<span class="lineNum">      42 </span><span class="lineCov">      18400 :     ar( make_size_tag( static_cast&lt;size_type&gt;(map.size()) ) );</span>
 <span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineCov">    6397074 :     for( const auto &amp; i : map )</span>
-<span class="lineNum">      45 </span><span class="lineCov">    6351074 :       ar( make_map_item(i.first, i.second) );</span>
-<span class="lineNum">      46 </span><span class="lineCov">      46000 :   }</span>
-<span class="lineNum">      47 </span><span class="lineCov">       2000 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">    2558894 :     for( const auto &amp; i : map )</span>
+<span class="lineNum">      45 </span><span class="lineCov">    2540494 :       ar( make_map_item(i.first, i.second) );</span>
+<span class="lineNum">      46 </span><span class="lineCov">      18400 :   }</span>
+<span class="lineNum">      47 </span><span class="lineCov">        800 : </span>
 <a name="48"><span class="lineNum">      48 </span>            :   //! Loading for std-like pair associative containers</a>
-<span class="lineNum">      49 </span><span class="lineCov">       2000 :   template &lt;class Archive, template &lt;typename...&gt; class Map, typename... Args, typename = typename Map&lt;Args...&gt;::mapped_type&gt; inline</span>
+<span class="lineNum">      49 </span><span class="lineCov">        800 :   template &lt;class Archive, template &lt;typename...&gt; class Map, typename... Args, typename = typename Map&lt;Args...&gt;::mapped_type&gt; inline</span>
 <span class="lineNum">      50 </span>            :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, Map&lt;Args...&gt; &amp; map )
-<span class="lineNum">      51 </span><span class="lineCov">     293469 :   {</span>
-<span class="lineNum">      52 </span><span class="lineCov">     291469 :     size_type size;</span>
-<span class="lineNum">      53 </span><span class="lineCov">       2000 :     ar( make_size_tag( size ) );</span>
-<span class="lineNum">      54 </span><span class="lineCov">       2000 : </span>
+<span class="lineNum">      51 </span><span class="lineCov">     117381 :   {</span>
+<span class="lineNum">      52 </span><span class="lineCov">     116581 :     size_type size;</span>
+<span class="lineNum">      53 </span><span class="lineCov">        800 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      54 </span><span class="lineCov">        800 : </span>
 <span class="lineNum">      55 </span>            :     map.clear();
-<span class="lineNum">      56 </span><span class="lineCov">       2000 : </span>
+<span class="lineNum">      56 </span><span class="lineCov">        800 : </span>
 <span class="lineNum">      57 </span>            :     auto hint = map.begin();
-<span class="lineNum">      58 </span><span class="lineCov">     257000 :     for( size_t i = 0; i &lt; size; ++i )</span>
-<span class="lineNum">      59 </span><span class="lineCov">     255000 :     {</span>
-<span class="lineNum">      60 </span><span class="lineCov">       2000 :       typename Map&lt;Args...&gt;::key_type key;</span>
-<span class="lineNum">      61 </span><span class="lineCov">       2000 :       typename Map&lt;Args...&gt;::mapped_type value;</span>
+<span class="lineNum">      58 </span><span class="lineCov">     102800 :     for( size_t i = 0; i &lt; size; ++i )</span>
+<span class="lineNum">      59 </span><span class="lineCov">     102000 :     {</span>
+<span class="lineNum">      60 </span><span class="lineCov">        800 :       typename Map&lt;Args...&gt;::key_type key;</span>
+<span class="lineNum">      61 </span><span class="lineCov">        800 :       typename Map&lt;Args...&gt;::mapped_type value;</span>
 <span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineCov">       2000 :       ar( make_map_item(key, value) );</span>
+<span class="lineNum">      63 </span><span class="lineCov">        800 :       ar( make_map_item(key, value) );</span>
 <span class="lineNum">      64 </span>            :       #ifdef CEREAL_OLDER_GCC
-<span class="lineNum">      65 </span><span class="lineCov">     301961 :       hint = map.insert( hint, std::make_pair(std::move(key), std::move(value)) );</span>
-<span class="lineNum">      66 </span><span class="lineCov">     299961 :       #else // NOT CEREAL_OLDER_GCC</span>
-<span class="lineNum">      67 </span><span class="lineCov">       2000 :       hint = map.emplace_hint( hint, std::move( key ), std::move( value ) );</span>
-<span class="lineNum">      68 </span><span class="lineCov">       2000 :       #endif // NOT CEREAL_OLDER_GCC</span>
+<span class="lineNum">      65 </span><span class="lineCov">     120786 :       hint = map.insert( hint, std::make_pair(std::move(key), std::move(value)) );</span>
+<span class="lineNum">      66 </span><span class="lineCov">     119986 :       #else // NOT CEREAL_OLDER_GCC</span>
+<span class="lineNum">      67 </span><span class="lineCov">        800 :       hint = map.emplace_hint( hint, std::move( key ), std::move( value ) );</span>
+<span class="lineNum">      68 </span><span class="lineCov">        800 :       #endif // NOT CEREAL_OLDER_GCC</span>
 <span class="lineNum">      69 </span>            :     }
-<span class="lineNum">      70 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      70 </span><span class="lineCov">        800 :   }</span>
 <span class="lineNum">      71 </span>            : } // namespace cereal
-<span class="lineNum">      72 </span><span class="lineCov">     301969 : </span>
-<span class="lineNum">      73 </span><span class="lineCov">     299969 : #endif // CEREAL_CONCEPTS_PAIR_ASSOCIATIVE_CONTAINER_HPP_</span>
+<span class="lineNum">      72 </span><span class="lineCov">     120783 : </span>
+<span class="lineNum">      73 </span><span class="lineCov">     119983 : #endif // CEREAL_CONCEPTS_PAIR_ASSOCIATIVE_CONTAINER_HPP_</span>
 </pre>
       </td>
     </tr>

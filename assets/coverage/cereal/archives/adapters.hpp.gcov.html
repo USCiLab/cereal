@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-12 20:45:33</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -179,26 +179,26 @@
 <span class="lineNum">     117 </span>            :           @tparam Args The arguments to pass to the constructor of
 <a name="118"><span class="lineNum">     118 </span>            :                        the archive. */</a>
 <span class="lineNum">     119 </span>            :       template &lt;class ... Args&gt;
-<span class="lineNum">     120 </span><span class="lineCov">       2000 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
-<span class="lineNum">     121 </span><span class="lineCov">       2000 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
-<span class="lineNum">     122 </span><span class="lineCov">       2500 :         userdata( ud )</span>
-<span class="lineNum">     123 </span><span class="lineCov">       2000 :       { }</span>
-<span class="lineNum">     124 </span><span class="lineCov">        500 : </span>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">        500 :     private:</span></a>
-<span class="lineNum">     126 </span><span class="lineCov">        500 :       //! Overload the rtti function to enable dynamic_cast</span>
-<span class="lineNum">     127 </span><span class="lineCov">        500 :       void rtti() {}</span>
-<span class="lineNum">     128 </span><span class="lineCov">        500 :       friend UserData &amp; get_user_data&lt;UserData&gt;( Archive &amp; ar );</span>
-<span class="lineNum">     129 </span><span class="lineCov">        500 :       UserData &amp; userdata; //!&lt; The actual user data</span>
-<span class="lineNum">     130 </span><span class="lineCov">        500 :   };</span>
-<span class="lineNum">     131 </span><span class="lineCov">        500 : </span>
-<span class="lineNum">     132 </span><span class="lineCov">        500 :   //! Retrieves user data from an archive wrapped by UserDataAdapter</span>
-<span class="lineNum">     133 </span><span class="lineCov">        500 :   /*! This will attempt to retrieve the user data associated with</span>
-<span class="lineNum">     134 </span><span class="lineCov">       1000 :       some archive wrapped by UserDataAdapter.  If this is used on</span>
-<span class="lineNum">     135 </span><span class="lineCov">        500 :       an archive that is not wrapped, a run-time exception will occur.</span>
-<span class="lineNum">     136 </span><span class="lineCov">        500 : </span>
-<span class="lineNum">     137 </span><span class="lineCov">        500 :       @note This feature is experimental and may be altered or removed in a future release. See issue #46.</span>
-<span class="lineNum">     138 </span><span class="lineCov">        500 : </span>
-<span class="lineNum">     139 </span><span class="lineCov">        500 :       @note The correct use of this function cannot be enforced at compile</span>
+<span class="lineNum">     120 </span><span class="lineCov">        800 :       UserDataAdapter( UserData &amp; ud, Args &amp;&amp; ... args ) :</span>
+<span class="lineNum">     121 </span><span class="lineCov">        800 :         Archive( std::forward&lt;Args&gt;( args )... ),</span>
+<span class="lineNum">     122 </span><span class="lineCov">       1000 :         userdata( ud )</span>
+<span class="lineNum">     123 </span><span class="lineCov">        800 :       { }</span>
+<span class="lineNum">     124 </span><span class="lineCov">        200 : </span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">        200 :     private:</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">        200 :       //! Overload the rtti function to enable dynamic_cast</span>
+<span class="lineNum">     127 </span><span class="lineCov">        200 :       void rtti() {}</span>
+<span class="lineNum">     128 </span><span class="lineCov">        200 :       friend UserData &amp; get_user_data&lt;UserData&gt;( Archive &amp; ar );</span>
+<span class="lineNum">     129 </span><span class="lineCov">        200 :       UserData &amp; userdata; //!&lt; The actual user data</span>
+<span class="lineNum">     130 </span><span class="lineCov">        200 :   };</span>
+<span class="lineNum">     131 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">     132 </span><span class="lineCov">        200 :   //! Retrieves user data from an archive wrapped by UserDataAdapter</span>
+<span class="lineNum">     133 </span><span class="lineCov">        200 :   /*! This will attempt to retrieve the user data associated with</span>
+<span class="lineNum">     134 </span><span class="lineCov">        400 :       some archive wrapped by UserDataAdapter.  If this is used on</span>
+<span class="lineNum">     135 </span><span class="lineCov">        200 :       an archive that is not wrapped, a run-time exception will occur.</span>
+<span class="lineNum">     136 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">     137 </span><span class="lineCov">        200 :       @note This feature is experimental and may be altered or removed in a future release. See issue #46.</span>
+<span class="lineNum">     138 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">     139 </span><span class="lineCov">        200 :       @note The correct use of this function cannot be enforced at compile</span>
 <span class="lineNum">     140 </span>            :             time.
 <span class="lineNum">     141 </span>            : 
 <span class="lineNum">     142 </span>            :       @relates UserDataAdapter

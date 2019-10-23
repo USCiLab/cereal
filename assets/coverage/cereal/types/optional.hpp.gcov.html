@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-12 20:45:33</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">40</td>
@@ -98,34 +98,34 @@
 <span class="lineNum">      36 </span>            : namespace cereal {
 <a name="37"><span class="lineNum">      37 </span>            :   //! Saving for std::optional</a>
 <span class="lineNum">      38 </span>            :   template &lt;class Archive, typename T&gt; inline
-<span class="lineNum">      39 </span><span class="lineCov">         32 :   void CEREAL_SAVE_FUNCTION_NAME(Archive&amp; ar, const std::optional&lt;T&gt;&amp; optional)</span>
+<span class="lineNum">      39 </span><span class="lineCov">         64 :   void CEREAL_SAVE_FUNCTION_NAME(Archive&amp; ar, const std::optional&lt;T&gt;&amp; optional)</span>
 <span class="lineNum">      40 </span>            :   {
-<span class="lineNum">      41 </span><span class="lineCov">         32 :     if(!optional) {</span>
-<span class="lineNum">      42 </span><span class="lineCov">         12 :       ar(CEREAL_NVP_(&quot;nullopt&quot;, true));</span>
+<span class="lineNum">      41 </span><span class="lineCov">         64 :     if(!optional) {</span>
+<span class="lineNum">      42 </span><span class="lineCov">         24 :       ar(CEREAL_NVP_(&quot;nullopt&quot;, true));</span>
 <span class="lineNum">      43 </span>            :     } else {
-<span class="lineNum">      44 </span><span class="lineCov">         20 :       ar(CEREAL_NVP_(&quot;nullopt&quot;, false),</span>
-<span class="lineNum">      45 </span><span class="lineCov">         35 :          CEREAL_NVP_(&quot;data&quot;, *optional));</span>
+<span class="lineNum">      44 </span><span class="lineCov">         40 :       ar(CEREAL_NVP_(&quot;nullopt&quot;, false),</span>
+<span class="lineNum">      45 </span><span class="lineCov">         70 :          CEREAL_NVP_(&quot;data&quot;, *optional));</span>
 <span class="lineNum">      46 </span>            :     }
-<span class="lineNum">      47 </span><span class="lineCov">         32 :   }</span>
-<span class="lineNum">      48 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">      47 </span><span class="lineCov">         64 :   }</span>
+<span class="lineNum">      48 </span><span class="lineCov">          4 : </span>
 <a name="49"><span class="lineNum">      49 </span>            :   //! Loading for std::optional</a>
-<span class="lineNum">      50 </span><span class="lineCov">          2 :   template &lt;class Archive, typename T&gt; inline</span>
-<span class="lineNum">      51 </span><span class="lineCov">          1 :   void CEREAL_LOAD_FUNCTION_NAME(Archive&amp; ar, std::optional&lt;T&gt;&amp; optional)</span>
+<span class="lineNum">      50 </span><span class="lineCov">          4 :   template &lt;class Archive, typename T&gt; inline</span>
+<span class="lineNum">      51 </span><span class="lineCov">          2 :   void CEREAL_LOAD_FUNCTION_NAME(Archive&amp; ar, std::optional&lt;T&gt;&amp; optional)</span>
 <span class="lineNum">      52 </span>            :   {
-<span class="lineNum">      53 </span><span class="lineCov">          1 :     bool nullopt;</span>
-<span class="lineNum">      54 </span><span class="lineCov">          2 :     ar(CEREAL_NVP_(&quot;nullopt&quot;, nullopt));</span>
+<span class="lineNum">      53 </span><span class="lineCov">          2 :     bool nullopt;</span>
+<span class="lineNum">      54 </span><span class="lineCov">          4 :     ar(CEREAL_NVP_(&quot;nullopt&quot;, nullopt));</span>
 <span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span><span class="lineCov">          2 :     if (nullopt) {</span>
-<span class="lineNum">      57 </span><span class="lineCov">          2 :       optional = std::nullopt;</span>
+<span class="lineNum">      56 </span><span class="lineCov">          4 :     if (nullopt) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">          4 :       optional = std::nullopt;</span>
 <span class="lineNum">      58 </span>            :     } else {
-<span class="lineNum">      59 </span><span class="lineCov">          2 :       T value;</span>
-<span class="lineNum">      60 </span><span class="lineCov">          1 :       ar(CEREAL_NVP_(&quot;data&quot;, value));</span>
+<span class="lineNum">      59 </span><span class="lineCov">          4 :       T value;</span>
+<span class="lineNum">      60 </span><span class="lineCov">          2 :       ar(CEREAL_NVP_(&quot;data&quot;, value));</span>
 <span class="lineNum">      61 </span>            :       optional = std::move(value);
-<span class="lineNum">      62 </span><span class="lineCov">          1 :     }</span>
-<span class="lineNum">      63 </span><span class="lineCov">          1 :   }</span>
+<span class="lineNum">      62 </span><span class="lineCov">          2 :     }</span>
+<span class="lineNum">      63 </span><span class="lineCov">          2 :   }</span>
 <span class="lineNum">      64 </span>            : } // namespace cereal
-<span class="lineNum">      65 </span><span class="lineCov">          2 : </span>
-<span class="lineNum">      66 </span><span class="lineCov">          2 : #endif // CEREAL_TYPES_STD_OPTIONAL_</span>
+<span class="lineNum">      65 </span><span class="lineCov">          4 : </span>
+<span class="lineNum">      66 </span><span class="lineCov">          4 : #endif // CEREAL_TYPES_STD_OPTIONAL_</span>
 </pre>
       </td>
     </tr>
