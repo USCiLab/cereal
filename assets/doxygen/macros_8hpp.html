@@ -101,6 +101,9 @@ Macros</h2></td></tr>
 <tr class="memitem:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#a6c37b2307b83bbe2a3de58d78a2b8c0b">CEREAL_NOEXCEPT</a></td></tr>
 <tr class="memdesc:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the CEREAL_NOEXCEPT macro to use instead of noexcept.  <a href="#a6c37b2307b83bbe2a3de58d78a2b8c0b">More...</a><br /></td></tr>
 <tr class="separator:a6c37b2307b83bbe2a3de58d78a2b8c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cef221591f5c83a264cd1e6738b678d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8hpp.html#a8cef221591f5c83a264cd1e6738b678d">CEREAL_ALIGNOF</a>&#160;&#160;&#160;alignof</td></tr>
+<tr class="memdesc:a8cef221591f5c83a264cd1e6738b678d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if C++17 is available.  <a href="#a8cef221591f5c83a264cd1e6738b678d">More...</a><br /></td></tr>
+<tr class="separator:a8cef221591f5c83a264cd1e6738b678d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Preprocessor macros that can customise the cereal library. </p>
@@ -108,6 +111,23 @@ Macros</h2></td></tr>
 <p>This file allows an advanced user to change these names to conform to some other style or preference. This is implemented using preprocessor macros.</p>
 <p>As a result of this, in internal cereal code you will see macros used for these function names. In user code, you should name the functions like you normally would and not use the macros to improve readability. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a8cef221591f5c83a264cd1e6738b678d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cef221591f5c83a264cd1e6738b678d">&#9670;&nbsp;</a></span>CEREAL_ALIGNOF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CEREAL_ALIGNOF&#160;&#160;&#160;alignof</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if C++17 is available. </p>
+<p>Checks if C++14 is available Defines the CEREAL_ALIGNOF macro to use instead of alignof </p>
+
+</div>
+</div>
 <a id="a854de4fbe2b80753b27264b7dda740e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a854de4fbe2b80753b27264b7dda740e8">&#9670;&nbsp;</a></span>CEREAL_LOAD_FUNCTION_NAME</h2>
 
@@ -251,7 +271,7 @@ Macros</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 16 2019 23:21:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 22 2019 19:57:00 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

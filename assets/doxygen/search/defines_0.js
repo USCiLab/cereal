@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['cereal_5falignof',['CEREAL_ALIGNOF',['../macros_8hpp.html#a8cef221591f5c83a264cd1e6738b678d',1,'macros.hpp']]],
   ['cereal_5farchive_5frestrict',['CEREAL_ARCHIVE_RESTRICT',['../traits_8hpp.html#a29490687675183194498a843f7beeb8b',1,'traits.hpp']]],
   ['cereal_5fbind_5fto_5farchives',['CEREAL_BIND_TO_ARCHIVES',['../polymorphic__impl_8hpp.html#a1287e4a45e8a9ce5d50d65c122d49d5f',1,'polymorphic_impl.hpp']]],
   ['cereal_5fbind_5fto_5farchives_5funused_5ffunction',['CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION',['../polymorphic__impl_8hpp.html#a447a2becefa10fee587b8cd1d04c7dfc',1,'polymorphic_impl.hpp']]],

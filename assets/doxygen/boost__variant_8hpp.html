@@ -65,6 +65,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">boost_variant.hpp File Reference<div class="ingroups"><a class="el" href="group__TypeSupport.html">Support for Serializing Various Types</a> &raquo; <a class="el" href="group__OtherTypes.html">Miscellaneous Types Support</a></div></div>  </div>
@@ -74,8 +75,8 @@ $(function() {
 <p>Support for boost::variant.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="cereal_8hpp_source.html">cereal/cereal.hpp</a>&quot;</code><br />
-<code>#include &lt;boost/variant.hpp&gt;</code><br />
-<code>#include &lt;boost/mpl/size.hpp&gt;</code><br />
+<code>#include &lt;boost/variant/variant_fwd.hpp&gt;</code><br />
+<code>#include &lt;boost/variant/static_visitor.hpp&gt;</code><br />
 </div>
 <p><a href="boost__variant_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -83,23 +84,34 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1boost__variant__detail_1_1variant__save__visitor.html">cereal::boost_variant_detail::variant_save_visitor&lt; Archive &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1boost__variant__detail_1_1LoadAndConstructLoadWrapper.html">cereal::boost_variant_detail::LoadAndConstructLoadWrapper&lt; Archive, T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1boost__variant__detail_1_1load__variant__wrapper.html">cereal::boost_variant_detail::load_variant_wrapper&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1boost__variant__detail_1_1load__variant__wrapper_3_01boost_1_1detail_1_1variant_1_1void___01_4.html">cereal::boost_variant_detail::load_variant_wrapper&lt; boost::detail::variant::void_ &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Avoid serializing variant void_ type.  <a href="structcereal_1_1boost__variant__detail_1_1load__variant__wrapper_3_01boost_1_1detail_1_1variant_1_1void___01_4.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcereal_1_1boost__variant__detail_1_1load__variant__wrapper.html">cereal::boost_variant_detail::load_variant_wrapper&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a92a2730ed1973ee064e402d49429392d"><td class="memItemLeft" align="right" valign="top"><a id="a92a2730ed1973ee064e402d49429392d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CEREAL_CONSTEXPR_LAMBDA</b>&#160;&#160;&#160;constexpr</td></tr>
+<tr class="separator:a92a2730ed1973ee064e402d49429392d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1d8b27c693d27811a73ad222457112ad"><td class="memTemplParams" colspan="2"><a id="a1d8b27c693d27811a73ad222457112ad"></a>
-template&lt;int N, class Variant , class ... Args, class Archive &gt; </td></tr>
-<tr class="memitem:a1d8b27c693d27811a73ad222457112ad"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; N==boost::mpl::size&lt; typename Variant::types &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>cereal::boost_variant_detail::load_variant</b> (Archive &amp;, int, Variant &amp;)</td></tr>
-<tr class="separator:a1d8b27c693d27811a73ad222457112ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab03bbaa4691f7fe57e41ffd108907c9b"><td class="memTemplParams" colspan="2"><a id="ab03bbaa4691f7fe57e41ffd108907c9b"></a>
-template&lt;class Archive , typename VariantType1 , typename... VariantTypes&gt; </td></tr>
-<tr class="memitem:ab03bbaa4691f7fe57e41ffd108907c9b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="boost__variant_8hpp.html#ab03bbaa4691f7fe57e41ffd108907c9b">cereal::CEREAL_SAVE_FUNCTION_NAME</a> (Archive &amp;ar, boost::variant&lt; VariantType1, VariantTypes... &gt; const &amp;variant)</td></tr>
-<tr class="memdesc:ab03bbaa4691f7fe57e41ffd108907c9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for boost::variant. <br /></td></tr>
-<tr class="separator:ab03bbaa4691f7fe57e41ffd108907c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee601e5b44bdc9acdef94097cbb43df"><td class="memTemplParams" colspan="2"><a id="a6ee601e5b44bdc9acdef94097cbb43df"></a>
-template&lt;class Archive , typename VariantType1 , typename... VariantTypes&gt; </td></tr>
-<tr class="memitem:a6ee601e5b44bdc9acdef94097cbb43df"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="boost__variant_8hpp.html#a6ee601e5b44bdc9acdef94097cbb43df">cereal::CEREAL_LOAD_FUNCTION_NAME</a> (Archive &amp;ar, boost::variant&lt; VariantType1, VariantTypes... &gt; &amp;variant)</td></tr>
-<tr class="memdesc:a6ee601e5b44bdc9acdef94097cbb43df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for boost::variant. <br /></td></tr>
-<tr class="separator:a6ee601e5b44bdc9acdef94097cbb43df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaef0d6cf11362910537f60cf2d977bff"><td class="memTemplParams" colspan="2"><a id="aaef0d6cf11362910537f60cf2d977bff"></a>
+template&lt;class Archive , typename ... VariantTypes&gt; </td></tr>
+<tr class="memitem:aaef0d6cf11362910537f60cf2d977bff"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="boost__variant_8hpp.html#aaef0d6cf11362910537f60cf2d977bff">cereal::CEREAL_SAVE_FUNCTION_NAME</a> (Archive &amp;ar, boost::variant&lt; VariantTypes... &gt; const &amp;variant)</td></tr>
+<tr class="memdesc:aaef0d6cf11362910537f60cf2d977bff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saving for boost::variant. <br /></td></tr>
+<tr class="separator:aaef0d6cf11362910537f60cf2d977bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a890ad33a3d0ec4f9d7408e6e7e25e772"><td class="memTemplParams" colspan="2"><a id="a890ad33a3d0ec4f9d7408e6e7e25e772"></a>
+template&lt;class Archive , typename ... VariantTypes&gt; </td></tr>
+<tr class="memitem:a890ad33a3d0ec4f9d7408e6e7e25e772"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="boost__variant_8hpp.html#a890ad33a3d0ec4f9d7408e6e7e25e772">cereal::CEREAL_LOAD_FUNCTION_NAME</a> (Archive &amp;ar, boost::variant&lt; VariantTypes... &gt; &amp;variant)</td></tr>
+<tr class="memdesc:a890ad33a3d0ec4f9d7408e6e7e25e772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loading for boost::variant. <br /></td></tr>
+<tr class="separator:a890ad33a3d0ec4f9d7408e6e7e25e772"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Support for boost::variant. </p>
@@ -107,7 +119,7 @@ template&lt;class Archive , typename VariantType1 , typename... VariantTypes&gt;
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 16 2019 23:21:56 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 22 2019 19:57:00 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
