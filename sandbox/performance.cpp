@@ -29,6 +29,9 @@
 #  pragma warning(disable : 4244 4267)
 #endif
 
+// fix for old versions of boost + deprecated auto_ptr
+#define BOOST_NO_AUTO_PTR
+
 #include <sstream>
 #include <iostream>
 #include <chrono>

@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "chrono.hpp"
 
-TEST_SUITE("chrono");
+TEST_SUITE_BEGIN("chrono");
 
 TEST_CASE("binary_chrono")
 {

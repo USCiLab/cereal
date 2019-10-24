@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "array.hpp"
 
-TEST_SUITE("array");
+TEST_SUITE_BEGIN("array");
 
 TEST_CASE("binary_array")
 {

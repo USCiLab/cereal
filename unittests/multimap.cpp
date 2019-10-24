@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "multimap.hpp"
 
-TEST_SUITE("multimap");
+TEST_SUITE_BEGIN("multimap");
 
 TEST_CASE("binary_multimap")
 {

@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "pair.hpp"
 
-TEST_SUITE("pair");
+TEST_SUITE_BEGIN("pair");
 
 TEST_CASE("binary_pair")
 {

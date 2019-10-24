@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "vector.hpp"
 
-TEST_SUITE("vector");
+TEST_SUITE_BEGIN("vector");
 
 TEST_CASE("binary_vector")
 {

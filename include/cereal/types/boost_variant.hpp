@@ -30,6 +30,13 @@
 #ifndef CEREAL_TYPES_BOOST_VARIANT_HPP_
 #define CEREAL_TYPES_BOOST_VARIANT_HPP_
 
+//! @internal
+#if defined(_MSC_VER) && _MSC_VER < 1911
+#define CEREAL_CONSTEXPR_LAMBDA
+#else // MSVC 2017 or newer, all other compilers
+#define CEREAL_CONSTEXPR_LAMBDA constexpr
+#endif
+
 #include "cereal/cereal.hpp"
 #include <boost/variant/variant_fwd.hpp>
 #include <boost/variant/static_visitor.hpp>
@@ -45,65 +52,88 @@ namespace cereal
       variant_save_visitor(Archive & ar_) : ar(ar_) {}
 
       template<class T>
-        void operator()(T const & value) const
-        {
-          ar( CEREAL_NVP_("data", value) );
-        }
+      void operator()(T const & value) const
+      {
+        ar( CEREAL_NVP_("data", value) );
+      }
 
       Archive & ar;
     };
 
-
     //! @internal
-    template<class T, class Variant, class Archive>
-    typename std::enable_if<std::is_default_constructible<T>::value>::type
-    load_variant(Archive & ar, Variant & variant)
-    {
-        T value;
-        ar( CEREAL_NVP_("data", value) );
-        variant = std::move(value);
-    }
-
     template <class Archive, class T>
     struct LoadAndConstructLoadWrapper
     {
-        using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
-        LoadAndConstructLoadWrapper() :
-            construct( reinterpret_cast<T *>( &st ) )
-        { }
+      LoadAndConstructLoadWrapper() :
+        construct( reinterpret_cast<T *>( &st ) )
+      { }
 
-        ~LoadAndConstructLoadWrapper()
+      ~LoadAndConstructLoadWrapper()
+      {
+        if (construct.itsValid)
         {
-            if (construct.itsValid)
-            {
-                construct->~T();
-            }
+          construct->~T();
         }
+      }
 
-        void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar )
-        {
-            ::cereal::detail::Construct<T, Archive>::load_andor_construct( ar, construct );
-        }
+      void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar )
+      {
+        ::cereal::detail::Construct<T, Archive>::load_andor_construct( ar, construct );
+      }
 
-        ST st;
-        ::cereal::construct<T> construct;
+      ST st;
+      ::cereal::construct<T> construct;
     };
 
-    template<class T, class Variant, class Archive>
-    typename std::enable_if<!std::is_default_constructible<T>::value>::type
-    load_variant(Archive & ar, Variant & variant)
+    //! @internal
+    template <class T> struct load_variant_wrapper;
+
+    //! Avoid serializing variant void_ type
+    /*! @internal */
+    template <>
+    struct load_variant_wrapper<boost::detail::variant::void_>
     {
+      template <class Variant, class Archive>
+      static void load_variant( Archive &, Variant & )
+      { }
+    };
+
+    //! @internal
+    template <class T>
+    struct load_variant_wrapper
+    {
+      // default constructible
+      template <class Archive, class Variant>
+      static void load_variant_impl( Archive & ar, Variant & variant, std::true_type )
+      {
+        T value;
+        ar( CEREAL_NVP_("data", value) );
+        variant = std::move(value);
+      }
+
+      // not default constructible
+      template<class Variant, class Archive>
+      static void load_variant_impl(Archive & ar, Variant & variant, std::false_type )
+      {
         LoadAndConstructLoadWrapper<Archive, T> loadWrapper;
 
         ar( CEREAL_NVP_("data", loadWrapper) );
         variant = std::move(*loadWrapper.construct.ptr());
-    }
+      }
 
+      //! @internal
+      template<class Variant, class Archive>
+      static void load_variant(Archive & ar, Variant & variant)
+      {
+        load_variant_impl( ar, variant, typename std::is_default_constructible<T>::type() );
+      }
+    };
   } // namespace boost_variant_detail
 
   //! Saving for boost::variant
-  template <class Archive, typename... VariantTypes> inline
+  template <class Archive, typename ... VariantTypes> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> const & variant )
   {
     int32_t which = variant.which();
@@ -113,14 +143,14 @@ namespace cereal
   }
 
   //! Loading for boost::variant
-  template <class Archive, typename... VariantTypes> inline
+  template <class Archive, typename ... VariantTypes> inline
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> & variant )
   {
     int32_t which;
     ar( CEREAL_NVP_("which", which) );
 
     using LoadFuncType = void(*)(Archive &, boost::variant<VariantTypes...> &);
-    constexpr LoadFuncType loadFuncArray[] = {&boost_variant_detail::load_variant<VariantTypes>...};
+    CEREAL_CONSTEXPR_LAMBDA LoadFuncType loadFuncArray[] = {&boost_variant_detail::load_variant_wrapper<VariantTypes>::load_variant...};
 
     if(which >= int32_t(sizeof(loadFuncArray)/sizeof(loadFuncArray[0])))
       throw Exception("Invalid 'which' selector when deserializing boost::variant");
@@ -128,5 +158,7 @@ namespace cereal
     loadFuncArray[which](ar, variant);
   }
 } // namespace cereal
+
+#undef CEREAL_CONSTEXPR_LAMBDA
 
 #endif // CEREAL_TYPES_BOOST_VARIANT_HPP_

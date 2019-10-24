@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "user_data_adapters.hpp"
 
-TEST_SUITE("user_data_adapters");
+TEST_SUITE_BEGIN("user_data_adapters");
 
 TEST_CASE("binary_user_data_adapters")
 {

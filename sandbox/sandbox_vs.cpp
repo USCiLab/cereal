@@ -125,10 +125,12 @@ namespace cereal
 struct A
 {
   virtual void foo() = 0;
+  virtual ~A() {}
 };
 
 struct B : A
 {
+  virtual ~B() {}
   void foo() {}
 
   template <class Archive>

@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "unordered_loads.hpp"
 
-TEST_SUITE("unordered_loads");
+TEST_SUITE_BEGIN("unordered_loads");
 
 TEST_CASE("xml_unordered_loads")
 {

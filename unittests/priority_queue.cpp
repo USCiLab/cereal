@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "priority_queue.hpp"
 
-TEST_SUITE("priority_queue");
+TEST_SUITE_BEGIN("priority_queue");
 
 TEST_CASE("binary_priority_queue")
 {

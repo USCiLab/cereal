@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.6.2)
 project (cereal)
 
 option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
+option(SKIP_PERFORMANCE_COMPARISON "Skip building performance comparison (requires boost)" OFF)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
     option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
 endif()

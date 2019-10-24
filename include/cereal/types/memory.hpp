@@ -104,6 +104,11 @@ namespace cereal
         portion of the class and replace it after whatever happens to modify it (e.g. the
         user performing construction or the wrapper shared_ptr in saving).
 
+        Note that this goes into undefined behavior territory, but as of the initial writing
+        of this, all standard library implementations of std::enable_shared_from_this are
+        compatible with this memory manipulation. It is entirely possible that this may someday
+        break or may not work with convoluted use cases.
+
         Example usage:
 
         @code{.cpp}
@@ -147,7 +152,8 @@ namespace cereal
         {
           if( !itsRestored )
           {
-            std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+            // void * cast needed when type has no trivial copy-assignment
+            std::memcpy( static_cast<void *>(itsPtr), &itsState, sizeof(ParentType) );
             itsRestored = true;
           }
         }

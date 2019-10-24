@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "portable_binary_archive.hpp"
 
-TEST_SUITE("portable_binary_archive");
+TEST_SUITE_BEGIN("portable_binary_archive");
 
 #ifdef _MSC_VER
 TEST_CASE("util")

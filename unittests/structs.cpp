@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "structs.hpp"
 
-TEST_SUITE("structs");
+TEST_SUITE_BEGIN("structs");
 
 TEST_CASE("binary_structs")
 {

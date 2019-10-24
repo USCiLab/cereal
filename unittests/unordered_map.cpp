@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "unordered_map.hpp"
 
-TEST_SUITE("unordered_map");
+TEST_SUITE_BEGIN("unordered_map");
 
 TEST_CASE("binary_unordered_map")
 {

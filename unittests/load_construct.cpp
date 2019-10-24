@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "load_construct.hpp"
 
-TEST_SUITE("load_construct");
+TEST_SUITE_BEGIN("load_construct");
 
 TEST_CASE("binary_memory_load_construct")
 {

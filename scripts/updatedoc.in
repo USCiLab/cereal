@@ -11,7 +11,7 @@ branch=`git rev-parse --abbrev-ref HEAD`
 cp -r @PROJECT_BINARY_DIR@/doc/html/ ${tempdir}
 
 git stash
-git checkout gh-pages-develop
+git checkout gh-pages
 
 rm -rf @PROJECT_SOURCE_DIR@/assets/doxygen
 mkdir @PROJECT_SOURCE_DIR@/assets/doxygen
