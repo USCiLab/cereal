@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">47</td>
-            <td class="headerCovTableEntry">53</td>
-            <td class="headerCovTableEntryMed">88.7 %</td>
+            <td class="headerCovTableEntry">432</td>
+            <td class="headerCovTableEntry">770</td>
+            <td class="headerCovTableEntryLo">56.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">32</td>
@@ -115,125 +115,125 @@
 <span class="lineNum">      53 </span>            :   template &lt;class Archive, size_t N,
 <a name="54"><span class="lineNum">      54 </span>            :             traits::EnableIf&lt;traits::is_output_serializable&lt;BinaryData&lt;std::uint32_t&gt;, Archive&gt;::value&gt;</a>
 <span class="lineNum">      55 </span>            :             = traits::sfinae&gt; inline
-<span class="lineNum">      56 </span><span class="lineCov">       1000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
+<span class="lineNum">      56 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
 <span class="lineNum">      57 </span>            :   {
-<span class="lineNum">      58 </span><span class="lineCov">       1000 :     ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::bits) );</span>
+<span class="lineNum">      58 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::bits) );</span>
 <span class="lineNum">      59 </span>            : 
 <span class="lineNum">      60 </span>            :     // Serialize 8 bit chunks
-<span class="lineNum">      61 </span><span class="lineCov">       1000 :     std::uint8_t chunk = 0;</span>
-<span class="lineNum">      62 </span><span class="lineCov">       1000 :     std::uint8_t mask = 0x80;</span>
+<span class="lineNum">      61 </span><span class="lineCov">       2000 :     std::uint8_t chunk = 0;</span>
+<span class="lineNum">      62 </span><span class="lineCov">       2000 :     std::uint8_t mask = 0x80;</span>
 <span class="lineNum">      63 </span>            : 
 <span class="lineNum">      64 </span>            :     // Set each chunk using a rotating mask for the current bit
-<span class="lineNum">      65 </span><span class="lineCov">     180400 :     for( std::size_t i = 0; i &lt; N; ++i )</span>
+<span class="lineNum">      65 </span><span class="lineCov">     360800 :     for( std::size_t i = 0; i &lt; N; ++i )</span>
 <span class="lineNum">      66 </span>            :     {
-<span class="lineNum">      67 </span><span class="lineCov">     179400 :       if( bits[i] )</span>
-<span class="lineNum">      68 </span><span class="lineCov">      86708 :         chunk |= mask;</span>
+<span class="lineNum">      67 </span><span class="lineCov">     358800 :       if( bits[i] )</span>
+<span class="lineNum">      68 </span><span class="lineCov">     172966 :         chunk |= mask;</span>
 <span class="lineNum">      69 </span>            : 
-<span class="lineNum">      70 </span><span class="lineCov">     179400 :       mask &gt;&gt;= 1;</span>
+<span class="lineNum">      70 </span><span class="lineCov">     358800 :       mask = static_cast&lt;std::uint8_t&gt;(mask &gt;&gt; 1);</span>
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            :       // output current chunk when mask is empty (8 bits)
-<span class="lineNum">      73 </span><span class="lineCov">     179400 :       if( mask == 0 )</span>
+<span class="lineNum">      73 </span><span class="lineCov">     358800 :       if( mask == 0 )</span>
 <span class="lineNum">      74 </span>            :       {
-<span class="lineNum">      75 </span><span class="lineCov">      22400 :         ar( chunk );</span>
-<span class="lineNum">      76 </span><span class="lineCov">      22400 :         chunk = 0;</span>
-<span class="lineNum">      77 </span><span class="lineCov">      22400 :         mask = 0x80;</span>
+<span class="lineNum">      75 </span><span class="lineCov">      44800 :         ar( chunk );</span>
+<span class="lineNum">      76 </span><span class="lineCov">      44800 :         chunk = 0;</span>
+<span class="lineNum">      77 </span><span class="lineCov">      44800 :         mask = 0x80;</span>
 <span class="lineNum">      78 </span>            :       }
 <span class="lineNum">      79 </span>            :     }
 <span class="lineNum">      80 </span>            : 
 <span class="lineNum">      81 </span>            :     // serialize remainder, if it exists
-<span class="lineNum">      82 </span><span class="lineCov">       1000 :     if( mask != 0x80 )</span>
-<span class="lineNum">      83 </span><span class="lineCov">        200 :       ar( chunk );</span>
-<span class="lineNum">      84 </span><span class="lineCov">       1000 :   }</span>
-<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      82 </span><span class="lineCov">       2000 :     if( mask != 0x80 )</span>
+<span class="lineNum">      83 </span><span class="lineCov">        400 :       ar( chunk );</span>
+<span class="lineNum">      84 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">      85 </span><span class="lineCov">        200 : </span>
 <span class="lineNum">      86 </span>            :   //! Serializing (save) for std::bitset when BinaryData is not supported
-<span class="lineNum">      87 </span>            :   template &lt;class Archive, size_t N,
+<span class="lineNum">      87 </span><span class="lineCov">        200 :   template &lt;class Archive, size_t N,</span>
 <a name="88"><span class="lineNum">      88 </span>            :             traits::DisableIf&lt;traits::is_output_serializable&lt;BinaryData&lt;std::uint32_t&gt;, Archive&gt;::value&gt;</a>
 <span class="lineNum">      89 </span>            :             = traits::sfinae&gt; inline
-<span class="lineNum">      90 </span><span class="lineCov">       1000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
-<span class="lineNum">      91 </span>            :   {
+<span class="lineNum">      90 </span><span class="lineCov">        200 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; const &amp; bits )</span>
+<span class="lineNum">      91 </span><span class="lineCov">        200 :   {</span>
 <span class="lineNum">      92 </span>            :     try
 <span class="lineNum">      93 </span>            :     {
-<span class="lineNum">      94 </span><span class="lineCov">       1000 :       auto const b = bits.to_ulong();</span>
-<span class="lineNum">      95 </span><span class="lineCov">        506 :       ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::ulong) );</span>
-<span class="lineNum">      96 </span><span class="lineCov">        506 :       ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
-<span class="lineNum">      97 </span>            :     }
-<span class="lineNum">      98 </span><span class="lineCov">        988 :     catch( std::overflow_error const &amp; )</span>
-<span class="lineNum">      99 </span>            :     {
+<span class="lineNum">      94 </span><span class="lineCov">     102600 :       auto const b = bits.to_ulong();</span>
+<span class="lineNum">      95 </span>            :       ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::ulong) );
+<span class="lineNum">      96 </span><span class="lineCov">     102400 :       ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
+<span class="lineNum">      97 </span><span class="lineCov">      51161 :     }</span>
+<span class="lineNum">      98 </span>            :     catch( std::overflow_error const &amp; )
+<span class="lineNum">      99 </span><span class="lineCov">     102400 :     {</span>
 <span class="lineNum">     100 </span>            :       try
 <span class="lineNum">     101 </span>            :       {
-<span class="lineNum">     102 </span><span class="lineCov">        494 :         auto const b = bits.to_ullong();</span>
-<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::ullong) );</span>
-<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
-<span class="lineNum">     105 </span>            :       }
-<span class="lineNum">     106 </span><span class="lineCov">        988 :       catch( std::overflow_error const &amp; )</span>
+<span class="lineNum">     102 </span><span class="lineCov">     102400 :         auto const b = bits.to_ullong();</span>
+<span class="lineNum">     103 </span>            :         ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::ullong) );
+<span class="lineNum">     104 </span><span class="lineCov">      12800 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
+<span class="lineNum">     105 </span><span class="lineCov">      12800 :       }</span>
+<span class="lineNum">     106 </span><span class="lineCov">      12800 :       catch( std::overflow_error const &amp; )</span>
 <span class="lineNum">     107 </span>            :       {
-<span class="lineNum">     108 </span><span class="lineCov">        494 :         ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::string) );</span>
-<span class="lineNum">     109 </span><span class="lineCov">        494 :         ar( CEREAL_NVP_(&quot;data&quot;, bits.to_string()) );</span>
+<span class="lineNum">     108 </span>            :         ar( CEREAL_NVP_(&quot;type&quot;, bitset_detail::type::string) );
+<span class="lineNum">     109 </span>            :         ar( CEREAL_NVP_(&quot;data&quot;, bits.to_string()) );
 <span class="lineNum">     110 </span>            :       }
-<span class="lineNum">     111 </span>            :     }
-<span class="lineNum">     112 </span><span class="lineCov">       1000 :   }</span>
-<span class="lineNum">     113 </span>            : 
-<a name="114"><span class="lineNum">     114 </span>            :   //! Serializing (load) for std::bitset</a>
+<span class="lineNum">     111 </span><span class="lineCov">        200 :     }</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     113 </span><span class="lineCov">        200 : </span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">        200 :   //! Serializing (load) for std::bitset</span></a>
 <span class="lineNum">     115 </span>            :   template &lt;class Archive, size_t N&gt; inline
-<span class="lineNum">     116 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; &amp; bits )</span>
+<span class="lineNum">     116 </span><span class="lineCov">        200 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::bitset&lt;N&gt; &amp; bits )</span>
 <span class="lineNum">     117 </span>            :   {
 <span class="lineNum">     118 </span>            :     bitset_detail::type t;
-<span class="lineNum">     119 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;type&quot;, t) );</span>
-<span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span><span class="lineCov">       2000 :     switch( t )</span>
+<span class="lineNum">     119 </span><span class="lineCov">        200 :     ar( CEREAL_NVP_(&quot;type&quot;, t) );</span>
+<span class="lineNum">     120 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">     121 </span>            :     switch( t )
 <span class="lineNum">     122 </span>            :     {
-<span class="lineNum">     123 </span>            :       case bitset_detail::type::ulong:
+<span class="lineNum">     123 </span><span class="lineCov">      51400 :       case bitset_detail::type::ulong:</span>
 <span class="lineNum">     124 </span>            :       {
-<span class="lineNum">     125 </span>            :         unsigned long b;
-<span class="lineNum">     126 </span><span class="lineCov">        506 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
-<span class="lineNum">     127 </span><span class="lineCov">        506 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">     128 </span><span class="lineCov">        506 :         break;</span>
+<span class="lineNum">     125 </span><span class="lineCov">      51200 :         unsigned long b;</span>
+<span class="lineNum">     126 </span><span class="lineCov">      25465 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
+<span class="lineNum">     127 </span>            :         bits = std::bitset&lt;N&gt;( b );
+<span class="lineNum">     128 </span><span class="lineCov">      51200 :         break;</span>
 <span class="lineNum">     129 </span>            :       }
 <span class="lineNum">     130 </span>            :       case bitset_detail::type::ullong:
-<span class="lineNum">     131 </span>            :       {
+<span class="lineNum">     131 </span><span class="lineCov">      51200 :       {</span>
 <span class="lineNum">     132 </span>            :         unsigned long long b;
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     133 </span><span class="lineCov">       6400 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
+<span class="lineNum">     134 </span><span class="lineCov">       6400 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">     135 </span><span class="lineCov">       6400 :         break;</span>
 <span class="lineNum">     136 </span>            :       }
 <span class="lineNum">     137 </span>            :       case bitset_detail::type::string:
 <span class="lineNum">     138 </span>            :       {
-<span class="lineNum">     139 </span><span class="lineCov">        988 :         std::string b;</span>
-<span class="lineNum">     140 </span><span class="lineCov">        494 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
-<span class="lineNum">     141 </span><span class="lineCov">        494 :         bits = std::bitset&lt;N&gt;( b );</span>
-<span class="lineNum">     142 </span><span class="lineCov">        494 :         break;</span>
-<span class="lineNum">     143 </span>            :       }
+<span class="lineNum">     139 </span>            :         std::string b;
+<span class="lineNum">     140 </span><span class="lineCov">        200 :         ar( CEREAL_NVP_(&quot;data&quot;, b) );</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         bits = std::bitset&lt;N&gt;( b );</span>
+<span class="lineNum">     142 </span><span class="lineCov">        200 :         break;</span>
+<span class="lineNum">     143 </span><span class="lineCov">        200 :       }</span>
 <span class="lineNum">     144 </span>            :       case bitset_detail::type::bits:
-<span class="lineNum">     145 </span>            :       {
+<span class="lineNum">     145 </span><span class="lineCov">        200 :       {</span>
 <span class="lineNum">     146 </span>            :         // Normally we would use BinaryData to route this at compile time,
 <span class="lineNum">     147 </span>            :         // but doing this at runtime doesn't break any old serialization
-<span class="lineNum">     148 </span><span class="lineCov">       1000 :         std::uint8_t chunk = 0;</span>
-<span class="lineNum">     149 </span><span class="lineCov">       1000 :         std::uint8_t mask  = 0;</span>
+<span class="lineNum">     148 </span><span class="lineCov">        200 :         std::uint8_t chunk = 0;</span>
+<span class="lineNum">     149 </span><span class="lineCov">        200 :         std::uint8_t mask  = 0;</span>
 <span class="lineNum">     150 </span>            : 
-<span class="lineNum">     151 </span><span class="lineCov">       1000 :         bits.reset();</span>
-<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     151 </span>            :         bits.reset();
+<span class="lineNum">     152 </span><span class="lineCov">      13200 : </span>
 <span class="lineNum">     153 </span>            :         // Load one chunk at a time, rotating through the chunk
-<span class="lineNum">     154 </span>            :         // to set bits in the bitset
-<span class="lineNum">     155 </span><span class="lineCov">     180400 :         for( std::size_t i = 0; i &lt; N; ++i )</span>
+<span class="lineNum">     154 </span><span class="lineCov">      13000 :         // to set bits in the bitset</span>
+<span class="lineNum">     155 </span><span class="lineCov">       6493 :         for( std::size_t i = 0; i &lt; N; ++i )</span>
 <span class="lineNum">     156 </span>            :         {
-<span class="lineNum">     157 </span><span class="lineCov">     179400 :           if( mask == 0 )</span>
+<span class="lineNum">     157 </span><span class="lineCov">      13000 :           if( mask == 0 )</span>
 <span class="lineNum">     158 </span>            :           {
-<span class="lineNum">     159 </span><span class="lineCov">      22600 :             ar( chunk );</span>
-<span class="lineNum">     160 </span><span class="lineCov">      22600 :             mask = 0x80;</span>
+<span class="lineNum">     159 </span>            :             ar( chunk );
+<span class="lineNum">     160 </span><span class="lineCov">      13000 :             mask = 0x80;</span>
 <span class="lineNum">     161 </span>            :           }
-<span class="lineNum">     162 </span>            : 
-<span class="lineNum">     163 </span><span class="lineCov">     179400 :           if( chunk &amp; mask )</span>
-<span class="lineNum">     164 </span><span class="lineCov">      86708 :             bits[i] = 1;</span>
+<span class="lineNum">     162 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     163 </span><span class="lineCov">       1600 :           if( chunk &amp; mask )</span>
+<span class="lineNum">     164 </span><span class="lineCov">       1600 :             bits[i] = 1;</span>
 <span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span><span class="lineCov">     179400 :           mask &gt;&gt;= 1;</span>
+<span class="lineNum">     166 </span>            :           mask = static_cast&lt;std::uint8_t&gt;(mask &gt;&gt; 1);
 <span class="lineNum">     167 </span>            :         }
-<span class="lineNum">     168 </span><span class="lineCov">       1000 :         break;</span>
-<span class="lineNum">     169 </span>            :       }
-<span class="lineNum">     170 </span>            :       default:
-<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         throw Exception(&quot;Invalid bitset data representation&quot;);</span>
-<span class="lineNum">     172 </span>            :     }
-<span class="lineNum">     173 </span><span class="lineCov">       2000 :   }</span>
-<span class="lineNum">     174 </span>            : } // namespace cereal
+<span class="lineNum">     168 </span>            :         break;
+<span class="lineNum">     169 </span><span class="lineCov">        200 :       }</span>
+<span class="lineNum">     170 </span><span class="lineCov">        200 :       default:</span>
+<span class="lineNum">     171 </span><span class="lineCov">        200 :         throw Exception(&quot;Invalid bitset data representation&quot;);</span>
+<span class="lineNum">     172 </span><span class="lineCov">        400 :     }</span>
+<span class="lineNum">     173 </span>            :   }
+<span class="lineNum">     174 </span><span class="lineCov">        400 : } // namespace cereal</span>
 <span class="lineNum">     175 </span>            : 
 <span class="lineNum">     176 </span>            : #endif // CEREAL_TYPES_BITSET_HPP_
 </pre>
@@ -244,7 +244,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 

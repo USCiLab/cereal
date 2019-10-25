@@ -319,6 +319,9 @@ used need to be registered. However, cereal still needs to know how to properly 
 Normally, cereal can determine this automatically if your derived class serializes the base class:
 
 ```cpp
+#include <cereal/types/polymorphic.hpp> // be sure to include support for polymorphism
+#include <cereal/types/base_class.hpp>
+
 struct Base
 {
   virtual void foo() = 0;

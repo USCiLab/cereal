@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['access',['access',['../classcereal_1_1access.html',1,'cereal']]],
-  ['access_20control_20and_20disambiguation',['Access Control and Disambiguation',['../group__Access.html',1,'']]],
+  ['access',['access',['../classcereal_1_1access.html',1,'cereal::access'],['../group__Access.html',1,'(Global Namespace)']]],
   ['access_2ehpp',['access.hpp',['../access_8hpp.html',1,'']]],
   ['adapters_2ehpp',['adapters.hpp',['../adapters_8hpp.html',1,'']]],
   ['adl_5ftag',['adl_tag',['../structcereal_1_1detail_1_1adl__tag.html',1,'cereal::detail']]],
@@ -9,5 +8,6 @@ var searchData=
   ['anyconvert',['AnyConvert',['../structcereal_1_1traits_1_1detail_1_1AnyConvert.html',1,'cereal::traits::detail']]],
   ['appendattribute',['appendAttribute',['../classcereal_1_1XMLOutputArchive.html#afbc756983609a1600576faff3c558c57',1,'cereal::XMLOutputArchive']]],
   ['array_2ehpp',['array.hpp',['../array_8hpp.html',1,'']]],
+  ['atomic_2ehpp',['atomic.hpp',['../atomic_8hpp.html',1,'']]],
   ['abstract_20type_20concept_20support',['Abstract Type Concept Support',['../group__TypeConcepts.html',1,'']]]
 ];

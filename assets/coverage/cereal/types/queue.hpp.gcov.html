@@ -31,17 +31,17 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">30</td>
-            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">329</td>
+            <td class="headerCovTableEntry">329</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">110</td>
-            <td class="headerCovTableEntry">110</td>
+            <td class="headerCovTableEntry">95</td>
+            <td class="headerCovTableEntry">95</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -107,88 +107,88 @@
 <span class="lineNum">      45 </span>            :     //! Allows access to the protected container in queue
 <a name="46"><span class="lineNum">      46 </span>            :     /*! @internal */</a>
 <span class="lineNum">      47 </span>            :     template &lt;class T, class C&gt; inline
-<span class="lineNum">      48 </span><span class="lineCov">       6000 :     C const &amp; container( std::queue&lt;T, C&gt; const &amp; queue )</span>
+<span class="lineNum">      48 </span><span class="lineCov">      12000 :     C const &amp; container( std::queue&lt;T, C&gt; const &amp; queue )</span>
 <span class="lineNum">      49 </span>            :     {
-<a name="50"><span class="lineNum">      50 </span>            :       struct H : public std::queue&lt;T, C&gt;</a>
+<span class="lineNum">      50 </span>            :       struct H : public std::queue&lt;T, C&gt;
 <span class="lineNum">      51 </span>            :       {
-<span class="lineNum">      52 </span><span class="lineCov">       6000 :         static C const &amp; get( std::queue&lt;T, C&gt; const &amp; q )</span>
+<span class="lineNum">      52 </span><span class="lineCov">      12000 :         static C const &amp; get( std::queue&lt;T, C&gt; const &amp; q )</span>
 <span class="lineNum">      53 </span>            :         {
-<span class="lineNum">      54 </span><span class="lineCov">       6000 :           return q.*(&amp;H::c);</span>
+<span class="lineNum">      54 </span><span class="lineCov">      12000 :           return q.*(&amp;H::c);</span>
 <span class="lineNum">      55 </span>            :         }
 <span class="lineNum">      56 </span>            :       };
 <span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span><span class="lineCov">       6000 :       return H::get( queue );</span>
+<span class="lineNum">      58 </span><span class="lineCov">      12000 :       return H::get( queue );</span>
 <span class="lineNum">      59 </span>            :     }
-<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      60 </span><span class="lineCov">       2400 : </span>
 <span class="lineNum">      61 </span>            :     //! Allows access to the protected container in priority queue
 <a name="62"><span class="lineNum">      62 </span>            :     /*! @internal */</a>
 <span class="lineNum">      63 </span>            :     template &lt;class T, class C, class Comp&gt; inline
-<span class="lineNum">      64 </span><span class="lineCov">       6000 :     C const &amp; container( std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )</span>
+<span class="lineNum">      64 </span><span class="lineCov">      12000 :     C const &amp; container( std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )</span>
 <span class="lineNum">      65 </span>            :     {
-<a name="66"><span class="lineNum">      66 </span>            :       struct H : public std::priority_queue&lt;T, C, Comp&gt;</a>
+<span class="lineNum">      66 </span>            :       struct H : public std::priority_queue&lt;T, C, Comp&gt;
 <span class="lineNum">      67 </span>            :       {
-<span class="lineNum">      68 </span><span class="lineCov">       6000 :         static C const &amp; get( std::priority_queue&lt;T, C, Comp&gt; const &amp; pq )</span>
+<span class="lineNum">      68 </span><span class="lineCov">      12000 :         static C const &amp; get( std::priority_queue&lt;T, C, Comp&gt; const &amp; pq )</span>
 <span class="lineNum">      69 </span>            :         {
-<span class="lineNum">      70 </span><span class="lineCov">       6000 :           return pq.*(&amp;H::c);</span>
+<span class="lineNum">      70 </span><span class="lineCov">      14400 :           return pq.*(&amp;H::c);</span>
 <span class="lineNum">      71 </span>            :         }
-<span class="lineNum">      72 </span>            :       };
+<span class="lineNum">      72 </span><span class="lineCov">       2400 :       };</span>
 <span class="lineNum">      73 </span>            : 
-<span class="lineNum">      74 </span><span class="lineCov">       6000 :       return H::get( priority_queue );</span>
+<span class="lineNum">      74 </span><span class="lineCov">      12000 :       return H::get( priority_queue );</span>
 <span class="lineNum">      75 </span>            :     }
-<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      76 </span><span class="lineCov">       2400 : </span>
 <span class="lineNum">      77 </span>            :     //! Allows access to the protected comparator in priority queue
 <a name="78"><span class="lineNum">      78 </span>            :     /*! @internal */</a>
 <span class="lineNum">      79 </span>            :     template &lt;class T, class C, class Comp&gt; inline
-<span class="lineNum">      80 </span><span class="lineCov">       2000 :     Comp const &amp; comparator( std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )</span>
+<span class="lineNum">      80 </span>            :     Comp const &amp; comparator( std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )
 <span class="lineNum">      81 </span>            :     {
-<a name="82"><span class="lineNum">      82 </span>            :       struct H : public std::priority_queue&lt;T, C, Comp&gt;</a>
+<span class="lineNum">      82 </span><span class="lineCov">       2400 :       struct H : public std::priority_queue&lt;T, C, Comp&gt;</span>
 <span class="lineNum">      83 </span>            :       {
-<span class="lineNum">      84 </span><span class="lineCov">       2000 :         static Comp const &amp; get( std::priority_queue&lt;T, C, Comp&gt; const &amp; pq )</span>
+<span class="lineNum">      84 </span><span class="lineCov">       2400 :         static Comp const &amp; get( std::priority_queue&lt;T, C, Comp&gt; const &amp; pq )</span>
 <span class="lineNum">      85 </span>            :         {
-<span class="lineNum">      86 </span><span class="lineCov">       2000 :           return pq.*(&amp;H::comp);</span>
+<span class="lineNum">      86 </span><span class="lineCov">       2400 :           return pq.*(&amp;H::comp);</span>
 <span class="lineNum">      87 </span>            :         }
-<span class="lineNum">      88 </span>            :       };
+<span class="lineNum">      88 </span><span class="lineCov">       2400 :       };</span>
 <span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">       2000 :       return H::get( priority_queue );</span>
+<span class="lineNum">      90 </span>            :       return H::get( priority_queue );
 <span class="lineNum">      91 </span>            :     }
 <span class="lineNum">      92 </span>            :   }
 <span class="lineNum">      93 </span>            : 
-<a name="94"><span class="lineNum">      94 </span>            :   //! Saving for std::queue</a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">       2400 :   //! Saving for std::queue</span></a>
 <span class="lineNum">      95 </span>            :   template &lt;class Archive, class T, class C&gt; inline
-<span class="lineNum">      96 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::queue&lt;T, C&gt; const &amp; queue )</span>
+<span class="lineNum">      96 </span><span class="lineCov">       2400 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::queue&lt;T, C&gt; const &amp; queue )</span>
 <span class="lineNum">      97 </span>            :   {
-<span class="lineNum">      98 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;container&quot;, queue_detail::container( queue )) );</span>
-<span class="lineNum">      99 </span><span class="lineCov">       2000 :   }</span>
-<span class="lineNum">     100 </span>            : 
+<span class="lineNum">      98 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;container&quot;, queue_detail::container( queue )) );</span>
+<span class="lineNum">      99 </span>            :   }
+<span class="lineNum">     100 </span><span class="lineCov">       2400 : </span>
 <a name="101"><span class="lineNum">     101 </span>            :   //! Loading for std::queue</a>
 <span class="lineNum">     102 </span>            :   template &lt;class Archive, class T, class C&gt; inline
-<span class="lineNum">     103 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::queue&lt;T, C&gt; &amp; queue )</span>
+<span class="lineNum">     103 </span>            :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::queue&lt;T, C&gt; &amp; queue )
 <span class="lineNum">     104 </span>            :   {
-<span class="lineNum">     105 </span><span class="lineCov">       4000 :     C container;</span>
-<span class="lineNum">     106 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;container&quot;, container) );</span>
-<span class="lineNum">     107 </span><span class="lineCov">       2000 :     queue = std::queue&lt;T, C&gt;( std::move( container ) );</span>
-<span class="lineNum">     108 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">     105 </span>            :     C container;
+<span class="lineNum">     106 </span><span class="lineCov">       2400 :     ar( CEREAL_NVP_(&quot;container&quot;, container) );</span>
+<span class="lineNum">     107 </span>            :     queue = std::queue&lt;T, C&gt;( std::move( container ) );
+<span class="lineNum">     108 </span><span class="lineCov">       2400 :   }</span>
 <span class="lineNum">     109 </span>            : 
-<a name="110"><span class="lineNum">     110 </span>            :   //! Saving for std::priority_queue</a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">       2400 :   //! Saving for std::priority_queue</span></a>
 <span class="lineNum">     111 </span>            :   template &lt;class Archive, class T, class C, class Comp&gt; inline
-<span class="lineNum">     112 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )</span>
+<span class="lineNum">     112 </span><span class="lineCov">       2400 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::priority_queue&lt;T, C, Comp&gt; const &amp; priority_queue )</span>
 <span class="lineNum">     113 </span>            :   {
-<span class="lineNum">     114 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;comparator&quot;, queue_detail::comparator( priority_queue )) );</span>
-<span class="lineNum">     115 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;container&quot;, queue_detail::container( priority_queue )) );</span>
-<span class="lineNum">     116 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">     114 </span>            :     ar( CEREAL_NVP_(&quot;comparator&quot;, queue_detail::comparator( priority_queue )) );
+<span class="lineNum">     115 </span>            :     ar( CEREAL_NVP_(&quot;container&quot;, queue_detail::container( priority_queue )) );
+<span class="lineNum">     116 </span>            :   }
 <span class="lineNum">     117 </span>            : 
-<a name="118"><span class="lineNum">     118 </span>            :   //! Loading for std::priority_queue</a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">       2400 :   //! Loading for std::priority_queue</span></a>
 <span class="lineNum">     119 </span>            :   template &lt;class Archive, class T, class C, class Comp&gt; inline
-<span class="lineNum">     120 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::priority_queue&lt;T, C, Comp&gt; &amp; priority_queue )</span>
+<span class="lineNum">     120 </span>            :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::priority_queue&lt;T, C, Comp&gt; &amp; priority_queue )
 <span class="lineNum">     121 </span>            :   {
-<span class="lineNum">     122 </span>            :     Comp comparator;
-<span class="lineNum">     123 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;comparator&quot;, comparator) );</span>
-<span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span><span class="lineCov">       4000 :     C container;</span>
-<span class="lineNum">     126 </span><span class="lineCov">       2000 :     ar( CEREAL_NVP_(&quot;container&quot;, container) );</span>
+<span class="lineNum">     122 </span><span class="lineCov">       2400 :     Comp comparator;</span>
+<span class="lineNum">     123 </span>            :     ar( CEREAL_NVP_(&quot;comparator&quot;, comparator) );
+<span class="lineNum">     124 </span><span class="lineCov">       2400 : </span>
+<span class="lineNum">     125 </span>            :     C container;
+<span class="lineNum">     126 </span>            :     ar( CEREAL_NVP_(&quot;container&quot;, container) );
 <span class="lineNum">     127 </span>            : 
-<span class="lineNum">     128 </span><span class="lineCov">       2000 :     priority_queue = std::priority_queue&lt;T, C, Comp&gt;( comparator, std::move( container ) );</span>
-<span class="lineNum">     129 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">     128 </span>            :     priority_queue = std::priority_queue&lt;T, C, Comp&gt;( comparator, std::move( container ) );
+<span class="lineNum">     129 </span>            :   }
 <span class="lineNum">     130 </span>            : } // namespace cereal
 <span class="lineNum">     131 </span>            : 
 <span class="lineNum">     132 </span>            : #endif // CEREAL_TYPES_QUEUE_HPP_
@@ -200,7 +200,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 

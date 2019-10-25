@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">5</td>
-            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">25</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">8</td>
@@ -154,41 +154,41 @@
 <span class="lineNum">      92 </span>            :   template &lt;class Archive, class T&gt; inline
 <a name="93"><span class="lineNum">      93 </span>            :   typename std::enable_if&lt;common_detail::is_enum&lt;T&gt;::value,</a>
 <span class="lineNum">      94 </span>            :                           typename common_detail::is_enum&lt;T&gt;::base_type&gt;::type
-<span class="lineNum">      95 </span><span class="lineCov">       2000 :   CEREAL_SAVE_MINIMAL_FUNCTION_NAME( Archive const &amp;, T const &amp; t )</span>
+<span class="lineNum">      95 </span><span class="lineCov">       4000 :   CEREAL_SAVE_MINIMAL_FUNCTION_NAME( Archive const &amp;, T const &amp; t )</span>
 <span class="lineNum">      96 </span>            :   {
-<span class="lineNum">      97 </span><span class="lineCov">       2000 :     return static_cast&lt;typename common_detail::is_enum&lt;T&gt;::base_type&gt;(t);</span>
+<span class="lineNum">      97 </span><span class="lineCov">       4000 :     return static_cast&lt;typename common_detail::is_enum&lt;T&gt;::base_type&gt;(t);</span>
 <span class="lineNum">      98 </span>            :   }
-<span class="lineNum">      99 </span>            : 
+<span class="lineNum">      99 </span><span class="lineCov">       1000 : </span>
 <span class="lineNum">     100 </span>            :   //! Loading for enum types
-<a name="101"><span class="lineNum">     101 </span>            :   template &lt;class Archive, class T&gt; inline</a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">       1000 :   template &lt;class Archive, class T&gt; inline</span></a>
 <span class="lineNum">     102 </span>            :   typename std::enable_if&lt;common_detail::is_enum&lt;T&gt;::value, void&gt;::type
-<span class="lineNum">     103 </span><span class="lineCov">       2000 :   CEREAL_LOAD_MINIMAL_FUNCTION_NAME( Archive const &amp;, T &amp;&amp; t,</span>
+<span class="lineNum">     103 </span><span class="lineCov">       1000 :   CEREAL_LOAD_MINIMAL_FUNCTION_NAME( Archive const &amp;, T &amp;&amp; t,</span>
 <span class="lineNum">     104 </span>            :                                      typename common_detail::is_enum&lt;T&gt;::base_type const &amp; value )
-<span class="lineNum">     105 </span>            :   {
-<span class="lineNum">     106 </span><span class="lineCov">       2000 :     t = reinterpret_cast&lt;typename common_detail::is_enum&lt;T&gt;::type const &amp;&gt;( value );</span>
-<span class="lineNum">     107 </span><span class="lineCov">       2000 :   }</span>
+<span class="lineNum">     105 </span><span class="lineCov">       1000 :   {</span>
+<span class="lineNum">     106 </span>            :     t = reinterpret_cast&lt;typename common_detail::is_enum&lt;T&gt;::type const &amp;&gt;( value );
+<span class="lineNum">     107 </span><span class="lineCov">       1000 :   }</span>
 <span class="lineNum">     108 </span>            : 
-<span class="lineNum">     109 </span>            :   //! Serialization for raw pointers
+<span class="lineNum">     109 </span><span class="lineCov">       1000 :   //! Serialization for raw pointers</span>
 <span class="lineNum">     110 </span>            :   /*! This exists only to throw a static_assert to let users know we don't support raw pointers. */
-<span class="lineNum">     111 </span>            :   template &lt;class Archive, class T&gt; inline
+<span class="lineNum">     111 </span><span class="lineCov">       1000 :   template &lt;class Archive, class T&gt; inline</span>
 <span class="lineNum">     112 </span>            :   void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp;, T * &amp; )
-<span class="lineNum">     113 </span>            :   {
+<span class="lineNum">     113 </span><span class="lineCov">       1000 :   {</span>
 <span class="lineNum">     114 </span>            :     static_assert(cereal::traits::detail::delay_static_assert&lt;T&gt;::value,
 <span class="lineNum">     115 </span>            :       &quot;Cereal does not support serializing raw pointers - please use a smart pointer&quot;);
 <span class="lineNum">     116 </span>            :   }
 <span class="lineNum">     117 </span>            : 
 <span class="lineNum">     118 </span>            :   //! Serialization for C style arrays
-<span class="lineNum">     119 </span>            :   template &lt;class Archive, class T&gt; inline
+<span class="lineNum">     119 </span><span class="lineCov">       4000 :   template &lt;class Archive, class T&gt; inline</span>
 <span class="lineNum">     120 </span>            :   typename std::enable_if&lt;std::is_array&lt;T&gt;::value, void&gt;::type
 <span class="lineNum">     121 </span>            :   CEREAL_SERIALIZE_FUNCTION_NAME(Archive &amp; ar, T &amp; array)
-<span class="lineNum">     122 </span>            :   {
-<span class="lineNum">     123 </span>            :     common_detail::serializeArray( ar, array,
-<span class="lineNum">     124 </span>            :         std::integral_constant&lt;bool, traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value &amp;&amp;
+<span class="lineNum">     122 </span><span class="lineCov">       4000 :   {</span>
+<span class="lineNum">     123 </span><span class="lineCov">       4000 :     common_detail::serializeArray( ar, array,</span>
+<span class="lineNum">     124 </span><span class="lineCov">       1000 :         std::integral_constant&lt;bool, traits::is_output_serializable&lt;BinaryData&lt;T&gt;, Archive&gt;::value &amp;&amp;</span>
 <span class="lineNum">     125 </span>            :                                      std::is_arithmetic&lt;typename std::remove_all_extents&lt;T&gt;::type&gt;::value&gt;() );
 <span class="lineNum">     126 </span>            :   }
-<span class="lineNum">     127 </span>            : } // namespace cereal
-<span class="lineNum">     128 </span>            : 
-<span class="lineNum">     129 </span>            : #endif // CEREAL_TYPES_COMMON_HPP_
+<span class="lineNum">     127 </span><span class="lineCov">       1000 : } // namespace cereal</span>
+<span class="lineNum">     128 </span><span class="lineCov">       1000 : </span>
+<span class="lineNum">     129 </span><span class="lineCov">       1000 : #endif // CEREAL_TYPES_COMMON_HPP_</span>
 </pre>
       </td>
     </tr>
@@ -197,7 +197,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 

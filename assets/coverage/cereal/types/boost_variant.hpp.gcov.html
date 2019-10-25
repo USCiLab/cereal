@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">22</td>
-            <td class="headerCovTableEntry">25</td>
-            <td class="headerCovTableEntryMed">88.0 %</td>
+            <td class="headerCovTableEntry">360</td>
+            <td class="headerCovTableEntry">371</td>
+            <td class="headerCovTableEntryHi">97.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">36</td>
-            <td class="headerCovTableEntry">40</td>
-            <td class="headerCovTableEntryHi">90.0 %</td>
+            <td class="headerCovTableEntry">92</td>
+            <td class="headerCovTableEntry">96</td>
+            <td class="headerCovTableEntryHi">95.8 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -92,80 +92,138 @@
 <span class="lineNum">      30 </span>            : #ifndef CEREAL_TYPES_BOOST_VARIANT_HPP_
 <span class="lineNum">      31 </span>            : #define CEREAL_TYPES_BOOST_VARIANT_HPP_
 <span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span>            : #include &quot;cereal/cereal.hpp&quot;
-<span class="lineNum">      34 </span>            : #include &lt;boost/variant.hpp&gt;
-<span class="lineNum">      35 </span>            : #include &lt;boost/mpl/size.hpp&gt;
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            : namespace cereal
-<span class="lineNum">      38 </span>            : {
-<span class="lineNum">      39 </span>            :   namespace variant_detail
-<span class="lineNum">      40 </span>            :   {
-<span class="lineNum">      41 </span>            :     //! @internal
-<span class="lineNum">      42 </span>            :     template &lt;class Archive&gt;
-<a name="43"><span class="lineNum">      43 </span>            :     struct variant_save_visitor : boost::static_visitor&lt;&gt;</a>
-<span class="lineNum">      44 </span>            :     {
-<span class="lineNum">      45 </span><span class="lineCov">         12 :       variant_save_visitor(Archive &amp; ar_) : ar(ar_) {}</span>
-<a name="46"><span class="lineNum">      46 </span>            : </a>
-<span class="lineNum">      47 </span>            :       template&lt;class T&gt;
-<span class="lineNum">      48 </span><span class="lineCov">         12 :         void operator()(T const &amp; value) const</span>
-<span class="lineNum">      49 </span>            :         {
-<span class="lineNum">      50 </span><span class="lineCov">         12 :           ar( CEREAL_NVP_(&quot;data&quot;, value) );</span>
-<span class="lineNum">      51 </span><span class="lineCov">         12 :         }</span>
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            :       Archive &amp; ar;
-<span class="lineNum">      54 </span>            :     };
-<span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span>            :     //! @internal
-<a name="57"><span class="lineNum">      57 </span>            :     template&lt;int N, class Variant, class ... Args, class Archive&gt;</a>
-<span class="lineNum">      58 </span>            :     typename std::enable_if&lt;N == boost::mpl::size&lt;typename Variant::types&gt;::value, void&gt;::type
-<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     load_variant(Archive &amp; /*ar*/, int /*target*/, Variant &amp; /*variant*/)</span>
-<span class="lineNum">      60 </span>            :     {
-<span class="lineNum">      61 </span><span class="lineNoCov">          0 :       throw ::cereal::Exception(&quot;Error traversing variant during load&quot;);</span>
-<span class="lineNum">      62 </span>            :     }
-<span class="lineNum">      63 </span>            : 
-<span class="lineNum">      64 </span>            :     //! @internal
-<a name="65"><span class="lineNum">      65 </span>            :     template&lt;int N, class Variant, class H, class ... T, class Archive&gt;</a>
-<span class="lineNum">      66 </span>            :     typename std::enable_if&lt;N &lt; boost::mpl::size&lt;typename Variant::types&gt;::value, void&gt;::type
-<span class="lineNum">      67 </span><span class="lineCov">         24 :     load_variant(Archive &amp; ar, int target, Variant &amp; variant)</span>
-<span class="lineNum">      68 </span>            :     {
-<span class="lineNum">      69 </span><span class="lineCov">         24 :       if(N == target)</span>
-<span class="lineNum">      70 </span>            :       {
-<span class="lineNum">      71 </span><span class="lineCov">          8 :         H value;</span>
-<span class="lineNum">      72 </span><span class="lineCov">         12 :         ar( CEREAL_NVP_(&quot;data&quot;, value) );</span>
-<span class="lineNum">      73 </span><span class="lineCov">         12 :         variant = value;</span>
-<span class="lineNum">      74 </span>            :       }
-<span class="lineNum">      75 </span>            :       else
-<span class="lineNum">      76 </span><span class="lineCov">         12 :         load_variant&lt;N+1, Variant, T...&gt;(ar, target, variant);</span>
-<span class="lineNum">      77 </span><span class="lineCov">         24 :     }</span>
-<span class="lineNum">      78 </span>            : 
-<span class="lineNum">      79 </span>            :   } // namespace variant_detail
-<span class="lineNum">      80 </span>            : 
-<a name="81"><span class="lineNum">      81 </span>            :   //! Saving for boost::variant</a>
-<span class="lineNum">      82 </span>            :   template &lt;class Archive, typename VariantType1, typename... VariantTypes&gt; inline
-<span class="lineNum">      83 </span><span class="lineCov">         12 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, boost::variant&lt;VariantType1, VariantTypes...&gt; const &amp; variant )</span>
-<span class="lineNum">      84 </span>            :   {
-<span class="lineNum">      85 </span><span class="lineCov">         12 :     int32_t which = variant.which();</span>
-<span class="lineNum">      86 </span><span class="lineCov">         12 :     ar( CEREAL_NVP_(&quot;which&quot;, which) );</span>
-<span class="lineNum">      87 </span><span class="lineCov">         12 :     variant_detail::variant_save_visitor&lt;Archive&gt; visitor(ar);</span>
-<span class="lineNum">      88 </span><span class="lineCov">         12 :     variant.apply_visitor(visitor);</span>
-<span class="lineNum">      89 </span><span class="lineCov">         12 :   }</span>
-<span class="lineNum">      90 </span>            : 
-<a name="91"><span class="lineNum">      91 </span>            :   //! Loading for boost::variant</a>
-<span class="lineNum">      92 </span>            :   template &lt;class Archive, typename VariantType1, typename... VariantTypes&gt; inline
-<span class="lineNum">      93 </span><span class="lineCov">         12 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, boost::variant&lt;VariantType1, VariantTypes...&gt; &amp; variant )</span>
-<span class="lineNum">      94 </span>            :   {
-<span class="lineNum">      95 </span>            :     typedef typename boost::variant&lt;VariantType1, VariantTypes...&gt;::types types;
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            :     int32_t which;
-<span class="lineNum">      98 </span><span class="lineCov">         12 :     ar( CEREAL_NVP_(&quot;which&quot;, which) );</span>
-<span class="lineNum">      99 </span><span class="lineCov">         12 :     if(which &gt;= boost::mpl::size&lt;types&gt;::value)</span>
-<span class="lineNum">     100 </span><span class="lineNoCov">          0 :       throw Exception(&quot;Invalid 'which' selector when deserializing boost::variant&quot;);</span>
-<span class="lineNum">     101 </span>            : 
-<span class="lineNum">     102 </span><span class="lineCov">         12 :     variant_detail::load_variant&lt;0, boost::variant&lt;VariantType1, VariantTypes...&gt;, VariantType1, VariantTypes...&gt;(ar, which, variant);</span>
-<span class="lineNum">     103 </span><span class="lineCov">         12 :   }</span>
-<span class="lineNum">     104 </span>            : } // namespace cereal
-<span class="lineNum">     105 </span>            : 
-<span class="lineNum">     106 </span>            : #endif // CEREAL_TYPES_BOOST_VARIANT_HPP_
+<span class="lineNum">      33 </span>            : //! @internal
+<span class="lineNum">      34 </span>            : #if defined(_MSC_VER) &amp;&amp; _MSC_VER &lt; 1911
+<span class="lineNum">      35 </span>            : #define CEREAL_CONSTEXPR_LAMBDA
+<span class="lineNum">      36 </span>            : #else // MSVC 2017 or newer, all other compilers
+<span class="lineNum">      37 </span>            : #define CEREAL_CONSTEXPR_LAMBDA constexpr
+<span class="lineNum">      38 </span>            : #endif
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #include &quot;cereal/cereal.hpp&quot;
+<span class="lineNum">      41 </span>            : #include &lt;boost/variant/variant_fwd.hpp&gt;
+<span class="lineNum">      42 </span>            : #include &lt;boost/variant/static_visitor.hpp&gt;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : namespace cereal
+<span class="lineNum">      45 </span><span class="lineCov">         12 : {</span>
+<span class="lineNum">      46 </span>            :   namespace boost_variant_detail
+<span class="lineNum">      47 </span>            :   {
+<span class="lineNum">      48 </span><span class="lineCov">         12 :     //! @internal</span>
+<span class="lineNum">      49 </span>            :     template &lt;class Archive&gt;
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">         12 :     struct variant_save_visitor : boost::static_visitor&lt;&gt;</span></a>
+<span class="lineNum">      51 </span><span class="lineCov">         12 :     {</span>
+<span class="lineNum">      52 </span><span class="lineCov">         17 :       variant_save_visitor(Archive &amp; ar_) : ar(ar_) {}</span>
+<a name="53"><span class="lineNum">      53 </span>            : </a>
+<span class="lineNum">      54 </span><span class="lineCov">          1 :       template&lt;class T&gt;</span>
+<span class="lineNum">      55 </span><span class="lineCov">         17 :       void operator()(T const &amp; value) const</span>
+<span class="lineNum">      56 </span><span class="lineCov">          1 :       {</span>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">         16 :         ar( CEREAL_NVP_(&quot;data&quot;, value) );</span></a>
+<span class="lineNum">      58 </span><span class="lineCov">         17 :       }</span>
+<span class="lineNum">      59 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">      60 </span><span class="lineCov">          1 :       Archive &amp; ar;</span>
+<span class="lineNum">      61 </span><span class="lineCov">          1 :     };</span>
+<span class="lineNum">      62 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">      63 </span><span class="lineCov">          2 :     //! @internal</span>
+<span class="lineNum">      64 </span><span class="lineCov">          1 :     template &lt;class Archive, class T&gt;</span>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          1 :     struct LoadAndConstructLoadWrapper</span></a>
+<span class="lineNum">      66 </span><span class="lineCov">          2 :     {</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          2 :       using ST = typename std::aligned_storage&lt;sizeof(T), CEREAL_ALIGNOF(T)&gt;::type;</span></a>
+<span class="lineNum">      68 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">      69 </span><span class="lineCov">          1 :       LoadAndConstructLoadWrapper() :</span>
+<span class="lineNum">      70 </span><span class="lineCov">          2 :         construct( reinterpret_cast&lt;T *&gt;( &amp;st ) )</span>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          2 :       { }</span></a>
+<span class="lineNum">      72 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">      73 </span><span class="lineCov">          1 :       ~LoadAndConstructLoadWrapper()</span>
+<span class="lineNum">      74 </span><span class="lineCov">          2 :       {</span>
+<span class="lineNum">      75 </span><span class="lineCov">          2 :         if (construct.itsValid)</span>
+<span class="lineNum">      76 </span><span class="lineCov">          1 :         {</span>
+<span class="lineNum">      77 </span><span class="lineCov">          1 :           construct-&gt;~T();</span>
+<span class="lineNum">      78 </span><span class="lineCov">          2 :         }</span>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">          2 :       }</span></a>
+<span class="lineNum">      80 </span><span class="lineCov">          1 : </span>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">          1 :       void CEREAL_SERIALIZE_FUNCTION_NAME( Archive &amp; ar )</span></a>
+<span class="lineNum">      82 </span><span class="lineCov">          2 :       {</span>
+<span class="lineNum">      83 </span><span class="lineCov">          2 :         ::cereal::detail::Construct&lt;T, Archive&gt;::load_andor_construct( ar, construct );</span>
+<span class="lineNum">      84 </span><span class="lineCov">          1 :       }</span>
+<span class="lineNum">      85 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">      86 </span><span class="lineCov">          2 :       ST st;</span>
+<span class="lineNum">      87 </span><span class="lineCov">          2 :       ::cereal::construct&lt;T&gt; construct;</span>
+<span class="lineNum">      88 </span><span class="lineCov">          1 :     };</span>
+<span class="lineNum">      89 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">      90 </span><span class="lineCov">          2 :     //! @internal</span>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          2 :     template &lt;class T&gt; struct load_variant_wrapper;</span></a>
+<span class="lineNum">      92 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">      93 </span><span class="lineCov">          1 :     //! Avoid serializing variant void_ type</span>
+<span class="lineNum">      94 </span><span class="lineCov">          2 :     /*! @internal */</span>
+<span class="lineNum">      95 </span><span class="lineCov">          2 :     template &lt;&gt;</span>
+<span class="lineNum">      96 </span><span class="lineCov">          1 :     struct load_variant_wrapper&lt;boost::detail::variant::void_&gt;</span>
+<span class="lineNum">      97 </span><span class="lineCov">          1 :     {</span>
+<span class="lineNum">      98 </span><span class="lineCov">          2 :       template &lt;class Variant, class Archive&gt;</span>
+<span class="lineNum">      99 </span><span class="lineCov">          2 :       static void load_variant( Archive &amp;, Variant &amp; )</span>
+<span class="lineNum">     100 </span>            :       { }
+<span class="lineNum">     101 </span><span class="lineCov">          1 :     };</span>
+<span class="lineNum">     102 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">     103 </span><span class="lineCov">          1 :     //! @internal</span>
+<span class="lineNum">     104 </span>            :     template &lt;class T&gt;
+<span class="lineNum">     105 </span><span class="lineCov">          1 :     struct load_variant_wrapper</span>
+<span class="lineNum">     106 </span><span class="lineCov">          1 :     {</span>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">          1 :       // default constructible</span></a>
+<span class="lineNum">     108 </span>            :       template &lt;class Archive, class Variant&gt;
+<span class="lineNum">     109 </span><span class="lineCov">          1 :       static void load_variant_impl( Archive &amp; ar, Variant &amp; variant, std::true_type )</span>
+<span class="lineNum">     110 </span><span class="lineCov">          1 :       {</span>
+<span class="lineNum">     111 </span><span class="lineCov">          1 :         T value;</span>
+<span class="lineNum">     112 </span>            :         ar( CEREAL_NVP_(&quot;data&quot;, value) );
+<span class="lineNum">     113 </span><span class="lineCov">          1 :         variant = std::move(value);</span>
+<span class="lineNum">     114 </span><span class="lineCov">          1 :       }</span>
+<span class="lineNum">     115 </span><span class="lineCov">          1 : </span>
+<a name="116"><span class="lineNum">     116 </span>            :       // not default constructible</a>
+<span class="lineNum">     117 </span><span class="lineCov">          1 :       template&lt;class Variant, class Archive&gt;</span>
+<span class="lineNum">     118 </span><span class="lineCov">          1 :       static void load_variant_impl(Archive &amp; ar, Variant &amp; variant, std::false_type )</span>
+<span class="lineNum">     119 </span><span class="lineCov">          1 :       {</span>
+<span class="lineNum">     120 </span>            :         LoadAndConstructLoadWrapper&lt;Archive, T&gt; loadWrapper;
+<span class="lineNum">     121 </span><span class="lineCov">          1 : </span>
+<span class="lineNum">     122 </span><span class="lineCov">          1 :         ar( CEREAL_NVP_(&quot;data&quot;, loadWrapper) );</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         variant = std::move(*loadWrapper.construct.ptr());</span>
+<span class="lineNum">     124 </span>            :       }
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : </span>
+<a name="126"><span class="lineNum">     126 </span>            :       //! @internal</a>
+<span class="lineNum">     127 </span>            :       template&lt;class Variant, class Archive&gt;
+<span class="lineNum">     128 </span>            :       static void load_variant(Archive &amp; ar, Variant &amp; variant)
+<span class="lineNum">     129 </span>            :       {
+<span class="lineNum">     130 </span>            :         load_variant_impl( ar, variant, typename std::is_default_constructible&lt;T&gt;::type() );
+<span class="lineNum">     131 </span><span class="lineCov">         24 :       }</span>
+<span class="lineNum">     132 </span>            :     };
+<span class="lineNum">     133 </span><span class="lineCov">         28 :   } // namespace boost_variant_detail</span>
+<span class="lineNum">     134 </span><span class="lineCov">          4 : </span>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         12 :   //! Saving for boost::variant</span></a>
+<span class="lineNum">     136 </span><span class="lineCov">         13 :   template &lt;class Archive, typename ... VariantTypes&gt; inline</span>
+<span class="lineNum">     137 </span><span class="lineCov">         13 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, boost::variant&lt;VariantTypes...&gt; const &amp; variant )</span>
+<span class="lineNum">     138 </span><span class="lineCov">          1 :   {</span>
+<span class="lineNum">     139 </span><span class="lineCov">          1 :     int32_t which = variant.which();</span>
+<span class="lineNum">     140 </span><span class="lineCov">         13 :     ar( CEREAL_NVP_(&quot;which&quot;, which) );</span>
+<span class="lineNum">     141 </span><span class="lineCov">         25 :     boost_variant_detail::variant_save_visitor&lt;Archive&gt; visitor(ar);</span>
+<span class="lineNum">     142 </span><span class="lineCov">          2 :     variant.apply_visitor(visitor);</span>
+<span class="lineNum">     143 </span><span class="lineCov">          1 :   }</span>
+<span class="lineNum">     144 </span><span class="lineCov">          2 : </span>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">          1 :   //! Loading for boost::variant</span></a>
+<span class="lineNum">     146 </span><span class="lineCov">          3 :   template &lt;class Archive, typename ... VariantTypes&gt; inline</span>
+<span class="lineNum">     147 </span><span class="lineCov">          2 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, boost::variant&lt;VariantTypes...&gt; &amp; variant )</span>
+<span class="lineNum">     148 </span><span class="lineCov">          1 :   {</span>
+<span class="lineNum">     149 </span><span class="lineCov">          4 :     int32_t which;</span>
+<span class="lineNum">     150 </span>            :     ar( CEREAL_NVP_(&quot;which&quot;, which) );
+<span class="lineNum">     151 </span><span class="lineCov">          4 : </span>
+<span class="lineNum">     152 </span><span class="lineCov">          1 :     using LoadFuncType = void(*)(Archive &amp;, boost::variant&lt;VariantTypes...&gt; &amp;);</span>
+<span class="lineNum">     153 </span><span class="lineCov">          5 :     CEREAL_CONSTEXPR_LAMBDA LoadFuncType loadFuncArray[] = {&amp;boost_variant_detail::load_variant_wrapper&lt;VariantTypes&gt;::load_variant...};</span>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineCov">          5 :     if(which &gt;= int32_t(sizeof(loadFuncArray)/sizeof(loadFuncArray[0])))</span>
+<span class="lineNum">     156 </span><span class="lineCov">          1 :       throw Exception(&quot;Invalid 'which' selector when deserializing boost::variant&quot;);</span>
+<span class="lineNum">     157 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     158 </span><span class="lineCov">          2 :     loadFuncArray[which](ar, variant);</span>
+<span class="lineNum">     159 </span><span class="lineCov">          1 :   }</span>
+<span class="lineNum">     160 </span><span class="lineCov">          1 : } // namespace cereal</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">          1 : #undef CEREAL_CONSTEXPR_LAMBDA</span>
+<span class="lineNum">     163 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     164 </span><span class="lineCov">          1 : #endif // CEREAL_TYPES_BOOST_VARIANT_HPP_</span>
 </pre>
       </td>
     </tr>
@@ -174,7 +232,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 

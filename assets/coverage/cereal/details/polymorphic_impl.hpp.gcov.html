@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">182</td>
-            <td class="headerCovTableEntry">203</td>
-            <td class="headerCovTableEntryMed">89.7 %</td>
+            <td class="headerCovTableEntry">1141</td>
+            <td class="headerCovTableEntry">1571</td>
+            <td class="headerCovTableEntryLo">72.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">275</td>
-            <td class="headerCovTableEntry">532</td>
-            <td class="headerCovTableEntryLo">51.7 %</td>
+            <td class="headerCovTableEntry">168</td>
+            <td class="headerCovTableEntry">284</td>
+            <td class="headerCovTableEntryLo">59.2 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -118,712 +118,744 @@
 <span class="lineNum">      56 </span>            : #include &lt;set&gt;
 <span class="lineNum">      57 </span>            : #include &lt;stack&gt;
 <span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span>            : //! Binds a polymorhic type to all registered archives
-<span class="lineNum">      60 </span>            : /*! This binds a polymorphic type to all compatible registered archives that
-<span class="lineNum">      61 </span>            :     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
-<span class="lineNum">      62 </span>            :     after all archives are registered (usually after the archives themselves
-<span class="lineNum">      63 </span>            :     have been included). */
-<span class="lineNum">      64 </span>            : #define CEREAL_BIND_TO_ARCHIVES(...)                                     \
-<span class="lineNum">      65 </span>            :     namespace cereal {                                                   \
-<span class="lineNum">      66 </span>            :     namespace detail {                                                   \
-<span class="lineNum">      67 </span>            :     template&lt;&gt;                                                           \
-<span class="lineNum">      68 </span>            :     struct init_binding&lt;__VA_ARGS__&gt; {                                   \
-<span class="lineNum">      69 </span>            :         static bind_to_archives&lt;__VA_ARGS__&gt; const &amp; b;                  \
-<span class="lineNum">      70 </span>            :         static void unused() { (void)b; }                                \
-<span class="lineNum">      71 </span>            :     };                                                                   \
-<span class="lineNum">      72 </span>            :     bind_to_archives&lt;__VA_ARGS__&gt; const &amp; init_binding&lt;__VA_ARGS__&gt;::b = \
-<span class="lineNum">      73 </span>            :         ::cereal::detail::StaticObject&lt;                                  \
-<span class="lineNum">      74 </span>            :             bind_to_archives&lt;__VA_ARGS__&gt;                                \
-<span class="lineNum">      75 </span>            :         &gt;::getInstance().bind();                                         \
-<span class="lineNum">      76 </span>            :     }} /* end namespaces */
-<span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span>            : namespace cereal
-<span class="lineNum">      79 </span>            : {
-<span class="lineNum">      80 </span>            :   /* Polymorphic casting support */
-<span class="lineNum">      81 </span>            :   namespace detail
-<span class="lineNum">      82 </span>            :   {
-<span class="lineNum">      83 </span>            :     //! Base type for polymorphic void casting
-<span class="lineNum">      84 </span>            :     /*! Contains functions for casting between registered base and derived types.
+<span class="lineNum">      59 </span>            : //! Helper macro to omit unused warning
+<span class="lineNum">      60 </span>            : #if defined(__GNUC__)
+<span class="lineNum">      61 </span>            :   // GCC / clang don't want the function
+<span class="lineNum">      62 </span>            :   #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION
+<span class="lineNum">      63 </span>            : #else
+<span class="lineNum">      64 </span>            :   #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION static void unused() { (void)b; }
+<span class="lineNum">      65 </span>            : #endif
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : //! Binds a polymorhic type to all registered archives
+<span class="lineNum">      68 </span>            : /*! This binds a polymorphic type to all compatible registered archives that
+<span class="lineNum">      69 </span>            :     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
+<span class="lineNum">      70 </span>            :     after all archives are registered (usually after the archives themselves
+<span class="lineNum">      71 </span>            :     have been included). */
+<span class="lineNum">      72 </span>            : #define CEREAL_BIND_TO_ARCHIVES(...)                                     \
+<span class="lineNum">      73 </span>            :     namespace cereal {                                                   \
+<span class="lineNum">      74 </span>            :     namespace detail {                                                   \
+<span class="lineNum">      75 </span>            :     template&lt;&gt;                                                           \
+<span class="lineNum">      76 </span>            :     struct init_binding&lt;__VA_ARGS__&gt; {                                   \
+<span class="lineNum">      77 </span>            :         static bind_to_archives&lt;__VA_ARGS__&gt; const &amp; b;                  \
+<span class="lineNum">      78 </span>            :         CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
+<span class="lineNum">      79 </span>            :     };                                                                   \
+<span class="lineNum">      80 </span>            :     bind_to_archives&lt;__VA_ARGS__&gt; const &amp; init_binding&lt;__VA_ARGS__&gt;::b = \
+<span class="lineNum">      81 </span>            :         ::cereal::detail::StaticObject&lt;                                  \
+<span class="lineNum">      82 </span>            :             bind_to_archives&lt;__VA_ARGS__&gt;                                \
+<span class="lineNum">      83 </span>            :         &gt;::getInstance().bind();                                         \
+<span class="lineNum">      84 </span>            :     }} /* end namespaces */
 <span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span>            :         This is necessary so that cereal can properly cast between polymorphic types
-<span class="lineNum">      87 </span>            :         even though void pointers are used, which normally have no type information.
-<span class="lineNum">      88 </span>            :         Runtime type information is used instead to index a compile-time made mapping
-<span class="lineNum">      89 </span>            :         that can perform the proper cast. In the case of multiple levels of inheritance,
-<span class="lineNum">      90 </span>            :         cereal will attempt to find the shortest path by using registered relationships to
-<span class="lineNum">      91 </span>            :         perform the cast.
-<span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span>            :         This class will be allocated as a StaticObject and only referenced by pointer,
-<span class="lineNum">      94 </span>            :         allowing a templated derived version of it to define strongly typed functions
-<span class="lineNum">      95 </span>            :         that cast between registered base and derived types. */
-<a name="96"><span class="lineNum">      96 </span>            :     struct PolymorphicCaster</a>
-<span class="lineNum">      97 </span>            :     {
-<span class="lineNum">      98 </span><span class="lineCov">          8 :       PolymorphicCaster() = default;</span>
-<span class="lineNum">      99 </span>            :       PolymorphicCaster( const PolymorphicCaster &amp; ) = default;
-<span class="lineNum">     100 </span>            :       PolymorphicCaster &amp; operator=( const PolymorphicCaster &amp; ) = default;
-<a name="101"><span class="lineNum">     101 </span>            :       PolymorphicCaster( PolymorphicCaster &amp;&amp; ) CEREAL_NOEXCEPT {}</a>
-<span class="lineNum">     102 </span>            :       PolymorphicCaster &amp; operator=( PolymorphicCaster &amp;&amp; ) CEREAL_NOEXCEPT { return *this; }
-<span class="lineNum">     103 </span><span class="lineNoCov">          0 :       virtual ~PolymorphicCaster() CEREAL_NOEXCEPT = default;</span>
-<span class="lineNum">     104 </span>            : 
-<span class="lineNum">     105 </span>            :       //! Downcasts to the proper derived type
-<span class="lineNum">     106 </span>            :       virtual void const * downcast( void const * const ptr ) const = 0;
-<span class="lineNum">     107 </span>            :       //! Upcast to proper base type
-<span class="lineNum">     108 </span>            :       virtual void * upcast( void * const ptr ) const = 0;
-<span class="lineNum">     109 </span>            :       //! Upcast to proper base type, shared_ptr version
-<span class="lineNum">     110 </span>            :       virtual std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;void&gt; const &amp; ptr ) const = 0;
-<span class="lineNum">     111 </span>            :     };
+<span class="lineNum">      86 </span>            : namespace cereal
+<span class="lineNum">      87 </span>            : {
+<span class="lineNum">      88 </span>            :   /* Polymorphic casting support */
+<span class="lineNum">      89 </span>            :   namespace detail
+<span class="lineNum">      90 </span>            :   {
+<span class="lineNum">      91 </span>            :     //! Base type for polymorphic void casting
+<span class="lineNum">      92 </span>            :     /*! Contains functions for casting between registered base and derived types.
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            :         This is necessary so that cereal can properly cast between polymorphic types
+<span class="lineNum">      95 </span>            :         even though void pointers are used, which normally have no type information.
+<span class="lineNum">      96 </span>            :         Runtime type information is used instead to index a compile-time made mapping
+<span class="lineNum">      97 </span>            :         that can perform the proper cast. In the case of multiple levels of inheritance,
+<span class="lineNum">      98 </span>            :         cereal will attempt to find the shortest path by using registered relationships to
+<span class="lineNum">      99 </span>            :         perform the cast.
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :         This class will be allocated as a StaticObject and only referenced by pointer,
+<span class="lineNum">     102 </span>            :         allowing a templated derived version of it to define strongly typed functions
+<span class="lineNum">     103 </span>            :         that cast between registered base and derived types. */
+<a name="104"><span class="lineNum">     104 </span>            :     struct PolymorphicCaster</a>
+<span class="lineNum">     105 </span>            :     {
+<span class="lineNum">     106 </span><span class="lineCov">         16 :       PolymorphicCaster() = default;</span>
+<span class="lineNum">     107 </span>            :       PolymorphicCaster( const PolymorphicCaster &amp; ) = default;
+<span class="lineNum">     108 </span>            :       PolymorphicCaster &amp; operator=( const PolymorphicCaster &amp; ) = default;
+<a name="109"><span class="lineNum">     109 </span>            :       PolymorphicCaster( PolymorphicCaster &amp;&amp; ) CEREAL_NOEXCEPT {}</a>
+<span class="lineNum">     110 </span>            :       PolymorphicCaster &amp; operator=( PolymorphicCaster &amp;&amp; ) CEREAL_NOEXCEPT { return *this; }
+<span class="lineNum">     111 </span><span class="lineCov">         16 :       virtual ~PolymorphicCaster() CEREAL_NOEXCEPT = default;</span>
 <span class="lineNum">     112 </span>            : 
-<span class="lineNum">     113 </span>            :     //! Holds registered mappings between base and derived types for casting
-<a name="114"><span class="lineNum">     114 </span>            :     /*! This will be allocated as a StaticObject and holds a map containing</a>
-<span class="lineNum">     115 </span>            :         all registered mappings between base and derived types. */
-<span class="lineNum">     116 </span><span class="lineCov">         36 :     struct PolymorphicCasters</span>
-<span class="lineNum">     117 </span>            :     {
-<span class="lineNum">     118 </span>            :       //! Maps from base type index to a map from derived type index to caster
-<span class="lineNum">     119 </span>            :       std::map&lt;std::type_index, std::map&lt;std::type_index, std::vector&lt;PolymorphicCaster const*&gt;&gt;&gt; map;
+<span class="lineNum">     113 </span>            :       //! Downcasts to the proper derived type
+<span class="lineNum">     114 </span>            :       virtual void const * downcast( void const * const ptr ) const = 0;
+<span class="lineNum">     115 </span>            :       //! Upcast to proper base type
+<span class="lineNum">     116 </span>            :       virtual void * upcast( void * const ptr ) const = 0;
+<span class="lineNum">     117 </span>            :       //! Upcast to proper base type, shared_ptr version
+<span class="lineNum">     118 </span>            :       virtual std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;void&gt; const &amp; ptr ) const = 0;
+<span class="lineNum">     119 </span>            :     };
 <span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span>            :       std::multimap&lt;std::type_index, std::type_index&gt; reverseMap;
-<span class="lineNum">     122 </span>            : 
-<span class="lineNum">     123 </span>            :       //! Error message used for unregistered polymorphic casts
-<span class="lineNum">     124 </span>            :       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
-<span class="lineNum">     125 </span>            :         throw cereal::Exception(&quot;Trying to &quot; #LoadSave &quot; a registered polymorphic type with an unregistered polymorphic cast.\n&quot;                                               \
-<span class="lineNum">     126 </span>            :                                 &quot;Could not find a path to a base class (&quot; + util::demangle(baseInfo.name()) + &quot;) for type: &quot; + ::cereal::util::demangledName&lt;Derived&gt;() + &quot;\n&quot; \
-<span class="lineNum">     127 </span>            :                                 &quot;Make sure you either serialize the base class at some point via cereal::base_class or cereal::virtual_base_class.\n&quot;                          \
-<span class="lineNum">     128 </span>            :                                 &quot;Alternatively, manually register the association with CEREAL_REGISTER_POLYMORPHIC_RELATION.&quot;);
-<span class="lineNum">     129 </span>            : 
-<span class="lineNum">     130 </span>            :       //! Checks if the mapping object that can perform the upcast or downcast
-<a name="131"><span class="lineNum">     131 </span>            :       /*! Uses the type index from the base and derived class to find the matching</a>
-<span class="lineNum">     132 </span>            :           registered caster. If no matching caster exists, returns false. */
-<span class="lineNum">     133 </span><span class="lineCov">         18 :       static bool exists( std::type_index const &amp; baseIndex, std::type_index const &amp; derivedIndex )</span>
-<span class="lineNum">     134 </span>            :       {
-<span class="lineNum">     135 </span>            :         // First phase of lookup - match base type index
-<span class="lineNum">     136 </span><span class="lineCov">         18 :         auto const &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
-<span class="lineNum">     137 </span><span class="lineCov">         18 :         auto baseIter = baseMap.find( baseIndex );</span>
-<span class="lineNum">     138 </span><span class="lineCov">         18 :         if (baseIter == baseMap.end())</span>
-<span class="lineNum">     139 </span><span class="lineNoCov">          0 :           return false;</span>
-<span class="lineNum">     140 </span>            : 
-<span class="lineNum">     141 </span>            :         // Second phase - find a match from base to derived
-<span class="lineNum">     142 </span><span class="lineCov">         18 :         auto &amp; derivedMap = baseIter-&gt;second;</span>
-<span class="lineNum">     143 </span><span class="lineCov">         18 :         auto derivedIter = derivedMap.find( derivedIndex );</span>
-<span class="lineNum">     144 </span><span class="lineCov">         18 :         if (derivedIter == derivedMap.end())</span>
-<span class="lineNum">     145 </span><span class="lineCov">          4 :           return false;</span>
-<span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span><span class="lineCov">         14 :         return true;</span>
-<span class="lineNum">     148 </span>            :       }
-<span class="lineNum">     149 </span>            : 
-<span class="lineNum">     150 </span>            :       //! Gets the mapping object that can perform the upcast or downcast
-<span class="lineNum">     151 </span>            :       /*! Uses the type index from the base and derived class to find the matching
-<span class="lineNum">     152 </span>            :           registered caster. If no matching caster exists, calls the exception function.
-<span class="lineNum">     153 </span>            : 
-<a name="154"><span class="lineNum">     154 </span>            :           The returned PolymorphicCaster is capable of upcasting or downcasting between the two types. */</a>
-<span class="lineNum">     155 </span>            :       template &lt;class F&gt; inline
-<span class="lineNum">     156 </span><span class="lineCov">       7214 :       static std::vector&lt;PolymorphicCaster const *&gt; const &amp; lookup( std::type_index const &amp; baseIndex, std::type_index const &amp; derivedIndex, F &amp;&amp; exceptionFunc )</span>
-<span class="lineNum">     157 </span>            :       {
-<span class="lineNum">     158 </span>            :         // First phase of lookup - match base type index
-<span class="lineNum">     159 </span><span class="lineCov">       7214 :         auto const &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
-<span class="lineNum">     160 </span><span class="lineCov">       7214 :         auto baseIter = baseMap.find( baseIndex );</span>
-<span class="lineNum">     161 </span><span class="lineCov">       7214 :         if( baseIter == baseMap.end() )</span>
-<span class="lineNum">     162 </span><span class="lineNoCov">          0 :           exceptionFunc();</span>
-<span class="lineNum">     163 </span>            : 
-<span class="lineNum">     164 </span>            :         // Second phase - find a match from base to derived
-<span class="lineNum">     165 </span><span class="lineCov">       7214 :         auto &amp; derivedMap = baseIter-&gt;second;</span>
-<span class="lineNum">     166 </span><span class="lineCov">       7214 :         auto derivedIter = derivedMap.find( derivedIndex );</span>
-<span class="lineNum">     167 </span><span class="lineCov">       7214 :         if( derivedIter == derivedMap.end() )</span>
-<span class="lineNum">     168 </span><span class="lineNoCov">          0 :           exceptionFunc();</span>
-<span class="lineNum">     169 </span>            : 
-<span class="lineNum">     170 </span><span class="lineCov">       7214 :         return derivedIter-&gt;second;</span>
-<span class="lineNum">     171 </span>            :       }
-<span class="lineNum">     172 </span>            : 
-<a name="173"><span class="lineNum">     173 </span>            :       //! Performs a downcast to the derived type using a registered mapping</a>
-<span class="lineNum">     174 </span>            :       template &lt;class Derived&gt; inline
-<a name="175"><span class="lineNum">     175 </span><span class="lineCov">       3600 :       static const Derived * downcast( const void * dptr, std::type_info const &amp; baseInfo )</span></a>
-<span class="lineNum">     176 </span>            :       {
-<span class="lineNum">     177 </span><span class="lineCov">       3600 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );</span>
-<span class="lineNum">     178 </span>            : 
-<span class="lineNum">     179 </span><span class="lineCov">       9600 :         for( auto const * map : mapping )</span>
-<span class="lineNum">     180 </span><span class="lineCov">       6000 :           dptr = map-&gt;downcast( dptr );</span>
+<span class="lineNum">     121 </span>            :     //! Holds registered mappings between base and derived types for casting
+<span class="lineNum">     122 </span>            :     /*! This will be allocated as a StaticObject and holds a map containing
+<span class="lineNum">     123 </span>            :         all registered mappings between base and derived types. */
+<span class="lineNum">     124 </span>            :     struct PolymorphicCasters
+<span class="lineNum">     125 </span>            :     {
+<span class="lineNum">     126 </span>            :       //! Maps from a derived type index to a set of chainable casters
+<span class="lineNum">     127 </span>            :       using DerivedCasterMap = std::unordered_map&lt;std::type_index, std::vector&lt;PolymorphicCaster const *&gt;&gt;;
+<span class="lineNum">     128 </span>            :       //! Maps from base type index to a map from derived type index to caster
+<span class="lineNum">     129 </span>            :       std::unordered_map&lt;std::type_index, DerivedCasterMap&gt; map;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :       std::multimap&lt;std::type_index, std::type_index&gt; reverseMap;
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :       //! Error message used for unregistered polymorphic casts
+<span class="lineNum">     134 </span>            :       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
+<span class="lineNum">     135 </span>            :         throw cereal::Exception(&quot;Trying to &quot; #LoadSave &quot; a registered polymorphic type with an unregistered polymorphic cast.\n&quot;                                               \
+<span class="lineNum">     136 </span>            :                                 &quot;Could not find a path to a base class (&quot; + util::demangle(baseInfo.name()) + &quot;) for type: &quot; + ::cereal::util::demangledName&lt;Derived&gt;() + &quot;\n&quot; \
+<span class="lineNum">     137 </span>            :                                 &quot;Make sure you either serialize the base class at some point via cereal::base_class or cereal::virtual_base_class.\n&quot;                          \
+<span class="lineNum">     138 </span>            :                                 &quot;Alternatively, manually register the association with CEREAL_REGISTER_POLYMORPHIC_RELATION.&quot;);
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            :       //! Checks if the mapping object that can perform the upcast or downcast exists, and returns it if so
+<span class="lineNum">     141 </span>            :       /*! Uses the type index from the base and derived class to find the matching
+<span class="lineNum">     142 </span>            :           registered caster. If no matching caster exists, the bool in the pair will be false and the vector
+<a name="143"><span class="lineNum">     143 </span>            :           reference should not be used. */</a>
+<span class="lineNum">     144 </span>            :       static std::pair&lt;bool, std::vector&lt;PolymorphicCaster const *&gt; const &amp;&gt;
+<span class="lineNum">     145 </span><span class="lineCov">         36 :       lookup_if_exists( std::type_index const &amp; baseIndex, std::type_index const &amp; derivedIndex )</span>
+<span class="lineNum">     146 </span>            :       {
+<span class="lineNum">     147 </span>            :         // First phase of lookup - match base type index
+<span class="lineNum">     148 </span><span class="lineCov">         36 :         auto const &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
+<span class="lineNum">     149 </span><span class="lineCov">         36 :         auto baseIter = baseMap.find( baseIndex );</span>
+<span class="lineNum">     150 </span><span class="lineCov">         36 :         if (baseIter == baseMap.end())</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :           return {false, {}};</span>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            :         // Second phase - find a match from base to derived
+<span class="lineNum">     154 </span><span class="lineCov">         36 :         auto const &amp; derivedMap = baseIter-&gt;second;</span>
+<span class="lineNum">     155 </span><span class="lineCov">         36 :         auto derivedIter = derivedMap.find( derivedIndex );</span>
+<span class="lineNum">     156 </span><span class="lineCov">         36 :         if (derivedIter == derivedMap.end())</span>
+<span class="lineNum">     157 </span><span class="lineCov">          8 :           return {false, {}};</span>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineCov">         28 :         return {true, derivedIter-&gt;second};</span>
+<span class="lineNum">     160 </span>            :       }
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :       //! Gets the mapping object that can perform the upcast or downcast
+<span class="lineNum">     163 </span>            :       /*! Uses the type index from the base and derived class to find the matching
+<span class="lineNum">     164 </span>            :           registered caster. If no matching caster exists, calls the exception function.
+<span class="lineNum">     165 </span>            : 
+<a name="166"><span class="lineNum">     166 </span>            :           The returned PolymorphicCaster is capable of upcasting or downcasting between the two types. */</a>
+<span class="lineNum">     167 </span>            :       template &lt;class F&gt; inline
+<span class="lineNum">     168 </span><span class="lineCov">      22400 :       static std::vector&lt;PolymorphicCaster const *&gt; const &amp; lookup( std::type_index const &amp; baseIndex, std::type_index const &amp; derivedIndex, F &amp;&amp; exceptionFunc )</span>
+<span class="lineNum">     169 </span>            :       {
+<span class="lineNum">     170 </span>            :         // First phase of lookup - match base type index
+<span class="lineNum">     171 </span><span class="lineCov">      22400 :         auto const &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
+<span class="lineNum">     172 </span><span class="lineCov">      22400 :         auto baseIter = baseMap.find( baseIndex );</span>
+<span class="lineNum">     173 </span><span class="lineCov">      22400 :         if( baseIter == baseMap.end() )</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :           exceptionFunc();</span>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            :         // Second phase - find a match from base to derived
+<span class="lineNum">     177 </span><span class="lineCov">      22400 :         auto const &amp; derivedMap = baseIter-&gt;second;</span>
+<span class="lineNum">     178 </span><span class="lineCov">      22400 :         auto derivedIter = derivedMap.find( derivedIndex );</span>
+<span class="lineNum">     179 </span><span class="lineCov">      22400 :         if( derivedIter == derivedMap.end() )</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :           exceptionFunc();</span>
 <span class="lineNum">     181 </span>            : 
-<span class="lineNum">     182 </span><span class="lineCov">       3600 :         return static_cast&lt;Derived const *&gt;( dptr );</span>
+<span class="lineNum">     182 </span><span class="lineCov">      22400 :         return derivedIter-&gt;second;</span>
 <span class="lineNum">     183 </span>            :       }
-<span class="lineNum">     184 </span>            : 
-<span class="lineNum">     185 </span>            :       //! Performs an upcast to the registered base type using the given a derived type
-<span class="lineNum">     186 </span>            :       /*! The return is untyped because the final casting to the base type must happen in the polymorphic
-<a name="187"><span class="lineNum">     187 </span>            :           serialization function, where the type is known at compile time */</a>
-<span class="lineNum">     188 </span>            :       template &lt;class Derived&gt; inline
-<a name="189"><span class="lineNum">     189 </span><span class="lineCov">        800 :       static void * upcast( Derived * const dptr, std::type_info const &amp; baseInfo )</span></a>
-<span class="lineNum">     190 </span>            :       {
-<span class="lineNum">     191 </span><span class="lineCov">        800 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );</span>
-<span class="lineNum">     192 </span>            : 
-<span class="lineNum">     193 </span><span class="lineCov">        800 :         void * uptr = dptr;</span>
-<span class="lineNum">     194 </span><span class="lineCov">       2400 :         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )</span>
-<span class="lineNum">     195 </span><span class="lineCov">       1600 :           uptr = (*mIter)-&gt;upcast( uptr );</span>
-<span class="lineNum">     196 </span>            : 
-<span class="lineNum">     197 </span><span class="lineCov">        800 :         return uptr;</span>
-<span class="lineNum">     198 </span>            :       }
-<span class="lineNum">     199 </span>            : 
-<a name="200"><span class="lineNum">     200 </span>            :       //! Upcasts for shared pointers</a>
-<span class="lineNum">     201 </span>            :       template &lt;class Derived&gt; inline
-<a name="202"><span class="lineNum">     202 </span><span class="lineCov">       2800 :       static std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;Derived&gt; const &amp; dptr, std::type_info const &amp; baseInfo )</span></a>
-<span class="lineNum">     203 </span>            :       {
-<span class="lineNum">     204 </span><span class="lineCov">       2800 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );</span>
-<span class="lineNum">     205 </span>            : 
-<span class="lineNum">     206 </span><span class="lineCov">       2800 :         std::shared_ptr&lt;void&gt; uptr = dptr;</span>
-<span class="lineNum">     207 </span><span class="lineCov">       7200 :         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )</span>
-<span class="lineNum">     208 </span><span class="lineCov">       4400 :           uptr = (*mIter)-&gt;upcast( uptr );</span>
-<span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">       2800 :         return uptr;</span>
-<span class="lineNum">     211 </span>            :       }
-<span class="lineNum">     212 </span>            : 
-<span class="lineNum">     213 </span>            :       #undef UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION
-<span class="lineNum">     214 </span>            :     };
-<span class="lineNum">     215 </span>            : 
-<a name="216"><span class="lineNum">     216 </span>            :     //! Strongly typed derivation of PolymorphicCaster</a>
-<span class="lineNum">     217 </span>            :     template &lt;class Base, class Derived&gt;
-<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     struct PolymorphicVirtualCaster : PolymorphicCaster</span>
-<span class="lineNum">     219 </span>            :     {
-<span class="lineNum">     220 </span>            :       //! Inserts an entry in the polymorphic casting map for this pairing
-<span class="lineNum">     221 </span>            :       /*! Creates an explicit mapping between Base and Derived in both upwards and
-<a name="222"><span class="lineNum">     222 </span>            :           downwards directions, allowing void pointers to either to be properly cast</a>
-<span class="lineNum">     223 </span>            :           assuming dynamic type information is available */
-<span class="lineNum">     224 </span><span class="lineCov">          8 :       PolymorphicVirtualCaster()</span>
-<span class="lineNum">     225 </span><span class="lineCov">          8 :       {</span>
-<span class="lineNum">     226 </span><span class="lineCov">          8 :         const auto baseKey = std::type_index(typeid(Base));</span>
-<span class="lineNum">     227 </span><span class="lineCov">          8 :         const auto derivedKey = std::type_index(typeid(Derived));</span>
-<span class="lineNum">     228 </span>            : 
-<span class="lineNum">     229 </span>            :         // First insert the relation Base-&gt;Derived
-<span class="lineNum">     230 </span><span class="lineCov">         16 :         const auto lock = StaticObject&lt;PolymorphicCasters&gt;::lock();</span>
-<span class="lineNum">     231 </span><span class="lineCov">          8 :         auto &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
-<span class="lineNum">     232 </span><span class="lineCov">          8 :         auto lb = baseMap.lower_bound(baseKey);</span>
-<span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span>            :         {
-<span class="lineNum">     235 </span><span class="lineCov">          8 :           auto &amp; derivedMap = baseMap.insert( lb, {baseKey, {}} )-&gt;second;</span>
-<span class="lineNum">     236 </span><span class="lineCov">          8 :           auto lbd = derivedMap.lower_bound(derivedKey);</span>
-<span class="lineNum">     237 </span><span class="lineCov">          8 :           auto &amp; derivedVec = derivedMap.insert( lbd, { std::move(derivedKey), {}} )-&gt;second;</span>
-<span class="lineNum">     238 </span><span class="lineCov">          8 :           derivedVec.push_back( this );</span>
-<span class="lineNum">     239 </span>            :         }
-<span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span>            :         // Insert reverse relation Derived-&gt;Base
-<span class="lineNum">     242 </span><span class="lineCov">          8 :         auto &amp; reverseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().reverseMap;</span>
-<span class="lineNum">     243 </span><span class="lineCov">          8 :         reverseMap.insert( {derivedKey, baseKey} );</span>
-<span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span>            :         // Find all chainable unregistered relations
-<span class="lineNum">     246 </span>            :         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
-<span class="lineNum">     247 </span>            :            affected by the new insertion. The aglorithm iteratively processes a node an ensures that it
-<span class="lineNum">     248 </span>            :            is updated with all new shortest length paths. It then rocesses the parents of the active node,
-<span class="lineNum">     249 </span>            :            with the knowledge that all children have already been processed.
-<span class="lineNum">     250 </span>            : 
-<span class="lineNum">     251 </span>            :            Note that for the following, we'll use the nomenclature of parent and child to not confuse with
-<span class="lineNum">     252 </span>            :            the inserted base derived relationship */
-<span class="lineNum">     253 </span>            :         {
-<span class="lineNum">     254 </span>            :           // Checks whether there is a path from parent-&gt;child and returns a &lt;dist, path&gt; pair
-<a name="255"><span class="lineNum">     255 </span>            :           // dist is set to MAX if the path does not exist</a>
-<span class="lineNum">     256 </span><span class="lineNoCov">          0 :           auto checkRelation = [](std::type_index const &amp; parentInfo, std::type_index const &amp; childInfo) -&gt;</span>
-<span class="lineNum">     257 </span><span class="lineCov">         18 :             std::pair&lt;size_t, std::vector&lt;PolymorphicCaster const *&gt;&gt;</span>
-<span class="lineNum">     258 </span>            :           {
-<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         18 :             if( PolymorphicCasters::exists( parentInfo, childInfo ) )</span></a>
-<span class="lineNum">     260 </span>            :             {
-<span class="lineNum">     261 </span><span class="lineCov">         14 :               auto const &amp; path = PolymorphicCasters::lookup( parentInfo, childInfo, [](){} );</span>
-<span class="lineNum">     262 </span><span class="lineCov">         14 :               return {path.size(), path};</span>
-<span class="lineNum">     263 </span>            :             }
-<span class="lineNum">     264 </span>            :             else
-<span class="lineNum">     265 </span><span class="lineCov">          4 :               return {std::numeric_limits&lt;size_t&gt;::max(), {}};</span>
-<span class="lineNum">     266 </span>            :           };
-<span class="lineNum">     267 </span>            : 
-<span class="lineNum">     268 </span><span class="lineCov">         16 :           std::stack&lt;std::type_index&gt; parentStack;      // Holds the parent nodes to be processed</span>
-<span class="lineNum">     269 </span><span class="lineCov">         16 :           std::set&lt;std::type_index&gt;   dirtySet;         // Marks child nodes that have been changed</span>
-<span class="lineNum">     270 </span><span class="lineCov">         16 :           std::set&lt;std::type_index&gt;   processedParents; // Marks parent nodes that have been processed</span>
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span>            :           // Begin processing the base key and mark derived as dirty
-<span class="lineNum">     273 </span><span class="lineCov">          8 :           parentStack.push( baseKey );</span>
-<span class="lineNum">     274 </span><span class="lineCov">          8 :           dirtySet.insert( derivedKey );</span>
-<span class="lineNum">     275 </span>            : 
-<span class="lineNum">     276 </span><span class="lineCov">         28 :           while( !parentStack.empty() )</span>
-<span class="lineNum">     277 </span>            :           {
-<span class="lineNum">     278 </span>            :             using Relations = std::multimap&lt;std::type_index, std::pair&lt;std::type_index, std::vector&lt;PolymorphicCaster const *&gt;&gt;&gt;;
-<span class="lineNum">     279 </span><span class="lineCov">         20 :             Relations unregisteredRelations; // Defer insertions until after main loop to prevent iterator invalidation</span>
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span><span class="lineCov">         10 :             const auto parent = parentStack.top();</span>
-<span class="lineNum">     282 </span><span class="lineCov">         10 :             parentStack.pop();</span>
-<span class="lineNum">     283 </span>            : 
-<span class="lineNum">     284 </span>            :             // Update paths to all children marked dirty
-<span class="lineNum">     285 </span><span class="lineCov">         24 :             for( auto const &amp; childPair : baseMap[parent] )</span>
-<span class="lineNum">     286 </span>            :             {
-<span class="lineNum">     287 </span><span class="lineCov">         14 :               const auto child = childPair.first;</span>
-<span class="lineNum">     288 </span><span class="lineCov">         14 :               if( dirtySet.count( child ) &amp;&amp; baseMap.count( child ) )</span>
-<span class="lineNum">     289 </span>            :               {
-<span class="lineNum">     290 </span><span class="lineCov">          8 :                 auto parentChildPath = checkRelation( parent, child );</span>
-<span class="lineNum">     291 </span>            : 
-<span class="lineNum">     292 </span>            :                 // Search all paths from the child to its own children (finalChild),
-<span class="lineNum">     293 </span>            :                 // looking for a shorter parth from parent to finalChild
-<span class="lineNum">     294 </span><span class="lineCov">         11 :                 for( auto const &amp; finalChildPair : baseMap[child] )</span>
-<span class="lineNum">     295 </span>            :                 {
-<span class="lineNum">     296 </span><span class="lineCov">          7 :                   const auto finalChild = finalChildPair.first;</span>
-<span class="lineNum">     297 </span>            : 
-<span class="lineNum">     298 </span><span class="lineCov">         14 :                   auto parentFinalChildPath = checkRelation( parent, finalChild );</span>
-<span class="lineNum">     299 </span><span class="lineCov">         14 :                   auto childFinalChildPath  = checkRelation( child, finalChild );</span>
-<span class="lineNum">     300 </span>            : 
-<span class="lineNum">     301 </span><span class="lineCov">          7 :                   const size_t newLength = 1u + parentChildPath.first;</span>
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span><span class="lineCov">          7 :                   if( newLength &lt; parentFinalChildPath.first )</span>
-<span class="lineNum">     304 </span>            :                   {
-<span class="lineNum">     305 </span><span class="lineCov">         10 :                     std::vector&lt;PolymorphicCaster const *&gt; path = parentChildPath.second;</span>
-<span class="lineNum">     306 </span><span class="lineCov">          5 :                     path.insert( path.end(), childFinalChildPath.second.begin(), childFinalChildPath.second.end() );</span>
-<span class="lineNum">     307 </span>            : 
-<span class="lineNum">     308 </span>            :                     // Check to see if we have a previous uncommitted path in unregisteredRelations
-<span class="lineNum">     309 </span>            :                     // that is shorter. If so, ignore this path
-<span class="lineNum">     310 </span><span class="lineCov">          5 :                     auto hintRange = unregisteredRelations.equal_range( parent );</span>
-<span class="lineNum">     311 </span><span class="lineCov">          5 :                     auto hint = hintRange.first;</span>
-<span class="lineNum">     312 </span><span class="lineCov">          9 :                     for( ; hint != hintRange.second; ++hint )</span>
-<span class="lineNum">     313 </span><span class="lineCov">          2 :                       if( hint-&gt;second.first == finalChild )</span>
-<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                         break;</span>
-<span class="lineNum">     315 </span>            : 
-<span class="lineNum">     316 </span><span class="lineCov">          5 :                     const bool uncommittedExists = hint != unregisteredRelations.end();</span>
-<span class="lineNum">     317 </span><span class="lineCov">          5 :                     if( uncommittedExists &amp;&amp; (hint-&gt;second.second.size() &lt;= newLength) )</span>
-<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                       continue;</span>
-<span class="lineNum">     319 </span>            : 
-<span class="lineNum">     320 </span><span class="lineCov">         10 :                     auto newPath = std::pair&lt;std::type_index, std::vector&lt;PolymorphicCaster const *&gt;&gt;{finalChild, std::move(path)};</span>
-<span class="lineNum">     321 </span>            : 
-<span class="lineNum">     322 </span>            :                     // Insert the new path if it doesn't exist, otherwise this will just lookup where to do the
-<span class="lineNum">     323 </span>            :                     // replacement
-<span class="lineNum">     324 </span>            :                     #ifdef CEREAL_OLDER_GCC
-<span class="lineNum">     325 </span>            :                     auto old = unregisteredRelations.insert( hint, std::make_pair(parent, newPath) );
-<span class="lineNum">     326 </span>            :                     #else // NOT CEREAL_OLDER_GCC
-<span class="lineNum">     327 </span><span class="lineCov">          5 :                     auto old = unregisteredRelations.emplace_hint( hint, parent, newPath );</span>
-<span class="lineNum">     328 </span>            :                     #endif // NOT CEREAL_OLDER_GCC
-<span class="lineNum">     329 </span>            : 
-<span class="lineNum">     330 </span>            :                     // If there was an uncommitted path, we need to perform a replacement
-<span class="lineNum">     331 </span><span class="lineCov">          5 :                     if( uncommittedExists )</span>
-<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                       old-&gt;second = newPath;</span>
-<span class="lineNum">     333 </span>            :                   }
-<span class="lineNum">     334 </span>            :                 } // end loop over child's children
-<span class="lineNum">     335 </span>            :               } // end if dirty and child has children
-<span class="lineNum">     336 </span>            :             } // end loop over children
-<span class="lineNum">     337 </span>            : 
-<span class="lineNum">     338 </span>            :             // Insert chained relations
-<span class="lineNum">     339 </span><span class="lineCov">         15 :             for( auto const &amp; it : unregisteredRelations )</span>
-<span class="lineNum">     340 </span>            :             {
-<span class="lineNum">     341 </span><span class="lineCov">          5 :               auto &amp; derivedMap = baseMap.find( it.first )-&gt;second;</span>
-<span class="lineNum">     342 </span><span class="lineCov">          5 :               derivedMap[it.second.first] = it.second.second;</span>
-<span class="lineNum">     343 </span><span class="lineCov">          5 :               reverseMap.insert( {it.second.first, it.first} );</span>
-<span class="lineNum">     344 </span>            :             }
-<span class="lineNum">     345 </span>            : 
-<span class="lineNum">     346 </span>            :             // Mark current parent as modified
-<span class="lineNum">     347 </span><span class="lineCov">         10 :             dirtySet.insert( parent );</span>
-<span class="lineNum">     348 </span>            : 
-<span class="lineNum">     349 </span>            :             // Insert all parents of the current parent node that haven't yet been processed
-<span class="lineNum">     350 </span><span class="lineCov">         10 :             auto parentRange = reverseMap.equal_range( parent );</span>
-<span class="lineNum">     351 </span><span class="lineCov">         12 :             for( auto pIter = parentRange.first; pIter != parentRange.second; ++pIter )</span>
-<span class="lineNum">     352 </span>            :             {
-<span class="lineNum">     353 </span><span class="lineCov">          2 :               const auto pParent = pIter-&gt;second;</span>
-<span class="lineNum">     354 </span><span class="lineCov">          2 :               if( !processedParents.count( pParent ) )</span>
-<span class="lineNum">     355 </span>            :               {
-<span class="lineNum">     356 </span><span class="lineCov">          2 :                 parentStack.push( pParent );</span>
-<span class="lineNum">     357 </span><span class="lineCov">          2 :                 processedParents.insert( pParent );</span>
-<span class="lineNum">     358 </span>            :               }
-<span class="lineNum">     359 </span>            :             }
-<span class="lineNum">     360 </span>            :           } // end loop over parent stack
-<span class="lineNum">     361 </span>            :         } // end chainable relations
-<span class="lineNum">     362 </span><span class="lineCov">          8 :       } // end PolymorphicVirtualCaster()</span>
-<a name="363"><span class="lineNum">     363 </span>            : </a>
-<span class="lineNum">     364 </span>            :       //! Performs the proper downcast with the templated types
-<span class="lineNum">     365 </span><span class="lineCov">       6000 :       void const * downcast( void const * const ptr ) const override</span>
-<span class="lineNum">     366 </span>            :       {
-<span class="lineNum">     367 </span><span class="lineCov">       6000 :         return dynamic_cast&lt;Derived const*&gt;( static_cast&lt;Base const*&gt;( ptr ) );</span>
-<span class="lineNum">     368 </span>            :       }
-<a name="369"><span class="lineNum">     369 </span>            : </a>
-<span class="lineNum">     370 </span>            :       //! Performs the proper upcast with the templated types
-<span class="lineNum">     371 </span><span class="lineCov">       1600 :       void * upcast( void * const ptr ) const override</span>
-<span class="lineNum">     372 </span>            :       {
-<span class="lineNum">     373 </span><span class="lineCov">       1600 :         return dynamic_cast&lt;Base*&gt;( static_cast&lt;Derived*&gt;( ptr ) );</span>
-<span class="lineNum">     374 </span>            :       }
-<a name="375"><span class="lineNum">     375 </span>            : </a>
-<span class="lineNum">     376 </span>            :       //! Performs the proper upcast with the templated types (shared_ptr version)
-<span class="lineNum">     377 </span><span class="lineCov">       4400 :       std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;void&gt; const &amp; ptr ) const override</span>
-<span class="lineNum">     378 </span>            :       {
-<span class="lineNum">     379 </span><span class="lineCov">       4400 :         return std::dynamic_pointer_cast&lt;Base&gt;( std::static_pointer_cast&lt;Derived&gt;( ptr ) );</span>
-<span class="lineNum">     380 </span>            :       }
-<span class="lineNum">     381 </span>            :     };
-<span class="lineNum">     382 </span>            : 
-<span class="lineNum">     383 </span>            :     //! Registers a polymorphic casting relation between a Base and Derived type
-<span class="lineNum">     384 </span>            :     /*! Registering a relation allows cereal to properly cast between the two types
-<span class="lineNum">     385 </span>            :         given runtime type information and void pointers.
-<span class="lineNum">     386 </span>            : 
-<span class="lineNum">     387 </span>            :         Registration happens automatically via cereal::base_class and cereal::virtual_base_class
-<span class="lineNum">     388 </span>            :         instantiations. For cases where neither is called, see the CEREAL_REGISTER_POLYMORPHIC_RELATION
-<span class="lineNum">     389 </span>            :         macro */
-<span class="lineNum">     390 </span>            :     template &lt;class Base, class Derived&gt;
-<a name="391"><span class="lineNum">     391 </span>            :     struct RegisterPolymorphicCaster</a>
-<span class="lineNum">     392 </span>            :     {
-<span class="lineNum">     393 </span><span class="lineCov">       8000 :       static PolymorphicCaster const * bind( std::true_type /* is_polymorphic&lt;Base&gt; */)</span>
-<span class="lineNum">     394 </span>            :       {
-<span class="lineNum">     395 </span><span class="lineCov">       8000 :         return &amp;StaticObject&lt;PolymorphicVirtualCaster&lt;Base, Derived&gt;&gt;::getInstance();</span>
-<span class="lineNum">     396 </span>            :       }
-<span class="lineNum">     397 </span>            : 
-<span class="lineNum">     398 </span>            :       static PolymorphicCaster const * bind( std::false_type /* is_polymorphic&lt;Base&gt; */ )
-<span class="lineNum">     399 </span>            :       { return nullptr; }
-<span class="lineNum">     400 </span>            : 
-<a name="401"><span class="lineNum">     401 </span>            :       //! Performs registration (binding) between Base and Derived</a>
-<span class="lineNum">     402 </span>            :       /*! If the type is not polymorphic, nothing will happen */
-<span class="lineNum">     403 </span><span class="lineCov">       8000 :       static PolymorphicCaster const * bind()</span>
-<span class="lineNum">     404 </span><span class="lineCov">       8000 :       { return bind( typename std::is_polymorphic&lt;Base&gt;::type() ); }</span>
-<span class="lineNum">     405 </span>            :     };
-<span class="lineNum">     406 </span>            :   }
-<span class="lineNum">     407 </span>            : 
-<span class="lineNum">     408 </span>            :   /* General polymorphism support */
-<span class="lineNum">     409 </span>            :   namespace detail
-<span class="lineNum">     410 </span>            :   {
-<span class="lineNum">     411 </span>            :     //! Binds a compile time type with a user defined string
-<span class="lineNum">     412 </span>            :     template &lt;class T&gt;
-<span class="lineNum">     413 </span>            :     struct binding_name {};
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 : </span>
+<a name="185"><span class="lineNum">     185 </span>            :       //! Performs a downcast to the derived type using a registered mapping</a>
+<span class="lineNum">     186 </span>            :       template &lt;class Derived&gt; inline
+<a name="187"><span class="lineNum">     187 </span><span class="lineNoCov">          0 :       static const Derived * downcast( const void * dptr, std::type_info const &amp; baseInfo )</span></a>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :       {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     191 </span>            :         for( auto const * dmap : mapping )
+<span class="lineNum">     192 </span>            :           dptr = dmap-&gt;downcast( dptr );
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         return static_cast&lt;Derived const *&gt;( dptr );</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :       }</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     197 </span>            :       //! Performs an upcast to the registered base type using the given a derived type
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :       /*! The return is untyped because the final casting to the base type must happen in the polymorphic</span>
+<a name="199"><span class="lineNum">     199 </span>            :           serialization function, where the type is known at compile time */</a>
+<span class="lineNum">     200 </span><span class="lineCov">       4000 :       template &lt;class Derived&gt; inline</span>
+<a name="201"><span class="lineNum">     201 </span>            :       static void * upcast( Derived * const dptr, std::type_info const &amp; baseInfo )</a>
+<span class="lineNum">     202 </span>            :       {
+<span class="lineNum">     203 </span><span class="lineCov">       4000 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );</span>
+<span class="lineNum">     204 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     205 </span><span class="lineCov">       4000 :         void * uptr = dptr;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )</span>
+<span class="lineNum">     207 </span>            :           uptr = (*mIter)-&gt;upcast( uptr );
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span><span class="lineCov">       4000 :         return uptr;</span>
+<span class="lineNum">     210 </span><span class="lineCov">       4000 :       }</span>
+<span class="lineNum">     211 </span><span class="lineCov">       4000 : </span>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :       //! Upcasts for shared pointers</span></a>
+<span class="lineNum">     213 </span>            :       template &lt;class Derived&gt; inline
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">       4000 :       static std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;Derived&gt; const &amp; dptr, std::type_info const &amp; baseInfo )</span></a>
+<span class="lineNum">     215 </span>            :       {
+<span class="lineNum">     216 </span><span class="lineCov">       4000 :         auto const &amp; mapping = lookup( baseInfo, typeid(Derived), [&amp;](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );</span>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span>            :         std::shared_ptr&lt;void&gt; uptr = dptr;
+<span class="lineNum">     219 </span><span class="lineCov">       4000 :         for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )</span>
+<span class="lineNum">     220 </span><span class="lineCov">       4000 :           uptr = (*mIter)-&gt;upcast( uptr );</span>
+<span class="lineNum">     221 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         return uptr;</span>
+<span class="lineNum">     223 </span>            :       }
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineCov">       4000 :       #undef UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION</span>
+<span class="lineNum">     226 </span><span class="lineCov">       4000 :     };</span>
+<span class="lineNum">     227 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     #ifdef CEREAL_OLDER_GCC</span>
+<span class="lineNum">     229 </span>            :       #define CEREAL_EMPLACE_MAP(map, key, value)                     \
+<span class="lineNum">     230 </span><span class="lineCov">       4000 :       map.insert( std::make_pair(std::move(key), std::move(value)) );</span>
+<span class="lineNum">     231 </span>            :     #else // NOT CEREAL_OLDER_GCC
+<span class="lineNum">     232 </span><span class="lineCov">       1600 :       #define CEREAL_EMPLACE_MAP(map, key, value)                     \</span>
+<span class="lineNum">     233 </span>            :       map.emplace( key, value );
+<span class="lineNum">     234 </span>            :     #endif // NOT_CEREAL_OLDER_GCC
+<span class="lineNum">     235 </span><span class="lineCov">       2400 : </span>
+<span class="lineNum">     236 </span><span class="lineCov">       1600 :     //! Strongly typed derivation of PolymorphicCaster</span>
+<span class="lineNum">     237 </span><span class="lineCov">       2400 :     template &lt;class Base, class Derived&gt;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     struct PolymorphicVirtualCaster : PolymorphicCaster</span>
+<span class="lineNum">     239 </span><span class="lineCov">       1600 :     {</span>
+<span class="lineNum">     240 </span><span class="lineCov">        800 :       //! Inserts an entry in the polymorphic casting map for this pairing</span>
+<span class="lineNum">     241 </span><span class="lineCov">       1600 :       /*! Creates an explicit mapping between Base and Derived in both upwards and</span>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">       2400 :           downwards directions, allowing void pointers to either to be properly cast</span></a>
+<span class="lineNum">     243 </span><span class="lineCov">       1600 :           assuming dynamic type information is available */</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :       PolymorphicVirtualCaster()</span>
+<span class="lineNum">     245 </span>            :       {
+<span class="lineNum">     246 </span><span class="lineCov">       1600 :         const auto baseKey = std::type_index(typeid(Base));</span>
+<span class="lineNum">     247 </span>            :         const auto derivedKey = std::type_index(typeid(Derived));
+<span class="lineNum">     248 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         // First insert the relation Base-&gt;Derived</span>
+<span class="lineNum">     250 </span>            :         const auto lock = StaticObject&lt;PolymorphicCasters&gt;::lock();
+<span class="lineNum">     251 </span><span class="lineCov">       3200 :         auto &amp; baseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().map;</span>
+<span class="lineNum">     252 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">     253 </span><span class="lineCov">       3200 :         {</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :           auto &amp; derivedMap = baseMap.insert( {baseKey, PolymorphicCasters::DerivedCasterMap{}} ).first-&gt;second;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :           auto &amp; derivedVec = derivedMap.insert( {derivedKey, {}} ).first-&gt;second;</span>
+<span class="lineNum">     256 </span>            :           derivedVec.push_back( this );
+<span class="lineNum">     257 </span><span class="lineCov">       3200 :         }</span>
+<span class="lineNum">     258 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">     259 </span><span class="lineCov">       3200 :         // Insert reverse relation Derived-&gt;Base</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         auto &amp; reverseMap = StaticObject&lt;PolymorphicCasters&gt;::getInstance().reverseMap;</span>
+<span class="lineNum">     261 </span>            :         CEREAL_EMPLACE_MAP(reverseMap, derivedKey, baseKey);
+<span class="lineNum">     262 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     263 </span>            :         // Find all chainable unregistered relations
+<span class="lineNum">     264 </span><span class="lineCov">       5600 :         /* The strategy here is to process only the nodes in the class hierarchy graph that have been</span>
+<span class="lineNum">     265 </span>            :            affected by the new insertion. The aglorithm iteratively processes a node an ensures that it
+<span class="lineNum">     266 </span><span class="lineCov">        800 :            is updated with all new shortest length paths. It then rocesses the parents of the active node,</span>
+<span class="lineNum">     267 </span><span class="lineCov">       6400 :            with the knowledge that all children have already been processed.</span>
+<span class="lineNum">     268 </span><span class="lineCov">       5600 : </span>
+<span class="lineNum">     269 </span><span class="lineCov">       4800 :            Note that for the following, we'll use the nomenclature of parent and child to not confuse with</span>
+<span class="lineNum">     270 </span><span class="lineCov">        800 :            the inserted base derived relationship */</span>
+<span class="lineNum">     271 </span>            :         {
+<span class="lineNum">     272 </span>            :           // Checks whether there is a path from parent-&gt;child and returns a &lt;dist, path&gt; pair
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">       4800 :           // dist is set to MAX if the path does not exist</span></a>
+<span class="lineNum">     274 </span><span class="lineCov">       4800 :           auto checkRelation = [](std::type_index const &amp; parentInfo, std::type_index const &amp; childInfo) -&gt;</span>
+<span class="lineNum">     275 </span><span class="lineCov">       4800 :             std::pair&lt;size_t, std::vector&lt;PolymorphicCaster const *&gt; const &amp;&gt;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :           {</span>
+<span class="lineNum">     277 </span>            :             auto result = PolymorphicCasters::lookup_if_exists( parentInfo, childInfo );
+<span class="lineNum">     278 </span><span class="lineCov">       4800 :             if( result.first )</span>
+<span class="lineNum">     279 </span>            :             {
+<span class="lineNum">     280 </span><span class="lineCov">        800 :               auto const &amp; path = result.second;</span>
+<span class="lineNum">     281 </span>            :               return {path.size(), path};
+<span class="lineNum">     282 </span>            :             }
+<span class="lineNum">     283 </span><span class="lineCov">        800 :             else</span>
+<span class="lineNum">     284 </span><span class="lineCov">        800 :               return {(std::numeric_limits&lt;size_t&gt;::max)(), {}};</span>
+<span class="lineNum">     285 </span><span class="lineCov">        800 :           };</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     287 </span>            :           std::stack&lt;std::type_index&gt;         parentStack;      // Holds the parent nodes to be processed
+<span class="lineNum">     288 </span>            :           std::vector&lt;std::type_index&gt; dirtySet;                // Marks child nodes that have been changed
+<span class="lineNum">     289 </span><span class="lineCov">        800 :           std::unordered_set&lt;std::type_index&gt; processedParents; // Marks parent nodes that have been processed</span>
+<a name="290"><span class="lineNum">     290 </span><span class="lineCov">        800 : </span></a>
+<span class="lineNum">     291 </span><span class="lineCov">        800 :           // Checks if a child has been marked dirty</span>
+<span class="lineNum">     292 </span><span class="lineCov">          2 :           auto isDirty = [&amp;](std::type_index const &amp; c)</span>
+<span class="lineNum">     293 </span><span class="lineCov">          2 :           {</span>
+<span class="lineNum">     294 </span><span class="lineCov">        802 :             auto const dirtySetSize = dirtySet.size();</span>
+<span class="lineNum">     295 </span><span class="lineCov">          2 :             for( size_t i = 0; i &lt; dirtySetSize; ++i )</span>
+<span class="lineNum">     296 </span><span class="lineCov">       1600 :               if( dirtySet[i] == c )</span>
+<span class="lineNum">     297 </span>            :                 return true;
+<span class="lineNum">     298 </span><span class="lineCov">          4 : </span>
+<span class="lineNum">     299 </span><span class="lineCov">       1602 :             return false;</span>
+<span class="lineNum">     300 </span><span class="lineCov">       1600 :           };</span>
+<span class="lineNum">     301 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     302 </span><span class="lineCov">          2 :           // Begin processing the base key and mark derived as dirty</span>
+<span class="lineNum">     303 </span><span class="lineCov">          2 :           parentStack.push( baseKey );</span>
+<span class="lineNum">     304 </span><span class="lineCov">          2 :           dirtySet.emplace_back( derivedKey );</span>
+<span class="lineNum">     305 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     306 </span><span class="lineCov">       1600 :           while( !parentStack.empty() )</span>
+<span class="lineNum">     307 </span><span class="lineCov">       1600 :           {</span>
+<span class="lineNum">     308 </span><span class="lineCov">          2 :             using Relations = std::unordered_multimap&lt;std::type_index, std::pair&lt;std::type_index, std::vector&lt;PolymorphicCaster const *&gt;&gt;&gt;;</span>
+<span class="lineNum">     309 </span><span class="lineCov">          2 :             Relations unregisteredRelations; // Defer insertions until after main loop to prevent iterator invalidation</span>
+<span class="lineNum">     310 </span><span class="lineCov">       1600 : </span>
+<span class="lineNum">     311 </span>            :             const auto parent = parentStack.top();
+<span class="lineNum">     312 </span><span class="lineCov">       2400 :             parentStack.pop();</span>
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :             // Update paths to all children marked dirty
+<span class="lineNum">     315 </span><span class="lineCov">       2400 :             for( auto const &amp; childPair : baseMap[parent] )</span>
+<span class="lineNum">     316 </span><span class="lineCov">       2400 :             {</span>
+<span class="lineNum">     317 </span><span class="lineCov">       2400 :               const auto child = childPair.first;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :               if( isDirty( child ) &amp;&amp; baseMap.count( child ) )</span>
+<span class="lineNum">     319 </span>            :               {
+<span class="lineNum">     320 </span>            :                 auto parentChildPath = checkRelation( parent, child );
+<span class="lineNum">     321 </span><span class="lineCov">       2400 : </span>
+<span class="lineNum">     322 </span><span class="lineCov">       2400 :                 // Search all paths from the child to its own children (finalChild),</span>
+<span class="lineNum">     323 </span><span class="lineCov">       2400 :                 // looking for a shorter parth from parent to finalChild</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :                 for( auto const &amp; finalChildPair : baseMap[child] )</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :                 {</span>
+<span class="lineNum">     326 </span><span class="lineCov">       2400 :                   const auto finalChild = finalChildPair.first;</span>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                   auto parentFinalChildPath = checkRelation( parent, finalChild );</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                   auto childFinalChildPath  = checkRelation( child, finalChild );</span>
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineCov">      10400 :                   const size_t newLength = 1u + parentChildPath.first;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     333 </span><span class="lineCov">      10400 :                   if( newLength &lt; parentFinalChildPath.first )</span>
+<span class="lineNum">     334 </span>            :                   {
+<span class="lineNum">     335 </span><span class="lineCov">      25604 :                     std::vector&lt;PolymorphicCaster const *&gt; path = parentChildPath.second;</span>
+<span class="lineNum">     336 </span><span class="lineCov">      15204 :                     path.insert( path.end(), childFinalChildPath.second.begin(), childFinalChildPath.second.end() );</span>
+<span class="lineNum">     337 </span><span class="lineCov">          4 : </span>
+<span class="lineNum">     338 </span><span class="lineCov">      10400 :                     // Check to see if we have a previous uncommitted path in unregisteredRelations</span>
+<span class="lineNum">     339 </span>            :                     // that is shorter. If so, ignore this path
+<span class="lineNum">     340 </span><span class="lineCov">       3206 :                     auto hintRange = unregisteredRelations.equal_range( parent );</span>
+<span class="lineNum">     341 </span>            :                     auto hint = hintRange.first;
+<span class="lineNum">     342 </span><span class="lineCov">       3202 :                     for( ; hint != hintRange.second; ++hint )</span>
+<span class="lineNum">     343 </span><span class="lineCov">          2 :                       if( hint-&gt;second.first == finalChild )</span>
+<span class="lineNum">     344 </span><span class="lineCov">       6402 :                         break;</span>
+<span class="lineNum">     345 </span><span class="lineCov">       3202 : </span>
+<span class="lineNum">     346 </span>            :                     const bool uncommittedExists = hint != unregisteredRelations.end();
+<span class="lineNum">     347 </span><span class="lineCov">       3200 :                     if( uncommittedExists &amp;&amp; (hint-&gt;second.second.size() &lt;= newLength) )</span>
+<span class="lineNum">     348 </span>            :                       continue;
+<span class="lineNum">     349 </span><span class="lineCov">       4800 : </span>
+<span class="lineNum">     350 </span>            :                     auto newPath = std::pair&lt;std::type_index, std::vector&lt;PolymorphicCaster const *&gt;&gt;{finalChild, std::move(path)};
+<span class="lineNum">     351 </span><span class="lineCov">       4802 : </span>
+<span class="lineNum">     352 </span><span class="lineCov">          2 :                     // Insert the new path if it doesn't exist, otherwise this will just lookup where to do the</span>
+<span class="lineNum">     353 </span><span class="lineCov">       9600 :                     // replacement</span>
+<span class="lineNum">     354 </span><span class="lineCov">       4804 :                     #ifdef CEREAL_OLDER_GCC</span>
+<span class="lineNum">     355 </span>            :                     auto old = unregisteredRelations.insert( hint, std::make_pair(parent, newPath) );
+<span class="lineNum">     356 </span><span class="lineCov">       4800 :                     #else // NOT CEREAL_OLDER_GCC</span>
+<span class="lineNum">     357 </span><span class="lineCov">          4 :                     auto old = unregisteredRelations.emplace_hint( hint, parent, newPath );</span>
+<span class="lineNum">     358 </span><span class="lineCov">       2400 :                     #endif // NOT CEREAL_OLDER_GCC</span>
+<span class="lineNum">     359 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     360 </span><span class="lineCov">       2402 :                     // If there was an uncommitted path, we need to perform a replacement</span>
+<span class="lineNum">     361 </span>            :                     if( uncommittedExists )
+<span class="lineNum">     362 </span><span class="lineCov">       9600 :                       old-&gt;second = newPath;</span>
+<span class="lineNum">     363 </span><span class="lineCov">       7204 :                   }</span>
+<span class="lineNum">     364 </span>            :                 } // end loop over child's children
+<span class="lineNum">     365 </span><span class="lineCov">       2402 :               } // end if dirty and child has children</span>
+<span class="lineNum">     366 </span><span class="lineCov">          2 :             } // end loop over children</span>
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :             // Insert chained relations</span>
+<span class="lineNum">     369 </span>            :             for( auto const &amp; it : unregisteredRelations )
+<span class="lineNum">     370 </span>            :             {
+<span class="lineNum">     371 </span>            :               auto &amp; derivedMap = baseMap.find( it.first )-&gt;second;
+<span class="lineNum">     372 </span><span class="lineCov">       2400 :               derivedMap[it.second.first] = it.second.second;</span>
+<span class="lineNum">     373 </span>            :               CEREAL_EMPLACE_MAP(reverseMap, it.second.first, it.first );
+<span class="lineNum">     374 </span><span class="lineCov">       2400 :             }</span>
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineCov">       2400 :             // Mark current parent as modified</span>
+<span class="lineNum">     377 </span><span class="lineCov">       6400 :             dirtySet.emplace_back( parent );</span>
+<span class="lineNum">     378 </span><span class="lineCov">       4000 : </span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :             // Insert all parents of the current parent node that haven't yet been processed</span>
+<span class="lineNum">     380 </span><span class="lineCov">       2400 :             auto parentRange = reverseMap.equal_range( parent );</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :             for( auto pIter = parentRange.first; pIter != parentRange.second; ++pIter )</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :             {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :               const auto pParent = pIter-&gt;second;</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :               if( !processedParents.count( pParent ) )</span>
+<span class="lineNum">     385 </span>            :               {
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :                 parentStack.push( pParent );</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                 processedParents.insert( pParent );</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :               }</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :           } // end loop over parent stack</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         } // end chainable relations</span>
+<span class="lineNum">     392 </span><span class="lineCov">       1600 :       } // end PolymorphicVirtualCaster()</span>
+<span class="lineNum">     393 </span>            : 
+<span class="lineNum">     394 </span><span class="lineCov">       1600 :       #undef CEREAL_EMPLACE_MAP</span>
+<a name="395"><span class="lineNum">     395 </span><span class="lineNoCov">          0 : </span></a>
+<span class="lineNum">     396 </span><span class="lineCov">       1600 :       //! Performs the proper downcast with the templated types</span>
+<span class="lineNum">     397 </span><span class="lineCov">       3200 :       void const * downcast( void const * const ptr ) const override</span>
+<span class="lineNum">     398 </span><span class="lineCov">       1600 :       {</span>
+<span class="lineNum">     399 </span>            :         return dynamic_cast&lt;Derived const*&gt;( static_cast&lt;Base const*&gt;( ptr ) );
+<span class="lineNum">     400 </span><span class="lineCov">       1600 :       }</span>
+<a name="401"><span class="lineNum">     401 </span>            : </a>
+<span class="lineNum">     402 </span><span class="lineCov">        800 :       //! Performs the proper upcast with the templated types</span>
+<span class="lineNum">     403 </span>            :       void * upcast( void * const ptr ) const override
+<span class="lineNum">     404 </span><span class="lineCov">        800 :       {</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         return dynamic_cast&lt;Base*&gt;( static_cast&lt;Derived*&gt;( ptr ) );</span>
+<span class="lineNum">     406 </span><span class="lineCov">        800 :       }</span>
+<a name="407"><span class="lineNum">     407 </span><span class="lineCov">       3200 : </span></a>
+<span class="lineNum">     408 </span><span class="lineCov">       2400 :       //! Performs the proper upcast with the templated types (shared_ptr version)</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :       std::shared_ptr&lt;void&gt; upcast( std::shared_ptr&lt;void&gt; const &amp; ptr ) const override</span>
+<span class="lineNum">     410 </span><span class="lineCov">        800 :       {</span>
+<span class="lineNum">     411 </span>            :         return std::dynamic_pointer_cast&lt;Base&gt;( std::static_pointer_cast&lt;Derived&gt;( ptr ) );
+<span class="lineNum">     412 </span>            :       }
+<span class="lineNum">     413 </span>            :     };
 <span class="lineNum">     414 </span>            : 
-<span class="lineNum">     415 </span>            :     //! A structure holding a map from type_indices to output serializer functions
-<span class="lineNum">     416 </span>            :     /*! A static object of this map should be created for each registered archive
-<span class="lineNum">     417 </span>            :         type, containing entries for every registered type that describe how to
-<span class="lineNum">     418 </span>            :         properly cast the type to its real type in polymorphic scenarios for
-<a name="419"><span class="lineNum">     419 </span>            :         shared_ptr, weak_ptr, and unique_ptr. */</a>
-<span class="lineNum">     420 </span>            :     template &lt;class Archive&gt;
-<span class="lineNum">     421 </span><span class="lineCov">          8 :     struct OutputBindingMap</span>
-<span class="lineNum">     422 </span>            :     {
-<span class="lineNum">     423 </span>            :       //! A serializer function
-<span class="lineNum">     424 </span>            :       /*! Serializer functions return nothing and take an archive as
-<span class="lineNum">     425 </span>            :           their first parameter (will be cast properly inside the function,
-<span class="lineNum">     426 </span>            :           a pointer to actual data (contents of smart_ptr's get() function)
-<span class="lineNum">     427 </span>            :           as their second parameter, and the type info of the owning smart_ptr
-<span class="lineNum">     428 </span>            :           as their final parameter */
-<span class="lineNum">     429 </span>            :       typedef std::function&lt;void(void*, void const *, std::type_info const &amp;)&gt; Serializer;
-<a name="430"><span class="lineNum">     430 </span>            : </a>
-<span class="lineNum">     431 </span>            :       //! Struct containing the serializer functions for all pointer types
-<span class="lineNum">     432 </span><span class="lineCov">         80 :       struct Serializers</span>
-<span class="lineNum">     433 </span>            :       {
-<span class="lineNum">     434 </span>            :         Serializer shared_ptr, //!&lt; Serializer function for shared/weak pointers
-<span class="lineNum">     435 </span>            :                    unique_ptr; //!&lt; Serializer function for unique pointers
-<span class="lineNum">     436 </span>            :       };
-<span class="lineNum">     437 </span>            : 
-<span class="lineNum">     438 </span>            :       //! A map of serializers for pointers of all registered types
-<span class="lineNum">     439 </span>            :       std::map&lt;std::type_index, Serializers&gt; map;
-<span class="lineNum">     440 </span>            :     };
-<a name="441"><span class="lineNum">     441 </span>            : </a>
-<span class="lineNum">     442 </span>            :     //! An empty noop deleter
-<span class="lineNum">     443 </span><span class="lineCov">        800 :     template&lt;class T&gt; struct EmptyDeleter { void operator()(T *) const {} };</span>
-<span class="lineNum">     444 </span>            : 
-<span class="lineNum">     445 </span>            :     //! A structure holding a map from type name strings to input serializer functions
-<span class="lineNum">     446 </span>            :     /*! A static object of this map should be created for each registered archive
-<span class="lineNum">     447 </span>            :         type, containing entries for every registered type that describe how to
-<span class="lineNum">     448 </span>            :         properly cast the type to its real type in polymorphic scenarios for
-<a name="449"><span class="lineNum">     449 </span>            :         shared_ptr, weak_ptr, and unique_ptr. */</a>
-<span class="lineNum">     450 </span>            :     template &lt;class Archive&gt;
-<span class="lineNum">     451 </span><span class="lineCov">          8 :     struct InputBindingMap</span>
-<span class="lineNum">     452 </span>            :     {
-<span class="lineNum">     453 </span>            :       //! Shared ptr serializer function
-<span class="lineNum">     454 </span>            :       /*! Serializer functions return nothing and take an archive as
-<span class="lineNum">     455 </span>            :           their first parameter (will be cast properly inside the function,
-<span class="lineNum">     456 </span>            :           a shared_ptr (or unique_ptr for the unique case) of any base
-<span class="lineNum">     457 </span>            :           type, and the type id of said base type as the third parameter.
-<span class="lineNum">     458 </span>            :           Internally it will properly be loaded and cast to the correct type. */
-<span class="lineNum">     459 </span>            :       typedef std::function&lt;void(void*, std::shared_ptr&lt;void&gt; &amp;, std::type_info const &amp;)&gt; SharedSerializer;
-<span class="lineNum">     460 </span>            :       //! Unique ptr serializer function
-<span class="lineNum">     461 </span>            :       typedef std::function&lt;void(void*, std::unique_ptr&lt;void, EmptyDeleter&lt;void&gt;&gt; &amp;, std::type_info const &amp;)&gt; UniqueSerializer;
-<a name="462"><span class="lineNum">     462 </span>            : </a>
+<span class="lineNum">     415 </span><span class="lineCov">       8000 :     //! Registers a polymorphic casting relation between a Base and Derived type</span>
+<span class="lineNum">     416 </span>            :     /*! Registering a relation allows cereal to properly cast between the two types
+<span class="lineNum">     417 </span><span class="lineCov">       8002 :         given runtime type information and void pointers.</span>
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span><span class="lineCov">       8000 :         Registration happens automatically via cereal::base_class and cereal::virtual_base_class</span>
+<span class="lineNum">     420 </span><span class="lineCov">      19200 :         instantiations. For cases where neither is called, see the CEREAL_REGISTER_POLYMORPHIC_RELATION</span>
+<span class="lineNum">     421 </span><span class="lineCov">      11200 :         macro */</span>
+<span class="lineNum">     422 </span>            :     template &lt;class Base, class Derived&gt;
+<a name="423"><span class="lineNum">     423 </span><span class="lineCov">       8000 :     struct RegisterPolymorphicCaster</span></a>
+<span class="lineNum">     424 </span>            :     {
+<span class="lineNum">     425 </span><span class="lineCov">       3202 :       static PolymorphicCaster const * bind( std::true_type /* is_polymorphic&lt;Base&gt; */)</span>
+<span class="lineNum">     426 </span>            :       {
+<span class="lineNum">     427 </span><span class="lineCov">       3200 :         return &amp;StaticObject&lt;PolymorphicVirtualCaster&lt;Base, Derived&gt;&gt;::getInstance();</span>
+<span class="lineNum">     428 </span><span class="lineCov">          2 :       }</span>
+<span class="lineNum">     429 </span><span class="lineCov">       3202 : </span>
+<span class="lineNum">     430 </span><span class="lineCov">       6400 :       static PolymorphicCaster const * bind( std::false_type /* is_polymorphic&lt;Base&gt; */ )</span>
+<span class="lineNum">     431 </span><span class="lineCov">       3200 :       { return nullptr; }</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 : </span>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">       3200 :       //! Performs registration (binding) between Base and Derived</span></a>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :       /*! If the type is not polymorphic, nothing will happen */</span>
+<span class="lineNum">     435 </span><span class="lineCov">       3200 :       static PolymorphicCaster const * bind()</span>
+<span class="lineNum">     436 </span>            :       { return bind( typename std::is_polymorphic&lt;Base&gt;::type() ); }
+<span class="lineNum">     437 </span><span class="lineCov">       3200 :     };</span>
+<span class="lineNum">     438 </span>            :   }
+<span class="lineNum">     439 </span><span class="lineCov">       3200 : </span>
+<span class="lineNum">     440 </span><span class="lineCov">       6402 :   /* General polymorphism support */</span>
+<span class="lineNum">     441 </span><span class="lineCov">       3200 :   namespace detail</span>
+<span class="lineNum">     442 </span>            :   {
+<span class="lineNum">     443 </span><span class="lineCov">       3200 :     //! Binds a compile time type with a user defined string</span>
+<span class="lineNum">     444 </span>            :     template &lt;class T&gt;
+<span class="lineNum">     445 </span><span class="lineCov">       2400 :     struct binding_name {};</span>
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span><span class="lineCov">       2400 :     //! A structure holding a map from type_indices to output serializer functions</span>
+<span class="lineNum">     448 </span>            :     /*! A static object of this map should be created for each registered archive
+<span class="lineNum">     449 </span><span class="lineCov">       1600 :         type, containing entries for every registered type that describe how to</span>
+<span class="lineNum">     450 </span><span class="lineCov">       6400 :         properly cast the type to its real type in polymorphic scenarios for</span>
+<span class="lineNum">     451 </span><span class="lineCov">       4800 :         shared_ptr, weak_ptr, and unique_ptr. */</span>
+<span class="lineNum">     452 </span>            :     template &lt;class Archive&gt;
+<span class="lineNum">     453 </span><span class="lineCov">       1600 :     struct OutputBindingMap</span>
+<span class="lineNum">     454 </span>            :     {
+<span class="lineNum">     455 </span>            :       //! A serializer function
+<span class="lineNum">     456 </span>            :       /*! Serializer functions return nothing and take an archive as
+<span class="lineNum">     457 </span><span class="lineCov">        800 :           their first parameter (will be cast properly inside the function,</span>
+<span class="lineNum">     458 </span>            :           a pointer to actual data (contents of smart_ptr's get() function)
+<span class="lineNum">     459 </span><span class="lineCov">        800 :           as their second parameter, and the type info of the owning smart_ptr</span>
+<span class="lineNum">     460 </span>            :           as their final parameter */
+<span class="lineNum">     461 </span>            :       typedef std::function&lt;void(void*, void const *, std::type_info const &amp;)&gt; Serializer;
+<span class="lineNum">     462 </span>            : 
 <span class="lineNum">     463 </span>            :       //! Struct containing the serializer functions for all pointer types
-<span class="lineNum">     464 </span><span class="lineCov">       7280 :       struct Serializers</span>
+<span class="lineNum">     464 </span>            :       struct Serializers
 <span class="lineNum">     465 </span>            :       {
-<span class="lineNum">     466 </span>            :         SharedSerializer shared_ptr; //!&lt; Serializer function for shared/weak pointers
-<span class="lineNum">     467 </span>            :         UniqueSerializer unique_ptr; //!&lt; Serializer function for unique pointers
+<span class="lineNum">     466 </span>            :         Serializer shared_ptr, //!&lt; Serializer function for shared/weak pointers
+<span class="lineNum">     467 </span>            :                    unique_ptr; //!&lt; Serializer function for unique pointers
 <span class="lineNum">     468 </span>            :       };
 <span class="lineNum">     469 </span>            : 
 <span class="lineNum">     470 </span>            :       //! A map of serializers for pointers of all registered types
-<span class="lineNum">     471 </span>            :       std::map&lt;std::string, Serializers&gt; map;
+<span class="lineNum">     471 </span>            :       std::map&lt;std::type_index, Serializers&gt; map;
 <span class="lineNum">     472 </span>            :     };
-<span class="lineNum">     473 </span>            : 
-<span class="lineNum">     474 </span>            :     // forward decls for archives from cereal.hpp
-<span class="lineNum">     475 </span>            :     class InputArchiveBase;
-<span class="lineNum">     476 </span>            :     class OutputArchiveBase;
-<span class="lineNum">     477 </span>            : 
-<span class="lineNum">     478 </span>            :     //! Creates a binding (map entry) between an input archive type and a polymorphic type
-<span class="lineNum">     479 </span>            :     /*! Bindings are made when types are registered, assuming that at least one
-<span class="lineNum">     480 </span>            :         archive has already been registered.  When this struct is created,
-<span class="lineNum">     481 </span>            :         it will insert (at run time) an entry into a map that properly handles
-<span class="lineNum">     482 </span>            :         casting for serializing polymorphic objects */
-<span class="lineNum">     483 </span>            :     template &lt;class Archive, class T&gt; struct InputBindingCreator
-<a name="484"><span class="lineNum">     484 </span>            :     {</a>
-<span class="lineNum">     485 </span>            :       //! Initialize the binding
-<span class="lineNum">     486 </span><span class="lineCov">         16 :       InputBindingCreator()</span>
-<span class="lineNum">     487 </span>            :       {
-<span class="lineNum">     488 </span><span class="lineCov">         16 :         auto &amp; map = StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
-<span class="lineNum">     489 </span><span class="lineCov">         32 :         auto lock = StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::lock();</span>
-<span class="lineNum">     490 </span><span class="lineCov">         32 :         auto key = std::string(binding_name&lt;T&gt;::name());</span>
-<span class="lineNum">     491 </span><span class="lineCov">         16 :         auto lb = map.lower_bound(key);</span>
-<span class="lineNum">     492 </span>            : 
-<span class="lineNum">     493 </span><span class="lineCov">         16 :         if (lb != map.end() &amp;&amp; lb-&gt;first == key)</span>
-<span class="lineNum">     494 </span><span class="lineNoCov">          0 :           return;</span>
-<span class="lineNum">     495 </span>            : 
-<span class="lineNum">     496 </span><span class="lineCov">         32 :         typename InputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
-<a name="497"><span class="lineNum">     497 </span>            : </a>
-<span class="lineNum">     498 </span><span class="lineCov">         16 :         serializers.shared_ptr =</span>
-<span class="lineNum">     499 </span><span class="lineCov">       2800 :           [](void * arptr, std::shared_ptr&lt;void&gt; &amp; dptr, std::type_info const &amp; baseInfo)</span>
-<span class="lineNum">     500 </span>            :           {
-<span class="lineNum">     501 </span><span class="lineCov">       2800 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     502 </span><span class="lineCov">       5600 :             std::shared_ptr&lt;T&gt; ptr;</span>
-<span class="lineNum">     503 </span>            : 
-<span class="lineNum">     504 </span><span class="lineCov">       2800 :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, ::cereal::memory_detail::make_ptr_wrapper(ptr)) );</span>
+<a name="473"><span class="lineNum">     473 </span>            : </a>
+<span class="lineNum">     474 </span>            :     //! An empty noop deleter
+<span class="lineNum">     475 </span><span class="lineCov">         14 :     template&lt;class T&gt; struct EmptyDeleter { void operator()(T *) const {} };</span>
+<span class="lineNum">     476 </span><span class="lineCov">         14 : </span>
+<span class="lineNum">     477 </span><span class="lineCov">         14 :     //! A structure holding a map from type name strings to input serializer functions</span>
+<span class="lineNum">     478 </span><span class="lineCov">         14 :     /*! A static object of this map should be created for each registered archive</span>
+<span class="lineNum">     479 </span>            :         type, containing entries for every registered type that describe how to
+<span class="lineNum">     480 </span>            :         properly cast the type to its real type in polymorphic scenarios for
+<span class="lineNum">     481 </span><span class="lineCov">         28 :         shared_ptr, weak_ptr, and unique_ptr. */</span>
+<span class="lineNum">     482 </span><span class="lineCov">         14 :     template &lt;class Archive&gt;</span>
+<span class="lineNum">     483 </span>            :     struct InputBindingMap
+<span class="lineNum">     484 </span>            :     {
+<span class="lineNum">     485 </span><span class="lineCov">         14 :       //! Shared ptr serializer function</span>
+<span class="lineNum">     486 </span><span class="lineCov">         14 :       /*! Serializer functions return nothing and take an archive as</span>
+<span class="lineNum">     487 </span><span class="lineCov">         14 :           their first parameter (will be cast properly inside the function,</span>
+<span class="lineNum">     488 </span>            :           a shared_ptr (or unique_ptr for the unique case) of any base
+<span class="lineNum">     489 </span>            :           type, and the type id of said base type as the third parameter.
+<span class="lineNum">     490 </span>            :           Internally it will properly be loaded and cast to the correct type. */
+<span class="lineNum">     491 </span><span class="lineCov">         14 :       typedef std::function&lt;void(void*, std::shared_ptr&lt;void&gt; &amp;, std::type_info const &amp;)&gt; SharedSerializer;</span>
+<span class="lineNum">     492 </span><span class="lineCov">         14 :       //! Unique ptr serializer function</span>
+<span class="lineNum">     493 </span>            :       typedef std::function&lt;void(void*, std::unique_ptr&lt;void, EmptyDeleter&lt;void&gt;&gt; &amp;, std::type_info const &amp;)&gt; UniqueSerializer;
+<span class="lineNum">     494 </span>            : 
+<span class="lineNum">     495 </span>            :       //! Struct containing the serializer functions for all pointer types
+<span class="lineNum">     496 </span>            :       struct Serializers
+<span class="lineNum">     497 </span>            :       {
+<span class="lineNum">     498 </span>            :         SharedSerializer shared_ptr; //!&lt; Serializer function for shared/weak pointers
+<span class="lineNum">     499 </span>            :         UniqueSerializer unique_ptr; //!&lt; Serializer function for unique pointers
+<span class="lineNum">     500 </span>            :       };
+<span class="lineNum">     501 </span>            : 
+<span class="lineNum">     502 </span>            :       //! A map of serializers for pointers of all registered types
+<span class="lineNum">     503 </span>            :       std::map&lt;std::string, Serializers&gt; map;
+<span class="lineNum">     504 </span>            :     };
 <span class="lineNum">     505 </span>            : 
-<span class="lineNum">     506 </span><span class="lineCov">       2800 :             dptr = PolymorphicCasters::template upcast&lt;T&gt;( ptr, baseInfo );</span>
-<span class="lineNum">     507 </span><span class="lineCov">       2800 :           };</span>
-<a name="508"><span class="lineNum">     508 </span>            : </a>
-<span class="lineNum">     509 </span><span class="lineCov">         16 :         serializers.unique_ptr =</span>
-<span class="lineNum">     510 </span><span class="lineCov">        800 :           [](void * arptr, std::unique_ptr&lt;void, EmptyDeleter&lt;void&gt;&gt; &amp; dptr, std::type_info const &amp; baseInfo)</span>
-<span class="lineNum">     511 </span>            :           {
-<span class="lineNum">     512 </span><span class="lineCov">        800 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     513 </span><span class="lineCov">       1600 :             std::unique_ptr&lt;T&gt; ptr;</span>
-<span class="lineNum">     514 </span>            : 
-<span class="lineNum">     515 </span><span class="lineCov">        800 :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, ::cereal::memory_detail::make_ptr_wrapper(ptr)) );</span>
-<span class="lineNum">     516 </span>            : 
-<span class="lineNum">     517 </span><span class="lineCov">        800 :             dptr.reset( PolymorphicCasters::template upcast&lt;T&gt;( ptr.release(), baseInfo ));</span>
-<span class="lineNum">     518 </span><span class="lineCov">        800 :           };</span>
-<span class="lineNum">     519 </span>            : 
-<span class="lineNum">     520 </span><span class="lineCov">         16 :         map.insert( lb, { std::move(key), std::move(serializers) } );</span>
-<span class="lineNum">     521 </span>            :       }
-<span class="lineNum">     522 </span>            :     };
-<span class="lineNum">     523 </span>            : 
-<span class="lineNum">     524 </span>            :     //! Creates a binding (map entry) between an output archive type and a polymorphic type
-<span class="lineNum">     525 </span>            :     /*! Bindings are made when types are registered, assuming that at least one
-<span class="lineNum">     526 </span>            :         archive has already been registered.  When this struct is created,
-<span class="lineNum">     527 </span>            :         it will insert (at run time) an entry into a map that properly handles
-<span class="lineNum">     528 </span>            :         casting for serializing polymorphic objects */
-<span class="lineNum">     529 </span>            :     template &lt;class Archive, class T&gt; struct OutputBindingCreator
-<a name="530"><span class="lineNum">     530 </span>            :     {</a>
-<span class="lineNum">     531 </span>            :       //! Writes appropriate metadata to the archive for this polymorphic type
-<span class="lineNum">     532 </span><span class="lineCov">       3600 :       static void writeMetadata(Archive &amp; ar)</span>
-<span class="lineNum">     533 </span>            :       {
-<span class="lineNum">     534 </span>            :         // Register the polymorphic type name with the archive, and get the id
-<span class="lineNum">     535 </span><span class="lineCov">       3600 :         char const * name = binding_name&lt;T&gt;::name();</span>
-<span class="lineNum">     536 </span><span class="lineCov">       3600 :         std::uint32_t id = ar.registerPolymorphicType(name);</span>
-<span class="lineNum">     537 </span>            : 
-<span class="lineNum">     538 </span>            :         // Serialize the id
-<span class="lineNum">     539 </span><span class="lineCov">       3600 :         ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, id) );</span>
-<span class="lineNum">     540 </span>            : 
-<span class="lineNum">     541 </span>            :         // If the msb of the id is 1, then the type name is new, and we should serialize it
-<span class="lineNum">     542 </span><span class="lineCov">       3600 :         if( id &amp; detail::msb_32bit )</span>
-<span class="lineNum">     543 </span>            :         {
-<span class="lineNum">     544 </span><span class="lineCov">       3200 :           std::string namestring(name);</span>
-<span class="lineNum">     545 </span><span class="lineCov">       1600 :           ar( CEREAL_NVP_(&quot;polymorphic_name&quot;, namestring) );</span>
-<span class="lineNum">     546 </span>            :         }
-<span class="lineNum">     547 </span><span class="lineCov">       3600 :       }</span>
-<a name="548"><span class="lineNum">     548 </span>            : </a>
-<span class="lineNum">     549 </span>            :       //! Holds a properly typed shared_ptr to the polymorphic type
-<span class="lineNum">     550 </span><span class="lineCov">       2800 :       class PolymorphicSharedPointerWrapper</span>
-<span class="lineNum">     551 </span>            :       {
-<span class="lineNum">     552 </span>            :         public:
-<span class="lineNum">     553 </span>            :           /*! Wrap a raw polymorphic pointer in a shared_ptr to its true type
-<span class="lineNum">     554 </span>            : 
-<span class="lineNum">     555 </span>            :               The wrapped pointer will not be responsible for ownership of the held pointer
-<span class="lineNum">     556 </span>            :               so it will not attempt to destroy it; instead the refcount of the wrapped
-<span class="lineNum">     557 </span>            :               pointer will be tied to a fake 'ownership pointer' that will do nothing
-<span class="lineNum">     558 </span>            :               when it ultimately goes out of scope.
-<span class="lineNum">     559 </span>            : 
-<span class="lineNum">     560 </span>            :               The main reason for doing this, other than not to destroy the true object
-<span class="lineNum">     561 </span>            :               with our wrapper pointer, is to avoid meddling with the internal reference
-<span class="lineNum">     562 </span>            :               count in a polymorphic type that inherits from std::enable_shared_from_this.
-<a name="563"><span class="lineNum">     563 </span>            : </a>
-<span class="lineNum">     564 </span>            :               @param dptr A void pointer to the contents of the shared_ptr to serialize */
-<span class="lineNum">     565 </span><span class="lineCov">       2800 :           PolymorphicSharedPointerWrapper( T const * dptr ) : refCount(), wrappedPtr( refCount, dptr )</span>
-<span class="lineNum">     566 </span><span class="lineCov">       2800 :           { }</span>
-<a name="567"><span class="lineNum">     567 </span>            : </a>
-<span class="lineNum">     568 </span>            :           //! Get the wrapped shared_ptr */
-<span class="lineNum">     569 </span><span class="lineCov">       2800 :           inline std::shared_ptr&lt;T const&gt; const &amp; operator()() const { return wrappedPtr; }</span>
-<span class="lineNum">     570 </span>            : 
-<span class="lineNum">     571 </span>            :         private:
-<span class="lineNum">     572 </span>            :           std::shared_ptr&lt;void&gt; refCount;      //!&lt; The ownership pointer
-<span class="lineNum">     573 </span>            :           std::shared_ptr&lt;T const&gt; wrappedPtr; //!&lt; The wrapped pointer
-<span class="lineNum">     574 </span>            :       };
-<span class="lineNum">     575 </span>            : 
-<span class="lineNum">     576 </span>            :       //! Does the actual work of saving a polymorphic shared_ptr
-<span class="lineNum">     577 </span>            :       /*! This function will properly create a shared_ptr from the void * that is passed in
-<span class="lineNum">     578 </span>            :           before passing it to the archive for serialization.
-<span class="lineNum">     579 </span>            : 
-<span class="lineNum">     580 </span>            :           In addition, this will also preserve the state of any internal enable_shared_from_this mechanisms
-<span class="lineNum">     581 </span>            : 
-<a name="582"><span class="lineNum">     582 </span>            :           @param ar The archive to serialize to</a>
-<span class="lineNum">     583 </span>            :           @param dptr Pointer to the actual data held by the shared_ptr */
-<span class="lineNum">     584 </span><span class="lineCov">        800 :       static inline void savePolymorphicSharedPtr( Archive &amp; ar, T const * dptr, std::true_type /* has_shared_from_this */ )</span>
-<span class="lineNum">     585 </span>            :       {
-<span class="lineNum">     586 </span><span class="lineCov">       1600 :         ::cereal::memory_detail::EnableSharedStateHelper&lt;T&gt; state( const_cast&lt;T *&gt;(dptr) );</span>
-<span class="lineNum">     587 </span><span class="lineCov">       1600 :         PolymorphicSharedPointerWrapper psptr( dptr );</span>
-<span class="lineNum">     588 </span><span class="lineCov">        800 :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( psptr() ) ) );</span>
-<span class="lineNum">     589 </span><span class="lineCov">        800 :       }</span>
-<span class="lineNum">     590 </span>            : 
-<span class="lineNum">     591 </span>            :       //! Does the actual work of saving a polymorphic shared_ptr
-<span class="lineNum">     592 </span>            :       /*! This function will properly create a shared_ptr from the void * that is passed in
-<span class="lineNum">     593 </span>            :           before passing it to the archive for serialization.
-<span class="lineNum">     594 </span>            : 
-<span class="lineNum">     595 </span>            :           This version is for types that do not inherit from std::enable_shared_from_this.
-<span class="lineNum">     596 </span>            : 
-<a name="597"><span class="lineNum">     597 </span>            :           @param ar The archive to serialize to</a>
-<span class="lineNum">     598 </span>            :           @param dptr Pointer to the actual data held by the shared_ptr */
-<span class="lineNum">     599 </span><span class="lineCov">       2000 :       static inline void savePolymorphicSharedPtr( Archive &amp; ar, T const * dptr, std::false_type /* has_shared_from_this */ )</span>
-<span class="lineNum">     600 </span>            :       {
-<span class="lineNum">     601 </span><span class="lineCov">       4000 :         PolymorphicSharedPointerWrapper psptr( dptr );</span>
-<span class="lineNum">     602 </span><span class="lineCov">       2000 :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( psptr() ) ) );</span>
-<span class="lineNum">     603 </span><span class="lineCov">       2000 :       }</span>
-<a name="604"><span class="lineNum">     604 </span>            : </a>
-<span class="lineNum">     605 </span>            :       //! Initialize the binding
-<span class="lineNum">     606 </span><span class="lineCov">         16 :       OutputBindingCreator()</span>
-<span class="lineNum">     607 </span>            :       {
-<span class="lineNum">     608 </span><span class="lineCov">         16 :         auto &amp; map = StaticObject&lt;OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
-<span class="lineNum">     609 </span><span class="lineCov">         16 :         auto key = std::type_index(typeid(T));</span>
-<span class="lineNum">     610 </span><span class="lineCov">         16 :         auto lb = map.lower_bound(key);</span>
-<span class="lineNum">     611 </span>            : 
-<span class="lineNum">     612 </span><span class="lineCov">         16 :         if (lb != map.end() &amp;&amp; lb-&gt;first == key)</span>
-<span class="lineNum">     613 </span><span class="lineNoCov">          0 :           return;</span>
-<span class="lineNum">     614 </span>            : 
-<span class="lineNum">     615 </span><span class="lineCov">         32 :         typename OutputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
-<a name="616"><span class="lineNum">     616 </span>            : </a>
-<span class="lineNum">     617 </span><span class="lineCov">         16 :         serializers.shared_ptr =</span>
-<span class="lineNum">     618 </span><span class="lineCov">       2800 :           [&amp;](void * arptr, void const * dptr, std::type_info const &amp; baseInfo)</span>
-<span class="lineNum">     619 </span>            :           {
-<span class="lineNum">     620 </span><span class="lineCov">       2800 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     621 </span><span class="lineCov">       2800 :             writeMetadata(ar);</span>
+<span class="lineNum">     506 </span><span class="lineCov">         36 :     // forward decls for archives from cereal.hpp</span>
+<span class="lineNum">     507 </span>            :     class InputArchiveBase;
+<span class="lineNum">     508 </span><span class="lineCov">         36 :     class OutputArchiveBase;</span>
+<span class="lineNum">     509 </span><span class="lineCov">         36 : </span>
+<span class="lineNum">     510 </span>            :     //! Creates a binding (map entry) between an input archive type and a polymorphic type
+<span class="lineNum">     511 </span><span class="lineCov">         28 :     /*! Bindings are made when types are registered, assuming that at least one</span>
+<span class="lineNum">     512 </span><span class="lineCov">         28 :         archive has already been registered.  When this struct is created,</span>
+<span class="lineNum">     513 </span>            :         it will insert (at run time) an entry into a map that properly handles
+<span class="lineNum">     514 </span>            :         casting for serializing polymorphic objects */
+<span class="lineNum">     515 </span><span class="lineCov">          8 :     template &lt;class Archive, class T&gt; struct InputBindingCreator</span>
+<a name="516"><span class="lineNum">     516 </span>            :     {</a>
+<span class="lineNum">     517 </span>            :       //! Initialize the binding
+<span class="lineNum">     518 </span><span class="lineCov">         28 :       InputBindingCreator()</span>
+<span class="lineNum">     519 </span><span class="lineCov">         28 :       {</span>
+<span class="lineNum">     520 </span><span class="lineCov">         28 :         auto &amp; map = StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
+<span class="lineNum">     521 </span>            :         auto lock = StaticObject&lt;InputBindingMap&lt;Archive&gt;&gt;::lock();
+<span class="lineNum">     522 </span>            :         auto key = std::string(binding_name&lt;T&gt;::name());
+<span class="lineNum">     523 </span><span class="lineCov">         74 :         auto lb = map.lower_bound(key);</span>
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span><span class="lineCov">         26 :         if (lb != map.end() &amp;&amp; lb-&gt;first == key)</span>
+<span class="lineNum">     526 </span><span class="lineCov">         42 :           return;</span>
+<span class="lineNum">     527 </span><span class="lineCov">         34 : </span>
+<span class="lineNum">     528 </span><span class="lineCov">         18 :         typename InputBindingMap&lt;Archive&gt;::Serializers serializers;</span>
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span><span class="lineCov">          8 :         serializers.shared_ptr =</span>
+<span class="lineNum">     531 </span>            :           [](void * arptr, std::shared_ptr&lt;void&gt; &amp; dptr, std::type_info const &amp; baseInfo)
+<span class="lineNum">     532 </span>            :           {
+<span class="lineNum">     533 </span>            :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);
+<span class="lineNum">     534 </span><span class="lineCov">         14 :             std::shared_ptr&lt;T&gt; ptr;</span>
+<span class="lineNum">     535 </span><span class="lineCov">         14 : </span>
+<span class="lineNum">     536 </span>            :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     537 </span><span class="lineCov">         32 : </span>
+<span class="lineNum">     538 </span>            :             dptr = PolymorphicCasters::template upcast&lt;T&gt;( ptr, baseInfo );
+<span class="lineNum">     539 </span>            :           };
+<span class="lineNum">     540 </span><span class="lineCov">         36 : </span>
+<span class="lineNum">     541 </span>            :         serializers.unique_ptr =
+<span class="lineNum">     542 </span><span class="lineCov">         18 :           [](void * arptr, std::unique_ptr&lt;void, EmptyDeleter&lt;void&gt;&gt; &amp; dptr, std::type_info const &amp; baseInfo)</span>
+<span class="lineNum">     543 </span><span class="lineCov">         18 :           {</span>
+<span class="lineNum">     544 </span>            :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);
+<span class="lineNum">     545 </span>            :             std::unique_ptr&lt;T&gt; ptr;
+<span class="lineNum">     546 </span><span class="lineCov">         44 : </span>
+<span class="lineNum">     547 </span>            :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, ::cereal::memory_detail::make_ptr_wrapper(ptr)) );
+<span class="lineNum">     548 </span><span class="lineCov">         26 : </span>
+<span class="lineNum">     549 </span><span class="lineCov">         26 :             dptr.reset( PolymorphicCasters::template upcast&lt;T&gt;( ptr.release(), baseInfo ));</span>
+<span class="lineNum">     550 </span>            :           };
+<span class="lineNum">     551 </span><span class="lineCov">          8 : </span>
+<span class="lineNum">     552 </span>            :         map.insert( lb, { std::move(key), std::move(serializers) } );
+<span class="lineNum">     553 </span>            :       }
+<span class="lineNum">     554 </span>            :     };
+<span class="lineNum">     555 </span><span class="lineCov">         22 : </span>
+<span class="lineNum">     556 </span>            :     //! Creates a binding (map entry) between an output archive type and a polymorphic type
+<span class="lineNum">     557 </span><span class="lineCov">         14 :     /*! Bindings are made when types are registered, assuming that at least one</span>
+<span class="lineNum">     558 </span>            :         archive has already been registered.  When this struct is created,
+<span class="lineNum">     559 </span><span class="lineCov">         14 :         it will insert (at run time) an entry into a map that properly handles</span>
+<span class="lineNum">     560 </span><span class="lineCov">         14 :         casting for serializing polymorphic objects */</span>
+<span class="lineNum">     561 </span>            :     template &lt;class Archive, class T&gt; struct OutputBindingCreator
+<a name="562"><span class="lineNum">     562 </span><span class="lineCov">         14 :     {</span></a>
+<span class="lineNum">     563 </span>            :       //! Writes appropriate metadata to the archive for this polymorphic type
+<span class="lineNum">     564 </span><span class="lineCov">         14 :       static void writeMetadata(Archive &amp; ar)</span>
+<span class="lineNum">     565 </span>            :       {
+<span class="lineNum">     566 </span><span class="lineCov">         18 :         // Register the polymorphic type name with the archive, and get the id</span>
+<span class="lineNum">     567 </span><span class="lineCov">         10 :         char const * name = binding_name&lt;T&gt;::name();</span>
+<span class="lineNum">     568 </span><span class="lineCov">          8 :         std::uint32_t id = ar.registerPolymorphicType(name);</span>
+<span class="lineNum">     569 </span><span class="lineCov">          8 : </span>
+<span class="lineNum">     570 </span><span class="lineCov">          8 :         // Serialize the id</span>
+<span class="lineNum">     571 </span><span class="lineCov">         18 :         ar( CEREAL_NVP_(&quot;polymorphic_id&quot;, id) );</span>
+<span class="lineNum">     572 </span><span class="lineCov">         10 : </span>
+<span class="lineNum">     573 </span><span class="lineCov">         22 :         // If the msb of the id is 1, then the type name is new, and we should serialize it</span>
+<span class="lineNum">     574 </span><span class="lineCov">          4 :         if( id &amp; detail::msb_32bit )</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :         {</span>
+<span class="lineNum">     576 </span><span class="lineCov">          8 :           std::string namestring(name);</span>
+<span class="lineNum">     577 </span><span class="lineCov">         10 :           ar( CEREAL_NVP_(&quot;polymorphic_name&quot;, namestring) );</span>
+<span class="lineNum">     578 </span><span class="lineCov">        818 :         }</span>
+<span class="lineNum">     579 </span><span class="lineCov">        800 :       }</span>
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span><span class="lineCov">        820 :       //! Holds a properly typed shared_ptr to the polymorphic type</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :       class PolymorphicSharedPointerWrapper</span>
+<span class="lineNum">     583 </span>            :       {
+<span class="lineNum">     584 </span><span class="lineCov">        800 :         public:</span>
+<span class="lineNum">     585 </span>            :           /*! Wrap a raw polymorphic pointer in a shared_ptr to its true type
+<span class="lineNum">     586 </span><span class="lineCov">        800 : </span>
+<span class="lineNum">     587 </span>            :               The wrapped pointer will not be responsible for ownership of the held pointer
+<span class="lineNum">     588 </span><span class="lineCov">         10 :               so it will not attempt to destroy it; instead the refcount of the wrapped</span>
+<span class="lineNum">     589 </span><span class="lineCov">          8 :               pointer will be tied to a fake 'ownership pointer' that will do nothing</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :               when it ultimately goes out of scope.</span>
+<span class="lineNum">     591 </span>            : 
+<span class="lineNum">     592 </span><span class="lineCov">         10 :               The main reason for doing this, other than not to destroy the true object</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :               with our wrapper pointer, is to avoid meddling with the internal reference</span>
+<span class="lineNum">     594 </span>            :               count in a polymorphic type that inherits from std::enable_shared_from_this.
+<a name="595"><span class="lineNum">     595 </span><span class="lineNoCov">          0 : </span></a>
+<span class="lineNum">     596 </span>            :               @param dptr A void pointer to the contents of the shared_ptr to serialize */
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :           PolymorphicSharedPointerWrapper( T const * dptr ) : refCount(), wrappedPtr( refCount, dptr )</span>
+<span class="lineNum">     598 </span>            :           { }
+<a name="599"><span class="lineNum">     599 </span>            : </a>
+<span class="lineNum">     600 </span><span class="lineCov">         36 :           //! Get the wrapped shared_ptr */</span>
+<span class="lineNum">     601 </span>            :           inline std::shared_ptr&lt;T const&gt; const &amp; operator()() const { return wrappedPtr; }
+<span class="lineNum">     602 </span><span class="lineCov">         12 : </span>
+<span class="lineNum">     603 </span><span class="lineCov">         10 :         private:</span>
+<span class="lineNum">     604 </span><span class="lineCov">         12 :           std::shared_ptr&lt;void&gt; refCount;      //!&lt; The ownership pointer</span>
+<span class="lineNum">     605 </span><span class="lineCov">          2 :           std::shared_ptr&lt;T const&gt; wrappedPtr; //!&lt; The wrapped pointer</span>
+<span class="lineNum">     606 </span><span class="lineCov">          2 :       };</span>
+<span class="lineNum">     607 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     608 </span><span class="lineCov">         18 :       //! Does the actual work of saving a polymorphic shared_ptr</span>
+<span class="lineNum">     609 </span><span class="lineCov">          2 :       /*! This function will properly create a shared_ptr from the void * that is passed in</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :           before passing it to the archive for serialization.</span>
+<span class="lineNum">     611 </span><span class="lineCov">         18 : </span>
+<span class="lineNum">     612 </span><span class="lineCov">         24 :           In addition, this will also preserve the state of any internal enable_shared_from_this mechanisms</span>
+<span class="lineNum">     613 </span>            : 
+<a name="614"><span class="lineNum">     614 </span><span class="lineCov">          6 :           @param ar The archive to serialize to</span></a>
+<span class="lineNum">     615 </span><span class="lineCov">          4 :           @param dptr Pointer to the actual data held by the shared_ptr */</span>
+<span class="lineNum">     616 </span>            :       static inline void savePolymorphicSharedPtr( Archive &amp; ar, T const * dptr, std::true_type /* has_shared_from_this */ )
+<span class="lineNum">     617 </span><span class="lineCov">          4 :       {</span>
+<span class="lineNum">     618 </span><span class="lineCov">          4 :         ::cereal::memory_detail::EnableSharedStateHelper&lt;T&gt; state( const_cast&lt;T *&gt;(dptr) );</span>
+<span class="lineNum">     619 </span>            :         PolymorphicSharedPointerWrapper psptr( dptr );
+<span class="lineNum">     620 </span>            :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( psptr() ) ) );
+<span class="lineNum">     621 </span>            :       }
 <span class="lineNum">     622 </span>            : 
-<span class="lineNum">     623 </span><span class="lineCov">       2800 :             auto ptr = PolymorphicCasters::template downcast&lt;T&gt;( dptr, baseInfo );</span>
-<span class="lineNum">     624 </span>            : 
-<span class="lineNum">     625 </span>            :             #ifdef _MSC_VER
-<span class="lineNum">     626 </span>            :             savePolymorphicSharedPtr( ar, ptr, ::cereal::traits::has_shared_from_this&lt;T&gt;::type() ); // MSVC doesn't like typename here
-<span class="lineNum">     627 </span>            :             #else // not _MSC_VER
-<span class="lineNum">     628 </span><span class="lineCov">       2800 :             savePolymorphicSharedPtr( ar, ptr, typename ::cereal::traits::has_shared_from_this&lt;T&gt;::type() );</span>
-<span class="lineNum">     629 </span>            :             #endif // _MSC_VER
-<span class="lineNum">     630 </span><span class="lineCov">       2800 :           };</span>
-<a name="631"><span class="lineNum">     631 </span>            : </a>
-<span class="lineNum">     632 </span><span class="lineCov">         16 :         serializers.unique_ptr =</span>
-<span class="lineNum">     633 </span><span class="lineCov">        800 :           [&amp;](void * arptr, void const * dptr, std::type_info const &amp; baseInfo)</span>
-<span class="lineNum">     634 </span>            :           {
-<span class="lineNum">     635 </span><span class="lineCov">        800 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
-<span class="lineNum">     636 </span><span class="lineCov">        800 :             writeMetadata(ar);</span>
-<span class="lineNum">     637 </span>            : 
-<span class="lineNum">     638 </span><span class="lineCov">       1600 :             std::unique_ptr&lt;T const, EmptyDeleter&lt;T const&gt;&gt; const ptr( PolymorphicCasters::template downcast&lt;T&gt;( dptr, baseInfo ) );</span>
-<span class="lineNum">     639 </span>            : 
-<span class="lineNum">     640 </span><span class="lineCov">        800 :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
-<span class="lineNum">     641 </span><span class="lineCov">        800 :           };</span>
-<span class="lineNum">     642 </span>            : 
-<span class="lineNum">     643 </span><span class="lineCov">         16 :         map.insert( { std::move(key), std::move(serializers) } );</span>
-<span class="lineNum">     644 </span>            :       }
-<span class="lineNum">     645 </span>            :     };
-<span class="lineNum">     646 </span>            : 
-<span class="lineNum">     647 </span>            :     //! Used to help out argument dependent lookup for finding potential overloads
-<span class="lineNum">     648 </span>            :     //! of instantiate_polymorphic_binding
-<span class="lineNum">     649 </span>            :     struct adl_tag {};
-<span class="lineNum">     650 </span>            : 
-<span class="lineNum">     651 </span>            :     //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous
-<span class="lineNum">     652 </span>            :     //! namespace it becomes a different type in each translation unit.
-<span class="lineNum">     653 </span>            :     namespace { struct polymorphic_binding_tag {}; }
+<span class="lineNum">     623 </span><span class="lineCov">         14 :       //! Does the actual work of saving a polymorphic shared_ptr</span>
+<span class="lineNum">     624 </span><span class="lineCov">          2 :       /*! This function will properly create a shared_ptr from the void * that is passed in</span>
+<span class="lineNum">     625 </span><span class="lineCov">          4 :           before passing it to the archive for serialization.</span>
+<span class="lineNum">     626 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     627 </span><span class="lineCov">          2 :           This version is for types that do not inherit from std::enable_shared_from_this.</span>
+<span class="lineNum">     628 </span>            : 
+<a name="629"><span class="lineNum">     629 </span>            :           @param ar The archive to serialize to</a>
+<span class="lineNum">     630 </span><span class="lineCov">          4 :           @param dptr Pointer to the actual data held by the shared_ptr */</span>
+<span class="lineNum">     631 </span><span class="lineCov">          2 :       static inline void savePolymorphicSharedPtr( Archive &amp; ar, T const * dptr, std::false_type /* has_shared_from_this */ )</span>
+<span class="lineNum">     632 </span>            :       {
+<span class="lineNum">     633 </span>            :         PolymorphicSharedPointerWrapper psptr( dptr );
+<span class="lineNum">     634 </span><span class="lineCov">          2 :         ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper( psptr() ) ) );</span>
+<span class="lineNum">     635 </span><span class="lineCov">          2 :       }</span>
+<a name="636"><span class="lineNum">     636 </span><span class="lineCov">          4 : </span></a>
+<span class="lineNum">     637 </span>            :       //! Initialize the binding
+<span class="lineNum">     638 </span><span class="lineCov">          2 :       OutputBindingCreator()</span>
+<span class="lineNum">     639 </span>            :       {
+<span class="lineNum">     640 </span><span class="lineCov">          4 :         auto &amp; map = StaticObject&lt;OutputBindingMap&lt;Archive&gt;&gt;::getInstance().map;</span>
+<span class="lineNum">     641 </span><span class="lineCov">          4 :         auto key = std::type_index(typeid(T));</span>
+<span class="lineNum">     642 </span><span class="lineCov">          2 :         auto lb = map.lower_bound(key);</span>
+<span class="lineNum">     643 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     644 </span>            :         if (lb != map.end() &amp;&amp; lb-&gt;first == key)
+<span class="lineNum">     645 </span><span class="lineCov">          2 :           return;</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     647 </span>            :         typename OutputBindingMap&lt;Archive&gt;::Serializers serializers;
+<span class="lineNum">     648 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     649 </span>            :         serializers.shared_ptr =
+<span class="lineNum">     650 </span><span class="lineCov">          2 :           [&amp;](void * arptr, void const * dptr, std::type_info const &amp; baseInfo)</span>
+<span class="lineNum">     651 </span>            :           {
+<span class="lineNum">     652 </span>            :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);
+<span class="lineNum">     653 </span>            :             writeMetadata(ar);
 <span class="lineNum">     654 </span>            : 
-<span class="lineNum">     655 </span>            :     //! Causes the static object bindings between an archive type and a serializable type T
-<span class="lineNum">     656 </span>            :     template &lt;class Archive, class T&gt;
-<span class="lineNum">     657 </span>            :     struct create_bindings
-<a name="658"><span class="lineNum">     658 </span>            :     {</a>
-<span class="lineNum">     659 </span>            :       static const InputBindingCreator&lt;Archive, T&gt; &amp;
-<span class="lineNum">     660 </span><span class="lineNoCov">          0 :       load(std::true_type)</span>
-<span class="lineNum">     661 </span>            :       {
-<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         return cereal::detail::StaticObject&lt;InputBindingCreator&lt;Archive, T&gt;&gt;::getInstance();</span>
-<span class="lineNum">     663 </span>            :       }
-<a name="664"><span class="lineNum">     664 </span>            : </a>
-<span class="lineNum">     665 </span>            :       static const OutputBindingCreator&lt;Archive, T&gt; &amp;
-<span class="lineNum">     666 </span><span class="lineNoCov">          0 :       save(std::true_type)</span>
-<span class="lineNum">     667 </span>            :       {
-<span class="lineNum">     668 </span><span class="lineNoCov">          0 :         return cereal::detail::StaticObject&lt;OutputBindingCreator&lt;Archive, T&gt;&gt;::getInstance();</span>
-<a name="669"><span class="lineNum">     669 </span>            :       }</a>
-<a name="670"><span class="lineNum">     670 </span>            : </a>
-<span class="lineNum">     671 </span><span class="lineNoCov">          0 :       inline static void load(std::false_type) {}</span>
-<span class="lineNum">     672 </span><span class="lineNoCov">          0 :       inline static void save(std::false_type) {}</span>
-<span class="lineNum">     673 </span>            :     };
-<span class="lineNum">     674 </span>            : 
-<span class="lineNum">     675 </span>            :     //! When specialized, causes the compiler to instantiate its parameter
-<span class="lineNum">     676 </span>            :     template &lt;void(*)()&gt;
-<span class="lineNum">     677 </span>            :     struct instantiate_function {};
-<span class="lineNum">     678 </span>            : 
-<span class="lineNum">     679 </span>            :     /*! This struct is used as the return type of instantiate_polymorphic_binding
-<span class="lineNum">     680 </span>            :         for specific Archive types.  When the compiler looks for overloads of
-<span class="lineNum">     681 </span>            :         instantiate_polymorphic_binding, it will be forced to instantiate this
-<span class="lineNum">     682 </span>            :         struct during overload resolution, even though it will not be part of a valid
-<span class="lineNum">     683 </span>            :         overload */
-<span class="lineNum">     684 </span>            :     template &lt;class Archive, class T&gt;
-<span class="lineNum">     685 </span>            :     struct polymorphic_serialization_support
-<span class="lineNum">     686 </span>            :     {
-<span class="lineNum">     687 </span>            :       #if defined(_MSC_VER) &amp;&amp; !defined(__INTEL_COMPILER)
-<span class="lineNum">     688 </span>            :       //! Creates the appropriate bindings depending on whether the archive supports
-<span class="lineNum">     689 </span>            :       //! saving or loading
-<span class="lineNum">     690 </span>            :       virtual CEREAL_DLL_EXPORT void instantiate() CEREAL_USED;
-<span class="lineNum">     691 </span>            :       #else // NOT _MSC_VER
-<span class="lineNum">     692 </span>            :       //! Creates the appropriate bindings depending on whether the archive supports
-<span class="lineNum">     693 </span>            :       //! saving or loading
-<span class="lineNum">     694 </span>            :       static CEREAL_DLL_EXPORT void instantiate() CEREAL_USED;
-<span class="lineNum">     695 </span>            :       //! This typedef causes the compiler to instantiate this static function
-<span class="lineNum">     696 </span>            :       typedef instantiate_function&lt;instantiate&gt; unused;
-<span class="lineNum">     697 </span>            :       #endif // _MSC_VER
-<span class="lineNum">     698 </span>            :     };
-<span class="lineNum">     699 </span>            : 
-<a name="700"><span class="lineNum">     700 </span>            :     // instantiate implementation</a>
-<span class="lineNum">     701 </span>            :     template &lt;class Archive, class T&gt;
-<span class="lineNum">     702 </span><span class="lineNoCov">          0 :     CEREAL_DLL_EXPORT void polymorphic_serialization_support&lt;Archive,T&gt;::instantiate()</span>
-<span class="lineNum">     703 </span>            :     {
-<span class="lineNum">     704 </span><span class="lineNoCov">          0 :       create_bindings&lt;Archive,T&gt;::save( std::integral_constant&lt;bool,</span>
-<span class="lineNum">     705 </span>            :                                           std::is_base_of&lt;detail::OutputArchiveBase, Archive&gt;::value &amp;&amp;
-<span class="lineNum">     706 </span>            :                                           traits::is_output_serializable&lt;T, Archive&gt;::value&gt;{} );
-<span class="lineNum">     707 </span>            : 
-<span class="lineNum">     708 </span><span class="lineNoCov">          0 :       create_bindings&lt;Archive,T&gt;::load( std::integral_constant&lt;bool,</span>
-<span class="lineNum">     709 </span>            :                                           std::is_base_of&lt;detail::InputArchiveBase, Archive&gt;::value &amp;&amp;
-<span class="lineNum">     710 </span>            :                                           traits::is_input_serializable&lt;T, Archive&gt;::value&gt;{} );
-<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     712 </span>            : 
-<span class="lineNum">     713 </span>            :     //! Begins the binding process of a type to all registered archives
-<span class="lineNum">     714 </span>            :     /*! Archives need to be registered prior to this struct being instantiated via
-<span class="lineNum">     715 </span>            :         the CEREAL_REGISTER_ARCHIVE macro.  Overload resolution will then force
-<span class="lineNum">     716 </span>            :         several static objects to be made that allow us to bind together all
-<span class="lineNum">     717 </span>            :         registered archive types with the parameter type T. */
-<span class="lineNum">     718 </span>            :     template &lt;class T, class Tag = polymorphic_binding_tag&gt;
-<span class="lineNum">     719 </span>            :     struct bind_to_archives
-<a name="720"><span class="lineNum">     720 </span>            :     {</a>
-<span class="lineNum">     721 </span>            :       //! Binding for non abstract types
-<span class="lineNum">     722 </span><span class="lineCov">          4 :       void bind(std::false_type) const</span>
-<span class="lineNum">     723 </span>            :       {
-<span class="lineNum">     724 </span><span class="lineCov">          4 :         instantiate_polymorphic_binding(static_cast&lt;T*&gt;(nullptr), 0, Tag{}, adl_tag{});</span>
-<span class="lineNum">     725 </span><span class="lineCov">          4 :       }</span>
-<span class="lineNum">     726 </span>            : 
-<span class="lineNum">     727 </span>            :       //! Binding for abstract types
-<span class="lineNum">     728 </span>            :       void bind(std::true_type) const
-<span class="lineNum">     729 </span>            :       { }
-<span class="lineNum">     730 </span>            : 
-<span class="lineNum">     731 </span>            :       //! Binds the type T to all registered archives
-<a name="732"><span class="lineNum">     732 </span>            :       /*! If T is abstract, we will not serialize it and thus</a>
-<span class="lineNum">     733 </span>            :           do not need to make a binding */
-<span class="lineNum">     734 </span><span class="lineCov">          4 :       bind_to_archives const &amp; bind() const</span>
-<span class="lineNum">     735 </span>            :       {
-<span class="lineNum">     736 </span>            :         static_assert( std::is_polymorphic&lt;T&gt;::value,
-<span class="lineNum">     737 </span>            :                        &quot;Attempting to register non polymorphic type&quot; );
-<span class="lineNum">     738 </span><span class="lineCov">          4 :         bind( std::is_abstract&lt;T&gt;() );</span>
-<span class="lineNum">     739 </span><span class="lineCov">          4 :         return *this;</span>
-<span class="lineNum">     740 </span>            :       }
-<span class="lineNum">     741 </span>            :     };
-<span class="lineNum">     742 </span>            : 
-<span class="lineNum">     743 </span>            :     //! Used to hide the static object used to bind T to registered archives
-<span class="lineNum">     744 </span>            :     template &lt;class T, class Tag = polymorphic_binding_tag&gt;
-<span class="lineNum">     745 </span>            :     struct init_binding;
-<span class="lineNum">     746 </span>            : 
-<span class="lineNum">     747 </span>            :     //! Base case overload for instantiation
-<span class="lineNum">     748 </span>            :     /*! This will end up always being the best overload due to the second
-<span class="lineNum">     749 </span>            :         parameter always being passed as an int.  All other overloads will
-<span class="lineNum">     750 </span>            :         accept pointers to archive types and have lower precedence than int.
-<span class="lineNum">     751 </span>            : 
-<span class="lineNum">     752 </span>            :         Since the compiler needs to check all possible overloads, the
-<span class="lineNum">     753 </span>            :         other overloads created via CEREAL_REGISTER_ARCHIVE, which will have
-<span class="lineNum">     754 </span>            :         lower precedence due to requring a conversion from int to (Archive*),
-<span class="lineNum">     755 </span>            :         will cause their return types to be instantiated through the static object
-<span class="lineNum">     756 </span>            :         mechanisms even though they are never called.
-<span class="lineNum">     757 </span>            : 
-<a name="758"><span class="lineNum">     758 </span>            :         See the documentation for the other functions to try and understand this */</a>
-<span class="lineNum">     759 </span>            :     template &lt;class T, typename BindingTag&gt;
-<span class="lineNum">     760 </span><span class="lineCov">          4 :     void instantiate_polymorphic_binding( T*, int, BindingTag, adl_tag ) {}</span>
-<span class="lineNum">     761 </span>            :   } // namespace detail
-<span class="lineNum">     762 </span>            : } // namespace cereal
-<span class="lineNum">     763 </span>            : 
-<span class="lineNum">     764 </span>            : #endif // CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
+<span class="lineNum">     655 </span>            :             auto ptr = PolymorphicCasters::template downcast&lt;T&gt;( dptr, baseInfo );
+<span class="lineNum">     656 </span>            : 
+<span class="lineNum">     657 </span>            :             #ifdef _MSC_VER
+<span class="lineNum">     658 </span>            :             savePolymorphicSharedPtr( ar, ptr, ::cereal::traits::has_shared_from_this&lt;T&gt;::type() ); // MSVC doesn't like typename here
+<span class="lineNum">     659 </span>            :             #else // not _MSC_VER
+<span class="lineNum">     660 </span>            :             savePolymorphicSharedPtr( ar, ptr, typename ::cereal::traits::has_shared_from_this&lt;T&gt;::type() );
+<span class="lineNum">     661 </span><span class="lineCov">          2 :             #endif // _MSC_VER</span>
+<span class="lineNum">     662 </span>            :           };
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span>            :         serializers.unique_ptr =
+<span class="lineNum">     665 </span>            :           [&amp;](void * arptr, void const * dptr, std::type_info const &amp; baseInfo)
+<span class="lineNum">     666 </span>            :           {
+<span class="lineNum">     667 </span><span class="lineCov">          4 :             Archive &amp; ar = *static_cast&lt;Archive*&gt;(arptr);</span>
+<span class="lineNum">     668 </span><span class="lineCov">          4 :             writeMetadata(ar);</span>
+<span class="lineNum">     669 </span><span class="lineCov">          4 : </span>
+<span class="lineNum">     670 </span>            :             std::unique_ptr&lt;T const, EmptyDeleter&lt;T const&gt;&gt; const ptr( PolymorphicCasters::template downcast&lt;T&gt;( dptr, baseInfo ) );
+<span class="lineNum">     671 </span>            : 
+<span class="lineNum">     672 </span><span class="lineCov">          4 :             ar( CEREAL_NVP_(&quot;ptr_wrapper&quot;, memory_detail::make_ptr_wrapper(ptr)) );</span>
+<span class="lineNum">     673 </span>            :           };
+<span class="lineNum">     674 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     675 </span>            :         map.insert( { std::move(key), std::move(serializers) } );
+<span class="lineNum">     676 </span><span class="lineCov">          2 :       }</span>
+<span class="lineNum">     677 </span><span class="lineCov">          2 :     };</span>
+<span class="lineNum">     678 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     679 </span><span class="lineCov">          2 :     //! Used to help out argument dependent lookup for finding potential overloads</span>
+<span class="lineNum">     680 </span>            :     //! of instantiate_polymorphic_binding
+<span class="lineNum">     681 </span><span class="lineCov">          2 :     struct adl_tag {};</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     683 </span><span class="lineCov">          2 :     //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous</span>
+<span class="lineNum">     684 </span><span class="lineCov">          4 :     //! namespace it becomes a different type in each translation unit.</span>
+<span class="lineNum">     685 </span>            :     namespace { struct polymorphic_binding_tag {}; }
+<span class="lineNum">     686 </span><span class="lineCov">          8 : </span>
+<span class="lineNum">     687 </span>            :     //! Causes the static object bindings between an archive type and a serializable type T
+<span class="lineNum">     688 </span>            :     template &lt;class Archive, class T&gt;
+<span class="lineNum">     689 </span><span class="lineCov">          8 :     struct create_bindings</span>
+<a name="690"><span class="lineNum">     690 </span>            :     {</a>
+<span class="lineNum">     691 </span><span class="lineCov">          4 :       static const InputBindingCreator&lt;Archive, T&gt; &amp;</span>
+<span class="lineNum">     692 </span><span class="lineCov">          4 :       load(std::true_type)</span>
+<span class="lineNum">     693 </span>            :       {
+<span class="lineNum">     694 </span>            :         return cereal::detail::StaticObject&lt;InputBindingCreator&lt;Archive, T&gt;&gt;::getInstance();
+<span class="lineNum">     695 </span><span class="lineCov">         16 :       }</span>
+<a name="696"><span class="lineNum">     696 </span>            : </a>
+<span class="lineNum">     697 </span><span class="lineCov">         14 :       static const OutputBindingCreator&lt;Archive, T&gt; &amp;</span>
+<span class="lineNum">     698 </span><span class="lineCov">         12 :       save(std::true_type)</span>
+<span class="lineNum">     699 </span>            :       {
+<span class="lineNum">     700 </span><span class="lineCov">          4 :         return cereal::detail::StaticObject&lt;OutputBindingCreator&lt;Archive, T&gt;&gt;::getInstance();</span>
+<a name="701"><span class="lineNum">     701 </span>            :       }</a>
+<a name="702"><span class="lineNum">     702 </span>            : </a>
+<span class="lineNum">     703 </span>            :       inline static void load(std::false_type) {}
+<span class="lineNum">     704 </span><span class="lineCov">         12 :       inline static void save(std::false_type) {}</span>
+<span class="lineNum">     705 </span>            :     };
+<span class="lineNum">     706 </span><span class="lineCov">          8 : </span>
+<span class="lineNum">     707 </span>            :     //! When specialized, causes the compiler to instantiate its parameter
+<span class="lineNum">     708 </span><span class="lineCov">         10 :     template &lt;void(*)()&gt;</span>
+<span class="lineNum">     709 </span><span class="lineCov">          8 :     struct instantiate_function {};</span>
+<span class="lineNum">     710 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     711 </span><span class="lineCov">          8 :     /*! This struct is used as the return type of instantiate_polymorphic_binding</span>
+<span class="lineNum">     712 </span><span class="lineCov">          2 :         for specific Archive types.  When the compiler looks for overloads of</span>
+<span class="lineNum">     713 </span><span class="lineCov">         10 :         instantiate_polymorphic_binding, it will be forced to instantiate this</span>
+<span class="lineNum">     714 </span><span class="lineCov">          2 :         struct during overload resolution, even though it will not be part of a valid</span>
+<span class="lineNum">     715 </span><span class="lineCov">          6 :         overload */</span>
+<span class="lineNum">     716 </span><span class="lineCov">          4 :     template &lt;class Archive, class T&gt;</span>
+<span class="lineNum">     717 </span><span class="lineCov">          2 :     struct polymorphic_serialization_support</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     719 </span>            :       #if defined(_MSC_VER) &amp;&amp; !defined(__INTEL_COMPILER)
+<span class="lineNum">     720 </span><span class="lineCov">          6 :       //! Creates the appropriate bindings depending on whether the archive supports</span>
+<span class="lineNum">     721 </span><span class="lineCov">          4 :       //! saving or loading</span>
+<span class="lineNum">     722 </span><span class="lineCov">          8 :       virtual CEREAL_DLL_EXPORT void instantiate() CEREAL_USED;</span>
+<span class="lineNum">     723 </span><span class="lineCov">          2 :       #else // NOT _MSC_VER</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :       //! Creates the appropriate bindings depending on whether the archive supports</span>
+<span class="lineNum">     725 </span>            :       //! saving or loading
+<span class="lineNum">     726 </span><span class="lineCov">          4 :       static CEREAL_DLL_EXPORT void instantiate() CEREAL_USED;</span>
+<span class="lineNum">     727 </span><span class="lineCov">          4 :       //! This typedef causes the compiler to instantiate this static function</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :       typedef instantiate_function&lt;instantiate&gt; unused;</span>
+<span class="lineNum">     729 </span>            :       #endif // _MSC_VER
+<span class="lineNum">     730 </span><span class="lineCov">          8 :     };</span>
+<span class="lineNum">     731 </span>            : 
+<a name="732"><span class="lineNum">     732 </span>            :     // instantiate implementation</a>
+<span class="lineNum">     733 </span><span class="lineCov">          2 :     template &lt;class Archive, class T&gt;</span>
+<span class="lineNum">     734 </span>            :     CEREAL_DLL_EXPORT void polymorphic_serialization_support&lt;Archive,T&gt;::instantiate()
+<span class="lineNum">     735 </span>            :     {
+<span class="lineNum">     736 </span>            :       create_bindings&lt;Archive,T&gt;::save( std::integral_constant&lt;bool,
+<span class="lineNum">     737 </span><span class="lineCov">          4 :                                           std::is_base_of&lt;detail::OutputArchiveBase, Archive&gt;::value &amp;&amp;</span>
+<span class="lineNum">     738 </span>            :                                           traits::is_output_serializable&lt;T, Archive&gt;::value&gt;{} );
+<span class="lineNum">     739 </span>            : 
+<span class="lineNum">     740 </span>            :       create_bindings&lt;Archive,T&gt;::load( std::integral_constant&lt;bool,
+<span class="lineNum">     741 </span><span class="lineCov">          4 :                                           std::is_base_of&lt;detail::InputArchiveBase, Archive&gt;::value &amp;&amp;</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :                                           traits::is_input_serializable&lt;T, Archive&gt;::value&gt;{} );</span>
+<span class="lineNum">     743 </span>            :     }
+<span class="lineNum">     744 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     745 </span>            :     //! Begins the binding process of a type to all registered archives
+<span class="lineNum">     746 </span>            :     /*! Archives need to be registered prior to this struct being instantiated via
+<span class="lineNum">     747 </span>            :         the CEREAL_REGISTER_ARCHIVE macro.  Overload resolution will then force
+<span class="lineNum">     748 </span>            :         several static objects to be made that allow us to bind together all
+<span class="lineNum">     749 </span><span class="lineCov">          8 :         registered archive types with the parameter type T. */</span>
+<span class="lineNum">     750 </span>            :     template &lt;class T, class Tag = polymorphic_binding_tag&gt;
+<span class="lineNum">     751 </span><span class="lineCov">          4 :     struct bind_to_archives</span>
+<a name="752"><span class="lineNum">     752 </span><span class="lineCov">          4 :     {</span></a>
+<span class="lineNum">     753 </span><span class="lineCov">          4 :       //! Binding for non abstract types</span>
+<span class="lineNum">     754 </span>            :       void bind(std::false_type) const
+<span class="lineNum">     755 </span>            :       {
+<span class="lineNum">     756 </span><span class="lineCov">        800 :         instantiate_polymorphic_binding(static_cast&lt;T*&gt;(nullptr), 0, Tag{}, adl_tag{});</span>
+<span class="lineNum">     757 </span><span class="lineCov">          4 :       }</span>
+<span class="lineNum">     758 </span>            : 
+<span class="lineNum">     759 </span><span class="lineCov">        800 :       //! Binding for abstract types</span>
+<span class="lineNum">     760 </span><span class="lineCov">        804 :       void bind(std::true_type) const</span>
+<span class="lineNum">     761 </span><span class="lineCov">          6 :       { }</span>
+<span class="lineNum">     762 </span>            : 
+<span class="lineNum">     763 </span><span class="lineCov">        802 :       //! Binds the type T to all registered archives</span>
+<a name="764"><span class="lineNum">     764 </span><span class="lineCov">          2 :       /*! If T is abstract, we will not serialize it and thus</span></a>
+<span class="lineNum">     765 </span>            :           do not need to make a binding */
+<span class="lineNum">     766 </span><span class="lineCov">        802 :       bind_to_archives const &amp; bind() const</span>
+<span class="lineNum">     767 </span><span class="lineCov">          2 :       {</span>
+<span class="lineNum">     768 </span><span class="lineCov">       1000 :         static_assert( std::is_polymorphic&lt;T&gt;::value,</span>
+<span class="lineNum">     769 </span><span class="lineCov">        800 :                        &quot;Attempting to register non polymorphic type&quot; );</span>
+<span class="lineNum">     770 </span>            :         bind( std::is_abstract&lt;T&gt;() );
+<span class="lineNum">     771 </span><span class="lineCov">        800 :         return *this;</span>
+<span class="lineNum">     772 </span><span class="lineCov">        202 :       }</span>
+<span class="lineNum">     773 </span><span class="lineCov">          2 :     };</span>
+<span class="lineNum">     774 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     775 </span><span class="lineCov">        202 :     //! Used to hide the static object used to bind T to registered archives</span>
+<span class="lineNum">     776 </span><span class="lineCov">        202 :     template &lt;class T, class Tag = polymorphic_binding_tag&gt;</span>
+<span class="lineNum">     777 </span>            :     struct init_binding;
+<span class="lineNum">     778 </span>            : 
+<span class="lineNum">     779 </span><span class="lineCov">        204 :     //! Base case overload for instantiation</span>
+<span class="lineNum">     780 </span><span class="lineCov">          2 :     /*! This will end up always being the best overload due to the second</span>
+<span class="lineNum">     781 </span>            :         parameter always being passed as an int.  All other overloads will
+<span class="lineNum">     782 </span><span class="lineCov">        200 :         accept pointers to archive types and have lower precedence than int.</span>
+<span class="lineNum">     783 </span><span class="lineCov">          2 : </span>
+<span class="lineNum">     784 </span><span class="lineCov">        402 :         Since the compiler needs to check all possible overloads, the</span>
+<span class="lineNum">     785 </span><span class="lineCov">        202 :         other overloads created via CEREAL_REGISTER_ARCHIVE, which will have</span>
+<span class="lineNum">     786 </span>            :         lower precedence due to requring a conversion from int to (Archive*),
+<span class="lineNum">     787 </span><span class="lineCov">        200 :         will cause their return types to be instantiated through the static object</span>
+<span class="lineNum">     788 </span><span class="lineCov">        200 :         mechanisms even though they are never called.</span>
+<span class="lineNum">     789 </span><span class="lineCov">          2 : </span>
+<a name="790"><span class="lineNum">     790 </span><span class="lineCov">          2 :         See the documentation for the other functions to try and understand this */</span></a>
+<span class="lineNum">     791 </span><span class="lineCov">        200 :     template &lt;class T, typename BindingTag&gt;</span>
+<span class="lineNum">     792 </span><span class="lineCov">        200 :     void instantiate_polymorphic_binding( T*, int, BindingTag, adl_tag ) {}</span>
+<span class="lineNum">     793 </span>            :   } // namespace detail
+<span class="lineNum">     794 </span>            : } // namespace cereal
+<span class="lineNum">     795 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">     796 </span>            : #endif // CEREAL_DETAILS_POLYMORPHIC_IMPL_HPP_
 </pre>
       </td>
     </tr>
@@ -832,7 +864,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 

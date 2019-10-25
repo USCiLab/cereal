@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">12</td>
-            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">252</td>
+            <td class="headerCovTableEntry">252</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-12 13:57:59</td>
+            <td class="headerValue">2019-10-22 20:09:23</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">40</td>
@@ -99,33 +99,33 @@
 <span class="lineNum">      37 </span>            : {
 <a name="38"><span class="lineNum">      38 </span>            :   //! Saving for std::forward_list all other types</a>
 <span class="lineNum">      39 </span>            :   template &lt;class Archive, class T, class A&gt; inline
-<span class="lineNum">      40 </span><span class="lineCov">       2000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::forward_list&lt;T, A&gt; const &amp; forward_list )</span>
+<span class="lineNum">      40 </span><span class="lineCov">       4000 :   void CEREAL_SAVE_FUNCTION_NAME( Archive &amp; ar, std::forward_list&lt;T, A&gt; const &amp; forward_list )</span>
 <span class="lineNum">      41 </span>            :   {
 <span class="lineNum">      42 </span>            :     // write the size - note that this is slow because we need to traverse
 <span class="lineNum">      43 </span>            :     // the entire list. there are ways we could avoid this but this was chosen
 <span class="lineNum">      44 </span>            :     // since it works in the most general fashion with any archive type
-<span class="lineNum">      45 </span><span class="lineCov">       2000 :     size_type const size = std::distance( forward_list.begin(), forward_list.end() );</span>
+<span class="lineNum">      45 </span><span class="lineCov">       4000 :     size_type const size = std::distance( forward_list.begin(), forward_list.end() );</span>
 <span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span><span class="lineCov">       2000 :     ar( make_size_tag( size ) );</span>
+<span class="lineNum">      47 </span><span class="lineCov">       4000 :     ar( make_size_tag( size ) );</span>
 <span class="lineNum">      48 </span>            : 
 <span class="lineNum">      49 </span>            :     // write the list
-<span class="lineNum">      50 </span><span class="lineCov">     202000 :     for( const auto &amp; i : forward_list )</span>
-<span class="lineNum">      51 </span><span class="lineCov">     200000 :       ar( i );</span>
-<span class="lineNum">      52 </span><span class="lineCov">       2000 :   }</span>
-<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      50 </span><span class="lineCov">     404000 :     for( const auto &amp; i : forward_list )</span>
+<span class="lineNum">      51 </span><span class="lineCov">     400000 :       ar( i );</span>
+<span class="lineNum">      52 </span><span class="lineCov">       4000 :   }</span>
+<span class="lineNum">      53 </span><span class="lineCov">        200 : </span>
 <a name="54"><span class="lineNum">      54 </span>            :   //! Loading for std::forward_list all other types from</a>
 <span class="lineNum">      55 </span>            :   template &lt;class Archive, class T, class A&gt;
-<span class="lineNum">      56 </span><span class="lineCov">       2000 :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::forward_list&lt;T, A&gt; &amp; forward_list )</span>
+<span class="lineNum">      56 </span>            :   void CEREAL_LOAD_FUNCTION_NAME( Archive &amp; ar, std::forward_list&lt;T, A&gt; &amp; forward_list )
 <span class="lineNum">      57 </span>            :   {
-<span class="lineNum">      58 </span>            :     size_type size;
-<span class="lineNum">      59 </span><span class="lineCov">       2000 :     ar( make_size_tag( size ) );</span>
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span><span class="lineCov">       2000 :     forward_list.resize( static_cast&lt;size_t&gt;( size ) );</span>
+<span class="lineNum">      58 </span><span class="lineCov">        200 :     size_type size;</span>
+<span class="lineNum">      59 </span>            :     ar( make_size_tag( size ) );
+<span class="lineNum">      60 </span><span class="lineCov">        200 : </span>
+<span class="lineNum">      61 </span>            :     forward_list.resize( static_cast&lt;size_t&gt;( size ) );
 <span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineCov">     202000 :     for( auto &amp; i : forward_list )</span>
-<span class="lineNum">      64 </span><span class="lineCov">     200000 :       ar( i );</span>
-<span class="lineNum">      65 </span><span class="lineCov">       2000 :   }</span>
-<span class="lineNum">      66 </span>            : } // namespace cereal
+<span class="lineNum">      63 </span><span class="lineCov">      20200 :     for( auto &amp; i : forward_list )</span>
+<span class="lineNum">      64 </span><span class="lineCov">      20000 :       ar( i );</span>
+<span class="lineNum">      65 </span><span class="lineCov">        200 :   }</span>
+<span class="lineNum">      66 </span><span class="lineCov">        200 : } // namespace cereal</span>
 <span class="lineNum">      67 </span>            : 
 <span class="lineNum">      68 </span>            : #endif // CEREAL_TYPES_FORWARD_LIST_HPP_
 </pre>
@@ -136,7 +136,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>
 
