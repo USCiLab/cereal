@@ -40,9 +40,9 @@
 //! The major version
 #define CEREAL_VERSION_MAJOR 1
 //! The minor version
-#define CEREAL_VERSION_MINOR 2
+#define CEREAL_VERSION_MINOR 3
 //! The patch version
-#define CEREAL_VERSION_PATCH 3
+#define CEREAL_VERSION_PATCH 0
 
 //! The full version as a single number
 #define CEREAL_VERSION (CEREAL_VERSION_MAJOR * 10000 \
