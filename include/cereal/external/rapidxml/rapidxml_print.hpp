@@ -363,10 +363,12 @@ namespace rapidxml
                 out = print_pi_node(out, node, flags, indent);
                 break;
 
+#ifndef __GNUC__
                 // Unknown
             default:
                 assert(0);
                 break;
+#endif
             }
 
             // If indenting not disabled, add line break after node

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2015, Kyle Fleming
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,29 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "boost_variant.hpp"
 
-#define BOOST_TEST_MODULE Cereal
-#include <common.hpp>
-#include <boost/test/unit_test.hpp>
+TEST_SUITE_BEGIN("boost_variant");
+
+TEST_CASE("binary_boost_variant")
+{
+  test_boost_variant<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
+
+TEST_CASE("portable_binary_boost_variant")
+{
+  test_boost_variant<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
+
+TEST_CASE("xml_boost_variant")
+{
+  test_boost_variant<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+TEST_CASE("json_boost_variant")
+{
+  test_boost_variant<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
+TEST_SUITE_END();

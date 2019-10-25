@@ -267,8 +267,13 @@ void test_polymorphic()
   for(int ii=0; ii<100; ++ii)
   {
     std::shared_ptr<PolyBase> o_shared = std::make_shared<PolyDerived>( rngI(), rngF(), rngB(), rngD() );
+    std::shared_ptr<const PolyBase> o_sharedC = std::make_shared<const PolyDerived>( rngI(), rngF(), rngB(), rngD() );
+
     std::weak_ptr<PolyBase>   o_weak = o_shared;
+    std::weak_ptr<const PolyBase>   o_weakC = o_sharedC;
+
     std::unique_ptr<PolyBase> o_unique( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
+    std::unique_ptr<const PolyBase> o_uniqueC( new PolyDerived( rngI(), rngF(), rngB(), rngD() ) );
 
     std::shared_ptr<PolyBaseA> o_sharedA = std::make_shared<PolyDerivedD>( random_basic_string<char>(gen),
                                                                            rngD(), rngI(), rngL() );
@@ -281,21 +286,35 @@ void test_polymorphic()
     pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
     std::shared_ptr<PolyLA>   o_sharedLA = pda;
 
+    auto pdaC = std::make_shared<const PolyDerivedLA>( rngI() );
+    pda->vec.emplace_back( std::make_shared<PolyDerivedLA>( rngI() ) );
+    std::shared_ptr<const PolyLA>   o_sharedLAC = pdaC;
+
     std::ostringstream os;
     {
       OArchive oar(os);
 
-      oar( o_shared, o_weak, o_unique );
+      oar( o_shared, o_sharedC );
+      oar( o_weak, o_weakC );
+      oar( o_unique, o_uniqueC );
+
       oar( o_sharedLA );
+      oar( o_sharedLAC );
 
       oar( o_sharedA, o_weakA, o_uniqueA );
     }
 
     decltype(o_shared) i_shared;
+    decltype(o_sharedC) i_sharedC;
+
     decltype(o_weak) i_weak;
+    decltype(o_weakC) i_weakC;
+
     decltype(o_unique) i_unique;
+    decltype(o_uniqueC) i_uniqueC;
 
     decltype(o_sharedLA) i_sharedLA;
+    decltype(o_sharedLAC) i_sharedLAC;
 
     decltype(o_sharedA) i_sharedA;
     decltype(o_weakA) i_weakA;
@@ -305,15 +324,24 @@ void test_polymorphic()
     {
       IArchive iar(is);
 
-      iar( i_shared, i_weak, i_unique );
+      iar( i_shared, i_sharedC );
+      iar( i_weak, i_weakC );
+      iar( i_unique, i_uniqueC );
+
       iar( i_sharedLA );
+      iar( i_sharedLAC );
+
       iar( i_sharedA, i_weakA, i_uniqueA );
     }
 
     auto i_locked = i_weak.lock();
     auto o_locked = o_weak.lock();
 
+    auto i_lockedC = i_weakC.lock();
+    auto o_lockedC = o_weakC.lock();
+
     auto i_sharedLA2 = i_sharedLA->shared_from_this();
+    auto i_sharedLA2C = i_sharedLAC->shared_from_this();
 
     auto i_lockedA = i_weakA.lock();
     auto o_lockedA = o_weakA.lock();
@@ -328,8 +356,17 @@ void test_polymorphic()
     CHECK_EQ(*dynamic_cast<PolyDerived*>(i_locked.get()), *dynamic_cast<PolyDerived*>(o_locked.get()));
     CHECK_EQ(*dynamic_cast<PolyDerived*>(i_unique.get()), *dynamic_cast<PolyDerived*>(o_unique.get()));
 
+    CHECK_EQ(i_sharedC.get(), i_lockedC.get());
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_sharedC.get()), *dynamic_cast<const PolyDerived*>(o_sharedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_sharedC.get()), *dynamic_cast<const PolyDerived*>(i_lockedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_lockedC.get()), *dynamic_cast<const PolyDerived*>(o_lockedC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerived*>(i_uniqueC.get()), *dynamic_cast<const PolyDerived*>(o_uniqueC.get()));
+
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
     CHECK_EQ(*dynamic_cast<PolyDerivedLA*>(i_sharedLA2.get()), *dynamic_cast<PolyDerivedLA*>(o_sharedLA.get()));
+
+    CHECK_EQ(*dynamic_cast<const PolyDerivedLA*>(i_sharedLAC.get()), *dynamic_cast<const PolyDerivedLA*>(o_sharedLAC.get()));
+    CHECK_EQ(*dynamic_cast<const PolyDerivedLA*>(i_sharedLA2C.get()), *dynamic_cast<const PolyDerivedLA*>(o_sharedLAC.get()));
 
     CHECK_EQ(i_sharedA.get(), i_lockedA.get());
     CHECK_EQ(*dynamic_cast<PolyDerivedD*>(i_sharedA.get()), *dynamic_cast<PolyDerivedD*>(o_sharedA.get()));
@@ -355,5 +392,243 @@ void test_polymorphic_threading()
     CHECK_UNARY( future.get() );
 }
 #endif // CEREAL_THREAD_SAFE
+
+struct Object
+{
+  Object() = default;
+  Object( int xx ) : x(xx) {}
+
+  virtual ~Object() {}
+  virtual void func() {}
+
+  int x;
+
+  template <class Archive>
+  void serialize( Archive & ar )
+  {
+    ar( x );
+  }
+};
+
+#define CEREAL_TEST_CREATE_DERIVED_CLASS(Base, Derived) \
+struct Derived : public Base                            \
+{                                                       \
+  Derived() = default;                                  \
+  Derived( int yy ) : Base( yy ), Derived##y( yy ) {}   \
+  virtual ~Derived() {}                                 \
+                                                        \
+  virtual void func() override {}                       \
+                                                        \
+  int Derived##y;                                       \
+  template <class Archive>                              \
+  void serialize( Archive & ar )                        \
+  {                                                     \
+    ar( cereal::base_class<Base>( this ), Derived##y ); \
+  }                                                     \
+};                                                      \
+CEREAL_REGISTER_TYPE(Derived)
+
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived0)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived0,Derived1)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived1,Derived2)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived2,Derived3)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived3,Derived4)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived5)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived5,Derived6)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived6,Derived7)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived7,Derived8)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived8,Derived9)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived10)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived10,Derived11)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived11,Derived12)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived12,Derived13)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived13,Derived14)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived15)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived15,Derived16)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived16,Derived17)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived17,Derived18)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived18,Derived19)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived20)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived20,Derived21)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived21,Derived22)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived22,Derived23)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived23,Derived24)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived25)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived25,Derived26)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived26,Derived27)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived27,Derived28)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived28,Derived29)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived30)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived30,Derived31)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived31,Derived32)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived32,Derived33)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived33,Derived34)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived35)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived35,Derived36)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived36,Derived37)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived37,Derived38)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived38,Derived39)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived40)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived40,Derived41)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived41,Derived42)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived42,Derived43)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived43,Derived44)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived45)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived45,Derived46)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived46,Derived47)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived47,Derived48)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived48,Derived49)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived50)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived50,Derived51)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived51,Derived52)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived52,Derived53)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived53,Derived54)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived55)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived55,Derived56)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived56,Derived57)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived57,Derived58)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived58,Derived59)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived60)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived60,Derived61)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived61,Derived62)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived62,Derived63)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived63,Derived64)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived65)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived65,Derived66)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived66,Derived67)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived67,Derived68)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived68,Derived69)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived70)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived70,Derived71)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived71,Derived72)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived72,Derived73)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived73,Derived74)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived75)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived75,Derived76)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived76,Derived77)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived77,Derived78)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived78,Derived79)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived80)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived80,Derived81)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived81,Derived82)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived82,Derived83)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived83,Derived84)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived85)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived85,Derived86)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived86,Derived87)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived87,Derived88)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived88,Derived89)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived90)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived90,Derived91)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived91,Derived92)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived92,Derived93)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived93,Derived94)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived95)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived95,Derived96)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived96,Derived97)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived97,Derived98)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived98,Derived99)
+
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived0)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived0,Derived1)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived1,Derived2)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived2,Derived3)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived0,Derived4)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived4,Derived5)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived5,Derived6)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived0,Derived7)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived7,Derived8)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived8,Derived9)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived10)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived10,Derived11)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived11,Derived12)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived12,Derived13)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived10,Derived14)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived14,Derived15)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived15,Derived16)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived10,Derived17)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived17,Derived18)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived18,Derived19)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived20)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived20,Derived21)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived21,Derived22)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived22,Derived23)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived20,Derived24)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived24,Derived25)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived25,Derived26)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived20,Derived27)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived27,Derived28)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived28,Derived29)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived30)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived30,Derived31)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived31,Derived32)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived32,Derived33)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived30,Derived34)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived34,Derived35)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived35,Derived36)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived30,Derived37)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived37,Derived38)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived38,Derived39)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived40)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived40,Derived41)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived41,Derived42)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived42,Derived43)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived40,Derived44)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived44,Derived45)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived45,Derived46)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived40,Derived47)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived47,Derived48)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived48,Derived49)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived50)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived50,Derived51)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived51,Derived52)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived52,Derived53)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived50,Derived54)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived54,Derived55)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived55,Derived56)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived50,Derived57)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived57,Derived58)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived58,Derived59)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived60)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived60,Derived61)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived61,Derived62)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived62,Derived63)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived60,Derived64)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived64,Derived65)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived65,Derived66)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived60,Derived67)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived67,Derived68)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived68,Derived69)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived70)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived70,Derived71)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived71,Derived72)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived72,Derived73)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived70,Derived74)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived74,Derived75)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived75,Derived76)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived70,Derived77)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived77,Derived78)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived78,Derived79)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived80)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived80,Derived81)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived81,Derived82)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived82,Derived83)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived80,Derived84)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived84,Derived85)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived85,Derived86)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived80,Derived87)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived87,Derived88)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived88,Derived89)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Object,Derived90)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived90,Derived91)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived91,Derived92)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived92,Derived93)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived90,Derived94)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived94,Derived95)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived95,Derived96)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived90,Derived97)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived97,Derived98)
+//CEREAL_TEST_CREATE_DERIVED_CLASS(Derived98,Derived99)
+
 
 #endif // CEREAL_TEST_POLYMORPHIC_H_

@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "structs_specialized.hpp"
 
-TEST_SUITE("structs_specialized");
+TEST_SUITE_BEGIN("structs_specialized");
 
 TEST_CASE("binary_structs_specialized")
 {

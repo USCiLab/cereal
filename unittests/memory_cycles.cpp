@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "memory_cycles.hpp"
 
-TEST_SUITE("memory_cycles");
+TEST_SUITE_BEGIN("memory_cycles");
 
 TEST_CASE("binary_memory_cycles")
 {

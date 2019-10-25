@@ -1,5 +1,8 @@
+/*! \file atomic.hpp
+    \brief Support for types found in \<atomic\>
+    \ingroup STLSupport */
 /*
-  Copyright (c) 2015, Kyle Fleming
+  Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -16,7 +19,7 @@
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES AND SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -24,29 +27,29 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "boost_variant.hpp"
+#ifndef CEREAL_TYPES_ATOMIC_HPP_
+#define CEREAL_TYPES_ATOMIC_HPP_
 
-TEST_SUITE("boost_variant");
+#include <cereal/cereal.hpp>
+#include <atomic>
 
-TEST_CASE("binary_boost_variant")
+namespace cereal
 {
-  test_boost_variant<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
-}
+  //! Serializing (save) for std::atomic
+  template <class Archive, class T> inline
+  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::atomic<T> const & a )
+  {
+    ar( CEREAL_NVP_("atomic_data", a.load()) );
+  }
 
-TEST_CASE("portable_binary_boost_variant")
-{
-  test_boost_variant<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
-}
+  //! Serializing (load) for std::atomic
+  template <class Archive, class T> inline
+  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::atomic<T> & a )
+  {
+    T tmp;
+    ar( CEREAL_NVP_("atomic_data", tmp) );
+    a.store( tmp );
+  }
+} // namespace cereal
 
-TEST_CASE("xml_boost_variant")
-{
-  test_boost_variant<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
-}
-
-TEST_CASE("json_boost_variant")
-{
-  test_boost_variant<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
-}
-
-TEST_SUITE_END();
+#endif // CEREAL_TYPES_ATOMIC_HPP_

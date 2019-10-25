@@ -34,13 +34,6 @@
 #include <memory>
 #include <cstring>
 
-// Work around MSVC not having alignof
-#if defined(_MSC_VER) && _MSC_VER < 1900
-#define CEREAL_ALIGNOF __alignof
-#else // not MSVC 2013 or older
-#define CEREAL_ALIGNOF alignof
-#endif // end MSVC check
-
 namespace cereal
 {
   namespace memory_detail
@@ -54,6 +47,7 @@ namespace cereal
       PtrWrapper(T && p) : ptr(std::forward<T>(p)) {}
       T & ptr;
 
+      PtrWrapper( PtrWrapper const & ) = default;
       PtrWrapper & operator=( PtrWrapper const & ) = delete;
     };
 
@@ -110,6 +104,11 @@ namespace cereal
         portion of the class and replace it after whatever happens to modify it (e.g. the
         user performing construction or the wrapper shared_ptr in saving).
 
+        Note that this goes into undefined behavior territory, but as of the initial writing
+        of this, all standard library implementations of std::enable_shared_from_this are
+        compatible with this memory manipulation. It is entirely possible that this may someday
+        break or may not work with convoluted use cases.
+
         Example usage:
 
         @code{.cpp}
@@ -136,7 +135,7 @@ namespace cereal
       using BaseType = typename ::cereal::traits::get_shared_from_this_base<T>::type;
       using ParentType = std::enable_shared_from_this<BaseType>;
       using StorageType = typename std::aligned_storage<sizeof(ParentType), CEREAL_ALIGNOF(ParentType)>::type;
-      
+
       public:
         //! Saves the state of some type inheriting from enable_shared_from_this
         /*! @param ptr The raw pointer held by the shared_ptr */
@@ -153,7 +152,8 @@ namespace cereal
         {
           if( !itsRestored )
           {
-            std::memcpy( itsPtr, &itsState, sizeof(ParentType) );
+            // void * cast needed when type has no trivial copy-assignment
+            std::memcpy( static_cast<void *>(itsPtr), &itsState, sizeof(ParentType) );
             itsRestored = true;
           }
         }
@@ -278,8 +278,6 @@ namespace cereal
   typename std::enable_if<traits::has_load_and_construct<T, Archive>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
-    auto & ptr = wrapper.ptr;
-
     uint32_t id;
 
     ar( CEREAL_NVP_("id", id) );
@@ -297,8 +295,9 @@ namespace cereal
 
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
-      ptr.reset( reinterpret_cast<T *>( new ST() ),
-          [=]( T * t )
+      using NonConstT = typename std::remove_const<T>::type;
+      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new ST()),
+          [=]( NonConstT * t )
           {
             if( *valid )
               t->~T();
@@ -310,13 +309,14 @@ namespace cereal
       ar.registerSharedPointer( id, ptr );
 
       // Perform the actual loading and allocation
-      memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<T>::type() );
+      memory_detail::loadAndConstructSharedPtr( ar, ptr.get(), typename ::cereal::traits::has_shared_from_this<NonConstT>::type() );
 
       // Mark pointer as valid (initialized)
       *valid = true;
+      wrapper.ptr = std::move(ptr);
     }
     else
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Loading std::shared_ptr, case when no user load and construct (wrapper implementation)
@@ -325,20 +325,20 @@ namespace cereal
   typename std::enable_if<!traits::has_load_and_construct<T, Archive>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, memory_detail::PtrWrapper<std::shared_ptr<T> &> & wrapper )
   {
-    auto & ptr = wrapper.ptr;
-
     uint32_t id;
 
     ar( CEREAL_NVP_("id", id) );
 
     if( id & detail::msb_32bit )
     {
-      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::shared_ptr<NonConstT> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar.registerSharedPointer( id, ptr );
       ar( CEREAL_NVP_("data", *ptr) );
+      wrapper.ptr = std::move(ptr);
     }
     else
-      ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
+      wrapper.ptr = std::static_pointer_cast<T>(ar.getSharedPointer(id));
   }
 
   //! Saving std::unique_ptr (wrapper implementation)
@@ -374,16 +374,17 @@ namespace cereal
 
     if( isValid )
     {
+      using NonConstT = typename std::remove_const<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using ST = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
 
       // Allocate storage - note the ST type so that deleter is correct if
       //                    an exception is thrown before we are initialized
       std::unique_ptr<ST> stPtr( new ST() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
-      memory_detail::LoadAndConstructLoadWrapper<Archive, T> loadWrapper( reinterpret_cast<T *>( stPtr.get() ) );
+      memory_detail::LoadAndConstructLoadWrapper<Archive, NonConstT> loadWrapper( reinterpret_cast<NonConstT *>( stPtr.get() ) );
 
       // Initialize storage
       ar( CEREAL_NVP_("data", loadWrapper) );
@@ -404,16 +405,16 @@ namespace cereal
     uint8_t isValid;
     ar( CEREAL_NVP_("valid", isValid) );
 
-    auto & ptr = wrapper.ptr;
-
     if( isValid )
     {
-      ptr.reset( detail::Construct<T, Archive>::load_andor_construct() );
+      using NonConstT = typename std::remove_const<T>::type;
+      std::unique_ptr<NonConstT, D> ptr( detail::Construct<NonConstT, Archive>::load_andor_construct() );
       ar( CEREAL_NVP_( "data", *ptr ) );
+      wrapper.ptr = std::move(ptr);
     }
     else
     {
-      ptr.reset( nullptr );
+      wrapper.ptr.reset( nullptr );
     }
   }
 } // namespace cereal
@@ -421,5 +422,4 @@ namespace cereal
 // automatically include polymorphic support
 #include "cereal/types/polymorphic.hpp"
 
-#undef CEREAL_ALIGNOF
 #endif // CEREAL_TYPES_SHARED_PTR_HPP_

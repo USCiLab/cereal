@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "unordered_multiset.hpp"
 
-TEST_SUITE("unordered_multiset");
+TEST_SUITE_BEGIN("unordered_multiset");
 
 TEST_CASE("binary_unordered_multiset")
 {

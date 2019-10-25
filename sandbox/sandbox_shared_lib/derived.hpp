@@ -2,6 +2,9 @@
 #include "base.hpp"
 class Derived : public Base
 {
+  public:
+    virtual ~Derived() {}
+
   private:
     friend class cereal::access;
     template <class Archive>

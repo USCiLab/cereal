@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "multiset.hpp"
 
-TEST_SUITE("multiset");
+TEST_SUITE_BEGIN("multiset");
 
 TEST_CASE("binary_multiset")
 {

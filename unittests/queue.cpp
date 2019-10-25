@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "queue.hpp"
 
-TEST_SUITE("queue");
+TEST_SUITE_BEGIN("queue");
 
 TEST_CASE("binary_queue")
 {

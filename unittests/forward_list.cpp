@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "forward_list.hpp"
 
-TEST_SUITE("forward_list");
+TEST_SUITE_BEGIN("forward_list");
 
 TEST_CASE("binary_forward_list")
 {

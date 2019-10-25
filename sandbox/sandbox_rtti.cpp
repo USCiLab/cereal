@@ -37,6 +37,7 @@ struct Base
 {
   int y;
   virtual void foo() = 0;
+  virtual ~Base() {}
 
   template<class Archive>
     void save(Archive & ar) const
@@ -55,6 +56,8 @@ struct Base
 
 struct MyType : public Base
 {
+  virtual ~MyType() {}
+
   int x;
 
   void foo() {}
@@ -77,6 +80,8 @@ CEREAL_REGISTER_TYPE(MyType)
 
 struct YourType : public Base
 {
+  virtual ~YourType() {}
+
   YourType(int xx) : x(xx) {}
   YourType() : x(-1) {}
   int x;
@@ -114,6 +119,8 @@ struct OurType : public OurBase
 {
   OurType() : OurBase(), x() {}
   OurType(int x_) : x(x_) {}
+  virtual ~OurType() {}
+
   void foo() {}
 
   int x;
@@ -136,6 +143,8 @@ struct BaseVirtual
 
 struct DerivedVirtual : public virtual BaseVirtual
 {
+  virtual ~DerivedVirtual() {}
+
   int y;
   virtual void foo() {}
 
@@ -177,6 +186,7 @@ struct AAA
 
 struct BBB : AAA
 {
+  virtual ~BBB() {}
   void foo() {}
   template <class Archive>
   void serialize( Archive & ) {}

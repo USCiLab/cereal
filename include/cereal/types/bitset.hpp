@@ -67,7 +67,7 @@ namespace cereal
       if( bits[i] )
         chunk |= mask;
 
-      mask >>= 1;
+      mask = static_cast<std::uint8_t>(mask >> 1);
 
       // output current chunk when mask is empty (8 bits)
       if( mask == 0 )
@@ -163,7 +163,7 @@ namespace cereal
           if( chunk & mask )
             bits[i] = 1;
 
-          mask >>= 1;
+          mask = static_cast<std::uint8_t>(mask >> 1);
         }
         break;
       }

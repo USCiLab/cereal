@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "versioning.hpp"
 
-TEST_SUITE("versioning");
+TEST_SUITE_BEGIN("versioning");
 
 TEST_CASE("binary_versioning")
 {

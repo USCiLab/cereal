@@ -29,6 +29,7 @@
 
 #include <cereal/types/memory.hpp>
 #include <cereal/types/array.hpp>
+#include <cereal/types/atomic.hpp>
 #include <cereal/types/valarray.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/deque.hpp>
@@ -83,6 +84,20 @@ void check_collection( T const & a, T const & b )
     CHECK_EQ( *aIter, *bIter );
 }
 
+template <class T> inline
+void check_ptr_collection( T const & a, T const & b )
+{
+  auto aIter = std::begin(a);
+  auto aEnd  = std::end(a);
+  auto bIter = std::begin(b);
+  auto bEnd  = std::end(b);
+
+  CHECK_EQ( std::distance(aIter, aEnd), std::distance(bIter, bEnd) );
+
+  for( ; aIter != aEnd; ++aIter, ++bIter )
+    CHECK_EQ( **aIter, **bIter );
+}
+
 // Random Number Generation ===============================================
 template<class T> inline
 typename std::enable_if<std::is_floating_point<T>::value, T>::type
@@ -107,6 +122,11 @@ random_value(std::mt19937 & gen)
   for(char & c : s)
     c = static_cast<char>( std::uniform_int_distribution<int>( 'A', 'Z' )(gen) );
   return s;
+}
+
+size_t random_index( size_t min, size_t max, std::mt19937 & gen )
+{
+  return std::uniform_int_distribution<size_t>( min, max )(gen);
 }
 
 template<class C> inline

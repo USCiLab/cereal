@@ -68,8 +68,10 @@ namespace cereal
   namespace detail
   {
     struct NameValuePairCore {}; //!< Traits struct for NVPs
+    struct DeferredDataCore {}; //!< Traits struct for DeferredData
   }
 
+  // ######################################################################
   //! For holding name value pairs
   /*! This pairs a name (some string) with some value such that an archive
       can potentially take advantage of the pairing.
@@ -210,7 +212,7 @@ namespace cereal
   {
     //! Internally store the pointer as a void *, keeping const if created with
     //! a const pointer
-    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<T>::type>::value,
+    using PT = typename std::conditional<std::is_const<typename std::remove_pointer<typename std::remove_reference<T>::type>::type>::value,
                                          const void *,
                                          void *>::type;
 
@@ -218,6 +220,43 @@ namespace cereal
 
     PT data;       //!< pointer to beginning of data
     uint64_t size; //!< size in bytes
+  };
+
+  // ######################################################################
+  //! A wrapper around data that should be serialized after all non-deferred data
+  /*! This class is used to demarcate data that can only be safely serialized after
+      any data not wrapped in this class.
+
+      @internal */
+  template <class T>
+  class DeferredData : detail::DeferredDataCore
+  {
+    private:
+      // If we get passed an array, keep the type as is, otherwise store
+      // a reference if we were passed an l value reference, else copy the value
+      using Type = typename std::conditional<std::is_array<typename std::remove_reference<T>::type>::value,
+                                             typename std::remove_cv<T>::type,
+                                             typename std::conditional<std::is_lvalue_reference<T>::value,
+                                                                       T,
+                                                                       typename std::decay<T>::type>::type>::type;
+
+      // prevent nested nvps
+      static_assert( !std::is_base_of<detail::DeferredDataCore, T>::value,
+                     "Cannot defer DeferredData" );
+
+      DeferredData & operator=( DeferredData const & ) = delete;
+
+    public:
+      //! Constructs a new NameValuePair
+      /*! @param v The value to defer.  Ideally this should be an l-value reference so that
+                   the value can be both loaded and saved to.  If you pass an r-value reference,
+                   the DeferredData will store a copy of it instead of a reference.  Thus you should
+                   only pass r-values in cases where this makes sense, such as the result of some
+                   size() call.
+          @internal */
+      DeferredData( T && v ) : value(std::forward<T>(v)) {}
+
+      Type value;
   };
 
   // ######################################################################
@@ -256,7 +295,7 @@ namespace cereal
     struct adl_tag;
 
     // used during saving pointers
-    static const int32_t msb_32bit  = 0x80000000;
+    static const uint32_t msb_32bit  = 0x80000000;
     static const int32_t msb2_32bit = 0x40000000;
   }
 

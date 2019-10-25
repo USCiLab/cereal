@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "stack.hpp"
 
-TEST_SUITE("stack");
+TEST_SUITE_BEGIN("stack");
 
 TEST_CASE("binary_stack")
 {

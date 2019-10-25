@@ -206,6 +206,14 @@ void test_memory_load_construct()
     auto o_shared1v = std::make_shared<OneLAVersioned>( random_value<int>(gen) );
     auto o_shared2v = std::make_shared<TwoLAVersioned>( random_value<int>(gen) );
 
+    auto o_constShared1 = std::make_shared<const OneLA>( random_value<int>(gen) ); // issue 417
+    auto o_constShared2 = std::make_shared<const TwoLA>( random_value<int>(gen) );
+    std::unique_ptr<const OneLA> o_constUnique1( new OneLA( random_value<int>(gen) ) );
+    std::unique_ptr<const TwoLA> o_constUnique2( new TwoLA( random_value<int>(gen) ) );
+    auto o_constShared3 = std::make_shared<const ThreeLA>( random_value<int>(gen) );
+    auto o_constShared1v = std::make_shared<const OneLAVersioned>( random_value<int>(gen) );
+    auto o_constShared2v = std::make_shared<const TwoLAVersioned>( random_value<int>(gen) );
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -217,9 +225,17 @@ void test_memory_load_construct()
       oar( o_shared3 );
       oar( o_shared1v );
       oar( o_shared2v );
+      oar( o_constShared1 );
+      oar( o_constShared2 );
+      oar( o_constUnique1 );
+      oar( o_constUnique2 );
+      oar( o_constShared3 );
+      oar( o_constShared1v );
+      oar( o_constShared2v );
     }
 
     o_shared3->shared_from_this(); // tests github issue #68
+    o_constShared3->shared_from_this();
 
     decltype(o_shared1) i_shared1;
     decltype(o_shared2) i_shared2;
@@ -228,6 +244,13 @@ void test_memory_load_construct()
     decltype(o_shared3) i_shared3;
     decltype(o_shared1v) i_shared1v;
     decltype(o_shared2v) i_shared2v;
+    decltype(o_constShared1) i_constShared1;
+    decltype(o_constShared2) i_constShared2;
+    decltype(o_constUnique1) i_constUnique1;
+    decltype(o_constUnique2) i_constUnique2;
+    decltype(o_constShared3) i_constShared3;
+    decltype(o_constShared1v) i_constShared1v;
+    decltype(o_constShared2v) i_constShared2v;
 
     std::istringstream is(os.str());
     {
@@ -240,6 +263,13 @@ void test_memory_load_construct()
       iar( i_shared3 );
       iar( i_shared1v );
       iar( i_shared2v );
+      iar( i_constShared1 );
+      iar( i_constShared2 );
+      iar( i_constUnique1 );
+      iar( i_constUnique2 );
+      iar( i_constShared3 );
+      iar( i_constShared1v );
+      iar( i_constShared2v );
     }
 
     CHECK_EQ( *o_shared1, *i_shared1 );
@@ -254,6 +284,19 @@ void test_memory_load_construct()
 
     auto i_shared3_2 = i_shared3->shared_from_this();
     CHECK_EQ( *o_shared3, *i_shared3_2 );
+
+    CHECK_EQ( *o_constShared1, *i_constShared1 );
+    CHECK_EQ( *o_constShared2, *i_constShared2 );
+    CHECK_EQ( *o_constUnique1, *i_constUnique1 );
+    CHECK_EQ( *o_constUnique2, *i_constUnique2 );
+    CHECK_EQ( *o_constShared3, *i_constShared3 );
+    CHECK_EQ( *o_constShared1v, *i_constShared1v );
+    CHECK_EQ(i_constShared1v->v, 13u);
+    CHECK_EQ( *o_constShared2v, *i_constShared2v );
+    CHECK_EQ(i_constShared2v->v, 1u);
+
+    auto i_constShared3_2 = i_constShared3->shared_from_this();
+    CHECK_EQ( *o_constShared3, *i_constShared3_2 );
   }
 }
 

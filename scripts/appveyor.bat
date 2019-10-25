@@ -10,6 +10,7 @@ if not defined APPVEYOR (
 if not defined BOOST_ROOT (
     set BOOST_ROOT=C:\Libraries\boost
 )
+
 if not defined VS_VERSION_MAJOR (
     set VS_VERSION_MAJOR=14
 )
@@ -18,6 +19,10 @@ if not defined VS_VERSION_YEAR (
         set VS_VERSION_YEAR=2013
     ) else if "%VS_VERSION_MAJOR%" == "14" (
         set VS_VERSION_YEAR=2015
+    ) else if "%VS_VERSION_MAJOR%" == "15" (
+        set VS_VERSION_YEAR=2017
+    ) else if "%VS_VERSION_MAJOR%" == "16" (
+        set VS_VERSION_YEAR=2019
     ) else (
         @echo Cannot use Visual Studio version %VS_VERSION_MAJOR%
         exit /b 1

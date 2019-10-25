@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "pod.hpp"
 
-TEST_SUITE("pod");
+TEST_SUITE_BEGIN("pod");
 
 TEST_CASE("binary_pod")
 {

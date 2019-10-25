@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "list.hpp"
 
-TEST_SUITE("list");
+TEST_SUITE_BEGIN("list");
 
 TEST_CASE("binary_list")
 {

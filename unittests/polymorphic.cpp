@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "polymorphic.hpp"
 
-TEST_SUITE("polymorphic");
+TEST_SUITE_BEGIN("polymorphic");
 
 TEST_CASE("binary_polymorphic")
 {

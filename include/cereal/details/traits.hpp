@@ -800,6 +800,18 @@ namespace cereal
 
         See notes from member load_minimal implementation.
 
+        Note that there should be an additional const check on load_minimal after the valid check,
+        but this currently interferes with many valid uses of minimal serialization.  It has been
+        removed (see #565 on github) and previously was:
+
+        @code
+        static_assert( check::const_valid || !check::exists,
+            "cereal detected an invalid serialization type parameter in non-member " #test_name ".  "
+            #test_name " non-member functions must accept their serialization type by non-const reference" );
+        @endcode
+
+        See #132, #436, #263, and #565 on https://github.com/USCiLab/cereal for more details.
+
         @param test_name The name to give the test (e.g. load_minimal or versioned_load_minimal)
         @param save_name The corresponding name the save test would have (e.g. save_minimal or versioned_save_minimal)
         @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
@@ -847,9 +859,6 @@ namespace cereal
         static_assert( check::valid || !check::exists, "cereal detected different types in corresponding non-member "        \
             #test_name " and " #save_name " functions. \n "                                                                  \
             "the paramater to " #test_name " must be a constant reference to the type that " #save_name " returns." );       \
-        static_assert( check::const_valid || !check::exists,                                                                 \
-            "cereal detected an invalid serialization type parameter in non-member " #test_name ".  "                        \
-            #test_name " non-member functions must accept their serialization type by non-const reference" );                \
       };                                                                                                                     \
     } /* namespace detail */                                                                                                 \
                                                                                                                              \
@@ -869,17 +878,29 @@ namespace cereal
     #undef CEREAL_MAKE_HAS_NON_MEMBER_LOAD_MINIMAL_TEST
 
     // ######################################################################
+    namespace detail
+    {
+      // const stripped away before reaching here, prevents errors on conversion from
+      // construct<const T> to construct<T>
+      template<typename T, typename A>
+      struct has_member_load_and_construct_impl : std::integral_constant<bool,
+        std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
+      { };
+
+      template<typename T, typename A>
+      struct has_member_versioned_load_and_construct_impl : std::integral_constant<bool,
+        std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>(), 0 ) ), void>::value>
+      { };
+    } // namespace detail
+
     //! Member load and construct check
     template<typename T, typename A>
-    struct has_member_load_and_construct : std::integral_constant<bool,
-      std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>() ) ), void>::value>
+    struct has_member_load_and_construct : detail::has_member_load_and_construct_impl<typename std::remove_const<T>::type, A>
     { };
 
-    // ######################################################################
     //! Member load and construct check (versioned)
     template<typename T, typename A>
-    struct has_member_versioned_load_and_construct : std::integral_constant<bool,
-      std::is_same<decltype( access::load_and_construct<T>( std::declval<A&>(), std::declval< ::cereal::construct<T>&>(), 0 ) ), void>::value>
+    struct has_member_versioned_load_and_construct : detail::has_member_versioned_load_and_construct_impl<typename std::remove_const<T>::type, A>
     { };
 
     // ######################################################################
@@ -901,7 +922,8 @@ namespace cereal
       };                                                                                                                        \
     } /* end namespace detail */                                                                                                \
     template <class T, class A>                                                                                                 \
-    struct has_non_member_##test_name : std::integral_constant<bool, detail::has_non_member_##test_name##_impl<T, A>::value> {};
+    struct has_non_member_##test_name :                                                                                         \
+      std::integral_constant<bool, detail::has_non_member_##test_name##_impl<typename std::remove_const<T>::type, A>::value> {};
 
     // ######################################################################
     //! Non member load and construct check
