@@ -5,7 +5,7 @@ pull_requests:
 
 branches:
   only:
-    - develop
+    - master
 
 configuration:
   - Debug

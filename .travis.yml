@@ -266,4 +266,4 @@ script:
 
 branches:
   only:
-    - develop
+    - master
