@@ -141,7 +141,7 @@ namespace cereal
   CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
   CEREAL_SAVE_FUNCTION_NAME(Archive & ar, SizeTag<T> const & t)
   {
-      ar.template saveBinary<sizeof(t.size)>(std::addressof(t.size), sizeof(t.size));
+      ar.saveBinary(std::addressof(t.size), sizeof(t.size));
   }
 
   //! Loading size tag from binary
@@ -149,7 +149,7 @@ namespace cereal
   CEREAL_ARCHIVE_RESTRICT(BinaryInputArchive, BinaryOutputArchive)
   CEREAL_LOAD_FUNCTION_NAME(Archive & ar, SizeTag<T> & t)
   {
-      ar.template loadBinary<sizeof(t.size)>(std::addressof(t.size), sizeof(t.size));
+      ar.loadBinary(std::addressof(t.size), sizeof(t.size));
   }
 
   //! Saving binary data
