@@ -628,7 +628,14 @@ namespace rapidxml
 
                 // Setup new pool in allocated memory
                 char *pool = align(raw_memory);
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
+#endif
                 header *new_header = reinterpret_cast<header *>(pool);
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
                 new_header->previous_begin = m_begin;
                 m_begin = raw_memory;
                 m_ptr = pool + sizeof(header);

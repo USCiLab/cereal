@@ -1158,7 +1158,7 @@ namespace cereal
           void const * ptr;
           size_t hash;
       };
-      struct base_class_id_hash { size_t operator()(base_class_id const & id) const { return id.hash; }  };
+      struct base_class_id_hash { size_t operator()(base_class_id const & id) const CEREAL_NOEXCEPT { return id.hash; }  };
     } // namespace detail
 
     namespace detail
