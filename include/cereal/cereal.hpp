@@ -568,9 +568,9 @@ namespace cereal
       template <class T> inline
       std::uint32_t registerClassVersion()
       {
+        const auto lock = detail::StaticObject<detail::Versions>::lock();
         static const auto hash = std::type_index(typeid(T)).hash_code();
         const auto insertResult = itsVersionedTypes.insert( hash );
-        const auto lock = detail::StaticObject<detail::Versions>::lock();
         const auto version =
           detail::StaticObject<detail::Versions>::getInstance().find( hash, detail::Version<T>::version );
 
