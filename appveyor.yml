@@ -1,5 +1,5 @@
 # can use variables like {build} and {branch}
-version: 1.2.{build}
+version: 1.3.{build}
 pull_requests:
   do_not_increment_build_number: true
 
@@ -22,9 +22,14 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       VS_VERSION_MAJOR: 15
       BOOST_ROOT: C:\Libraries\boost_1_66_0
-      #    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019 Preview
-      #      VS_VERSION_MAJOR: 16
-      #      BOOST_ROOT: C:\Libraries\boost_1_66_0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      VS_VERSION_MAJOR: 16
+      BOOST_ROOT: C:\Libraries\boost_1_71_0
+
+matrix:
+  exclude:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      platform: Win32
 
 platform:
   - Win32
