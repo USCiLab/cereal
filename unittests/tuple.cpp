@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "tuple.hpp"
 
-TEST_SUITE("tuple");
+TEST_SUITE_BEGIN("tuple");
 
 TEST_CASE("binary_tuple")
 {

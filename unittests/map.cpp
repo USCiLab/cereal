@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "map.hpp"
 
-TEST_SUITE("map");
+TEST_SUITE_BEGIN("map");
 
 TEST_CASE("binary_map")
 {

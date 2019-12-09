@@ -223,6 +223,11 @@ namespace cereal
   };
 
   // ######################################################################
+  //! A wrapper around data that should be serialized after all non-deferred data
+  /*! This class is used to demarcate data that can only be safely serialized after
+      any data not wrapped in this class.
+
+      @internal */
   template <class T>
   class DeferredData : detail::DeferredDataCore
   {

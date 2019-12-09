@@ -70,6 +70,8 @@ struct BogusBasePolymorphic
   void serialize( Archive & ) {}
 
   virtual void doesNothing() {}
+
+  virtual ~BogusBasePolymorphic() {}
 };
 
 class SpecializedMSerialize : public BogusBase
@@ -157,6 +159,8 @@ class SpecializedMSplitPolymorphic : public BogusBasePolymorphic
   public:
     SpecializedMSplitPolymorphic() = default;
     SpecializedMSplitPolymorphic( int xx ) : x(xx) {}
+
+    virtual ~SpecializedMSplitPolymorphic() {}
 
     int x;
 

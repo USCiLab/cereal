@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "deque.hpp"
 
-TEST_SUITE("deque");
+TEST_SUITE_BEGIN("deque");
 
 TEST_CASE("binary_dequeue")
 {

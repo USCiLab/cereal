@@ -51,7 +51,7 @@
 
     Note that even with this enabled you must still ensure that
     archives are accessed by only one thread at a time; it is safe
-    to use multiple archives in paralel, but not to access one archive
+    to use multiple archives in parallel, but not to access one archive
     from many places simultaneously. */
 #define CEREAL_THREAD_SAFE 0
 #endif // CEREAL_THREAD_SAFE
@@ -142,5 +142,13 @@
 #if __cplusplus >= 201402L
 #define CEREAL_HAS_CPP14
 #endif
+
+// ######################################################################
+//! Defines the CEREAL_ALIGNOF macro to use instead of alignof
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#define CEREAL_ALIGNOF __alignof
+#else // not MSVC 2013 or older
+#define CEREAL_ALIGNOF alignof
+#endif // end MSVC check
 
 #endif // CEREAL_MACROS_HPP_

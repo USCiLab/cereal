@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "basic_string.hpp"
 
-TEST_SUITE("basic_string");
+TEST_SUITE_BEGIN("basic_string");
 
 TEST_CASE("binary_string")
 {

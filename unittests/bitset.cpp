@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "bitset.hpp"
 
-TEST_SUITE("bitset");
+TEST_SUITE_BEGIN("bitset");
 
 TEST_CASE("binary_bitset")
 {

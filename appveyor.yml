@@ -5,7 +5,7 @@ pull_requests:
 
 branches:
   only:
-    - develop
+    - master
 
 configuration:
   - Debug
@@ -13,9 +13,18 @@ configuration:
 
 environment:
   matrix:
-    - VS_VERSION_MAJOR: 12
-    - VS_VERSION_MAJOR: 14
-      BOOST_ROOT: C:\Libraries\boost_1_59_0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VS_VERSION_MAJOR: 12
+      BOOST_ROOT: C:\Libraries\boost_1_58_0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      VS_VERSION_MAJOR: 14
+      BOOST_ROOT: C:\Libraries\boost_1_60_0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      VS_VERSION_MAJOR: 15
+      BOOST_ROOT: C:\Libraries\boost_1_66_0
+      #    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019 Preview
+      #      VS_VERSION_MAJOR: 16
+      #      BOOST_ROOT: C:\Libraries\boost_1_66_0
 
 platform:
   - Win32

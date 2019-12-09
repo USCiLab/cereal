@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "defer.hpp"
 
-TEST_SUITE("defer");
+TEST_SUITE_BEGIN("defer");
 
 TEST_CASE("binary_defer")
 {

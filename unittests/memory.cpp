@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "memory.hpp"
 
-TEST_SUITE("memory");
+TEST_SUITE_BEGIN("memory");
 
 TEST_CASE("binary_memory")
 {

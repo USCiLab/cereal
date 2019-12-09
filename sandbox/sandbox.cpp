@@ -65,6 +65,8 @@ class Base
 
   public:
     int x;
+
+    virtual ~Base() {}
 };
 
 class Derived : public Base
@@ -77,6 +79,7 @@ class Derived : public Base
       y = d;
       x = b;
     }
+    virtual ~Derived() {}
 
     template <class Archive>
     void save( Archive & ar ) const
@@ -386,7 +389,8 @@ void test_unordered_loads()
            cereal::make_nvp( name3, i_vecbool3 ),
            cereal::make_nvp( name1, i_int1 ),
            cereal::make_nvp( name5, i_int5 ),
-           i_int6 );
+           i_int6,
+           i_un7 );
     }
   }
 }

@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "valarray.hpp"
 
-TEST_SUITE("valarray");
+TEST_SUITE_BEGIN("valarray");
 
 TEST_CASE("binary_valarray")
 {

@@ -27,7 +27,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "structs_minimal.hpp"
 
-TEST_SUITE("structs_minimal");
+TEST_SUITE_BEGIN("structs_minimal");
 
 TEST_CASE("binary_structs_minimal")
 {
