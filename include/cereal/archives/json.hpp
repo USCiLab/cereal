@@ -61,6 +61,7 @@ namespace cereal
 #define CEREAL_RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
 #endif
 
+#include "cereal/external/rapidjson/writer.h"
 #include "cereal/external/rapidjson/prettywriter.h"
 #include "cereal/external/rapidjson/ostreamwrapper.h"
 #include "cereal/external/rapidjson/istreamwrapper.h"
@@ -75,6 +76,27 @@ namespace cereal
 
 namespace cereal
 {
+    struct MinimalJsonWriter
+    {
+        using stream_type = CEREAL_RAPIDJSON_NAMESPACE::OStreamWrapper;
+        using type = CEREAL_RAPIDJSON_NAMESPACE::Writer<stream_type>;
+
+        static void SetIndent(type&, char, unsigned int)
+        {
+        }
+    };
+
+    struct PrettyJsonWriter
+    {
+        using stream_type = CEREAL_RAPIDJSON_NAMESPACE::OStreamWrapper;
+        using type = CEREAL_RAPIDJSON_NAMESPACE::PrettyWriter<stream_type>;
+
+        static void SetIndent(type& itsWriter, char indentChar, unsigned int indentLength)
+        {
+            itsWriter.SetIndent(indentChar, indentLength);
+        }
+    };
+
   // ######################################################################
   //! An output archive designed to save data to JSON
   /*! This archive uses RapidJSON to build serialize data to JSON.
@@ -103,16 +125,19 @@ namespace cereal
       that the container is variable sized and may be edited.
 
       \ingroup Archives */
-  class JSONOutputArchive : public OutputArchive<JSONOutputArchive>, public traits::TextArchive
+    template <typename WriterType = PrettyJsonWriter>
+    class BaseJSONOutputArchive
+    : public OutputArchive<BaseJSONOutputArchive<WriterType>>
+    , public traits::TextArchive
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
-    using WriteStream = CEREAL_RAPIDJSON_NAMESPACE::OStreamWrapper;
-    using JSONWriter = CEREAL_RAPIDJSON_NAMESPACE::PrettyWriter<WriteStream>;
+    using WriteStream = typename WriterType::stream_type;
+    using JSONWriter = typename WriterType::type;
 
     public:
       /*! @name Common Functionality
-          Common use cases for directly interacting with an JSONOutputArchive */
+          Common use cases for directly interacting with an BaseJSONOutputArchive */
       //! @{
 
       //! A class containing various advanced options for the JSON archive
@@ -123,7 +148,8 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options(
+                  JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -134,7 +160,7 @@ namespace cereal
             carriage_return = '\r'
           };
 
-          //! Specify specific options for the JSONOutputArchive
+          //! Specify specific options for the BaseJSONOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
@@ -147,7 +173,7 @@ namespace cereal
             itsIndentLength( indentLength ) { }
 
         private:
-          friend class JSONOutputArchive;
+          friend class BaseJSONOutputArchive;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
@@ -157,20 +183,20 @@ namespace cereal
       /*! @param stream The stream to output to.
           @param options The JSON specific options to use.  See the Options struct
                          for the values of default parameters */
-      JSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
-        OutputArchive<JSONOutputArchive>(this),
+      BaseJSONOutputArchive(std::ostream & stream, Options const & options = Options::Default() ) :
+        OutputArchive<BaseJSONOutputArchive>(this),
         itsWriteStream(stream),
         itsWriter(itsWriteStream),
         itsNextName(nullptr)
       {
         itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
-        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
+        WriterType::SetIndent(itsWriter, options.itsIndentChar, options.itsIndentLength);
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
 
       //! Destructor, flushes the JSON
-      ~JSONOutputArchive() CEREAL_NOEXCEPT
+      ~BaseJSONOutputArchive() CEREAL_NOEXCEPT
       {
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
@@ -193,7 +219,7 @@ namespace cereal
       //! @}
       /*! @name Internal Functionality
           Functionality designed for use by those requiring control over the inner mechanisms of
-          the JSONOutputArchive */
+          the BaseJSONOutputArchive */
       //! @{
 
       //! Starts a new node in the JSON output
@@ -376,7 +402,7 @@ namespace cereal
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
-  }; // JSONOutputArchive
+  }; // BaseJSONOutputArchive
 
   // ######################################################################
   //! An input archive designed to load data from JSON
@@ -385,14 +411,14 @@ namespace cereal
       As with the output JSON archive, the preferred way to use this archive is in
       an RAII fashion, ensuring its destruction after all data has been read.
 
-      Input JSON should have been produced by the JSONOutputArchive.  Data can
+      Input JSON should have been produced by the BaseJSONOutputArchive.  Data can
       only be added to dynamically sized containers (marked by JSON arrays) -
       the input archive will determine their size by looking at the number of child nodes.
-      Only JSON originating from a JSONOutputArchive is officially supported, but data
+      Only JSON originating from a BaseJSONOutputArchive is officially supported, but data
       from other sources may work if properly formatted.
 
       The JSONInputArchive does not require that nodes are loaded in the same
-      order they were saved by JSONOutputArchive.  Using name value pairs (NVPs),
+      order they were saved by BaseJSONOutputArchive.  Using name value pairs (NVPs),
       it is possible to load in an out of order fashion or otherwise skip/select
       specific nodes to load.
 
@@ -742,8 +768,8 @@ namespace cereal
   // ######################################################################
   //! Prologue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void prologue( JSONOutputArchive &, NameValuePair<T> const & )
+  template <class T, typename W> inline
+      void prologue( BaseJSONOutputArchive<W> &, NameValuePair<T> const & )
   { }
 
   //! Prologue for NVPs for JSON archives
@@ -754,8 +780,8 @@ namespace cereal
   // ######################################################################
   //! Epilogue for NVPs for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void epilogue( JSONOutputArchive &, NameValuePair<T> const & )
+  template <class T, class W> inline
+  void epilogue( BaseJSONOutputArchive<W> &, NameValuePair<T> const & )
   { }
 
   //! Epilogue for NVPs for JSON archives
@@ -767,8 +793,8 @@ namespace cereal
   // ######################################################################
   //! Prologue for deferred data for JSON archives
   /*! Do nothing for the defer wrapper */
-  template <class T> inline
-  void prologue( JSONOutputArchive &, DeferredData<T> const & )
+  template <class T, class W> inline
+  void prologue( BaseJSONOutputArchive<W> &, DeferredData<T> const & )
   { }
 
   //! Prologue for deferred data for JSON archives
@@ -779,8 +805,8 @@ namespace cereal
   // ######################################################################
   //! Epilogue for deferred for JSON archives
   /*! NVPs do not start or finish nodes - they just set up the names */
-  template <class T> inline
-  void epilogue( JSONOutputArchive &, DeferredData<T> const & )
+  template <class T, class W> inline
+  void epilogue( BaseJSONOutputArchive<W> &, DeferredData<T> const & )
   { }
 
   //! Epilogue for deferred for JSON archives
@@ -793,8 +819,8 @@ namespace cereal
   //! Prologue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON, they just indicate
       that the current node should be made into an array */
-  template <class T> inline
-  void prologue( JSONOutputArchive & ar, SizeTag<T> const & )
+  template <class T, class W> inline
+  void prologue( BaseJSONOutputArchive<W> & ar, SizeTag<T> const & )
   {
     ar.makeArray();
   }
@@ -807,8 +833,8 @@ namespace cereal
   // ######################################################################
   //! Epilogue for SizeTags for JSON archives
   /*! SizeTags are strictly ignored for JSON */
-  template <class T> inline
-  void epilogue( JSONOutputArchive &, SizeTag<T> const & )
+  template <class T, class W> inline
+  void epilogue( BaseJSONOutputArchive<W> &, SizeTag<T> const & )
   { }
 
   //! Epilogue for SizeTags for JSON archives
@@ -822,10 +848,14 @@ namespace cereal
       that may be given data by the type about to be archived
 
       Minimal types do not start or finish nodes */
-  template <class T, traits::EnableIf<!std::is_arithmetic<T>::value,
-                                      !traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, JSONOutputArchive>::value,
-                                      !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
-  inline void prologue( JSONOutputArchive & ar, T const & )
+  template <class T, class W,
+            traits::EnableIf<!std::is_arithmetic<T>::value,
+                             !traits::has_minimal_base_class_serialization
+                             <T, traits::has_minimal_output_serialization,
+                              BaseJSONOutputArchive<W>>::value,
+                             !traits::has_minimal_output_serialization
+                             <T, BaseJSONOutputArchive<W>>::value> = traits::sfinae>
+  inline void prologue( BaseJSONOutputArchive<W> & ar, T const & )
   {
     ar.startNode();
   }
@@ -844,10 +874,10 @@ namespace cereal
   /*! Finishes the node created in the prologue
 
       Minimal types do not start or finish nodes */
-  template <class T, traits::EnableIf<!std::is_arithmetic<T>::value,
-                                      !traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, JSONOutputArchive>::value,
-                                      !traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
-  inline void epilogue( JSONOutputArchive & ar, T const & )
+  template <class T, class W, traits::EnableIf<!std::is_arithmetic<T>::value,
+                                      !traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, BaseJSONOutputArchive<W>>::value,
+                                      !traits::has_minimal_output_serialization<T, BaseJSONOutputArchive<W>>::value> = traits::sfinae>
+  inline void epilogue( BaseJSONOutputArchive<W> & ar, T const & )
   {
     ar.finishNode();
   }
@@ -863,8 +893,8 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for arithmetic types for JSON archives
-  inline
-  void prologue( JSONOutputArchive & ar, std::nullptr_t const & )
+  template <class W> inline
+  void prologue( BaseJSONOutputArchive<W> & ar, std::nullptr_t const & )
   {
     ar.writeName();
   }
@@ -876,8 +906,8 @@ namespace cereal
 
   // ######################################################################
   //! Epilogue for arithmetic types for JSON archives
-  inline
-  void epilogue( JSONOutputArchive &, std::nullptr_t const & )
+  template <class W> inline
+  void epilogue( BaseJSONOutputArchive<W> &, std::nullptr_t const & )
   { }
 
   //! Epilogue for arithmetic types for JSON archives
@@ -887,8 +917,8 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for arithmetic types for JSON archives
-  template <class T, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
-  void prologue( JSONOutputArchive & ar, T const & )
+  template <class T, class W, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
+  void prologue( BaseJSONOutputArchive<W> & ar, T const & )
   {
     ar.writeName();
   }
@@ -900,8 +930,8 @@ namespace cereal
 
   // ######################################################################
   //! Epilogue for arithmetic types for JSON archives
-  template <class T, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
-  void epilogue( JSONOutputArchive &, T const & )
+  template <class T, class W, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
+  void epilogue( BaseJSONOutputArchive<W> &, T const & )
   { }
 
   //! Epilogue for arithmetic types for JSON archives
@@ -911,8 +941,8 @@ namespace cereal
 
   // ######################################################################
   //! Prologue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void prologue(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const &)
+  template<class CharT, class Traits, class Alloc, class W> inline
+  void prologue(BaseJSONOutputArchive<W> & ar, std::basic_string<CharT, Traits, Alloc> const &)
   {
     ar.writeName();
   }
@@ -924,8 +954,8 @@ namespace cereal
 
   // ######################################################################
   //! Epilogue for strings for JSON archives
-  template<class CharT, class Traits, class Alloc> inline
-  void epilogue(JSONOutputArchive &, std::basic_string<CharT, Traits, Alloc> const &)
+  template<class CharT, class Traits, class Alloc, class W> inline
+  void epilogue(BaseJSONOutputArchive<W> &, std::basic_string<CharT, Traits, Alloc> const &)
   { }
 
   //! Epilogue for strings for JSON archives
@@ -937,8 +967,8 @@ namespace cereal
   // Common JSONArchive serialization functions
   // ######################################################################
   //! Serializing NVP types to JSON
-  template <class T> inline
-  void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  template <class T, class W> inline
+  void CEREAL_SAVE_FUNCTION_NAME( BaseJSONOutputArchive<W> & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
@@ -952,8 +982,8 @@ namespace cereal
   }
 
   //! Saving for nullptr to JSON
-  inline
-  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, std::nullptr_t const & t)
+  template <class W> inline
+  void CEREAL_SAVE_FUNCTION_NAME(BaseJSONOutputArchive<W> & ar, std::nullptr_t const & t)
   {
     ar.saveValue( t );
   }
@@ -966,8 +996,8 @@ namespace cereal
   }
 
   //! Saving for arithmetic to JSON
-  template <class T, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
-  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, T const & t)
+  template <class T, class W, traits::EnableIf<std::is_arithmetic<T>::value> = traits::sfinae> inline
+  void CEREAL_SAVE_FUNCTION_NAME(BaseJSONOutputArchive<W> & ar, T const & t)
   {
     ar.saveValue( t );
   }
@@ -980,8 +1010,8 @@ namespace cereal
   }
 
   //! saving string to JSON
-  template<class CharT, class Traits, class Alloc> inline
-  void CEREAL_SAVE_FUNCTION_NAME(JSONOutputArchive & ar, std::basic_string<CharT, Traits, Alloc> const & str)
+  template<class CharT, class Traits, class Alloc, class W> inline
+  void CEREAL_SAVE_FUNCTION_NAME(BaseJSONOutputArchive<W> & ar, std::basic_string<CharT, Traits, Alloc> const & str)
   {
     ar.saveValue( str );
   }
@@ -995,8 +1025,8 @@ namespace cereal
 
   // ######################################################################
   //! Saving SizeTags to JSON
-  template <class T> inline
-  void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive &, SizeTag<T> const & )
+  template <class T, class W> inline
+  void CEREAL_SAVE_FUNCTION_NAME( BaseJSONOutputArchive<W> &, SizeTag<T> const & )
   {
     // nothing to do here, we don't explicitly save the size
   }
@@ -1011,9 +1041,28 @@ namespace cereal
 
 // register archives for polymorphic support
 CEREAL_REGISTER_ARCHIVE(cereal::JSONInputArchive)
-CEREAL_REGISTER_ARCHIVE(cereal::JSONOutputArchive)
+CEREAL_REGISTER_ARCHIVE(cereal::BaseJSONOutputArchive<cereal::MinimalJsonWriter>)
+CEREAL_REGISTER_ARCHIVE(cereal::BaseJSONOutputArchive<cereal::PrettyJsonWriter>)
 
 // tie input and output archives together
-CEREAL_SETUP_ARCHIVE_TRAITS(cereal::JSONInputArchive, cereal::JSONOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(cereal::JSONInputArchive,
+                            cereal::BaseJSONOutputArchive<cereal::MinimalJsonWriter>)
 
+namespace cereal {
+namespace traits {
+namespace detail {
+template <>
+struct get_input_from_output<cereal::BaseJSONOutputArchive<cereal::PrettyJsonWriter>>
+{
+    using type = cereal::JSONInputArchive;
+};
+} } }
+
+
+namespace cereal
+{
+using JSONOutputArchive = BaseJSONOutputArchive<PrettyJsonWriter>;
+using PrettyJSONOutputArchive = BaseJSONOutputArchive<PrettyJsonWriter>;
+using MinimalJSONOutputArchive = BaseJSONOutputArchive<MinimalJsonWriter>;
+}
 #endif // CEREAL_ARCHIVES_JSON_HPP_
