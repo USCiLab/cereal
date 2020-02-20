@@ -292,13 +292,13 @@ namespace cereal
 #else // _MSC_VER
       //! Serialize a long if it would not be caught otherwise
       template <class T, traits::EnableIf<std::is_same<T, long>::value,
-                                          !std::is_same<T, std::int32_t>::value,
+                                          !std::is_same<T, int>::value,
                                           !std::is_same<T, std::int64_t>::value> = traits::sfinae> inline
       void saveValue( T t ){ saveLong( t ); }
 
       //! Serialize an unsigned long if it would not be caught otherwise
       template <class T, traits::EnableIf<std::is_same<T, unsigned long>::value,
-                                          !std::is_same<T, std::uint32_t>::value,
+                                          !std::is_same<T, unsigned>::value,
                                           !std::is_same<T, std::uint64_t>::value> = traits::sfinae> inline
       void saveValue( T t ){ saveLong( t ); }
 #endif // _MSC_VER
