@@ -81,6 +81,7 @@ namespace cereal
       construct( x ); // calls MyType( x )
     }
   };
+}
 ```
 
 Implementing either of the `load_and_construct` styles will allow you to serialize smart pointers to a type without a
