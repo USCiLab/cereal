@@ -221,7 +221,7 @@ struct EmbarrassingDerivedClass : public BaseClass
 // Potentially necessary if no explicit reference
 // to objects in myclasses.cpp will take place
 // from other translation units
-//#include <cereal/types.polymorphic.hpp>
+//#include <cereal/types/polymorphic.hpp>
 //CEREAL_FORCE_DYNAMIC_INIT(myclasses)
 ```
 
