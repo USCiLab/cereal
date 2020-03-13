@@ -319,6 +319,8 @@ namespace cereal
 
       bool hasSizeAttributes() const { return itsSizeAttributes; }
 
+      void makeArray() {}
+
     protected:
       //! A struct that contains metadata about a node
       struct NodeInfo
@@ -675,6 +677,8 @@ namespace cereal
       {
         value = getNumChildren( itsNodes.top().node );
       }
+
+      void makeArray() {}
 
     protected:
       //! Gets the number of children (usually interpreted as size) for the specified node
