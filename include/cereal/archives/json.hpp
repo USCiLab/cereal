@@ -221,12 +221,18 @@ namespace cereal
           case NodeType::StartArray:
             itsWriter.StartArray();
             // fall through
+          #if defined (__cplusplus) && __cplusplus >= 201703L
+              [[fallthrough]];
+          #endif
           case NodeType::InArray:
             itsWriter.EndArray();
             break;
           case NodeType::StartObject:
             itsWriter.StartObject();
             // fall through
+          #if defined (__cplusplus) && __cplusplus >= 201703L
+              [[fallthrough]];
+          #endif
           case NodeType::InObject:
             itsWriter.EndObject();
             break;
