@@ -248,10 +248,12 @@ namespace cereal
       void saveValue(int i)                 { itsWriter.Int(i);                                                          }
       //! Saves a uint to the current node
       void saveValue(unsigned u)            { itsWriter.Uint(u);                                                         }
+#if LONG_MAX == 0x7FFFFFFFL
       //! Saves a long to the current node
       void saveValue(long i)                { itsWriter.Int(i);                                                          }
       //! Saves a ulong to the current node
       void saveValue(unsigned long u)       { itsWriter.Uint(u);                                                         }
+#endif // LONG_MAX == 0x7FFFFFFFL
       //! Saves an int64 to the current node
       void saveValue(int64_t i64)           { itsWriter.Int64(i64);                                                      }
       //! Saves a uint64 to the current node
