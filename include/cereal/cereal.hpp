@@ -454,7 +454,7 @@ namespace cereal
       template <class T> inline
       ArchiveType & processImpl(DeferredData<T> const & d)
       {
-        std::function<void(void)> deferment( [=](){ self->process( d.value ); } );
+        std::function<void(void)> deferment( [this, d](){ self->process( d.value ); } );
         itsDeferments.emplace_back( std::move(deferment) );
 
         return *self;
@@ -859,7 +859,7 @@ namespace cereal
       template <class T> inline
       ArchiveType & processImpl(DeferredData<T> const & d)
       {
-        std::function<void(void)> deferment( [=](){ self->process( d.value ); } );
+        std::function<void(void)> deferment( [this, d](){ self->process( d.value ); } );
         itsDeferments.emplace_back( std::move(deferment) );
 
         return *self;
