@@ -46,6 +46,10 @@ else()
 
 endif()
 
+if (CMAKE_CXX_STANDARD GREATER 17)
+    set(SKIP_PERFORMANCE_COMPARISON ON)
+endif()
+
 if(NOT CMAKE_VERSION VERSION_LESS 3.0)
     add_library(cereal INTERFACE)
     target_include_directories(cereal INTERFACE
