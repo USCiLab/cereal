@@ -773,34 +773,19 @@ namespace detail {
     // cppcheck-suppress unusedStructMember
     { static const bool value = false; };
 
-    namespace has_insertion_operator_impl {
-        typedef char no;
-        typedef char yes[2];
+    template<typename T>
+    class has_insertion_operator
+    {
+        template<typename TT>
+        static auto test(int)
+        -> decltype( std::declval<std::ostream&>() << std::declval<TT>(), std::true_type() );
 
-        struct any_t
-        {
-            template <typename T>
-            // cppcheck-suppress noExplicitConstructor
-            any_t(const DOCTEST_REF_WRAP(T));
-        };
+        template<typename>
+        static auto test(...) -> std::false_type;
 
-        yes& testStreamable(std::ostream&);
-        no   testStreamable(no);
-
-        no operator<<(const std::ostream&, const any_t&);
-
-        template <typename T>
-        struct has_insertion_operator
-        {
-            static std::ostream& s;
-            static const DOCTEST_REF_WRAP(T) t;
-            static const bool value = sizeof(decltype(testStreamable(s << t))) == sizeof(yes);
-        };
-    } // namespace has_insertion_operator_impl
-
-    template <typename T>
-    struct has_insertion_operator : has_insertion_operator_impl::has_insertion_operator<T>
-    {};
+    public:
+        static const bool value = decltype(test<T>(0))::value;
+    };
 
     DOCTEST_INTERFACE void my_memcpy(void* dest, const void* src, unsigned num);
 
