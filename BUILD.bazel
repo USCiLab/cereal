@@ -1,0 +1,6 @@
+cc_library(
+    name = "cereal",
+    hdrs = glob(["include/cereal/**/*.hpp"]),
+    strip_include_prefix = "include/",
+    visibility = ["//visibility:public"],
+)

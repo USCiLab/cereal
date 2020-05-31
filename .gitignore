@@ -29,6 +29,9 @@
 *.idb
 *\build_*
 
+# Bazel build output
+/bazel-*
+
 # misc files mostly used for testing
 out.txt
 ptr.txt
