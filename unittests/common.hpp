@@ -240,4 +240,22 @@ struct StructHash {
     }
 };
 
+class JSONDocumentWrapper {
+  public:
+    JSONDocumentWrapper(const std::string & string)
+    {
+      std::istringstream stream(string);
+      CEREAL_RAPIDJSON_NAMESPACE::IStreamWrapper readStream(stream);
+      document.ParseStream<>(readStream);
+    }
+
+    operator CEREAL_RAPIDJSON_NAMESPACE::Document ()
+    {
+      return std::move(document);
+    }
+
+  private:
+    CEREAL_RAPIDJSON_NAMESPACE::Document document;
+};
+
 #endif // CEREAL_TEST_COMMON_H_
