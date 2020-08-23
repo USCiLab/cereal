@@ -123,7 +123,7 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0, FormatMode::single_line_array ); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -134,6 +134,12 @@ namespace cereal
             carriage_return = '\r'
           };
 
+          enum class FormatMode : int
+          {
+              default = 0,
+              single_line_array = 1
+          };
+
           //! Specify specific options for the JSONOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
@@ -141,16 +147,19 @@ namespace cereal
                              (0 corresponds to no indentation) */
           explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
-                            unsigned int indentLength = 4 ) :
+                            unsigned int indentLength = 4,
+                            FormatMode formatMode = FormatMode::default) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
-            itsIndentLength( indentLength ) { }
+            itsIndentLength( indentLength ),
+            itsFormatMode( static_cast<int>(formatMode) ){ }
 
         private:
           friend class JSONOutputArchive;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
+          int itsFormatMode;
       };
 
       //! Construct, outputting to the provided stream
@@ -165,6 +174,7 @@ namespace cereal
       {
         itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
+        itsWriter.SetFormatOptions(static_cast<cereal_rapidjson::PrettyFormatOptions>(options.itsFormatMode));
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
