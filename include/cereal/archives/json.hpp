@@ -174,7 +174,7 @@ namespace cereal
       {
         itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
-        itsWriter.SetFormatOptions(static_cast<cereal_rapidjson::PrettyFormatOptions>(options.itsFormatMode));
+        itsWriter.SetFormatOptions(static_cast<CEREAL_RAPIDJSON_NAMESPACE::PrettyFormatOptions>(options.itsFormatMode));
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
