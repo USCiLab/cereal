@@ -136,7 +136,7 @@ namespace cereal
 
           enum class FormatMode : int
           {
-              default = 0,
+              default_format = 0,
               single_line_array = 1
           };
 
@@ -148,7 +148,7 @@ namespace cereal
           explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4,
-                            FormatMode formatMode = FormatMode::default) :
+                            FormatMode formatMode = FormatMode::default_format) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
             itsIndentLength( indentLength ),
