@@ -258,6 +258,26 @@ namespace cereal
       Interfaces for other forms of serialization functions is similar.  This
       macro should be placed at global scope.
       @ingroup Utility */
+
+  //! On C++17, define the StaticObject as inline to merge the definitions across TUs
+  //! This prevents multiple definition errors when this macro appears in a header file
+  //! included in multiple TUs.
+  #ifdef CEREAL_HAS_CPP17
+  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
+  namespace cereal { namespace detail {                                          \
+    template <> struct Version<TYPE>                                             \
+    {                                                                            \
+      static std::uint32_t registerVersion()                                     \
+      {                                                                          \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
+             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        return VERSION_NUMBER;                                                   \
+      }                                                                          \
+      static inline const std::uint32_t version = registerVersion();             \
+      CEREAL_UNUSED_FUNCTION                                                     \
+    }; /* end Version */                                                         \
+  } } // end namespaces
+  #else
   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
   namespace cereal { namespace detail {                                          \
     template <> struct Version<TYPE>                                             \
@@ -274,6 +294,8 @@ namespace cereal
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
   } } // end namespaces
+
+  #endif
 
   // ######################################################################
   //! The base output archive class

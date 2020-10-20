@@ -286,7 +286,7 @@ namespace cereal
       void saveLong(T lu){ saveValue( static_cast<std::uint64_t>( lu ) ); }
 
     public:
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && _MSC_VER < 1916
       //! MSVC only long overload to current node
       void saveValue( unsigned long lu ){ saveLong( lu ); };
 #else // _MSC_VER

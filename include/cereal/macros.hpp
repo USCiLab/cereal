@@ -134,7 +134,9 @@
 
 // ######################################################################
 //! Checks if C++17 is available
-#if __cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L)
+//! NOTE: clang v5 has a bug with inline variables, so disable C++17 on that compiler
+#if (__cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703L)) \
+    && (!defined(__clang__) || __clang_major__ > 5)
 #define CEREAL_HAS_CPP17
 #endif
 
