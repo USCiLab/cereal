@@ -69,12 +69,26 @@
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
     have been included). */
+#ifdef CEREAL_HAS_CPP17
 #define CEREAL_BIND_TO_ARCHIVES(...)                                     \
     namespace cereal {                                                   \
     namespace detail {                                                   \
     template<>                                                           \
     struct init_binding<__VA_ARGS__> {                                   \
-        static bind_to_archives<__VA_ARGS__> const & b;                  \
+        static inline bind_to_archives<__VA_ARGS__> const & b=           \
+        ::cereal::detail::StaticObject<                                  \
+            bind_to_archives<__VA_ARGS__>                                \
+        >::getInstance().bind();                                         \
+        CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
+    };                                                                   \
+    }} /* end namespaces */
+#else
+#define CEREAL_BIND_TO_ARCHIVES(...)                                     \
+    namespace cereal {                                                   \
+    namespace detail {                                                   \
+    template<>                                                           \
+    struct init_binding<__VA_ARGS__> {                                   \
+        static bind_to_archives<__VA_ARGS__> const& b;                   \
         CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
     };                                                                   \
     bind_to_archives<__VA_ARGS__> const & init_binding<__VA_ARGS__>::b = \
@@ -82,6 +96,7 @@
             bind_to_archives<__VA_ARGS__>                                \
         >::getInstance().bind();                                         \
     }} /* end namespaces */
+#endif
 
 namespace cereal
 {
@@ -654,7 +669,7 @@ namespace cereal
 
             auto ptr = PolymorphicCasters::template downcast<T>( dptr, baseInfo );
 
-            #if defined(_MSC_VER) && !defined(__clang__)
+            #if defined(_MSC_VER) && _MSC_VER < 1916 && !defined(__clang__)
             savePolymorphicSharedPtr( ar, ptr, ::cereal::traits::has_shared_from_this<T>::type() ); // MSVC doesn't like typename here
             #else // not _MSC_VER
             savePolymorphicSharedPtr( ar, ptr, typename ::cereal::traits::has_shared_from_this<T>::type() );
@@ -680,9 +695,23 @@ namespace cereal
     //! of instantiate_polymorphic_binding
     struct adl_tag {};
 
-    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous
-    //! namespace it becomes a different type in each translation unit.
+    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding.
+    //! For C++14 and below, we must instantiate a unique StaticObject per TU that is
+    //! otherwise identical -- otherwise we get multiple definition problems (ODR violations).
+    //! To achieve this, put a tag in an anonymous namespace and use it as a template argument.
+    //!
+    //! For C++17, we can use static inline global variables to unify these definitions across
+    //! all TUs in the same shared object (DLL).  The tag is therefore not necessary.
+    //! For convenience, keep it to not complicate other code, but don't put it in
+    //! an anonymous namespace.  Now the template instantiations will correspond
+    //! to the same type, and since they are marked inline with C++17, they will be merged
+    //! across all TUs.
+#ifdef CEREAL_HAS_CPP17
+    struct polymorphic_binding_tag {};
+#else
     namespace { struct polymorphic_binding_tag {}; }
+#endif
+
 
     //! Causes the static object bindings between an archive type and a serializable type T
     template <class Archive, class T>
