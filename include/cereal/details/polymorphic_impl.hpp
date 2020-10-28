@@ -654,7 +654,7 @@ namespace cereal
 
             auto ptr = PolymorphicCasters::template downcast<T>( dptr, baseInfo );
 
-            #ifdef _MSC_VER
+            #if defined(_MSC_VER) && !defined(__clang__)
             savePolymorphicSharedPtr( ar, ptr, ::cereal::traits::has_shared_from_this<T>::type() ); // MSVC doesn't like typename here
             #else // not _MSC_VER
             savePolymorphicSharedPtr( ar, ptr, typename ::cereal::traits::has_shared_from_this<T>::type() );

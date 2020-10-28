@@ -44,7 +44,7 @@
     License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt) */
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #   define CEREAL_DLL_EXPORT __declspec(dllexport)
 #   define CEREAL_USED
 #else // clang or gcc
