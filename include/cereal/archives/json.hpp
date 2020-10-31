@@ -432,19 +432,36 @@ namespace cereal
 
       //! Construct, reading from the provided stream
       /*! @param stream The stream to read from */
-      JSONInputArchive(std::istream & stream) :
+      JSONInputArchive(std::istream & stream, bool shouldSuppressParseErrors = false) :
         InputArchive<JSONInputArchive>(this),
         itsNextName( nullptr ),
-        itsReadStream(stream)
+        itsReadStream(stream),
+        suppressParseError(shouldSuppressParseErrors),
+        hasRapidParseError(false)
       {
         itsDocument.ParseStream<>(itsReadStream);
-        if (itsDocument.IsArray())
-          itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
+        hasRapidParseError = itsDocument.HasParseError();
+        if (hasRapidParseError && suppressParseError)
+        {
+          // Do nothing if RapidJSON fails to parse the input stream and we want to suppress parse errors
+          // In this case, it's up to the client to check against hasParseError() or operator bool()
+        }
         else
-          itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
+        {
+          if (itsDocument.IsArray())
+            itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
+          else
+            itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
+        }
       }
 
       ~JSONInputArchive() CEREAL_NOEXCEPT = default;
+
+      //! Whether or not RapidJSON failed to parse the input stream
+      bool hasParseError() const { return hasRapidParseError; }
+
+      //! Whether or not RapidJSON failed to parse the input stream
+      operator bool() const { return !hasRapidParseError; }
 
       //! Loads some binary data, encoded as a base64 string
       /*! This will automatically start and finish a node to load the data, and can be called directly by
@@ -733,6 +750,8 @@ namespace cereal
       ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument; //!< Rapidjson document
+      bool suppressParseError;                //!< Whether this should attempt to emplace when RapidJSON parse fails
+      bool hasRapidParseError;                //!< Whether RapidJSON failed to parse the input
   };
 
   // ######################################################################
