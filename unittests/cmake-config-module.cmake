@@ -2,8 +2,8 @@ if(CMAKE_VERSION LESS 3.0)
   message(FATAL_ERROR "Cereal can't be installed with CMake < 3.0")
 endif()
 
-get_filename_component(BINARY_DIR ${CMAKE_CURRENT_LIST_DIR}/../build ABSOLUTE)
-get_filename_component(INSTALL_DIR ${CMAKE_CURRENT_LIST_DIR}/../out ABSOLUTE)
+get_filename_component(BINARY_DIR ${CMAKE_BINARY_DIR}/build ABSOLUTE)
+get_filename_component(INSTALL_DIR ${CMAKE_BINARY_DIR}/out ABSOLUTE)
 
 # cmake configure step for cereal
 file(MAKE_DIRECTORY ${BINARY_DIR}/cereal)
@@ -44,10 +44,11 @@ file(WRITE ${BINARY_DIR}/test_source/CMakeLists.txt "
   endif()
   find_package(cereal REQUIRED)
   add_executable(cereal-test-config-module main.cpp)
-  target_link_libraries(cereal-test-config-module cereal)
+  target_link_libraries(cereal-test-config-module cereal::cereal)
   enable_testing()
-  add_test(test-cereal-test-config-module cereal-test-config-module)
+  add_test(NAME test-cereal-test-config-module COMMAND cereal-test-config-module)
 ")
+
 file(WRITE ${BINARY_DIR}/test_source/main.cpp "
   #include <cereal/archives/binary.hpp>
   #include <sstream>
@@ -90,6 +91,7 @@ file(WRITE ${BINARY_DIR}/test_source/main.cpp "
     }
   }"
 )
+
 file(MAKE_DIRECTORY ${BINARY_DIR}/test)
 execute_process(
   COMMAND ${CMAKE_COMMAND}
