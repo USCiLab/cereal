@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8...3.15)
+cmake_minimum_required(VERSION 3.6...3.15)
 
 project(cereal LANGUAGES CXX)
 
@@ -95,7 +95,7 @@ endif()
 
 if(NOT SKIP_PERFORMANCE_COMPARISON)
     # Boost serialization for performance sandbox
-    find_package(Boost COMPONENTS serialization)
+    find_package(Boost REQUIRED COMPONENTS serialization)
 
     # TODO: should not be needed! CK
     if(Boost_FOUND)

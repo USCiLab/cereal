@@ -16,7 +16,7 @@ foreach(TEST_SOURCE ${TESTS})
     add_executable(${TEST_TARGET}_32 ${TEST_SOURCE})
     set_target_properties(${TEST_TARGET}_32 PROPERTIES
       COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
-    add_test("NAME ${TEST_TARGET}_32" COMMAND "${TEST_TARGET}_32")
+    add_test(NAME "${TEST_TARGET}_32" COMMAND "${TEST_TARGET}_32")
   endif()
 
 endforeach()
