@@ -1,5 +1,7 @@
 file(GLOB TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
 # Build all of the non-special tests
 foreach(TEST_SOURCE ${TESTS})
   message(STATUS ${TEST_SOURCE})
