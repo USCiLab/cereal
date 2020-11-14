@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6...3.15)
 
-project(cereal LANGUAGES CXX)
+project(cereal LANGUAGES CXX VERSION 1.3.0)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
@@ -44,7 +44,7 @@ else()
     if(APPLE OR CLANG_USE_LIBCPP)
         message(STATUS "Use libc++")
         add_compile_options(-stdlib=libc++)
-        # TODO: use add_link_options(-stdlib=libc++ -lc++abi") bud needs cmake 3.13! CK
+        # TODO: use add_link_options(-stdlib=libc++ -lc++abi") bud this needs cmake 3.13! CK
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
     endif()
 
@@ -56,7 +56,7 @@ else()
             set(CMAKE_CXX_STANDARD 11)
         endif()
 
-        # XXX Why should this needed? CK
+        # XXX Why should we needed this? CK
         # if(CMAKE_CXX_STANDARD GREATER 14)
         #     cmake_policy(VERSION 3.8)
         # endif()
@@ -66,27 +66,27 @@ else()
 endif()
 
 
-# TODO: should not be needed! CK
-# if(NOT CMAKE_VERSION VERSION_LESS 3.0)
-    add_library(cereal INTERFACE)
-    add_library(cereal::cereal ALIAS cereal)
-    target_compile_features(cereal INTERFACE cxx_std_11)
-    target_include_directories(cereal INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    )
-    list(APPEND CEREAL_THREAD_LIBS "cereal::cereal")
+add_library(cereal INTERFACE)
+add_library(cereal::cereal ALIAS cereal)
+target_include_directories(cereal INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+list(APPEND CEREAL_THREAD_LIBS "cereal::cereal")
 
-    option(CEREAL_INSTALL "Generate the install target" ${CEREAL_MASTER_PROJECT})
-    if(CEREAL_INSTALL)
-        install(TARGETS cereal EXPORT cereal
-            DESTINATION lib) # ignored
-        install(EXPORT cereal FILE cereal-config.cmake
-            NAMESPACE "cereal::"
-            DESTINATION lib/cmake/cereal)
-        install(DIRECTORY include/cereal DESTINATION include)
-    endif()
-# endif()
+if(NOT CMAKE_VERSION VERSION_LESS 3.12)
+    target_compile_features(cereal INTERFACE cxx_std_11)
+endif()
+
+option(CEREAL_INSTALL "Generate the install target" ${CEREAL_MASTER_PROJECT})
+if(CEREAL_INSTALL)
+    install(TARGETS cereal EXPORT cereal
+        DESTINATION lib) # ignored
+    install(EXPORT cereal FILE cereal-config.cmake
+        NAMESPACE "cereal::"
+        DESTINATION lib/cmake/cereal)
+    install(DIRECTORY include/cereal DESTINATION include)
+endif()
 
 
 if(JUST_INSTALL_CEREAL)
