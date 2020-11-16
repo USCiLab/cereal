@@ -14,6 +14,7 @@ foreach(TEST_SOURCE ${TESTS})
   # If we are on a 64-bit machine, create an extra 32-bit version of the test if portability testing is enabled
   if((NOT MSVC) AND (${CMAKE_SIZEOF_VOID_P} EQUAL 8) AND (NOT SKIP_PORTABILITY_TEST))
     add_executable(${TEST_TARGET}_32 ${TEST_SOURCE})
+    target_link_libraries(${TEST_TARGET}_32 ${CEREAL_THREAD_LIBS})
     set_target_properties(${TEST_TARGET}_32 PROPERTIES
       COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
     add_test(NAME "${TEST_TARGET}_32" COMMAND "${TEST_TARGET}_32")
