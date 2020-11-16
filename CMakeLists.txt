@@ -19,13 +19,13 @@ if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE li
 endif()
 
 
-set(CEREAL_THREAD_LIBS "")
+set(CEREAL_THREAD_LIBS)
 if(UNIX)
     option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
     if(THREAD_SAFE)
         message(STATUS "Use mutexes")
         add_definitions(-DCEREAL_THREAD_SAFE=1)
-        set(CEREAL_THREAD_LIBS "pthread")
+        set(CEREAL_THREAD_LIBS pthread)
     endif()
 endif()
 
@@ -61,7 +61,7 @@ target_include_directories(cereal INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
-list(APPEND CEREAL_THREAD_LIBS "cereal::cereal")
+list(APPEND CEREAL_THREAD_LIBS cereal::cereal)
 
 if(NOT CMAKE_VERSION VERSION_LESS 3.8)
     target_compile_features(cereal INTERFACE cxx_std_11)
