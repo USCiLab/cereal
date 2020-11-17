@@ -15,4 +15,4 @@ if(DOXYGEN_FOUND)
     COMMENT "Copying documentation to gh-pages branch" VERBATIM
     )
 
-endif(DOXYGEN_FOUND)
+endif()
