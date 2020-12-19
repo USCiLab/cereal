@@ -72,9 +72,26 @@ namespace cereal
 #include <stack>
 #include <vector>
 #include <string>
+#ifdef CEREAL_HAS_CPP17
+#include <optional>
+#endif
+#include <type_traits>
 
 namespace cereal
 {
+#ifdef CEREAL_HAS_CPP17
+  template <typename T>
+  struct IsOptionalImpl : std::false_type{};
+  template <typename T>
+  struct IsOptionalImpl<std::optional<T>> : std::true_type{};
+  template <typename T, typename = void>
+  struct IsOptional : std::false_type{};
+  template <typename T>
+  struct IsOptional<T, std::enable_if_t<IsOptionalImpl<std::decay_t<T>>::value>> : std::true_type{};
+#else
+  template <typename T>
+  using IsOptional = std::false_type;
+#endif
   // ######################################################################
   //! An output archive designed to save data to JSON
   /*! This archive uses RapidJSON to build serialize data to JSON.
@@ -938,18 +955,51 @@ namespace cereal
   // ######################################################################
   //! Serializing NVP types to JSON
   template <class T> inline
-  void CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  typename std::enable_if<!IsOptional<T>::value>::type
+  CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
   }
 
   template <class T> inline
-  void CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
+  typename std::enable_if<!IsOptional<T>::value>::type
+  CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
   }
+
+#ifdef CEREAL_HAS_CPP17
+  //! Overload to eliminate entries for name-value pairs of empty std::optional
+  template <class T> inline
+  std::enable_if_t<IsOptional<T>::value>
+  CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  {
+    if (t.value)
+    {
+      ar.setNextName( t.name );
+      ar( *t.value );
+    }
+  }
+
+  template <class T> inline
+  std::enable_if_t<IsOptional<T>::value>
+  CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
+  {
+    if (ar.getNodeName() != nullptr && std::strcmp(ar.getNodeName(), t.name) == 0)
+    {
+      ar.setNextName( t.name );
+      std::decay_t<decltype(*t.value)> val;
+      ar( val );
+      t.value = std::move(val);
+    }
+    else
+    {
+      t.value = std::nullopt;
+    }
+  }
+#endif
 
   //! Saving for nullptr to JSON
   inline
