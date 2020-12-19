@@ -369,12 +369,17 @@ namespace cereal
           point to the same data.
 
           @internal
-          @param addr The address (see shared_ptr get()) pointed to by the shared pointer
+          @param sharedPointer The shared pointer itself (the adress is taked via get()).
+                               The archive takes a copy to prevent the memory location to be freed
+                               as long as the address is used as id. This is needed to prevent CVE-2020-11105.
           @return A key that uniquely identifies the pointer */
-      inline std::uint32_t registerSharedPointer( void const * addr )
+      inline std::uint32_t registerSharedPointer(const std::shared_ptr<const void>& sharedPointer)
       {
+        void const * addr = sharedPointer.get();
+
         // Handle null pointers by just returning 0
         if(addr == 0) return 0;
+        itsSharedPointerStorage.push_back(sharedPointer);
 
         auto id = itsSharedPointerMap.find( addr );
         if( id == itsSharedPointerMap.end() )
@@ -644,6 +649,10 @@ namespace cereal
 
       //! Maps from addresses to pointer ids
       std::unordered_map<void const *, std::uint32_t> itsSharedPointerMap;
+
+      //! Copy of shared pointers used in #itsSharedPointerMap to make sure they are kept alive
+      //  during lifetime of itsSharedPointerMap to prevent CVE-2020-11105.
+      std::vector<std::shared_ptr<const void>> itsSharedPointerStorage;
 
       //! The id to be given to the next pointer
       std::uint32_t itsCurrentPointerId;
