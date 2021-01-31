@@ -32,6 +32,8 @@
 
 #include "cereal/cereal.hpp"
 
+#include <cstring>
+
 namespace cereal
 {
   namespace common_detail
@@ -117,13 +119,35 @@ namespace cereal
 
   //! Serialization for C style arrays
   template <class Archive, class T> inline
-  typename std::enable_if<std::is_array<T>::value, void>::type
+  typename std::enable_if<std::is_array<T>::value
+#ifdef CEREAL_STRINGIFY_CHAR_ARRAY
+    && !std::is_same<typename std::remove_extent<T>::type, char>::value
+#endif
+    , void>::type
   CEREAL_SERIALIZE_FUNCTION_NAME(Archive & ar, T & array)
   {
     common_detail::serializeArray( ar, array,
         std::integral_constant<bool, traits::is_output_serializable<BinaryData<T>, Archive>::value &&
                                      std::is_arithmetic<typename std::remove_all_extents<T>::type>::value>() );
   }
+
+#ifdef CEREAL_STRINGIFY_CHAR_ARRAY
+  //! Serializion for C style char arrays
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_array<T>::value && std::is_same<typename std::remove_extent<T>::type, char>::value, std::string>::type
+  CEREAL_SAVE_MINIMAL_FUNCTION_NAME(Archive const &, T const & array)
+  {
+    return std::string(array);
+  }
+
+  //! Serializion for C style char arrays
+  template <class Archive, class T> inline
+  typename std::enable_if<std::is_array<T>::value && std::is_same<typename std::remove_extent<T>::type, char>::value, void>::type
+  CEREAL_LOAD_MINIMAL_FUNCTION_NAME(Archive const &, T & array, std::string const & value)
+  {
+    std::strncpy(array, value.c_str(), sizeof(array));
+  }
+#endif
 } // namespace cereal
 
 #endif // CEREAL_TYPES_COMMON_HPP_
