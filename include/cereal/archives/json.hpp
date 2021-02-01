@@ -483,16 +483,16 @@ namespace cereal
           Iterator() : itsIndex( 0 ), itsType(Null_) {}
 
           Iterator(MemberIterator begin, MemberIterator end) :
-            itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
+            itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsSize(std::distance(begin, end)), itsType(Member)
           {
-            if( std::distance( begin, end ) == 0 )
+            if( itsSize == 0 )
               itsType = Null_;
           }
 
           Iterator(ValueIterator begin, ValueIterator end) :
-            itsValueItBegin(begin), itsIndex(0), itsType(Value)
+            itsValueItBegin(begin), itsIndex(0), itsSize(std::distance(begin, end)), itsType(Value)
           {
-            if( std::distance( begin, end ) == 0 )
+            if( itsSize == 0 )
               itsType = Null_;
           }
 
@@ -506,6 +506,9 @@ namespace cereal
           //! Get the value of the current node
           GenericValue const & value()
           {
+            if( itsIndex >= itsSize )
+              throw cereal::Exception("No more objects in input");
+
             switch(itsType)
             {
               case Value : return itsValueItBegin[itsIndex];
@@ -546,7 +549,7 @@ namespace cereal
         private:
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin;                   //!< The value iterator (array)
-          size_t itsIndex;                                 //!< The current index of this iterator
+          size_t itsIndex, itsSize;                        //!< The current index of this iterator
           enum Type {Value, Member, Null_} itsType;        //!< Whether this holds values (array) or members (objects) or nothing
       };
 
