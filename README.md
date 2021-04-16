@@ -5,11 +5,11 @@ cereal - A C++11 library for serialization
 
 ### cereal has great documentation
 
-Looking for more information on how cereal works and its documentation?  Visit [cereal's web page](http://USCiLab.github.com/cereal) to get the latest information.
+Looking for more information on how cereal works and its documentation?  Visit [cereal's web page](http://USCiLab.github.io/cereal) to get the latest information.
 
 ### cereal is easy to use
 
-Installation and use of of cereal is fully documented on the [main web page](http://USCiLab.github.com/cereal), but this is a quick and dirty version:
+Installation and use of of cereal is fully documented on the [main web page](http://USCiLab.github.io/cereal), but this is a quick and dirty version:
 
 * Download cereal and place the headers somewhere your code can see them
 * Write serialization functions for your custom types or use the built in support for the standard library cereal provides
