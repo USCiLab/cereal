@@ -49,4 +49,9 @@ TEST_CASE("json_vector")
   test_vector<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+TEST_CASE("json_document_vector")
+{
+  test_vector<cereal::JSONInputArchive, cereal::JSONOutputArchive, JSONDocumentWrapper>();
+}
+
 TEST_SUITE_END();

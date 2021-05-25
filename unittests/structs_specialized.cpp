@@ -49,4 +49,9 @@ TEST_CASE("json_structs_specialized")
   test_structs_specialized<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+TEST_CASE("json_document_structs_specialized")
+{
+  test_structs_specialized<cereal::JSONInputArchive, cereal::JSONOutputArchive, JSONDocumentWrapper>();
+}
+
 TEST_SUITE_END();
