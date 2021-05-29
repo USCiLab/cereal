@@ -89,7 +89,7 @@ namespace cereal
   {
     public:
       //! Construct, loading from the provided stream
-      BinaryInputArchive(std::istream & stream) :
+      BinaryInputArchive(const std::istream & stream) :
         InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
       { }
@@ -106,7 +106,7 @@ namespace cereal
       }
 
     private:
-      std::istream & itsStream;
+      const std::istream & itsStream;
   };
 
   // ######################################################################
