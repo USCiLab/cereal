@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cereal</name>
+  <version>1.1.2</version>
+  <description>A C++11 library for serialization</description>
+
+  <maintainer email="todo@todo.com">todo</maintainer>
+
+  <author>todo</author>
+
+  <license>BSD-3</license>
+
+  <url type="repository">https://github.com/USCiLab/cereal</url>
+  <url type="bugtracker">http://github.com/USCiLab/cereal/issues</url>
+  <url type="website">http://uscilab.github.io/cereal/</url>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+
+</package>
