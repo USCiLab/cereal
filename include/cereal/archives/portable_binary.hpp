@@ -291,12 +291,20 @@ namespace cereal
     ar( t.value );
   }
 
-  //! Serializing SizeTags to portable binary
+  //! Saving size tag to portable binary
   template <class Archive, class T> inline
   CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
-  CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, SizeTag<T> & t )
+  CEREAL_SAVE_FUNCTION_NAME(Archive & ar, SizeTag<T> const & t )
   {
-    ar( t.size );
+      ar.template saveBinary<sizeof(t.size)>(std::addressof(t.size), sizeof(t.size));
+  }
+
+  //! Loading size tag from portable binary
+  template <class Archive, class T> inline
+  CEREAL_ARCHIVE_RESTRICT(PortableBinaryInputArchive, PortableBinaryOutputArchive)
+  CEREAL_LOAD_FUNCTION_NAME(Archive & ar, SizeTag<T> & t)
+  {
+      ar.template loadBinary<sizeof(t.size)>(std::addressof(t.size), sizeof(t.size));
   }
 
   //! Saving binary data to portable binary
