@@ -40,6 +40,11 @@ namespace cereal
   { RapidJSONException( const char * what_ ) : Exception( what_ ) {} };
 }
 
+// Avoid the bundled rapidjson to have name clashes with regular rapidjson
+#define CEREAL_RAPIDJSON_NAMESPACE cereal::rapidjson
+#define CEREAL_RAPIDJSON_NAMESPACE_BEGIN namespace cereal { namespace rapidjson {
+#define CEREAL_RAPIDJSON_NAMESPACE_END   } }
+
 // Inform rapidjson that assert will throw
 #ifndef CEREAL_RAPIDJSON_ASSERT_THROWS
 #define CEREAL_RAPIDJSON_ASSERT_THROWS
