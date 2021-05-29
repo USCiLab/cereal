@@ -442,5 +442,21 @@ int main()
     std::cout << (ull == std::numeric_limits<unsigned long long>::max()) << std::endl;
   }
 
+  // test parse error
+  std::stringstream errstr;
+  {
+    std::cout << "---------------------" << std::endl;
+    cereal::JSONInputArchive ar(errstr, true);
+    std::cout << ar.hasParseError() << std::endl;
+    if (ar)
+    {
+      std::cout << "fail" << std::endl;
+    }
+    else
+    {
+      std::cout << "success" << std::endl;
+    }
+  }
+
   return 0;
 }
