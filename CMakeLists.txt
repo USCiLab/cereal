@@ -110,11 +110,11 @@ endif()
 
 
 option(BUILD_TESTS "Build tests" ${CEREAL_MASTER_PROJECT})
+
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(unittests)
+    add_subdirectory(sandbox)
 endif()
-
-add_subdirectory(sandbox)
 
 add_subdirectory(doc)
