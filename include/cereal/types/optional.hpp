@@ -56,9 +56,8 @@ namespace cereal {
     if (nullopt) {
       optional = std::nullopt;
     } else {
-      T value;
-      ar(CEREAL_NVP_("data", value));
-      optional = std::move(value);
+      optional.emplace();
+      ar(CEREAL_NVP_("data", *optional));
     }
   }
 } // namespace cereal
