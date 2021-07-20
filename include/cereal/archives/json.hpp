@@ -564,18 +564,20 @@ namespace cereal
           @throws Exception if an expectedName is given and not found */
       inline void search()
       {
+        // store pointer to itsNextName locally and reset to nullptr in case search() throws
+        auto localNextName = itsNextName;
+        itsNextName = nullptr;
+
         // The name an NVP provided with setNextName()
-        if( itsNextName )
+        if( localNextName )
         {
           // The actual name of the current node
           auto const actualName = itsIteratorStack.back().name();
 
           // Do a search if we don't see a name coming up, or if the names don't match
-          if( !actualName || std::strcmp( itsNextName, actualName ) != 0 )
-            itsIteratorStack.back().search( itsNextName );
+          if( !actualName || std::strcmp( localNextName, actualName ) != 0 )
+            itsIteratorStack.back().search( localNextName );
         }
-
-        itsNextName = nullptr;
       }
 
     public:
