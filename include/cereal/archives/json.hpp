@@ -572,7 +572,11 @@ namespace cereal
 
           // Do a search if we don't see a name coming up, or if the names don't match
           if( !actualName || std::strcmp( itsNextName, actualName ) != 0 )
-            itsIteratorStack.back().search( itsNextName );
+          {
+            auto temp = itsNextName;
+            itsNextName = nullptr;
+            itsIteratorStack.back().search( temp );
+          }
         }
 
         itsNextName = nullptr;
