@@ -235,7 +235,9 @@ namespace cereal
         // insert into the XML
         auto node = itsXML.allocate_node( rapidxml::node_element, namePtr, nullptr, nameString.size() );
         itsNodes.top().node->append_node( node );
-        itsNodes.emplace( node );
+        const auto vectorChildNameString = itsNodes.top().vectorChildName;
+        itsNodes.emplace(node);
+        itsNodes.top().vectorChildName = vectorChildNameString;
       }
 
       //! Designates the most recently added node as finished
@@ -245,9 +247,10 @@ namespace cereal
       }
 
       //! Sets the name for the next node created with startNode
-      void setNextName( const char * name )
+      void setNextName(const char * name, const char * vectorChildName = nullptr)
       {
-        itsNodes.top().name = name;
+          itsNodes.top().name = name;
+          itsNodes.top().vectorChildName = vectorChildName;
       }
 
       //! Saves some data, encoded as a string, into the current top level node
@@ -327,12 +330,14 @@ namespace cereal
                   const char * nm = nullptr ) :
           node( n ),
           counter( 0 ),
-          name( nm )
+          name( nm ),
+          vectorChildName(nullptr)
         { }
 
         rapidxml::xml_node<> * node; //!< A pointer to this node
         size_t counter;              //!< The counter for naming child nodes
         const char * name;           //!< The name for the next child node
+        const char * vectorChildName;      //!< The name for the inner child node
 
         //! Gets the name for the next child node created from this node
         /*! The name will be automatically generated using the counter if
@@ -343,8 +348,12 @@ namespace cereal
           if( name )
           {
             auto n = name;
-            name = nullptr;
+            name = vectorChildName;
             return {n};
+          }
+          else if (vectorChildName)
+          {
+              return {vectorChildName};
           }
           else
             return "value" + std::to_string( counter++ ) + "\0";
@@ -890,7 +899,7 @@ namespace cereal
   template <class T> inline
   void CEREAL_SAVE_FUNCTION_NAME( XMLOutputArchive & ar, NameValuePair<T> const & t )
   {
-    ar.setNextName( t.name );
+    ar.setNextName( t.name, t.vectorChildName );
     ar( t.value );
   }
 
