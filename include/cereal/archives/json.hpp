@@ -141,7 +141,10 @@ namespace cereal
 
           //! Default options with no indentation
           static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
-
+#ifdef CEREAL_HAS_CPP17
+          //! Default options skipping std::nullopt entries
+          static Options SkipNullopt() { auto opts = Options::Default(); opts.itsSkipNullopt = true; return opts; }
+#endif
           //! The character to use for indenting
           enum class IndentChar : char
           {
@@ -155,19 +158,24 @@ namespace cereal
           /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
-                             (0 corresponds to no indentation) */
+                             (0 corresponds to no indentation)
+              @param skipNullopt Whether std::optional entries evaluating to
+                             std::nullopt should be eliminated in the JSON output */
           explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
-                            unsigned int indentLength = 4 ) :
+                            unsigned int indentLength = 4,
+                            bool skipNullopt = false) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
-            itsIndentLength( indentLength ) { }
+            itsIndentLength( indentLength ),
+            itsSkipNullopt( skipNullopt ) { }
 
         private:
           friend class JSONOutputArchive;
           int itsPrecision;
           char itsIndentChar;
           unsigned int itsIndentLength;
+          bool itsSkipNullopt;
       };
 
       //! Construct, outputting to the provided stream
@@ -178,7 +186,8 @@ namespace cereal
         OutputArchive<JSONOutputArchive>(this),
         itsWriteStream(stream),
         itsWriter(itsWriteStream),
-        itsNextName(nullptr)
+        itsNextName(nullptr),
+        itsSkipNullopt(options.itsSkipNullopt)
       {
         itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
         itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
@@ -194,6 +203,10 @@ namespace cereal
         else if (itsNodeStack.top() == NodeType::InArray)
           itsWriter.EndArray();
       }
+
+      //! Whether std::optional evaluating to std::nullopt should be saved.
+      //! If true, std::nullopt entries are skipped in the JSON output.
+      bool skipNullopt() const {return itsSkipNullopt;}
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
       /*! This will create a new node, optionally named, and insert a value that consists of
@@ -393,6 +406,7 @@ namespace cereal
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
+      bool itsSkipNullopt;                 //!< See Options::itsSkipNullopt
   }; // JSONOutputArchive
 
   // ######################################################################
@@ -448,11 +462,14 @@ namespace cereal
       //! @{
 
       //! Construct, reading from the provided stream
-      /*! @param stream The stream to read from */
-      JSONInputArchive(std::istream & stream) :
+      /*! @param stream The stream to read from
+          @param skippedNullopt Whether the JSON input has std::nullopt entries eliminated
+      */
+      JSONInputArchive(std::istream & stream, bool skippedNullopt = false) :
         InputArchive<JSONInputArchive>(this),
         itsNextName( nullptr ),
-        itsReadStream(stream)
+        itsReadStream(stream),
+        itsSkippedNullopt(skippedNullopt)
       {
         itsDocument.ParseStream<>(itsReadStream);
         if (itsDocument.IsArray())
@@ -462,6 +479,11 @@ namespace cereal
       }
 
       ~JSONInputArchive() CEREAL_NOEXCEPT = default;
+
+      //! Whether std::nullopt is skipped in the JSON input.
+      //! If true, allow missing std::optional entries in the JSON input and set such entries
+      //! std::nullopt
+      bool skippedNullopt() const {return itsSkippedNullopt;}
 
       //! Loads some binary data, encoded as a base64 string
       /*! This will automatically start and finish a node to load the data, and can be called directly by
@@ -748,6 +770,7 @@ namespace cereal
     private:
       const char * itsNextName;               //!< Next name set by NVP
       ReadStream itsReadStream;               //!< Rapidjson write stream
+      bool itsSkippedNullopt;                 //!< std::nullopt was skipped
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument; //!< Rapidjson document
   };
@@ -955,8 +978,14 @@ namespace cereal
   // ######################################################################
   //! Serializing NVP types to JSON
   template <class T> inline
-  typename std::enable_if<!IsOptional<T>::value>::type
-  CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  void saveImpl( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  {
+    ar.setNextName( t.name );
+    ar( t.value );
+  }
+
+  template <class T> inline
+  void loadImpl( JSONInputArchive & ar, NameValuePair<T> & t )
   {
     ar.setNextName( t.name );
     ar( t.value );
@@ -964,10 +993,16 @@ namespace cereal
 
   template <class T> inline
   typename std::enable_if<!IsOptional<T>::value>::type
+  CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
+  {
+    saveImpl(ar, t);
+  }
+
+  template <class T> inline
+  typename std::enable_if<!IsOptional<T>::value>::type
   CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
   {
-    ar.setNextName( t.name );
-    ar( t.value );
+    loadImpl(ar, t);
   }
 
 #ifdef CEREAL_HAS_CPP17
@@ -976,10 +1011,17 @@ namespace cereal
   std::enable_if_t<IsOptional<T>::value>
   CEREAL_SAVE_FUNCTION_NAME( JSONOutputArchive & ar, NameValuePair<T> const & t )
   {
-    if (t.value)
+    if (ar.skipNullopt())
     {
-      ar.setNextName( t.name );
-      ar( *t.value );
+      if (t.value != std::nullopt)
+      {
+        ar.setNextName( t.name );
+        ar( *t.value );
+      }
+    }
+    else
+    {
+      saveImpl(ar, t);
     }
   }
 
@@ -987,16 +1029,23 @@ namespace cereal
   std::enable_if_t<IsOptional<T>::value>
   CEREAL_LOAD_FUNCTION_NAME( JSONInputArchive & ar, NameValuePair<T> & t )
   {
-    if (ar.getNodeName() != nullptr && std::strcmp(ar.getNodeName(), t.name) == 0)
+    if (ar.skippedNullopt())
     {
-      ar.setNextName( t.name );
-      std::decay_t<decltype(*t.value)> val;
-      ar( val );
-      t.value = std::move(val);
+      if (ar.getNodeName() != nullptr && std::strcmp(ar.getNodeName(), t.name) == 0)
+      {
+        ar.setNextName( t.name );
+        std::decay_t<decltype(*t.value)> val;
+        ar( val );
+        t.value = std::move(val);
+      }
+      else
+      {
+        t.value = std::nullopt;
+      }
     }
     else
     {
-      t.value = std::nullopt;
+      loadImpl(ar, t);
     }
   }
 #endif
