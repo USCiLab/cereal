@@ -177,5 +177,5 @@ jobs:
         # Build cereal and test
         cmake --version
         mkdir build && cd build
-        cmake ${CMAKE_OPTIONS} .. && make -j4
+        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
         ctest . --output-on-failure
