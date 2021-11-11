@@ -88,25 +88,25 @@ jobs:
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-5.0'
             EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
-            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
             CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'clang++-5.0'
             EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
-            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
             CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'clang++-7.0'
-            EXTRA_APT_PACKAGES: 'clang-7.0 g++-7'
-            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-7 main'
+            EXTRA_APT_PACKAGES: 'clang-7 g++-7'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
             CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++-8'
             EXTRA_APT_PACKAGES: 'clang-8 g++-8 libc++-8-dev libc++abi-8-dev'
-            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-8 main'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main'
             CONTAINER: ubuntu:16.04
 
     steps:
@@ -121,6 +121,7 @@ jobs:
         EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
         LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
       run: |
+        set -ex
         # Add apt repositories
         apt-get update -y
         apt-get install software-properties-common wget python3-pip make apt-transport-https -y
