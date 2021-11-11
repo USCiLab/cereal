@@ -122,16 +122,16 @@ jobs:
         LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
       run: |
         # Add apt repositories
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        sudo add-apt-repository ppa:mhier/libboost-latest -y
-        wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        add-apt-repository ppa:mhier/libboost-latest -y
+        wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
         if [[ "${LLVM_APT_SOURCE}" != "" ]]; then
-          sudo add-apt-repository "${LLVM_APT_SOURCE}"
+          add-apt-repository "${LLVM_APT_SOURCE}"
         fi
-        sudo apt-get update -y
+        apt-get update -y
 
         # Install apt packages
-        sudo apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
+        apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
 
         # Set compiler and env variables
         export CXX=${COMPILER}
