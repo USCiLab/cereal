@@ -123,7 +123,7 @@ jobs:
       run: |
         # Add apt repositories
         apt-get update -y
-        apt-get install software-properties-common wget python3-pip make -y
+        apt-get install software-properties-common wget python3-pip make apt-transport-https -y
         add-apt-repository ppa:ubuntu-toolchain-r/test -y
         add-apt-repository ppa:mhier/libboost-latest -y
         wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
