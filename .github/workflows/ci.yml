@@ -47,7 +47,7 @@ jobs:
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'g++-8'
             EXTRA_APT_PACKAGES: 'g++-8'
-            CONTAINER: ubuntu:18.04
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.5'
@@ -123,7 +123,7 @@ jobs:
       run: |
         # Add apt repositories
         apt-get update -y
-        apt-get install software-properties-common wget cmake make -y
+        apt-get install software-properties-common wget python3-pip make -y
         add-apt-repository ppa:ubuntu-toolchain-r/test -y
         add-apt-repository ppa:mhier/libboost-latest -y
         wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
@@ -134,6 +134,7 @@ jobs:
 
         # Install apt packages
         apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
+        pip3 install cmake
 
         # Set compiler and env variables
         export CXX=${COMPILER}
