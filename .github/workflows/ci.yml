@@ -145,6 +145,9 @@ jobs:
         pushd "${DEPS_DIR}"
         JOBS=2
 
+        # boost was compiled with new ABI
+        export CXXFLAGS="${CXXFLAGS} -D_GLIBCXX_USE_CXX11_ABI=1"
+
         # Install the right version of libc++
         LLVM_INSTALL=${DEPS_DIR}/llvm/install
         # if in linux and compiler clang and llvm not installed
