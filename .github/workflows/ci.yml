@@ -4,6 +4,7 @@ on: [push, pull_request]
 jobs:
   test_cereal_linux:
     runs-on: ubuntu-latest
+    container: ${{ matrix.CONTAINER }}
     strategy:
       fail-fast: false
       matrix:
@@ -11,84 +12,102 @@ jobs:
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-4.7'
             EXTRA_APT_PACKAGES: 'g++-4.7'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-4.8'
             EXTRA_APT_PACKAGES: 'g++-4.8'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-4.9'
             EXTRA_APT_PACKAGES: 'g++-4.9'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-5'
             EXTRA_APT_PACKAGES: 'g++-5'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-5'
             EXTRA_APT_PACKAGES: 'gcc-multilib g++-5-multilib linux-libc-dev'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'g++-6'
             EXTRA_APT_PACKAGES: 'g++-6'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'g++-7'
             EXTRA_APT_PACKAGES: 'g++-7'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'g++-8'
             EXTRA_APT_PACKAGES: 'g++-8'
+            CONTAINER: ubuntu:18.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.5'
             EXTRA_APT_PACKAGES: 'clang-3.5'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.5 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.6'
             EXTRA_APT_PACKAGES: 'clang-3.6'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.6 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.7'
             EXTRA_APT_PACKAGES: 'clang-3.7'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.7 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.8'
             EXTRA_APT_PACKAGES: 'clang-3.8'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.8 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-3.9'
             EXTRA_APT_PACKAGES: 'clang-3.9'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.9 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-4.0'
             EXTRA_APT_PACKAGES: 'clang-4.0 g++-5'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
             COMPILER: 'clang++-5.0'
             EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'clang++-5.0'
             EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
             COMPILER: 'clang++-7.0'
             EXTRA_APT_PACKAGES: 'clang-7.0 g++-7'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-7 main'
+            CONTAINER: ubuntu:16.04
 
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++-8'
             EXTRA_APT_PACKAGES: 'clang-8 g++-8 libc++-8-dev libc++abi-8-dev'
             LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-8 main'
+            CONTAINER: ubuntu:16.04
 
     steps:
     - name: Checkout code
