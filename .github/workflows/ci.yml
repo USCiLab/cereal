@@ -122,6 +122,7 @@ jobs:
         LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
       run: |
         # Add apt repositories
+        apt-get install software-properties-common -y
         add-apt-repository ppa:ubuntu-toolchain-r/test -y
         add-apt-repository ppa:mhier/libboost-latest -y
         wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
