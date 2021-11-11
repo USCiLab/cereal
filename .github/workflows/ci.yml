@@ -123,7 +123,7 @@ jobs:
       run: |
         # Add apt repositories
         apt-get update -y
-        apt-get install software-properties-common wget -y
+        apt-get install software-properties-common wget cmake make -y
         add-apt-repository ppa:ubuntu-toolchain-r/test -y
         add-apt-repository ppa:mhier/libboost-latest -y
         wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
