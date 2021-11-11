@@ -9,17 +9,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'g++-4.7'
             EXTRA_APT_PACKAGES: 'g++-4.7'
             CONTAINER: ubuntu:16.04
 
-          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'g++-4.8'
             EXTRA_APT_PACKAGES: 'g++-4.8'
             CONTAINER: ubuntu:16.04
 
-          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'g++-4.9'
             EXTRA_APT_PACKAGES: 'g++-4.9'
             CONTAINER: ubuntu:16.04
@@ -144,9 +144,6 @@ jobs:
         mkdir -p "${DEPS_DIR}"
         pushd "${DEPS_DIR}"
         JOBS=2
-
-        # boost was compiled with new ABI
-        export CXXFLAGS="${CXXFLAGS} -D_GLIBCXX_USE_CXX11_ABI=1"
 
         # Install the right version of libc++
         LLVM_INSTALL=${DEPS_DIR}/llvm/install
