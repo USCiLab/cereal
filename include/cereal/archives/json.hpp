@@ -658,6 +658,12 @@ namespace cereal
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
       void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
+      
+      //! Loads a value from the current node - string long long - for some plaforms int64_t!=long long
+      template <typename T,
+      std::enable_if_t<!std::is_same<T, int64_t>::value && std::is_same<T, long long>::value,
+                       bool> = true>
+      void loadValue(T & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
@@ -708,13 +714,14 @@ namespace cereal
       void stringToNumber( std::string const & str, long double & val ) { val = std::stold( str ); }
 
     public:
-      //! Loads a value from the current node - long double and long long overloads
+      //! Loads a value from the current node - long double overloads
       template <class T, traits::EnableIf<std::is_arithmetic<T>::value,
                                           !std::is_same<T, long>::value,
                                           !std::is_same<T, unsigned long>::value,
                                           !std::is_same<T, std::int64_t>::value,
                                           !std::is_same<T, std::uint64_t>::value,
-                                          (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long))> = traits::sfinae>
+                                          !std::is_same<T, long long>::value,
+                                          (sizeof(T) >= sizeof(long double))> = traits::sfinae>
       inline void loadValue(T & val)
       {
         std::string encoded;
