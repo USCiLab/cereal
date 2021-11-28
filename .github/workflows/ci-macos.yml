@@ -1,0 +1,33 @@
+name: Test cereal
+on: [push, pull_request]
+
+jobs:
+  test_cereal_macos:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF'
+            COMPILER: 'clang++'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: build and test
+      shell: bash
+      env:
+        CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
+        COMPILER: ${{ matrix.COMPILER }}
+      run: |
+        set -ex
+        # Set compiler and env variables
+        export CXX=${COMPILER}
+        ${CXX} --version
+
+        # Build cereal and test
+        cmake --version
+        mkdir build && cd build
+        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
+        ctest . --output-on-failure
