@@ -10,10 +10,23 @@ jobs:
         include:
           - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
+            XCODE_VERSION: 10
+
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'clang++'
+            XCODE_VERSION: 11
+
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'clang++'
+            XCODE_VERSION: 12
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.XCODE_VERSION }}
 
     - name: build and test
       shell: bash
