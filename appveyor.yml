@@ -24,11 +24,17 @@ environment:
       BOOST_ROOT: C:\Libraries\boost_1_66_0
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       VS_VERSION_MAJOR: 16
-      BOOST_ROOT: C:\Libraries\boost_1_71_0
+      BOOST_ROOT: C:\Libraries\boost_1_73_0
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      VS_VERSION_MAJOR: 17
+      BOOST_ROOT: C:\Libraries\boost_1_73_0
 
 matrix:
   exclude:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      platform: Win32
+    
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       platform: Win32
 
 platform:
