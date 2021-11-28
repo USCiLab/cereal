@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF'
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
 
     steps:
