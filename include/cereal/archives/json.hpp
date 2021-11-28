@@ -261,6 +261,13 @@ namespace cereal
       //! Saves a nullptr to the current node
       void saveValue(std::nullptr_t)        { itsWriter.Null();                                                          }
 
+      template <class T> inline
+      typename std::enable_if<!std::is_same<T, int64_t>::value && std::is_same<T, long long>::value, void>::type
+      saveValue(T val)     { itsWriter.Int64(val); }
+      template <class T> inline
+      typename std::enable_if<!std::is_same<T, uint64_t>::value && std::is_same<T, unsigned long long>::value, void>::type
+      saveValue(T val)     { itsWriter.Uint64(val); }
+
     private:
       // Some compilers/OS have difficulty disambiguating the above for various flavors of longs, so we provide
       // special overloads to handle these cases.
@@ -310,6 +317,8 @@ namespace cereal
                                           !std::is_same<T, unsigned long>::value,
                                           !std::is_same<T, std::int64_t>::value,
                                           !std::is_same<T, std::uint64_t>::value,
+                                          !std::is_same<T, long long>::value,
+                                          !std::is_same<T, unsigned long long>::value,
                                           (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long))> = traits::sfinae> inline
       void saveValue(T const & t)
       {
@@ -659,6 +668,12 @@ namespace cereal
       //! Loads a nullptr from the current node
       void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
+      template <class T> inline
+      typename std::enable_if<!std::is_same<T, int64_t>::value && std::is_same<T, long long>::value, void>::type
+      loadValue(T & val)     { search(); val = itsIteratorStack.back().value().GetInt64(); ++itsIteratorStack.back(); }
+      template <class T> inline
+      typename std::enable_if<!std::is_same<T, uint64_t>::value && std::is_same<T, unsigned long long>::value, void>::type
+      loadValue(T & val)     { search(); val = itsIteratorStack.back().value().GetUint64(); ++itsIteratorStack.back(); }
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
       #ifndef _MSC_VER
@@ -714,6 +729,8 @@ namespace cereal
                                           !std::is_same<T, unsigned long>::value,
                                           !std::is_same<T, std::int64_t>::value,
                                           !std::is_same<T, std::uint64_t>::value,
+                                          !std::is_same<T, long long>::value,
+                                          !std::is_same<T, unsigned long long>::value,
                                           (sizeof(T) >= sizeof(long double) || sizeof(T) >= sizeof(long long))> = traits::sfinae>
       inline void loadValue(T & val)
       {

@@ -49,4 +49,14 @@ TEST_CASE("json_pod")
   test_pod<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+TEST_CASE("xml_pod_serialization")
+{
+  test_pod_serialization<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
+
+TEST_CASE("json_pod_serialization")
+{
+  test_pod_serialization<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
 TEST_SUITE_END();
