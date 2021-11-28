@@ -23,6 +23,8 @@ if not defined VS_VERSION_YEAR (
         set VS_VERSION_YEAR=2017
     ) else if "%VS_VERSION_MAJOR%" == "16" (
         set VS_VERSION_YEAR=2019
+    ) else if "%VS_VERSION_MAJOR%" == "17" (
+        set VS_VERSION_YEAR=2022
     ) else (
         @echo Cannot use Visual Studio version %VS_VERSION_MAJOR%
         exit /b 1
