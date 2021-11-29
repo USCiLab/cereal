@@ -23,6 +23,8 @@ if not defined VS_VERSION_YEAR (
         set VS_VERSION_YEAR=2017
     ) else if "%VS_VERSION_MAJOR%" == "16" (
         set VS_VERSION_YEAR=2019
+    ) else if "%VS_VERSION_MAJOR%" == "17" (
+        set VS_VERSION_YEAR=2022
     ) else (
         @echo Cannot use Visual Studio version %VS_VERSION_MAJOR%
         exit /b 1
@@ -39,10 +41,8 @@ if not defined CONFIGURATION (
 @rem PLATFORM is (one of the entries) defined in appveyor.yml
 if "%PLATFORM%"=="x64" (
     set BIT_COUNT=64
-    set CMAKE_GENERATOR_NAME=%CMAKE_GENERATOR_PREFIX% Win64
 ) else (
     set BIT_COUNT=32
-    set CMAKE_GENERATOR_NAME=%CMAKE_GENERATOR_PREFIX%
 )
 
 set BOOST_LIBRARYDIR=%BOOST_ROOT%\lib%BIT_COUNT%-msvc-%VS_VERSION_MAJOR%.0
@@ -72,7 +72,7 @@ if "%PLATFORM%" == "x64" (
     rmdir /s /q CMakeFiles
 )
 
-cmake -G "%CMAKE_GENERATOR_NAME%" -DBOOST_ROOT=%BOOST_ROOT% -DBOOST_LIBRARYDIR=%BOOST_LIBRARYDIR% ..
+cmake -G "%CMAKE_GENERATOR_PREFIX%" -A %PLATFORM% -DBOOST_ROOT=%BOOST_ROOT% -DBOOST_LIBRARYDIR=%BOOST_LIBRARYDIR% ..
 @rem left the actual build for later - AppVeyor enables parallel jobs in a much cleaner way than msbuild
 
 :done
