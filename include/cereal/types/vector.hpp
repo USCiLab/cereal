@@ -100,7 +100,7 @@ namespace cereal
     ar( make_size_tag( size ) );
 
     vector.resize( static_cast<std::size_t>( size ) );
-    for(auto v : vector)
+    for(auto && v : vector)
     {
       bool b;
       ar( b );
