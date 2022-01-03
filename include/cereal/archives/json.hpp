@@ -118,6 +118,8 @@ namespace cereal
       //! A class containing various advanced options for the JSON archive
       class Options
       {
+
+
         public:
           //! Default options
           static Options Default(){ return Options(); }
@@ -134,18 +136,30 @@ namespace cereal
             carriage_return = '\r'
           };
 
+ 		  struct params
+		  {
+		  	std::size_t precision = JSONWriter::kDefaultMaxDecimalPlaces;
+		  	IndentChar indentChar = IndentChar::space;
+			std::size_t indentLength = 4;
+		  };
+
+
           //! Specify specific options for the JSONOutputArchive
           /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
+           explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4 ) :
             itsPrecision( precision ),
             itsIndentChar( static_cast<char>(indentChar) ),
             itsIndentLength( indentLength ) { }
 
+           Options(params p) :
+            itsPrecision( p.precision ),
+            itsIndentChar( static_cast<char>(p.indentChar) ),
+            itsIndentLength( p.indentLength ) { }
         private:
           friend class JSONOutputArchive;
           int itsPrecision;
