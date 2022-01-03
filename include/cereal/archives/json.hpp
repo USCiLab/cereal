@@ -118,8 +118,6 @@ namespace cereal
       //! A class containing various advanced options for the JSON archive
       class Options
       {
-
-
         public:
           //! Default options
           static Options Default(){ return Options(); }
