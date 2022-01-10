@@ -1,4 +1,4 @@
-name: Test cereal
+name: cereal mac ci
 on: [push, pull_request]
 
 jobs:
@@ -17,6 +17,7 @@ jobs:
             COMPILER: 'clang++'
             XCODE_VERSION: 12
             NAME: macos-latest-clang-xcode12
+    name: ${{ matrix.name }}
 
     steps:
     - name: Checkout code

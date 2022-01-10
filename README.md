@@ -77,8 +77,9 @@ cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-
 
 ## cereal build status
 
-* master : [![Build Status](https://travis-ci.com/USCiLab/cereal.svg?branch=master)](https://travis-ci.com/USCiLab/cereal)
-[![Build status](https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true)](https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master)
+* [![Linux build status](https://github.com/USCiLab/cereal/actions/workflows/ci.yml/badge.svg)](https://github.com/USCiLab/cereal/actions/workflows/ci.yml)
+* [![Mac build status](https://github.com/USCiLab/cereal/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/USCiLab/cereal/actions/workflows/ci-macos.yml)
+* [![Windows build status](https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true)](https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master)
 
 ---
 

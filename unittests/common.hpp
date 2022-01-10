@@ -56,6 +56,22 @@
 #include <limits>
 #include <random>
 
+// gcc 4.7 workarounds for doctest
+#if defined(__GNUC__) && !defined(__clang__)
+  #if __GNUC__ == 4 && __GNUC_MINOR__ < 8
+    #define DOCTEST_THREAD_LOCAL
+    #define DOCTEST_NORETURN
+    #pragma GCC diagnostic ignored "-Wreturn-type"
+    static bool cereal_doctest_debugger(){ return false; }
+    #define DOCTEST_IS_DEBUGGER_ACTIVE cereal_doctest_debugger
+  #endif // GNU version check
+#endif // GCC but not clang
+
+// MSVC 2013 workaround for doctest
+#if defined(_MSC_VER) && _MSC_VER < 1900
+__pragma(warning(disable : 4715))
+#endif // _MSC_VER
+
 #include "doctest.h"
 
 namespace std
