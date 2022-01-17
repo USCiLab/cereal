@@ -92,15 +92,26 @@
                 <li><a href="{{ site.baseurl }}/assets/doxygen/index.html">Doxygen Docs</a></li>
                 <li><a href="{{ site.baseurl }}/assets/coverage/index.html">Coverage</a></li>
                 <li><a href="https://github.com/USCiLab/cereal">Github</a></li>
-                <li>
-                  <a href="https://travis-ci.com/USCiLab/cereal">
-                    <img src="https://travis-ci.com/USCiLab/cereal.svg?branch=master"/>
-                  </a>
-                </li>
-                <li>
-                  <a href="https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master">
-                    <img src="https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true"/>
-                  </a>
+
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> CI Status <b class="caret"></b> </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="https://github.com/USCilab/cereal/actions/workflows/ci.yml">
+                      <img src="https://github.com/USCilab/cereal/actions/workflows/ci.yml/badge.svg"/>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/USCilab/cereal/actions/workflows/ci-macos.yml">
+                      <img src="https://github.com/USCilab/cereal/actions/workflows/ci-macos.yml/badge.svg"/>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master">
+                      <img src="https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true"/>
+                    </a>
+                  </li>
+                </ul>
                 </li>
               </ul>
 
