@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6...3.15)
 
-project(cereal LANGUAGES CXX VERSION 1.3.0)
+project(cereal LANGUAGES CXX VERSION 1.3.1)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
