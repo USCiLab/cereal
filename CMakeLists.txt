@@ -13,6 +13,8 @@ endif()
 
 option(SKIP_PERFORMANCE_COMPARISON "Skip building performance comparison (requires boost)" OFF)
 
+option(ONLY_TESTS "Don't build docs, or sandbox" OFF)
+
 # TODO: should not be needed! CK
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
     option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
@@ -116,6 +118,8 @@ if(BUILD_TESTS)
     add_subdirectory(unittests)
 endif()
 
-add_subdirectory(sandbox)
+if(NOT ONLY_TEST)
+	add_subdirectory(sandbox)
+endif(NOT ONLY_TEST)
 
 add_subdirectory(doc)
