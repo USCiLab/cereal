@@ -6,8 +6,10 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
 endif()
 
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-m32" COMPILER_HAVE_M32)
 
-if(APPLE)
+if(APPLE OR NOT COMPILER_HAVE_M32)
     option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
 endif()
 
