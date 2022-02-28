@@ -28,6 +28,8 @@
 *.pdb
 *.idb
 *\build_*
+.vs/
+CMakeSettings.json
 
 # misc files mostly used for testing
 out.txt
