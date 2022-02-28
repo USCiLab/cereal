@@ -11,7 +11,9 @@ if(APPLE)
     option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
 endif()
 
-option(SKIP_PERFORMANCE_COMPARISON "Skip building performance comparison (requires boost)" OFF)
+option(BUILD_DOC "Build documentation" ON)
+option(BUILD_SANDBOX "Build sandbox examples" ON)
+option(SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
 
 # TODO: should not be needed! CK
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
@@ -116,6 +118,12 @@ if(BUILD_TESTS)
     add_subdirectory(unittests)
 endif()
 
-add_subdirectory(sandbox)
 
-add_subdirectory(doc)
+if(BUILD_SANDBOX)
+    add_subdirectory(sandbox)
+endif()
+
+
+if(BUILD_DOC)
+    add_subdirectory(doc)
+endif()
