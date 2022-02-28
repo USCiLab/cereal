@@ -121,13 +121,13 @@ virtual std::shared_ptr&lt; void &gt;&#160;</td><td class="memItemRight" valign=
 <p>This is necessary so that cereal can properly cast between polymorphic types even though void pointers are used, which normally have no type information. Runtime type information is used instead to index a compile-time made mapping that can perform the proper cast. In the case of multiple levels of inheritance, cereal will attempt to find the shortest path by using registered relationships to perform the cast.</p>
 <p>This class will be allocated as a <a class="el" href="classcereal_1_1detail_1_1StaticObject.html" title="A static, pre-execution object.">StaticObject</a> and only referenced by pointer, allowing a templated derived version of it to define strongly typed functions that cast between registered base and derived types. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/shane/workspace/cereal/include/cereal/details/<a class="el" href="polymorphic__impl_8hpp_source.html">polymorphic_impl.hpp</a></li>
+<li><a class="el" href="polymorphic__impl_8hpp_source.html">polymorphic_impl.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.3.1-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jan 16 2022 21:11:12 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 27 2022 19:46:46 for cereal by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
