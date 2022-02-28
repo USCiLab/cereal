@@ -286,7 +286,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
-      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using AlignedStorage = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -296,13 +296,13 @@ namespace cereal
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
       using NonConstT = typename std::remove_const<T>::type;
-      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new ST()),
+      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new AlignedStorage()),
           [=]( NonConstT * t )
           {
             if( *valid )
               t->~T();
 
-            delete reinterpret_cast<ST *>( t );
+            delete reinterpret_cast<AlignedStorage*>( t );
           } );
 
       // Register the pointer
@@ -377,11 +377,11 @@ namespace cereal
       using NonConstT = typename std::remove_const<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
+      using AlignedStorage = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
 
-      // Allocate storage - note the ST type so that deleter is correct if
+      // Allocate storage - note the AlignedStorage type so that deleter is correct if
       //                    an exception is thrown before we are initialized
-      std::unique_ptr<ST> stPtr( new ST() );
+      std::unique_ptr<AlignedStorage> stPtr( new AlignedStorage() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
       memory_detail::LoadAndConstructLoadWrapper<Archive, NonConstT> loadWrapper( reinterpret_cast<NonConstT *>( stPtr.get() ) );
