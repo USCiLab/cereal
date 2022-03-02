@@ -49,4 +49,9 @@ TEST_CASE("json_pod")
   test_pod<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
+TEST_CASE("json_document_pod")
+{
+  test_pod<cereal::JSONInputArchive, cereal::JSONOutputArchive, JSONDocumentWrapper>();
+}
+
 TEST_SUITE_END();

@@ -366,7 +366,7 @@ namespace cereal
 CEREAL_REGISTER_TYPE(SpecializedMSplitPolymorphic)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(BogusBasePolymorphic, SpecializedMSplitPolymorphic)
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, class IStream = std::istringstream> inline
 void test_structs_specialized()
 {
   std::random_device rd;
@@ -428,7 +428,7 @@ void test_structs_specialized()
     decltype(o_esplm) i_esplm;
     decltype(o_esplvm) i_esplvm;
 
-    std::istringstream is(os.str());
+    IStream is(os.str());
     {
       IArchive iar(is);
 

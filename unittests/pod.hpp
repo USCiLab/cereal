@@ -28,7 +28,7 @@
 #define CEREAL_TEST_POD_H_
 #include "common.hpp"
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, class IStream = std::istringstream> inline
 void test_pod()
 {
   std::random_device rd;
@@ -99,7 +99,7 @@ void test_pod()
     long long i_long_long           = 0;
     unsigned long long i_ulong_long = 0;
 
-    std::istringstream is(os.str());
+    IStream is(os.str());
     {
       IArchive iar(is);
       iar(i_bool);

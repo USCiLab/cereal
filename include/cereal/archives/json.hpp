@@ -434,14 +434,21 @@ namespace cereal
       /*! @param stream The stream to read from */
       JSONInputArchive(std::istream & stream) :
         InputArchive<JSONInputArchive>(this),
-        itsNextName( nullptr ),
-        itsReadStream(stream)
+        itsNextName( nullptr )
       {
+        ReadStream itsReadStream(stream);
         itsDocument.ParseStream<>(itsReadStream);
-        if (itsDocument.IsArray())
-          itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
-        else
-          itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
+        initNodes();
+      }
+
+      //! Construct, using the provided JSON document
+      /*! @param doc The JSON document to use */
+      JSONInputArchive(CEREAL_RAPIDJSON_NAMESPACE::Document doc) :
+          InputArchive<JSONInputArchive>(this),
+          itsNextName( nullptr ),
+          itsDocument(std::move(doc))
+      {
+        initNodes();
       }
 
       ~JSONInputArchive() CEREAL_NOEXCEPT = default;
@@ -578,6 +585,15 @@ namespace cereal
           if( !actualName || std::strcmp( localNextName, actualName ) != 0 )
             itsIteratorStack.back().search( localNextName );
         }
+      }
+
+      //! Starts a root node, going into its proper iterator
+      void initNodes()
+      {
+        if (itsDocument.IsArray())
+          itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
+        else
+          itsIteratorStack.emplace_back(itsDocument.MemberBegin(), itsDocument.MemberEnd());
       }
 
     public:
@@ -735,7 +751,6 @@ namespace cereal
 
     private:
       const char * itsNextName;               //!< Next name set by NVP
-      ReadStream itsReadStream;               //!< Rapidjson write stream
       std::vector<Iterator> itsIteratorStack; //!< 'Stack' of rapidJSON iterators
       CEREAL_RAPIDJSON_NAMESPACE::Document itsDocument; //!< Rapidjson document
   };

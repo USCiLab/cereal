@@ -28,7 +28,7 @@
 #define CEREAL_TEST_MAP_H_
 #include "common.hpp"
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, class IStream = std::istringstream> inline
 void test_map()
 {
   std::random_device rd;
@@ -83,7 +83,7 @@ void test_map()
     std::map<uint32_t, StructExternalSerialize> i_esermap;
     std::map<int8_t, StructExternalSplit>       i_esplmap;
 
-    std::istringstream is(os.str());
+    IStream is(os.str());
     {
       IArchive iar(is);
 
@@ -112,7 +112,7 @@ void test_map()
   }
 }
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, class IStream = std::istringstream> inline
 void test_map_memory()
 {
   std::random_device rd;
@@ -145,7 +145,7 @@ void test_map_memory()
     decltype( o_uniqueptrMap ) i_uniqueptrMap;
     decltype( o_sharedptrMap ) i_sharedptrMap;
 
-    std::istringstream is(os.str());
+    IStream is(os.str());
     {
       IArchive iar(is);
 

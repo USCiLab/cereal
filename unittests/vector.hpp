@@ -28,7 +28,7 @@
 #define CEREAL_TEST_VECTOR_H_
 #include "common.hpp"
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, class IStream = std::istringstream> inline
 void test_vector()
 {
   std::random_device rd;
@@ -79,7 +79,7 @@ void test_vector()
     std::vector<StructExternalSerialize> i_eservector;
     std::vector<StructExternalSplit>     i_esplvector;
 
-    std::istringstream is(os.str());
+    IStream is(os.str());
     {
       IArchive iar(is);
 
