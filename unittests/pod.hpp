@@ -149,7 +149,6 @@ void test_pod_serialization(std::mt19937& gen)
 {
   T1 const o_t1 = random_value<T1>(gen);
   T2 const o_t2 = o_t1;
-  INFO(std::string("typeid(int).name(): ") + typeid(T2).name());
 
   std::ostringstream os1;
   {
