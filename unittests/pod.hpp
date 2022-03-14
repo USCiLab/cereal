@@ -144,4 +144,72 @@ void test_pod()
   }
 }
 
+template <class IArchive, class OArchive, class T1, class T2>
+void test_pod_serialization(std::mt19937& gen)
+{
+  T1 const o_t1 = random_value<T1>(gen);
+  T2 const o_t2 = o_t1;
+
+  std::ostringstream os1;
+  {
+    OArchive oar(os1);
+    oar(o_t1);
+  }
+
+  std::ostringstream os2;
+  {
+    OArchive oar(os2);
+    oar(o_t2);
+  }
+
+  CHECK_EQ(os1.str(), os2.str());
+
+  T1 i_t1 = T1();
+  T2 i_t2 = T2();
+  CHECK_EQ(os1.str(), os2.str());
+  std::istringstream is1(os1.str());
+  {
+    IArchive iar(is1);
+    iar(i_t1);
+  }
+  CHECK_EQ(o_t1, i_t1);
+
+  std::istringstream is2(os2.str());
+  {
+    IArchive iar(is2);
+    iar(i_t2);
+  }
+  CHECK_EQ(o_t2, i_t2);
+}
+
+template <class IArchive, class OArchive>
+void test_pod_serialization()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  for (size_t i = 0; i < 100; ++i) {
+    test_pod_serialization<IArchive, OArchive, int8_t, int16_t>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, uint16_t>(gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, int32_t>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, uint32_t>(gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, int64_t>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, uint64_t>(gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, long>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, unsigned long>(gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, long long>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, unsigned long long>(
+        gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, int>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, unsigned int>(gen);
+
+    test_pod_serialization<IArchive, OArchive, int8_t, short>(gen);
+    test_pod_serialization<IArchive, OArchive, uint8_t, unsigned short>(gen);
+  }
+}
+
 #endif // CEREAL_TEST_POD_H_
