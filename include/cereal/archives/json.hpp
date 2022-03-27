@@ -188,7 +188,7 @@ namespace cereal
 
         auto base64string = base64::encode( reinterpret_cast<const unsigned char *>( data ), size );
         saveValue( base64string );
-      };
+      }
 
       //! @}
       /*! @name Internal Functionality
@@ -474,7 +474,7 @@ namespace cereal
 
         std::memcpy( data, decoded.data(), decoded.size() );
         itsNextName = nullptr;
-      };
+      }
 
     private:
       //! @}
