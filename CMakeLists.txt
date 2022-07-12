@@ -91,10 +91,11 @@ if(CEREAL_INSTALL)
         ${configFile}
         INSTALL_DESTINATION ${configInstallDestination}
     )
-    write_basic_package_version_file(
-        ${versionFile}
-        COMPATIBILITY SameMajorVersion
-    )
+    if(${CMAKE_VERSION} VERSION_GREATER 3.13)
+        write_basic_package_version_file("${versionFile}" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
+    else()
+        write_basic_package_version_file("${versionFile}" COMPATIBILITY SameMajorVersion)
+    endif()
 
     install(FILES ${configFile} ${versionFile} DESTINATION ${configInstallDestination})
     install(
