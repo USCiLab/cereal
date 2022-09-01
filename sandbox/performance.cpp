@@ -258,7 +258,7 @@ random_value(std::mt19937 & gen)
 {
   std::string s(std::uniform_int_distribution<int>(3, 30)(gen), ' ');
   for(char & c : s)
-    c = std::uniform_int_distribution<char>(' ', '~')(gen);
+    c = static_cast<char>( std::uniform_int_distribution<int>(' ', '~')(gen) );
   return s;
 }
 
@@ -277,7 +277,7 @@ std::string random_binary_string(std::mt19937 & gen)
 {
   std::string s(N, ' ');
   for(auto & c : s )
-    c = std::uniform_int_distribution<char>('0', '1')(gen);
+    c = static_cast<char>( std::uniform_int_distribution<int>( '0', '1' )(gen) );
   return s;
 }
 
