@@ -54,7 +54,7 @@ namespace cereal
       //! Construct, outputting to the provided stream
       /*! @param stream The stream to output to.  Can be a stringstream, a file stream, or
                         even cout! */
-      BinaryOutputArchive(std::ostream & stream) :
+      BinaryOutputArchive(std::ostream & stream) CEREAL_NOEXCEPT :
         OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
       { }
@@ -89,7 +89,7 @@ namespace cereal
   {
     public:
       //! Construct, loading from the provided stream
-      BinaryInputArchive(std::istream & stream) :
+      BinaryInputArchive(std::istream & stream) CEREAL_NOEXCEPT :
         InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
       { }
