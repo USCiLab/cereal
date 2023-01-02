@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.6...3.15)
 
 project(cereal LANGUAGES CXX VERSION 1.3.2)
 
+set(CEREAL_MASTER_PROJECT OFF)
+set(CEREAL_NOT_MASTER_PROJECT ON)
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
+    set(CEREAL_NOT_MASTER_PROJECT OFF)
 endif()
 
 
@@ -11,9 +14,9 @@ if(APPLE)
     option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
 endif()
 
-option(CEREAL_BUILD_DOC "Build documentation" ON)
-option(CEREAL_BUILD_SANDBOX "Build sandbox examples" ON)
-option(CEREAL_SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
+option(CEREAL_BUILD_DOC "Build documentation" ${CEREAL_MASTER_PROJECT})
+option(CEREAL_BUILD_SANDBOX "Build sandbox examples" ${CEREAL_MASTER_PROJECT})
+option(CEREAL_SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" ${CEREAL_NOT_MASTER_PROJECT})
 
 # TODO: should not be needed! CK
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
