@@ -11,22 +11,22 @@ if(APPLE)
     option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
 endif()
 
-option(BUILD_DOC "Build documentation" ON)
-option(BUILD_SANDBOX "Build sandbox examples" ON)
-option(SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
+option(CEREAL_BUILD_DOC "Build documentation" ON)
+option(CEREAL_BUILD_SANDBOX "Build sandbox examples" ON)
+option(CEREAL_SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
 
 # TODO: should not be needed! CK
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
-    option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
+    option(CEREAL_JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
 endif()
 
 
 set(CEREAL_THREAD_LIBS)
 if(UNIX)
-    option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
-    if(THREAD_SAFE)
+    option(CEREAL_THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
+    if(CEREAL_THREAD_SAFE)
         message(STATUS "Use mutexes")
-        add_definitions(-DCEREAL_THREAD_SAFE=1)
+        add_definitions(-DCEREAL_CEREAL_THREAD_SAFE=1)
         set(CEREAL_THREAD_LIBS pthread)
     endif()
 endif()
@@ -36,13 +36,13 @@ if(MSVC)
     add_compile_options(/bigobj /W3 /WX)
 else()
     add_compile_options(-Wall -Wextra -pedantic -Wshadow -Wold-style-cast)
-    option(WITH_WERROR "Compile with '-Werror' C++ compiler flag" ON)
-    if(WITH_WERROR)
+    option(CEREAL_WITH_WERROR "Compile with '-Werror' C++ compiler flag" ON)
+    if(CEREAL_WITH_WERROR)
         add_compile_options(-Werror)
     endif()
 
-    option(CLANG_USE_LIBCPP "Use libc++ for clang compilation" OFF)
-    if(APPLE OR CLANG_USE_LIBCPP)
+    option(CEREAL_CLANG_USE_LIBCPP "Use libc++ for clang compilation" OFF)
+    if(APPLE OR CEREAL_CLANG_USE_LIBCPP)
         message(STATUS "Use libc++")
         add_compile_options(-stdlib=libc++)
         # TODO: use add_link_options(-stdlib=libc++ -lc++abi") bud this needs cmake 3.13! CK
@@ -101,29 +101,29 @@ if(CEREAL_INSTALL)
 endif()
 
 
-if(JUST_INSTALL_CEREAL)
+if(CEREAL_JUST_INSTALL_CEREAL)
     return()
 endif()
 
 
-if(NOT SKIP_PERFORMANCE_COMPARISON)
+if(NOT CEREAL_SKIP_PERFORMANCE_COMPARISON)
     # Boost serialization for performance sandbox
     find_package(Boost REQUIRED COMPONENTS serialization)
 endif()
 
 
-option(BUILD_TESTS "Build tests" ${CEREAL_MASTER_PROJECT})
-if(BUILD_TESTS)
+option(CEREAL_BUILD_TESTS "Build tests" ${CEREAL_MASTER_PROJECT})
+if(CEREAL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(unittests)
 endif()
 
 
-if(BUILD_SANDBOX)
+if(CEREAL_BUILD_SANDBOX)
     add_subdirectory(sandbox)
 endif()
 
 
-if(BUILD_DOC)
+if(CEREAL_BUILD_DOC)
     add_subdirectory(doc)
 endif()
