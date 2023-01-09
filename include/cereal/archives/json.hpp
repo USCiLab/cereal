@@ -426,7 +426,12 @@ namespace cereal
   {
     private:
       using ReadStream = CEREAL_RAPIDJSON_NAMESPACE::IStreamWrapper;
+#ifndef __freertos__
       typedef CEREAL_RAPIDJSON_NAMESPACE::GenericValue<CEREAL_RAPIDJSON_NAMESPACE::UTF8<>> JSONValue;
+#else
+      typedef CEREAL_RAPIDJSON_NAMESPACE::GenericValue<CEREAL_RAPIDJSON_NAMESPACE::UTF8<>,
+                                                       CEREAL_RAPIDJSON_NAMESPACE::MemoryPoolAllocator<CEREAL_RAPIDJSON_NAMESPACE::FrtosAllocator>> JSONValue;
+#endif
       typedef JSONValue::ConstMemberIterator MemberIterator;
       typedef JSONValue::ConstValueIterator ValueIterator;
       typedef CEREAL_RAPIDJSON_NAMESPACE::Document::GenericValue GenericValue;
