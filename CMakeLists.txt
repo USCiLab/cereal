@@ -6,9 +6,13 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
 endif()
 
-
-if(APPLE)
-    option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
+option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
+include(CheckCXXCompilerFlag)
+set(CMAKE_REQUIRED_FLAGS "-m32")
+check_cxx_compiler_flag("-m32" COMPILER_SUPPORT_M32)
+unset(CMAKE_REQUIRED_FLAGS)
+if(NOT COMPILER_SUPPORT_M32)
+    set(SKIP_PORTABILITY_TEST ON CACHE BOOL "Skip portability (32 bit) tests" FORCE)
 endif()
 
 option(BUILD_DOC "Build documentation" ON)
