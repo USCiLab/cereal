@@ -1,6 +1,8 @@
 #ifndef FREERTOS_ALLOCATOR_H_
 #define FREERTOS_ALLOCATOR_H_
 
+#include "FreeRTOS.h"
+
 CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 
 class FrtosAllocator
