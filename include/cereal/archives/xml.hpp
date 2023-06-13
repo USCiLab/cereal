@@ -136,7 +136,7 @@ namespace cereal
               */
           //! @{
 
-          //! Sets the precision used for floaing point numbers
+          //! Sets the precision used for floating point numbers
           Options & precision( int value ){ itsPrecision = value; return * this; }
           //! Whether to indent each line of XML
           Options & indent( bool enable ){ itsIndent = enable; return *this; }

@@ -64,7 +64,7 @@
   #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION static void unused() { (void)b; }
 #endif
 
-//! Binds a polymorhic type to all registered archives
+//! Binds a polymorphic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
@@ -277,8 +277,8 @@ namespace cereal
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
-           affected by the new insertion. The aglorithm iteratively processes a node an ensures that it
-           is updated with all new shortest length paths. It then rocesses the parents of the active node,
+           affected by the new insertion. The algorithm iteratively processes a node an ensures that it
+           is updated with all new shortest length paths. It then processes the parents of the active node,
            with the knowledge that all children have already been processed.
 
            Note that for the following, we'll use the nomenclature of parent and child to not confuse with
@@ -335,7 +335,7 @@ namespace cereal
                 auto parentChildPath = checkRelation( parent, child );
 
                 // Search all paths from the child to its own children (finalChild),
-                // looking for a shorter parth from parent to finalChild
+                // looking for a shorter path from parent to finalChild
                 for( auto const & finalChildPair : baseMap[child] )
                 {
                   const auto finalChild = finalChildPair.first;
@@ -812,7 +812,7 @@ namespace cereal
 
         Since the compiler needs to check all possible overloads, the
         other overloads created via CEREAL_REGISTER_ARCHIVE, which will have
-        lower precedence due to requring a conversion from int to (Archive*),
+        lower precedence due to requiring a conversion from int to (Archive*),
         will cause their return types to be instantiated through the static object
         mechanisms even though they are never called.
 
