@@ -77,7 +77,7 @@ CEREAL_SETUP_ARCHIVE_TRAITS(Archive, Archive)
 struct Test
 {
   template <class Archive>
-  void serialzize( Archive & )
+  void serialize( Archive & )
   {
     std::cout << "hey there" << std::endl;
   }
