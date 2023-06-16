@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2015, Kyle Fleming
+  Copyright (c) 2022, Nokia
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -29,6 +30,7 @@
 
 #include "../common.hpp"
 #include <cereal/types/boost_variant.hpp>
+#include <boost/mpl/vector/vector30.hpp>
 #include <boost/variant.hpp>
 
 struct NonDefaultConstructible
@@ -58,13 +60,11 @@ template <> struct LoadAndConstruct<NonDefaultConstructible>
 };
 } // end namespace cereal
 
-template <class IArchive, class OArchive> inline
-void test_boost_variant()
+template <class IArchive, class OArchive, typename VariantType> inline
+void test_boost_variant_case()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
-
-  using VariantType = boost::variant<int, double, std::string, NonDefaultConstructible>;
 
   VariantType o_bv1 = random_value<int>(gen);
   VariantType o_bv2 = random_value<double>(gen);
@@ -100,6 +100,18 @@ void test_boost_variant()
   CHECK_EQ( boost::get<double>(i_bv2), doctest::Approx(boost::get<double>(o_bv2)).epsilon(1e-5) );
   CHECK_EQ( boost::get<std::string>(i_bv3), boost::get<std::string>(o_bv3) );
   CHECK_EQ( boost::get<NonDefaultConstructible>(i_bv4).index, boost::get<NonDefaultConstructible>(o_bv4).index );
+}
+
+template <class IArchive, class OArchive> inline
+void test_boost_variant()
+{
+  using VariantType = boost::variant<int, double, std::string, NonDefaultConstructible>;
+
+  using TypeList = boost::mpl::vector4<int, double, std::string, NonDefaultConstructible>;
+  using OversizedVariantType = boost::make_variant_over<TypeList>::type;
+
+  test_boost_variant_case<IArchive, OArchive, VariantType>();
+  test_boost_variant_case<IArchive, OArchive, OversizedVariantType>();
 }
 
 #endif // CEREAL_TEST_BOOST_VARIANT_H_
