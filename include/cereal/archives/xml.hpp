@@ -227,7 +227,7 @@ namespace cereal
       void startNode()
       {
         // generate a name for this new node
-        const auto nameString = itsNodes.top().getValueName();
+          const auto nameString = itsNodes.top().getValueName();
 
         // allocate strings for all of the data in the XML object
         auto namePtr = itsXML.allocate_string( nameString.data(), nameString.length() + 1 );
@@ -235,7 +235,9 @@ namespace cereal
         // insert into the XML
         auto node = itsXML.allocate_node( rapidxml::node_element, namePtr, nullptr, nameString.size() );
         itsNodes.top().node->append_node( node );
-        itsNodes.emplace( node );
+        const auto innerNameString = itsNodes.top().innerName;
+        itsNodes.emplace(node);
+        itsNodes.top().innerName = innerNameString;
       }
 
       //! Designates the most recently added node as finished
@@ -245,9 +247,10 @@ namespace cereal
       }
 
       //! Sets the name for the next node created with startNode
-      void setNextName( const char * name )
+      void setNextName(const char * name, const char * innerName = nullptr)
       {
-        itsNodes.top().name = name;
+          itsNodes.top().name = name;
+          itsNodes.top().innerName = innerName;
       }
 
       //! Saves some data, encoded as a string, into the current top level node
@@ -327,12 +330,14 @@ namespace cereal
                   const char * nm = nullptr ) :
           node( n ),
           counter( 0 ),
-          name( nm )
+          name( nm ),
+          innerName(nullptr)
         { }
 
         rapidxml::xml_node<> * node; //!< A pointer to this node
         size_t counter;              //!< The counter for naming child nodes
         const char * name;           //!< The name for the next child node
+        const char * innerName;      //!< The name for the inner child node
 
         //! Gets the name for the next child node created from this node
         /*! The name will be automatically generated using the counter if
@@ -343,8 +348,12 @@ namespace cereal
           if( name )
           {
             auto n = name;
-            name = nullptr;
+            name = innerName;
             return {n};
+          }
+          else if (innerName)
+          {
+              return {innerName};
           }
           else
             return "value" + std::to_string( counter++ ) + "\0";
@@ -890,7 +899,7 @@ namespace cereal
   template <class T> inline
   void CEREAL_SAVE_FUNCTION_NAME( XMLOutputArchive & ar, NameValuePair<T> const & t )
   {
-    ar.setNextName( t.name );
+    ar.setNextName( t.name, t.innerName );
     ar( t.value );
   }
 
