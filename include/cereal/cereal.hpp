@@ -320,7 +320,7 @@ namespace cereal
     public:
       //! Construct the output archive
       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
-      OutputArchive(ArchiveType * const derived) : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
+      OutputArchive(ArchiveType * const derived) CEREAL_NOEXCEPT : self(derived), itsCurrentPointerId(1), itsCurrentPolymorphicTypeId(1)
       { }
 
       OutputArchive & operator=( OutputArchive const & ) = delete;
@@ -712,7 +712,7 @@ namespace cereal
     public:
       //! Construct the output archive
       /*! @param derived A pointer to the derived ArchiveType (pass this from the derived archive) */
-      InputArchive(ArchiveType * const derived) :
+      InputArchive(ArchiveType * const derived) CEREAL_NOEXCEPT :
         self(derived),
         itsBaseClassSet(),
         itsSharedPointerMap(),
