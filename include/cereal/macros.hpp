@@ -141,7 +141,7 @@
 #endif
 
 //! Checks if C++14 is available
-#if __cplusplus >= 201402L
+#if (__cplusplus >= 201402L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201402L))
 #define CEREAL_HAS_CPP14
 #endif
 
