@@ -62,7 +62,7 @@ void test_map()
 
     std::map<int8_t, StructExternalSplit> o_esplmap;
     for(int j=0; j<100; ++j)
-      o_esplmap.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
+      o_esplmap.insert({random_value<int8_t>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
     std::ostringstream os;
     {

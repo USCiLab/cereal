@@ -54,7 +54,7 @@ void test_unordered_map()
 
     std::unordered_map<int8_t, StructExternalSplit> o_esplunordered_map;
     for(int j=0; j<100; ++j)
-      o_esplunordered_map.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
+      o_esplunordered_map.insert({random_value<int8_t>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
     std::ostringstream os;
     {
