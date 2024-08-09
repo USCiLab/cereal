@@ -1,6 +1,6 @@
 [submodule "include/cereal/external/rapidjson"]
 	path = include/cereal/external/rapidjson
-	url = git@github.com:Tencent/rapidjson.git
+	url = https://github.com/Tencent/rapidjson.git
 [submodule "include/cereal/external/rapidxml"]
 	path = include/cereal/external/rapidxml
-	url = git@github.com:Fe-Bell/RapidXML.git
+	url = https://github.com/Fe-Bell/RapidXML.git
