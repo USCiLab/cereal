@@ -185,6 +185,37 @@ namespace cereal
         itsOS.precision( options.itsPrecision );
       }
 
+      //! Construct, outputting to the provided stream upon destruction
+      /*! @param stream  The stream to output to.  Note that XML is only guaranteed to flush
+                         its output to the stream upon destruction.
+          @param rootNodeName The name of the root node
+          @param options The XML specific options to use.  See the Options struct
+                         for the values of default parameters */
+      XMLOutputArchive( std::ostream & stream, std::string const & rootNodeName, Options const & options = Options::Default() ) :
+        OutputArchive<XMLOutputArchive>(this),
+        itsStream(stream),
+        itsOutputType( options.itsOutputType ),
+        itsIndent( options.itsIndent ),
+        itsSizeAttributes(options.itsSizeAttributes)
+      {
+        // rapidxml will delete all allocations when xml_document is cleared
+        auto node = itsXML.allocate_node( rapidxml::node_declaration );
+        node->append_attribute( itsXML.allocate_attribute( "version", "1.0" ) );
+        node->append_attribute( itsXML.allocate_attribute( "encoding", "utf-8" ) );
+        itsXML.append_node( node );
+
+        // allocate root node
+        auto root = itsXML.allocate_node( rapidxml::node_element, rootNodeName.c_str(), 0, rootNodeName.size() );
+        itsXML.append_node( root );
+        itsNodes.emplace( root );
+
+        // set attributes on the streams
+        itsStream << std::boolalpha;
+        itsStream.precision( options.itsPrecision );
+        itsOS << std::boolalpha;
+        itsOS.precision( options.itsPrecision );
+      }
+
       //! Destructor, flushes the XML
       ~XMLOutputArchive() CEREAL_NOEXCEPT
       {
@@ -414,7 +445,7 @@ namespace cereal
           as serialization starts
 
           @param stream The stream to read from.  Can be a stringstream or a file. */
-      XMLInputArchive( std::istream & stream ) :
+      XMLInputArchive( std::istream & stream, std::string const & rootNodeName = xml_detail::CEREAL_XML_STRING ) :
         InputArchive<XMLInputArchive>( this ),
         itsData( std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() )
       {
@@ -436,9 +467,10 @@ namespace cereal
         }
 
         // Parse the root
-        auto root = itsXML.first_node( xml_detail::CEREAL_XML_STRING );
-        if( root == nullptr )
-          throw Exception("Could not detect cereal root node - likely due to empty or invalid input");
+        auto root = itsXML.first_node( rootNodeName.c_str() );
+        if( root == nullptr ) {
+          throw Exception("Could not detect " + rootNodeName + " root node - likely due to empty or invalid input");
+        }
         else
           itsNodes.emplace( root );
       }
