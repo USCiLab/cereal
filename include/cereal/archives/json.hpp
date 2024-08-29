@@ -582,6 +582,23 @@ namespace cereal
             throw Exception("JSON Parsing failed - provided NVP (" + std::string(searchName) + ") not found");
           }
 
+      	  inline const char * searchNodeName( const char * searchName)
+          {
+            const auto len = std::strlen( searchName );
+            size_t index = 0;
+            for( auto it = itsMemberItBegin; it != itsMemberItEnd; ++it, ++index )
+            {
+              const auto currentName = it->name.GetString();
+              if( ( std::strncmp( searchName, currentName, len ) == 0 ) &&
+                  ( std::strlen( currentName ) == len ) )
+              {
+                itsIndex = index;
+                return currentName;
+              }
+            }
+            return nullptr;
+          }
+
         private:
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin;                   //!< The value iterator (array)
@@ -645,6 +662,17 @@ namespace cereal
       //! Retrieves the current node name
       /*! @return nullptr if no name exists */
       const char * getNodeName() const
+      {
+        return itsIteratorStack.back().name();
+      }
+
+      const char* searchNodeName(const char* name) const
+      {
+        auto currentIterator = itsIteratorStack.back();
+        return currentIterator.searchNodeName(name);
+      }
+
+      const char* getCurrentNodeName(const char* name) const
       {
         return itsIteratorStack.back().name();
       }
@@ -1031,7 +1059,7 @@ namespace cereal
   {
     if (ar.skippedNullopt())
     {
-      if (ar.getNodeName() != nullptr && std::strcmp(ar.getNodeName(), t.name) == 0)
+      if (ar.searchNodeName(t.name))
       {
         ar.setNextName( t.name );
         std::decay_t<decltype(*t.value)> val;
