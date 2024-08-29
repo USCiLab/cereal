@@ -11,14 +11,14 @@
       * Redistributions in binary form must reproduce the above copyright
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
-      * Neither the name of cereal nor the
+      * Neither the name of the copyright holder nor the
         names of its contributors may be used to endorse or promote products
         derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -176,7 +176,7 @@ namespace cereal
         a serialization function.  Classes with no data members are considered to be
         empty.  Be warned that if this is enabled and you attempt to serialize an
         empty class with improperly formed serialize or load/save functions, no
-        static error will occur - the error will propogate silently and your
+        static error will occur - the error will propagate silently and your
         intended serialization functions may not be called.  You can manually
         ensure that your classes that have custom serialization are correct
         by using the traits is_output_serializable and is_input_serializable
@@ -258,6 +258,26 @@ namespace cereal
       Interfaces for other forms of serialization functions is similar.  This
       macro should be placed at global scope.
       @ingroup Utility */
+
+  //! On C++17, define the StaticObject as inline to merge the definitions across TUs
+  //! This prevents multiple definition errors when this macro appears in a header file
+  //! included in multiple TUs.
+  #ifdef CEREAL_HAS_CPP17
+  #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
+  namespace cereal { namespace detail {                                          \
+    template <> struct Version<TYPE>                                             \
+    {                                                                            \
+      static std::uint32_t registerVersion()                                     \
+      {                                                                          \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
+             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        return VERSION_NUMBER;                                                   \
+      }                                                                          \
+      static inline const std::uint32_t version = registerVersion();             \
+      CEREAL_UNUSED_FUNCTION                                                     \
+    }; /* end Version */                                                         \
+  } } // end namespaces
+  #else
   #define CEREAL_CLASS_VERSION(TYPE, VERSION_NUMBER)                             \
   namespace cereal { namespace detail {                                          \
     template <> struct Version<TYPE>                                             \
@@ -274,6 +294,8 @@ namespace cereal
     const std::uint32_t Version<TYPE>::version =                                 \
       Version<TYPE>::registerVersion();                                          \
   } } // end namespaces
+
+  #endif
 
   // ######################################################################
   //! The base output archive class
@@ -369,12 +391,17 @@ namespace cereal
           point to the same data.
 
           @internal
-          @param addr The address (see shared_ptr get()) pointed to by the shared pointer
+          @param sharedPointer The shared pointer itself (the address is taken via get()).
+                               The archive takes a copy to prevent the memory location to be freed
+                               as long as the address is used as id. This is needed to prevent CVE-2020-11105.
           @return A key that uniquely identifies the pointer */
-      inline std::uint32_t registerSharedPointer( void const * addr )
+      inline std::uint32_t registerSharedPointer(const std::shared_ptr<const void>& sharedPointer)
       {
+        void const * addr = sharedPointer.get();
+
         // Handle null pointers by just returning 0
         if(addr == 0) return 0;
+        itsSharedPointerStorage.push_back(sharedPointer);
 
         auto id = itsSharedPointerMap.find( addr );
         if( id == itsSharedPointerMap.end() )
@@ -645,6 +672,10 @@ namespace cereal
       //! Maps from addresses to pointer ids
       std::unordered_map<void const *, std::uint32_t> itsSharedPointerMap;
 
+      //! Copy of shared pointers used in #itsSharedPointerMap to make sure they are kept alive
+      //  during lifetime of itsSharedPointerMap to prevent CVE-2020-11105.
+      std::vector<std::shared_ptr<const void>> itsSharedPointerStorage;
+
       //! The id to be given to the next pointer
       std::uint32_t itsCurrentPointerId;
 
@@ -789,7 +820,7 @@ namespace cereal
 
           @internal
           @param id The unique id that was serialized for the polymorphic type
-          @return The string identifier for the tyep */
+          @return The string identifier for the type */
       inline std::string getPolymorphicName(std::uint32_t const id)
       {
         auto name = itsPolymorphicTypeMap.find( id );
@@ -806,7 +837,7 @@ namespace cereal
 
           @internal
           @param id The unique identifier for the polymorphic type
-          @param name The name associated with the tyep */
+          @param name The name associated with the type */
       inline void registerPolymorphicName(std::uint32_t const id, std::string const & name)
       {
         std::uint32_t const stripped_id = id & ~detail::msb_32bit;

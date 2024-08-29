@@ -1,17 +1,23 @@
 cmake_minimum_required(VERSION 3.6...3.15)
 
-project(cereal LANGUAGES CXX VERSION 1.3.0)
+project(cereal LANGUAGES CXX VERSION 1.3.2)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CEREAL_MASTER_PROJECT ON)
 endif()
 
-
-if(APPLE)
-    option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" ON)
+option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
+include(CheckCXXCompilerFlag)
+set(CMAKE_REQUIRED_FLAGS "-m32")
+check_cxx_compiler_flag("-m32" COMPILER_SUPPORT_M32)
+unset(CMAKE_REQUIRED_FLAGS)
+if(NOT COMPILER_SUPPORT_M32)
+    set(SKIP_PORTABILITY_TEST ON CACHE BOOL "Skip portability (32 bit) tests" FORCE)
 endif()
 
-option(SKIP_PERFORMANCE_COMPARISON "Skip building performance comparison (requires boost)" OFF)
+option(BUILD_DOC "Build documentation" ON)
+option(BUILD_SANDBOX "Build sandbox examples" ON)
+option(SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
 
 # TODO: should not be needed! CK
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
@@ -70,24 +76,26 @@ endif()
 
 option(CEREAL_INSTALL "Generate the install target" ${CEREAL_MASTER_PROJECT})
 if(CEREAL_INSTALL)
+    include(GNUInstallDirs)
     include(CMakePackageConfigHelpers)
 
     install(TARGETS cereal EXPORT ${PROJECT_NAME}Targets)
-    install(DIRECTORY include/cereal DESTINATION include)
+    install(DIRECTORY include/cereal DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
     set(configFile ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
     set(versionFile ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-    set(configInstallDestination lib/cmake/${PROJECT_NAME})
+    set(configInstallDestination ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
     configure_package_config_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
         ${configFile}
         INSTALL_DESTINATION ${configInstallDestination}
     )
-    write_basic_package_version_file(
-        ${versionFile}
-        COMPATIBILITY SameMajorVersion
-    )
+    if(${CMAKE_VERSION} VERSION_GREATER 3.13)
+        write_basic_package_version_file("${versionFile}" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
+    else()
+        write_basic_package_version_file("${versionFile}" COMPATIBILITY SameMajorVersion)
+    endif()
 
     install(FILES ${configFile} ${versionFile} DESTINATION ${configInstallDestination})
     install(
@@ -115,6 +123,12 @@ if(BUILD_TESTS)
     add_subdirectory(unittests)
 endif()
 
-add_subdirectory(sandbox)
 
-add_subdirectory(doc)
+if(BUILD_SANDBOX)
+    add_subdirectory(sandbox)
+endif()
+
+
+if(BUILD_DOC)
+    add_subdirectory(doc)
+endif()

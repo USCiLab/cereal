@@ -1,15 +1,15 @@
 cereal - A C++11 library for serialization
 ==========================================
 
-<img src="http://uscilab.github.io/cereal/assets/img/cerealboxside.png" align="right"/><p>cereal is a header-only C++11 serialization library.  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings, XML, or JSON.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.</p>
+<img src="https://uscilab.github.io/cereal/assets/img/cerealboxside.png" align="right"/><p>cereal is a header-only C++11 serialization library.  cereal takes arbitrary data types and reversibly turns them into different representations, such as compact binary encodings, XML, or JSON.  cereal was designed to be fast, light-weight, and easy to extend - it has no external dependencies and can be easily bundled with other code or used standalone.</p>
 
 ### cereal has great documentation
 
-Looking for more information on how cereal works and its documentation?  Visit [cereal's web page](http://USCiLab.github.com/cereal) to get the latest information.
+Looking for more information on how cereal works and its documentation?  Visit [cereal's web page](https://USCiLab.github.io/cereal) to get the latest information.
 
 ### cereal is easy to use
 
-Installation and use of of cereal is fully documented on the [main web page](http://USCiLab.github.com/cereal), but this is a quick and dirty version:
+Installation and use of of cereal is fully documented on the [main web page](https://USCiLab.github.io/cereal), but this is a quick and dirty version:
 
 * Download cereal and place the headers somewhere your code can see them
 * Write serialization functions for your custom types or use the built in support for the standard library cereal provides
@@ -77,8 +77,9 @@ cereal is licensed under the [BSD license](http://opensource.org/licenses/BSD-3-
 
 ## cereal build status
 
-* master : [![Build Status](https://travis-ci.com/USCiLab/cereal.svg?branch=master)](https://travis-ci.com/USCiLab/cereal)
-[![Build status](https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true)](https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master)
+* [![Linux build status](https://github.com/USCiLab/cereal/actions/workflows/ci.yml/badge.svg)](https://github.com/USCiLab/cereal/actions/workflows/ci.yml)
+* [![Mac build status](https://github.com/USCiLab/cereal/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/USCiLab/cereal/actions/workflows/ci-macos.yml)
+* [![Windows build status](https://ci.appveyor.com/api/projects/status/91aou6smj36or0vb/branch/master?svg=true)](https://ci.appveyor.com/project/AzothAmmo/cereal/branch/master)
 
 ---
 

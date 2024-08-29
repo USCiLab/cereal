@@ -1,0 +1,238 @@
+name: cereal linux ci
+on: [push, pull_request]
+
+jobs:
+  test_cereal_linux:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.CONTAINER }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'g++-4.7'
+            EXTRA_APT_PACKAGES: 'g++-4.7'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.7
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'g++-4.8'
+            EXTRA_APT_PACKAGES: 'g++-4.8'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.8
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'g++-4.9'
+            EXTRA_APT_PACKAGES: 'g++-4.9'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.9
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'g++-5'
+            EXTRA_APT_PACKAGES: 'g++-5'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.5
+
+          - COMPILER: 'g++-5'
+            EXTRA_APT_PACKAGES: 'gcc-multilib g++-5-multilib linux-libc-dev'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++5-multilib
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'g++-6'
+            EXTRA_APT_PACKAGES: 'g++-6'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++6
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-7'
+            EXTRA_APT_PACKAGES: 'g++-7'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++7
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-8'
+            EXTRA_APT_PACKAGES: 'g++-8'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++8
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-9'
+            EXTRA_APT_PACKAGES: 'g++-9'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-g++9
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-10'
+            EXTRA_APT_PACKAGES: 'g++-10'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-g++10
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-3.5'
+            EXTRA_APT_PACKAGES: 'clang-3.5'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.5 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-3.5
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-3.6'
+            EXTRA_APT_PACKAGES: 'clang-3.6'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.6 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-3.6
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-3.7'
+            EXTRA_APT_PACKAGES: 'clang-3.7'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.7 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-3.7
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-3.8'
+            EXTRA_APT_PACKAGES: 'clang-3.8'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.8 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-3.8
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-3.9'
+            EXTRA_APT_PACKAGES: 'clang-3.9'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.9 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-3.9
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-4.0'
+            EXTRA_APT_PACKAGES: 'clang-4.0 g++-5'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-4.0
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'clang++-5.0'
+            EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-5.0
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-5.0'
+            EXTRA_APT_PACKAGES: 'clang-5.0 g++-7'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-5.0-cpp17
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-7'
+            EXTRA_APT_PACKAGES: 'clang-7 g++-7'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-7-cpp17
+
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17 -DCLANG_USE_LIBCPP=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'clang++-8'
+            EXTRA_APT_PACKAGES: 'clang-8 g++-8 libc++-8-dev libc++abi-8-dev'
+            LLVM_APT_SOURCE: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-clang-8-cpp17
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-9'
+            EXTRA_APT_PACKAGES: 'clang-9'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-clang-9-cpp17
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-10'
+            EXTRA_APT_PACKAGES: 'clang-10'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-clang-10-cpp17
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-11'
+            EXTRA_APT_PACKAGES: 'clang-11'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-clang-11-cpp17
+          
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'clang++-12'
+            EXTRA_APT_PACKAGES: 'clang-12'
+            CONTAINER: ubuntu:20.04
+            NAME: ubuntu-20.04-clang-12-cpp17
+    name: ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: install deps and test
+      shell: bash
+      env:
+        CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
+        COMPILER: ${{ matrix.COMPILER }}
+        EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
+        LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
+      run: |
+        set -ex
+        apt-get update -y
+        DEBIAN_FRONTEND=noninteractive TZ=America/Los_Angeles apt-get install -y software-properties-common wget python3-pip make apt-transport-https
+
+        # Add apt repositories for older Ubuntu
+        . /etc/os-release
+        if [[ "${VERSION_ID}" == "16.04" ]]; then
+          add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          add-apt-repository ppa:mhier/libboost-latest -y
+        fi
+
+        if [[ "${LLVM_APT_SOURCE}" != "" ]]; then
+          wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+          add-apt-repository "${LLVM_APT_SOURCE}"
+        fi
+
+        apt-get update -y
+
+        # Install apt packages
+        apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
+        pip3 install cmake
+
+        # Set compiler and env variables
+        export CXX=${COMPILER}
+        ${CXX} --version
+        DEPS_DIR="${PWD}/deps"
+        mkdir -p "${DEPS_DIR}"
+        pushd "${DEPS_DIR}"
+        JOBS=2
+
+        # Install the right version of libc++
+        LLVM_INSTALL=${DEPS_DIR}/llvm/install
+        # if in linux and compiler clang and llvm not installed
+        if [[ "${CXX}" == "clang"* && -n "$(ls -A ${LLVM_INSTALL})" ]]; then
+          if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
+          elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
+          elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.1";
+          elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION="3.9.1";
+          fi
+          LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+          LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+          LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+          mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+          wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
+          wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
+          wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
+          (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
+          (cd llvm/build/projects/libcxx && make install -j2)
+          (cd llvm/build/projects/libcxxabi && make install -j2)
+          export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
+          export LDFLAGS="-L ${LLVM_INSTALL}/lib -l c++ -l c++abi"
+          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib"
+        fi
+
+        popd
+
+        # Build cereal and test
+        cmake --version
+        mkdir build && cd build
+        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
+        ctest . --output-on-failure

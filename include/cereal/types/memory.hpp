@@ -12,14 +12,14 @@
       * Redistributions in binary form must reproduce the above copyright
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
-      * Neither the name of cereal nor the
+      * Neither the name of the copyright holder nor the
         names of its contributors may be used to endorse or promote products
         derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -263,7 +263,7 @@ namespace cereal
   {
     auto & ptr = wrapper.ptr;
 
-    uint32_t id = ar.registerSharedPointer( ptr.get() );
+    uint32_t id = ar.registerSharedPointer( ptr );
     ar( CEREAL_NVP_("id", id) );
 
     if( id & detail::msb_32bit )
@@ -286,7 +286,7 @@ namespace cereal
     {
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage and use a custom deleter
-      using ST = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
+      using AlignedStorage = typename std::aligned_storage<sizeof(T), CEREAL_ALIGNOF(T)>::type;
 
       // Valid flag - set to true once construction finishes
       //  This prevents us from calling the destructor on
@@ -296,13 +296,13 @@ namespace cereal
       // Allocate our storage, which we will treat as
       //  uninitialized until initialized with placement new
       using NonConstT = typename std::remove_const<T>::type;
-      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new ST()),
+      std::shared_ptr<NonConstT> ptr(reinterpret_cast<NonConstT *>(new AlignedStorage()),
           [=]( NonConstT * t )
           {
             if( *valid )
               t->~T();
 
-            delete reinterpret_cast<ST *>( t );
+            delete reinterpret_cast<AlignedStorage*>( t );
           } );
 
       // Register the pointer
@@ -377,11 +377,11 @@ namespace cereal
       using NonConstT = typename std::remove_const<T>::type;
       // Storage type for the pointer - since we can't default construct this type,
       // we'll allocate it using std::aligned_storage
-      using ST = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
+      using AlignedStorage = typename std::aligned_storage<sizeof(NonConstT), CEREAL_ALIGNOF(NonConstT)>::type;
 
-      // Allocate storage - note the ST type so that deleter is correct if
+      // Allocate storage - note the AlignedStorage type so that deleter is correct if
       //                    an exception is thrown before we are initialized
-      std::unique_ptr<ST> stPtr( new ST() );
+      std::unique_ptr<AlignedStorage> stPtr( new AlignedStorage() );
 
       // Use wrapper to enter into "data" nvp of ptr_wrapper
       memory_detail::LoadAndConstructLoadWrapper<Archive, NonConstT> loadWrapper( reinterpret_cast<NonConstT *>( stPtr.get() ) );

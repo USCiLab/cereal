@@ -12,14 +12,14 @@
       * Redistributions in binary form must reproduce the above copyright
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
-      * Neither the name of cereal nor the
+      * Neither the name of the copyright holder nor the
         names of its contributors may be used to endorse or promote products
         derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -64,17 +64,31 @@
   #define CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION static void unused() { (void)b; }
 #endif
 
-//! Binds a polymorhic type to all registered archives
+//! Binds a polymorphic type to all registered archives
 /*! This binds a polymorphic type to all compatible registered archives that
     have been registered with CEREAL_REGISTER_ARCHIVE.  This must be called
     after all archives are registered (usually after the archives themselves
     have been included). */
+#ifdef CEREAL_HAS_CPP17
 #define CEREAL_BIND_TO_ARCHIVES(...)                                     \
     namespace cereal {                                                   \
     namespace detail {                                                   \
     template<>                                                           \
     struct init_binding<__VA_ARGS__> {                                   \
-        static bind_to_archives<__VA_ARGS__> const & b;                  \
+        static inline bind_to_archives<__VA_ARGS__> const & b=           \
+        ::cereal::detail::StaticObject<                                  \
+            bind_to_archives<__VA_ARGS__>                                \
+        >::getInstance().bind();                                         \
+        CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
+    };                                                                   \
+    }} /* end namespaces */
+#else
+#define CEREAL_BIND_TO_ARCHIVES(...)                                     \
+    namespace cereal {                                                   \
+    namespace detail {                                                   \
+    template<>                                                           \
+    struct init_binding<__VA_ARGS__> {                                   \
+        static bind_to_archives<__VA_ARGS__> const& b;                   \
         CEREAL_BIND_TO_ARCHIVES_UNUSED_FUNCTION                          \
     };                                                                   \
     bind_to_archives<__VA_ARGS__> const & init_binding<__VA_ARGS__>::b = \
@@ -82,6 +96,7 @@
             bind_to_archives<__VA_ARGS__>                                \
         >::getInstance().bind();                                         \
     }} /* end namespaces */
+#endif
 
 namespace cereal
 {
@@ -262,8 +277,8 @@ namespace cereal
 
         // Find all chainable unregistered relations
         /* The strategy here is to process only the nodes in the class hierarchy graph that have been
-           affected by the new insertion. The aglorithm iteratively processes a node an ensures that it
-           is updated with all new shortest length paths. It then rocesses the parents of the active node,
+           affected by the new insertion. The algorithm iteratively processes a node an ensures that it
+           is updated with all new shortest length paths. It then processes the parents of the active node,
            with the knowledge that all children have already been processed.
 
            Note that for the following, we'll use the nomenclature of parent and child to not confuse with
@@ -320,7 +335,7 @@ namespace cereal
                 auto parentChildPath = checkRelation( parent, child );
 
                 // Search all paths from the child to its own children (finalChild),
-                // looking for a shorter parth from parent to finalChild
+                // looking for a shorter path from parent to finalChild
                 for( auto const & finalChildPair : baseMap[child] )
                 {
                   const auto finalChild = finalChildPair.first;
@@ -654,7 +669,7 @@ namespace cereal
 
             auto ptr = PolymorphicCasters::template downcast<T>( dptr, baseInfo );
 
-            #if defined(_MSC_VER) && !defined(__clang__)
+            #if defined(_MSC_VER) && _MSC_VER < 1916 && !defined(__clang__)
             savePolymorphicSharedPtr( ar, ptr, ::cereal::traits::has_shared_from_this<T>::type() ); // MSVC doesn't like typename here
             #else // not _MSC_VER
             savePolymorphicSharedPtr( ar, ptr, typename ::cereal::traits::has_shared_from_this<T>::type() );
@@ -680,9 +695,23 @@ namespace cereal
     //! of instantiate_polymorphic_binding
     struct adl_tag {};
 
-    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding. Due to the use of anonymous
-    //! namespace it becomes a different type in each translation unit.
+    //! Tag for init_binding, bind_to_archives and instantiate_polymorphic_binding.
+    //! For C++14 and below, we must instantiate a unique StaticObject per TU that is
+    //! otherwise identical -- otherwise we get multiple definition problems (ODR violations).
+    //! To achieve this, put a tag in an anonymous namespace and use it as a template argument.
+    //!
+    //! For C++17, we can use static inline global variables to unify these definitions across
+    //! all TUs in the same shared object (DLL).  The tag is therefore not necessary.
+    //! For convenience, keep it to not complicate other code, but don't put it in
+    //! an anonymous namespace.  Now the template instantiations will correspond
+    //! to the same type, and since they are marked inline with C++17, they will be merged
+    //! across all TUs.
+#ifdef CEREAL_HAS_CPP17
+    struct polymorphic_binding_tag {};
+#else
     namespace { struct polymorphic_binding_tag {}; }
+#endif
+
 
     //! Causes the static object bindings between an archive type and a serializable type T
     template <class Archive, class T>
@@ -783,7 +812,7 @@ namespace cereal
 
         Since the compiler needs to check all possible overloads, the
         other overloads created via CEREAL_REGISTER_ARCHIVE, which will have
-        lower precedence due to requring a conversion from int to (Archive*),
+        lower precedence due to requiring a conversion from int to (Archive*),
         will cause their return types to be instantiated through the static object
         mechanisms even though they are never called.
 

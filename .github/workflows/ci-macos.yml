@@ -1,0 +1,45 @@
+name: cereal mac ci
+on: [push, pull_request]
+
+jobs:
+  test_cereal_macos:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'clang++'
+            XCODE_VERSION: 11
+            NAME: macos-latest-clang-xcode11
+
+          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'clang++'
+            XCODE_VERSION: 12
+            NAME: macos-latest-clang-xcode12
+    name: ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.XCODE_VERSION }}
+
+    - name: build and test
+      shell: bash
+      env:
+        CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
+        COMPILER: ${{ matrix.COMPILER }}
+      run: |
+        set -ex
+        # Set compiler and env variables
+        export CXX=${COMPILER}
+        ${CXX} --version
+
+        # Build cereal and test
+        cmake --version
+        mkdir build && cd build
+        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
+        ctest . --output-on-failure

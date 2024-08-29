@@ -12,14 +12,14 @@
       * Redistributions in binary form must reproduce the above copyright
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
-      * Neither the name of cereal nor the
+      * Neither the name of the copyright holder nor the
         names of its contributors may be used to endorse or promote products
         derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL RANDOLPH VOORHIES OR SHANE GRANT BE LIABLE FOR ANY
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -54,25 +54,24 @@ namespace cereal
     };
 
     //! @internal
-    template<int N, class Variant, class ... Args, class Archive>
+    template<int N, class Variant, class Archive>
     typename std::enable_if<N == std::variant_size_v<Variant>, void>::type
     load_variant(Archive & /*ar*/, int /*target*/, Variant & /*variant*/)
     {
       throw ::cereal::Exception("Error traversing variant during load");
     }
     //! @internal
-    template<int N, class Variant, class H, class ... T, class Archive>
+    template<int N, class Variant, class Archive>
     typename std::enable_if<N < std::variant_size_v<Variant>, void>::type
     load_variant(Archive & ar, int target, Variant & variant)
     {
       if(N == target)
       {
-        H value;
-        ar( CEREAL_NVP_("data", value) );
-        variant = std::move(value);
+        variant.template emplace<N>();
+        ar( CEREAL_NVP_("data", std::get<N>(variant)) );
       }
       else
-        load_variant<N+1, Variant, T...>(ar, target, variant);
+        load_variant<N+1>(ar, target, variant);
     }
 
   } // namespace variant_detail
@@ -98,7 +97,7 @@ namespace cereal
     if(index >= static_cast<std::int32_t>(std::variant_size_v<variant_t>))
       throw Exception("Invalid 'index' selector when deserializing std::variant");
 
-    variant_detail::load_variant<0, variant_t, VariantTypes...>(ar, index, variant);
+    variant_detail::load_variant<0>(ar, index, variant);
   }
 
   //! Serializing a std::monostate
