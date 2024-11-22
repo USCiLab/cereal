@@ -96,12 +96,21 @@ if(CEREAL_INSTALL)
     else()
         write_basic_package_version_file("${versionFile}" COMPATIBILITY SameMajorVersion)
     endif()
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.pc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+        @ONLY
+    )
 
     install(FILES ${configFile} ${versionFile} DESTINATION ${configInstallDestination})
     install(
         EXPORT ${PROJECT_NAME}Targets
         NAMESPACE "cereal::"
         DESTINATION ${configInstallDestination}
+    )
+    install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
     )
 endif()
 
