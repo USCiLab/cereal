@@ -171,11 +171,11 @@ jobs:
         image: ${{ matrix.CONTAINER }}
         options: -v ${{ github.workspace }}:/var/workspace 
         shell: bash
-        env:
-          CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
-          COMPILER: ${{ matrix.COMPILER }}
-          EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
-          LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
+        # env:
+        #   CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
+        #   COMPILER: ${{ matrix.COMPILER }}
+        #   EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
+        #   LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
         run: |
           set -ex
           apt-get update -y
@@ -188,7 +188,7 @@ jobs:
             add-apt-repository ppa:mhier/libboost-latest -y
           fi
 
-          if [[ "${LLVM_APT_SOURCE}" != "" ]]; then
+          if [[ "${{ matrix.LLVM_APT_SOURCE }}" != "" ]]; then
             wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
             add-apt-repository "${LLVM_APT_SOURCE}"
           fi
@@ -196,11 +196,12 @@ jobs:
           apt-get update -y
 
           # Install apt packages
-          apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
+          apt-get install libboost-serialization-dev libboost-dev ${{ matrix.EXTRA_APT_PACKAGES }} -y
           pip3 install cmake
 
           # Set compiler and env variables
-          export CXX=${COMPILER}
+          cd /var/workspace
+          export CXX=${{ matrix.COMPILER }}
           ${CXX} --version
           DEPS_DIR="${PWD}/deps"
           mkdir -p "${DEPS_DIR}"
