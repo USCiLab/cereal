@@ -197,7 +197,7 @@ jobs:
 
           # Install apt packages
           apt-get install libboost-serialization-dev libboost-dev ${{ matrix.EXTRA_APT_PACKAGES }} -y
-          pip3 install --upgrade pip
+          pip3 install --upgrade "pip < 21.0"
           pip3 install cmake
 
           # Set compiler and env variables
