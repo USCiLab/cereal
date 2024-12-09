@@ -12,7 +12,7 @@ jobs:
           - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'g++-4.7'
             EXTRA_APT_PACKAGES: 'g++-4.7'
-            CONTAINER: gcc:4.7
+            CONTAINER: ubuntu:16.04
             NAME: ubuntu-16.04-g++4.7
 
           # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
