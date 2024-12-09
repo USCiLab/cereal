@@ -14,46 +14,46 @@ jobs:
             CONTAINER: ubuntu:16.04
             NAME: ubuntu-16.04-g++4.7
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
-          #   COMPILER: 'g++-4.8'
-          #   EXTRA_APT_PACKAGES: 'g++-4.8'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++4.8
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'g++-4.8'
+            EXTRA_APT_PACKAGES: 'g++-4.8'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.8
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
-          #   COMPILER: 'g++-4.9'
-          #   EXTRA_APT_PACKAGES: 'g++-4.9'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++4.9
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
+            COMPILER: 'g++-4.9'
+            EXTRA_APT_PACKAGES: 'g++-4.9'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.9
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
-          #   COMPILER: 'g++-5'
-          #   EXTRA_APT_PACKAGES: 'g++-5'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++4.5
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'g++-5'
+            EXTRA_APT_PACKAGES: 'g++-5'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++4.5
 
-          # - COMPILER: 'g++-5'
-          #   EXTRA_APT_PACKAGES: 'gcc-multilib g++-5-multilib linux-libc-dev'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++5-multilib
+          - COMPILER: 'g++-5'
+            EXTRA_APT_PACKAGES: 'gcc-multilib g++-5-multilib linux-libc-dev'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++5-multilib
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
-          #   COMPILER: 'g++-6'
-          #   EXTRA_APT_PACKAGES: 'g++-6'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++6
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON'
+            COMPILER: 'g++-6'
+            EXTRA_APT_PACKAGES: 'g++-6'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++6
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
-          #   COMPILER: 'g++-7'
-          #   EXTRA_APT_PACKAGES: 'g++-7'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++7
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-7'
+            EXTRA_APT_PACKAGES: 'g++-7'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++7
 
-          # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
-          #   COMPILER: 'g++-8'
-          #   EXTRA_APT_PACKAGES: 'g++-8'
-          #   CONTAINER: ubuntu:16.04
-          #   NAME: ubuntu-16.04-g++8
+          - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
+            COMPILER: 'g++-8'
+            EXTRA_APT_PACKAGES: 'g++-8'
+            CONTAINER: ubuntu:16.04
+            NAME: ubuntu-16.04-g++8
           
           # - CMAKE_OPTIONS: '-DSKIP_PORTABILITY_TEST=ON -DCMAKE_CXX_STANDARD=17'
           #   COMPILER: 'g++-9'
