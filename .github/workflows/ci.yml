@@ -233,5 +233,5 @@ jobs:
           # Build cereal and test
           cmake --version
           mkdir build && cd build
-          cmake ${{ matrix.CMAKE_OPTIONS }} .. && make -j VERBOSE=1
+          cmake ${{ matrix.CMAKE_OPTIONS }} .. && make -j4 VERBOSE=1
           ctest . --output-on-failure
