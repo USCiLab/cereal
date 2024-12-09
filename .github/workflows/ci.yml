@@ -171,11 +171,6 @@ jobs:
         image: ${{ matrix.CONTAINER }}
         options: -v ${{ github.workspace }}:/var/workspace 
         shell: bash
-        # env:
-        #   CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
-        #   COMPILER: ${{ matrix.COMPILER }}
-        #   EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
-        #   LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
         run: |
           set -ex
           apt-get update -y
@@ -190,7 +185,7 @@ jobs:
 
           if [[ "${{ matrix.LLVM_APT_SOURCE }}" != "" ]]; then
             wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-            add-apt-repository "${LLVM_APT_SOURCE}"
+            add-apt-repository "${{ matrix.LLVM_APT_SOURCE }}"
           fi
 
           apt-get update -y
