@@ -30,8 +30,9 @@
 #ifndef CEREAL_DETAILS_UTIL_HPP_
 #define CEREAL_DETAILS_UTIL_HPP_
 
-#include <typeinfo>
 #include <string>
+
+#include "cereal/external/ctti/nameof.hpp"
 
 #ifdef _MSC_VER
 namespace cereal
@@ -47,7 +48,7 @@ namespace cereal
     /*! @internal */
     template <class T> inline
     std::string demangledName()
-    { return typeid( T ).name(); }
+    { return ctti::nameof<T>().str(); }
   } // namespace util
 } // namespace cereal
 #else // clang or gcc
@@ -77,7 +78,7 @@ namespace cereal
     /*! @internal */
     template<class T> inline
     std::string demangledName()
-    { return demangle(typeid(T).name()); }
+    { return ctti::nameof<T>().str(); }
   }
 } // namespace cereal
 #endif // clang or gcc branch of _MSC_VER
