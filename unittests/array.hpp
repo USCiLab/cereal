@@ -28,7 +28,7 @@
 #define CEREAL_TEST_ARRAY_H_
 #include "common.hpp"
 
-template <class IArchive, class OArchive> inline
+template <class IArchive, class OArchive, size_t N> inline
 void test_array()
 {
   std::random_device rd;
@@ -36,23 +36,23 @@ void test_array()
 
   for(int ii=0; ii<100; ++ii)
   {
-    std::array<int, 100> o_podarray;
+    std::array<int, N> o_podarray;
     for(auto & elem : o_podarray)
       elem = random_value<int>(gen);
 
-    std::array<StructInternalSerialize, 100> o_iserarray;
+    std::array<StructInternalSerialize, N> o_iserarray;
     for(auto & elem : o_iserarray)
       elem = StructInternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
-    std::array<StructInternalSplit, 100> o_isplarray;
+    std::array<StructInternalSplit, N> o_isplarray;
     for(auto & elem : o_isplarray)
       elem = StructInternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
-    std::array<StructExternalSerialize, 100> o_eserarray;
+    std::array<StructExternalSerialize, N> o_eserarray;
     for(auto & elem : o_eserarray)
       elem = StructExternalSerialize( random_value<int>(gen), random_value<int>(gen) );
 
-    std::array<StructExternalSplit, 100> o_esplarray;
+    std::array<StructExternalSplit, N> o_esplarray;
     for(auto & elem : o_esplarray)
       elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
@@ -67,11 +67,11 @@ void test_array()
       oar(o_esplarray);
     }
 
-    std::array<int, 100> i_podarray;
-    std::array<StructInternalSerialize, 100> i_iserarray;
-    std::array<StructInternalSplit, 100>     i_isplarray;
-    std::array<StructExternalSerialize, 100> i_eserarray;
-    std::array<StructExternalSplit, 100>     i_esplarray;
+    std::array<int, N> i_podarray;
+    std::array<StructInternalSerialize, N> i_iserarray;
+    std::array<StructInternalSplit, N>     i_isplarray;
+    std::array<StructExternalSerialize, N> i_eserarray;
+    std::array<StructExternalSplit, N>     i_esplarray;
 
     std::istringstream is(os.str());
     {
