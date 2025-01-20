@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.6...3.15)
+cmake_policy(SET CMP0167 NEW)
 
 project(cereal LANGUAGES CXX VERSION 1.3.2)
 
