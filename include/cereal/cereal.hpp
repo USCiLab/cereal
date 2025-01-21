@@ -338,8 +338,10 @@ namespace cereal
       /*! This will cause any data wrapped in DeferredData to be immediately serialized */
       void serializeDeferments()
       {
-        for( auto & deferment : itsDeferments )
-          deferment();
+        // for( auto & deferment : itsDeferments )
+        //   deferment();
+        for(int32_t i = 0; i < itsDeferments.size(); i++)
+          itsDeferments[i]();
       }
 
       /*! @name Boost Transition Layer
@@ -735,8 +737,10 @@ namespace cereal
       /*! This will cause any data wrapped in DeferredData to be immediately serialized */
       void serializeDeferments()
       {
-        for( auto & deferment : itsDeferments )
-          deferment();
+        // for( auto & deferment : itsDeferments )
+        //   deferment();
+        for(int32_t i = 0; i < itsDeferments.size(); i++)
+          itsDeferments[i]();
       }
 
       /*! @name Boost Transition Layer
