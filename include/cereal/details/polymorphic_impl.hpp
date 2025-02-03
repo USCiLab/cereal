@@ -49,12 +49,8 @@
 #include "cereal/details/static_object.hpp"
 #include "cereal/types/memory.hpp"
 #include "cereal/types/string.hpp"
-#include <functional>
 #include <typeindex>
-#include <map>
 #include <limits>
-#include <set>
-#include <stack>
 
 //! Helper macro to omit unused warning
 #if defined(__GNUC__)
@@ -143,7 +139,7 @@ namespace cereal
       //! Maps from base type index to a map from derived type index to caster
       std::unordered_map<std::type_index, DerivedCasterMap> map;
 
-      std::multimap<std::type_index, std::type_index> reverseMap;
+      std::unordered_multimap<std::type_index, std::type_index> reverseMap;
 
       //! Error message used for unregistered polymorphic casts
       #define UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(LoadSave)                                                                                                                \
@@ -299,38 +295,27 @@ namespace cereal
               return {(std::numeric_limits<size_t>::max)(), {}};
           };
 
-          std::stack<std::type_index>         parentStack;      // Holds the parent nodes to be processed
-          std::vector<std::type_index> dirtySet;                // Marks child nodes that have been changed
+          std::vector<std::type_index>         parentStack;     // Holds the parent nodes to be processed
+          std::unordered_set<std::type_index> dirtySet;         // Marks child nodes that have been changed
           std::unordered_set<std::type_index> processedParents; // Marks parent nodes that have been processed
 
-          // Checks if a child has been marked dirty
-          auto isDirty = [&](std::type_index const & c)
-          {
-            auto const dirtySetSize = dirtySet.size();
-            for( size_t i = 0; i < dirtySetSize; ++i )
-              if( dirtySet[i] == c )
-                return true;
-
-            return false;
-          };
-
           // Begin processing the base key and mark derived as dirty
-          parentStack.push( baseKey );
-          dirtySet.emplace_back( derivedKey );
+          parentStack.push_back( baseKey );
+          dirtySet.insert( derivedKey );
 
           while( !parentStack.empty() )
           {
             using Relations = std::unordered_multimap<std::type_index, std::pair<std::type_index, std::vector<PolymorphicCaster const *>>>;
             Relations unregisteredRelations; // Defer insertions until after main loop to prevent iterator invalidation
 
-            const auto parent = parentStack.top();
-            parentStack.pop();
+            const auto parent = parentStack.back();
+            parentStack.pop_back();
 
             // Update paths to all children marked dirty
             for( auto const & childPair : baseMap[parent] )
             {
               const auto child = childPair.first;
-              if( isDirty( child ) && baseMap.count( child ) )
+              if( dirtySet.count( child ) && baseMap.count( child ) )
               {
                 auto parentChildPath = checkRelation( parent, child );
 
@@ -341,15 +326,11 @@ namespace cereal
                   const auto finalChild = finalChildPair.first;
 
                   auto parentFinalChildPath = checkRelation( parent, finalChild );
-                  auto childFinalChildPath  = checkRelation( child, finalChild );
 
                   const size_t newLength = 1u + parentChildPath.first;
 
                   if( newLength < parentFinalChildPath.first )
                   {
-                    std::vector<PolymorphicCaster const *> path = parentChildPath.second;
-                    path.insert( path.end(), childFinalChildPath.second.begin(), childFinalChildPath.second.end() );
-
                     // Check to see if we have a previous uncommitted path in unregisteredRelations
                     // that is shorter. If so, ignore this path
                     auto hintRange = unregisteredRelations.equal_range( parent );
@@ -362,19 +343,19 @@ namespace cereal
                     if( uncommittedExists && (hint->second.second.size() <= newLength) )
                       continue;
 
+                    auto childFinalChildPath  = checkRelation( child, finalChild );
+                    std::vector<PolymorphicCaster const *> path = parentChildPath.second;
+                    path.insert( path.end(), childFinalChildPath.second.begin(), childFinalChildPath.second.end() );
+
                     auto newPath = std::pair<std::type_index, std::vector<PolymorphicCaster const *>>{finalChild, std::move(path)};
 
                     // Insert the new path if it doesn't exist, otherwise this will just lookup where to do the
                     // replacement
                     #ifdef CEREAL_OLDER_GCC
-                    auto old = unregisteredRelations.insert( hint, std::make_pair(parent, newPath) );
+                    unregisteredRelations.insert( hint, std::make_pair(parent, std::move(newPath)) );
                     #else // NOT CEREAL_OLDER_GCC
-                    auto old = unregisteredRelations.emplace_hint( hint, parent, newPath );
+                    unregisteredRelations.emplace_hint( hint, parent, std::move(newPath) );
                     #endif // NOT CEREAL_OLDER_GCC
-
-                    // If there was an uncommitted path, we need to perform a replacement
-                    if( uncommittedExists )
-                      old->second = newPath;
                   }
                 } // end loop over child's children
               } // end if dirty and child has children
@@ -389,7 +370,7 @@ namespace cereal
             }
 
             // Mark current parent as modified
-            dirtySet.emplace_back( parent );
+            dirtySet.insert( parent );
 
             // Insert all parents of the current parent node that haven't yet been processed
             auto parentRange = reverseMap.equal_range( parent );
@@ -398,7 +379,7 @@ namespace cereal
               const auto pParent = pIter->second;
               if( !processedParents.count( pParent ) )
               {
-                parentStack.push( pParent );
+                parentStack.push_back( pParent );
                 processedParents.insert( pParent );
               }
             }
@@ -473,7 +454,7 @@ namespace cereal
           a pointer to actual data (contents of smart_ptr's get() function)
           as their second parameter, and the type info of the owning smart_ptr
           as their final parameter */
-      typedef std::function<void(void*, void const *, std::type_info const &)> Serializer;
+      typedef void(*Serializer)(void*, void const *, std::type_info const &);
 
       //! Struct containing the serializer functions for all pointer types
       struct Serializers
@@ -483,7 +464,7 @@ namespace cereal
       };
 
       //! A map of serializers for pointers of all registered types
-      std::map<std::type_index, Serializers> map;
+      std::unordered_map<std::type_index, Serializers> map;
     };
 
     //! An empty noop deleter
@@ -503,9 +484,9 @@ namespace cereal
           a shared_ptr (or unique_ptr for the unique case) of any base
           type, and the type id of said base type as the third parameter.
           Internally it will properly be loaded and cast to the correct type. */
-      typedef std::function<void(void*, std::shared_ptr<void> &, std::type_info const &)> SharedSerializer;
+      typedef void(*SharedSerializer)(void*, std::shared_ptr<void> &, std::type_info const &);
       //! Unique ptr serializer function
-      typedef std::function<void(void*, std::unique_ptr<void, EmptyDeleter<void>> &, std::type_info const &)> UniqueSerializer;
+      typedef void(*UniqueSerializer)(void*, std::unique_ptr<void, EmptyDeleter<void>> &, std::type_info const &);
 
       //! Struct containing the serializer functions for all pointer types
       struct Serializers
@@ -515,7 +496,7 @@ namespace cereal
       };
 
       //! A map of serializers for pointers of all registered types
-      std::map<std::string, Serializers> map;
+      std::unordered_map<std::string, Serializers> map;
     };
 
     // forward decls for archives from cereal.hpp
@@ -535,12 +516,12 @@ namespace cereal
         auto & map = StaticObject<InputBindingMap<Archive>>::getInstance().map;
         auto lock = StaticObject<InputBindingMap<Archive>>::lock();
         auto key = std::string(binding_name<T>::name());
-        auto lb = map.lower_bound(key);
 
-        if (lb != map.end() && lb->first == key)
+        auto result = map.insert( { std::move(key), typename InputBindingMap<Archive>::Serializers() } );
+        if ( !result.second )
           return;
 
-        typename InputBindingMap<Archive>::Serializers serializers;
+        auto& serializers = result.first->second;
 
         serializers.shared_ptr =
           [](void * arptr, std::shared_ptr<void> & dptr, std::type_info const & baseInfo)
@@ -563,8 +544,6 @@ namespace cereal
 
             dptr.reset( PolymorphicCasters::template upcast<T>( ptr.release(), baseInfo ));
           };
-
-        map.insert( lb, { std::move(key), std::move(serializers) } );
       }
     };
 
@@ -654,18 +633,18 @@ namespace cereal
       {
         auto & map = StaticObject<OutputBindingMap<Archive>>::getInstance().map;
         auto key = std::type_index(typeid(T));
-        auto lb = map.lower_bound(key);
 
-        if (lb != map.end() && lb->first == key)
+        auto result = map.insert( { std::move(key), typename OutputBindingMap<Archive>::Serializers() } );
+        if ( !result.second )
           return;
 
-        typename OutputBindingMap<Archive>::Serializers serializers;
+        auto& serializers = result.first->second;
 
         serializers.shared_ptr =
-          [&](void * arptr, void const * dptr, std::type_info const & baseInfo)
+          [](void * arptr, void const * dptr, std::type_info const & baseInfo)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
-            writeMetadata(ar);
+            OutputBindingCreator::writeMetadata(ar);
 
             auto ptr = PolymorphicCasters::template downcast<T>( dptr, baseInfo );
 
@@ -677,10 +656,10 @@ namespace cereal
           };
 
         serializers.unique_ptr =
-          [&](void * arptr, void const * dptr, std::type_info const & baseInfo)
+          [](void * arptr, void const * dptr, std::type_info const & baseInfo)
           {
             Archive & ar = *static_cast<Archive*>(arptr);
-            writeMetadata(ar);
+            OutputBindingCreator::writeMetadata(ar);
 
             std::unique_ptr<T const, EmptyDeleter<T const>> const ptr( PolymorphicCasters::template downcast<T>( dptr, baseInfo ) );
 
