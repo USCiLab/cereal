@@ -49,7 +49,12 @@ TEST_CASE("xml_std_optional")
 
 TEST_CASE("json_std_optional")
 {
-  test_std_optional<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_std_optional<cereal::JSONInputArchive, cereal::JSONOutputArchive>(false);
+}
+
+TEST_CASE("json_std_optional_skip_nullopt")
+{
+  test_std_optional<cereal::JSONInputArchive, cereal::JSONOutputArchive>(true);
 }
 
 TEST_SUITE_END();
