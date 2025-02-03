@@ -489,6 +489,8 @@ namespace cereal
       class Iterator
       {
         public:
+          static constexpr size_t INVALID_INDEX = static_cast<size_t>(-1);
+
           Iterator() : itsIndex( 0 ), itsType(Null_) {}
 
           Iterator(MemberIterator begin, MemberIterator end) :
@@ -535,9 +537,9 @@ namespace cereal
               return nullptr;
           }
 
-          //! Adjust our position such that we are at the node with the given name
-          /*! @throws Exception if no such named node exists */
-          inline void search( const char * searchName )
+          //! Check if an upcoming node exists, without changing state
+          //! This provides an exception-free option to search ahead
+          inline size_t lookAhead( const char * searchName ) const
           {
             const auto len = std::strlen( searchName );
             size_t index = 0;
@@ -547,9 +549,22 @@ namespace cereal
               if( ( std::strncmp( searchName, currentName, len ) == 0 ) &&
                   ( std::strlen( currentName ) == len ) )
               {
-                itsIndex = index;
-                return;
+                return index;
               }
+            }
+
+            return INVALID_INDEX;
+          }
+
+          //! Adjust our position such that we are at the node with the given name
+          /*! @throws Exception if no such named node exists */
+          inline void search( const char * searchName )
+          {
+            const size_t index = lookAhead( searchName );
+            if (index != INVALID_INDEX)
+            {
+              itsIndex = index;
+              return;
             }
 
             throw Exception("JSON Parsing failed - provided NVP (" + std::string(searchName) + ") not found");
@@ -622,6 +637,12 @@ namespace cereal
       const char * getNodeName() const
       {
         return itsIteratorStack.back().name();
+      }
+
+      //! Returns whether or not the given searchName apears as an upcoming json node
+      bool lookAhead( const char * searchName ) const
+      {
+        return itsIteratorStack.back().lookAhead( searchName ) != Iterator::INVALID_INDEX;
       }
 
       //! Sets the name for the next node created with startNode
