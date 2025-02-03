@@ -45,6 +45,8 @@
 #include "cereal/details/helpers.hpp"
 #include "cereal/types/base_class.hpp"
 
+#include "cereal/external/ctti/type_id.hpp"
+
 namespace cereal
 {
   // ######################################################################
@@ -269,8 +271,9 @@ namespace cereal
     {                                                                            \
       static std::uint32_t registerVersion()                                     \
       {                                                                          \
-        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
-             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping          \
+            .emplace(std::hash<ctti::type_id_t>()(ctti::type_id<TYPE>()),        \
+                     VERSION_NUMBER);                                            \
         return VERSION_NUMBER;                                                   \
       }                                                                          \
       static inline const std::uint32_t version = registerVersion();             \
@@ -285,8 +288,9 @@ namespace cereal
       static const std::uint32_t version;                                        \
       static std::uint32_t registerVersion()                                     \
       {                                                                          \
-        ::cereal::detail::StaticObject<Versions>::getInstance().mapping.emplace( \
-             std::type_index(typeid(TYPE)).hash_code(), VERSION_NUMBER );        \
+        ::cereal::detail::StaticObject<Versions>::getInstance().mapping          \
+            .emplace(std::hash<ctti::type_id_t>()(ctti::type_id<TYPE>()),        \
+                     VERSION_NUMBER);                                            \
         return VERSION_NUMBER;                                                   \
       }                                                                          \
       CEREAL_UNUSED_FUNCTION                                                     \
@@ -595,7 +599,7 @@ namespace cereal
       template <class T> inline
       std::uint32_t registerClassVersion()
       {
-        static const auto hash = std::type_index(typeid(T)).hash_code();
+        static const auto hash = std::hash<ctti::type_id_t>()(ctti::type_id<T>());
         const auto insertResult = itsVersionedTypes.insert( hash );
         const auto lock = detail::StaticObject<detail::Versions>::lock();
         const auto version =
@@ -1013,7 +1017,7 @@ namespace cereal
       template <class T> inline
       std::uint32_t loadClassVersion()
       {
-        static const auto hash = std::type_index(typeid(T)).hash_code();
+        static const auto hash = std::hash<ctti::type_id_t>()(ctti::type_id<T>());
         auto lookupResult = itsVersionedTypes.find( hash );
 
         if( lookupResult != itsVersionedTypes.end() ) // already exists

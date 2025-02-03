@@ -51,3 +51,5 @@ cereal_version.out
 xml_ordering.out
 build
 /out/
+compile_commands.json
+.cache
