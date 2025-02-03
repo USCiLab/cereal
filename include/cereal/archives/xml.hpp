@@ -191,6 +191,7 @@ namespace cereal
         const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
         rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
+        itsStream.flush();
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
