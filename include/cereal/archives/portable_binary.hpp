@@ -224,7 +224,7 @@ namespace cereal
         itsStream(stream),
         itsConvertEndianness( false )
       {
-        uint8_t streamLittleEndian;
+        uint8_t streamLittleEndian{0};
         this->operator()( streamLittleEndian );
         itsConvertEndianness = options.is_little_endian() ^ streamLittleEndian;
       }
