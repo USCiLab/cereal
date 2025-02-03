@@ -3,6 +3,7 @@
     \ingroup OtherTypes */
 /*
   Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2022, Nokia
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -38,8 +39,11 @@
 #endif
 
 #include "cereal/cereal.hpp"
-#include <boost/variant/variant_fwd.hpp>
+#include <boost/mpl/at.hpp>
+#include <boost/mpl/size.hpp>
+#include <boost/mpl/size_t.hpp>
 #include <boost/variant/static_visitor.hpp>
+#include <boost/variant/variant_fwd.hpp>
 
 namespace cereal
 {
@@ -130,6 +134,62 @@ namespace cereal
         load_variant_impl( ar, variant, typename std::is_default_constructible<T>::type() );
       }
     };
+
+    //! @internal
+    template<size_t ... indices>
+    struct sequence
+    {
+    };
+
+    //! @internal
+    template<typename S1, std::size_t x>
+    struct push_back;
+
+    //! @internal
+    template<std::size_t ... indices, std::size_t x>
+    struct push_back<sequence<indices...>, x>
+    {
+      using type = sequence<indices..., x>;
+    };
+
+    //! @internal
+    template<std::size_t N>
+    struct make_sequence;
+
+    //! @internal
+    template<>
+    struct make_sequence<0>
+    {
+      using type = sequence<>;
+    };
+
+    //! @internal
+    template<std::size_t N>
+    struct make_sequence
+    {
+      using type = typename push_back<typename make_sequence<N - 1>::type, N - 1>::type;
+    };
+
+    //! @internal
+    template <class Archive, typename ... VariantTypes, size_t ... indices> inline
+    void load_variant_with_sequence( Archive & ar, boost::variant<VariantTypes...> & variant, sequence<indices...>)
+    {
+      int32_t which;
+      ar( CEREAL_NVP_("which", which) );
+
+      using TypesSequence = typename boost::variant<VariantTypes...>::types;
+      using LoadFuncType = void(*)(Archive &, boost::variant<VariantTypes...> &);
+      CEREAL_CONSTEXPR_LAMBDA LoadFuncType loadFuncArray[] = {
+        &boost_variant_detail::load_variant_wrapper<typename boost::mpl::at<
+          TypesSequence,
+          boost::mpl::size_t<indices>>::type>::load_variant...};
+
+      if(which >= int32_t(sizeof(loadFuncArray)/sizeof(loadFuncArray[0])))
+        throw Exception("Invalid 'which' selector when deserializing boost::variant");
+
+      loadFuncArray[which](ar, variant);
+    }
+
   } // namespace boost_variant_detail
 
   //! Saving for boost::variant
@@ -146,16 +206,10 @@ namespace cereal
   template <class Archive, typename ... VariantTypes> inline
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, boost::variant<VariantTypes...> & variant )
   {
-    int32_t which;
-    ar( CEREAL_NVP_("which", which) );
+    using TypesSequence = typename boost::variant<VariantTypes...>::types;
+    using IndexSequence = typename boost_variant_detail::make_sequence<boost::mpl::size<TypesSequence>::value>::type;
 
-    using LoadFuncType = void(*)(Archive &, boost::variant<VariantTypes...> &);
-    CEREAL_CONSTEXPR_LAMBDA LoadFuncType loadFuncArray[] = {&boost_variant_detail::load_variant_wrapper<VariantTypes>::load_variant...};
-
-    if(which >= int32_t(sizeof(loadFuncArray)/sizeof(loadFuncArray[0])))
-      throw Exception("Invalid 'which' selector when deserializing boost::variant");
-
-    loadFuncArray[which](ar, variant);
+    load_variant_with_sequence(ar, variant, IndexSequence());
   }
 } // namespace cereal
 
