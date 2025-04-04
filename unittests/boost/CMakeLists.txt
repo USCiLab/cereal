@@ -1,6 +1,7 @@
 file(GLOB TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+# include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -idirafter ${Boost_INCLUDE_DIRS}")
 
 # Build all of the non-special tests
 foreach(TEST_SOURCE ${TESTS})
