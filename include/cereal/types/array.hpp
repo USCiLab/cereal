@@ -42,7 +42,7 @@ namespace cereal
                           && std::is_arithmetic<T>::value, void>::type
   CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::array<T, N> const & array )
   {
-    ar( binary_data( array.data(), sizeof(array) ) );
+    ar( binary_data( array.data(), N*sizeof(T) ) );
   }
 
   //! Loading for std::array primitive types
@@ -52,7 +52,7 @@ namespace cereal
                           && std::is_arithmetic<T>::value, void>::type
   CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::array<T, N> & array )
   {
-    ar( binary_data( array.data(), sizeof(array) ) );
+    ar( binary_data( array.data(), N*sizeof(T) ) );
   }
 
   //! Saving for std::array all other types

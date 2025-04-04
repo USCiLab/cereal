@@ -1,0 +1,8 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: @PROJECT_NAME@
+Description: cereal is a header-only C++11 serialization library
+URL: https://uscilab.github.io/cereal/
+Version: @PROJECT_VERSION@
+Cflags: -I"${includedir}"

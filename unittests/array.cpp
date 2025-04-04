@@ -31,22 +31,26 @@ TEST_SUITE_BEGIN("array");
 
 TEST_CASE("binary_array")
 {
-  test_array<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_array<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, 0>();
+  test_array<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, 100>();
 }
 
 TEST_CASE("portable_binary_array")
 {
-  test_array<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+  test_array<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive, 0>();
+  test_array<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive, 100>();
 }
 
 TEST_CASE("xml_array")
 {
-  test_array<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  test_array<cereal::XMLInputArchive, cereal::XMLOutputArchive, 0>();
+  test_array<cereal::XMLInputArchive, cereal::XMLOutputArchive, 100>();
 }
 
 TEST_CASE("json_array")
 {
-  test_array<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_array<cereal::JSONInputArchive, cereal::JSONOutputArchive, 0>();
+  test_array<cereal::JSONInputArchive, cereal::JSONOutputArchive, 100>();
 }
 
 TEST_SUITE_END();

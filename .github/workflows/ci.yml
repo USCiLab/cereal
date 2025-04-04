@@ -4,7 +4,6 @@ on: [push, pull_request]
 jobs:
   test_cereal_linux:
     runs-on: ubuntu-latest
-    container: ${{ matrix.CONTAINER }}
     strategy:
       fail-fast: false
       matrix:
@@ -164,75 +163,75 @@ jobs:
     name: ${{ matrix.name }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
+    - name: Check out the repo
+      uses: actions/checkout@v4
     - name: install deps and test
-      shell: bash
-      env:
-        CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
-        COMPILER: ${{ matrix.COMPILER }}
-        EXTRA_APT_PACKAGES: ${{ matrix.EXTRA_APT_PACKAGES }}
-        LLVM_APT_SOURCE: ${{ matrix.LLVM_APT_SOURCE }}
-      run: |
-        set -ex
-        apt-get update -y
-        DEBIAN_FRONTEND=noninteractive TZ=America/Los_Angeles apt-get install -y software-properties-common wget python3-pip make apt-transport-https
+      uses: addnab/docker-run-action@v3
+      with:
+        image: ${{ matrix.CONTAINER }}
+        options: -v ${{ github.workspace }}:/var/workspace 
+        shell: bash
+        run: |
+          set -ex
+          apt-get update -y
+          DEBIAN_FRONTEND=noninteractive TZ=America/Los_Angeles apt-get install -y software-properties-common wget python3-pip make apt-transport-https
 
-        # Add apt repositories for older Ubuntu
-        . /etc/os-release
-        if [[ "${VERSION_ID}" == "16.04" ]]; then
-          add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          add-apt-repository ppa:mhier/libboost-latest -y
-        fi
-
-        if [[ "${LLVM_APT_SOURCE}" != "" ]]; then
-          wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-          add-apt-repository "${LLVM_APT_SOURCE}"
-        fi
-
-        apt-get update -y
-
-        # Install apt packages
-        apt-get install libboost-serialization-dev libboost-dev ${EXTRA_APT_PACKAGES} -y
-        pip3 install cmake
-
-        # Set compiler and env variables
-        export CXX=${COMPILER}
-        ${CXX} --version
-        DEPS_DIR="${PWD}/deps"
-        mkdir -p "${DEPS_DIR}"
-        pushd "${DEPS_DIR}"
-        JOBS=2
-
-        # Install the right version of libc++
-        LLVM_INSTALL=${DEPS_DIR}/llvm/install
-        # if in linux and compiler clang and llvm not installed
-        if [[ "${CXX}" == "clang"* && -n "$(ls -A ${LLVM_INSTALL})" ]]; then
-          if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
-          elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
-          elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.1";
-          elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION="3.9.1";
+          # Add apt repositories for older Ubuntu
+          . /etc/os-release
+          if [[ "${VERSION_ID}" == "16.04" ]]; then
+            add-apt-repository ppa:ubuntu-toolchain-r/test -y
+            add-apt-repository ppa:mhier/libboost-latest -y
           fi
-          LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
-          LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
-          LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
-          mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
-          wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
-          wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
-          wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
-          (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
-          (cd llvm/build/projects/libcxx && make install -j2)
-          (cd llvm/build/projects/libcxxabi && make install -j2)
-          export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
-          export LDFLAGS="-L ${LLVM_INSTALL}/lib -l c++ -l c++abi"
-          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib"
-        fi
 
-        popd
+          if [[ "${{ matrix.LLVM_APT_SOURCE }}" != "" ]]; then
+            wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+            add-apt-repository "${{ matrix.LLVM_APT_SOURCE }}"
+          fi
 
-        # Build cereal and test
-        cmake --version
-        mkdir build && cd build
-        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
-        ctest . --output-on-failure
+          apt-get update -y
+
+          # Install apt packages
+          apt-get install libboost-serialization-dev libboost-dev ${{ matrix.EXTRA_APT_PACKAGES }} -y
+          pip3 install --upgrade "pip < 21.0"
+          pip3 install cmake
+
+          # Set compiler and env variables
+          cd /var/workspace
+          export CXX=${{ matrix.COMPILER }}
+          ${CXX} --version
+          DEPS_DIR="${PWD}/deps"
+          mkdir -p "${DEPS_DIR}"
+          pushd "${DEPS_DIR}"
+          JOBS=2
+
+          # Install the right version of libc++
+          LLVM_INSTALL=${DEPS_DIR}/llvm/install
+          # if in linux and compiler clang and llvm not installed
+          if [[ "${CXX}" == "clang"* && -n "$(ls -A ${LLVM_INSTALL})" ]]; then
+            if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
+            elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
+            elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.1";
+            elif [[ "${CXX}" == "clang++-3.9" ]]; then LLVM_VERSION="3.9.1";
+            fi
+            LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+            LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+            LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+            mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+            wget -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
+            wget -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
+            wget -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
+            (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_INSTALL})
+            (cd llvm/build/projects/libcxx && make install -j2)
+            (cd llvm/build/projects/libcxxabi && make install -j2)
+            export CXXFLAGS="-isystem ${LLVM_INSTALL}/include/c++/v1"
+            export LDFLAGS="-L ${LLVM_INSTALL}/lib -l c++ -l c++abi"
+            export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_INSTALL}/lib"
+          fi
+
+          popd
+
+          # Build cereal and test
+          cmake --version
+          mkdir build && cd build
+          cmake ${{ matrix.CMAKE_OPTIONS }} .. && make -j4 VERBOSE=1
+          ctest . --output-on-failure

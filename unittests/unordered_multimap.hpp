@@ -71,7 +71,7 @@ void test_unordered_multimap()
     std::unordered_multimap<int8_t, StructExternalSplit> o_esplunordered_multimap;
     for(int j=0; j<100; ++j)
     {
-      auto key = random_value<char>(gen);
+      auto key = random_value<int8_t>(gen);
       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
     }

@@ -10,18 +10,18 @@ jobs:
         include:
           - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
-            XCODE_VERSION: 11
-            NAME: macos-latest-clang-xcode11
+            XCODE_VERSION: 15
+            NAME: macos-latest-clang-xcode15
 
           - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
-            XCODE_VERSION: 12
-            NAME: macos-latest-clang-xcode12
+            XCODE_VERSION: 16
+            NAME: macos-latest-clang-xcode16
     name: ${{ matrix.name }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
