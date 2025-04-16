@@ -731,7 +731,7 @@ namespace cereal
       //! Convert a string to an unsigned long long
       void stringToNumber( std::string const & str, unsigned long long & val ) { val = std::stoull( str ); }
       //! Convert a string to a long double
-      void stringToNumber( std::string const & str, long double & val ) { val = std::stold( std::wstring{str.begin(), str.end()} ); }
+      void stringToNumber( std::string const & str, long double & val ) { val = std::stold( str ); }
 
     public:
       //! Loads a value from the current node - long double and long long overloads
