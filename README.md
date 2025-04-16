@@ -1,3 +1,15 @@
+### Klepsydra UT converage
+
+```bash
+mkdir build && cd build/
+cmake ..
+make coverage-html
+```
+
+Go to the gcovr [report](build/coverage-html/index.html) or lcov [report](assets/coverage/index.html).
+
+---
+
 cereal - A C++11 library for serialization
 ==========================================
 

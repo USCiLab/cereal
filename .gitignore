@@ -51,3 +51,8 @@ cereal_version.out
 xml_ordering.out
 build
 /out/
+
+cmake-build-*
+.idea
+.vscode
+assets

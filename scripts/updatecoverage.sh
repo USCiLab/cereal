@@ -25,9 +25,9 @@ lcov --remove coverage.info '*/external/*' '*/cereal/details/util.hpp' 'sandbox/
 genhtml --demangle-cpp coverage.info --output-directory ${tempdir}
 
 # copy over to gh pages
-git checkout gh-pages
+#git checkout gh-pages
 
 rm -rf $1/assets/coverage
-mkdir $1/assets/coverage
+mkdir -p $1/assets/coverage
 cp -r ${tempdir}/* $1/assets/coverage/
 rm -rf ${tempdir}
