@@ -256,6 +256,8 @@ namespace cereal
           @internal */
       DeferredData( T && v ) : value(std::forward<T>(v)) {}
 
+      DeferredData(const DeferredData &) = default;
+
       Type value;
   };
 
