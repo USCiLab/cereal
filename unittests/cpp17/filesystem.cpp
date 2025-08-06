@@ -1,8 +1,5 @@
-/*! \file filesystem.hpp
-    \brief Support for types found in \<filesystem\>
-    \ingroup STLSupport */
 /*
-  Copyright (c) 2023, Francois Michaut
+  Copyright (c) 2025, Francois Michaut
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -28,35 +25,33 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef CEREAL_TYPES_FILESYSTEM_HPP_
-#define CEREAL_TYPES_FILESYSTEM_HPP_
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "filesystem.hpp"
 
-#include "cereal/cereal.hpp"
-#include "cereal/types/string.hpp"
-#include <filesystem>
+#ifdef CEREAL_HAS_CPP17
 
-namespace cereal
+TEST_SUITE_BEGIN("std_filesystem");
+
+TEST_CASE("binary_std_filesystem")
 {
-  //! Serialization for std::filesystem::path types, if binary data is supported
-  template<class Archive> inline
-  typename std::enable_if<traits::is_output_serializable<BinaryData<std::filesystem::path::value_type>, Archive>::value, void>::type
-  CEREAL_SAVE_FUNCTION_NAME(Archive & ar, std::filesystem::path const & path)
-  {
-    // Save native path format
-    ar(path.native());
-  }
+  test_std_filesystem_path<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+}
 
-  //! Serialization for std::filesystem::path types, if binary data is supported
-  template<class Archive> inline
-  typename std::enable_if<traits::is_input_serializable<BinaryData<std::filesystem::path::value_type>, Archive>::value, void>::type
-  CEREAL_LOAD_FUNCTION_NAME(Archive & ar, std::filesystem::path & path)
-  {
-    // load native path string
-    std::filesystem::path::string_type str;
+TEST_CASE("portable_binary_std_filesystem")
+{
+  test_std_filesystem_path<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+}
 
-    ar(str);
-    path = std::move(str);
-  }
-} // namespace cereal
+TEST_CASE("xml_std_filesystem")
+{
+  test_std_filesystem_path<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+}
 
-#endif // CEREAL_TYPES_FILESYSTEM_HPP_
+TEST_CASE("json_std_filesystem")
+{
+  test_std_filesystem_path<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+}
+
+TEST_SUITE_END();
+
+#endif // CEREAL_HAS_CPP17

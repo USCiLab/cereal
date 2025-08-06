@@ -1,8 +1,5 @@
-/*! \file filesystem.hpp
-    \brief Support for types found in \<filesystem\>
-    \ingroup STLSupport */
 /*
-  Copyright (c) 2023, Francois Michaut
+  Copyright (c) 2025, Francois Michaut
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -28,35 +25,64 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef CEREAL_TYPES_FILESYSTEM_HPP_
-#define CEREAL_TYPES_FILESYSTEM_HPP_
+#ifndef CEREAL_TEST_CPP17_FILESYSTEM_H_
+#define CEREAL_TEST_CPP17_FILESYSTEM_H_
+#include "../common.hpp"
 
-#include "cereal/cereal.hpp"
-#include "cereal/types/string.hpp"
-#include <filesystem>
+#ifdef CEREAL_HAS_CPP17
 
-namespace cereal
+#include <cereal/types/filesystem.hpp>
+
+template <class IArchive, class OArchive> inline
+void test_std_filesystem_path()
 {
-  //! Serialization for std::filesystem::path types, if binary data is supported
-  template<class Archive> inline
-  typename std::enable_if<traits::is_output_serializable<BinaryData<std::filesystem::path::value_type>, Archive>::value, void>::type
-  CEREAL_SAVE_FUNCTION_NAME(Archive & ar, std::filesystem::path const & path)
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  using char_type = std::filesystem::path::value_type;
+
+  for(size_t i=0; i<100; ++i)
   {
-    // Save native path format
-    ar(path.native());
+
+    std::filesystem::path path_a = random_basic_string<char_type>(gen);
+    std::filesystem::path path_b = random_basic_string<char_type>(gen);
+    std::filesystem::path path_c = random_basic_string<char_type>(gen);
+
+    std::filesystem::path o_path1 = random_basic_string<char_type>(gen);
+    std::filesystem::path o_path2 = "";
+    std::filesystem::path o_path3;
+    std::filesystem::path o_long_path = path_a / path_b / path_c;
+
+    std::ostringstream os;
+    {
+      OArchive oar(os);
+      oar(o_path1);
+      oar(o_path2);
+      oar(o_path3);
+      oar(o_long_path);
+    }
+
+    std::filesystem::path i_path1;
+    std::filesystem::path i_path2;
+    std::filesystem::path i_path3;
+    std::filesystem::path i_long_path;
+
+    std::istringstream is(os.str());
+    {
+      IArchive iar(is);
+
+      iar(i_path1);
+      iar(i_path2);
+      iar(i_path3);
+      iar(i_long_path);
+    }
+
+    CHECK_EQ(i_path1, o_path1);
+    CHECK_EQ(i_path2, o_path2);
+    CHECK_EQ(i_path3, o_path3);
+    CHECK_EQ(i_long_path, o_long_path);
   }
+}
 
-  //! Serialization for std::filesystem::path types, if binary data is supported
-  template<class Archive> inline
-  typename std::enable_if<traits::is_input_serializable<BinaryData<std::filesystem::path::value_type>, Archive>::value, void>::type
-  CEREAL_LOAD_FUNCTION_NAME(Archive & ar, std::filesystem::path & path)
-  {
-    // load native path string
-    std::filesystem::path::string_type str;
-
-    ar(str);
-    path = std::move(str);
-  }
-} // namespace cereal
-
-#endif // CEREAL_TYPES_FILESYSTEM_HPP_
+#endif // CEREAL_HAS_CPP17
+#endif // CEREAL_TEST_CPP17_VARIANT_H_
