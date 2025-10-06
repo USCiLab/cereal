@@ -321,8 +321,8 @@ struct GenericStringRef {
     //! implicit conversion to plain CharType pointer
     operator const Ch *() const { return s; }
 
-    const Ch* const s; //!< plain CharType pointer
-    const SizeType length; //!< length of the string (excluding the trailing NULL terminator)
+    const Ch* s; //!< plain CharType pointer
+    SizeType length; //!< length of the string (excluding the trailing NULL terminator)
 
 private:
     //! Disallow construction from non-const array
