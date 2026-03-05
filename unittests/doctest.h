@@ -6424,7 +6424,7 @@ void Context::setCout(std::ostream* out) { p->cout = out; }
 static class DiscardOStream : public std::ostream
 {
 private:
-    class : public std::streambuf
+    class discardBufStream: public std::streambuf
     {
     private:
         // allowing some buffering decreases the amount of calls to overflow
