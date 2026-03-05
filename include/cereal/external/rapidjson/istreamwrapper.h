@@ -22,7 +22,7 @@
 #ifdef __clang__
 CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(padded)
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1910
 CEREAL_RAPIDJSON_DIAG_PUSH
 CEREAL_RAPIDJSON_DIAG_OFF(4351) // new behavior: elements of array 'array' will be default initialized
 #endif
@@ -119,7 +119,7 @@ private:
 typedef BasicIStreamWrapper<std::istream> IStreamWrapper;
 typedef BasicIStreamWrapper<std::wistream> WIStreamWrapper;
 
-#if defined(__clang__) || defined(_MSC_VER)
+#if defined(__clang__) || (defined(_MSC_VER) && _MSC_VER < 1910)
 CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
