@@ -169,13 +169,34 @@ namespace cereal
         itsNodeStack.push(NodeType::StartObject);
       }
 
-      //! Destructor, flushes the JSON
-      ~JSONOutputArchive() CEREAL_NOEXCEPT
+      //! Explicitly finishes the JSON output and flushes to the stream
+      /*! This method can be used to detect and handle errors that occur during
+          finalization of the JSON output, similar to std::fstream::close().
+          If not called explicitly, the destructor will attempt the same
+          finalization but will silently swallow any exceptions.
+
+          It is safe to call close() multiple times; subsequent calls are no-ops.
+
+          @throws RapidJSONException if rapidjson encounters an error during finalization */
+      void close()
       {
+        if( itsClosed )
+          return;
+        itsClosed = true;
+
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
         else if (itsNodeStack.top() == NodeType::InArray)
           itsWriter.EndArray();
+      }
+
+      //! Destructor, flushes the JSON
+      /*! Silently catches any exceptions to guarantee noexcept.
+          Call close() explicitly before destruction to detect errors. */
+      ~JSONOutputArchive() CEREAL_NOEXCEPT
+      {
+        try { close(); }
+        catch(...) {}
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
@@ -385,6 +406,7 @@ namespace cereal
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes
       std::stack<NodeType> itsNodeStack;
+      bool itsClosed = false;              //!< Whether close() has been called
   }; // JSONOutputArchive
 
   // ######################################################################
