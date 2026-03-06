@@ -96,7 +96,34 @@ namespace cereal
   template <class Archive, class K, class C, class A> inline
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::multiset<K, C, A> & multiset )
   {
-    set_detail::load( ar, multiset );
+    size_type size;
+    ar( make_size_tag( size ) );
+
+    multiset.clear();
+
+    typename std::multiset<K, C, A>::key_compare cmp;
+
+    auto hint = multiset.begin();
+    for( size_type i = 0; i < size; ++i )
+    {
+      typename std::multiset<K, C, A>::key_type key;
+      ar( key );
+
+      // if hint == key
+      if(!cmp(*hint, key) && !cmp(key, *hint)) {
+        #ifdef CEREAL_OLDER_GCC
+        hint = multiset.insert(std::move(key));
+        #else // NOT CEREAL_OLDER_GCC
+        hint = multiset.emplace(std::move(key));
+        #endif // NOT CEREAL_OLDER_GCC
+      }else {
+        #ifdef CEREAL_OLDER_GCC
+        hint = multiset.insert_hint( hint, std::move( key ) );
+        #else // NOT CEREAL_OLDER_GCC
+        hint = multiset.emplace_hint( hint, std::move( key ) );
+        #endif // NOT CEREAL_OLDER_GCC
+      }
+    }
   }
 } // namespace cereal
 

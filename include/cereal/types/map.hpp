@@ -33,4 +33,55 @@
 #include "cereal/types/concepts/pair_associative_container.hpp"
 #include <map>
 
+namespace cereal
+{
+  /**
+    * std::multimap must not default to the implementation in
+    * pair_associative_container.hpp, because it incorrectly
+    * handles equivalent keys when loading the map.
+    *
+    * The cause is the use of emplace_hint.
+    * Since it iserts the value before the hint, key order will be flipped
+    *
+    * Here we are using emplace (if key is equivalent to the previous one),
+    * or emplace_hint if keys are different, because this is a faster path
+    *
+    * Emplace will preserve order of equivalent keys, while where
+    * non-equivalent ones are placed doesn't matter.
+    **/
+
+  template <class Archive, typename... Args>
+  inline void load(Archive &ar, std::multimap<Args...> &map)
+  {
+    size_type size;
+    ar(make_size_tag(size));
+
+    map.clear();
+
+    typename std::multimap<Args...>::key_compare cmp;
+    auto hint = map.begin();
+    for (size_t i = 0; i < size; ++i)
+    {
+      typename std::multimap<Args...>::key_type key;
+      typename std::multimap<Args...>::mapped_type value;
+
+      ar(make_map_item(key, value));
+      if(!cmp(hint->first, key) && !cmp(key, hint->first)) {
+        #ifdef CEREAL_OLDER_GCC
+        hint = map.insert(std::move(key), std::move(value));
+        #else // NOT CEREAL_OLDER_GCC
+        hint = map.emplace(std::move(key), std::move(value));
+        #endif // NOT CEREAL_OLDER_GCC
+      } else {
+        #ifdef CEREAL_OLDER_GCC
+        hint = map.insert_hint(hint, std::move(key), std::move(value));
+        #else // NOT CEREAL_OLDER_GCC
+        hint = map.emplace_hint(hint, std::move(key), std::move(value));
+        #endif // NOT CEREAL_OLDER_GCC
+      }
+
+    }
+  }
+}
+
 #endif // CEREAL_TYPES_MAP_HPP_
