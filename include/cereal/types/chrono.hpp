@@ -38,7 +38,7 @@ namespace cereal
   template <class Archive, class R, class P> inline
   void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::chrono::duration<R, P> const & dur )
   {
-    ar( CEREAL_NVP_("count", dur.count()) );
+    ar( CEREAL_NVP_("count", std::chrono::duration_cast<std::chrono::nanoseconds>(dur).count()) );
   }
 
   //! Loading std::chrono::duration
@@ -48,7 +48,7 @@ namespace cereal
     R count;
     ar( CEREAL_NVP_("count", count) );
 
-    dur = std::chrono::duration<R, P>{count};
+    dur = std::chrono::duration_cast<std::chrono::duration<R, P>>(std::chrono::nanoseconds{count});
   }
 
   //! Saving std::chrono::time_point
