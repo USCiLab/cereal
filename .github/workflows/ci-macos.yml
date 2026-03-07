@@ -1,45 +1,71 @@
-name: cereal mac ci
+name: cereal mac multi-arch ci
 on: [push, pull_request]
 
 jobs:
   test_cereal_macos:
-    runs-on: macos-latest
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
-            COMPILER: 'clang++'
-            XCODE_VERSION: 15
-            NAME: macos-latest-clang-xcode15
+          # 1. Latest Apple Silicon (Standard)
+          - os: macos-15
+            arch: arm64
+            xcode: '16.2'
+            name: macos-15-arm64-xcode16
 
-          - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
-            COMPILER: 'clang++'
-            XCODE_VERSION: 16
-            NAME: macos-latest-clang-xcode16
-    name: ${{ matrix.name }}
+          # 2. Legacy Intel Support (Standard)
+          # Note: macos-13 is retired; macos-15-intel is the modern way to hit x86_64
+          - os: macos-15-intel
+            arch: x86_64
+            xcode: '16.0'
+            name: macos-15-x64-xcode16
+
+          # 3. Bleeding Edge (ARM)
+          - os: macos-26
+            arch: arm64
+            xcode: '26.0'
+            name: macos-26-arm64-beta
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: ${{ matrix.XCODE_VERSION }}
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ matrix.xcode }}
 
-    - name: build and test
-      shell: bash
-      env:
-        CMAKE_OPTIONS: ${{ matrix.CMAKE_OPTIONS }}
-        COMPILER: ${{ matrix.COMPILER }}
-      run: |
-        set -ex
-        # Set compiler and env variables
-        export CXX=${COMPILER}
-        ${CXX} --version
+      - name: Install Dependencies
+        run: brew install ninja ccache boost
 
-        # Build cereal and test
-        cmake --version
-        mkdir build && cd build
-        cmake ${CMAKE_OPTIONS} .. && make -j4 VERBOSE=1
-        ctest . --output-on-failure
+      - name: Configure Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-${{ matrix.arch }}-ccache-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-${{ matrix.arch }}-ccache-
+
+      - name: Build and Verify Architecture
+        shell: bash
+        run: |
+          # Verify we are on the expected architecture
+          EXPECTED_ARCH="${{ matrix.arch }}"
+          ACTUAL_ARCH=$(uname -m)
+          echo "Expected: $EXPECTED_ARCH, Actual: $ACTUAL_ARCH"
+          if [ "$EXPECTED_ARCH" == "x86_64" ] && [ "$ACTUAL_ARCH" != "x86_64" ]; then exit 1; fi
+
+          # Modern CMake Build
+          export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DWITH_WERROR=ON \
+            -DCMAKE_BUILD_TYPE=Release
+
+          cmake --build build --parallel 4
+
+      - name: Run Tests
+        run: |
+          cd build
+          ctest --output-on-failure --parallel 4
