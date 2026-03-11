@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test_cereal_macos:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -11,12 +11,14 @@ jobs:
           - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
             XCODE_VERSION: 15
-            NAME: macos-latest-clang-xcode15
+            NAME: macos-14-clang-xcode15
+            os: macos-14
 
           - CMAKE_OPTIONS: '-DWITH_WERROR=OFF -DSKIP_PORTABILITY_TEST=ON -DSKIP_PERFORMANCE_COMPARISON=ON'
             COMPILER: 'clang++'
             XCODE_VERSION: 16
-            NAME: macos-latest-clang-xcode16
+            NAME: macos-15-clang-xcode16
+            os: macos-15
     name: ${{ matrix.name }}
 
     steps:
