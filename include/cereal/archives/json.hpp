@@ -255,7 +255,8 @@ namespace cereal
       //! Saves a double to the current node
       void saveValue(double d)              { itsWriter.Double(d);                                                       }
       //! Saves a string to the current node
-      void saveValue(std::string const & s) { itsWriter.String(s.c_str(), static_cast<CEREAL_RAPIDJSON_NAMESPACE::SizeType>( s.size() )); }
+      template<class CharT, class Traits, class Alloc> inline
+      void saveValue(std::basic_string<CharT, Traits, Alloc>const& s) { itsWriter.String(s.c_str(), static_cast<CEREAL_RAPIDJSON_NAMESPACE::SizeType>(s.size())); }
       //! Saves a const char * to the current node
       void saveValue(char const * s)        { itsWriter.String(s);                                                       }
       //! Saves a nullptr to the current node
@@ -664,7 +665,8 @@ namespace cereal
       //! Loads a value from the current node - double overload
       void loadValue(double & val)      { search(); val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
-      void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
+      template<class CharT, class Traits, class Alloc> inline
+      void loadValue(std::basic_string<CharT, Traits, Alloc> & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
       void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
