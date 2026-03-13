@@ -29,16 +29,15 @@
 #ifndef CEREAL_CEREAL_HPP_
 #define CEREAL_CEREAL_HPP_
 
-#include <type_traits>
-#include <string>
-#include <memory>
-#include <functional>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <memory>
+#include <string>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #include "cereal/macros.hpp"
 #include "cereal/details/traits.hpp"
