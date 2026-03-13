@@ -30,9 +30,10 @@
 
 #ifdef CEREAL_HAS_CPP17
 #include <cereal/types/optional.hpp>
+#include <cereal/archives/json.hpp>
 
 template <class IArchive, class OArchive> inline
-void test_std_optional()
+void test_std_optional(bool skipNullopt = false)
 {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -47,7 +48,16 @@ void test_std_optional()
 
   std::ostringstream os;
   {
-    OArchive oar(os);
+    OArchive oar = [&os, skipNullopt](){
+      if constexpr(std::is_same_v<OArchive, cereal::JSONOutputArchive>)
+      {
+        return OArchive(os, skipNullopt ? cereal::JSONOutputArchive::Options::SkipNullopt() : cereal::JSONOutputArchive::Options::Default());
+      }
+      else
+      {
+        return OArchive{os};
+      }
+    }();
 
     oar(o_o1);
     oar(o_o2);
@@ -68,7 +78,16 @@ void test_std_optional()
 
   std::istringstream is(os.str());
   {
-    IArchive iar(is);
+    IArchive iar = [&is, skipNullopt](){
+      if constexpr(std::is_same_v<IArchive, cereal::JSONInputArchive>)
+      {
+        return IArchive(is, skipNullopt);
+      }
+      else
+      {
+        return IArchive{is};
+      }
+    }();
 
     iar(i_o1);
     iar(i_o2);
