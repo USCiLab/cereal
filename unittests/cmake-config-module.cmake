@@ -33,7 +33,7 @@ endif()
 # create test project sources
 file(WRITE ${BINARY_DIR}/test_source/CMakeLists.txt "
   cmake_minimum_required(VERSION ${CMAKE_VERSION})
-  project(cereal-test-config-module)
+  project(cereal-test-config-module LANGUAGES CXX)
   if(NOT MSVC)
       if(CMAKE_VERSION VERSION_LESS 3.1)
           set(CMAKE_CXX_FLAGS \"-std=c++11 \${CMAKE_CXX_FLAGS}\")
