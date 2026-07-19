@@ -19,12 +19,6 @@ option(BUILD_DOC "Build documentation" ON)
 option(BUILD_SANDBOX "Build sandbox examples" ON)
 option(SKIP_PERFORMANCE_COMPARISON "Skip building performance sandbox comparison (requires boost)" OFF)
 
-# TODO: should not be needed! CK
-if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
-    option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
-endif()
-
-
 set(CEREAL_THREAD_LIBS)
 if(UNIX)
     option(THREAD_SAFE "Use mutexes to ensure thread safety" OFF)
