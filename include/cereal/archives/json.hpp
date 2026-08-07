@@ -123,7 +123,7 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options( IndentChar::space, 0 ); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -139,10 +139,20 @@ namespace cereal
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
+          explicit Options( int precision,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4 ) :
             itsPrecision( precision ),
+            itsIndentChar( static_cast<char>(indentChar) ),
+            itsIndentLength( indentLength ) { }
+
+          //! Specify specific options for the JSONOutputArchive
+          /*! @param indentChar The type of character to indent with
+              @param indentLength The number of indentChar to use for indentation
+                             (0 corresponds to no indentation) */
+          explicit Options( IndentChar indentChar = IndentChar::space,
+                            unsigned int indentLength = 4 ) :
+            itsPrecision( JSONWriter::kDefaultMaxDecimalPlaces ),
             itsIndentChar( static_cast<char>(indentChar) ),
             itsIndentLength( indentLength ) { }
 
