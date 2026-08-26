@@ -133,7 +133,7 @@ namespace cereal
       {
         std::streamsize writtenSize = 0;
 
-        if( itsConvertEndianness )
+        if( itsConvertEndianness && DataSize > 1 )
         {
           for( std::streamsize i = 0; i < size; i += DataSize )
             for( std::streamsize j = 0; j < DataSize; ++j )
@@ -245,7 +245,7 @@ namespace cereal
           throw Exception("Failed to read " + std::to_string(size) + " bytes from input stream! Read " + std::to_string(readSize));
 
         // flip bits if needed
-        if( itsConvertEndianness )
+        if( itsConvertEndianness && DataSize > 1 )
         {
           std::uint8_t * ptr = reinterpret_cast<std::uint8_t*>( data );
           for( std::streamsize i = 0; i < size; i += DataSize )
