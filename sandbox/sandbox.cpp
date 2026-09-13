@@ -219,7 +219,7 @@ struct Everything
     ar(CEREAL_NVP(s));
   }
 
-  bool operator==(Everything const & o)
+  bool operator==(Everything const & o) const
   {
     return
       x == o.x &&
