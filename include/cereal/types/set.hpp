@@ -56,7 +56,7 @@ namespace cereal
 
       set.clear();
 
-      auto hint = set.begin();
+      auto hint = set.end();
       for( size_type i = 0; i < size; ++i )
       {
         typename SetT::key_type key;
@@ -67,6 +67,7 @@ namespace cereal
         #else // NOT CEREAL_OLDER_GCC
         hint = set.emplace_hint( hint, std::move( key ) );
         #endif // NOT CEREAL_OLDER_GCC
+        hint = set.end();
       }
     }
   }

@@ -104,31 +104,68 @@ void test_multiset()
       iar(i_esplmultiset);
     }
 
+    CHECK_EQ( i_podmultiset.size(), o_podmultiset.size() );
+    CHECK_UNARY( std::equal( i_podmultiset.begin(), i_podmultiset.end(), o_podmultiset.begin() ) );
     for(auto const & p : i_podmultiset)
     {
       CHECK_EQ(o_podmultiset.count(p), i_podmultiset.count(p));
     }
 
+    CHECK_EQ( i_isermultiset.size(), o_isermultiset.size() );
+    CHECK_UNARY( std::equal( i_isermultiset.begin(), i_isermultiset.end(), o_isermultiset.begin() ) );
     for(auto const & p : i_isermultiset)
     {
       CHECK_EQ(o_isermultiset.count(p), i_isermultiset.count(p));
     }
 
+    CHECK_EQ( i_isplmultiset.size(), o_isplmultiset.size() );
+    CHECK_UNARY( std::equal( i_isplmultiset.begin(), i_isplmultiset.end(), o_isplmultiset.begin() ) );
     for(auto const & p : i_isplmultiset)
     {
       CHECK_EQ(o_isplmultiset.count(p), i_isplmultiset.count(p));
     }
 
+    CHECK_EQ( i_esermultiset.size(), o_esermultiset.size() );
+    CHECK_UNARY( std::equal( i_esermultiset.begin(), i_esermultiset.end(), o_esermultiset.begin() ) );
     for(auto const & p : i_esermultiset)
     {
       CHECK_EQ(o_esermultiset.count(p), i_esermultiset.count(p));
     }
 
+    CHECK_EQ( i_esplmultiset.size(), o_esplmultiset.size() );
+    CHECK_UNARY( std::equal( i_esplmultiset.begin(), i_esplmultiset.end(), o_esplmultiset.begin() ) );
     for(auto const & p : i_esplmultiset)
     {
       CHECK_EQ(o_esplmultiset.count(p), i_esplmultiset.count(p));
     }
   }
+}
+
+template <class IArchive, class OArchive> inline
+void test_multiset_equivalent_keys_order()
+{
+  std::multiset<int> o_multiset;
+  o_multiset.emplace(1);
+  o_multiset.emplace(1);
+  o_multiset.emplace(1);
+  o_multiset.emplace(2);
+  o_multiset.emplace(2);
+
+  std::ostringstream os;
+  {
+    OArchive oar(os);
+    oar(o_multiset);
+  }
+
+  std::multiset<int> i_multiset;
+  std::istringstream is(os.str());
+  {
+    IArchive iar(is);
+    iar(i_multiset);
+  }
+
+  CHECK_EQ(i_multiset.size(), o_multiset.size());
+  CHECK_UNARY(std::equal(i_multiset.begin(), i_multiset.end(), o_multiset.begin()));
 }
 
 #endif // CEREAL_TEST_MULTISET_H_
