@@ -54,7 +54,7 @@ namespace cereal
 
     map.clear();
 
-    auto hint = map.begin();
+    auto hint = map.end();
     for( size_t i = 0; i < size; ++i )
     {
       typename Map<Args...>::key_type key;
@@ -66,6 +66,7 @@ namespace cereal
       #else // NOT CEREAL_OLDER_GCC
       hint = map.emplace_hint( hint, std::move( key ), std::move( value ) );
       #endif // NOT CEREAL_OLDER_GCC
+      hint = map.end();
     }
   }
 } // namespace cereal

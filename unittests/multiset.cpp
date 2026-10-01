@@ -32,21 +32,25 @@ TEST_SUITE_BEGIN("multiset");
 TEST_CASE("binary_multiset")
 {
   test_multiset<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_multiset_equivalent_keys_order<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
 TEST_CASE("portable_binary_multiset")
 {
   test_multiset<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+  test_multiset_equivalent_keys_order<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 TEST_CASE("xml_multiset")
 {
   test_multiset<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  test_multiset_equivalent_keys_order<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
 TEST_CASE("json_multiset")
 {
   test_multiset<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_multiset_equivalent_keys_order<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 TEST_SUITE_END();

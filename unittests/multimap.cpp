@@ -32,21 +32,25 @@ TEST_SUITE_BEGIN("multimap");
 TEST_CASE("binary_multimap")
 {
   test_multimap<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  test_multimap_equivalent_keys_order<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
 
 TEST_CASE("portable_binary_multimap")
 {
   test_multimap<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
+  test_multimap_equivalent_keys_order<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive>();
 }
 
 TEST_CASE("xml_multimap")
 {
   test_multimap<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
+  test_multimap_equivalent_keys_order<cereal::XMLInputArchive, cereal::XMLOutputArchive>();
 }
 
 TEST_CASE("json_multimap")
 {
   test_multimap<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  test_multimap_equivalent_keys_order<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
 }
 
 TEST_SUITE_END();

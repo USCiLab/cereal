@@ -105,6 +105,8 @@ void test_multimap()
     }
 
 #define MULTIMAP_CHECK(InMap, OutMap) \
+    CHECK_EQ( InMap.size(), OutMap.size() ); \
+    CHECK_UNARY( std::equal( InMap.begin(), InMap.end(), OutMap.begin() ) ); \
     for( auto & pair : OutMap ) \
     { \
       auto const count = InMap.count( pair.first ); \
@@ -124,6 +126,34 @@ void test_multimap()
 
 #undef MULTIMAP_CHECK
   }
+}
+
+template <class IArchive, class OArchive> inline
+void test_multimap_equivalent_keys_order()
+{
+  std::multimap<char, int> o_multimap;
+  o_multimap.emplace('a', 1);
+  o_multimap.emplace('a', 2);
+  o_multimap.emplace('a', 3);
+  o_multimap.emplace('b', 10);
+  o_multimap.emplace('b', 20);
+  o_multimap.emplace('b', 30);
+
+  std::ostringstream os;
+  {
+    OArchive oar(os);
+    oar(o_multimap);
+  }
+
+  std::multimap<char, int> i_multimap;
+  std::istringstream is(os.str());
+  {
+    IArchive iar(is);
+    iar(i_multimap);
+  }
+
+  CHECK_EQ(i_multimap.size(), o_multimap.size());
+  CHECK_UNARY(std::equal(i_multimap.begin(), i_multimap.end(), o_multimap.begin()));
 }
 
 #endif // CEREAL_TEST_MULTIMAP_H_
