@@ -186,13 +186,8 @@ namespace cereal
       }
 
       //! Explicitly finishes the XML output and flushes to the stream
-      /*! This method can be used to detect and handle errors that occur during
-          finalization of the XML output (e.g., stream I/O failures), similar
-          to std::fstream::close().
-          If not called explicitly, the destructor will attempt the same
-          finalization but will silently swallow any exceptions.
-
-          It is safe to call close() multiple times; subsequent calls are no-ops.
+      /*! Flushes and closes the XML document. Subsequent calls to close() or
+          attempts to serialize data after closing are safe no-ops.
 
           @throws std::exception if the stream operations fail */
       void close()
@@ -201,9 +196,17 @@ namespace cereal
           return;
         itsClosed = true;
 
+        // Print full XML document to stream and clear memory pool
         const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
         rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
+
+        // Re-anchor node stack to a dummy root to avoid dangling pointers on post-close writes
+        while( !itsNodes.empty() )
+          itsNodes.pop();
+        auto root = itsXML.allocate_node( rapidxml::node_element, xml_detail::CEREAL_XML_STRING );
+        itsXML.append_node( root );
+        itsNodes.emplace( root );
       }
 
       //! Destructor, flushes the XML

@@ -170,12 +170,8 @@ namespace cereal
       }
 
       //! Explicitly finishes the JSON output and flushes to the stream
-      /*! This method can be used to detect and handle errors that occur during
-          finalization of the JSON output, similar to std::fstream::close().
-          If not called explicitly, the destructor will attempt the same
-          finalization but will silently swallow any exceptions.
-
-          It is safe to call close() multiple times; subsequent calls are no-ops.
+      /*! Flushes and closes the JSON document. Subsequent calls to close() or
+          attempts to serialize data after closing are safe no-ops.
 
           @throws RapidJSONException if rapidjson encounters an error during finalization */
       void close()
@@ -184,10 +180,25 @@ namespace cereal
           return;
         itsClosed = true;
 
+        // Finalize the root JSON container
         if (itsNodeStack.top() == NodeType::InObject)
           itsWriter.EndObject();
         else if (itsNodeStack.top() == NodeType::InArray)
           itsWriter.EndArray();
+
+        // Redirect writer to a null stream so post-close writes don't touch the user's stream
+        static std::ostream nullStream( nullptr );
+        static WriteStream nullWriteStream( nullStream );
+        itsWriter.Reset( nullWriteStream );
+
+        // Reset stack to root state so post-close calls remain valid no-ops without throwing
+        while( itsNodeStack.size() > 1 )
+          itsNodeStack.pop();
+        itsNodeStack.top() = NodeType::StartObject;
+        while( itsNameCounter.size() > 1 )
+          itsNameCounter.pop();
+        itsNameCounter.top() = 0;
+        itsNextName = nullptr;
       }
 
       //! Destructor, flushes the JSON
