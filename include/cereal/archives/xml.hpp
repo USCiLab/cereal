@@ -185,12 +185,37 @@ namespace cereal
         itsOS.precision( options.itsPrecision );
       }
 
-      //! Destructor, flushes the XML
-      ~XMLOutputArchive() CEREAL_NOEXCEPT
+      //! Explicitly finishes the XML output and flushes to the stream
+      /*! Flushes and closes the XML document. Subsequent calls to close() or
+          attempts to serialize data after closing are safe no-ops.
+
+          @throws std::exception if the stream operations fail */
+      void close()
       {
+        if( itsClosed )
+          return;
+        itsClosed = true;
+
+        // Print full XML document to stream and clear memory pool
         const int flags = itsIndent ? 0x0 : rapidxml::print_no_indenting;
         rapidxml::print( itsStream, itsXML, flags );
         itsXML.clear();
+
+        // Re-anchor node stack to a dummy root to avoid dangling pointers on post-close writes
+        while( !itsNodes.empty() )
+          itsNodes.pop();
+        auto root = itsXML.allocate_node( rapidxml::node_element, xml_detail::CEREAL_XML_STRING );
+        itsXML.append_node( root );
+        itsNodes.emplace( root );
+      }
+
+      //! Destructor, flushes the XML
+      /*! Silently catches any exceptions to guarantee noexcept.
+          Call close() explicitly before destruction to detect errors. */
+      ~XMLOutputArchive() CEREAL_NOEXCEPT
+      {
+        try { close(); }
+        catch(...) {}
       }
 
       //! Saves some binary data, encoded as a base64 string, with an optional name
@@ -361,6 +386,7 @@ namespace cereal
       bool itsOutputType;              //!< Controls whether type information is printed
       bool itsIndent;                  //!< Controls whether indenting is used
       bool itsSizeAttributes;          //!< Controls whether lists have a size attribute
+      bool itsClosed = false;          //!< Whether close() has been called
   }; // XMLOutputArchive
 
   // ######################################################################
