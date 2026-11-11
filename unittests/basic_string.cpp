@@ -69,6 +69,11 @@ void test_ws_in_out(Out const & o_value_with_ws)
   CHECK(i_value_with_ws == o_value_with_ws);
 }
 
+TEST_CASE("json_string_embedded_null")
+{
+  test_ws_in_out<cereal::JSONInputArchive, cereal::JSONOutputArchive>( std::string("\0a\0b\0", 5) );
+}
+
 TEST_CASE("xml_string_issue109")
 {
   char strings[][20] = {

@@ -664,7 +664,13 @@ namespace cereal
       //! Loads a value from the current node - double overload
       void loadValue(double & val)      { search(); val = itsIteratorStack.back().value().GetDouble(); ++itsIteratorStack.back(); }
       //! Loads a value from the current node - string overload
-      void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
+      void loadValue(std::string & val)
+      {
+        search();
+        auto const & value = itsIteratorStack.back().value();
+        val.assign(value.GetString(), value.GetStringLength());
+        ++itsIteratorStack.back();
+      }
       //! Loads a nullptr from the current node
       void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
